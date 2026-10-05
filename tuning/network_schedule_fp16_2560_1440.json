@@ -1,0 +1,7078 @@
+{
+  "status": "CPU_NATIVE_PHYSICAL_SCHEDULE_NOT_RUNTIME_QUALIFIED",
+  "valid": [
+    2560,
+    1440
+  ],
+  "levels": [
+    [
+      1280,
+      736
+    ],
+    [
+      640,
+      368
+    ],
+    [
+      320,
+      184
+    ],
+    [
+      160,
+      92
+    ],
+    [
+      80,
+      48
+    ],
+    [
+      40,
+      24
+    ]
+  ],
+  "precision": "fp16",
+  "compute_positions": 152,
+  "counter_reset_positions": 33,
+  "positions": [
+    {
+      "position": 0,
+      "native_node": "block-1",
+      "block": 1,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1_inpview",
+      "module": 0,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "input"
+      },
+      "output_buffers": {
+        "high": "b1.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        160,
+        92,
+        1
+      ],
+      "block_dim": [
+        32,
+        1,
+        1
+      ],
+      "abi_bytes": 96,
+      "phase": 0
+    },
+    {
+      "position": 1,
+      "native_node": "block-2",
+      "block": 2,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1",
+      "module": 0,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b1.output"
+      },
+      "output_buffers": {
+        "high": "b2.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        161,
+        93,
+        1
+      ],
+      "block_dim": [
+        32,
+        1,
+        1
+      ],
+      "abi_bytes": 96,
+      "phase": 1
+    },
+    {
+      "position": 2,
+      "native_node": "block-3",
+      "block": 3,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1",
+      "module": 0,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b2.output"
+      },
+      "output_buffers": {
+        "high": "b3.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        161,
+        92,
+        1
+      ],
+      "block_dim": [
+        32,
+        1,
+        1
+      ],
+      "abi_bytes": 96,
+      "phase": 2
+    },
+    {
+      "position": 3,
+      "native_node": "block-4",
+      "block": 4,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1_ds",
+      "module": 0,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b3.output"
+      },
+      "output_buffers": {
+        "high": "b4.output",
+        "down": "b4.down"
+      },
+      "record_layer": 0,
+      "grid": [
+        160,
+        93,
+        1
+      ],
+      "block_dim": [
+        32,
+        1,
+        1
+      ],
+      "abi_bytes": 96,
+      "phase": 3
+    },
+    {
+      "position": 4,
+      "native_node": "block-5",
+      "block": 5,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2_inpview",
+      "module": 1,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b4.down"
+      },
+      "output_buffers": {
+        "high": "b5.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        80,
+        46,
+        1
+      ],
+      "block_dim": [
+        32,
+        2,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 0
+    },
+    {
+      "position": 5,
+      "native_node": "block-6",
+      "block": 6,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2",
+      "module": 1,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b5.output"
+      },
+      "output_buffers": {
+        "high": "b6.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        81,
+        47,
+        1
+      ],
+      "block_dim": [
+        32,
+        2,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 1
+    },
+    {
+      "position": 6,
+      "native_node": "block-7",
+      "block": 7,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2",
+      "module": 1,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b6.output"
+      },
+      "output_buffers": {
+        "high": "b7.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        81,
+        46,
+        1
+      ],
+      "block_dim": [
+        32,
+        2,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 2
+    },
+    {
+      "position": 7,
+      "native_node": "block-8",
+      "block": 8,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2_ds",
+      "module": 1,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b7.output"
+      },
+      "output_buffers": {
+        "high": "b8.output",
+        "down": "b8.down"
+      },
+      "record_layer": 0,
+      "grid": [
+        80,
+        47,
+        1
+      ],
+      "block_dim": [
+        32,
+        2,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 3
+    },
+    {
+      "position": 8,
+      "native_node": "block-9",
+      "block": 9,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4_inpview",
+      "module": 2,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b8.down"
+      },
+      "output_buffers": {
+        "high": "b9.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        40,
+        23,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 0
+    },
+    {
+      "position": 9,
+      "native_node": "block-10",
+      "block": 10,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4",
+      "module": 2,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b9.output"
+      },
+      "output_buffers": {
+        "high": "b10.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        41,
+        24,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 1
+    },
+    {
+      "position": 10,
+      "native_node": "block-11",
+      "block": 11,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4",
+      "module": 2,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b10.output"
+      },
+      "output_buffers": {
+        "high": "b11.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        41,
+        23,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 2
+    },
+    {
+      "position": 11,
+      "native_node": "block-12",
+      "block": 12,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4",
+      "module": 2,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b11.output"
+      },
+      "output_buffers": {
+        "high": "b12.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        40,
+        24,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 3
+    },
+    {
+      "position": 12,
+      "native_node": "block-13",
+      "block": 13,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4",
+      "module": 2,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b12.output"
+      },
+      "output_buffers": {
+        "high": "b13.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        40,
+        23,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 0
+    },
+    {
+      "position": 13,
+      "native_node": "block-14",
+      "block": 14,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4_ds",
+      "module": 2,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b13.output"
+      },
+      "output_buffers": {
+        "high": "b14.output",
+        "down": "b14.down"
+      },
+      "record_layer": 0,
+      "grid": [
+        41,
+        24,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 1
+    },
+    {
+      "position": 14,
+      "native_node": "block-15",
+      "block": 15,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8_inpview",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b14.down"
+      },
+      "output_buffers": {
+        "high": "b15.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        20,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 0
+    },
+    {
+      "position": 15,
+      "native_node": "block-16",
+      "block": 16,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b15.output"
+      },
+      "output_buffers": {
+        "high": "b16.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        21,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 1
+    },
+    {
+      "position": 16,
+      "native_node": "block-17",
+      "block": 17,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b16.output"
+      },
+      "output_buffers": {
+        "high": "b17.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        21,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 2
+    },
+    {
+      "position": 17,
+      "native_node": "block-18",
+      "block": 18,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b17.output"
+      },
+      "output_buffers": {
+        "high": "b18.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        20,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 3
+    },
+    {
+      "position": 18,
+      "native_node": "block-19",
+      "block": 19,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b18.output"
+      },
+      "output_buffers": {
+        "high": "b19.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        20,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 0
+    },
+    {
+      "position": 19,
+      "native_node": "block-20",
+      "block": 20,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b19.output"
+      },
+      "output_buffers": {
+        "high": "b20.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        21,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 1
+    },
+    {
+      "position": 20,
+      "native_node": "block-21",
+      "block": 21,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b20.output"
+      },
+      "output_buffers": {
+        "high": "b21.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        21,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 2
+    },
+    {
+      "position": 21,
+      "native_node": "block-22",
+      "block": 22,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8_ds",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b21.output"
+      },
+      "output_buffers": {
+        "high": "b22.output",
+        "down": "b22.down"
+      },
+      "record_layer": 0,
+      "grid": [
+        20,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 3
+    },
+    {
+      "position": 22,
+      "native_node": "block-23",
+      "block": 23,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_inpview_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b22.down"
+      },
+      "output_buffers": {
+        "high": "b23.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 23,
+      "native_node": "block-23",
+      "block": 23,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_inpview_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b23.branches",
+        "residual": "b22.down"
+      },
+      "output_buffers": {
+        "high": "b23.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 24,
+      "native_node": "block-23",
+      "block": 23,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b23.ffn"
+      },
+      "output_buffers": {
+        "high": "b23.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        10,
+        6,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 0
+    },
+    {
+      "position": 25,
+      "native_node": "block-23",
+      "block": 23,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b23.attended",
+        "residual": "b23.ffn"
+      },
+      "output_buffers": {
+        "high": "b23.output"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 26,
+      "native_node": "block-24",
+      "block": 24,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b23.output"
+      },
+      "output_buffers": {
+        "high": "b24.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 27,
+      "native_node": "block-24",
+      "block": 24,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b24.branches",
+        "residual": "b23.output"
+      },
+      "output_buffers": {
+        "high": "b24.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 28,
+      "native_node": "block-24",
+      "block": 24,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b24.ffn"
+      },
+      "output_buffers": {
+        "high": "b24.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        11,
+        7,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 1
+    },
+    {
+      "position": 29,
+      "native_node": "block-24",
+      "block": 24,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b24.attended",
+        "residual": "b24.ffn"
+      },
+      "output_buffers": {
+        "high": "b24.output"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 30,
+      "native_node": "block-25",
+      "block": 25,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b24.output"
+      },
+      "output_buffers": {
+        "high": "b25.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 31,
+      "native_node": "block-25",
+      "block": 25,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b25.branches",
+        "residual": "b24.output"
+      },
+      "output_buffers": {
+        "high": "b25.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 32,
+      "native_node": "block-25",
+      "block": 25,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b25.ffn"
+      },
+      "output_buffers": {
+        "high": "b25.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        11,
+        6,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 2
+    },
+    {
+      "position": 33,
+      "native_node": "block-25",
+      "block": 25,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b25.attended",
+        "residual": "b25.ffn"
+      },
+      "output_buffers": {
+        "high": "b25.output"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 34,
+      "native_node": "block-26",
+      "block": 26,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b25.output"
+      },
+      "output_buffers": {
+        "high": "b26.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 35,
+      "native_node": "block-26",
+      "block": 26,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b26.branches",
+        "residual": "b25.output"
+      },
+      "output_buffers": {
+        "high": "b26.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 36,
+      "native_node": "block-26",
+      "block": 26,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b26.ffn"
+      },
+      "output_buffers": {
+        "high": "b26.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        10,
+        7,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 3
+    },
+    {
+      "position": 37,
+      "native_node": "block-26",
+      "block": 26,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b26.attended",
+        "residual": "b26.ffn"
+      },
+      "output_buffers": {
+        "high": "b26.output"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 38,
+      "native_node": "block-27",
+      "block": 27,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b26.output"
+      },
+      "output_buffers": {
+        "high": "b27.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 39,
+      "native_node": "block-27",
+      "block": 27,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b27.branches",
+        "residual": "b26.output"
+      },
+      "output_buffers": {
+        "high": "b27.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 40,
+      "native_node": "block-27",
+      "block": 27,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b27.ffn"
+      },
+      "output_buffers": {
+        "high": "b27.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        10,
+        6,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 0
+    },
+    {
+      "position": 41,
+      "native_node": "block-27",
+      "block": 27,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b27.attended",
+        "residual": "b27.ffn"
+      },
+      "output_buffers": {
+        "high": "b27.output"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 42,
+      "native_node": "block-28",
+      "block": 28,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b27.output"
+      },
+      "output_buffers": {
+        "high": "b28.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 43,
+      "native_node": "block-28",
+      "block": 28,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b28.branches",
+        "residual": "b27.output"
+      },
+      "output_buffers": {
+        "high": "b28.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 44,
+      "native_node": "block-28",
+      "block": 28,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b28.ffn"
+      },
+      "output_buffers": {
+        "high": "b28.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        11,
+        7,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 1
+    },
+    {
+      "position": 45,
+      "native_node": "block-28",
+      "block": 28,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b28.attended",
+        "residual": "b28.ffn"
+      },
+      "output_buffers": {
+        "high": "b28.output"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 46,
+      "native_node": "block-29",
+      "block": 29,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b28.output"
+      },
+      "output_buffers": {
+        "high": "b29.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 47,
+      "native_node": "block-29",
+      "block": 29,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b29.branches",
+        "residual": "b28.output"
+      },
+      "output_buffers": {
+        "high": "b29.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 48,
+      "native_node": "block-29",
+      "block": 29,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b29.ffn"
+      },
+      "output_buffers": {
+        "high": "b29.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        11,
+        6,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 2
+    },
+    {
+      "position": 49,
+      "native_node": "block-29",
+      "block": 29,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b29.attended",
+        "residual": "b29.ffn"
+      },
+      "output_buffers": {
+        "high": "b29.output"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 50,
+      "native_node": "block-30",
+      "block": 30,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b29.output"
+      },
+      "output_buffers": {
+        "high": "b30.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 51,
+      "native_node": "block-30",
+      "block": 30,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b30.branches",
+        "residual": "b29.output"
+      },
+      "output_buffers": {
+        "high": "b30.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 52,
+      "native_node": "block-30",
+      "block": 30,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b30.ffn"
+      },
+      "output_buffers": {
+        "high": "b30.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        10,
+        7,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 3
+    },
+    {
+      "position": 53,
+      "native_node": "block-30",
+      "block": 30,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_pool_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b30.attended",
+        "residual": "b30.ffn"
+      },
+      "output_buffers": {
+        "high": "b30.output",
+        "pool": "b30.pool"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 80,
+      "phase": null
+    },
+    {
+      "position": 54,
+      "native_node": "block-30",
+      "block": 30,
+      "stage": "down",
+      "original_symbol": "cc_split_swin_16h_final_head_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b30.pool"
+      },
+      "output_buffers": {
+        "high": "b30.down"
+      },
+      "record_layer": 4,
+      "grid": [
+        20,
+        3,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 40,
+      "phase": null
+    },
+    {
+      "position": 55,
+      "native_node": "repack-30-31",
+      "block": "repack-30-31",
+      "stage": "repack",
+      "original_symbol": "cc_vit_1d_repack_2d_to_1d",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "input": "b30.down"
+      },
+      "output_buffers": {
+        "output": "repack-30-31"
+      },
+      "record_layer": null,
+      "grid": [
+        1920,
+        1,
+        1
+      ],
+      "block_dim": [
+        256,
+        1,
+        1
+      ],
+      "abi_bytes": 24,
+      "phase": null
+    },
+    {
+      "position": 56,
+      "native_node": "block-31",
+      "block": 31,
+      "stage": "expand",
+      "original_symbol": "cc_vit_1d_ffn_expand",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "repack-30-31"
+      },
+      "output_buffers": {
+        "high": "b31.expanded"
+      },
+      "record_layer": 0,
+      "grid": [
+        256,
+        1,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 57,
+      "native_node": "block-31",
+      "block": 31,
+      "stage": "contract",
+      "original_symbol": "cc_vit_1d_ffn_contract",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b31.expanded",
+        "residual": "repack-30-31"
+      },
+      "output_buffers": {
+        "high": "b31.contracted",
+        "counter": "b31.contract_counter"
+      },
+      "record_layer": 1,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 58,
+      "native_node": "block-31",
+      "block": 31,
+      "stage": "qkv",
+      "original_symbol": "cc_vit_1d_qkv",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b31.contracted"
+      },
+      "output_buffers": {
+        "q": "b31.Q",
+        "k": "b31.K",
+        "v": "b31.V",
+        "counter": "b31.qkv_counter"
+      },
+      "record_layer": 2,
+      "grid": [
+        128,
+        1,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 80,
+      "phase": null
+    },
+    {
+      "position": 59,
+      "native_node": "block-31",
+      "block": 31,
+      "stage": "attention_chained",
+      "original_symbol": "cc_vit_1d_attention_chained",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "q": "b31.Q",
+        "k": "b31.K",
+        "v": "b31.V",
+        "predecessor_counter": "b31.qkv_counter"
+      },
+      "output_buffers": {
+        "high": "b31.attended",
+        "completion_counter": "b31.attention_counter"
+      },
+      "record_layer": null,
+      "grid": [
+        32,
+        4,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 64,
+      "phase": null
+    },
+    {
+      "position": 60,
+      "native_node": "block-31",
+      "block": 31,
+      "stage": "projection",
+      "original_symbol": "cc_vit_1d_projection",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b31.attended",
+        "residual": "b31.contracted"
+      },
+      "output_buffers": {
+        "high": "b31.output",
+        "counter": "b31.projection_counter"
+      },
+      "record_layer": 4,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 61,
+      "native_node": "block-32",
+      "block": 32,
+      "stage": "expand",
+      "original_symbol": "cc_vit_1d_ffn_expand",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b31.output"
+      },
+      "output_buffers": {
+        "high": "b32.expanded"
+      },
+      "record_layer": 0,
+      "grid": [
+        256,
+        1,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 62,
+      "native_node": "block-32",
+      "block": 32,
+      "stage": "contract",
+      "original_symbol": "cc_vit_1d_ffn_contract",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b32.expanded",
+        "residual": "b31.output"
+      },
+      "output_buffers": {
+        "high": "b32.contracted",
+        "counter": "b32.contract_counter"
+      },
+      "record_layer": 1,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 63,
+      "native_node": "block-32",
+      "block": 32,
+      "stage": "qkv",
+      "original_symbol": "cc_vit_1d_qkv",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b32.contracted"
+      },
+      "output_buffers": {
+        "q": "b32.Q",
+        "k": "b32.K",
+        "v": "b32.V",
+        "counter": "b32.qkv_counter"
+      },
+      "record_layer": 2,
+      "grid": [
+        128,
+        1,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 80,
+      "phase": null
+    },
+    {
+      "position": 64,
+      "native_node": "block-32",
+      "block": 32,
+      "stage": "attention_chained",
+      "original_symbol": "cc_vit_1d_attention_chained",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "q": "b32.Q",
+        "k": "b32.K",
+        "v": "b32.V",
+        "predecessor_counter": "b32.qkv_counter"
+      },
+      "output_buffers": {
+        "high": "b32.attended",
+        "completion_counter": "b32.attention_counter"
+      },
+      "record_layer": null,
+      "grid": [
+        32,
+        4,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 64,
+      "phase": null
+    },
+    {
+      "position": 65,
+      "native_node": "block-32",
+      "block": 32,
+      "stage": "projection",
+      "original_symbol": "cc_vit_1d_projection",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b32.attended",
+        "residual": "b32.contracted"
+      },
+      "output_buffers": {
+        "high": "b32.output",
+        "counter": "b32.projection_counter"
+      },
+      "record_layer": 4,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 66,
+      "native_node": "block-33",
+      "block": 33,
+      "stage": "expand",
+      "original_symbol": "cc_vit_1d_ffn_expand",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b32.output"
+      },
+      "output_buffers": {
+        "high": "b33.expanded"
+      },
+      "record_layer": 0,
+      "grid": [
+        256,
+        1,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 67,
+      "native_node": "block-33",
+      "block": 33,
+      "stage": "contract",
+      "original_symbol": "cc_vit_1d_ffn_contract",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b33.expanded",
+        "residual": "b32.output"
+      },
+      "output_buffers": {
+        "high": "b33.contracted",
+        "counter": "b33.contract_counter"
+      },
+      "record_layer": 1,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 68,
+      "native_node": "block-33",
+      "block": 33,
+      "stage": "qkv",
+      "original_symbol": "cc_vit_1d_qkv",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b33.contracted"
+      },
+      "output_buffers": {
+        "q": "b33.Q",
+        "k": "b33.K",
+        "v": "b33.V",
+        "counter": "b33.qkv_counter"
+      },
+      "record_layer": 2,
+      "grid": [
+        128,
+        1,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 80,
+      "phase": null
+    },
+    {
+      "position": 69,
+      "native_node": "block-33",
+      "block": 33,
+      "stage": "attention_chained",
+      "original_symbol": "cc_vit_1d_attention_chained",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "q": "b33.Q",
+        "k": "b33.K",
+        "v": "b33.V",
+        "predecessor_counter": "b33.qkv_counter"
+      },
+      "output_buffers": {
+        "high": "b33.attended",
+        "completion_counter": "b33.attention_counter"
+      },
+      "record_layer": null,
+      "grid": [
+        32,
+        4,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 64,
+      "phase": null
+    },
+    {
+      "position": 70,
+      "native_node": "block-33",
+      "block": 33,
+      "stage": "projection",
+      "original_symbol": "cc_vit_1d_projection",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b33.attended",
+        "residual": "b33.contracted"
+      },
+      "output_buffers": {
+        "high": "b33.output",
+        "counter": "b33.projection_counter"
+      },
+      "record_layer": 4,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 71,
+      "native_node": "block-34",
+      "block": 34,
+      "stage": "expand",
+      "original_symbol": "cc_vit_1d_ffn_expand",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b33.output"
+      },
+      "output_buffers": {
+        "high": "b34.expanded"
+      },
+      "record_layer": 0,
+      "grid": [
+        256,
+        1,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 72,
+      "native_node": "block-34",
+      "block": 34,
+      "stage": "contract",
+      "original_symbol": "cc_vit_1d_ffn_contract",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b34.expanded",
+        "residual": "b33.output"
+      },
+      "output_buffers": {
+        "high": "b34.contracted",
+        "counter": "b34.contract_counter"
+      },
+      "record_layer": 1,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 73,
+      "native_node": "block-34",
+      "block": 34,
+      "stage": "qkv",
+      "original_symbol": "cc_vit_1d_qkv",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b34.contracted"
+      },
+      "output_buffers": {
+        "q": "b34.Q",
+        "k": "b34.K",
+        "v": "b34.V",
+        "counter": "b34.qkv_counter"
+      },
+      "record_layer": 2,
+      "grid": [
+        128,
+        1,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 80,
+      "phase": null
+    },
+    {
+      "position": 74,
+      "native_node": "block-34",
+      "block": 34,
+      "stage": "attention_chained",
+      "original_symbol": "cc_vit_1d_attention_chained",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "q": "b34.Q",
+        "k": "b34.K",
+        "v": "b34.V",
+        "predecessor_counter": "b34.qkv_counter"
+      },
+      "output_buffers": {
+        "high": "b34.attended",
+        "completion_counter": "b34.attention_counter"
+      },
+      "record_layer": null,
+      "grid": [
+        32,
+        4,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 64,
+      "phase": null
+    },
+    {
+      "position": 75,
+      "native_node": "block-34",
+      "block": 34,
+      "stage": "projection",
+      "original_symbol": "cc_vit_1d_projection",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b34.attended",
+        "residual": "b34.contracted"
+      },
+      "output_buffers": {
+        "high": "b34.output",
+        "counter": "b34.projection_counter"
+      },
+      "record_layer": 4,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 76,
+      "native_node": "block-35",
+      "block": 35,
+      "stage": "expand",
+      "original_symbol": "cc_vit_1d_ffn_expand",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b34.output"
+      },
+      "output_buffers": {
+        "high": "b35.expanded"
+      },
+      "record_layer": 0,
+      "grid": [
+        256,
+        1,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 77,
+      "native_node": "block-35",
+      "block": 35,
+      "stage": "contract",
+      "original_symbol": "cc_vit_1d_ffn_contract",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b35.expanded",
+        "residual": "b34.output"
+      },
+      "output_buffers": {
+        "high": "b35.contracted",
+        "counter": "b35.contract_counter"
+      },
+      "record_layer": 1,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 78,
+      "native_node": "block-35",
+      "block": 35,
+      "stage": "qkv",
+      "original_symbol": "cc_vit_1d_qkv",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b35.contracted"
+      },
+      "output_buffers": {
+        "q": "b35.Q",
+        "k": "b35.K",
+        "v": "b35.V",
+        "counter": "b35.qkv_counter"
+      },
+      "record_layer": 2,
+      "grid": [
+        128,
+        1,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 80,
+      "phase": null
+    },
+    {
+      "position": 79,
+      "native_node": "block-35",
+      "block": 35,
+      "stage": "attention_chained",
+      "original_symbol": "cc_vit_1d_attention_chained",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "q": "b35.Q",
+        "k": "b35.K",
+        "v": "b35.V",
+        "predecessor_counter": "b35.qkv_counter"
+      },
+      "output_buffers": {
+        "high": "b35.attended",
+        "completion_counter": "b35.attention_counter"
+      },
+      "record_layer": null,
+      "grid": [
+        32,
+        4,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 64,
+      "phase": null
+    },
+    {
+      "position": 80,
+      "native_node": "block-35",
+      "block": 35,
+      "stage": "projection",
+      "original_symbol": "cc_vit_1d_projection",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b35.attended",
+        "residual": "b35.contracted"
+      },
+      "output_buffers": {
+        "high": "b35.output",
+        "counter": "b35.projection_counter"
+      },
+      "record_layer": 4,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 81,
+      "native_node": "block-36",
+      "block": 36,
+      "stage": "expand",
+      "original_symbol": "cc_vit_1d_ffn_expand",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b35.output"
+      },
+      "output_buffers": {
+        "high": "b36.expanded"
+      },
+      "record_layer": 0,
+      "grid": [
+        256,
+        1,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 82,
+      "native_node": "block-36",
+      "block": 36,
+      "stage": "contract",
+      "original_symbol": "cc_vit_1d_ffn_contract",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b36.expanded",
+        "residual": "b35.output"
+      },
+      "output_buffers": {
+        "high": "b36.contracted",
+        "counter": "b36.contract_counter"
+      },
+      "record_layer": 1,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 83,
+      "native_node": "block-36",
+      "block": 36,
+      "stage": "qkv",
+      "original_symbol": "cc_vit_1d_qkv",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b36.contracted"
+      },
+      "output_buffers": {
+        "q": "b36.Q",
+        "k": "b36.K",
+        "v": "b36.V",
+        "counter": "b36.qkv_counter"
+      },
+      "record_layer": 2,
+      "grid": [
+        128,
+        1,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 80,
+      "phase": null
+    },
+    {
+      "position": 84,
+      "native_node": "block-36",
+      "block": 36,
+      "stage": "attention_chained",
+      "original_symbol": "cc_vit_1d_attention_chained",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "q": "b36.Q",
+        "k": "b36.K",
+        "v": "b36.V",
+        "predecessor_counter": "b36.qkv_counter"
+      },
+      "output_buffers": {
+        "high": "b36.attended",
+        "completion_counter": "b36.attention_counter"
+      },
+      "record_layer": null,
+      "grid": [
+        32,
+        4,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 64,
+      "phase": null
+    },
+    {
+      "position": 85,
+      "native_node": "block-36",
+      "block": 36,
+      "stage": "projection",
+      "original_symbol": "cc_vit_1d_projection",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b36.attended",
+        "residual": "b36.contracted"
+      },
+      "output_buffers": {
+        "high": "b36.output",
+        "counter": "b36.projection_counter"
+      },
+      "record_layer": 4,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 86,
+      "native_node": "block-37",
+      "block": 37,
+      "stage": "expand",
+      "original_symbol": "cc_vit_1d_ffn_expand",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b36.output"
+      },
+      "output_buffers": {
+        "high": "b37.expanded"
+      },
+      "record_layer": 0,
+      "grid": [
+        256,
+        1,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 87,
+      "native_node": "block-37",
+      "block": 37,
+      "stage": "contract",
+      "original_symbol": "cc_vit_1d_ffn_contract",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b37.expanded",
+        "residual": "b36.output"
+      },
+      "output_buffers": {
+        "high": "b37.contracted",
+        "counter": "b37.contract_counter"
+      },
+      "record_layer": 1,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 88,
+      "native_node": "block-37",
+      "block": 37,
+      "stage": "qkv",
+      "original_symbol": "cc_vit_1d_qkv",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b37.contracted"
+      },
+      "output_buffers": {
+        "q": "b37.Q",
+        "k": "b37.K",
+        "v": "b37.V",
+        "counter": "b37.qkv_counter"
+      },
+      "record_layer": 2,
+      "grid": [
+        128,
+        1,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 80,
+      "phase": null
+    },
+    {
+      "position": 89,
+      "native_node": "block-37",
+      "block": 37,
+      "stage": "attention_chained",
+      "original_symbol": "cc_vit_1d_attention_chained",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "q": "b37.Q",
+        "k": "b37.K",
+        "v": "b37.V",
+        "predecessor_counter": "b37.qkv_counter"
+      },
+      "output_buffers": {
+        "high": "b37.attended",
+        "completion_counter": "b37.attention_counter"
+      },
+      "record_layer": null,
+      "grid": [
+        32,
+        4,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 64,
+      "phase": null
+    },
+    {
+      "position": 90,
+      "native_node": "block-37",
+      "block": 37,
+      "stage": "projection",
+      "original_symbol": "cc_vit_1d_projection",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b37.attended",
+        "residual": "b37.contracted"
+      },
+      "output_buffers": {
+        "high": "b37.output",
+        "counter": "b37.projection_counter"
+      },
+      "record_layer": 4,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 91,
+      "native_node": "block-38",
+      "block": 38,
+      "stage": "expand",
+      "original_symbol": "cc_vit_1d_ffn_expand",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b37.output"
+      },
+      "output_buffers": {
+        "high": "b38.expanded"
+      },
+      "record_layer": 0,
+      "grid": [
+        256,
+        1,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 92,
+      "native_node": "block-38",
+      "block": 38,
+      "stage": "contract",
+      "original_symbol": "cc_vit_1d_ffn_contract",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b38.expanded",
+        "residual": "b37.output"
+      },
+      "output_buffers": {
+        "high": "b38.contracted",
+        "counter": "b38.contract_counter"
+      },
+      "record_layer": 1,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 93,
+      "native_node": "block-38",
+      "block": 38,
+      "stage": "qkv",
+      "original_symbol": "cc_vit_1d_qkv",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b38.contracted"
+      },
+      "output_buffers": {
+        "q": "b38.Q",
+        "k": "b38.K",
+        "v": "b38.V",
+        "counter": "b38.qkv_counter"
+      },
+      "record_layer": 2,
+      "grid": [
+        128,
+        1,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 80,
+      "phase": null
+    },
+    {
+      "position": 94,
+      "native_node": "block-38",
+      "block": 38,
+      "stage": "attention_chained",
+      "original_symbol": "cc_vit_1d_attention_chained",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "q": "b38.Q",
+        "k": "b38.K",
+        "v": "b38.V",
+        "predecessor_counter": "b38.qkv_counter"
+      },
+      "output_buffers": {
+        "high": "b38.attended",
+        "completion_counter": "b38.attention_counter"
+      },
+      "record_layer": null,
+      "grid": [
+        32,
+        4,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 64,
+      "phase": null
+    },
+    {
+      "position": 95,
+      "native_node": "block-38",
+      "block": 38,
+      "stage": "projection",
+      "original_symbol": "cc_vit_1d_projection",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b38.attended",
+        "residual": "b38.contracted"
+      },
+      "output_buffers": {
+        "high": "b38.output",
+        "counter": "b38.projection_counter"
+      },
+      "record_layer": 4,
+      "grid": [
+        64,
+        1,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 96,
+      "native_node": "repack-38-39",
+      "block": "repack-38-39",
+      "stage": "repack",
+      "original_symbol": "cc_vit_1d_repack_1d_to_2d",
+      "module": 5,
+      "precision": "fp16",
+      "input_buffers": {
+        "input": "b38.output"
+      },
+      "output_buffers": {
+        "output": "repack-38-39"
+      },
+      "record_layer": null,
+      "grid": [
+        1920,
+        1,
+        1
+      ],
+      "block_dim": [
+        256,
+        1,
+        1
+      ],
+      "abi_bytes": 24,
+      "phase": null
+    },
+    {
+      "position": 97,
+      "native_node": "block-39",
+      "block": 39,
+      "stage": "output",
+      "original_symbol": "cc_dec_input_upsample_1024_512",
+      "module": 6,
+      "precision": "fp16",
+      "input_buffers": {
+        "low": "repack-38-39",
+        "skip": "b30.output"
+      },
+      "output_buffers": {
+        "high": "b39.output",
+        "counter": "b39.up_counter",
+        "scratch": "b39.scratch"
+      },
+      "record_layer": 0,
+      "grid": [
+        20,
+        6,
+        4
+      ],
+      "block_dim": [
+        32,
+        2,
+        1
+      ],
+      "abi_bytes": 80,
+      "phase": null
+    },
+    {
+      "position": 98,
+      "native_node": "block-40",
+      "block": 40,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b39.output"
+      },
+      "output_buffers": {
+        "high": "b40.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 99,
+      "native_node": "block-40",
+      "block": 40,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b40.branches",
+        "residual": "b39.output"
+      },
+      "output_buffers": {
+        "high": "b40.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 100,
+      "native_node": "block-40",
+      "block": 40,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b40.ffn"
+      },
+      "output_buffers": {
+        "high": "b40.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        10,
+        6,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 0
+    },
+    {
+      "position": 101,
+      "native_node": "block-40",
+      "block": 40,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b40.attended",
+        "residual": "b40.ffn"
+      },
+      "output_buffers": {
+        "high": "b40.output"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 102,
+      "native_node": "block-41",
+      "block": 41,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b40.output"
+      },
+      "output_buffers": {
+        "high": "b41.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 103,
+      "native_node": "block-41",
+      "block": 41,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b41.branches",
+        "residual": "b40.output"
+      },
+      "output_buffers": {
+        "high": "b41.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 104,
+      "native_node": "block-41",
+      "block": 41,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b41.ffn"
+      },
+      "output_buffers": {
+        "high": "b41.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        11,
+        7,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 1
+    },
+    {
+      "position": 105,
+      "native_node": "block-41",
+      "block": 41,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b41.attended",
+        "residual": "b41.ffn"
+      },
+      "output_buffers": {
+        "high": "b41.output"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 106,
+      "native_node": "block-42",
+      "block": 42,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b41.output"
+      },
+      "output_buffers": {
+        "high": "b42.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 107,
+      "native_node": "block-42",
+      "block": 42,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b42.branches",
+        "residual": "b41.output"
+      },
+      "output_buffers": {
+        "high": "b42.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 108,
+      "native_node": "block-42",
+      "block": 42,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b42.ffn"
+      },
+      "output_buffers": {
+        "high": "b42.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        11,
+        6,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 2
+    },
+    {
+      "position": 109,
+      "native_node": "block-42",
+      "block": 42,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b42.attended",
+        "residual": "b42.ffn"
+      },
+      "output_buffers": {
+        "high": "b42.output"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 110,
+      "native_node": "block-43",
+      "block": 43,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b42.output"
+      },
+      "output_buffers": {
+        "high": "b43.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 111,
+      "native_node": "block-43",
+      "block": 43,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b43.branches",
+        "residual": "b42.output"
+      },
+      "output_buffers": {
+        "high": "b43.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 112,
+      "native_node": "block-43",
+      "block": 43,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b43.ffn"
+      },
+      "output_buffers": {
+        "high": "b43.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        10,
+        7,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 3
+    },
+    {
+      "position": 113,
+      "native_node": "block-43",
+      "block": 43,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b43.attended",
+        "residual": "b43.ffn"
+      },
+      "output_buffers": {
+        "high": "b43.output"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 114,
+      "native_node": "block-44",
+      "block": 44,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b43.output"
+      },
+      "output_buffers": {
+        "high": "b44.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 115,
+      "native_node": "block-44",
+      "block": 44,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b44.branches",
+        "residual": "b43.output"
+      },
+      "output_buffers": {
+        "high": "b44.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 116,
+      "native_node": "block-44",
+      "block": 44,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b44.ffn"
+      },
+      "output_buffers": {
+        "high": "b44.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        10,
+        6,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 0
+    },
+    {
+      "position": 117,
+      "native_node": "block-44",
+      "block": 44,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b44.attended",
+        "residual": "b44.ffn"
+      },
+      "output_buffers": {
+        "high": "b44.output"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 118,
+      "native_node": "block-45",
+      "block": 45,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b44.output"
+      },
+      "output_buffers": {
+        "high": "b45.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 119,
+      "native_node": "block-45",
+      "block": 45,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b45.branches",
+        "residual": "b44.output"
+      },
+      "output_buffers": {
+        "high": "b45.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 120,
+      "native_node": "block-45",
+      "block": 45,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b45.ffn"
+      },
+      "output_buffers": {
+        "high": "b45.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        11,
+        7,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 1
+    },
+    {
+      "position": 121,
+      "native_node": "block-45",
+      "block": 45,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b45.attended",
+        "residual": "b45.ffn"
+      },
+      "output_buffers": {
+        "high": "b45.output"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 122,
+      "native_node": "block-46",
+      "block": 46,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b45.output"
+      },
+      "output_buffers": {
+        "high": "b46.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 123,
+      "native_node": "block-46",
+      "block": 46,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b46.branches",
+        "residual": "b45.output"
+      },
+      "output_buffers": {
+        "high": "b46.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 124,
+      "native_node": "block-46",
+      "block": 46,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b46.ffn"
+      },
+      "output_buffers": {
+        "high": "b46.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        11,
+        6,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 2
+    },
+    {
+      "position": 125,
+      "native_node": "block-46",
+      "block": 46,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b46.attended",
+        "residual": "b46.ffn"
+      },
+      "output_buffers": {
+        "high": "b46.output"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 126,
+      "native_node": "block-47",
+      "block": 47,
+      "stage": "branches",
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b46.output"
+      },
+      "output_buffers": {
+        "high": "b47.branches"
+      },
+      "record_layer": 0,
+      "grid": [
+        10,
+        6,
+        2
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": null
+    },
+    {
+      "position": 127,
+      "native_node": "block-47",
+      "block": 47,
+      "stage": "ffn",
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b47.branches",
+        "residual": "b46.output"
+      },
+      "output_buffers": {
+        "high": "b47.ffn"
+      },
+      "record_layer": 1,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 128,
+      "native_node": "block-47",
+      "block": 47,
+      "stage": "attended",
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b47.ffn"
+      },
+      "output_buffers": {
+        "high": "b47.attended"
+      },
+      "record_layer": 2,
+      "grid": [
+        10,
+        7,
+        4
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 56,
+      "phase": 3
+    },
+    {
+      "position": 129,
+      "native_node": "block-47",
+      "block": 47,
+      "stage": "output",
+      "original_symbol": "cc_split_swin_16h_proj_512_outview",
+      "module": 4,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b47.attended",
+        "residual": "b47.ffn"
+      },
+      "output_buffers": {
+        "high": "b47.output"
+      },
+      "record_layer": 3,
+      "grid": [
+        20,
+        6,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 72,
+      "phase": null
+    },
+    {
+      "position": 130,
+      "native_node": "block-48",
+      "block": 48,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8_upsample",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b47.output",
+        "skip": "b22.output"
+      },
+      "output_buffers": {
+        "high": "b48.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        20,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 0
+    },
+    {
+      "position": 131,
+      "native_node": "block-49",
+      "block": 49,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b48.output"
+      },
+      "output_buffers": {
+        "high": "b49.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        21,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 1
+    },
+    {
+      "position": 132,
+      "native_node": "block-50",
+      "block": 50,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b49.output"
+      },
+      "output_buffers": {
+        "high": "b50.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        21,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 2
+    },
+    {
+      "position": 133,
+      "native_node": "block-51",
+      "block": 51,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b50.output"
+      },
+      "output_buffers": {
+        "high": "b51.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        20,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 3
+    },
+    {
+      "position": 134,
+      "native_node": "block-52",
+      "block": 52,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b51.output"
+      },
+      "output_buffers": {
+        "high": "b52.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        20,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 0
+    },
+    {
+      "position": 135,
+      "native_node": "block-53",
+      "block": 53,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b52.output"
+      },
+      "output_buffers": {
+        "high": "b53.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        21,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 1
+    },
+    {
+      "position": 136,
+      "native_node": "block-54",
+      "block": 54,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b53.output"
+      },
+      "output_buffers": {
+        "high": "b54.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        21,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 2
+    },
+    {
+      "position": 137,
+      "native_node": "block-55",
+      "block": 55,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8_outview",
+      "module": 3,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b54.output"
+      },
+      "output_buffers": {
+        "high": "b55.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        20,
+        12,
+        1
+      ],
+      "block_dim": [
+        32,
+        8,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 3
+    },
+    {
+      "position": 138,
+      "native_node": "block-56",
+      "block": 56,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4_upsample",
+      "module": 2,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b55.output",
+        "skip": "b14.output"
+      },
+      "output_buffers": {
+        "high": "b56.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        41,
+        23,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 2
+    },
+    {
+      "position": 139,
+      "native_node": "block-57",
+      "block": 57,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4",
+      "module": 2,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b56.output"
+      },
+      "output_buffers": {
+        "high": "b57.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        40,
+        24,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 3
+    },
+    {
+      "position": 140,
+      "native_node": "block-58",
+      "block": 58,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4",
+      "module": 2,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b57.output"
+      },
+      "output_buffers": {
+        "high": "b58.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        40,
+        23,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 0
+    },
+    {
+      "position": 141,
+      "native_node": "block-59",
+      "block": 59,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4",
+      "module": 2,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b58.output"
+      },
+      "output_buffers": {
+        "high": "b59.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        41,
+        24,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 1
+    },
+    {
+      "position": 142,
+      "native_node": "block-60",
+      "block": 60,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4",
+      "module": 2,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b59.output"
+      },
+      "output_buffers": {
+        "high": "b60.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        41,
+        23,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 2
+    },
+    {
+      "position": 143,
+      "native_node": "block-61",
+      "block": 61,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4_outview",
+      "module": 2,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b60.output"
+      },
+      "output_buffers": {
+        "high": "b61.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        40,
+        24,
+        1
+      ],
+      "block_dim": [
+        32,
+        4,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 3
+    },
+    {
+      "position": 144,
+      "native_node": "block-62",
+      "block": 62,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2_upsample",
+      "module": 1,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b61.output",
+        "skip": "b8.output"
+      },
+      "output_buffers": {
+        "high": "b62.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        80,
+        46,
+        1
+      ],
+      "block_dim": [
+        32,
+        2,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 0
+    },
+    {
+      "position": 145,
+      "native_node": "block-63",
+      "block": 63,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2",
+      "module": 1,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b62.output"
+      },
+      "output_buffers": {
+        "high": "b63.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        81,
+        47,
+        1
+      ],
+      "block_dim": [
+        32,
+        2,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 1
+    },
+    {
+      "position": 146,
+      "native_node": "block-64",
+      "block": 64,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2",
+      "module": 1,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b63.output"
+      },
+      "output_buffers": {
+        "high": "b64.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        81,
+        46,
+        1
+      ],
+      "block_dim": [
+        32,
+        2,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 2
+    },
+    {
+      "position": 147,
+      "native_node": "block-65",
+      "block": 65,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2_outview",
+      "module": 1,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b64.output"
+      },
+      "output_buffers": {
+        "high": "b65.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        80,
+        47,
+        1
+      ],
+      "block_dim": [
+        32,
+        2,
+        1
+      ],
+      "abi_bytes": 88,
+      "phase": 3
+    },
+    {
+      "position": 148,
+      "native_node": "block-66",
+      "block": 66,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1_upsample",
+      "module": 0,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b65.output",
+        "skip": "b4.output"
+      },
+      "output_buffers": {
+        "high": "b66.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        160,
+        92,
+        1
+      ],
+      "block_dim": [
+        32,
+        1,
+        1
+      ],
+      "abi_bytes": 96,
+      "phase": 0
+    },
+    {
+      "position": 149,
+      "native_node": "block-67",
+      "block": 67,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1",
+      "module": 0,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b66.output"
+      },
+      "output_buffers": {
+        "high": "b67.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        161,
+        93,
+        1
+      ],
+      "block_dim": [
+        32,
+        1,
+        1
+      ],
+      "abi_bytes": 96,
+      "phase": 1
+    },
+    {
+      "position": 150,
+      "native_node": "block-68",
+      "block": 68,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1",
+      "module": 0,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b67.output"
+      },
+      "output_buffers": {
+        "high": "b68.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        161,
+        92,
+        1
+      ],
+      "block_dim": [
+        32,
+        1,
+        1
+      ],
+      "abi_bytes": 96,
+      "phase": 2
+    },
+    {
+      "position": 151,
+      "native_node": "block-69",
+      "block": 69,
+      "stage": "fused",
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1",
+      "module": 0,
+      "precision": "fp16",
+      "input_buffers": {
+        "state": "b68.output"
+      },
+      "output_buffers": {
+        "high": "b69.output"
+      },
+      "record_layer": 0,
+      "grid": [
+        160,
+        93,
+        1
+      ],
+      "block_dim": [
+        32,
+        1,
+        1
+      ],
+      "abi_bytes": 96,
+      "phase": 3
+    }
+  ],
+  "buffers": {
+    "input": {
+      "shape_hwc": [
+        736,
+        1280,
+        32
+      ],
+      "precision": "fp16",
+      "layout": "plane16",
+      "logical_bytes": 60293120,
+      "storage_bytes": 60293120,
+      "retain": true
+    },
+    "b1.output": {
+      "shape_hwc": [
+        736,
+        1280,
+        32
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 60293120,
+      "storage_bytes": 60293120,
+      "retain": true
+    },
+    "b2.output": {
+      "shape_hwc": [
+        736,
+        1280,
+        32
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 60293120,
+      "storage_bytes": 60293120,
+      "retain": true
+    },
+    "b3.output": {
+      "shape_hwc": [
+        736,
+        1280,
+        32
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 60293120,
+      "storage_bytes": 60293120,
+      "retain": true
+    },
+    "b4.output": {
+      "shape_hwc": [
+        736,
+        1280,
+        32
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 60293120,
+      "storage_bytes": 60293120,
+      "retain": true
+    },
+    "b4.down": {
+      "shape_hwc": [
+        368,
+        640,
+        64
+      ],
+      "precision": "fp16",
+      "layout": "plane16",
+      "logical_bytes": 30146560,
+      "storage_bytes": 30146560,
+      "retain": true
+    },
+    "b5.output": {
+      "shape_hwc": [
+        368,
+        640,
+        64
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 30146560,
+      "storage_bytes": 30146560,
+      "retain": true
+    },
+    "b6.output": {
+      "shape_hwc": [
+        368,
+        640,
+        64
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 30146560,
+      "storage_bytes": 30146560,
+      "retain": true
+    },
+    "b7.output": {
+      "shape_hwc": [
+        368,
+        640,
+        64
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 30146560,
+      "storage_bytes": 30146560,
+      "retain": true
+    },
+    "b8.output": {
+      "shape_hwc": [
+        368,
+        640,
+        64
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 30146560,
+      "storage_bytes": 30146560,
+      "retain": true
+    },
+    "b8.down": {
+      "shape_hwc": [
+        184,
+        320,
+        128
+      ],
+      "precision": "fp16",
+      "layout": "plane16",
+      "logical_bytes": 15073280,
+      "storage_bytes": 15073280,
+      "retain": true
+    },
+    "b9.output": {
+      "shape_hwc": [
+        184,
+        320,
+        128
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 15073280,
+      "storage_bytes": 15073280,
+      "retain": true
+    },
+    "b10.output": {
+      "shape_hwc": [
+        184,
+        320,
+        128
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 15073280,
+      "storage_bytes": 15073280,
+      "retain": true
+    },
+    "b11.output": {
+      "shape_hwc": [
+        184,
+        320,
+        128
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 15073280,
+      "storage_bytes": 15073280,
+      "retain": true
+    },
+    "b12.output": {
+      "shape_hwc": [
+        184,
+        320,
+        128
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 15073280,
+      "storage_bytes": 15073280,
+      "retain": true
+    },
+    "b13.output": {
+      "shape_hwc": [
+        184,
+        320,
+        128
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 15073280,
+      "storage_bytes": 15073280,
+      "retain": true
+    },
+    "b14.output": {
+      "shape_hwc": [
+        184,
+        320,
+        128
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 15073280,
+      "storage_bytes": 15073280,
+      "retain": true
+    },
+    "b14.down": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "plane16",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b15.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b16.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b17.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b18.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b19.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b20.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b21.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b22.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b22.down": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "plane16",
+      "logical_bytes": 3932160,
+      "storage_bytes": 7864320,
+      "retain": true
+    },
+    "b23.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b23.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b23.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b23.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b24.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b24.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b24.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b24.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b25.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b25.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b25.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b25.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b26.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b26.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b26.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b26.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b27.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b27.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b27.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b27.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b28.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b28.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b28.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b28.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b29.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b29.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b29.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b29.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b30.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b30.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b30.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b30.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b30.pool": {
+      "shape_hwc": [
+        24,
+        40,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 983040,
+      "storage_bytes": 983040,
+      "retain": true
+    },
+    "b30.down": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "repack-30-31": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b31.expanded": {
+      "shape_hwc": [
+        24,
+        40,
+        4096
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 7864320,
+      "storage_bytes": 7864320,
+      "retain": true
+    },
+    "b31.contracted": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b31.Q": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_q",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b31.K": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_k",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b31.V": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_v",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b31.attended": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b31.output": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b31.contract_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "b31.qkv_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 512,
+      "storage_bytes": 512,
+      "retain": true
+    },
+    "b31.attention_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 1024,
+      "storage_bytes": 1024,
+      "retain": true
+    },
+    "b31.projection_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "b32.expanded": {
+      "shape_hwc": [
+        24,
+        40,
+        4096
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 7864320,
+      "storage_bytes": 7864320,
+      "retain": true
+    },
+    "b32.contracted": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b32.Q": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_q",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b32.K": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_k",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b32.V": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_v",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b32.attended": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b32.output": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b32.contract_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "b32.qkv_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 512,
+      "storage_bytes": 512,
+      "retain": true
+    },
+    "b32.attention_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 1024,
+      "storage_bytes": 1024,
+      "retain": true
+    },
+    "b32.projection_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "b33.expanded": {
+      "shape_hwc": [
+        24,
+        40,
+        4096
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 7864320,
+      "storage_bytes": 7864320,
+      "retain": true
+    },
+    "b33.contracted": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b33.Q": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_q",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b33.K": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_k",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b33.V": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_v",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b33.attended": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b33.output": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b33.contract_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "b33.qkv_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 512,
+      "storage_bytes": 512,
+      "retain": true
+    },
+    "b33.attention_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 1024,
+      "storage_bytes": 1024,
+      "retain": true
+    },
+    "b33.projection_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "b34.expanded": {
+      "shape_hwc": [
+        24,
+        40,
+        4096
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 7864320,
+      "storage_bytes": 7864320,
+      "retain": true
+    },
+    "b34.contracted": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b34.Q": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_q",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b34.K": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_k",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b34.V": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_v",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b34.attended": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b34.output": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b34.contract_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "b34.qkv_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 512,
+      "storage_bytes": 512,
+      "retain": true
+    },
+    "b34.attention_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 1024,
+      "storage_bytes": 1024,
+      "retain": true
+    },
+    "b34.projection_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "b35.expanded": {
+      "shape_hwc": [
+        24,
+        40,
+        4096
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 7864320,
+      "storage_bytes": 7864320,
+      "retain": true
+    },
+    "b35.contracted": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b35.Q": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_q",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b35.K": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_k",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b35.V": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_v",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b35.attended": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b35.output": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b35.contract_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "b35.qkv_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 512,
+      "storage_bytes": 512,
+      "retain": true
+    },
+    "b35.attention_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 1024,
+      "storage_bytes": 1024,
+      "retain": true
+    },
+    "b35.projection_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "b36.expanded": {
+      "shape_hwc": [
+        24,
+        40,
+        4096
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 7864320,
+      "storage_bytes": 7864320,
+      "retain": true
+    },
+    "b36.contracted": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b36.Q": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_q",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b36.K": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_k",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b36.V": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_v",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b36.attended": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b36.output": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b36.contract_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "b36.qkv_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 512,
+      "storage_bytes": 512,
+      "retain": true
+    },
+    "b36.attention_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 1024,
+      "storage_bytes": 1024,
+      "retain": true
+    },
+    "b36.projection_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "b37.expanded": {
+      "shape_hwc": [
+        24,
+        40,
+        4096
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 7864320,
+      "storage_bytes": 7864320,
+      "retain": true
+    },
+    "b37.contracted": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b37.Q": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_q",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b37.K": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_k",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b37.V": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_v",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b37.attended": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b37.output": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b37.contract_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "b37.qkv_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 512,
+      "storage_bytes": 512,
+      "retain": true
+    },
+    "b37.attention_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 1024,
+      "storage_bytes": 1024,
+      "retain": true
+    },
+    "b37.projection_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "b38.expanded": {
+      "shape_hwc": [
+        24,
+        40,
+        4096
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 7864320,
+      "storage_bytes": 7864320,
+      "retain": true
+    },
+    "b38.contracted": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b38.Q": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_q",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b38.K": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_k",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b38.V": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "global_v",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b38.attended": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b38.output": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "token16",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b38.contract_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "b38.qkv_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 512,
+      "storage_bytes": 512,
+      "retain": true
+    },
+    "b38.attention_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 1024,
+      "storage_bytes": 1024,
+      "retain": true
+    },
+    "b38.projection_counter": {
+      "shape_hwc": null,
+      "precision": "int32",
+      "layout": "ordered_partition_counter",
+      "logical_bytes": 256,
+      "storage_bytes": 256,
+      "retain": true
+    },
+    "repack-38-39": {
+      "shape_hwc": [
+        24,
+        40,
+        1024
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 1966080,
+      "storage_bytes": 1966080,
+      "retain": true
+    },
+    "b39.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b39.up_counter": {
+      "shape_hwc": null,
+      "precision": "physical_bytes",
+      "layout": "int32_counter",
+      "logical_bytes": 480,
+      "storage_bytes": 480,
+      "retain": true
+    },
+    "b39.scratch": {
+      "shape_hwc": null,
+      "precision": "physical_bytes",
+      "layout": "half_split_scratch",
+      "logical_bytes": 983040,
+      "storage_bytes": 983040,
+      "retain": true
+    },
+    "b40.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b40.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b40.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b40.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b41.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b41.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b41.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b41.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b42.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b42.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b42.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b42.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b43.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b43.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b43.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b43.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b44.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b44.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b44.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b44.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b45.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b45.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b45.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b45.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b46.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b46.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b46.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b46.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b47.branches": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b47.ffn": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b47.attended": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b47.output": {
+      "shape_hwc": [
+        48,
+        80,
+        512
+      ],
+      "precision": "fp16",
+      "layout": "plane16",
+      "logical_bytes": 3932160,
+      "storage_bytes": 3932160,
+      "retain": true
+    },
+    "b48.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b49.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b50.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b51.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b52.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b53.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b54.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b55.output": {
+      "shape_hwc": [
+        92,
+        160,
+        256
+      ],
+      "precision": "fp16",
+      "layout": "plane16",
+      "logical_bytes": 7536640,
+      "storage_bytes": 7536640,
+      "retain": true
+    },
+    "b56.output": {
+      "shape_hwc": [
+        184,
+        320,
+        128
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 15073280,
+      "storage_bytes": 15073280,
+      "retain": true
+    },
+    "b57.output": {
+      "shape_hwc": [
+        184,
+        320,
+        128
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 15073280,
+      "storage_bytes": 15073280,
+      "retain": true
+    },
+    "b58.output": {
+      "shape_hwc": [
+        184,
+        320,
+        128
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 15073280,
+      "storage_bytes": 15073280,
+      "retain": true
+    },
+    "b59.output": {
+      "shape_hwc": [
+        184,
+        320,
+        128
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 15073280,
+      "storage_bytes": 15073280,
+      "retain": true
+    },
+    "b60.output": {
+      "shape_hwc": [
+        184,
+        320,
+        128
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 15073280,
+      "storage_bytes": 15073280,
+      "retain": true
+    },
+    "b61.output": {
+      "shape_hwc": [
+        184,
+        320,
+        128
+      ],
+      "precision": "fp16",
+      "layout": "plane16",
+      "logical_bytes": 15073280,
+      "storage_bytes": 15073280,
+      "retain": true
+    },
+    "b62.output": {
+      "shape_hwc": [
+        368,
+        640,
+        64
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 30146560,
+      "storage_bytes": 30146560,
+      "retain": true
+    },
+    "b63.output": {
+      "shape_hwc": [
+        368,
+        640,
+        64
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 30146560,
+      "storage_bytes": 30146560,
+      "retain": true
+    },
+    "b64.output": {
+      "shape_hwc": [
+        368,
+        640,
+        64
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 30146560,
+      "storage_bytes": 30146560,
+      "retain": true
+    },
+    "b65.output": {
+      "shape_hwc": [
+        368,
+        640,
+        64
+      ],
+      "precision": "fp16",
+      "layout": "plane16",
+      "logical_bytes": 30146560,
+      "storage_bytes": 30146560,
+      "retain": true
+    },
+    "b66.output": {
+      "shape_hwc": [
+        736,
+        1280,
+        32
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 60293120,
+      "storage_bytes": 60293120,
+      "retain": true
+    },
+    "b67.output": {
+      "shape_hwc": [
+        736,
+        1280,
+        32
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 60293120,
+      "storage_bytes": 60293120,
+      "retain": true
+    },
+    "b68.output": {
+      "shape_hwc": [
+        736,
+        1280,
+        32
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 60293120,
+      "storage_bytes": 60293120,
+      "retain": true
+    },
+    "b69.output": {
+      "shape_hwc": [
+        736,
+        1280,
+        32
+      ],
+      "precision": "fp16",
+      "layout": "tile4",
+      "logical_bytes": 60293120,
+      "storage_bytes": 60293120,
+      "retain": true
+    }
+  },
+  "reset_protocol": [
+    {
+      "before_block": 31,
+      "counter": "contract",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 31,
+      "counter": "qkv",
+      "initial": -1,
+      "final": 1,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 31,
+      "counter": "attention",
+      "initial": -1,
+      "final": 0,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 31,
+      "counter": "projection",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 32,
+      "counter": "contract",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 32,
+      "counter": "qkv",
+      "initial": -1,
+      "final": 1,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 32,
+      "counter": "attention",
+      "initial": -1,
+      "final": 0,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 32,
+      "counter": "projection",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 33,
+      "counter": "contract",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 33,
+      "counter": "qkv",
+      "initial": -1,
+      "final": 1,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 33,
+      "counter": "attention",
+      "initial": -1,
+      "final": 0,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 33,
+      "counter": "projection",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 34,
+      "counter": "contract",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 34,
+      "counter": "qkv",
+      "initial": -1,
+      "final": 1,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 34,
+      "counter": "attention",
+      "initial": -1,
+      "final": 0,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 34,
+      "counter": "projection",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 35,
+      "counter": "contract",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 35,
+      "counter": "qkv",
+      "initial": -1,
+      "final": 1,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 35,
+      "counter": "attention",
+      "initial": -1,
+      "final": 0,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 35,
+      "counter": "projection",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 36,
+      "counter": "contract",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 36,
+      "counter": "qkv",
+      "initial": -1,
+      "final": 1,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 36,
+      "counter": "attention",
+      "initial": -1,
+      "final": 0,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 36,
+      "counter": "projection",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 37,
+      "counter": "contract",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 37,
+      "counter": "qkv",
+      "initial": -1,
+      "final": 1,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 37,
+      "counter": "attention",
+      "initial": -1,
+      "final": 0,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 37,
+      "counter": "projection",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 38,
+      "counter": "contract",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 38,
+      "counter": "qkv",
+      "initial": -1,
+      "final": 1,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 38,
+      "counter": "attention",
+      "initial": -1,
+      "final": 0,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 38,
+      "counter": "projection",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out",
+      "note": "Reset QKV before producer only; chained attention consumes its published predecessor unchanged."
+    },
+    {
+      "before_block": 39,
+      "counter": "up",
+      "initial": -1,
+      "final": 3,
+      "callable": "global_counter_clear_reconstructed_out"
+    }
+  ],
+  "output_buffer": "b69.output",
+  "skip_buffers": {
+    "4": "b4.output",
+    "8": "b8.output",
+    "14": "b14.output",
+    "22": "b22.output",
+    "30": "b30.output"
+  },
+  "alias_rule": "Successor consumes the producer allocation at offset 0 with its exact logical extent; retain the entire guarded backing allocation, including any padding-clear workspace.",
+  "no_per_block_layout_kernels": true,
+  "mandatory_repack_positions": [
+    "repack-30-31",
+    "repack-38-39"
+  ],
+  "scope": "Original resident blocks1..69. Frontend0/output70 are separate root-owned gaps. Half symbol/layout catalogs do not imply full-resolution Half host admission.",
+  "source_pins": {
+    "dlssnr/geometry.py": "677499c0c7bd06544581ebd719801d7d1e027fe1fa3438d5e55f3f43af5db6c1",
+    "tools/native_reference/trunk.py": "2f866e6fc7f3e6cdd932b70c26e71df26d59c5d9af564917f04adec864199d22",
+    "tools/native_reference/vendor_global_block.py": "01b99fed8db73f105b530dae8987c064d71990fbe9a56146f37a56d7fd40c9f3",
+    "tools/native_reference/vendor_window512_block.py": "27fce53e5480b61daa1eff5b10d2c786f5c3d847ec66ecfaa939dce75c0501d3",
+    "tools/native_reference/native_fused.py": "4ba2c0698f89d019270cf700e884208760af6f318d6bf119d8a9a25c2435a43d",
+    "tools/native_reference/vendor_connectors.py": "e1accfb5e622ec7a59380ca6a39a87856204285899556382cf2d5584d75e21ad",
+    "tools/native_reference/vendor_window_benchmark.py": "d2ea6bd6ac80ab405bcdfa3ad647f636428c66cd9827f6b0d7eeff4f43fad6fb",
+    "tools/native_reference/vendor_downsample_probe.py": "08e66b961246daa1edaf8c485f7eafb3f2c4a8e5dc7bfe7158268b13403cfd05"
+  }
+}

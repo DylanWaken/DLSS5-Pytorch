@@ -17,6 +17,21 @@ The prepared-feature trunk covers blocks 1–69, with 152 compute/repack calls a
 
 Each run uses three warmups and 32 alternating pairs, 16 per order, with three whole-trunk calls per captured graph. Timings are CUDA-event medians. The accepted no-more-than-1% slowdown criterion passes in both execution orders at all four sizes. Numerical comparison covers all 74 published boundaries. Full protocol, per-order results and evidence are in [reconstruction status](RECONSTRUCTION_STATUS.md).
 
+## FP16 deployment
+
+![FP16 prepared-feature trunk at four resolutions](figures/deployment_fp16_resolutions.svg)
+
+| Valid resolution | Original kernels | Reconstructed | Difference | Original-first ratio | Candidate-first ratio |
+|---|---:|---:|---:|---:|---:|
+| 1280 x 720 | 3.700365 ms | 3.613875 ms | -2.337% | 0.976796 | 0.976327 |
+| 1920 x 1080 | 4.434293 ms | 4.340932 ms | -2.105% | 0.978606 | 0.978782 |
+| 2560 x 1440 | 6.029166 ms | 6.028813 ms | -0.006% | 1.000919 | 0.999415 |
+| 3840 x 2160 | 11.301165 ms | 11.409460 ms | +0.958% | 1.009885 | 1.008921 |
+
+The same blocks 1-69 run as a complete Half trunk, with independent Half layouts and derived K16 weights. All 74 boundaries compare byte-exactly. Poisoned and changed-input graph replays pass; a 720p Compute Sanitizer run reports zero errors. Timing uses 64 alternating pairs, three calls per graph and ten replays per event interval after warmup. Table ratios divide per-role medians, including within each execution order. All are at most 1.01.
+
+These results use final build `121ac8d...8073f8`. The 4K margin is small; this is measured qualification on the named GPU, not a universal speed guarantee. The earlier uncapped build missed the per-order gate and remains in the logs. See [raw pairs and hashes](figures/fp16_deployment_measurements.json) and [layout, synchronization, Nsight and SASS analysis](FP16_DEPLOYMENT.md).
+
 ## Individual FP8 and FP16 kernels
 
 ![Six kernel families in both precisions](figures/deployment_kernel_precision_comparison.svg)

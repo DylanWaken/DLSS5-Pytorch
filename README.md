@@ -7,7 +7,7 @@ Reconstructed DLSS-NR CUDA kernels for PyTorch, plus a differentiable network fo
 | Route | What you can use |
 |---|---|
 | **FP8 deployment** | CUDA-graph-compatible prepared-feature inference at 720p, 1080p, 2K and 4K; tested on SM120. |
-| **FP16 kernels** | Reconstructed counterparts with six kernel families benchmarked at all four resolutions. Full FP16 network integration is unfinished. |
+| **FP16 deployment** | Complete prepared-feature CUDA/C++ trunk at the same four sizes; within 1% of original kernels in both execution orders. |
 | **FP32 / BF16 training** | All 71 numbered network records, ordinary autograd and optional activation checkpointing. All eight resolution/precision benchmark cases pass. |
 
 The current deployment target is **SM120**, tested on an RTX PRO 6000 Blackwell. Other GPUs and continuous-resolution deployment remain future work. Inputs are prepared features; renderer integration is not included.
@@ -47,7 +47,7 @@ head = model.forward_train(features, geometry=geometry)
 head.square().mean().backward()  # Diagnostic only; not a task loss.
 ```
 
-See the [training guide](docs/training.md) for input contracts and benchmarking, or the [deployment guide](docs/API_MIGRATION.md) for `create_plan_fp8` / `inference_forward_fp8` and packed-buffer preparation. Training does not require the custom CUDA extension.
+See the [training guide](docs/training.md) for input contracts and benchmarking, or the [deployment guide](docs/API_MIGRATION.md) for FP8/FP16 entry points and packed-buffer preparation. The [FP16 integration report](docs/FP16_DEPLOYMENT.md) explains recovered layouts and profiler-guided tuning. Training does not require the custom CUDA extension.
 
 **Actual DLSS5 transfer-learning methodology, task losses, data preparation and training procedures still require investigation.** This is a minimal trainable implementation.
 
@@ -56,6 +56,10 @@ See the [training guide](docs/training.md) for input contracts and benchmarking,
 **FP8 inference:** the prepared-feature trunk is within the accepted 1% slowdown limit versus extracted original kernels at all four tested resolutions. At 4K: **6.497 ms reconstructed / 6.452 ms original**. This excludes input/output stages and DLL host processing.
 
 ![FP8 deployment latency at 720p, 1080p, 2K and 4K](docs/figures/deployment_fp8_resolutions.svg)
+
+**FP16 inference:** the same trunk now runs with native Half layouts and losslessly promoted weights. At 4K: **11.409 ms reconstructed / 11.301 ms original**, a **0.96%** difference. Both execution orders pass the 1% gate at every tested size.
+
+![FP16 deployment latency at 720p, 1080p, 2K and 4K](docs/figures/deployment_fp16_resolutions.svg)
 
 **Training:** full-network FP32/BF16 forward and backward, with checkpointing, batch one and no optimizer. At 4K, peak allocated memory is **52.4 / 43.3 GiB**, respectively.
 

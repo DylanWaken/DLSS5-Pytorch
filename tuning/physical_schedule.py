@@ -12,7 +12,9 @@ def load_geometry():
     s.loader.exec_module(m)
     return m
 
-def make(width=3840, height=2160):
+def make(width=3840, height=2160, *, precision="fp8"):
+    if precision not in ('fp8', 'fp16'):
+        raise ValueError('unsupported deployment precision')
     gmod = load_geometry()
     g = gmod.Geometry.from_valid(width, height)
     rows = []
@@ -116,8 +118,28 @@ def make(width=3840, height=2160):
             skips[b] = out
         add(b, 'fused', symbol, {32: 0, 64: 1, 128: 2, 256: 3}[c], inputs, outputs, 0, grid, [32, c // 32, 1], 96 if c == 32 else 88, phase)
         previous = outputs['down'] if down else out
+    if precision == 'fp16':
+        # Half uses independent K16/plane16 layouts, direct global reductions,
+        # and a different decoder scratch slot. No activation-byte reinterpretation.
+        c512 = {e['original_symbol']: e for e in json.loads((H / 'reconstruction/c512.json').read_text())['entries']}
+        for name in list(buffers):
+            value = buffers[name]
+            if name.endswith('_scratch'):
+                del buffers[name]
+            elif value['precision'] == 'fp8':
+                value['precision'] = 'fp16'
+                value['logical_bytes'] *= 2
+                value['storage_bytes'] *= 2
+        for row in rows:
+            row['precision'] = 'fp16'
+            row['original_symbol'] = row['original_symbol'].removesuffix('_fp8')
+            if row['module'] == 5:
+                row['output_buffers'].pop('scratch', None)
+                if row['stage'] == 'repack': row['grid'][0] *= 2
+            if row['original_symbol'] in c512:
+                row['block_dim'] = c512[row['original_symbol']]['block']
     inputs = {v for x in rows for v in x['input_buffers'].values()}
     produced = {v for x in rows for v in x['output_buffers'].values()}
     if not (len(rows) == 152 and len(resets) == 33 and (inputs - produced == {'input'})):
         raise ValueError('physical schedule census')
-    return dict(status='CPU_NATIVE_PHYSICAL_SCHEDULE_NOT_RUNTIME_QUALIFIED', valid=[width, height], levels=g.levels, precision='fp8', compute_positions=152, counter_reset_positions=33, positions=rows, buffers=buffers, reset_protocol=resets, output_buffer=previous, skip_buffers=skips, alias_rule='Successor consumes the producer allocation at offset 0 with its exact logical extent; retain the entire guarded backing allocation, including any padding-clear workspace.', no_per_block_layout_kernels=True, mandatory_repack_positions=['repack-30-31', 'repack-38-39'], scope='Original resident blocks1..69. Frontend0/output70 are separate root-owned gaps. Half symbol/layout catalogs do not imply full-resolution Half host admission.', source_pins={p: hashlib.sha256((R / p).read_bytes()).hexdigest() for p in ('dlssnr/geometry.py', 'tools/native_reference/trunk.py', 'tools/native_reference/vendor_global_block.py', 'tools/native_reference/vendor_window512_block.py', 'tools/native_reference/native_fused.py', 'tools/native_reference/vendor_connectors.py', 'tools/native_reference/vendor_window_benchmark.py', 'tools/native_reference/vendor_downsample_probe.py')})
+    return dict(status='CPU_NATIVE_PHYSICAL_SCHEDULE_NOT_RUNTIME_QUALIFIED', valid=[width, height], levels=g.levels, precision=precision, compute_positions=152, counter_reset_positions=33, positions=rows, buffers=buffers, reset_protocol=resets, output_buffer=previous, skip_buffers=skips, alias_rule='Successor consumes the producer allocation at offset 0 with its exact logical extent; retain the entire guarded backing allocation, including any padding-clear workspace.', no_per_block_layout_kernels=True, mandatory_repack_positions=['repack-30-31', 'repack-38-39'], scope='Original resident blocks1..69. Frontend0/output70 are separate root-owned gaps. Half symbol/layout catalogs do not imply full-resolution Half host admission.', source_pins={p: hashlib.sha256((R / p).read_bytes()).hexdigest() for p in ('dlssnr/geometry.py', 'tools/native_reference/trunk.py', 'tools/native_reference/vendor_global_block.py', 'tools/native_reference/vendor_window512_block.py', 'tools/native_reference/native_fused.py', 'tools/native_reference/vendor_connectors.py', 'tools/native_reference/vendor_window_benchmark.py', 'tools/native_reference/vendor_downsample_probe.py')})

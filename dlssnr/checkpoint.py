@@ -35,7 +35,7 @@ def promote_tensor(value, dtype):
         torch.float64: (torch.float64,),
     }
     if dtype not in allowed.get(value.dtype, ()):
-        raise ValueError(f"{value.dtype} → {dtype} requires explicit quantization; automatic down-conversion is disabled")
+        raise ValueError(f"{value.dtype} to {dtype} requires explicit quantization; automatic down-conversion is disabled")
     return value.to(dtype=dtype)
 
 
@@ -132,7 +132,7 @@ def _half_bias(value):
 
 
 def pack_kernel_fp16(state, block, kind):
-    """K16 layouts for the six measured kernel families; not a full FP16 graph packer."""
+    """Pack original K16 records from losslessly widened checkpoint tensors."""
     c = block_channels(block)
     get = lambda name: _natural(state, block, name)
     if kind == "window" and c in (32, 64, 128, 256) and block not in (0, 70):
@@ -153,11 +153,31 @@ def pack_kernel_fp16(state, block, kind):
                           head_scale=head, projection=projection, attn_scale=attention,
                           size=align_up(attention + 2 * c, 64))
             matrices = [("w1", c // 32 * c, 128), ("w2", c // 32 * 128, 32), ("w3", c, c)]
-        output = bytearray(layout["size"])
+        end = layout["attn_scale"] + 2 * c
+        if block in (48, 56, 62, 66):
+            total = 16384 if c == 32 else layout["w3"] + 2 * c * c
+            padding = 16 if c == 32 else 0
+            layout["up_projection"] = total
+            layout["ffn_scale"] = total + 4 * c * c + padding
+            layout["transition_scale"] = layout["ffn_scale"] + 2 * c + padding
+            layout["qkv"] = layout["transition_scale"] + 2 * c
+            layout["relative"] = layout["qkv"] + 6 * c * c
+            layout["head_scale"] = layout["relative"] + c // 32 * 8192
+            layout["projection"] = layout["head_scale"] + align_up(c // 32 * 4, 16)
+            layout["attn_scale"] = layout["projection"] + 2 * c * c
+            end = layout["attn_scale"] + 2 * c
+            matrices.append(("up_projection", 2 * c, c))
+        elif block in (4, 8, 14, 22):
+            layout["down_projection"] = end
+            matrices.append(("down_projection", c, 2 * c))
+            end += 4 * c * c
+        output = bytearray(align_up(end, 64))
         for name, k, n in matrices + [("qkv", c, 3 * c), ("projection", c, c)]:
             raw = _half_matrix(get(name), k, n)
             output[layout[name]:layout[name] + len(raw)] = raw
-        for name in ("ffn_scale", "attn_scale", "head_scale"):
+        for name in ("ffn_scale", "attn_scale", "head_scale", "transition_scale"):
+            if name not in layout:
+                continue
             dtype = torch.float32 if name == "head_scale" else torch.float16
             raw = promote_tensor(get(name), dtype).cpu().numpy().tobytes()
             output[layout[name]:layout[name] + len(raw)] = raw
@@ -170,7 +190,24 @@ def pack_kernel_fp16(state, block, kind):
     if c == 512 and block != 39 and kind == "qkv":
         return (_half_matrix(get("qkv"), 512, 1536) + _half_bias(get("bias")) +
                 promote_tensor(get("head_scale"), torch.float32).cpu().numpy().tobytes())
-    raise NotImplementedError("FP16 record packing currently covers ordinary C32–C256, C512 FFN and C512 QKV")
+    vector = lambda name, dtype=torch.float16: promote_tensor(get(name), dtype).cpu().numpy().tobytes()
+    if block == 39 and kind == "upsample":
+        return _half_matrix(get("up_projection"), 1024, 512) + vector("transition_scale")
+    if c == 512 and block != 39:
+        if kind in ("ffn_projection", "projection"):
+            return _half_matrix(get("w4" if kind == "ffn_projection" else "projection"), c, c) + vector("ffn_scale" if kind == "ffn_projection" else "attn_scale")
+        if block == 30 and kind == "down":
+            return _half_matrix(get("down_projection"), 512, 1024) + bytes(16)
+    if c == 1024:
+        if kind == "expand":
+            return _half_matrix(get("w1"), 1024, 4096)
+        if kind == "contract":
+            return _half_matrix(get("w2"), 4096, 1024) + vector("ffn_scale")
+        if kind == "qkv":
+            return vector("head_scale", torch.float32) + _half_matrix(get("qkv"), 1024, 3072)
+        if kind == "projection":
+            return _half_matrix(get("projection"), 1024, 1024) + vector("attn_scale")
+    raise ValueError(f"Unsupported FP16 record role: block={block}, kind={kind}")
 
 
 class Checkpoint:
@@ -237,7 +274,7 @@ class Checkpoint:
         if target not in ("fp8", "fp16"):
             raise ValueError("Deployment record precision must be fp8 or fp16")
         if self.precision == "fp16" and target == "fp8":
-            raise ValueError("FP16 → FP8 requires explicit quantization")
+            raise ValueError("FP16 to FP8 requires explicit quantization")
         if target == "fp16":
             raw = pack_kernel_fp16(self._state, block, kind)
             return torch.from_numpy(np.frombuffer(raw, dtype=np.uint8).copy()).to(device)
@@ -250,10 +287,35 @@ class Checkpoint:
             raise NotImplementedError("Use the complete FP8 plan or a supported ordinary kernel family")
         return self._records[f"block{block}.layer{layer}.layer"].clone().to(device)
 
+    def create_plan_fp16(self, state, *, width=3840, height=2160):
+        """Prepare the Half trunk; accept either native FP8 or widened FP16 storage."""
+        from .deployment import load_extension, create_plan_fp16
+        ops = load_extension()
+        names, sizes = list(ops.record_names_fp16()), list(ops.record_bytes_fp16())
+        if len(names) != len(sizes) or len(set(names)) != len(names):
+            raise ValueError("Invalid compiled FP16 record roster")
+        records = []
+        for name, size in zip(names, sizes):
+            block, layer = (int(part.removeprefix(prefix)) for part, prefix in
+                            zip(name.split(".")[:2], ("block", "layer")))
+            if block == 39:
+                kind = "upsample"
+            elif 31 <= block <= 38:
+                kind = {0: "expand", 1: "contract", 2: "qkv", 4: "projection"}[layer]
+            elif block_channels(block) == 512:
+                kind = {0: "ffn", 1: "ffn_projection", 2: "qkv", 3: "projection", 4: "down"}[layer]
+            else:
+                kind = "window"
+            record = self.kernel_record(block, kind=kind, precision="fp16", device=state.device)
+            if record.numel() != size:
+                raise ValueError("Checkpoint/extension record size differs: " + name)
+            records.append(record)
+        return create_plan_fp16(state, records, width=width, height=height)
+
     def create_plan_fp8(self, state, *, width=3840, height=2160):
         """Prepare the existing FP8 trunk directly from original packed checkpoint records."""
         if self.precision != "fp8":
-            raise ValueError("FP16 → FP8 requires explicit quantization; no fallback to original weights")
+            raise ValueError("FP16 to FP8 requires explicit quantization; no fallback to original weights")
         from .deployment import load_extension, create_plan_fp8
         ops = load_extension()
         names, sizes = list(ops.record_names_fp8()), list(ops.record_bytes_fp8())

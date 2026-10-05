@@ -14,6 +14,8 @@ def load_extension(path=None):
     import torch
     global _loaded
     with _lock:
+        if path is None and _loaded is not None:
+            return torch.ops.dlssnr
         if path is None:
             spec = find_spec('dlssnr._C')
             if spec is None:
@@ -34,3 +36,13 @@ def create_plan_fp8(state, records, *, width=3840, height=2160):
 def inference_forward_fp8(plan):
     """Run an already prepared plan on the current PyTorch CUDA stream."""
     return plan.run_fp8()
+
+
+def create_plan_fp16(state, records, *, width=3840, height=2160):
+    """Prepare physical Half buffers outside CUDA graph capture."""
+    return load_extension().create_plan_for_resolution_fp16(state, records, width, height)
+
+
+def inference_forward_fp16(plan):
+    """Run the prepared Half plan on the current PyTorch CUDA stream."""
+    return plan.run_fp16()

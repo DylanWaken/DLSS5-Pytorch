@@ -144,3 +144,12 @@ Evidence anchors, relative to the repository:
 - `outputs/all-reconstructed-deployment-prep/training-checkpoint/run-v1/receipt.json` and `outputs/all-reconstructed-deployment-prep/training-checkpoint-benchmark/run-v1/receipt.json` for two-precision parity and all eight completed checkpointed benchmark cases.
 - `outputs/c512-window-integration-runtime-v2/run-paired-v1` for a historical partial six-order comparison, not a controlled ablation against the final route.
 - `outputs/legacy-code-archive-20261005/ARCHIVE.md`, `outputs/source-before-readability-20261005`, failed build/run receipts and private rejected trials for historical interpretation.
+
+
+## Full FP16 integration: measured lessons (2026-10-06)
+
+Use `docs/FP16_DEPLOYMENT.md` and `docs/figures/fp16_deployment_measurements.json` for the completed SM120 Half trunk. Do not infer Half record offsets by doubling FP8 offsets: K16 packing, upsample record placement, C512 thread counts, direct global reductions and decoder scratch ABI differ. Keep 32-row allocation padding separate from logical finiteness checks; native Half can leave unused token rows poisoned.
+
+Profile the actual repeated workload before choosing a register cap. In C256 Half, Nsight found 238 reconstructed registers versus 188 native with equal occupancy; a 192 cap improved whole-trunk timing despite a small stack frame. Do not claim an occupancy gain. The non-volatile pure-MMA experiment compiled to identical machine code and was discarded. Static MMA/NOP count differences alone do not prove dead arithmetic or dynamic workload differences; compare full SASS, counters and balanced graph timings.
+
+At 4K, native Half split grids exceed all-resident capacity. The retained SM120 path admits one complete XY plane and empirically validates native ordered Z progress under bounded workers. This is architecture-specific evidence, not a CUDA scheduling guarantee or admission for other devices. Preserve the rejected occupancy run and native-only progress probe. The final per-order <=1% gate is tight at 4K; retain raw pairs and do not round a failure into a pass.

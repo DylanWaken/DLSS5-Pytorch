@@ -19,6 +19,19 @@ TORCH_LIBRARY(dlssnr, Library)
 	Library.def("create_plan_for_resolution_fp8", &deployment::CreatePlanForResolution_fp8);
 	Library.def("record_names_fp8", &deployment::RecordNames_fp8);
 	Library.def("record_bytes_fp8", &deployment::RecordBytes_fp8);
+	Library.class_<deployment::FDeploymentPlan_fp16>("DeploymentPlan_fp16")
+		.def("run_fp16", &deployment::FDeploymentPlan_fp16::Run_fp16)
+		.def("buffer", &deployment::FDeploymentPlan_fp16::GetBuffer)
+		.def("buffer_names", &deployment::FDeploymentPlan_fp16::GetBufferNames)
+		.def("boundaries", &deployment::FDeploymentPlan_fp16::GetBoundaries)
+		.def("boundary_names", &deployment::FDeploymentPlan_fp16::GetBoundaryNames)
+		.def("guards_intact", &deployment::FDeploymentPlan_fp16::GuardsIntact)
+		.def("poison", &deployment::FDeploymentPlan_fp16::Poison)
+		.def("resources", &deployment::FDeploymentPlan_fp16::GetResources);
+	Library.def("create_plan_fp16", &deployment::CreatePlan_fp16);
+	Library.def("create_plan_for_resolution_fp16", &deployment::CreatePlanForResolution_fp16);
+	Library.def("record_names_fp16", &deployment::RecordNames_fp16);
+	Library.def("record_bytes_fp16", &deployment::RecordBytes_fp16);
 	Library.def("compiled_policy_version", &deployment::CompiledPolicyVersion);
 	Library.def("resolution_selection", &deployment::ResolutionSelection);
 	Library.def("prepare_window_fp8", &reconstructed_windows::PrepareWindow_fp8);

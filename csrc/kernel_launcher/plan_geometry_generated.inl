@@ -1,3 +1,5 @@
+namespace fp8
+{
 // Generated geometry data; all shapes reuse one physical call sequence.
 static const int64_t BufferBytes_1280_720[] = {
 	8257536LL, // input
@@ -1814,3 +1816,4 @@ static const FGeometryPlanSpec& SelectGeometryPlan(int64_t Width, int64_t Height
 	}
 	TORCH_CHECK(false, "FP8 trunk supports 1280x720, 1920x1080, 2560x1440, or 3840x2160");
 }
+} // namespace fp8

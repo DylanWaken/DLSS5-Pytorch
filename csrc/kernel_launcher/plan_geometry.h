@@ -2,15 +2,12 @@
 #pragma once
 #include <cuda_runtime_api.h>
 #include <cstdint>
-
-namespace dlssnr::deployment
-{
-struct FGeometryPlanSpec
-{
-	int64_t ValidWidth;
-	int64_t ValidHeight;
-	const int64_t* BufferBytes;
-	const dim3* Grids;
-	const int32_t* ScalarValues;
+namespace dlssnr::deployment {
+struct FGeometryPlanSpec {
+    int64_t ValidWidth;
+    int64_t ValidHeight;
+    const int64_t* BufferBytes;
+    const dim3* Grids;
+    const int32_t* ScalarValues;
 };
 } // namespace dlssnr::deployment

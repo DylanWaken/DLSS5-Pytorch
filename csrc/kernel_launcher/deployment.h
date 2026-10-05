@@ -35,12 +35,23 @@ struct FKernelCall
 // A plan owns its input, weights, intermediates and prepacked launch arguments.
 // Create outside capture; run can be captured. A plan is a mutable workspace:
 // its executions must be ordered on the caller's stream, like an out operator.
-class FDeploymentPlan_fp8 : public torch::CustomClassHolder
+template <bool bFp16> class FDeploymentPlan : public torch::CustomClassHolder
 {
   public:
-	FDeploymentPlan_fp8(at::Tensor g_Input, std::vector<at::Tensor> g_InputRecords, int64_t Width = 3840,
-						int64_t Height = 2160);
-	at::Tensor Run_fp8();
+	FDeploymentPlan(at::Tensor g_Input, std::vector<at::Tensor> g_InputRecords, int64_t Width = 3840,
+					int64_t Height = 2160);
+	at::Tensor Run();
+
+	at::Tensor Run_fp8()
+	{
+		return Run();
+	}
+
+	at::Tensor Run_fp16()
+	{
+		return Run();
+	}
+
 	std::vector<at::Tensor> GetBoundaries() const;
 	std::vector<std::string> GetBoundaryNames() const;
 	std::vector<std::string> GetBufferNames() const;
@@ -66,6 +77,11 @@ class FDeploymentPlan_fp8 : public torch::CustomClassHolder
 	std::mutex LaunchMutex;
 };
 
+using FDeploymentPlan_fp8 = FDeploymentPlan<false>;
+using FDeploymentPlan_fp16 = FDeploymentPlan<true>;
+
+std::vector<std::string> RecordNames_fp16();
+std::vector<int64_t> RecordBytes_fp16();
 std::vector<std::string> RecordNames_fp8();
 std::vector<int64_t> RecordBytes_fp8();
 std::string CompiledPolicyVersion();
@@ -74,4 +90,9 @@ c10::intrusive_ptr<FDeploymentPlan_fp8> CreatePlanForResolution_fp8(at::Tensor g
 																	std::vector<at::Tensor> g_Records,
 																	int64_t Width, int64_t Height);
 c10::intrusive_ptr<FDeploymentPlan_fp8> CreatePlan_fp8(at::Tensor g_Input, std::vector<at::Tensor> g_Records);
+c10::intrusive_ptr<FDeploymentPlan_fp16> CreatePlanForResolution_fp16(at::Tensor g_Input,
+																	  std::vector<at::Tensor> g_Records,
+																	  int64_t Width, int64_t Height);
+c10::intrusive_ptr<FDeploymentPlan_fp16> CreatePlan_fp16(at::Tensor g_Input,
+														 std::vector<at::Tensor> g_Records);
 } // namespace dlssnr::deployment

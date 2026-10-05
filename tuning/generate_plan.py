@@ -14,6 +14,7 @@ def load(name):
     return json.loads((PREP / name).read_text())
 
 def build_plan(schedule):
+    fp16 = schedule['precision'] == 'fp16'
     bottleneck_width, bottleneck_height = schedule['levels'][5]
     decoder_width, decoder_height = schedule['levels'][4]
     global_tokens = bottleneck_width * bottleneck_height
@@ -97,11 +98,14 @@ def build_plan(schedule):
                 p(0,ins['state'])
                 if 'residual' in ins:p(8,ins['residual'])
                 p(16,outs['high']);record(24,e['record']['bytes'])
-                if stage!='expand':p(32,outs['counter']);p(40,outs['scratch']);resident=True
+                if stage!='expand':
+                    p(32,outs['counter']);resident=True
+                    if not fp16:p(40,outs['scratch'])
                 scalar(64,1);scalar(68,global_tokens)
             elif stage=='qkv':
                 for off,name in ((0,ins['state']),(8,outs['q']),(16,outs['k']),(24,outs['v'])):p(off,name)
-                record(32,e['record']['bytes']);p(40,outs['counter']);p(48,outs['scratch'])
+                record(32,e['record']['bytes']);p(40,outs['counter'])
+                if not fp16:p(48,outs['scratch'])
                 scalar(72,1);scalar(76,global_tokens);resident=True
             elif stage=='attention_chained':
                 for off,name in ((0,ins['q']),(8,ins['k']),(16,ins['v']),(24,outs['high']),
@@ -114,7 +118,7 @@ def build_plan(schedule):
                 p(0,ins['input']);p(8,outs['output']);scalar(16,bottleneck_height);scalar(20,bottleneck_width)
             else:
                 for off,name in ((0,ins['low']),(8,ins['skip']),(16,outs['high']),
-                                 (32,outs['counter']),(48,outs['scratch'])):p(off,name)
+                                 (32,outs['counter']),(24 if fp16 else 48,outs['scratch'])):p(off,name)
                 record(56,e['record']['selected_bytes'])
                 for off,v in zip((64,68,72,76),(bottleneck_height,bottleneck_width,decoder_height,decoder_width)):scalar(off,v)
                 resident=True
@@ -128,10 +132,10 @@ def build_plan(schedule):
 RESOLUTIONS = ((1280, 720), (1920, 1080), (2560, 1440), (3840, 2160))
 
 
-def generate():
+def generate(precision="fp8"):
     from physical_schedule import make
 
-    schedules = [make(width, height) for width, height in RESOLUTIONS]
+    schedules = [make(width, height, precision=precision) for width, height in RESOLUTIONS]
     plans = [build_plan(schedule) for schedule in schedules]
     reference = plans[-1]
     names = list(reference['buffers'])
@@ -161,7 +165,7 @@ struct FGeometryPlanSpec {
 };
 } // namespace dlssnr::deployment
 '''
-    tables = ['// Generated geometry data; all shapes reuse one physical call sequence.']
+    tables = [f'namespace {precision} {{', '// Generated geometry data; all shapes reuse one physical call sequence.']
     descriptors = []
     for (width, height), plan in zip(RESOLUTIONS, plans):
         suffix = f'{width}_{height}'
@@ -183,15 +187,15 @@ struct FGeometryPlanSpec {
                '        if (Geometry.ValidWidth == Width && Geometry.ValidHeight == Height)',
                '            return Geometry;', '    }',
                '    TORCH_CHECK(false, "FP8 trunk supports 1280x720, 1920x1080, 2560x1440, or 3840x2160");',
-               '}']
+               '}', '}']
 
-    lines = ['// Generated shared native FP8 schedule. Every resolution uses the same 185 calls.',
+    lines = [f'namespace {precision} {{', '// Generated shared native FP8 schedule. Every resolution uses the same 185 calls.',
              '// Buffer names are shared; the geometry table supplies their actual byte extents.',
              'static const char* BufferNameTable[] = {']
     lines += [f'    "{name}",' for name in names]
     lines += ['};', 'static const FBufferSpec RecordSpecs[] = {']
     lines += [f'    {{"{name}", {size}LL}},' for name, size in reference['records'].items()]
-    lines += ['};', 'void FDeploymentPlan_fp8::BuildCalls() {', '    Calls.reserve(185);']
+    lines += ['};', '}', 'void FDeploymentPlan_fp8::BuildCalls() {', '    Calls.reserve(185);']
     scalar_index = 0
     for call_index, call in enumerate(reference['calls']):
         block = ', '.join(map(str, call['block']))
@@ -210,14 +214,16 @@ struct FGeometryPlanSpec {
     lines += ['}']
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / 'plan_geometry.h').write_text(header, newline='\n')
-    (OUT / 'plan_geometry_generated.inl').write_text('\n'.join(tables) + '\n', newline='\n')
-    (OUT / 'plan_generated.inl').write_text('\n'.join(lines) + '\n', newline='\n')
+    suffix = '' if precision == 'fp8' else '_fp16'
+    (OUT / f'plan_geometry{suffix}_generated.inl').write_text('\n'.join(tables).replace('FP8 trunk', precision.upper() + ' trunk') + '\n', newline='\n')
+    (OUT / f'plan{suffix}_generated.inl').write_text('\n'.join(lines).replace('FDeploymentPlan_fp8::BuildCalls()', f'FDeploymentPlan<{str(precision == "fp16").lower()}>::BuildCalls()').replace('void FDeploymentPlan<', 'template <> void FDeploymentPlan<').replace('native FP8', 'native ' + precision.upper()) + '\n', newline='\n')
     for (width, height), plan, schedule in zip(RESOLUTIONS, plans, schedules):
-        (PREP / f'plan_{width}_{height}.json').write_text(json.dumps(plan, indent=2) + '\n')
-        (PREP / f'network_schedule_fp8_{width}_{height}.json').write_text(json.dumps(schedule, indent=2) + '\n')
+        (PREP / f'plan{suffix}_{width}_{height}.json').write_text(json.dumps(plan, indent=2) + '\n')
+        (PREP / f'network_schedule_{precision}_{width}_{height}.json').write_text(json.dumps(schedule, indent=2) + '\n')
     print(json.dumps(dict(resolutions=RESOLUTIONS, calls=185, buffers=len(names),
                           scalar_fields=scalar_index, kernel_sequence_shared=True)))
 
 
 if __name__ == '__main__':
     generate()
+    generate('fp16')

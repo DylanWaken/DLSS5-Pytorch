@@ -32,7 +32,15 @@ plan = checkpoint.create_plan_fp8(prepared_state, width=1280, height=720)
 output = plan.run_fp8()
 ```
 
-Use the packed feature contract in the [deployment guide](../docs/API_MIGRATION.md). Preparation and weight uploads happen outside CUDA graph capture. Full FP16 graph integration is being implemented; currently `kernel_record(block, kind="window", precision="fp16", device="cuda")` supports ordinary C32-C256 blocks, with `kind="ffn"` or `"qkv"` for C512.
+Use the packed feature contract in the [deployment guide](../docs/API_MIGRATION.md). Preparation and weight uploads happen outside CUDA graph capture. The full FP16 prepared-feature trunk is available through either checkpoint:
+
+```python
+checkpoint = load_checkpoint("ckpts/dlss5_nr_fp16.pt")
+plan = checkpoint.create_plan_fp16(prepared_half_state, width=1280, height=720)
+output = plan.run_fp16()
+```
+
+FP16 packs all 142 trunk records on demand, including transitions, C512 and global attention. The native FP8 file can also widen into this FP16 route.
 
 Loading allows only equal precision or lossless widening. FP16-to-FP8, FP32-to-FP16 and FP16-to-BF16 weight conversion require explicit quantization and are rejected. FP16 checkpoints never silently fall back to the original FP8 records. FP32 scales remain FP32 in both files.
 

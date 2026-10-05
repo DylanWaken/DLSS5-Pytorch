@@ -4,7 +4,9 @@
 
 namespace dlssnr::reconstructed::window_block_c256_fp16
 {
-__global__ __maxnreg__(255) void window_block_c256_fp16(Parameters r_Parameters)
+// Native SASS uses 188 registers. Limit allocation to its 192-register quantum
+// to test compiler scheduling without changing the recovered arithmetic.
+__global__ __maxnreg__(192) void window_block_c256_fp16(Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ __align__(16) unsigned char s_SharedStorage[32768];
