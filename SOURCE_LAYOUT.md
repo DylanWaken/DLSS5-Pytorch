@@ -18,7 +18,7 @@ run_tests.py        Test entry point
 run_tuning.py       Offline tuning entry point
 ```
 
-Kernel selection belongs in C++; Python does not select a different arithmetic implementation per call. A kernel's parameter ABI is declared once in `kernel_launcher/kernel_abi.h`, including size, alignment and offset assertions. There are no separate per-kernel ABI implementation files.
+Kernel selection belongs in C++; Python does not select a different arithmetic implementation per call. A kernel's parameter ABI is declared once in `kernel_launcher/kernel_abi.h`, including size, alignment and offset assertions. There are no separate per-kernel ABI implementation files. Project declarations and helpers are global, with descriptive operation prefixes instead of namespaces; ABI/profile types follow the `F` naming convention. All exported kernels have bare `extern "C"` symbols. External `std::`, `at::` and `c10::` qualifications and the public `TORCH_LIBRARY(dlssnr, ...)` domain remain unchanged.
 
 ## Operation wrappers and shared algorithms
 
@@ -40,17 +40,17 @@ All 76 mathematical/frontend exports now use the semantic implementations in thi
 
 ## Current source inventory
 
-The final source tree contains **45 headers and 7,953 physical lines** in `kernel_impl`, including comments and blank lines:
+The final source tree contains **45 headers and 7,714 physical lines** in `kernel_impl`, including comments and blank lines:
 
 | Source role | Headers | Lines |
 | --- | ---: | ---: |
-| Operation/precision entry wrappers | 16 | 1,658 |
-| Shared operation and physical-layout algorithms | 21 | 5,422 |
-| Common device utilities listed below | 7 | 857 |
-| Precision-independent counter clear | 1 | 16 |
-| Total | 45 | 7,953 |
+| Operation/precision entry wrappers | 16 | 1,456 |
+| Shared operation and physical-layout algorithms | 21 | 5,414 |
+| Common device utilities listed below | 7 | 832 |
+| Precision-independent counter clear | 1 | 12 |
+| Total | 45 | 7,714 |
 
-The 21 algorithm headers serve multiple configurations; the largest has 579 lines. The structural inventory resolves all local includes and finds **81 exports in 17 entry headers, each owned by exactly one of ten CUDA emission units**. These counts describe the current production dependencies, not archived proposals or a count of network positions.
+The 21 algorithm headers serve multiple configurations; the largest has 572 lines. The structural inventory resolves all local includes and finds **81 exports in 17 entry headers, each owned by exactly one of ten CUDA emission units**. These counts describe the current production dependencies, not archived proposals or a count of network positions.
 
 ## Profiles represent real schedule differences
 
@@ -77,7 +77,7 @@ Operation headers carry the algorithm; `intrinsics.cuh` carries the instruction-
 
 ## Launch plans and resolution policies
 
-Original configurations remain in the launcher dispatch tables, generated deployment plans and geometry tables. `tuning/plan[_fp16]_W_H.json` records native symbols, launch dimensions, buffers and ABI bindings. Operation-based CUDA translation units emit each entry once; large groups compile their precisions separately.
+Original configurations remain in the launcher dispatch tables, generated deployment plans and geometry tables. `tuning/plan[_fp16]_W_H.json` records native symbols, launch dimensions, buffers and ABI bindings. Operation-based CUDA translation units emit each entry once; large groups compile their precisions separately. Generated table and geometry names use `_fp8`/`_fp16` suffixes in global scope. The plan generator resolves each bare kernel symbol to its typed declaration and checked field offsets.
 
 Template coverage does not establish runtime support. A measured resolution policy must be backed by recorded measurements and correctness tests. The existing four admitted SM120 plans do not establish continuous-resolution tuning, arbitrary channels, or support on another architecture. Source organization and unmeasured templates add no such qualification.
 
@@ -96,8 +96,10 @@ python -B tools/kernel_sources.py --output outputs/kernel-sources.json
 python run_tests.py cpu --optimized
 ```
 
-The inventory follows includes and exported names, checks that local includes resolve, and rejects duplicate exports or missing/duplicate CUDA emission owners. `--baseline-csrc <saved-csrc>` also compares the exported roster. These are structural checks; compiled correctness and performance are separate evidence.
+The inventory follows includes and exported names, checks local include resolution and C linkage, and rejects project namespaces, duplicate exports or missing/duplicate CUDA emission owners. `--baseline-csrc <saved-csrc>` compares the exported roster and linkage. Comparing a namespaced historical source requires the explicit `--allow-namespace-migration` flag; active sources must still be flat. These are structural checks; compiled correctness and performance are separate evidence.
 
 See [code conventions and current validation scope](CODE_READABILITY.md). The earlier transcript cleanup and its timings remain unchanged in [the historical readability report](CODE_READABILITY_HISTORY.md); final semantic qualification is recorded separately above.
 
 The [semantic naming audit](NAMING_AUDIT.md) covers the current typed ABI, named generated-plan fields and manual variable-role review. Its rebuild preserves all 81 GPU instruction payloads and separately revalidates the changed host packing.
+
+The subsequent [flat-symbol migration](FLAT_SYMBOLS.md) removes every project namespace and changes CUDA linkage to bare C exports. It has its own rebuild, compiled comparison and runtime qualification. The timing receipts above continue to identify the earlier measured semantic build.
