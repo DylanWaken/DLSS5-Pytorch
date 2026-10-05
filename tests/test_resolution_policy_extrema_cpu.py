@@ -82,7 +82,7 @@ class ExtremaTests(unittest.TestCase):
         self.assertIn('std::array<FAdmission,0>',compact)
         self.assertIn(P.RESOLVER_VERSION,header)
         self.assertIn('if(EvidenceRow.Sm!=Sm||EvidenceRow.PrecisionValue!=PrecisionIndex)continue;',compact)
-        self.assertLess(compact.index('if(bMeasuredFamily)'),compact.index('constint64_tDx='))
+        self.assertLess(compact.index('if(bMeasuredFamily)'),compact.index('constint64_tWidthDelta='))
         self.assertIn('EvidenceRow.Width==Width&&EvidenceRow.Height==Height',compact)
         old=hashlib.sha256(P.canonical(P.validate(p)).encode()).hexdigest()
         self.assertNotEqual(P.version(p),old)

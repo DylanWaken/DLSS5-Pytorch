@@ -26,7 +26,7 @@ __global__ __maxnreg__(168) void input_preprocess_window_downsample_c32_fp16(Par
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ dlssnr::kernels::input_features::FSharedFeatures s_Features;
-	const auto& r_Input = reinterpret_cast<const dlssnr::kernels::input_features::FParameters&>(r_Parameters);
+	const dlssnr::kernels::input_features::FParameters& r_Input = r_Parameters;
 	dlssnr::kernels::window_preprocess::RunPreprocess<false, true>(r_Input, s_Features);
 #endif
 }
@@ -44,9 +44,10 @@ __global__ __maxnreg__(168) void window_block_c32_downsample_fp16(Parameters r_P
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	using namespace dlssnr::kernels::window_downsample;
 	const FArguments r_Arguments = Arguments<32, false>(r_Parameters);
-	FAccumulatorTile<32> r_Raw[4];
-	RunWindow32<false, FArguments, FOrdinaryIO, true>(r_Arguments, r_Raw);
-	ProjectDown32<false>(r_Arguments, Publish<false>(dlssnr::kernels::window_pool::PoolWindow(r_Raw)));
+	FAccumulatorTile<32> r_WindowOutput[4];
+	RunWindow32<false, FArguments, FOrdinaryIO, true>(r_Arguments, r_WindowOutput);
+	ProjectDown32<false>(r_Arguments,
+						 Publish<false>(dlssnr::kernels::window_pool::PoolWindow(r_WindowOutput)));
 #endif
 }
 } // namespace dlssnr::reconstructed::window_block_c32_downsample_fp16
@@ -63,11 +64,11 @@ __global__ __maxnreg__(168) void window_block_c64_downsample_fp16(Parameters r_P
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	using namespace dlssnr::kernels::window_downsample;
 	const FArguments r_Arguments = Arguments<64, false>(r_Parameters);
-	FAccumulatorTile<32> r_Raw[4];
+	FAccumulatorTile<32> r_WindowOutput[4];
 	__shared__ FSharedWindow<64, false> s_Window;
-	RunWindowWide<64, false, FTiledIO<64, false>, true>(r_Arguments, s_Window, r_Raw);
-	ProjectDown<64, false>(r_Arguments, Publish<false>(dlssnr::kernels::window_pool::PoolWindow(r_Raw)),
-						   s_Window);
+	RunWindowWide<64, false, FTiledIO<64, false>, true>(r_Arguments, s_Window, r_WindowOutput);
+	ProjectDown<64, false>(
+		r_Arguments, Publish<false>(dlssnr::kernels::window_pool::PoolWindow(r_WindowOutput)), s_Window);
 #endif
 }
 } // namespace dlssnr::reconstructed::window_block_c64_downsample_fp16
@@ -84,11 +85,11 @@ __global__ __maxnreg__(168) void window_block_c128_downsample_fp16(Parameters r_
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	using namespace dlssnr::kernels::window_downsample;
 	const FArguments r_Arguments = Arguments<128, false>(r_Parameters);
-	FAccumulatorTile<32> r_Raw[4];
+	FAccumulatorTile<32> r_WindowOutput[4];
 	__shared__ FSharedWindow<128, false> s_Window;
-	RunWindowWide<128, false, FTiledIO<128, false>, true>(r_Arguments, s_Window, r_Raw);
-	ProjectDown<128, false>(r_Arguments, Publish<false>(dlssnr::kernels::window_pool::PoolWindow(r_Raw)),
-							s_Window);
+	RunWindowWide<128, false, FTiledIO<128, false>, true>(r_Arguments, s_Window, r_WindowOutput);
+	ProjectDown<128, false>(
+		r_Arguments, Publish<false>(dlssnr::kernels::window_pool::PoolWindow(r_WindowOutput)), s_Window);
 #endif
 }
 } // namespace dlssnr::reconstructed::window_block_c128_downsample_fp16
@@ -105,11 +106,11 @@ __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(Parameters r_
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	using namespace dlssnr::kernels::window_downsample;
 	const FArguments r_Arguments = Arguments<256, false>(r_Parameters);
-	FAccumulatorTile<32> r_Raw[4];
+	FAccumulatorTile<32> r_WindowOutput[4];
 	__shared__ FSharedWindow<256, false> s_Window;
-	RunWindowWide<256, false, FTiledIO<256, false>, true>(r_Arguments, s_Window, r_Raw);
-	ProjectDown<256, false>(r_Arguments, Publish<false>(dlssnr::kernels::window_pool::PoolWindow(r_Raw)),
-							s_Window);
+	RunWindowWide<256, false, FTiledIO<256, false>, true>(r_Arguments, s_Window, r_WindowOutput);
+	ProjectDown<256, false>(
+		r_Arguments, Publish<false>(dlssnr::kernels::window_pool::PoolWindow(r_WindowOutput)), s_Window);
 #endif
 }
 } // namespace dlssnr::reconstructed::window_block_c256_downsample_fp16
@@ -125,10 +126,15 @@ __global__ __maxnreg__(168) void window_attention_projection_pool_c512_fp16(Para
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ __align__(512) unsigned char s_Storage[8208];
-	const dlssnr::kernels::spatial_projection::FArguments r_Arguments{
-		r_Parameters.g_Pointer0,  r_Parameters.g_Pointer8,	  r_Parameters.g_Pointer16,
-		r_Parameters.g_Pointer32, int(r_Parameters.Scalar64), int(r_Parameters.Scalar68),
-		r_Parameters.g_Pointer24, int(r_Parameters.Scalar72), int(r_Parameters.Scalar76)};
+	const dlssnr::kernels::spatial_projection::FArguments r_Arguments{r_Parameters.g_Input,
+																	  r_Parameters.g_Residual,
+																	  r_Parameters.g_Output,
+																	  r_Parameters.g_PackedWeights,
+																	  int(r_Parameters.Height),
+																	  int(r_Parameters.Width),
+																	  r_Parameters.g_DownsampledOutput,
+																	  int(r_Parameters.DownsampledHeight),
+																	  int(r_Parameters.DownsampledWidth)};
 	dlssnr::kernels::spatial_projection::Forward<false, 4, false, false, 2, true>(r_Arguments, s_Storage);
 #endif
 }

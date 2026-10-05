@@ -96,7 +96,7 @@ class PolicyTests(unittest.TestCase):
         self.assertIn('std::array<FAnchor,0>',h);self.assertIn('std::array<FAdmission,0>',h)
         self.assertIn('intConfigId=-1',h);self.assertIn('bActualShapeSupported=false',h)
         self.assertIn('EvidenceRow.Width==Width&&EvidenceRow.Height==Height',h)
-        self.assertIn('Dx*Dx*1440LL*1440LL+Dy*Dy*2560LL*2560LL',h)
+        self.assertIn('WidthDelta*WidthDelta*1440LL*1440LL+HeightDelta*HeightDelta*2560LL*2560LL',h)
         p=empty();p['anchors']=[anchor(2560,1440,4),anchor(1280,720,2)]
         first=P.cpp_header(p);p['anchors'].reverse()
         self.assertEqual(first,P.cpp_header(p))

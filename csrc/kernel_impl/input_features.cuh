@@ -20,24 +20,9 @@ constexpr uint32_t CONST_NOISE_TWO_PI_BITS = 0x40c90fdbu; // 6.2831854820251465.
 constexpr float CONST_NOISE_RADIUS_FACTOR = -2.0f;		  // Box-Muller radius sqrt(-2 ln u).
 
 // ABI names describe how the native code uses each field. Renderer-level
-// meanings of the three conditioning controls remain deliberately unspecified.
-struct FParameters
-{
-	uint64_t g_CurrentTexture, g_HistoryTexture, g_MotionTexture, g_DepthTexture, g_ConditioningTexture;
-	FTextureTransform HistoryTransform, MotionTransform, DepthTransform, ConditioningTransform,
-		CurrentTransform;
-	float r_MotionScaleX, r_MotionScaleY;
-	uint32_t bPreferGreaterDepth;
-	float r_ConditionA, r_ConditionB, r_ConditionConstant, r_OverrideA, r_OverrideB;
-	uint32_t bConditioningOverride;
-	float r_ColorScale;
-	uint32_t NoiseSeed, Reserved;
-	int ValidHeight, ValidWidth;
-	uint64_t g_Output, g_Record, ReservedPointer;
-	int FullHeight, FullWidth;
-	uint64_t g_PooledOutput;
-	int PooledHeight, PooledWidth;
-};
+// meanings of the conditioning controls remain deliberately unspecified. Green/Blue
+// identify the texture channels used in the feature product, not renderer labels.
+using FParameters = dlssnr::reconstructed::frontend_abi::FPreprocessParameters;
 
 static_assert(sizeof(FParameters) == 264, "Native preprocessing ABI must stay 264 bytes");
 static_assert(offsetof(FParameters, CurrentTransform) == 136);
@@ -51,10 +36,10 @@ struct FSharedFeatures
 	uint4 s_Plane[2][64];
 };
 
-__device__ __forceinline__ uint32_t PermuteNoise(uint32_t r_State)
+__device__ __forceinline__ uint32_t PermuteNoise(uint32_t r_HashState)
 {
-	const uint32_t r_Shifted = r_State >> ((r_State >> 28) + 4);
-	return (r_Shifted ^ r_State) * CONST_NOISE_PERMUTE_MULTIPLIER;
+	const uint32_t r_ShiftedHash = r_HashState >> ((r_HashState >> 28) + 4);
+	return (r_ShiftedHash ^ r_HashState) * CONST_NOISE_PERMUTE_MULTIPLIER;
 }
 
 __device__ __forceinline__ float3 PixelNoise(uint32_t NoiseSeed, int g_X, int g_Y)
@@ -66,14 +51,14 @@ __device__ __forceinline__ float3 PixelNoise(uint32_t NoiseSeed, int g_X, int g_
 	const uint32_t r_Hash =
 		PermuteNoise(uint32_t(g_X) * CONST_NOISE_X_MULTIPLIER ^ uint32_t(g_Y) * CONST_NOISE_Y_MULTIPLIER ^
 					 NoiseSeed * CONST_NOISE_FRAME_MULTIPLIER ^ CONST_NOISE_SEED_XOR);
-	const uint32_t r_Base = (r_Hash >> 22) ^ r_Hash;
+	const uint32_t r_PixelHash = (r_Hash >> 22) ^ r_Hash;
 	float r_Uniform[4];
 #pragma unroll
 	for (int r_Stream = 0; r_Stream < 4; ++r_Stream)
 	{
-		const uint32_t r_Value = PermuteNoise(r_Base * CONST_NOISE_STREAM_MULTIPLIER[r_Stream] +
-											  CONST_NOISE_STREAM_ADDEND[r_Stream]);
-		const uint32_t r_UniformInteger = ((r_Value >> 30) ^ (r_Value >> 8)) + 1;
+		const uint32_t r_StreamHash = PermuteNoise(r_PixelHash * CONST_NOISE_STREAM_MULTIPLIER[r_Stream] +
+												   CONST_NOISE_STREAM_ADDEND[r_Stream]);
+		const uint32_t r_UniformInteger = ((r_StreamHash >> 30) ^ (r_StreamHash >> 8)) + 1;
 		r_Uniform[r_Stream] = Multiply(__uint2float_rn(r_UniformInteger), CONST_NOISE_UINT24_SCALE);
 	}
 	float r_Radius[2], r_Angle[2];
@@ -102,56 +87,58 @@ __device__ __forceinline__ float4 SampleTransformed(uint64_t g_Texture, const FT
 
 __device__ __forceinline__ float2 SelectMotionOffset(const FParameters& r_Parameters, float2 r_Uv)
 {
-	float2 r_Selected = make_float2(CONST_ZERO, CONST_ZERO);
+	float2 r_SelectedMotionOffset = make_float2(CONST_ZERO, CONST_ZERO);
 	if (!r_Parameters.g_DepthTexture)
-		return r_Selected;
-	const float r_StepX = Reciprocal(r_Parameters.DepthTransform.r_ScaleX);
-	const float r_StepY = Reciprocal(r_Parameters.DepthTransform.r_ScaleY);
+		return r_SelectedMotionOffset;
+	const float r_DepthTexelWidth = Reciprocal(r_Parameters.DepthTransform.r_ScaleX);
+	const float r_DepthTexelHeight = Reciprocal(r_Parameters.DepthTransform.r_ScaleY);
 	float r_BestDepth = SampleTransformed(r_Parameters.g_DepthTexture, r_Parameters.DepthTransform, r_Uv).x;
 // The four diagonal candidates are visited TL, TR, BL, BR. Ties and NaNs
 // retain the prior sample, exactly as the native unordered comparisons do.
 #pragma unroll
 	for (int r_Corner = 0; r_Corner < 4; ++r_Corner)
 	{
-		const float r_OffsetX = (r_Corner & 1) ? r_StepX : -r_StepX;
-		const float r_OffsetY = (r_Corner & 2) ? r_StepY : -r_StepY;
-		const float2 r_CandidateUv =
-			make_float2((r_Corner & 1) ? Add(r_Uv.x, r_StepX) : Subtract(r_Uv.x, r_StepX),
-						(r_Corner & 2) ? Add(r_Uv.y, r_StepY) : Subtract(r_Uv.y, r_StepY));
-		const float r_Depth =
+		const float r_OffsetX = (r_Corner & 1) ? r_DepthTexelWidth : -r_DepthTexelWidth;
+		const float r_OffsetY = (r_Corner & 2) ? r_DepthTexelHeight : -r_DepthTexelHeight;
+		const float2 r_CandidateUv = make_float2(
+			(r_Corner & 1) ? Add(r_Uv.x, r_DepthTexelWidth) : Subtract(r_Uv.x, r_DepthTexelWidth),
+			(r_Corner & 2) ? Add(r_Uv.y, r_DepthTexelHeight) : Subtract(r_Uv.y, r_DepthTexelHeight));
+		const float r_CandidateDepth =
 			SampleTransformed(r_Parameters.g_DepthTexture, r_Parameters.DepthTransform, r_CandidateUv).x;
-		const bool r_bKeep =
+		const bool r_bKeepPreviousDepth =
 			r_Parameters.bPreferGreaterDepth
-				? NativeSetpLeuFtzF32(__float_as_uint(r_Depth), __float_as_uint(r_BestDepth))
-				: NativeSetpGeuFtzF32(__float_as_uint(r_Depth), __float_as_uint(r_BestDepth));
-		if (!r_bKeep)
+				? NativeSetpLeuFtzF32(__float_as_uint(r_CandidateDepth), __float_as_uint(r_BestDepth))
+				: NativeSetpGeuFtzF32(__float_as_uint(r_CandidateDepth), __float_as_uint(r_BestDepth));
+		if (!r_bKeepPreviousDepth)
 		{
-			r_Selected = make_float2(r_OffsetX, r_OffsetY);
-			r_BestDepth = r_Depth;
+			r_SelectedMotionOffset = make_float2(r_OffsetX, r_OffsetY);
+			r_BestDepth = r_CandidateDepth;
 		}
 	}
-	r_Selected.x = Multiply(
-		r_Selected.x, Divide(r_Parameters.DepthTransform.r_ScaleX, r_Parameters.MotionTransform.r_ScaleX));
-	r_Selected.y = Multiply(
-		r_Selected.y, Divide(r_Parameters.DepthTransform.r_ScaleY, r_Parameters.MotionTransform.r_ScaleY));
-	return r_Selected;
+	r_SelectedMotionOffset.x =
+		Multiply(r_SelectedMotionOffset.x,
+				 Divide(r_Parameters.DepthTransform.r_ScaleX, r_Parameters.MotionTransform.r_ScaleX));
+	r_SelectedMotionOffset.y =
+		Multiply(r_SelectedMotionOffset.y,
+				 Divide(r_Parameters.DepthTransform.r_ScaleY, r_Parameters.MotionTransform.r_ScaleY));
+	return r_SelectedMotionOffset;
 }
 
-__device__ __forceinline__ uint16_t ToHalf(float r_Value)
+__device__ __forceinline__ uint16_t ToHalf(float r_InputValue)
 {
-	return NativeCvtRnF16F32(__float_as_uint(r_Value));
+	return NativeCvtRnF16F32(__float_as_uint(r_InputValue));
 }
 
-__device__ __forceinline__ uint32_t HalfWords(uint16_t r_Low, uint16_t r_High)
+__device__ __forceinline__ uint32_t HalfWords(uint16_t r_LowerHalfword, uint16_t r_UpperHalfword)
 {
-	return uint32_t(r_Low) | uint32_t(r_High) << 16;
+	return uint32_t(r_LowerHalfword) | uint32_t(r_UpperHalfword) << 16;
 }
 
-__device__ __forceinline__ uint16_t ConditionColor(float r_Value, uint16_t r_Scale)
+__device__ __forceinline__ uint16_t ConditionColor(float r_ColorSample, uint16_t r_ColorScaleHalf)
 {
 	// Keep both Half rounding points: round(texture), subtract 1/2, multiply
 	// rounded(2*ColorScale). A float affine transform is not equivalent.
-	return NativeMulF16(NativeSubF16(ToHalf(r_Value), ToHalf(CONST_PIXEL_CENTER)), r_Scale);
+	return NativeMulF16(NativeSubF16(ToHalf(r_ColorSample), ToHalf(CONST_PIXEL_CENTER)), r_ColorScaleHalf);
 }
 
 __device__ __forceinline__ void FillFeatures(const FParameters& r_Parameters, FSharedFeatures& s_Features)
@@ -180,10 +167,10 @@ __device__ __forceinline__ void FillFeatures(const FParameters& r_Parameters, FS
 				ConditionColor((&r_Current.x)[r_Channel], r_ColorScale);
 		if (r_Parameters.g_HistoryTexture && r_Parameters.g_MotionTexture)
 		{
-			const float2 r_Offset = SelectMotionOffset(r_Parameters, r_Uv);
-			const float4 r_Motion =
-				SampleTransformed(r_Parameters.g_MotionTexture, r_Parameters.MotionTransform,
-								  make_float2(Add(r_Uv.x, r_Offset.x), Add(r_Uv.y, r_Offset.y)));
+			const float2 r_MotionSampleOffset = SelectMotionOffset(r_Parameters, r_Uv);
+			const float4 r_Motion = SampleTransformed(
+				r_Parameters.g_MotionTexture, r_Parameters.MotionTransform,
+				make_float2(Add(r_Uv.x, r_MotionSampleOffset.x), Add(r_Uv.y, r_MotionSampleOffset.y)));
 			const float2 r_PreviousUv = make_float2(Fma(r_Motion.x, r_Parameters.r_MotionScaleX, r_Uv.x),
 													Fma(r_Motion.y, r_Parameters.r_MotionScaleY, r_Uv.y));
 			const float3 r_History =
@@ -194,42 +181,46 @@ __device__ __forceinline__ void FillFeatures(const FParameters& r_Parameters, FS
 				r_HistoryHalf[r_Channel] = ConditionColor((&r_History.x)[r_Channel], r_ColorScale);
 		}
 
-		float r_ConditionA = r_Parameters.r_ConditionA, r_ConditionB = r_Parameters.r_ConditionB;
-		float r_OverrideA = r_Parameters.bConditioningOverride ? -CONST_UNIT : CONST_ZERO;
-		float r_OverrideB = r_OverrideA;
+		float r_ConditioningGreen = r_Parameters.r_ConditioningGreen,
+			  r_ConditioningBlue = r_Parameters.r_ConditioningBlue;
+		float r_ConditioningOverrideGreen = r_Parameters.bConditioningOverride ? -CONST_UNIT : CONST_ZERO;
+		float r_ConditioningOverrideBlue = r_ConditioningOverrideGreen;
 		if (r_Parameters.bConditioningOverride && !r_Parameters.g_ConditioningTexture)
 		{
-			const bool r_bExplicit = NativeSetpGeFtzF32(
-				__float_as_uint(Maximum(r_Parameters.r_OverrideA, r_Parameters.r_OverrideB)),
-				__float_as_uint(CONST_ZERO));
-			if (r_bExplicit)
+			const bool r_bExplicitConditioningOverride =
+				NativeSetpGeFtzF32(__float_as_uint(Maximum(r_Parameters.r_ConditioningOverrideGreen,
+														   r_Parameters.r_ConditioningOverrideBlue)),
+								   __float_as_uint(CONST_ZERO));
+			if (r_bExplicitConditioningOverride)
 			{
-				r_ConditionB = CONST_UNIT;
-				r_OverrideA = NativeSetpLtuFtzF32(__float_as_uint(r_Parameters.r_OverrideA),
-												  __float_as_uint(CONST_ZERO))
-								  ? r_Parameters.r_ConditionB
-								  : r_Parameters.r_OverrideA;
-				r_OverrideB = NativeSetpLtuFtzF32(__float_as_uint(r_Parameters.r_OverrideB),
-												  __float_as_uint(CONST_ZERO))
-								  ? r_Parameters.r_ConditionB
-								  : r_Parameters.r_OverrideB;
+				r_ConditioningBlue = CONST_UNIT;
+				r_ConditioningOverrideGreen =
+					NativeSetpLtuFtzF32(__float_as_uint(r_Parameters.r_ConditioningOverrideGreen),
+										__float_as_uint(CONST_ZERO))
+						? r_Parameters.r_ConditioningBlue
+						: r_Parameters.r_ConditioningOverrideGreen;
+				r_ConditioningOverrideBlue =
+					NativeSetpLtuFtzF32(__float_as_uint(r_Parameters.r_ConditioningOverrideBlue),
+										__float_as_uint(CONST_ZERO))
+						? r_Parameters.r_ConditioningBlue
+						: r_Parameters.r_ConditioningOverrideBlue;
 			}
 		}
 		else if (r_Parameters.g_ConditioningTexture)
 		{
 			const float4 r_Conditioning = SampleTransformed(r_Parameters.g_ConditioningTexture,
 															r_Parameters.ConditioningTransform, r_Uv);
-			r_ConditionA = Multiply(r_Conditioning.y, r_ConditionA);
-			r_ConditionB = Multiply(r_Conditioning.z, r_ConditionB);
+			r_ConditioningGreen = Multiply(r_Conditioning.y, r_ConditioningGreen);
+			r_ConditioningBlue = Multiply(r_Conditioning.z, r_ConditioningBlue);
 		}
 		s_Features.s_Plane[0][s_Pixel] = make_uint4(
 			HalfWords(ToHalf(r_Noise.x), ToHalf(r_Noise.y)), HalfWords(ToHalf(r_Noise.z), ToHalf(CONST_UNIT)),
 			HalfWords(r_CurrentHalf[0], r_CurrentHalf[1]), HalfWords(r_CurrentHalf[2], r_HistoryHalf[0]));
 		s_Features.s_Plane[1][s_Pixel] =
 			make_uint4(HalfWords(r_HistoryHalf[1], r_HistoryHalf[2]),
-					   HalfWords(ToHalf(r_Parameters.r_ConditionConstant), ToHalf(r_ConditionA)),
-					   HalfWords(ToHalf(r_ConditionB), ToHalf(r_OverrideA)),
-					   HalfWords(ToHalf(r_OverrideB), ToHalf(CONST_ZERO)));
+					   HalfWords(ToHalf(r_Parameters.r_ConstantConditioning), ToHalf(r_ConditioningGreen)),
+					   HalfWords(ToHalf(r_ConditioningBlue), ToHalf(r_ConditioningOverrideGreen)),
+					   HalfWords(ToHalf(r_ConditioningOverrideBlue), ToHalf(CONST_ZERO)));
 	}
 	__syncthreads();
 }

@@ -46,8 +46,8 @@ namespace dlssnr::reconstructed::window_block_c32_input_view_fp16
 __global__ __maxnreg__(168) void window_block_c32_input_view_fp16(Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	using FIO = dlssnr::kernels::window_wide::FSmallViewIO<false, true, false>;
-	dlssnr::kernels::window32::RunWindow32<false, decltype(r_Parameters), FIO>(r_Parameters);
+	using FWindowIO = dlssnr::kernels::window_wide::FSmallViewIO<false, true, false>;
+	dlssnr::kernels::window32::RunWindow32<false, decltype(r_Parameters), FWindowIO>(r_Parameters);
 #endif
 }
 } // namespace dlssnr::reconstructed::window_block_c32_input_view_fp16
@@ -62,8 +62,8 @@ namespace dlssnr::reconstructed::window_block_c32_output_view_fp16
 __global__ __maxnreg__(168) void window_block_c32_output_view_fp16(Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	using FIO = dlssnr::kernels::window_wide::FSmallViewIO<false, false, true>;
-	dlssnr::kernels::window32::RunWindow32<false, decltype(r_Parameters), FIO>(r_Parameters);
+	using FWindowIO = dlssnr::kernels::window_wide::FSmallViewIO<false, false, true>;
+	dlssnr::kernels::window32::RunWindow32<false, decltype(r_Parameters), FWindowIO>(r_Parameters);
 #endif
 }
 } // namespace dlssnr::reconstructed::window_block_c32_output_view_fp16
@@ -95,9 +95,9 @@ namespace dlssnr::reconstructed::window_block_c64_input_view_fp16
 __global__ __maxnreg__(168) void window_block_c64_input_view_fp16(Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	using FIO = dlssnr::kernels::window_wide::FViewIO<64, false, true, false>;
+	using FWindowIO = dlssnr::kernels::window_wide::FViewIO<64, false, true, false>;
 	__shared__ dlssnr::kernels::window_wide::FSharedWindow<64, false> s_Window;
-	dlssnr::kernels::window_wide::RunWindowWide<64, false, FIO>(r_Parameters, s_Window);
+	dlssnr::kernels::window_wide::RunWindowWide<64, false, FWindowIO>(r_Parameters, s_Window);
 #endif
 }
 } // namespace dlssnr::reconstructed::window_block_c64_input_view_fp16
@@ -112,9 +112,9 @@ namespace dlssnr::reconstructed::window_block_c64_output_view_fp16
 __global__ __maxnreg__(168) void window_block_c64_output_view_fp16(Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	using FIO = dlssnr::kernels::window_wide::FViewIO<64, false, false, true>;
+	using FWindowIO = dlssnr::kernels::window_wide::FViewIO<64, false, false, true>;
 	__shared__ dlssnr::kernels::window_wide::FSharedWindow<64, false> s_Window;
-	dlssnr::kernels::window_wide::RunWindowWide<64, false, FIO>(r_Parameters, s_Window);
+	dlssnr::kernels::window_wide::RunWindowWide<64, false, FWindowIO>(r_Parameters, s_Window);
 #endif
 }
 } // namespace dlssnr::reconstructed::window_block_c64_output_view_fp16
@@ -145,9 +145,9 @@ namespace dlssnr::reconstructed::window_block_c128_input_view_fp16
 __global__ __maxnreg__(168) void window_block_c128_input_view_fp16(Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	using FIO = dlssnr::kernels::window_wide::FViewIO<128, false, true, false>;
+	using FWindowIO = dlssnr::kernels::window_wide::FViewIO<128, false, true, false>;
 	__shared__ dlssnr::kernels::window_wide::FSharedWindow<128, false> s_Window;
-	dlssnr::kernels::window_wide::RunWindowWide<128, false, FIO>(r_Parameters, s_Window);
+	dlssnr::kernels::window_wide::RunWindowWide<128, false, FWindowIO>(r_Parameters, s_Window);
 #endif
 }
 } // namespace dlssnr::reconstructed::window_block_c128_input_view_fp16
@@ -162,9 +162,9 @@ namespace dlssnr::reconstructed::window_block_c128_output_view_fp16
 __global__ __maxnreg__(168) void window_block_c128_output_view_fp16(Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	using FIO = dlssnr::kernels::window_wide::FViewIO<128, false, false, true>;
+	using FWindowIO = dlssnr::kernels::window_wide::FViewIO<128, false, false, true>;
 	__shared__ dlssnr::kernels::window_wide::FSharedWindow<128, false> s_Window;
-	dlssnr::kernels::window_wide::RunWindowWide<128, false, FIO>(r_Parameters, s_Window);
+	dlssnr::kernels::window_wide::RunWindowWide<128, false, FWindowIO>(r_Parameters, s_Window);
 #endif
 }
 } // namespace dlssnr::reconstructed::window_block_c128_output_view_fp16
@@ -195,9 +195,9 @@ namespace dlssnr::reconstructed::window_block_c256_input_view_fp16
 __global__ __maxnreg__(192) void window_block_c256_input_view_fp16(Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	using FIO = dlssnr::kernels::window_wide::FViewIO<256, false, true, false>;
+	using FWindowIO = dlssnr::kernels::window_wide::FViewIO<256, false, true, false>;
 	__shared__ dlssnr::kernels::window_wide::FSharedWindow<256, false> s_Window;
-	dlssnr::kernels::window_wide::RunWindowWide<256, false, FIO>(r_Parameters, s_Window);
+	dlssnr::kernels::window_wide::RunWindowWide<256, false, FWindowIO>(r_Parameters, s_Window);
 #endif
 }
 } // namespace dlssnr::reconstructed::window_block_c256_input_view_fp16
@@ -212,9 +212,9 @@ namespace dlssnr::reconstructed::window_block_c256_output_view_fp16
 __global__ __maxnreg__(192) void window_block_c256_output_view_fp16(Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	using FIO = dlssnr::kernels::window_wide::FViewIO<256, false, false, true>;
+	using FWindowIO = dlssnr::kernels::window_wide::FViewIO<256, false, false, true>;
 	__shared__ dlssnr::kernels::window_wide::FSharedWindow<256, false> s_Window;
-	dlssnr::kernels::window_wide::RunWindowWide<256, false, FIO>(r_Parameters, s_Window);
+	dlssnr::kernels::window_wide::RunWindowWide<256, false, FWindowIO>(r_Parameters, s_Window);
 #endif
 }
 } // namespace dlssnr::reconstructed::window_block_c256_output_view_fp16

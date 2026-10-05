@@ -41,19 +41,19 @@ template <int Channels, bool bFp8> struct FSharedWindow
 
 	__device__ __forceinline__ FActivationTile<bFp8> Load(int r_Tile, int r_Panel) const
 	{
-		FActivationTile<bFp8> r_Result;
+		FActivationTile<bFp8> r_ActivationTile;
 #pragma unroll
 		for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
-			r_Result.r_Reduction[r_Chunk] = Fragment(s_Tile[r_Tile][r_Panel][r_Chunk][threadIdx.x]);
-		return r_Result;
+			r_ActivationTile.r_Reduction[r_Chunk] = Fragment(s_Tile[r_Tile][r_Panel][r_Chunk][threadIdx.x]);
+		return r_ActivationTile;
 	}
 
-	__device__ __forceinline__ void Store(int r_Tile, int r_Panel, const FActivationTile<bFp8>& r_Value)
+	__device__ __forceinline__ void Store(int r_Tile, int r_Panel, const FActivationTile<bFp8>& r_Activation)
 	{
 #pragma unroll
 		for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
 		{
-			const auto& r_Fragment = r_Value.r_Reduction[r_Chunk];
+			const auto& r_Fragment = r_Activation.r_Reduction[r_Chunk];
 			s_Tile[r_Tile][r_Panel][r_Chunk][threadIdx.x] = make_uint4(
 				r_Fragment.r_Word[0], r_Fragment.r_Word[1], r_Fragment.r_Word[2], r_Fragment.r_Word[3]);
 		}
@@ -74,7 +74,7 @@ template <bool bFp8>
 __device__ __forceinline__ FAccumulatorTile<32>
 ScaledResidual(const FActivationTile<bFp8>& r_Input, const unsigned char* g_Scale, int g_ChannelBase)
 {
-	FAccumulatorTile<32> r_Result;
+	FAccumulatorTile<32> r_ScaledResidual;
 #pragma unroll
 	for (int r_Column = 0; r_Column < 4; ++r_Column)
 	{
@@ -83,16 +83,16 @@ ScaledResidual(const FActivationTile<bFp8>& r_Input, const unsigned char* g_Scal
 #pragma unroll
 		for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 		{
-			uint32_t r_Value;
+			uint32_t r_ResidualPair;
 			if constexpr (bFp8)
-				r_Value = DecodeE4(uint16_t(r_Input.r_Reduction[0].r_Word[2 * (r_Column / 2) + r_RowHalf] >>
-											(16 * (r_Column & 1))));
+				r_ResidualPair = DecodeE4(uint16_t(
+					r_Input.r_Reduction[0].r_Word[2 * (r_Column / 2) + r_RowHalf] >> (16 * (r_Column & 1))));
 			else
-				r_Value = r_Input.r_Reduction[r_Column / 2].r_Word[2 * (r_Column & 1) + r_RowHalf];
-			r_Result.r_Pair[r_Column][r_RowHalf] = HalfMul(r_Value, r_Scale);
+				r_ResidualPair = r_Input.r_Reduction[r_Column / 2].r_Word[2 * (r_Column & 1) + r_RowHalf];
+			r_ScaledResidual.r_Pair[r_Column][r_RowHalf] = HalfMul(r_ResidualPair, r_Scale);
 		}
 	}
-	return r_Result;
+	return r_ScaledResidual;
 }
 
 template <int Channels, bool bFp8, class FParameters>
@@ -106,27 +106,28 @@ __device__ __forceinline__ FActivationTile<bFp8> ReadTile(const FParameters& r_P
 	const int g_TileY =
 		g_TileRows == 1 ? 0 : (int(blockIdx.y) * 8 + r_Parameters.OriginY) / 4 + (r_Tile >> 1);
 	const bool r_bValid = g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows;
-	FActivationTile<bFp8> r_Result;
+	FActivationTile<bFp8> r_InputTile;
 #pragma unroll
 	for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
 	{
-		const uint64_t g_Address = r_Parameters.g_State +
-								   uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
-								   r_Panel * FConfig::PanelBytes + r_Chunk * 512 + int(threadIdx.x) * 16;
-		r_Result.r_Reduction[r_Chunk] =
-			Fragment(r_bValid ? __ldcg(reinterpret_cast<const uint4*>(g_Address)) : make_uint4(0, 0, 0, 0));
+		const uint64_t g_InputFragmentAddress =
+			r_Parameters.g_Input + uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
+			r_Panel * FConfig::PanelBytes + r_Chunk * 512 + int(threadIdx.x) * 16;
+		r_InputTile.r_Reduction[r_Chunk] =
+			Fragment(r_bValid ? __ldcg(reinterpret_cast<const uint4*>(g_InputFragmentAddress))
+							  : make_uint4(0, 0, 0, 0));
 	}
-	return r_Result;
+	return r_InputTile;
 }
 
 template <int Channels, bool bFp8, int Tiles, class FInputSource>
-__device__ __forceinline__ void Expert(const FInputSource& r_Input, const unsigned char* g_Record,
+__device__ __forceinline__ void Expert(const FInputSource& r_Input, const unsigned char* g_PackedWeights,
 									   int r_Expert, FAccumulatorTile<32> (&r_Contracted)[Tiles])
 {
 	using FConfig = FWideProfile<Channels, bFp8>;
-	const unsigned char* g_Expansion = g_Record + r_Expert * FConfig::ExpertExpandBytes;
+	const unsigned char* g_Expansion = g_PackedWeights + r_Expert * FConfig::ExpertExpandBytes;
 	const unsigned char* g_Contraction =
-		g_Record + FConfig::ContractOffset + r_Expert * FConfig::ExpertContractBytes;
+		g_PackedWeights + FConfig::ContractOffset + r_Expert * FConfig::ExpertContractBytes;
 // Each expert is C→128→32. Stream one hidden C32 panel and preserve all
 // Half MMA rounding points; the four contractions accumulate in K order.
 #pragma unroll 1
@@ -164,7 +165,7 @@ __device__ __forceinline__ void FeedForward(const FParameters& r_Parameters,
 {
 	using FConfig = typename FIO::FRecordProfile;
 	const int r_Warp = threadIdx.y;
-	const auto* g_Record = reinterpret_cast<const unsigned char*>(r_Parameters.g_Record);
+	const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(r_Parameters.g_PackedWeights);
 	if constexpr (Channels == 64)
 	{
 		// C64 uses token parallelism in the FFN: one warp owns left/right tiles
@@ -177,19 +178,19 @@ __device__ __forceinline__ void FeedForward(const FParameters& r_Parameters,
 			for (int r_Panel = 0; r_Panel < 2; ++r_Panel)
 			{
 				r_Input.r_Tile[r_Tile][r_Panel] = FIO::Read(r_Parameters, 2 * r_Warp + r_Tile, r_Panel);
-				r_Output[r_Tile][r_Panel] = ScaledResidual(r_Input.r_Tile[r_Tile][r_Panel],
-														   g_Record + FConfig::FfnScaleOffset, 32 * r_Panel);
+				r_Output[r_Tile][r_Panel] = ScaledResidual(
+					r_Input.r_Tile[r_Tile][r_Panel], g_PackedWeights + FConfig::FfnScaleOffset, 32 * r_Panel);
 			}
 #pragma unroll 1
 		for (int r_Expert = 0; r_Expert < 2; ++r_Expert)
 		{
 			FAccumulatorTile<32> r_Contracted[2]{};
-			Expert<Channels, bFp8>(r_Input, g_Record, r_Expert, r_Contracted);
+			Expert<Channels, bFp8>(r_Input, g_PackedWeights, r_Expert, r_Contracted);
 #pragma unroll
 			for (int r_Panel = 0; r_Panel < 2; ++r_Panel)
 			{
-				const auto r_Weights =
-					LoadWeights<bFp8>(g_Record + FConfig::MixOffset, r_Panel * 32, r_Expert * 32, Channels);
+				const auto r_Weights = LoadWeights<bFp8>(g_PackedWeights + FConfig::MixOffset, r_Panel * 32,
+														 r_Expert * 32, Channels);
 #pragma unroll
 				for (int r_Tile = 0; r_Tile < 2; ++r_Tile)
 					Linear32(Publish<bFp8>(r_Contracted[r_Tile]), r_Weights, r_Output[r_Tile][r_Panel]);
@@ -209,12 +210,12 @@ __device__ __forceinline__ void FeedForward(const FParameters& r_Parameters,
 			s_Window.Store(r_Tile, r_Warp, FIO::Read(r_Parameters, r_Tile, r_Warp));
 		__syncthreads();
 		FAccumulatorTile<32> r_Contracted[4]{};
-		Expert<Channels, bFp8>(s_Window, g_Record, r_Warp, r_Contracted);
+		Expert<Channels, bFp8>(s_Window, g_PackedWeights, r_Warp, r_Contracted);
 		FAccumulatorTile<32> r_Output[4];
 #pragma unroll
 		for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 			r_Output[r_Tile] = ScaledResidual(s_Window.Load(r_Tile, r_Warp),
-											  g_Record + FConfig::FfnScaleOffset, 32 * r_Warp);
+											  g_PackedWeights + FConfig::FfnScaleOffset, 32 * r_Warp);
 		// All experts must finish reading X before their published outputs reuse
 		// the same slab. This is a tensor lifetime barrier, not a warp shuffle.
 		__syncthreads();
@@ -226,7 +227,7 @@ __device__ __forceinline__ void FeedForward(const FParameters& r_Parameters,
 		for (int r_Panel = 0; r_Panel < FConfig::Heads; ++r_Panel)
 		{
 			const auto r_Weights =
-				LoadWeights<bFp8>(g_Record + FConfig::MixOffset, 32 * r_Warp, 32 * r_Panel, Channels);
+				LoadWeights<bFp8>(g_PackedWeights + FConfig::MixOffset, 32 * r_Warp, 32 * r_Panel, Channels);
 #pragma unroll
 			for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 				Linear32(s_Window.Load(r_Tile, r_Panel), r_Weights, r_Output[r_Tile]);
@@ -241,25 +242,26 @@ __device__ __forceinline__ void FeedForward(const FParameters& r_Parameters,
 
 template <int Channels, bool bFp8, class FConfig = FWideProfile<Channels, bFp8>>
 __device__ __forceinline__ void ProjectQkv(const FSharedWindow<Channels, bFp8>& s_Window,
-										   const unsigned char* g_Record, FActivationTile<bFp8> (&r_Query)[4],
+										   const unsigned char* g_PackedWeights,
+										   FActivationTile<bFp8> (&r_Query)[4],
 										   FActivationTile<bFp8> (&r_Key)[4], FValueTile<bFp8> (&r_Value)[4])
 {
 	FAccumulatorTile<32> r_Projected[3][4]{};
 #pragma unroll 1
 	for (int r_Panel = 0; r_Panel < FConfig::Heads; ++r_Panel)
 #pragma unroll
-		for (int r_Kind = 0; r_Kind < 3; ++r_Kind)
+		for (int r_QkvComponent = 0; r_QkvComponent < 3; ++r_QkvComponent)
 		{
 			// The record interleaves Q/K/V within each head: [Head][Q,K,V][32].
 			const auto r_Weights =
-				LoadWeights<bFp8>(g_Record + FConfig::QkvOffset, 96 * int(threadIdx.y) + 32 * r_Kind,
-								  32 * r_Panel, 3 * Channels);
+				LoadWeights<bFp8>(g_PackedWeights + FConfig::QkvOffset,
+								  96 * int(threadIdx.y) + 32 * r_QkvComponent, 32 * r_Panel, 3 * Channels);
 #pragma unroll
 			for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
-				Linear32(s_Window.Load(r_Tile, r_Panel), r_Weights, r_Projected[r_Kind][r_Tile]);
+				Linear32(s_Window.Load(r_Tile, r_Panel), r_Weights, r_Projected[r_QkvComponent][r_Tile]);
 		}
 	const uint32_t r_HeadScale = FloatToHalf2(
-		*reinterpret_cast<const uint32_t*>(g_Record + FConfig::HeadScaleOffset + 4 * threadIdx.y));
+		*reinterpret_cast<const uint32_t*>(g_PackedWeights + FConfig::HeadScaleOffset + 4 * threadIdx.y));
 #pragma unroll
 	for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 	{
@@ -272,14 +274,14 @@ __device__ __forceinline__ void ProjectQkv(const FSharedWindow<Channels, bFp8>& 
 		{
 			// Transpose Half accumulators before E4 publication, exactly as the
 			// DLL does, to obtain B fragments for probability times value.
-			const uint32_t r_Low = TransposeM8n8(r_Projected[2][r_Tile].r_Pair[r_Column][0]);
-			const uint32_t r_High = TransposeM8n8(r_Projected[2][r_Tile].r_Pair[r_Column][1]);
+			const uint32_t r_LowerValueRows = TransposeM8n8(r_Projected[2][r_Tile].r_Pair[r_Column][0]);
+			const uint32_t r_UpperValueRows = TransposeM8n8(r_Projected[2][r_Tile].r_Pair[r_Column][1]);
 			if constexpr (bFp8)
-				r_Value[r_Tile].r_Column[r_Column][0] = PackHalfPairsE4(r_Low, r_High);
+				r_Value[r_Tile].r_Column[r_Column][0] = PackHalfPairsE4(r_LowerValueRows, r_UpperValueRows);
 			else
 			{
-				r_Value[r_Tile].r_Column[r_Column][0] = r_Low;
-				r_Value[r_Tile].r_Column[r_Column][1] = r_High;
+				r_Value[r_Tile].r_Column[r_Column][0] = r_LowerValueRows;
+				r_Value[r_Tile].r_Column[r_Column][1] = r_UpperValueRows;
 			}
 		}
 	}
@@ -307,8 +309,9 @@ AttendWithBias(int r_Tile, const unsigned char* g_HeadBias, const FActivationTil
 		for (int r_Chunk = 0; r_Chunk < FProfile<bFp8>::InputChunks; ++r_Chunk)
 		{
 			const auto& r_Fragment = r_Key[r_Column / 2].r_Reduction[r_Chunk];
-			const uint32_t r_B[2] = {r_Fragment.r_Word[r_Column & 1], r_Fragment.r_Word[2 + (r_Column & 1)]};
-			Mma<bFp8>(r_Query[r_Tile].r_Reduction[r_Chunk], r_B, r_Probabilities.r_Pair[r_Column]);
+			const uint32_t r_KeyFragment[2] = {r_Fragment.r_Word[r_Column & 1],
+											   r_Fragment.r_Word[2 + (r_Column & 1)]};
+			Mma<bFp8>(r_Query[r_Tile].r_Reduction[r_Chunk], r_KeyFragment, r_Probabilities.r_Pair[r_Column]);
 		}
 	Softmax(r_Probabilities);
 	FAccumulatorTile<32> r_Attended{};
@@ -319,18 +322,18 @@ AttendWithBias(int r_Tile, const unsigned char* g_HeadBias, const FActivationTil
 #pragma unroll
 		for (int r_Column = 0; r_Column < 4; ++r_Column)
 		{
-			uint32_t r_B[2];
+			uint32_t r_ValueFragment[2];
 			if constexpr (bFp8)
 			{
-				r_B[0] = r_Value[2 * r_Chunk].r_Column[r_Column][0];
-				r_B[1] = r_Value[2 * r_Chunk + 1].r_Column[r_Column][0];
+				r_ValueFragment[0] = r_Value[2 * r_Chunk].r_Column[r_Column][0];
+				r_ValueFragment[1] = r_Value[2 * r_Chunk + 1].r_Column[r_Column][0];
 			}
 			else
 			{
-				r_B[0] = r_Value[r_Chunk].r_Column[r_Column][0];
-				r_B[1] = r_Value[r_Chunk].r_Column[r_Column][1];
+				r_ValueFragment[0] = r_Value[r_Chunk].r_Column[r_Column][0];
+				r_ValueFragment[1] = r_Value[r_Chunk].r_Column[r_Column][1];
 			}
-			Mma<bFp8>(r_Probability, r_B, r_Attended.r_Pair[r_Column]);
+			Mma<bFp8>(r_Probability, r_ValueFragment, r_Attended.r_Pair[r_Column]);
 		}
 	}
 	return Publish<bFp8>(r_Attended);
@@ -369,11 +372,12 @@ __device__ __forceinline__ void WriteTile(const FParameters& r_Parameters, int r
 		for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
 		{
 			const auto r_Published = PublishChunk<bFp8>(r_Output, r_Chunk);
-			const uint64_t g_Address = r_Parameters.g_High +
-									   uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
-									   threadIdx.y * FConfig::PanelBytes + r_Chunk * 512 + threadIdx.x * 16;
-			StoreNoAllocate(g_Address, make_uint4(r_Published.r_Word[0], r_Published.r_Word[1],
-												  r_Published.r_Word[2], r_Published.r_Word[3]));
+			const uint64_t g_OutputFragmentAddress =
+				r_Parameters.g_Output + uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
+				threadIdx.y * FConfig::PanelBytes + r_Chunk * 512 + threadIdx.x * 16;
+			StoreNoAllocate(g_OutputFragmentAddress,
+							make_uint4(r_Published.r_Word[0], r_Published.r_Word[1], r_Published.r_Word[2],
+									   r_Published.r_Word[3]));
 		}
 }
 
@@ -403,11 +407,11 @@ __device__ __forceinline__ void RunWindowWide(const FParameters& r_Parameters,
 											  FAccumulatorTile<32>* r_RawTiles = nullptr)
 {
 	using FConfig = typename FIO::FRecordProfile;
-	const auto* g_Record = reinterpret_cast<const unsigned char*>(r_Parameters.g_Record);
+	const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(r_Parameters.g_PackedWeights);
 	FeedForward<Channels, bFp8, FIO>(r_Parameters, s_Window);
 	FActivationTile<bFp8> r_Query[4], r_Key[4];
 	FValueTile<bFp8> r_Value[4];
-	ProjectQkv<Channels, bFp8, FConfig>(s_Window, g_Record, r_Query, r_Key, r_Value);
+	ProjectQkv<Channels, bFp8, FConfig>(s_Window, g_PackedWeights, r_Query, r_Key, r_Value);
 	__syncthreads();
 #pragma unroll
 	for (int r_FirstTile = 0; r_FirstTile < 4; r_FirstTile += FConfig::AttentionBatch)
@@ -419,10 +423,10 @@ __device__ __forceinline__ void RunWindowWide(const FParameters& r_Parameters,
 		{
 			const int r_Tile = r_FirstTile + r_LocalTile;
 			r_Attended[r_LocalTile] = AttendWithBias<bFp8>(
-				r_Tile, g_Record + FConfig::BiasOffset + 8192 * threadIdx.y, r_Query, r_Key, r_Value);
+				r_Tile, g_PackedWeights + FConfig::BiasOffset + 8192 * threadIdx.y, r_Query, r_Key, r_Value);
 			r_Output[r_LocalTile] =
-				ScaledResidual(s_Window.Load(r_Tile, threadIdx.y), g_Record + FConfig::AttentionScaleOffset,
-							   32 * threadIdx.y);
+				ScaledResidual(s_Window.Load(r_Tile, threadIdx.y),
+							   g_PackedWeights + FConfig::AttentionScaleOffset, 32 * threadIdx.y);
 		}
 // Each warp has consumed its own published FFN residual; attention
 // output now occupies the same head panel for the cross-head projection.
@@ -433,8 +437,8 @@ __device__ __forceinline__ void RunWindowWide(const FParameters& r_Parameters,
 #pragma unroll 1
 		for (int r_Panel = 0; r_Panel < FConfig::Heads; ++r_Panel)
 		{
-			const auto r_Weights = LoadWeights<bFp8>(g_Record + FConfig::ProjectionOffset, 32 * threadIdx.y,
-													 32 * r_Panel, Channels);
+			const auto r_Weights = LoadWeights<bFp8>(g_PackedWeights + FConfig::ProjectionOffset,
+													 32 * threadIdx.y, 32 * r_Panel, Channels);
 #pragma unroll
 			for (int r_LocalTile = 0; r_LocalTile < FConfig::AttentionBatch; ++r_LocalTile)
 				Linear32(s_Window.Load(r_FirstTile + r_LocalTile, r_Panel), r_Weights, r_Output[r_LocalTile]);

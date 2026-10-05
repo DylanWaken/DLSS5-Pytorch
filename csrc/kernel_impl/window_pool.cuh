@@ -16,19 +16,19 @@ __device__ __forceinline__ uint32_t PoolHorizontalWords(uint32_t r_LeftLow, uint
 	const int r_Lane = threadIdx.x;
 	if (r_Lane & 4)
 	{
-		const uint32_t r_Low = r_LeftLow, r_High = r_LeftHigh;
+		const uint32_t r_SavedLeftLowerRows = r_LeftLow, r_SavedLeftUpperRows = r_LeftHigh;
 		r_LeftLow = r_RightLow;
-		r_RightLow = r_Low;
+		r_RightLow = r_SavedLeftLowerRows;
 		r_LeftHigh = r_RightHigh;
-		r_RightHigh = r_High;
+		r_RightHigh = r_SavedLeftUpperRows;
 	}
 	if (r_Lane & 16)
 	{
-		const uint32_t r_LeftWord = r_LeftLow, r_RightWord = r_RightLow;
+		const uint32_t r_SavedLeftWord = r_LeftLow, r_SavedRightWord = r_RightLow;
 		r_LeftLow = r_LeftHigh;
 		r_RightLow = r_RightHigh;
-		r_LeftHigh = r_LeftWord;
-		r_RightHigh = r_RightWord;
+		r_LeftHigh = r_SavedLeftWord;
+		r_RightHigh = r_SavedRightWord;
 	}
 	const int r_SourceLane = (r_Lane & 19) | ((r_Lane << 1) & 8) | ((r_Lane >> 1) & 4);
 	const uint32_t r_TopLeft = ShuffleIdx(r_LeftLow, r_SourceLane, 31, 0xffffffffu);
@@ -48,14 +48,14 @@ __device__ __forceinline__ uint32_t PoolHorizontalTiles(const FAccumulatorTile<3
 							   r_Right.r_Pair[r_Column][0], r_Right.r_Pair[r_Column][1]);
 }
 
-__device__ __forceinline__ FAccumulatorTile<32> PoolWindow(const FAccumulatorTile<32> (&r_Raw)[4])
+__device__ __forceinline__ FAccumulatorTile<32> PoolWindow(const FAccumulatorTile<32> (&r_InputTiles)[4])
 {
 	FAccumulatorTile<32> r_Pooled;
 #pragma unroll
 	for (int r_Column = 0; r_Column < 4; ++r_Column)
 	{
-		r_Pooled.r_Pair[r_Column][0] = PoolHorizontalTiles(r_Raw[0], r_Raw[1], r_Column);
-		r_Pooled.r_Pair[r_Column][1] = PoolHorizontalTiles(r_Raw[2], r_Raw[3], r_Column);
+		r_Pooled.r_Pair[r_Column][0] = PoolHorizontalTiles(r_InputTiles[0], r_InputTiles[1], r_Column);
+		r_Pooled.r_Pair[r_Column][1] = PoolHorizontalTiles(r_InputTiles[2], r_InputTiles[3], r_Column);
 	}
 	return r_Pooled;
 }

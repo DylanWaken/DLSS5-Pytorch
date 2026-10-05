@@ -38,8 +38,8 @@ template <int Channels, bool bFp8> struct FUpProfile : FBlockProfile<Channels, b
 
 struct FArguments
 {
-	uint64_t g_State, g_High, g_Record, g_Skip;
-	int Height, Width, OriginX, OriginY, SkipHeight, SkipWidth;
+	uint64_t g_Input, g_Output, g_PackedWeights, g_Residual;
+	int Height, Width, OriginX, OriginY, ResidualHeight, ResidualWidth;
 	void* s_Window;
 	const FAccumulatorTile<32>* r_Merged;
 };
@@ -47,20 +47,29 @@ struct FArguments
 template <int Channels, class FParameters>
 __device__ __forceinline__ FArguments Arguments(const FParameters& r_Source)
 {
-	FArguments r_Result{r_Source.g_State, r_Source.g_High, r_Source.g_Record, 0,
-						r_Source.Height,  r_Source.Width,  r_Source.OriginX,  r_Source.OriginY,
-						r_Source.Height,  r_Source.Width,  nullptr,			  nullptr};
+	FArguments r_Arguments{r_Source.g_Input,
+						   r_Source.g_Output,
+						   r_Source.g_PackedWeights,
+						   0,
+						   r_Source.Height,
+						   r_Source.Width,
+						   r_Source.OriginX,
+						   r_Source.OriginY,
+						   r_Source.Height,
+						   r_Source.Width,
+						   nullptr,
+						   nullptr};
 	if constexpr (Channels == 32)
 	{
-		r_Result.g_Skip = r_Source.g_Extra80;
-		if (r_Source.Aux88 > 0)
-			r_Result.SkipHeight = r_Source.Aux88;
-		if (r_Source.Aux92 > 0)
-			r_Result.SkipWidth = r_Source.Aux92;
+		r_Arguments.g_Residual = r_Source.g_Residual;
+		if (r_Source.ResidualHeight > 0)
+			r_Arguments.ResidualHeight = r_Source.ResidualHeight;
+		if (r_Source.ResidualWidth > 0)
+			r_Arguments.ResidualWidth = r_Source.ResidualWidth;
 	}
 	else
-		r_Result.g_Skip = r_Source.g_Skip;
-	return r_Result;
+		r_Arguments.g_Residual = r_Source.g_Residual;
+	return r_Arguments;
 }
 
 template <int Channels, bool bFp8>
@@ -72,7 +81,7 @@ __device__ __forceinline__ FActivationTile<bFp8> ReadLowInput(const FArguments& 
 	const int g_Width = Channels == 32 ? r_Parameters.Width / 2 : ((r_Parameters.Width + 1) / 2 + 3) & ~3;
 	const int g_OriginX = (int(blockIdx.x) * 8 + r_Parameters.OriginX) / 2;
 	const int g_OriginY = (int(blockIdx.y) * 8 + r_Parameters.OriginY) / 2;
-	FActivationTile<bFp8> r_Result;
+	FActivationTile<bFp8> r_LowResolutionInput;
 #pragma unroll
 	for (int r_Chunk = 0; r_Chunk < FProfile<bFp8>::InputChunks; ++r_Chunk)
 #pragma unroll
@@ -81,35 +90,36 @@ __device__ __forceinline__ FActivationTile<bFp8> ReadLowInput(const FArguments& 
 			const int g_X = g_Width == 1 ? 0 : g_OriginX + ((threadIdx.x / 4) & 3);
 			const int g_Y = g_Height == 1 ? 0 : g_OriginY + threadIdx.x / 16 + 2 * (r_Word & 1);
 			const int g_Plane = r_Panel * 2 * FProfile<bFp8>::InputChunks + 2 * r_Chunk + r_Word / 2;
-			const uint64_t g_Address = r_Parameters.g_State +
-									   ((uint64_t(g_Plane * g_Height + g_Y) * g_Width + g_X) * 16) +
-									   4 * (threadIdx.x & 3);
-			r_Result.r_Reduction[r_Chunk].r_Word[r_Word] =
+			const uint64_t g_InputWordAddress = r_Parameters.g_Input +
+												((uint64_t(g_Plane * g_Height + g_Y) * g_Width + g_X) * 16) +
+												4 * (threadIdx.x & 3);
+			r_LowResolutionInput.r_Reduction[r_Chunk].r_Word[r_Word] =
 				g_X >= 0 && g_X < g_Width && g_Y >= 0 && g_Y < g_Height
-					? *reinterpret_cast<const uint32_t*>(g_Address)
+					? *reinterpret_cast<const uint32_t*>(g_InputWordAddress)
 					: 0u;
 		}
-	return r_Result;
+	return r_LowResolutionInput;
 }
 
 template <int Channels, bool bFp8>
 __device__ __forceinline__ FActivationTile<bFp8> ReadSkip(const FArguments& r_Parameters, int r_Tile)
 {
-	const int g_Columns = r_Parameters.SkipWidth / 4, g_Rows = r_Parameters.SkipHeight / 4;
+	const int g_Columns = r_Parameters.ResidualWidth / 4, g_Rows = r_Parameters.ResidualHeight / 4;
 	const int g_X = g_Columns == 1 ? 0 : (int(blockIdx.x) * 8 + r_Parameters.OriginX) / 4 + (r_Tile & 1);
 	const int g_Y = g_Rows == 1 ? 0 : (int(blockIdx.y) * 8 + r_Parameters.OriginY) / 4 + (r_Tile >> 1);
 	const bool r_bValid = g_X >= 0 && g_X < g_Columns && g_Y >= 0 && g_Y < g_Rows;
-	FActivationTile<bFp8> r_Result;
+	FActivationTile<bFp8> r_ResidualInput;
 #pragma unroll
 	for (int r_Chunk = 0; r_Chunk < FProfile<bFp8>::InputChunks; ++r_Chunk)
 	{
-		const uint64_t g_Address = r_Parameters.g_Skip +
-								   uint64_t(g_Y * g_Columns + g_X) * Channels * 16 * (bFp8 ? 1 : 2) +
-								   threadIdx.y * FProfile<bFp8>::TileBytes + r_Chunk * 512 + threadIdx.x * 16;
-		r_Result.r_Reduction[r_Chunk] =
-			Fragment(r_bValid ? __ldcg(reinterpret_cast<const uint4*>(g_Address)) : make_uint4(0, 0, 0, 0));
+		const uint64_t g_ResidualFragmentAddress =
+			r_Parameters.g_Residual + uint64_t(g_Y * g_Columns + g_X) * Channels * 16 * (bFp8 ? 1 : 2) +
+			threadIdx.y * FProfile<bFp8>::TileBytes + r_Chunk * 512 + threadIdx.x * 16;
+		r_ResidualInput.r_Reduction[r_Chunk] =
+			Fragment(r_bValid ? __ldcg(reinterpret_cast<const uint4*>(g_ResidualFragmentAddress))
+							  : make_uint4(0, 0, 0, 0));
 	}
-	return r_Result;
+	return r_ResidualInput;
 }
 
 template <int Channels, bool bFp8>
@@ -117,20 +127,20 @@ __device__ __forceinline__ void ProjectAndMerge(const FArguments& r_Parameters,
 												FAccumulatorTile<32> (&r_Merged)[4])
 {
 	using FConfig = FUpProfile<Channels, bFp8>;
-	const auto* g_Record = reinterpret_cast<const unsigned char*>(r_Parameters.g_Record);
+	const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(r_Parameters.g_PackedWeights);
 	FAccumulatorTile<32> r_LowProjection{};
 #pragma unroll 1
 	for (int r_Panel = 0; r_Panel < 2 * FConfig::Heads; ++r_Panel)
 	{
-		const auto r_Weights = LoadWeights<bFp8>(g_Record + FConfig::UpProjectionOffset, 32 * threadIdx.y,
-												 32 * r_Panel, Channels);
+		const auto r_Weights = LoadWeights<bFp8>(g_PackedWeights + FConfig::UpProjectionOffset,
+												 32 * threadIdx.y, 32 * r_Panel, Channels);
 		Linear32(ReadLowInput<Channels, bFp8>(r_Parameters, r_Panel), r_Weights, r_LowProjection);
 	}
 #pragma unroll
 	for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 	{
 		r_Merged[r_Tile] = ScaledResidual(ReadSkip<Channels, bFp8>(r_Parameters, r_Tile),
-										  g_Record + FConfig::TransitionScaleOffset, 32 * threadIdx.y);
+										  g_PackedWeights + FConfig::TransitionScaleOffset, 32 * threadIdx.y);
 #pragma unroll
 		for (int r_Column = 0; r_Column < 4; ++r_Column)
 #pragma unroll

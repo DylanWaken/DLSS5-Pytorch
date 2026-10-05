@@ -45,6 +45,18 @@ class KernelSourcesCPUTest(unittest.TestCase):
                 code = _without_comments_and_strings(path.read_text(encoding="utf-8"))
                 self.assertNotRegex(code, r"\bFloatToHalf2\s*\(\s*(?:0x[0-9a-fA-F]{6,}|[0-9]{6,})[uUlL]*\s*\)")
 
+    def test_interfaces_do_not_regress_to_offset_named_parameters(self):
+        # Byte offsets belong in ABI assertions, not in the field's identity.
+        # This catches the earlier Pointer0/Scalar32/Aux80 wrappers and raw
+        # frontend word decoding across implementations, launchers and Torch.
+        for path in (ROOT / "csrc").rglob("*"):
+            if path.suffix not in {".cu", ".cuh", ".h", ".cpp", ".inl"}:
+                continue
+            with self.subTest(source=str(path.relative_to(ROOT))):
+                code = _without_comments_and_strings(path.read_text(encoding="utf-8"))
+                self.assertNotRegex(code, r"\b(?:g_)?(?:Pointer|Scalar|Aux|Parameter|Param|Temp|Tmp)[0-9]+\b")
+                self.assertNotRegex(code, r"\bParameterU64\b|\br_Parameters\s*\.\s*Words\b")
+
     def test_grouped_header_maps_names_not_filenames(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

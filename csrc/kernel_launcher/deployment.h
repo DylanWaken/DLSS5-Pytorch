@@ -25,10 +25,10 @@ struct FKernelCall
 	bool bAllResident;
 	alignas(8) std::array<unsigned char, 96> ParameterBlock{};
 
-	template <class TValue> void Set(size_t Offset, TValue Value)
+	template <class TValue> void Set(size_t FieldOffset, TValue FieldValue)
 	{
-		TORCH_CHECK(Offset + sizeof(TValue) <= size_t(AbiBytes), "parameter outside native ABI");
-		std::memcpy(ParameterBlock.data() + Offset, &Value, sizeof(Value));
+		TORCH_CHECK(FieldOffset + sizeof(TValue) <= size_t(AbiBytes), "parameter outside native ABI");
+		std::memcpy(ParameterBlock.data() + FieldOffset, &FieldValue, sizeof(FieldValue));
 	}
 };
 
@@ -38,8 +38,8 @@ struct FKernelCall
 template <bool bFp16> class FDeploymentPlan : public torch::CustomClassHolder
 {
   public:
-	FDeploymentPlan(at::Tensor g_Input, std::vector<at::Tensor> g_InputRecords, int64_t Width = 3840,
-					int64_t Height = 2160);
+	FDeploymentPlan(at::Tensor g_Input, std::vector<at::Tensor> g_InputPackedWeightRecords,
+					int64_t Width = 3840, int64_t Height = 2160);
 	at::Tensor Run();
 
 	at::Tensor Run_fp8()
@@ -57,7 +57,7 @@ template <bool bFp16> class FDeploymentPlan : public torch::CustomClassHolder
 	std::vector<std::string> GetBufferNames() const;
 	at::Tensor GetBuffer(const std::string& Name) const;
 	bool GuardsIntact() const;
-	void Poison(int64_t Value);
+	void Poison(int64_t PoisonByte);
 
 	std::vector<int64_t> GetResources() const
 	{
@@ -65,11 +65,11 @@ template <bool bFp16> class FDeploymentPlan : public torch::CustomClassHolder
 	}
 
   private:
-	uint64_t GetBufferAddress(size_t Index) const;
-	uint64_t GetRecordAddress(size_t Index) const;
+	uint64_t GetBufferAddress(size_t g_BufferIndex) const;
+	uint64_t GetRecordAddress(size_t g_RecordIndex) const;
 	void BuildCalls();
-	std::vector<at::Tensor> g_Buffers, g_Records, g_GuardedBackings;
-	std::vector<uint64_t> g_Addresses, g_RecordAddresses;
+	std::vector<at::Tensor> g_Buffers, g_PackedWeightRecords, g_GuardedBackings;
+	std::vector<uint64_t> g_BufferAddresses, g_PackedWeightAddresses;
 	std::vector<FKernelCall> Calls;
 	std::vector<int64_t> ResourceRows;
 	int DeviceIndex;
@@ -86,13 +86,14 @@ std::vector<std::string> RecordNames_fp8();
 std::vector<int64_t> RecordBytes_fp8();
 std::string CompiledPolicyVersion();
 std::vector<int64_t> ResolutionSelection(int64_t Width, int64_t Height, int64_t Sm, bool bFp16);
-c10::intrusive_ptr<FDeploymentPlan_fp8> CreatePlanForResolution_fp8(at::Tensor g_Input,
-																	std::vector<at::Tensor> g_Records,
-																	int64_t Width, int64_t Height);
-c10::intrusive_ptr<FDeploymentPlan_fp8> CreatePlan_fp8(at::Tensor g_Input, std::vector<at::Tensor> g_Records);
-c10::intrusive_ptr<FDeploymentPlan_fp16> CreatePlanForResolution_fp16(at::Tensor g_Input,
-																	  std::vector<at::Tensor> g_Records,
-																	  int64_t Width, int64_t Height);
+c10::intrusive_ptr<FDeploymentPlan_fp8>
+CreatePlanForResolution_fp8(at::Tensor g_Input, std::vector<at::Tensor> g_PackedWeightRecords, int64_t Width,
+							int64_t Height);
+c10::intrusive_ptr<FDeploymentPlan_fp8> CreatePlan_fp8(at::Tensor g_Input,
+													   std::vector<at::Tensor> g_PackedWeightRecords);
+c10::intrusive_ptr<FDeploymentPlan_fp16>
+CreatePlanForResolution_fp16(at::Tensor g_Input, std::vector<at::Tensor> g_PackedWeightRecords, int64_t Width,
+							 int64_t Height);
 c10::intrusive_ptr<FDeploymentPlan_fp16> CreatePlan_fp16(at::Tensor g_Input,
-														 std::vector<at::Tensor> g_Records);
+														 std::vector<at::Tensor> g_PackedWeightRecords);
 } // namespace dlssnr::deployment

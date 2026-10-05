@@ -31,24 +31,24 @@ template <bool bFp8> struct FExpandProfile
 // Packed token storage groups 16 tokens together. Each warp copies a complete
 // 1024-byte K slab from two groups; out-of-range groups contribute exact zero.
 template <bool bFp8>
-__device__ __forceinline__ void StageInput(unsigned char* s_Storage, uint64_t g_Input,
-										   uint32_t g_FirstTokenGroup, uint32_t g_GroupCount, uint32_t r_Step,
-										   uint32_t r_Stage, bool r_bBroadcastSmallHalf)
+__device__ __forceinline__ void
+StageInput(unsigned char* s_Storage, uint64_t g_Input, uint32_t g_FirstTokenGroup, uint32_t g_GroupCount,
+		   uint32_t r_ReductionTile, uint32_t s_StageIndex, bool r_bBroadcastSmallHalf)
 {
 	using FProfile = FExpandProfile<bFp8>;
 	const uint32_t r_Warp = threadIdx.y;
 	const uint32_t r_Lane = threadIdx.x;
-	const uint32_t s_Barrier = FProfile::s_BarrierBase + r_Stage * 8;
+	const uint32_t s_Barrier = FProfile::s_BarrierBase + s_StageIndex * 8;
 #pragma unroll
 	for (int r_Group = 0; r_Group < 2; ++r_Group)
 	{
 		const uint32_t g_TokenGroup = g_FirstTokenGroup + r_Warp + r_Group * 4;
-		const uint32_t s_Destination = r_Stage * FProfile::s_StageBytes + r_Warp * 1024 + r_Group * 4096;
+		const uint32_t s_Destination = s_StageIndex * FProfile::s_StageBytes + r_Warp * 1024 + r_Group * 4096;
 		if (g_TokenGroup < g_GroupCount || r_bBroadcastSmallHalf)
 		{
 			const uint32_t g_InputGroup = r_bBroadcastSmallHalf ? 0 : g_TokenGroup;
 			const uint64_t g_Source =
-				g_Input + uint64_t(g_InputGroup) * 16384 * FProfile::ElementBytes + r_Step * 1024;
+				g_Input + uint64_t(g_InputGroup) * 16384 * FProfile::ElementBytes + r_ReductionTile * 1024;
 			// The original warp election publishes one bulk-copy transaction.
 			if (Elected(0xffffffffu))
 			{
@@ -66,24 +66,25 @@ __device__ __forceinline__ void StageInput(unsigned char* s_Storage, uint64_t g_
 
 // All threads arrive once at the selected stage. Its token includes the parity
 // needed when the three-slot ring wraps; a CTA-wide barrier is not substituted.
-__device__ __forceinline__ void WaitForInput(unsigned char* s_Storage, uint32_t r_Stage)
+__device__ __forceinline__ void WaitForInput(unsigned char* s_Storage, uint32_t s_StageIndex)
 {
-	const uint32_t s_Barrier = 24576 + r_Stage * 8;
+	const uint32_t s_Barrier = 24576 + s_StageIndex * 8;
 	dlssnr::memoryops::sm120::ArriveAndWait(s_Storage, s_Barrier);
 }
 
 // Each uint4 supplies two adjacent N8 B fragments. The two K subtiles use the
 // original 128-KiB record stride in both storage precisions.
-__device__ __forceinline__ void LoadWeights(uint4 (&r_Weight)[2][4], uint64_t g_Record,
-											uint32_t g_OutputBlock, uint32_t r_Step)
+__device__ __forceinline__ void LoadWeights(uint4 (&r_Weight)[2][4], uint64_t g_PackedWeights,
+											uint32_t g_OutputBlock, uint32_t r_ReductionTile)
 {
-	const uint64_t g_Base = g_Record + g_OutputBlock * 4096 + (threadIdx.y & 1) * 2048 + threadIdx.x * 16;
+	const uint64_t g_WeightTileBase =
+		g_PackedWeights + g_OutputBlock * 4096 + (threadIdx.y & 1) * 2048 + threadIdx.x * 16;
 #pragma unroll
 	for (int r_KTile = 0; r_KTile < 2; ++r_KTile)
 #pragma unroll
 		for (int r_NTile = 0; r_NTile < 4; ++r_NTile)
 			r_Weight[r_KTile][r_NTile] = __ldca(reinterpret_cast<const uint4*>(
-				g_Base + uint64_t(r_Step * 2 + r_KTile) * 131072 + r_NTile * 512));
+				g_WeightTileBase + uint64_t(r_ReductionTile * 2 + r_KTile) * 131072 + r_NTile * 512));
 }
 
 template <bool bFp8, typename TParameters>
@@ -93,29 +94,29 @@ __device__ __forceinline__ void Expand(const TParameters& r_Parameters)
 	__shared__ __align__(512) unsigned char s_Storage[FProfile::s_BarrierBase + 24];
 	const uint32_t r_Lane = threadIdx.x;
 	const uint32_t r_Warp = threadIdx.y;
-	const uint32_t r_Tokens = r_Parameters.Batch * r_Parameters.Tokens;
-	const uint32_t r_TokenTiles = (r_Tokens + 127) / 128;
-	const uint32_t g_OutputBlock = blockIdx.x / r_TokenTiles;
-	const uint32_t g_FirstTokenGroup = (blockIdx.x % r_TokenTiles) * 8;
-	const uint32_t g_GroupCount = ((r_Tokens + FProfile::TokenAlignment - 1) / FProfile::TokenAlignment) *
+	const uint32_t g_TokenCount = r_Parameters.BatchCount * r_Parameters.TokensPerBatch;
+	const uint32_t g_TokenTileCount = (g_TokenCount + 127) / 128;
+	const uint32_t g_OutputBlock = blockIdx.x / g_TokenTileCount;
+	const uint32_t g_FirstTokenGroup = (blockIdx.x % g_TokenTileCount) * 8;
+	const uint32_t g_GroupCount = ((g_TokenCount + FProfile::TokenAlignment - 1) / FProfile::TokenAlignment) *
 								  (FProfile::TokenAlignment / 16);
-	const bool r_bBroadcastSmallHalf = !bFp8 && r_Tokens <= 16;
-	const uint64_t g_Input = r_Parameters.g_State + uint64_t(blockIdx.z) * 16384 * FProfile::ElementBytes;
-	const uint64_t g_Record =
-		r_Parameters.g_Record + uint64_t(blockIdx.z) * (1024 * 4096) * FProfile::ElementBytes;
+	const bool r_bBroadcastSmallHalf = !bFp8 && g_TokenCount <= 16;
+	const uint64_t g_Input = r_Parameters.g_Input + uint64_t(blockIdx.z) * 16384 * FProfile::ElementBytes;
+	const uint64_t g_PackedWeights =
+		r_Parameters.g_PackedWeights + uint64_t(blockIdx.z) * (1024 * 4096) * FProfile::ElementBytes;
 	if ((r_Lane | r_Warp) == 0)
 	{
 #pragma unroll
-		for (int r_Stage = 0; r_Stage < FProfile::s_StageCount; ++r_Stage)
-			BarrierInit(s_Storage, FProfile::s_BarrierBase + r_Stage * 8, blockDim.x * blockDim.y);
+		for (int s_StageIndex = 0; s_StageIndex < FProfile::s_StageCount; ++s_StageIndex)
+			BarrierInit(s_Storage, FProfile::s_BarrierBase + s_StageIndex * 8, blockDim.x * blockDim.y);
 	}
 	__syncthreads();
 
 	uint4 r_Weight[2][4];
-	LoadWeights(r_Weight, g_Record, g_OutputBlock, 0);
+	LoadWeights(r_Weight, g_PackedWeights, g_OutputBlock, 0);
 #pragma unroll
-	for (int r_Stage = 0; r_Stage < FProfile::s_StageCount; ++r_Stage)
-		StageInput<bFp8>(s_Storage, g_Input, g_FirstTokenGroup, g_GroupCount, r_Stage, r_Stage,
+	for (int s_StageIndex = 0; s_StageIndex < FProfile::s_StageCount; ++s_StageIndex)
+		StageInput<bFp8>(s_Storage, g_Input, g_FirstTokenGroup, g_GroupCount, s_StageIndex, s_StageIndex,
 						 r_bBroadcastSmallHalf);
 	WaitForInput(s_Storage, 0);
 
@@ -123,10 +124,11 @@ __device__ __forceinline__ void Expand(const TParameters& r_Parameters)
 	// are already stored in the native MMA A layout, so no transpose is needed.
 	tiles::sm120::FAccumulatorTile<4, 4> r_Accumulator{};
 #pragma unroll 1
-	for (uint32_t r_Step = 0; r_Step < FProfile::ReductionSteps; ++r_Step)
+	for (uint32_t r_ReductionTile = 0; r_ReductionTile < FProfile::ReductionSteps; ++r_ReductionTile)
 	{
-		const uint32_t r_Stage = r_Step % FProfile::s_StageCount;
-		const uint32_t s_WarpInput = r_Stage * FProfile::s_StageBytes + (r_Warp / 2) * 4096 + r_Lane * 16;
+		const uint32_t s_StageIndex = r_ReductionTile % FProfile::s_StageCount;
+		const uint32_t s_WarpInput =
+			s_StageIndex * FProfile::s_StageBytes + (r_Warp / 2) * 4096 + r_Lane * 16;
 		uint4 r_Input[4][2];
 #pragma unroll
 		for (int r_MTile = 0; r_MTile < 4; ++r_MTile)
@@ -138,14 +140,14 @@ __device__ __forceinline__ void Expand(const TParameters& r_Parameters)
 
 		// Match the native software pipeline: preload B, wait for the next A
 		// stage, then recycle the consumed stage for the tile three steps ahead.
-		if (r_Step + 1 < FProfile::ReductionSteps)
+		if (r_ReductionTile + 1 < FProfile::ReductionSteps)
 		{
-			LoadWeights(r_Weight, g_Record, g_OutputBlock, r_Step + 1);
-			WaitForInput(s_Storage, (r_Step + 1) % FProfile::s_StageCount);
+			LoadWeights(r_Weight, g_PackedWeights, g_OutputBlock, r_ReductionTile + 1);
+			WaitForInput(s_Storage, (r_ReductionTile + 1) % FProfile::s_StageCount);
 		}
-		if (r_Step + FProfile::s_StageCount < FProfile::ReductionSteps)
+		if (r_ReductionTile + FProfile::s_StageCount < FProfile::ReductionSteps)
 			StageInput<bFp8>(s_Storage, g_Input, g_FirstTokenGroup, g_GroupCount,
-							 r_Step + FProfile::s_StageCount, r_Stage, r_bBroadcastSmallHalf);
+							 r_ReductionTile + FProfile::s_StageCount, s_StageIndex, r_bBroadcastSmallHalf);
 	}
 
 	// Preserve the native clamped Half polynomial and all its rounding points.
@@ -155,8 +157,9 @@ __device__ __forceinline__ void Expand(const TParameters& r_Parameters)
 		for (int r_NTile = 0; r_NTile < 4; ++r_NTile)
 #pragma unroll
 			for (int r_Word = 0; r_Word < 4; ++r_Word)
-				r_Accumulator.r_Words[r_MTile][r_NTile][r_Word] =
-					packed_math::sm120::FfnActivation(r_Accumulator.r_Words[r_MTile][r_NTile][r_Word]);
+				r_Accumulator.r_AccumulatorWords[r_MTile][r_NTile][r_Word] =
+					packed_math::sm120::FfnActivation(
+						r_Accumulator.r_AccumulatorWords[r_MTile][r_NTile][r_Word]);
 
 	// Publish each valid 16-token group directly into the next layer's physical
 	// tensor layout. FP8 pairs two N16 fragments into one 128-bit vector.
@@ -166,29 +169,31 @@ __device__ __forceinline__ void Expand(const TParameters& r_Parameters)
 		const uint32_t g_TokenGroup = g_FirstTokenGroup + (r_Warp / 2) * 4 + r_MTile;
 		if (g_TokenGroup >= g_GroupCount)
 			continue;
-		const uint64_t g_Output = r_Parameters.g_High +
+		const uint64_t g_Output = r_Parameters.g_Output +
 								  uint64_t(g_TokenGroup) * 65536 * FProfile::ElementBytes +
 								  g_OutputBlock * 2048 * FProfile::ElementBytes +
 								  (r_Warp & 1) * 1024 * FProfile::ElementBytes + r_Lane * 16;
 #pragma unroll
 		for (int r_NTile = 0; r_NTile < (bFp8 ? 2 : 4); ++r_NTile)
 		{
-			uint4 r_Result;
+			uint4 r_OutputVector;
 			if constexpr (bFp8)
 			{
-				const auto& r_Low = r_Accumulator.r_Words[r_MTile][r_NTile * 2];
-				const auto& r_High = r_Accumulator.r_Words[r_MTile][r_NTile * 2 + 1];
-				r_Result = make_uint4(packed_math::sm120::PackHalfPairsE4(r_Low[0], r_Low[2]),
-									  packed_math::sm120::PackHalfPairsE4(r_Low[1], r_Low[3]),
-									  packed_math::sm120::PackHalfPairsE4(r_High[0], r_High[2]),
-									  packed_math::sm120::PackHalfPairsE4(r_High[1], r_High[3]));
+				const auto& r_LowerChannelWords = r_Accumulator.r_AccumulatorWords[r_MTile][r_NTile * 2];
+				const auto& r_UpperChannelWords = r_Accumulator.r_AccumulatorWords[r_MTile][r_NTile * 2 + 1];
+				r_OutputVector = make_uint4(
+					packed_math::sm120::PackHalfPairsE4(r_LowerChannelWords[0], r_LowerChannelWords[2]),
+					packed_math::sm120::PackHalfPairsE4(r_LowerChannelWords[1], r_LowerChannelWords[3]),
+					packed_math::sm120::PackHalfPairsE4(r_UpperChannelWords[0], r_UpperChannelWords[2]),
+					packed_math::sm120::PackHalfPairsE4(r_UpperChannelWords[1], r_UpperChannelWords[3]));
 			}
 			else
 			{
-				const auto& r_Values = r_Accumulator.r_Words[r_MTile][r_NTile];
-				r_Result = make_uint4(r_Values[0], r_Values[1], r_Values[2], r_Values[3]);
+				const auto& r_OutputWords = r_Accumulator.r_AccumulatorWords[r_MTile][r_NTile];
+				r_OutputVector =
+					make_uint4(r_OutputWords[0], r_OutputWords[1], r_OutputWords[2], r_OutputWords[3]);
 			}
-			StoreNoAllocate(g_Output + r_NTile * 512, r_Result);
+			StoreNoAllocate(g_Output + r_NTile * 512, r_OutputVector);
 		}
 	}
 }

@@ -115,11 +115,11 @@ __global__ __maxnreg__(168) void window_block_c256_upsample_fp8(Parameters r_Par
 
 namespace dlssnr::reconstructed::decoder_upsample_c1024_to_c512_fp8
 {
-__global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp8(Parameters ParameterBlock)
+__global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp8(Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ __align__(512) unsigned char s_Storage[2064];
-	dlssnr::kernels::decoder::Forward<true>(ParameterBlock, s_Storage);
+	dlssnr::kernels::decoder::Forward<true>(r_Parameters, s_Storage);
 #endif
 }
 } // namespace dlssnr::reconstructed::decoder_upsample_c1024_to_c512_fp8

@@ -204,75 +204,75 @@ struct FSelection
 
 inline FSelection Select(int Width, int Height, int Sm, EPrecision PrecisionValue)
 {
-	FSelection Result;
-	Result.ActualWidth = Width;
-	Result.ActualHeight = Height;
+	FSelection Selection;
+	Selection.ActualWidth = Width;
+	Selection.ActualHeight = Height;
 	const int PrecisionIndex = static_cast<int>(PrecisionValue);
 	if (Width <= 0 || Height <= 0 || Sm <= 0 || PrecisionIndex < 0 || PrecisionIndex > 1)
 	{
-		Result.StatusValue = EStatus::InvalidInput;
-		return Result;
+		Selection.StatusValue = EStatus::InvalidInput;
+		return Selection;
 	}
-	Result.QueryWidth = Width < WidthMin ? WidthMin : Width > WidthMax ? WidthMax : Width;
-	Result.QueryHeight = Height < HeightMin ? HeightMin : Height > HeightMax ? HeightMax : Height;
+	Selection.QueryWidth = Width < WidthMin ? WidthMin : Width > WidthMax ? WidthMax : Width;
+	Selection.QueryHeight = Height < HeightMin ? HeightMin : Height > HeightMax ? HeightMax : Height;
 	// Measured extrema are family-local and affect metadata only.
-	int LoW = WidthMax, HiW = WidthMin, LoH = HeightMax, HiH = HeightMin;
+	int MeasuredWidthMin = WidthMax, MeasuredWidthMax = WidthMin, MeasuredHeightMin = HeightMax, MeasuredHeightMax = HeightMin;
 	bool bMeasuredFamily = false;
 	for (const auto& EvidenceRow : Anchors)
 	{
 		if (EvidenceRow.Sm != Sm || EvidenceRow.PrecisionValue != PrecisionIndex)
 			continue;
 		bMeasuredFamily = true;
-		if (EvidenceRow.Width < LoW)
-			LoW = EvidenceRow.Width;
-		if (EvidenceRow.Width > HiW)
-			HiW = EvidenceRow.Width;
-		if (EvidenceRow.Height < LoH)
-			LoH = EvidenceRow.Height;
-		if (EvidenceRow.Height > HiH)
-			HiH = EvidenceRow.Height;
+		if (EvidenceRow.Width < MeasuredWidthMin)
+			MeasuredWidthMin = EvidenceRow.Width;
+		if (EvidenceRow.Width > MeasuredWidthMax)
+			MeasuredWidthMax = EvidenceRow.Width;
+		if (EvidenceRow.Height < MeasuredHeightMin)
+			MeasuredHeightMin = EvidenceRow.Height;
+		if (EvidenceRow.Height > MeasuredHeightMax)
+			MeasuredHeightMax = EvidenceRow.Height;
 	}
 	if (bMeasuredFamily)
 	{
-		Result.QueryWidth = Result.QueryWidth < LoW ? LoW : Result.QueryWidth > HiW ? HiW : Result.QueryWidth;
-		Result.QueryHeight = Result.QueryHeight < LoH	? LoH
-							 : Result.QueryHeight > HiH ? HiH
-														: Result.QueryHeight;
+		Selection.QueryWidth = Selection.QueryWidth < MeasuredWidthMin ? MeasuredWidthMin : Selection.QueryWidth > MeasuredWidthMax ? MeasuredWidthMax : Selection.QueryWidth;
+		Selection.QueryHeight = Selection.QueryHeight < MeasuredHeightMin	? MeasuredHeightMin
+							 : Selection.QueryHeight > MeasuredHeightMax ? MeasuredHeightMax
+														: Selection.QueryHeight;
 	}
-	Result.bClamped = Result.QueryWidth != Width || Result.QueryHeight != Height;
+	Selection.bClamped = Selection.QueryWidth != Width || Selection.QueryHeight != Height;
 	// Exact actual dimensions only. Clamped coordinates never grant admission.
 	for (const auto& EvidenceRow : Admissions)
 		if (EvidenceRow.Sm == Sm && EvidenceRow.PrecisionValue == PrecisionIndex &&
 			EvidenceRow.Width == Width && EvidenceRow.Height == Height)
 		{
-			Result.Admission = &EvidenceRow;
-			Result.bActualShapeSupported = true;
-			Result.bRuntimeQualified = EvidenceRow.bRuntimeQualified;
+			Selection.Admission = &EvidenceRow;
+			Selection.bActualShapeSupported = true;
+			Selection.bRuntimeQualified = EvidenceRow.bRuntimeQualified;
 			break;
 		}
-	int64_t Best = std::numeric_limits<int64_t>::max();
+	int64_t NearestDistanceSquared = std::numeric_limits<int64_t>::max();
 	for (const auto& EvidenceRow : Anchors)
 	{
 		if (EvidenceRow.Sm != Sm || EvidenceRow.PrecisionValue != PrecisionIndex)
 			continue;
-		const int64_t Dx = int64_t(Result.QueryWidth) - EvidenceRow.Width,
-					  Dy = int64_t(Result.QueryHeight) - EvidenceRow.Height;
-		const int64_t Distance = Dx * Dx * 1440LL * 1440LL + Dy * Dy * 2560LL * 2560LL;
+		const int64_t WidthDelta = int64_t(Selection.QueryWidth) - EvidenceRow.Width,
+					  HeightDelta = int64_t(Selection.QueryHeight) - EvidenceRow.Height;
+		const int64_t DistanceSquared = WidthDelta * WidthDelta * 1440LL * 1440LL + HeightDelta * HeightDelta * 2560LL * 2560LL;
 		// Generated rows are sorted by width, height, configuration within family.
-		if (Distance < Best)
+		if (DistanceSquared < NearestDistanceSquared)
 		{
-			Best = Distance;
-			Result.AnchorEvidence = &EvidenceRow;
+			NearestDistanceSquared = DistanceSquared;
+			Selection.AnchorEvidence = &EvidenceRow;
 		}
 	}
-	if (Result.AnchorEvidence)
+	if (Selection.AnchorEvidence)
 	{
-		Result.ConfigId = Result.AnchorEvidence->ConfigId;
-		Result.bActualResolutionMeasured =
-			Result.AnchorEvidence->Width == Width && Result.AnchorEvidence->Height == Height;
-		Result.StatusValue = Result.bActualResolutionMeasured ? EStatus::ExactMeasured : EStatus::Transferred;
+		Selection.ConfigId = Selection.AnchorEvidence->ConfigId;
+		Selection.bActualResolutionMeasured =
+			Selection.AnchorEvidence->Width == Width && Selection.AnchorEvidence->Height == Height;
+		Selection.StatusValue = Selection.bActualResolutionMeasured ? EStatus::ExactMeasured : EStatus::Transferred;
 	}
-	return Result;
+	return Selection;
 }
 } // namespace dlssnr::resolution_policy
 '''

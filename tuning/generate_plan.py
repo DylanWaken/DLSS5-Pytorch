@@ -4,6 +4,7 @@ This is offline code generation, not Python inference dispatch. Every repeated
 network instance references one shared reconstructed kernel host stub.
 """
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,6 +13,42 @@ OUT = ROOT / 'csrc' / 'kernel_launcher'
 
 def load(name):
     return json.loads((PREP / name).read_text())
+
+def load_abi_fields():
+    """Read names from compiler-checked offsets, resolving shared ABI aliases.
+
+    Generation fails when a written offset has no checked field. Neither the
+    generated plans nor a second schema can silently redefine the native ABI.
+    """
+    source = (OUT / 'kernel_abi.h').read_text()
+    fields_by_type = {}
+    aliases = {}
+    for namespace, body in re.findall(
+            r'namespace dlssnr::reconstructed::(\w+)\s*\{(.*?)'
+            r'\} // namespace dlssnr::reconstructed::\1', source, re.S):
+        for parameter_type, field, offset in re.findall(
+                r'offsetof\((\w+),\s*(\w+)\)\s*==\s*(\d+)', body):
+            fields = fields_by_type.setdefault((namespace, parameter_type), {})
+            offset = int(offset)
+            if offset in fields and fields[offset] != field:
+                raise ValueError(f'conflicting ABI names for {namespace} byte {offset}')
+            fields[offset] = field
+        for alias, owner, target in re.findall(
+                r'using (\w+) = dlssnr::reconstructed::(\w+)::(\w+);', body):
+            aliases[(namespace, alias)] = (owner, target)
+    for alias, target in aliases.items():
+        fields_by_type[alias] = fields_by_type[target]
+    fields_by_entry = {}
+    parameter_types = {}
+    for symbol in load('canonical_kernel_names.json').values():
+        namespace = symbol.split('::')[-1]
+        parameter_type = 'ClearParameters' if namespace == 'completion_counter_clear' else 'Parameters'
+        fields_by_entry[namespace] = fields_by_type[(namespace, parameter_type)]
+        parameter_types[namespace] = f'dlssnr::reconstructed::{namespace}::{parameter_type}'
+    if len(fields_by_entry) != 81:
+        raise ValueError('expected all 81 compiler-checked ABI declarations')
+    return fields_by_entry, parameter_types
+
 
 def build_plan(schedule):
     fp16 = schedule['precision'] == 'fp16'
@@ -135,6 +172,8 @@ RESOLUTIONS = ((1280, 720), (1920, 1080), (2560, 1440), (3840, 2160))
 def generate(precision="fp8"):
     from physical_schedule import make
 
+    abi_fields, parameter_types = load_abi_fields()
+
     schedules = [make(width, height, precision=precision) for width, height in RESOLUTIONS]
     plans = [build_plan(schedule) for schedule in schedules]
     reference = plans[-1]
@@ -161,7 +200,7 @@ struct FGeometryPlanSpec {
     int64_t ValidHeight;
     const int64_t* BufferBytes;
     const dim3* Grids;
-    const int32_t* ScalarValues;
+    const int32_t* GeometryArguments;
 };
 } // namespace dlssnr::deployment
 '''
@@ -175,12 +214,16 @@ struct FGeometryPlanSpec {
         tables.append(f'static const dim3 Grids_{suffix}[] = {{')
         tables.extend('    dim3(%s), // %s' % (', '.join(map(str, call['grid'])), call['symbol']) for call in plan['calls'])
         tables.append('};')
-        scalars = [int(value) for call in plan['calls'] for offset, size, value in call['fields'] if size == 4]
-        tables.append(f'static const int32_t Scalars_{suffix}[] = {{')
-        for start in range(0, len(scalars), 12):
-            tables.append('    ' + ', '.join(map(str, scalars[start:start + 12])) + ',')
+        tables.append(f'static const int32_t GeometryArguments_{suffix}[] = {{')
+        for call in plan['calls']:
+            entry_fields = abi_fields[call['fn'].split('::')[-1]]
+            integer_fields = [(entry_fields[offset], value)
+                              for offset, size, value in call['fields'] if size == 4]
+            field_names = ', '.join(field for field, _ in integer_fields)
+            field_values = ', '.join(value for _, value in integer_fields)
+            tables.append(f'    {field_values}, // {call["fn"].split("::")[-1]}: {field_names}')
         tables.append('};')
-        descriptors.append(f'    {{{width}, {height}, BufferBytes_{suffix}, Grids_{suffix}, Scalars_{suffix}}},')
+        descriptors.append(f'    {{{width}, {height}, BufferBytes_{suffix}, Grids_{suffix}, GeometryArguments_{suffix}}},')
     tables += ['static const FGeometryPlanSpec GeometryPlans[] = {', *descriptors, '};',
                'static const FGeometryPlanSpec& SelectGeometryPlan(int64_t Width, int64_t Height) {',
                '    for (const auto& Geometry : GeometryPlans) {',
@@ -199,17 +242,21 @@ struct FGeometryPlanSpec {
     scalar_index = 0
     for call_index, call in enumerate(reference['calls']):
         block = ', '.join(map(str, call['block']))
+        parameter_type = parameter_types[call['fn'].split('::')[-1]]
+        entry_fields = abi_fields[call['fn'].split('::')[-1]]
         lines += [f'    {{ // {call["symbol"]}',
+                  f'        using FParameters = {parameter_type};',
                   '        FKernelCall KernelCall{reinterpret_cast<const void*>(&%s), Geometry->Grids[%d], dim3(%s), %d, %s};'
                   % (call['fn'], call_index, block, call['abi'], str(call['all_resident']).lower())]
         for offset, size, value in call['fields']:
             cpp_type = 'uint64_t' if size == 8 else 'int32_t'
             if size == 4:
-                value = f'Geometry->ScalarValues[{scalar_index}]'
+                value = f'Geometry->GeometryArguments[{scalar_index}]'
                 scalar_index += 1
             if size == 8:
                 value = value.replace('record_address(', 'GetRecordAddress(').replace('address(', 'GetBufferAddress(')
-            lines.append(f'        KernelCall.Set<{cpp_type}>({offset}, {value});')
+            field_name = entry_fields[offset]
+            lines.append(f'        KernelCall.Set<{cpp_type}>(offsetof(FParameters, {field_name}), {value});')
         lines += ['        Calls.push_back(KernelCall);', '    }']
     lines += ['}']
     OUT.mkdir(parents=True, exist_ok=True)

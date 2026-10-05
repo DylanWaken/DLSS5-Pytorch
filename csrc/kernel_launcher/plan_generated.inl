@@ -315,2382 +315,2568 @@ template <> void FDeploymentPlan<false>::BuildCalls()
 {
 	Calls.reserve(185);
 	{ // cc_tinlayout_fused_swin_1h_32_1_inpview_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c32_input_view_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_block_c32_input_view_fp8::window_block_c32_input_view_fp8),
 			Geometry->Grids[0], dim3(32, 1, 1), 96, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(0));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(1));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(0));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[0]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[1]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[2]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[3]);
-		KernelCall.Set<int32_t>(72, Geometry->ScalarValues[4]);
-		KernelCall.Set<int32_t>(76, Geometry->ScalarValues[5]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(0));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(1));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(0));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[0]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[1]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[2]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[3]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, ViewHeight), Geometry->GeometryArguments[4]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, ViewWidth), Geometry->GeometryArguments[5]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c32_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_block_c32_fp8::window_block_c32_fp8),
 			Geometry->Grids[1], dim3(32, 1, 1), 96, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(1));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(2));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(1));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[6]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[7]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[8]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[9]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(1));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(2));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(1));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[6]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[7]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[8]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[9]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c32_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_block_c32_fp8::window_block_c32_fp8),
 			Geometry->Grids[2], dim3(32, 1, 1), 96, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(2));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(3));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(2));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[10]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[11]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[12]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[13]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(2));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(3));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(2));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[10]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[11]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[12]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[13]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1_ds_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c32_downsample_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_block_c32_downsample_fp8::window_block_c32_downsample_fp8),
 			Geometry->Grids[3], dim3(32, 1, 1), 96, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(3));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(4));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(3));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[14]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[15]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[16]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[17]);
-		KernelCall.Set<uint64_t>(64, GetBufferAddress(5));
-		KernelCall.Set<int32_t>(72, Geometry->ScalarValues[18]);
-		KernelCall.Set<int32_t>(76, Geometry->ScalarValues[19]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(3));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(4));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(3));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[14]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[15]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[16]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[17]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_DownsampledOutput), GetBufferAddress(5));
+		KernelCall.Set<int32_t>(offsetof(FParameters, DownsampledHeight), Geometry->GeometryArguments[18]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, DownsampledWidth), Geometry->GeometryArguments[19]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2_inpview_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c64_input_view_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_block_c64_input_view_fp8::window_block_c64_input_view_fp8),
 			Geometry->Grids[4], dim3(32, 2, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(5));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(6));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(4));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[20]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[21]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[22]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[23]);
-		KernelCall.Set<int32_t>(80, Geometry->ScalarValues[24]);
-		KernelCall.Set<int32_t>(84, Geometry->ScalarValues[25]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(5));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(6));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(4));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[20]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[21]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[22]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[23]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, ViewHeight), Geometry->GeometryArguments[24]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, ViewWidth), Geometry->GeometryArguments[25]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c64_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_block_c64_fp8::window_block_c64_fp8),
 			Geometry->Grids[5], dim3(32, 2, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(6));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(7));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(5));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[26]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[27]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[28]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[29]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(6));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(7));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(5));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[26]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[27]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[28]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[29]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c64_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_block_c64_fp8::window_block_c64_fp8),
 			Geometry->Grids[6], dim3(32, 2, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(7));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(8));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(6));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[30]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[31]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[32]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[33]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(7));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(8));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(6));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[30]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[31]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[32]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[33]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2_ds_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c64_downsample_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_block_c64_downsample_fp8::window_block_c64_downsample_fp8),
 			Geometry->Grids[7], dim3(32, 2, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(8));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(9));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(7));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[34]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[35]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[36]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[37]);
-		KernelCall.Set<uint64_t>(72, GetBufferAddress(10));
-		KernelCall.Set<int32_t>(80, Geometry->ScalarValues[38]);
-		KernelCall.Set<int32_t>(84, Geometry->ScalarValues[39]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(8));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(9));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(7));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[34]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[35]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[36]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[37]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_DownsampledOutput), GetBufferAddress(10));
+		KernelCall.Set<int32_t>(offsetof(FParameters, DownsampledHeight), Geometry->GeometryArguments[38]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, DownsampledWidth), Geometry->GeometryArguments[39]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_inpview_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c128_input_view_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_block_c128_input_view_fp8::window_block_c128_input_view_fp8),
 			Geometry->Grids[8], dim3(32, 4, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(10));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(11));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(8));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[40]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[41]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[42]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[43]);
-		KernelCall.Set<int32_t>(80, Geometry->ScalarValues[44]);
-		KernelCall.Set<int32_t>(84, Geometry->ScalarValues[45]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(10));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(11));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(8));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[40]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[41]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[42]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[43]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, ViewHeight), Geometry->GeometryArguments[44]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, ViewWidth), Geometry->GeometryArguments[45]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c128_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c128_fp8::window_block_c128_fp8),
 							   Geometry->Grids[9], dim3(32, 4, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(11));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(12));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(9));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[46]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[47]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[48]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[49]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(11));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(12));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(9));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[46]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[47]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[48]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[49]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c128_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c128_fp8::window_block_c128_fp8),
 							   Geometry->Grids[10], dim3(32, 4, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(12));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(13));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(10));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[50]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[51]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[52]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[53]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(12));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(13));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(10));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[50]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[51]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[52]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[53]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c128_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c128_fp8::window_block_c128_fp8),
 							   Geometry->Grids[11], dim3(32, 4, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(13));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(14));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(11));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[54]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[55]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[56]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[57]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(13));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(14));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(11));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[54]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[55]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[56]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[57]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c128_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c128_fp8::window_block_c128_fp8),
 							   Geometry->Grids[12], dim3(32, 4, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(14));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(15));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(12));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[58]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[59]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[60]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[61]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(14));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(15));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(12));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[58]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[59]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[60]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[61]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_ds_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c128_downsample_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_block_c128_downsample_fp8::window_block_c128_downsample_fp8),
 			Geometry->Grids[13], dim3(32, 4, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(15));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(16));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(13));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[62]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[63]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[64]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[65]);
-		KernelCall.Set<uint64_t>(72, GetBufferAddress(17));
-		KernelCall.Set<int32_t>(80, Geometry->ScalarValues[66]);
-		KernelCall.Set<int32_t>(84, Geometry->ScalarValues[67]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(15));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(16));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(13));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[62]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[63]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[64]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[65]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_DownsampledOutput), GetBufferAddress(17));
+		KernelCall.Set<int32_t>(offsetof(FParameters, DownsampledHeight), Geometry->GeometryArguments[66]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, DownsampledWidth), Geometry->GeometryArguments[67]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_inpview_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_input_view_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_block_c256_input_view_fp8::window_block_c256_input_view_fp8),
 			Geometry->Grids[14], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(17));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(18));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(14));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[68]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[69]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[70]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[71]);
-		KernelCall.Set<int32_t>(80, Geometry->ScalarValues[72]);
-		KernelCall.Set<int32_t>(84, Geometry->ScalarValues[73]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(17));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(18));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(14));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[68]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[69]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[70]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[71]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, ViewHeight), Geometry->GeometryArguments[72]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, ViewWidth), Geometry->GeometryArguments[73]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c256_fp8::window_block_c256_fp8),
 							   Geometry->Grids[15], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(18));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(19));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(15));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[74]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[75]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[76]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[77]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(18));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(19));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(15));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[74]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[75]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[76]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[77]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c256_fp8::window_block_c256_fp8),
 							   Geometry->Grids[16], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(19));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(20));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(16));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[78]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[79]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[80]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[81]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(19));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(20));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(16));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[78]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[79]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[80]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[81]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c256_fp8::window_block_c256_fp8),
 							   Geometry->Grids[17], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(20));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(21));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(17));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[82]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[83]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[84]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[85]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(20));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(21));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(17));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[82]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[83]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[84]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[85]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c256_fp8::window_block_c256_fp8),
 							   Geometry->Grids[18], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(21));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(22));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(18));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[86]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[87]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[88]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[89]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(21));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(22));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(18));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[86]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[87]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[88]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[89]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c256_fp8::window_block_c256_fp8),
 							   Geometry->Grids[19], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(22));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(23));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(19));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[90]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[91]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[92]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[93]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(22));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(23));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(19));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[90]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[91]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[92]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[93]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c256_fp8::window_block_c256_fp8),
 							   Geometry->Grids[20], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(23));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(24));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(20));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[94]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[95]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[96]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[97]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(23));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(24));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(20));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[94]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[95]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[96]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[97]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_ds_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_downsample_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_block_c256_downsample_fp8::window_block_c256_downsample_fp8),
 			Geometry->Grids[21], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(24));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(25));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(21));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[98]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[99]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[100]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[101]);
-		KernelCall.Set<uint64_t>(72, GetBufferAddress(26));
-		KernelCall.Set<int32_t>(80, Geometry->ScalarValues[102]);
-		KernelCall.Set<int32_t>(84, Geometry->ScalarValues[103]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(24));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(25));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(21));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[98]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[99]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[100]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[101]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_DownsampledOutput), GetBufferAddress(26));
+		KernelCall.Set<int32_t>(offsetof(FParameters, DownsampledHeight), Geometry->GeometryArguments[102]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, DownsampledWidth), Geometry->GeometryArguments[103]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_inpview_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_input_view_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_input_view_c512_fp8::window_ffn_input_view_c512_fp8),
 			Geometry->Grids[22], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(27));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(22));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(26));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[104]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[105]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[106]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[107]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(27));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(22));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(26));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[104]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[105]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[106]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[107]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_inpview_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_input_view_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_projection_input_view_c512_fp8::
 											  window_ffn_projection_input_view_c512_fp8),
 			Geometry->Grids[23], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(28));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(23));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(26));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(27));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[108]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[109]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(28));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(23));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(26));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(27));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[108]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[109]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[24], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(29));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(24));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(28));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[110]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[111]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[112]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[113]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(29));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(24));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(28));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[110]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[111]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[112]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[113]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp8::
 											  window_attention_projection_c512_fp8),
 			Geometry->Grids[25], dim3(32, 8, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(30));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(25));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(28));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(29));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[114]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[115]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(30));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(25));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(28));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(29));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[114]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[115]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp8::window_ffn_c512_fp8),
 			Geometry->Grids[26], dim3(32, 8, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(31));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(26));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(30));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[116]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[117]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[118]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[119]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(31));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(26));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(30));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[116]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[117]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[118]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[119]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_projection_c512_fp8::window_ffn_projection_c512_fp8),
 			Geometry->Grids[27], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(32));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(27));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(30));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(31));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[120]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[121]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(32));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(27));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(30));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(31));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[120]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[121]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[28], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(33));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(28));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(32));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[122]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[123]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[124]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[125]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(33));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(28));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(32));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[122]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[123]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[124]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[125]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp8::
 											  window_attention_projection_c512_fp8),
 			Geometry->Grids[29], dim3(32, 8, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(34));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(29));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(32));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(33));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[126]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[127]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(34));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(29));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(32));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(33));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[126]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[127]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp8::window_ffn_c512_fp8),
 			Geometry->Grids[30], dim3(32, 8, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(35));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(30));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(34));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[128]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[129]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[130]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[131]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(35));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(30));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(34));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[128]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[129]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[130]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[131]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_projection_c512_fp8::window_ffn_projection_c512_fp8),
 			Geometry->Grids[31], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(36));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(31));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(34));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(35));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[132]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[133]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(36));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(31));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(34));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(35));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[132]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[133]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[32], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(37));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(32));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(36));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[134]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[135]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[136]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[137]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(37));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(32));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(36));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[134]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[135]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[136]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[137]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp8::
 											  window_attention_projection_c512_fp8),
 			Geometry->Grids[33], dim3(32, 8, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(38));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(33));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(36));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(37));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[138]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[139]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(38));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(33));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(36));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(37));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[138]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[139]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp8::window_ffn_c512_fp8),
 			Geometry->Grids[34], dim3(32, 8, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(39));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(34));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(38));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[140]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[141]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[142]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[143]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(39));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(34));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(38));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[140]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[141]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[142]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[143]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_projection_c512_fp8::window_ffn_projection_c512_fp8),
 			Geometry->Grids[35], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(40));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(35));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(38));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(39));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[144]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[145]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(40));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(35));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(38));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(39));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[144]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[145]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[36], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(41));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(36));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(40));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[146]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[147]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[148]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[149]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(41));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(36));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(40));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[146]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[147]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[148]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[149]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp8::
 											  window_attention_projection_c512_fp8),
 			Geometry->Grids[37], dim3(32, 8, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(42));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(37));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(40));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(41));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[150]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[151]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(42));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(37));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(40));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(41));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[150]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[151]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp8::window_ffn_c512_fp8),
 			Geometry->Grids[38], dim3(32, 8, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(43));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(38));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(42));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[152]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[153]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[154]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[155]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(43));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(38));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(42));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[152]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[153]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[154]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[155]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_projection_c512_fp8::window_ffn_projection_c512_fp8),
 			Geometry->Grids[39], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(44));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(39));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(42));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(43));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[156]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[157]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(44));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(39));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(42));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(43));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[156]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[157]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[40], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(45));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(40));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(44));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[158]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[159]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[160]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[161]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(45));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(40));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(44));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[158]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[159]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[160]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[161]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp8::
 											  window_attention_projection_c512_fp8),
 			Geometry->Grids[41], dim3(32, 8, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(46));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(41));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(44));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(45));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[162]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[163]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(46));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(41));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(44));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(45));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[162]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[163]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp8::window_ffn_c512_fp8),
 			Geometry->Grids[42], dim3(32, 8, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(47));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(42));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(46));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[164]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[165]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[166]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[167]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(47));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(42));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(46));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[164]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[165]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[166]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[167]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_projection_c512_fp8::window_ffn_projection_c512_fp8),
 			Geometry->Grids[43], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(48));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(43));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(46));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(47));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[168]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[169]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(48));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(43));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(46));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(47));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[168]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[169]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[44], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(49));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(44));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(48));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[170]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[171]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[172]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[173]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(49));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(44));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(48));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[170]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[171]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[172]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[173]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp8::
 											  window_attention_projection_c512_fp8),
 			Geometry->Grids[45], dim3(32, 8, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(50));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(45));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(48));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(49));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[174]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[175]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(50));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(45));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(48));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(49));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[174]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[175]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp8::window_ffn_c512_fp8),
 			Geometry->Grids[46], dim3(32, 8, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(51));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(46));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(50));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[176]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[177]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[178]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[179]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(51));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(46));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(50));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[176]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[177]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[178]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[179]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_projection_c512_fp8::window_ffn_projection_c512_fp8),
 			Geometry->Grids[47], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(52));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(47));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(50));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(51));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[180]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[181]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(52));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(47));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(50));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(51));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[180]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[181]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[48], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(53));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(48));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(52));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[182]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[183]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[184]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[185]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(53));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(48));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(52));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[182]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[183]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[184]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[185]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp8::
 											  window_attention_projection_c512_fp8),
 			Geometry->Grids[49], dim3(32, 8, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(54));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(49));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(52));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(53));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[186]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[187]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(54));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(49));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(52));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(53));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[186]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[187]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp8::window_ffn_c512_fp8),
 			Geometry->Grids[50], dim3(32, 8, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(55));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(50));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(54));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[188]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[189]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[190]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[191]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(55));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(50));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(54));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[188]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[189]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[190]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[191]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_projection_c512_fp8::window_ffn_projection_c512_fp8),
 			Geometry->Grids[51], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(56));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(51));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(54));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(55));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[192]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[193]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(56));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(51));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(54));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(55));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[192]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[193]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[52], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(57));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(52));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(56));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[194]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[195]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[196]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[197]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(57));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(52));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(56));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[194]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[195]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[196]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[197]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_pool_512_fp8
+		using FParameters = dlssnr::reconstructed::window_attention_projection_pool_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_pool_c512_fp8::
 											  window_attention_projection_pool_c512_fp8),
 			Geometry->Grids[53], dim3(32, 4, 1), 80, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(58));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(59));
-		KernelCall.Set<uint64_t>(32, GetRecordAddress(53));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(56));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(57));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[198]);
-		KernelCall.Set<int32_t>(72, Geometry->ScalarValues[199]);
-		KernelCall.Set<int32_t>(76, Geometry->ScalarValues[200]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[201]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(58));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_DownsampledOutput), GetBufferAddress(59));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(53));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(56));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(57));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[198]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, DownsampledHeight), Geometry->GeometryArguments[199]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, DownsampledWidth), Geometry->GeometryArguments[200]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[201]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_final_head_512_fp8
+		using FParameters = dlssnr::reconstructed::channel_projection_c512_to_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::channel_projection_c512_to_c1024_fp8::
 											  channel_projection_c512_to_c1024_fp8),
 			Geometry->Grids[54], dim3(32, 8, 1), 40, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(60));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(54));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(59));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[202]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[203]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(60));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(54));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(59));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[202]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[203]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_repack_2d_to_1d_fp8
+		using FParameters = dlssnr::reconstructed::repack_2d_to_1d_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::repack_2d_to_1d_c1024_fp8::repack_2d_to_1d_c1024_fp8),
 			Geometry->Grids[55], dim3(256, 1, 1), 24, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(60));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(61));
-		KernelCall.Set<int32_t>(16, Geometry->ScalarValues[204]);
-		KernelCall.Set<int32_t>(20, Geometry->ScalarValues[205]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(60));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(61));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[204]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[205]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[56], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(69));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[206]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(69));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[206]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[57], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(71));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[207]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(71));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[207]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[58], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(73));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[208]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(73));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[208]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[59], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(74));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[209]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(74));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[209]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_expand_c1024_fp8::global_ffn_expand_c1024_fp8),
 			Geometry->Grids[60], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(61));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(62));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(55));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[210]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[211]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(61));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(62));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(55));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[210]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[211]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_contract_c1024_fp8::global_ffn_contract_c1024_fp8),
 			Geometry->Grids[61], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(62));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(61));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(63));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(56));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(69));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(70));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[212]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[213]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(62));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(61));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(63));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(56));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(69));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(70));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[212]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[213]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv_fp8
+		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_qkv_c1024_fp8::global_qkv_c1024_fp8),
 			Geometry->Grids[62], dim3(32, 4, 1), 80, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(63));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(64));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(65));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(66));
-		KernelCall.Set<uint64_t>(32, GetRecordAddress(57));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(71));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(72));
-		KernelCall.Set<int32_t>(72, Geometry->ScalarValues[214]);
-		KernelCall.Set<int32_t>(76, Geometry->ScalarValues[215]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(63));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(64));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(65));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(66));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(57));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(71));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(72));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[214]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[215]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained_fp8
+		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp8::
 											  global_attention_chained_c1024_fp8),
 			Geometry->Grids[63], dim3(32, 4, 1), 64, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(64));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(65));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(66));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(67));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(71));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(73));
-		KernelCall.Set<int32_t>(56, Geometry->ScalarValues[216]);
-		KernelCall.Set<int32_t>(60, Geometry->ScalarValues[217]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(64));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(65));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(66));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(67));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PredecessorCounters), GetBufferAddress(71));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_CompletionCounters), GetBufferAddress(73));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[216]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[217]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection_fp8
+		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_projection_c1024_fp8::global_projection_c1024_fp8),
 			Geometry->Grids[64], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(67));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(63));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(68));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(58));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(74));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(75));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[218]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[219]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(67));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(63));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(68));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(58));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(74));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(75));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[218]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[219]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[65], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(83));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[220]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(83));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[220]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[66], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(85));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[221]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(85));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[221]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[67], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(87));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[222]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(87));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[222]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[68], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(88));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[223]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(88));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[223]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_expand_c1024_fp8::global_ffn_expand_c1024_fp8),
 			Geometry->Grids[69], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(68));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(76));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(59));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[224]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[225]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(68));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(76));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(59));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[224]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[225]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_contract_c1024_fp8::global_ffn_contract_c1024_fp8),
 			Geometry->Grids[70], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(76));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(68));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(77));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(60));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(83));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(84));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[226]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[227]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(76));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(68));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(77));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(60));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(83));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(84));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[226]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[227]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv_fp8
+		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_qkv_c1024_fp8::global_qkv_c1024_fp8),
 			Geometry->Grids[71], dim3(32, 4, 1), 80, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(77));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(78));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(79));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(80));
-		KernelCall.Set<uint64_t>(32, GetRecordAddress(61));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(85));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(86));
-		KernelCall.Set<int32_t>(72, Geometry->ScalarValues[228]);
-		KernelCall.Set<int32_t>(76, Geometry->ScalarValues[229]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(77));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(78));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(79));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(80));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(61));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(85));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(86));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[228]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[229]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained_fp8
+		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp8::
 											  global_attention_chained_c1024_fp8),
 			Geometry->Grids[72], dim3(32, 4, 1), 64, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(78));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(79));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(80));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(81));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(85));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(87));
-		KernelCall.Set<int32_t>(56, Geometry->ScalarValues[230]);
-		KernelCall.Set<int32_t>(60, Geometry->ScalarValues[231]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(78));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(79));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(80));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(81));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PredecessorCounters), GetBufferAddress(85));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_CompletionCounters), GetBufferAddress(87));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[230]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[231]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection_fp8
+		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_projection_c1024_fp8::global_projection_c1024_fp8),
 			Geometry->Grids[73], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(81));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(77));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(82));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(62));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(88));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(89));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[232]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[233]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(81));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(77));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(82));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(62));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(88));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(89));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[232]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[233]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[74], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(97));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[234]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(97));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[234]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[75], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(99));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[235]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(99));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[235]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[76], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(101));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[236]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(101));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[236]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[77], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(102));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[237]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(102));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[237]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_expand_c1024_fp8::global_ffn_expand_c1024_fp8),
 			Geometry->Grids[78], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(82));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(90));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(63));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[238]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[239]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(82));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(90));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(63));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[238]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[239]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_contract_c1024_fp8::global_ffn_contract_c1024_fp8),
 			Geometry->Grids[79], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(90));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(82));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(91));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(64));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(97));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(98));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[240]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[241]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(90));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(82));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(91));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(64));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(97));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(98));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[240]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[241]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv_fp8
+		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_qkv_c1024_fp8::global_qkv_c1024_fp8),
 			Geometry->Grids[80], dim3(32, 4, 1), 80, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(91));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(92));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(93));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(94));
-		KernelCall.Set<uint64_t>(32, GetRecordAddress(65));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(99));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(100));
-		KernelCall.Set<int32_t>(72, Geometry->ScalarValues[242]);
-		KernelCall.Set<int32_t>(76, Geometry->ScalarValues[243]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(91));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(92));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(93));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(94));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(65));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(99));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(100));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[242]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[243]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained_fp8
+		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp8::
 											  global_attention_chained_c1024_fp8),
 			Geometry->Grids[81], dim3(32, 4, 1), 64, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(92));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(93));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(94));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(95));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(99));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(101));
-		KernelCall.Set<int32_t>(56, Geometry->ScalarValues[244]);
-		KernelCall.Set<int32_t>(60, Geometry->ScalarValues[245]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(92));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(93));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(94));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(95));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PredecessorCounters), GetBufferAddress(99));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_CompletionCounters), GetBufferAddress(101));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[244]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[245]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection_fp8
+		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_projection_c1024_fp8::global_projection_c1024_fp8),
 			Geometry->Grids[82], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(95));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(91));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(96));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(66));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(102));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(103));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[246]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[247]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(95));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(91));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(96));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(66));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(102));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(103));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[246]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[247]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[83], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(111));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[248]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(111));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[248]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[84], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(113));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[249]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(113));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[249]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[85], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(115));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[250]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(115));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[250]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[86], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(116));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[251]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(116));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[251]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_expand_c1024_fp8::global_ffn_expand_c1024_fp8),
 			Geometry->Grids[87], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(96));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(104));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(67));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[252]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[253]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(96));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(104));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(67));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[252]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[253]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_contract_c1024_fp8::global_ffn_contract_c1024_fp8),
 			Geometry->Grids[88], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(104));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(96));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(105));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(68));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(111));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(112));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[254]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[255]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(104));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(96));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(105));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(68));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(111));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(112));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[254]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[255]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv_fp8
+		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_qkv_c1024_fp8::global_qkv_c1024_fp8),
 			Geometry->Grids[89], dim3(32, 4, 1), 80, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(105));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(106));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(107));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(108));
-		KernelCall.Set<uint64_t>(32, GetRecordAddress(69));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(113));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(114));
-		KernelCall.Set<int32_t>(72, Geometry->ScalarValues[256]);
-		KernelCall.Set<int32_t>(76, Geometry->ScalarValues[257]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(105));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(106));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(107));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(108));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(69));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(113));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(114));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[256]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[257]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained_fp8
+		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp8::
 											  global_attention_chained_c1024_fp8),
 			Geometry->Grids[90], dim3(32, 4, 1), 64, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(106));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(107));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(108));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(109));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(113));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(115));
-		KernelCall.Set<int32_t>(56, Geometry->ScalarValues[258]);
-		KernelCall.Set<int32_t>(60, Geometry->ScalarValues[259]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(106));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(107));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(108));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(109));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PredecessorCounters), GetBufferAddress(113));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_CompletionCounters), GetBufferAddress(115));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[258]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[259]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection_fp8
+		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_projection_c1024_fp8::global_projection_c1024_fp8),
 			Geometry->Grids[91], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(109));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(105));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(110));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(70));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(116));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(117));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[260]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[261]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(109));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(105));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(110));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(70));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(116));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(117));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[260]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[261]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[92], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(125));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[262]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(125));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[262]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[93], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(127));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[263]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(127));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[263]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[94], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(129));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[264]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(129));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[264]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[95], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(130));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[265]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(130));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[265]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_expand_c1024_fp8::global_ffn_expand_c1024_fp8),
 			Geometry->Grids[96], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(110));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(118));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(71));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[266]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[267]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(110));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(118));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(71));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[266]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[267]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_contract_c1024_fp8::global_ffn_contract_c1024_fp8),
 			Geometry->Grids[97], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(118));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(110));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(119));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(72));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(125));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(126));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[268]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[269]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(118));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(110));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(119));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(72));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(125));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(126));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[268]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[269]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv_fp8
+		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_qkv_c1024_fp8::global_qkv_c1024_fp8),
 			Geometry->Grids[98], dim3(32, 4, 1), 80, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(119));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(120));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(121));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(122));
-		KernelCall.Set<uint64_t>(32, GetRecordAddress(73));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(127));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(128));
-		KernelCall.Set<int32_t>(72, Geometry->ScalarValues[270]);
-		KernelCall.Set<int32_t>(76, Geometry->ScalarValues[271]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(119));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(120));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(121));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(122));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(73));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(127));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(128));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[270]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[271]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained_fp8
+		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp8::
 											  global_attention_chained_c1024_fp8),
 			Geometry->Grids[99], dim3(32, 4, 1), 64, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(120));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(121));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(122));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(123));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(127));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(129));
-		KernelCall.Set<int32_t>(56, Geometry->ScalarValues[272]);
-		KernelCall.Set<int32_t>(60, Geometry->ScalarValues[273]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(120));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(121));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(122));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(123));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PredecessorCounters), GetBufferAddress(127));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_CompletionCounters), GetBufferAddress(129));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[272]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[273]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection_fp8
+		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_projection_c1024_fp8::global_projection_c1024_fp8),
 			Geometry->Grids[100], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(123));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(119));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(124));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(74));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(130));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(131));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[274]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[275]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(123));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(119));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(124));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(74));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(130));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(131));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[274]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[275]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[101], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(139));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[276]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(139));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[276]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[102], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(141));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[277]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(141));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[277]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[103], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(143));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[278]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(143));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[278]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[104], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(144));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[279]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(144));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[279]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_expand_c1024_fp8::global_ffn_expand_c1024_fp8),
 			Geometry->Grids[105], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(124));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(132));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(75));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[280]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[281]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(124));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(132));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(75));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[280]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[281]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_contract_c1024_fp8::global_ffn_contract_c1024_fp8),
 			Geometry->Grids[106], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(132));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(124));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(133));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(76));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(139));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(140));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[282]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[283]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(132));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(124));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(133));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(76));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(139));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(140));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[282]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[283]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv_fp8
+		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_qkv_c1024_fp8::global_qkv_c1024_fp8),
 			Geometry->Grids[107], dim3(32, 4, 1), 80, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(133));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(134));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(135));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(136));
-		KernelCall.Set<uint64_t>(32, GetRecordAddress(77));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(141));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(142));
-		KernelCall.Set<int32_t>(72, Geometry->ScalarValues[284]);
-		KernelCall.Set<int32_t>(76, Geometry->ScalarValues[285]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(133));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(134));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(135));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(136));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(77));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(141));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(142));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[284]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[285]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained_fp8
+		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp8::
 											  global_attention_chained_c1024_fp8),
 			Geometry->Grids[108], dim3(32, 4, 1), 64, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(134));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(135));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(136));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(137));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(141));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(143));
-		KernelCall.Set<int32_t>(56, Geometry->ScalarValues[286]);
-		KernelCall.Set<int32_t>(60, Geometry->ScalarValues[287]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(134));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(135));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(136));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(137));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PredecessorCounters), GetBufferAddress(141));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_CompletionCounters), GetBufferAddress(143));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[286]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[287]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection_fp8
+		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_projection_c1024_fp8::global_projection_c1024_fp8),
 			Geometry->Grids[109], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(137));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(133));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(138));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(78));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(144));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(145));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[288]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[289]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(137));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(133));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(138));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(78));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(144));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(145));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[288]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[289]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[110], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(153));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[290]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(153));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[290]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[111], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(155));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[291]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(155));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[291]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[112], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(157));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[292]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(157));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[292]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[113], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(158));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[293]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(158));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[293]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_expand_c1024_fp8::global_ffn_expand_c1024_fp8),
 			Geometry->Grids[114], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(138));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(146));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(79));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[294]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[295]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(138));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(146));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(79));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[294]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[295]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_contract_c1024_fp8::global_ffn_contract_c1024_fp8),
 			Geometry->Grids[115], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(146));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(138));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(147));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(80));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(153));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(154));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[296]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[297]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(146));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(138));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(147));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(80));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(153));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(154));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[296]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[297]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv_fp8
+		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_qkv_c1024_fp8::global_qkv_c1024_fp8),
 			Geometry->Grids[116], dim3(32, 4, 1), 80, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(147));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(148));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(149));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(150));
-		KernelCall.Set<uint64_t>(32, GetRecordAddress(81));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(155));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(156));
-		KernelCall.Set<int32_t>(72, Geometry->ScalarValues[298]);
-		KernelCall.Set<int32_t>(76, Geometry->ScalarValues[299]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(147));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(148));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(149));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(150));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(81));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(155));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(156));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[298]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[299]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained_fp8
+		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp8::
 											  global_attention_chained_c1024_fp8),
 			Geometry->Grids[117], dim3(32, 4, 1), 64, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(148));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(149));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(150));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(151));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(155));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(157));
-		KernelCall.Set<int32_t>(56, Geometry->ScalarValues[300]);
-		KernelCall.Set<int32_t>(60, Geometry->ScalarValues[301]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(148));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(149));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(150));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(151));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PredecessorCounters), GetBufferAddress(155));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_CompletionCounters), GetBufferAddress(157));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[300]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[301]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection_fp8
+		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_projection_c1024_fp8::global_projection_c1024_fp8),
 			Geometry->Grids[118], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(151));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(147));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(152));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(82));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(158));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(159));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[302]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[303]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(151));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(147));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(152));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(82));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(158));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(159));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[302]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[303]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[119], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(167));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[304]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(167));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[304]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[120], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(169));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[305]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(169));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[305]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[121], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(171));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[306]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(171));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[306]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[122], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(172));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[307]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(172));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[307]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_expand_c1024_fp8::global_ffn_expand_c1024_fp8),
 			Geometry->Grids[123], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(152));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(160));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(83));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[308]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[309]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(152));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(160));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(83));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[308]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[309]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract_fp8
+		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_ffn_contract_c1024_fp8::global_ffn_contract_c1024_fp8),
 			Geometry->Grids[124], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(160));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(152));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(161));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(84));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(167));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(168));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[310]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[311]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(160));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(152));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(161));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(84));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(167));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(168));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[310]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[311]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv_fp8
+		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_qkv_c1024_fp8::global_qkv_c1024_fp8),
 			Geometry->Grids[125], dim3(32, 4, 1), 80, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(161));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(162));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(163));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(164));
-		KernelCall.Set<uint64_t>(32, GetRecordAddress(85));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(169));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(170));
-		KernelCall.Set<int32_t>(72, Geometry->ScalarValues[312]);
-		KernelCall.Set<int32_t>(76, Geometry->ScalarValues[313]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(161));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(162));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(163));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(164));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(85));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(169));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(170));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[312]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[313]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained_fp8
+		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp8::
 											  global_attention_chained_c1024_fp8),
 			Geometry->Grids[126], dim3(32, 4, 1), 64, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(162));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(163));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(164));
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(165));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(169));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(171));
-		KernelCall.Set<int32_t>(56, Geometry->ScalarValues[314]);
-		KernelCall.Set<int32_t>(60, Geometry->ScalarValues[315]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(162));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(163));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(164));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(165));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PredecessorCounters), GetBufferAddress(169));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_CompletionCounters), GetBufferAddress(171));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[314]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[315]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection_fp8
+		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::global_projection_c1024_fp8::global_projection_c1024_fp8),
 			Geometry->Grids[127], dim3(32, 4, 1), 72, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(165));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(161));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(166));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(86));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(172));
-		KernelCall.Set<uint64_t>(40, GetBufferAddress(173));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[316]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[317]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(165));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(161));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(166));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(86));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitCounters), GetBufferAddress(172));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(173));
+		KernelCall.Set<int32_t>(offsetof(FParameters, BatchCount), Geometry->GeometryArguments[316]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, TokensPerBatch), Geometry->GeometryArguments[317]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_repack_1d_to_2d_fp8
+		using FParameters = dlssnr::reconstructed::repack_1d_to_2d_c1024_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::repack_1d_to_2d_c1024_fp8::repack_1d_to_2d_c1024_fp8),
 			Geometry->Grids[128], dim3(256, 1, 1), 24, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(166));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(174));
-		KernelCall.Set<int32_t>(16, Geometry->ScalarValues[318]);
-		KernelCall.Set<int32_t>(20, Geometry->ScalarValues[319]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(166));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(174));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[318]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[319]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
+		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
 			Geometry->Grids[129], dim3(256, 1, 1), 16, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(176));
-		KernelCall.Set<int32_t>(8, Geometry->ScalarValues[320]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(176));
+		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[320]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_dec_input_upsample_1024_512_fp8
+		using FParameters = dlssnr::reconstructed::decoder_upsample_c1024_to_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::decoder_upsample_c1024_to_c512_fp8::
 											  decoder_upsample_c1024_to_c512_fp8),
 			Geometry->Grids[130], dim3(32, 2, 1), 80, true};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(174));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(58));
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(175));
-		KernelCall.Set<uint64_t>(32, GetBufferAddress(176));
-		KernelCall.Set<uint64_t>(48, GetBufferAddress(177));
-		KernelCall.Set<uint64_t>(56, GetRecordAddress(87));
-		KernelCall.Set<int32_t>(64, Geometry->ScalarValues[321]);
-		KernelCall.Set<int32_t>(68, Geometry->ScalarValues[322]);
-		KernelCall.Set<int32_t>(72, Geometry->ScalarValues[323]);
-		KernelCall.Set<int32_t>(76, Geometry->ScalarValues[324]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(174));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(58));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(175));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_CompletionCounters), GetBufferAddress(176));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_SplitAccumulator), GetBufferAddress(177));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(87));
+		KernelCall.Set<int32_t>(offsetof(FParameters, InputHeight), Geometry->GeometryArguments[321]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, InputWidth), Geometry->GeometryArguments[322]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OutputHeight), Geometry->GeometryArguments[323]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OutputWidth), Geometry->GeometryArguments[324]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp8::window_ffn_c512_fp8),
 			Geometry->Grids[131], dim3(32, 8, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(178));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(88));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(175));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[325]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[326]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[327]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[328]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(178));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(88));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(175));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[325]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[326]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[327]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[328]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_projection_c512_fp8::window_ffn_projection_c512_fp8),
 			Geometry->Grids[132], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(179));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(89));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(175));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(178));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[329]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[330]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(179));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(89));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(175));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(178));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[329]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[330]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[133], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(180));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(90));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(179));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[331]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[332]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[333]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[334]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(180));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(90));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(179));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[331]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[332]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[333]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[334]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp8::
 											  window_attention_projection_c512_fp8),
 			Geometry->Grids[134], dim3(32, 8, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(181));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(91));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(179));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(180));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[335]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[336]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(181));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(91));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(179));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(180));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[335]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[336]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp8::window_ffn_c512_fp8),
 			Geometry->Grids[135], dim3(32, 8, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(182));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(92));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(181));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[337]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[338]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[339]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[340]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(182));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(92));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(181));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[337]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[338]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[339]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[340]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_projection_c512_fp8::window_ffn_projection_c512_fp8),
 			Geometry->Grids[136], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(183));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(93));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(181));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(182));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[341]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[342]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(183));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(93));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(181));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(182));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[341]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[342]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[137], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(184));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(94));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(183));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[343]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[344]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[345]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[346]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(184));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(94));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(183));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[343]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[344]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[345]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[346]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp8::
 											  window_attention_projection_c512_fp8),
 			Geometry->Grids[138], dim3(32, 8, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(185));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(95));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(183));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(184));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[347]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[348]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(185));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(95));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(183));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(184));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[347]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[348]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp8::window_ffn_c512_fp8),
 			Geometry->Grids[139], dim3(32, 8, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(186));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(96));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(185));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[349]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[350]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[351]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[352]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(186));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(96));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(185));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[349]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[350]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[351]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[352]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_projection_c512_fp8::window_ffn_projection_c512_fp8),
 			Geometry->Grids[140], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(187));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(97));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(185));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(186));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[353]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[354]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(187));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(97));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(185));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(186));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[353]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[354]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[141], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(188));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(98));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(187));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[355]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[356]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[357]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[358]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(188));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(98));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(187));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[355]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[356]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[357]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[358]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp8::
 											  window_attention_projection_c512_fp8),
 			Geometry->Grids[142], dim3(32, 8, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(189));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(99));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(187));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(188));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[359]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[360]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(189));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(99));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(187));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(188));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[359]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[360]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp8::window_ffn_c512_fp8),
 			Geometry->Grids[143], dim3(32, 8, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(190));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(100));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(189));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[361]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[362]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[363]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[364]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(190));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(100));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(189));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[361]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[362]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[363]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[364]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_projection_c512_fp8::window_ffn_projection_c512_fp8),
 			Geometry->Grids[144], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(191));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(101));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(189));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(190));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[365]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[366]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(191));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(101));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(189));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(190));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[365]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[366]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[145], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(192));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(102));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(191));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[367]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[368]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[369]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[370]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(192));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(102));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(191));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[367]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[368]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[369]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[370]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp8::
 											  window_attention_projection_c512_fp8),
 			Geometry->Grids[146], dim3(32, 8, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(193));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(103));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(191));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(192));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[371]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[372]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(193));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(103));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(191));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(192));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[371]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[372]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp8::window_ffn_c512_fp8),
 			Geometry->Grids[147], dim3(32, 8, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(194));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(104));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(193));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[373]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[374]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[375]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[376]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(194));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(104));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(193));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[373]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[374]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[375]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[376]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_projection_c512_fp8::window_ffn_projection_c512_fp8),
 			Geometry->Grids[148], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(195));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(105));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(193));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(194));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[377]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[378]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(195));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(105));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(193));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(194));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[377]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[378]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[149], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(196));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(106));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(195));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[379]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[380]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[381]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[382]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(196));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(106));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(195));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[379]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[380]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[381]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[382]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp8::
 											  window_attention_projection_c512_fp8),
 			Geometry->Grids[150], dim3(32, 8, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(197));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(107));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(195));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(196));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[383]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[384]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(197));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(107));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(195));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(196));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[383]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[384]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp8::window_ffn_c512_fp8),
 			Geometry->Grids[151], dim3(32, 8, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(198));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(108));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(197));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[385]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[386]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[387]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[388]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(198));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(108));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(197));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[385]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[386]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[387]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[388]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_projection_c512_fp8::window_ffn_projection_c512_fp8),
 			Geometry->Grids[152], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(199));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(109));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(197));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(198));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[389]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[390]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(199));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(109));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(197));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(198));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[389]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[390]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[153], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(200));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(110));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(199));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[391]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[392]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[393]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[394]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(200));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(110));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(199));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[391]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[392]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[393]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[394]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp8::
 											  window_attention_projection_c512_fp8),
 			Geometry->Grids[154], dim3(32, 8, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(201));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(111));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(199));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(200));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[395]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[396]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(201));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(111));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(199));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(200));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[395]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[396]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp8::window_ffn_c512_fp8),
 			Geometry->Grids[155], dim3(32, 8, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(202));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(112));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(201));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[397]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[398]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[399]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[400]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(202));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(112));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(201));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[397]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[398]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[399]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[400]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_projection_c512_fp8::window_ffn_projection_c512_fp8),
 			Geometry->Grids[156], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(203));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(113));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(201));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(202));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[401]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[402]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(203));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(113));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(201));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(202));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[401]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[402]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[157], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(204));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(114));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(203));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[403]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[404]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[405]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[406]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(204));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(114));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(203));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[403]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[404]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[405]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[406]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp8::
 											  window_attention_projection_c512_fp8),
 			Geometry->Grids[158], dim3(32, 8, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(205));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(115));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(203));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(204));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[407]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[408]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(205));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(115));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(203));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(204));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[407]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[408]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp8::window_ffn_c512_fp8),
 			Geometry->Grids[159], dim3(32, 8, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(206));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(116));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(205));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[409]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[410]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[411]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[412]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(206));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(116));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(205));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[409]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[410]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[411]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[412]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512_fp8
+		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_ffn_projection_c512_fp8::window_ffn_projection_c512_fp8),
 			Geometry->Grids[160], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(207));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(117));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(205));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(206));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[413]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[414]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(207));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(117));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(205));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(206));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[413]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[414]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512_fp8
+		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp8::window_qkv_c512_fp8),
 			Geometry->Grids[161], dim3(32, 4, 1), 56, false};
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(208));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(118));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(207));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[415]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[416]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[417]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[418]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(208));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(118));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(207));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[415]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[416]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[417]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[418]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_outview_fp8
+		using FParameters =
+			dlssnr::reconstructed::window_attention_projection_output_view_c512_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_attention_projection_output_view_c512_fp8::
 									   window_attention_projection_output_view_c512_fp8),
 							   Geometry->Grids[162], dim3(32, 4, 1), 72, false};
-		KernelCall.Set<uint64_t>(16, GetBufferAddress(209));
-		KernelCall.Set<uint64_t>(24, GetRecordAddress(119));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(207));
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(208));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[419]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[420]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(209));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(119));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(207));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(208));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[419]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[420]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_upsample_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_upsample_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_block_c256_upsample_fp8::window_block_c256_upsample_fp8),
 			Geometry->Grids[163], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(209));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(210));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(120));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[421]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[422]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[423]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[424]);
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(25));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(209));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(210));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(120));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[421]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[422]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[423]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[424]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(25));
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c256_fp8::window_block_c256_fp8),
 							   Geometry->Grids[164], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(210));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(211));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(121));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[425]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[426]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[427]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[428]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(210));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(211));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(121));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[425]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[426]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[427]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[428]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c256_fp8::window_block_c256_fp8),
 							   Geometry->Grids[165], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(211));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(212));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(122));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[429]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[430]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[431]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[432]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(211));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(212));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(122));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[429]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[430]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[431]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[432]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c256_fp8::window_block_c256_fp8),
 							   Geometry->Grids[166], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(212));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(213));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(123));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[433]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[434]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[435]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[436]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(212));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(213));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(123));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[433]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[434]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[435]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[436]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c256_fp8::window_block_c256_fp8),
 							   Geometry->Grids[167], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(213));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(214));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(124));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[437]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[438]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[439]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[440]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(213));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(214));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(124));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[437]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[438]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[439]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[440]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c256_fp8::window_block_c256_fp8),
 							   Geometry->Grids[168], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(214));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(215));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(125));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[441]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[442]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[443]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[444]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(214));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(215));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(125));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[441]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[442]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[443]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[444]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c256_fp8::window_block_c256_fp8),
 							   Geometry->Grids[169], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(215));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(216));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(126));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[445]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[446]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[447]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[448]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(215));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(216));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(126));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[445]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[446]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[447]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[448]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_outview_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c256_output_view_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_block_c256_output_view_fp8::window_block_c256_output_view_fp8),
 			Geometry->Grids[170], dim3(32, 8, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(216));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(217));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(127));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[449]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[450]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[451]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[452]);
-		KernelCall.Set<int32_t>(80, Geometry->ScalarValues[453]);
-		KernelCall.Set<int32_t>(84, Geometry->ScalarValues[454]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(216));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(217));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(127));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[449]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[450]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[451]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[452]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, ViewHeight), Geometry->GeometryArguments[453]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, ViewWidth), Geometry->GeometryArguments[454]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_upsample_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c128_upsample_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_block_c128_upsample_fp8::window_block_c128_upsample_fp8),
 			Geometry->Grids[171], dim3(32, 4, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(217));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(218));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(128));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[455]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[456]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[457]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[458]);
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(16));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(217));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(218));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(128));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[455]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[456]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[457]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[458]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(16));
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c128_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c128_fp8::window_block_c128_fp8),
 							   Geometry->Grids[172], dim3(32, 4, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(218));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(219));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(129));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[459]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[460]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[461]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[462]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(218));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(219));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(129));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[459]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[460]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[461]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[462]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c128_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c128_fp8::window_block_c128_fp8),
 							   Geometry->Grids[173], dim3(32, 4, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(219));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(220));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(130));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[463]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[464]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[465]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[466]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(219));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(220));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(130));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[463]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[464]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[465]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[466]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c128_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c128_fp8::window_block_c128_fp8),
 							   Geometry->Grids[174], dim3(32, 4, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(220));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(221));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(131));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[467]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[468]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[469]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[470]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(220));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(221));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(131));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[467]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[468]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[469]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[470]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c128_fp8::Parameters;
 		FKernelCall KernelCall{reinterpret_cast<const void*>(
 								   &dlssnr::reconstructed::window_block_c128_fp8::window_block_c128_fp8),
 							   Geometry->Grids[175], dim3(32, 4, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(221));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(222));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(132));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[471]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[472]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[473]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[474]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(221));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(222));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(132));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[471]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[472]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[473]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[474]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_outview_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c128_output_view_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_block_c128_output_view_fp8::window_block_c128_output_view_fp8),
 			Geometry->Grids[176], dim3(32, 4, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(222));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(223));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(133));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[475]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[476]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[477]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[478]);
-		KernelCall.Set<int32_t>(80, Geometry->ScalarValues[479]);
-		KernelCall.Set<int32_t>(84, Geometry->ScalarValues[480]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(222));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(223));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(133));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[475]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[476]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[477]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[478]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, ViewHeight), Geometry->GeometryArguments[479]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, ViewWidth), Geometry->GeometryArguments[480]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2_upsample_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c64_upsample_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_block_c64_upsample_fp8::window_block_c64_upsample_fp8),
 			Geometry->Grids[177], dim3(32, 2, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(223));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(224));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(134));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[481]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[482]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[483]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[484]);
-		KernelCall.Set<uint64_t>(24, GetBufferAddress(9));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(223));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(224));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(134));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[481]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[482]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[483]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[484]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(9));
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c64_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_block_c64_fp8::window_block_c64_fp8),
 			Geometry->Grids[178], dim3(32, 2, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(224));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(225));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(135));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[485]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[486]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[487]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[488]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(224));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(225));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(135));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[485]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[486]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[487]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[488]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c64_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_block_c64_fp8::window_block_c64_fp8),
 			Geometry->Grids[179], dim3(32, 2, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(225));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(226));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(136));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[489]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[490]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[491]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[492]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(225));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(226));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(136));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[489]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[490]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[491]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[492]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2_outview_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c64_output_view_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_block_c64_output_view_fp8::window_block_c64_output_view_fp8),
 			Geometry->Grids[180], dim3(32, 2, 1), 88, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(226));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(227));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(137));
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[493]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[494]);
-		KernelCall.Set<int32_t>(40, Geometry->ScalarValues[495]);
-		KernelCall.Set<int32_t>(44, Geometry->ScalarValues[496]);
-		KernelCall.Set<int32_t>(80, Geometry->ScalarValues[497]);
-		KernelCall.Set<int32_t>(84, Geometry->ScalarValues[498]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(226));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(227));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(137));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[493]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[494]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[495]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[496]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, ViewHeight), Geometry->GeometryArguments[497]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, ViewWidth), Geometry->GeometryArguments[498]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1_upsample_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c32_upsample_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(
 				&dlssnr::reconstructed::window_block_c32_upsample_fp8::window_block_c32_upsample_fp8),
 			Geometry->Grids[181], dim3(32, 1, 1), 96, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(227));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(228));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(138));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[499]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[500]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[501]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[502]);
-		KernelCall.Set<uint64_t>(80, GetBufferAddress(4));
-		KernelCall.Set<int32_t>(88, Geometry->ScalarValues[503]);
-		KernelCall.Set<int32_t>(92, Geometry->ScalarValues[504]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(227));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(228));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(138));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[499]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[500]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[501]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[502]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(4));
+		KernelCall.Set<int32_t>(offsetof(FParameters, ResidualHeight), Geometry->GeometryArguments[503]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, ResidualWidth), Geometry->GeometryArguments[504]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c32_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_block_c32_fp8::window_block_c32_fp8),
 			Geometry->Grids[182], dim3(32, 1, 1), 96, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(228));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(229));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(139));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[505]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[506]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[507]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[508]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(228));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(229));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(139));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[505]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[506]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[507]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[508]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c32_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_block_c32_fp8::window_block_c32_fp8),
 			Geometry->Grids[183], dim3(32, 1, 1), 96, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(229));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(230));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(140));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[509]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[510]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[511]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[512]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(229));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(230));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(140));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[509]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[510]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[511]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[512]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1_fp8
+		using FParameters = dlssnr::reconstructed::window_block_c32_fp8::Parameters;
 		FKernelCall KernelCall{
 			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_block_c32_fp8::window_block_c32_fp8),
 			Geometry->Grids[184], dim3(32, 1, 1), 96, false};
-		KernelCall.Set<uint64_t>(0, GetBufferAddress(230));
-		KernelCall.Set<uint64_t>(8, GetBufferAddress(231));
-		KernelCall.Set<uint64_t>(16, GetRecordAddress(141));
-		KernelCall.Set<int32_t>(24, Geometry->ScalarValues[513]);
-		KernelCall.Set<int32_t>(28, Geometry->ScalarValues[514]);
-		KernelCall.Set<int32_t>(32, Geometry->ScalarValues[515]);
-		KernelCall.Set<int32_t>(36, Geometry->ScalarValues[516]);
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(230));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(231));
+		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(141));
+		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[513]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, Width), Geometry->GeometryArguments[514]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginX), Geometry->GeometryArguments[515]);
+		KernelCall.Set<int32_t>(offsetof(FParameters, OriginY), Geometry->GeometryArguments[516]);
 		Calls.push_back(KernelCall);
 	}
 }

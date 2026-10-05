@@ -45,8 +45,8 @@ __global__ __maxnreg__(128) void window_attention_projection_output_view_c512_fp
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ __align__(512) unsigned char s_Storage[12312];
 	const dlssnr::kernels::spatial_projection::FArguments r_Arguments{
-		r_Parameters.g_Pointer0,  r_Parameters.g_Pointer8,	  r_Parameters.g_Pointer16,
-		r_Parameters.g_Pointer24, int(r_Parameters.Scalar32), int(r_Parameters.Scalar36)};
+		r_Parameters.g_Input,		  r_Parameters.g_Residual,	r_Parameters.g_Output,
+		r_Parameters.g_PackedWeights, int(r_Parameters.Height), int(r_Parameters.Width)};
 	dlssnr::kernels::spatial_projection::Forward<true, 4, false, true>(r_Arguments, s_Storage);
 #endif
 }
@@ -59,11 +59,11 @@ __global__ __maxnreg__(128) void window_attention_projection_output_view_c512_fp
 
 namespace dlssnr::reconstructed::window_qkv_c512_fp8
 {
-__global__ __maxnreg__(168) void window_qkv_c512_fp8(Parameters ParameterBlock)
+__global__ __maxnreg__(168) void window_qkv_c512_fp8(Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ __align__(512) unsigned char s_Storage[8208];
-	dlssnr::kernels::window_qkv::Forward<true>(ParameterBlock, s_Storage);
+	dlssnr::kernels::window_qkv::Forward<true>(r_Parameters, s_Storage);
 #endif
 }
 } // namespace dlssnr::reconstructed::window_qkv_c512_fp8
@@ -97,8 +97,9 @@ __global__ __maxnreg__(168) void global_projection_c1024_fp8(Parameters r_Parame
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ __align__(512) unsigned char s_Storage[8208];
-	using Profile = dlssnr::kernels::global_contract::FProfile<true, true>;
-	dlssnr::kernels::global_contract::RunGlobalContract<true, Parameters, Profile>(r_Parameters, s_Storage);
+	using FProjectionProfile = dlssnr::kernels::global_contract::FProfile<true, true>;
+	dlssnr::kernels::global_contract::RunGlobalContract<true, Parameters, FProjectionProfile>(r_Parameters,
+																							  s_Storage);
 #endif
 }
 } // namespace dlssnr::reconstructed::global_projection_c1024_fp8

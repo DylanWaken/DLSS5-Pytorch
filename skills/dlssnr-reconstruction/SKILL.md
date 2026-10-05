@@ -5,6 +5,8 @@ description: Reconstruct, integrate, qualify and document this repository's DLSS
 
 # DLSS-NR reconstruction workflow
 
+For the current build, read `docs/RECONSTRUCTION_STATUS.md` and `docs/NAMING_AUDIT.md`. The dated UEv2 snapshot below is historical; later semantic reconstruction and naming-audit receipts supersede its coverage and timing statements.
+
 Read `docs/RECONSTRUCTION_STATUS.md` and the exact run receipts before acting. Reconciled snapshot: 2026-10-05. The latest qualified **UEv2 normal 81-entry source build**, binary `88b7a94a…`, passes the fixed SM120, batch-one, prepared-feature FP8 trunk at 720p, 1080p, 1440p and 2160p. Its final 4K paired result is **6.496523 ms versus 6.452048 ms original**, ratio **1.006893098**: approximately **0.689% slower**. Both execution-order medians meet the user's accepted **within-1%** slowdown limit; the other three measured resolutions are faster than the original. Further performance optimization stopped at the user's criterion. Installation is a separate root-owned receipt, not inferred from qualification.
 
 The original comparison is an extracted native-kernel graph, not the DLL/NGX/renderer host. All four final paired runs check all 74 published physical boundaries, immutable input/142 records, guards, counters and same-input poisoned replay. `changed_input_graph_proof` and continuous-resolution qualification remain false. Full FP16-trunk, frontend/renderer and broader full-route exceptional/sanitizer coverage remain separate scopes.
@@ -213,3 +215,27 @@ hash. Do not replace installed toolkit files or bypass PyTorch version checks.
 Keep architecture flags explicit: PyTorch's substring-based detection can
 mistake a path containing `arch` for an existing architecture flag. See
 [the compiler scheduling report](../../docs/COMPILER_SCHEDULING.md).
+
+## Audit names through their consumers
+
+A prefix/regex audit is not a semantic naming audit. Trace every launch field
+from host population to its loads/stores, math and publication. Rename positional
+fields such as Pointer0, Scalar32 and Aux80 to proven tensor or geometry roles.
+Keep offsets in static assertions, not field names. Update host packing, wrappers,
+algorithm consumers and the authoritative generators together.
+
+Use typed renderer records instead of repeated Words[offset] decoding. Preserve
+exported Parameters identities, widths, alignment, unused zero padding and every
+field offset; assert standard layout and trivial copy. Name unknown conditioning
+controls by observed channel/dataflow rather than inventing renderer semantics.
+
+Review local aliases too: identify MMA input/weight/accumulator fragments and
+query/key/feature traversal axes. Standard UV or N8 names are reasonable when the
+layout documents them; numeric suffixes are not a substitute for a value's role.
+Keep low-level instruction operand-word ordering explicit.
+
+After interface refactoring, compare actual parameter byte images and generated
+launch contracts, rebuild normally, and compare device text/constants/resources.
+Host code may change even when GPU code is identical. Test public host dispatch
+as well as full plans: a full-plan graph can bypass a separately exposed operator
+launcher. Preserve timing identities instead of relabeling old samples as fresh.

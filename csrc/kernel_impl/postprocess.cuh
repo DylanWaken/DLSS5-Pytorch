@@ -26,7 +26,7 @@ template <bool bFp8> struct FPostProfile : FProfile<bFp8>
 
 struct FWindowParameters
 {
-	uint64_t g_State, g_High, g_Record;
+	uint64_t g_Input, g_Output, g_PackedWeights;
 	int Height, Width, OriginX, OriginY;
 	const FAccumulatorTile<32>* r_RawInput;
 	uint32_t (*r_Head)[2];
@@ -36,7 +36,7 @@ struct FWindowParameters
 // 4x4 low-resolution patch, then broadcasts each pixel to a 2x2 high patch.
 // This preserves native scalar loads and avoids materializing an upsampled map.
 template <bool bFp8>
-__device__ __forceinline__ void MergeInput(uint64_t g_State, uint64_t g_Adapter, uint64_t g_Record,
+__device__ __forceinline__ void MergeInput(uint64_t g_Input, uint64_t g_Adapter, uint64_t g_PackedWeights,
 										   int Height, int Width, int OriginX, int OriginY,
 										   FAccumulatorTile<32> (&r_Merged)[4])
 {
@@ -45,7 +45,7 @@ __device__ __forceinline__ void MergeInput(uint64_t g_State, uint64_t g_Adapter,
 	const int g_LowHeight = Height / 2, g_LowWidth = Width / 2;
 	const int g_OriginX = int(blockIdx.x) * 8 + OriginX;
 	const int g_OriginY = int(blockIdx.y) * 8 + OriginY;
-	uint32_t r_Low[4][2];
+	uint32_t r_LowResolutionPairs[4][2];
 #pragma unroll
 	for (int r_Plane = 0; r_Plane < (bFp8 ? 2 : 4); ++r_Plane)
 #pragma unroll
@@ -56,14 +56,15 @@ __device__ __forceinline__ void MergeInput(uint64_t g_State, uint64_t g_Adapter,
 			const bool r_bValid = g_X >= 0 && g_X < g_LowWidth && g_Y >= 0 && g_Y < g_LowHeight;
 			const int64_t g_Offset =
 				((int64_t(r_Plane) * g_LowHeight + g_Y) * g_LowWidth + g_X) * 16 + (r_Lane & 3) * 4;
-			const uint32_t r_Packed = r_bValid ? *reinterpret_cast<const uint32_t*>(g_State + g_Offset) : 0;
+			const uint32_t r_InputWord =
+				r_bValid ? *reinterpret_cast<const uint32_t*>(g_Input + g_Offset) : 0;
 			if constexpr (bFp8)
 			{
-				r_Low[2 * r_Plane][r_Row] = DecodeE4(uint16_t(r_Packed));
-				r_Low[2 * r_Plane + 1][r_Row] = DecodeE4(uint16_t(r_Packed >> 16));
+				r_LowResolutionPairs[2 * r_Plane][r_Row] = DecodeE4(uint16_t(r_InputWord));
+				r_LowResolutionPairs[2 * r_Plane + 1][r_Row] = DecodeE4(uint16_t(r_InputWord >> 16));
 			}
 			else
-				r_Low[r_Plane][r_Row] = r_Packed;
+				r_LowResolutionPairs[r_Plane][r_Row] = r_InputWord;
 		}
 
 #pragma unroll
@@ -88,27 +89,29 @@ __device__ __forceinline__ void MergeInput(uint64_t g_State, uint64_t g_Adapter,
 		{
 			const int g_ScaleByte = r_Column * 16 + (r_Lane & 3) * 4;
 			const uint32_t r_InputScale = *reinterpret_cast<const uint32_t*>(
-				g_Record + FConfig::CONST_INPUT_SCALE_OFFSET + g_ScaleByte);
+				g_PackedWeights + FConfig::CONST_INPUT_SCALE_OFFSET + g_ScaleByte);
 			const uint32_t r_AdapterScale = *reinterpret_cast<const uint32_t*>(
-				g_Record + FConfig::CONST_ADAPTER_SCALE_OFFSET + g_ScaleByte);
+				g_PackedWeights + FConfig::CONST_ADAPTER_SCALE_OFFSET + g_ScaleByte);
 #pragma unroll
 			for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 			{
 				const int r_SourceLane =
 					(r_Lane & 3) | ((r_Lane >> 1) & 4) | ((r_Tile & 1) * 8) | (r_RowHalf * 16);
-				const uint32_t r_Up = ShuffleIdx(r_Low[r_Column][r_Tile >> 1], r_SourceLane, CONST_WARP_CLAMP,
-												 CONST_WARP_MEMBERS);
-				uint32_t r_Skip;
+				const uint32_t r_UpsampledPair =
+					ShuffleIdx(r_LowResolutionPairs[r_Column][r_Tile >> 1], r_SourceLane, CONST_WARP_CLAMP,
+							   CONST_WARP_MEMBERS);
+				uint32_t r_AdapterPair;
 				if constexpr (bFp8)
-					r_Skip =
+					r_AdapterPair =
 						DecodeE4(uint16_t(r_Adapter.r_Reduction[0].r_Word[2 * (r_Column / 2) + r_RowHalf] >>
 										  (16 * (r_Column & 1))));
 				else
-					r_Skip = r_Adapter.r_Reduction[r_Column / 2].r_Word[2 * (r_Column & 1) + r_RowHalf];
+					r_AdapterPair =
+						r_Adapter.r_Reduction[r_Column / 2].r_Word[2 * (r_Column & 1) + r_RowHalf];
 				// Native SASS rounds the low product, then fuses the adapter product
 				// with its addition. An unfixed sum of products may fuse the other side.
 				r_Merged[r_Tile].r_Pair[r_Column][r_RowHalf] =
-					HalfFma(r_Skip, r_AdapterScale, HalfMul(r_Up, r_InputScale));
+					HalfFma(r_AdapterPair, r_AdapterScale, HalfMul(r_UpsampledPair, r_InputScale));
 			}
 		}
 	}
@@ -137,20 +140,21 @@ template <bool bFp8> struct FPostIO : FOrdinaryIO
 	// Native PTX issues both N8 tiles but never consumes N8 tile 1. The surviving
 	// first N8 tile is sufficient; GPU qualification checks all surface pixels.
 	__device__ __forceinline__ static void Write(const FWindowParameters& r_Parameters, int r_Tile,
-												 const FAccumulatorTile<32>& r_Raw)
+												 const FAccumulatorTile<32>& r_WindowOutput)
 	{
-		uint32_t r_Result[2] = {0, 0};
+		uint32_t r_HeadAccumulator[2] = {0, 0};
 #pragma unroll
-		for (int r_K = 0; r_K < 2; ++r_K)
+		for (int r_ReductionChunk = 0; r_ReductionChunk < 2; ++r_ReductionChunk)
 		{
-			const uint4 r_Weights = __ldca(
-				reinterpret_cast<const uint4*>(r_Parameters.g_Record + FPostProfile<bFp8>::CONST_HEAD_OFFSET +
-											   r_K * 512 + threadIdx.x * 16));
-			const uint32_t r_B[2] = {r_Weights.x, r_Weights.y};
-			Mma<false>(PublishChunk<false>(r_Raw, r_K), r_B, r_Result);
+			const uint4 r_Weights = __ldca(reinterpret_cast<const uint4*>(
+				r_Parameters.g_PackedWeights + FPostProfile<bFp8>::CONST_HEAD_OFFSET +
+				r_ReductionChunk * 512 + threadIdx.x * 16));
+			const uint32_t r_HeadWeightFragment[2] = {r_Weights.x, r_Weights.y};
+			Mma<false>(PublishChunk<false>(r_WindowOutput, r_ReductionChunk), r_HeadWeightFragment,
+					   r_HeadAccumulator);
 		}
-		r_Parameters.r_Head[r_Tile][0] = r_Result[0];
-		r_Parameters.r_Head[r_Tile][1] = r_Result[1];
+		r_Parameters.r_Head[r_Tile][0] = r_HeadAccumulator[0];
+		r_Parameters.r_Head[r_Tile][1] = r_HeadAccumulator[1];
 	}
 };
 
@@ -161,71 +165,48 @@ __device__ __forceinline__ uint2 HeadPixel(const uint32_t (&r_Head)[4][2], int r
 	const int r_Lane = threadIdx.x;
 	const int r_LocalRowHalf = r_Lane & 1, r_LocalTile = (r_Lane >> 1) & 1;
 	const int r_SourceLane = ((r_Lane & 7) << 2) | (r_Lane >> 3);
-	const uint32_t r_Gather[4] = {ShuffleIdx(r_Head[r_TileRow * 2 + r_LocalTile][r_LocalRowHalf],
-											 r_SourceLane, CONST_WARP_CLAMP, CONST_WARP_MEMBERS),
-								  ShuffleIdx(r_Head[r_TileRow * 2 + r_LocalTile][1 - r_LocalRowHalf],
-											 r_SourceLane ^ 1, CONST_WARP_CLAMP, CONST_WARP_MEMBERS),
-								  ShuffleIdx(r_Head[r_TileRow * 2 + 1 - r_LocalTile][r_LocalRowHalf],
-											 r_SourceLane ^ 2, CONST_WARP_CLAMP, CONST_WARP_MEMBERS),
-								  ShuffleIdx(r_Head[r_TileRow * 2 + 1 - r_LocalTile][1 - r_LocalRowHalf],
-											 r_SourceLane ^ 3, CONST_WARP_CLAMP, CONST_WARP_MEMBERS)};
-	const int r_Select = ((r_Lane >> 3) & 1) | ((r_Lane >> 3) & 2);
-	return make_uint2(r_Gather[r_Select], r_Gather[r_Select ^ 1]);
-}
-
-__device__ __forceinline__ float FloatParameter(const uint32_t* r_Words, int Offset)
-{
-	return __uint_as_float(r_Words[Offset / 4]);
+	const uint32_t r_GatheredHeadWords[4] = {
+		ShuffleIdx(r_Head[r_TileRow * 2 + r_LocalTile][r_LocalRowHalf], r_SourceLane, CONST_WARP_CLAMP,
+				   CONST_WARP_MEMBERS),
+		ShuffleIdx(r_Head[r_TileRow * 2 + r_LocalTile][1 - r_LocalRowHalf], r_SourceLane ^ 1,
+				   CONST_WARP_CLAMP, CONST_WARP_MEMBERS),
+		ShuffleIdx(r_Head[r_TileRow * 2 + 1 - r_LocalTile][r_LocalRowHalf], r_SourceLane ^ 2,
+				   CONST_WARP_CLAMP, CONST_WARP_MEMBERS),
+		ShuffleIdx(r_Head[r_TileRow * 2 + 1 - r_LocalTile][1 - r_LocalRowHalf], r_SourceLane ^ 3,
+				   CONST_WARP_CLAMP, CONST_WARP_MEMBERS)};
+	const int r_PixelWordIndex = ((r_Lane >> 3) & 1) | ((r_Lane >> 3) & 2);
+	return make_uint2(r_GatheredHeadWords[r_PixelWordIndex], r_GatheredHeadWords[r_PixelWordIndex ^ 1]);
 }
 
 template <class FParameters>
 __device__ __forceinline__ FCompositeParameters CompositeParameters(const FParameters& r_Parameters)
 {
-	using dlssnr::reconstructed::ParameterU64;
-	const uint32_t* r_Words = r_Parameters.Words;
-	FCompositeParameters r_Result;
-	r_Result.g_Surface = ParameterU64<16>(r_Parameters);
-	r_Result.g_Color = ParameterU64<56>(r_Parameters);
-	r_Result.g_History = ParameterU64<88>(r_Parameters);
-	r_Result.g_Motion = ParameterU64<96>(r_Parameters);
-	r_Result.g_BlendScale = ParameterU64<104>(r_Parameters);
-	r_Result.ColorTransform = {FloatParameter(r_Words, 64), FloatParameter(r_Words, 68),
-							   FloatParameter(r_Words, 72), FloatParameter(r_Words, 76),
-							   FloatParameter(r_Words, 80), FloatParameter(r_Words, 84)};
-	r_Result.HistoryTransform = {FloatParameter(r_Words, 116), FloatParameter(r_Words, 120),
-								 FloatParameter(r_Words, 124), FloatParameter(r_Words, 128),
-								 FloatParameter(r_Words, 132), FloatParameter(r_Words, 136)};
-	r_Result.MotionTransform = {FloatParameter(r_Words, 140), FloatParameter(r_Words, 144),
-								FloatParameter(r_Words, 148), FloatParameter(r_Words, 152),
-								FloatParameter(r_Words, 156), FloatParameter(r_Words, 160)};
-	r_Result.r_MotionScaleX = FloatParameter(r_Words, 164);
-	r_Result.r_MotionScaleY = FloatParameter(r_Words, 168);
-	r_Result.r_OutputScale = FloatParameter(r_Words, 48);
-	r_Result.bDisplayOutput = r_Words[52 / 4] != 0;
-	r_Result.bApplyMotion = r_Words[112 / 4] != 0;
-	r_Result.Height = int(r_Words[32 / 4]);
-	r_Result.Width = int(r_Words[36 / 4]);
-	r_Result.ValidWidth = int(r_Words[172 / 4]);
-	r_Result.ValidHeight = int(r_Words[176 / 4]);
-	return r_Result;
+	return {r_Parameters.g_OutputSurface,  r_Parameters.g_ColorTexture,
+			r_Parameters.g_HistoryTexture, r_Parameters.g_MotionTexture,
+			r_Parameters.g_BlendScale,	   r_Parameters.ColorTransform,
+			r_Parameters.HistoryTransform, r_Parameters.MotionTransform,
+			r_Parameters.r_OutputScale,	   r_Parameters.r_MotionScaleX,
+			r_Parameters.r_MotionScaleY,   r_Parameters.Width,
+			r_Parameters.Height,		   r_Parameters.ValidWidth,
+			r_Parameters.ValidHeight,	   r_Parameters.bDisplayOutput != 0,
+			r_Parameters.bApplyMotion != 0};
 }
 
 template <bool bFp8, class FParameters>
 __device__ __forceinline__ void RunPostprocess(const FParameters& r_Parameters)
 {
-	using dlssnr::reconstructed::ParameterU64;
 	FAccumulatorTile<32> r_RawInput[4];
 	uint32_t r_Head[4][2];
-	FWindowParameters r_Window = {ParameterU64<0>(r_Parameters),
+	FWindowParameters r_Window = {r_Parameters.g_Input,
 								  0,
-								  ParameterU64<24>(r_Parameters),
-								  int(r_Parameters.Words[8]),
-								  int(r_Parameters.Words[9]),
-								  int(r_Parameters.Words[10]),
-								  int(r_Parameters.Words[11]),
+								  r_Parameters.g_PackedWeights,
+								  r_Parameters.Height,
+								  r_Parameters.Width,
+								  r_Parameters.OriginX,
+								  r_Parameters.OriginY,
 								  r_RawInput,
 								  r_Head};
-	MergeInput<bFp8>(r_Window.g_State, ParameterU64<8>(r_Parameters), r_Window.g_Record, r_Window.Height,
+	MergeInput<bFp8>(r_Window.g_Input, r_Parameters.g_Adapter, r_Window.g_PackedWeights, r_Window.Height,
 					 r_Window.Width, r_Window.OriginX, r_Window.OriginY, r_RawInput);
 	RunWindow32<bFp8, FWindowParameters, FPostIO<bFp8>>(r_Window);
 	const FCompositeParameters r_Composite = CompositeParameters(r_Parameters);

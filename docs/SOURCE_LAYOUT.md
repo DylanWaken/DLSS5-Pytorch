@@ -40,17 +40,17 @@ All 76 mathematical/frontend exports now use the semantic implementations in thi
 
 ## Current source inventory
 
-The final source tree contains **45 headers and 7,755 physical lines** in `kernel_impl`, including comments and blank lines:
+The final source tree contains **45 headers and 7,953 physical lines** in `kernel_impl`, including comments and blank lines:
 
 | Source role | Headers | Lines |
 | --- | ---: | ---: |
-| Operation/precision entry wrappers | 16 | 1,645 |
-| Shared operation and physical-layout algorithms | 21 | 5,241 |
-| Common device utilities listed below | 7 | 853 |
+| Operation/precision entry wrappers | 16 | 1,658 |
+| Shared operation and physical-layout algorithms | 21 | 5,422 |
+| Common device utilities listed below | 7 | 857 |
 | Precision-independent counter clear | 1 | 16 |
-| Total | 45 | 7,755 |
+| Total | 45 | 7,953 |
 
-The 21 algorithm headers serve multiple configurations; the largest has 562 lines. The structural inventory resolves all local includes and finds **81 exports in 17 entry headers, each owned by exactly one of ten CUDA emission units**. These counts describe the current production dependencies, not archived proposals or a count of network positions.
+The 21 algorithm headers serve multiple configurations; the largest has 579 lines. The structural inventory resolves all local includes and finds **81 exports in 17 entry headers, each owned by exactly one of ten CUDA emission units**. These counts describe the current production dependencies, not archived proposals or a count of network positions.
 
 ## Profiles represent real schedule differences
 
@@ -71,7 +71,7 @@ The [historical per-entry census](kernel_schedule_census.json) preserves recover
 | `packed_math.cuh` | Packed Half arithmetic, conversion, publication and activation helpers |
 | `numerical_constants.cuh` | Named `CONST_*` bit patterns with decoded values and documented arithmetic roles |
 | `memoryops.cuh` | Shared pipeline barrier arrival and phase waiting |
-| `kernel_helpers.cuh` | Common ABI includes and bounded renderer-record handle reads |
+| `kernel_helpers.cuh` | Common typed ABI and device-utility includes |
 
 Operation headers carry the algorithm; `intrinsics.cuh` carries the instruction-level exception needed to express it exactly. Unused transcript-era helpers and their unused headers have been removed; the table lists the seven common device utility headers that remain. Keeping a primitive shared does not justify merging different Half reduction trees, cache policies or synchronization contracts.
 
@@ -99,3 +99,5 @@ python run_tests.py cpu --optimized
 The inventory follows includes and exported names, checks that local includes resolve, and rejects duplicate exports or missing/duplicate CUDA emission owners. `--baseline-csrc <saved-csrc>` also compares the exported roster. These are structural checks; compiled correctness and performance are separate evidence.
 
 See [code conventions and current validation scope](CODE_READABILITY.md). The earlier transcript cleanup and its timings remain unchanged in [the historical readability report](CODE_READABILITY_HISTORY.md); final semantic qualification is recorded separately above.
+
+The [semantic naming audit](NAMING_AUDIT.md) covers the current typed ABI, named generated-plan fields and manual variable-role review. Its rebuild preserves all 81 GPU instruction payloads and separately revalidates the changed host packing.

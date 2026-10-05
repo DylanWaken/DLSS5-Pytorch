@@ -422,32 +422,204 @@ static const dim3 Grids_1280_720[] = {
 	dim3(85, 48, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 	dim3(84, 49, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 };
-static const int32_t Scalars_1280_720[] = {
-	384, 672, 0,   0,	384, 672, 384, 672, -4,	 -4,  384, 672, -4,	 0,	  384, 672, 0,	 -4,  192, 336, 192,
-	336, 0,	  0,   192, 336, 192, 336, -4,	-4,	 192, 336, -4,	0,	 192, 336, 0,	-4,	 96,  168, 96,	168,
-	0,	 0,	  96,  168, 96,	 168, -4,  -4,	96,	 168, -4,  0,	96,	 168, 0,   -4,	96,	 168, 0,   0,	96,
-	168, -4,  -4,  48,	84,	 48,  84,  0,	0,	 48,  84,  48,	84,	 -4,  -4,  48,	84,	 -4,  0,   48,	84,
-	0,	 -4,  48,  84,	0,	 0,	  48,  84,	-4,	 -4,  48,  84,	-4,	 0,	  48,  84,	0,	 -4,  24,  44,	24,
-	0,	 0,	  44,  24,	44,	 24,  0,   0,	44,	 24,  44,  24,	0,	 0,	  44,  24,	44,	 24,  -4,  -4,	44,
-	24,	 44,  24,  0,	0,	 44,  24,  44,	24,	 -4,  0,   44,	24,	 44,  24,  0,	0,	 44,  24,  44,	24,
-	0,	 -4,  44,  24,	44,	 24,  0,   0,	44,	 24,  44,  24,	0,	 0,	  44,  24,	44,	 24,  0,   0,	44,
-	24,	 44,  24,  -4,	-4,	 44,  24,  44,	24,	 0,	  0,   44,	24,	 44,  24,  -4,	0,	 44,  24,  44,	24,
-	0,	 0,	  44,  24,	44,	 24,  0,   -4,	44,	 24,  12,  24,	44,	 12,  24,  12,	24,	 24,  48,  96,	24,
-	1,	 288, 1,   288, 1,	 288, 1,   288, 1,	 288, 24,  48,	96,	 24,  1,   288, 1,	 288, 1,   288, 1,
-	288, 1,	  288, 24,	48,	 96,  24,  1,	288, 1,	  288, 1,	288, 1,	  288, 1,	288, 24,  48,  96,	24,
-	1,	 288, 1,   288, 1,	 288, 1,   288, 1,	 288, 24,  48,	96,	 24,  1,   288, 1,	 288, 1,   288, 1,
-	288, 1,	  288, 24,	48,	 96,  24,  1,	288, 1,	  288, 1,	288, 1,	  288, 1,	288, 24,  48,  96,	24,
-	1,	 288, 1,   288, 1,	 288, 1,   288, 1,	 288, 24,  48,	96,	 24,  1,   288, 1,	 288, 1,   288, 1,
-	288, 1,	  288, 12,	24,	 36,  12,  24,	24,	 44,  24,  0,	0,	 44,  24,  44,	24,	 0,	  0,   44,	24,
-	44,	 24,  0,   0,	44,	 24,  44,  24,	-4,	 -4,  44,  24,	44,	 24,  0,   0,	44,	 24,  44,  24,	-4,
-	0,	 44,  24,  44,	24,	 0,	  0,   44,	24,	 44,  24,  0,	-4,	 44,  24,  44,	24,	 0,	  0,   44,	24,
-	44,	 24,  0,   0,	44,	 24,  44,  24,	0,	 0,	  44,  24,	44,	 24,  -4,  -4,	44,	 24,  44,  24,	0,
-	0,	 44,  24,  44,	24,	 -4,  0,   44,	24,	 44,  24,  0,	0,	 44,  24,  44,	24,	 0,	  -4,  44,	24,
-	44,	 48,  84,  0,	0,	 48,  84,  -4,	-4,	 48,  84,  -4,	0,	 48,  84,  0,	-4,	 48,  84,  0,	0,
-	48,	 84,  -4,  -4,	48,	 84,  -4,  0,	48,	 84,  0,   -4,	48,	 84,  96,  168, -4,	 0,	  96,  168, 0,
-	-4,	 96,  168, 0,	0,	 96,  168, -4,	-4,	 96,  168, -4,	0,	 96,  168, 0,	-4,	 96,  168, 192, 336,
-	0,	 0,	  192, 336, -4,	 -4,  192, 336, -4,	 0,	  192, 336, 0,	 -4,  192, 336, 384, 672, 0,   0,	384,
-	672, 384, 672, -4,	-4,	 384, 672, -4,	0,	 384, 672, 0,	-4,
+static const int32_t GeometryArguments_1280_720[] = {
+	384, 672, 0,  0,  384,
+	672, // window_block_c32_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	384, 672, -4, -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
+	384, 672, -4, 0,  // window_block_c32_fp8: Height, Width, OriginX, OriginY
+	384, 672, 0,  -4, 192,
+	336, // window_block_c32_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	192, 336, 0,  0,  192,
+	336, // window_block_c64_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	192, 336, -4, -4, // window_block_c64_fp8: Height, Width, OriginX, OriginY
+	192, 336, -4, 0,  // window_block_c64_fp8: Height, Width, OriginX, OriginY
+	192, 336, 0,  -4, 96,
+	168, // window_block_c64_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	96,	 168, 0,  0,  96,
+	168, // window_block_c128_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	96,	 168, -4, -4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	96,	 168, -4, 0,  // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	96,	 168, 0,  -4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	96,	 168, 0,  0,  // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	96,	 168, -4, -4, 48,
+	84, // window_block_c128_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	48,	 84,  0,  0,  48,
+	84, // window_block_c256_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	48,	 84,  -4, -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	48,	 84,  -4, 0,  // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	48,	 84,  0,  -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	48,	 84,  0,  0,  // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	48,	 84,  -4, -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	48,	 84,  -4, 0,  // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	48,	 84,  0,  -4, 24,
+	44, // window_block_c256_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	24,	 0,	  0,  44, // window_ffn_input_view_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_input_view_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_attention_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_c512_fp8: Height, Width
+	24,	 -4,  -4, 44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_attention_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_c512_fp8: Height, Width
+	24,	 -4,  0,  44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_attention_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_c512_fp8: Height, Width
+	24,	 0,	  -4, 44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_attention_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_attention_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_c512_fp8: Height, Width
+	24,	 -4,  -4, 44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_attention_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_c512_fp8: Height, Width
+	24,	 -4,  0,  44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_attention_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_c512_fp8: Height, Width
+	24,	 0,	  -4, 44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 12,  24, 44, // window_attention_projection_pool_c512_fp8: Height, DownsampledHeight, DownsampledWidth, Width
+	12,	 24,		  // channel_projection_c512_to_c1024_fp8: Height, Width
+	12,	 24,		  // repack_2d_to_1d_c1024_fp8: Height, Width
+	24,				  // completion_counter_clear: CounterCount
+	48,				  // completion_counter_clear: CounterCount
+	96,				  // completion_counter_clear: CounterCount
+	24,				  // completion_counter_clear: CounterCount
+	1,	 288,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	24,				  // completion_counter_clear: CounterCount
+	48,				  // completion_counter_clear: CounterCount
+	96,				  // completion_counter_clear: CounterCount
+	24,				  // completion_counter_clear: CounterCount
+	1,	 288,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	24,				  // completion_counter_clear: CounterCount
+	48,				  // completion_counter_clear: CounterCount
+	96,				  // completion_counter_clear: CounterCount
+	24,				  // completion_counter_clear: CounterCount
+	1,	 288,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	24,				  // completion_counter_clear: CounterCount
+	48,				  // completion_counter_clear: CounterCount
+	96,				  // completion_counter_clear: CounterCount
+	24,				  // completion_counter_clear: CounterCount
+	1,	 288,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	24,				  // completion_counter_clear: CounterCount
+	48,				  // completion_counter_clear: CounterCount
+	96,				  // completion_counter_clear: CounterCount
+	24,				  // completion_counter_clear: CounterCount
+	1,	 288,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	24,				  // completion_counter_clear: CounterCount
+	48,				  // completion_counter_clear: CounterCount
+	96,				  // completion_counter_clear: CounterCount
+	24,				  // completion_counter_clear: CounterCount
+	1,	 288,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	24,				  // completion_counter_clear: CounterCount
+	48,				  // completion_counter_clear: CounterCount
+	96,				  // completion_counter_clear: CounterCount
+	24,				  // completion_counter_clear: CounterCount
+	1,	 288,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	24,				  // completion_counter_clear: CounterCount
+	48,				  // completion_counter_clear: CounterCount
+	96,				  // completion_counter_clear: CounterCount
+	24,				  // completion_counter_clear: CounterCount
+	1,	 288,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 288,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	12,	 24,		  // repack_1d_to_2d_c1024_fp8: Height, Width
+	36,				  // completion_counter_clear: CounterCount
+	12,	 24,  24, 44, // decoder_upsample_c1024_to_c512_fp8: InputHeight, InputWidth, OutputHeight, OutputWidth
+	24,	 0,	  0,  44, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_attention_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_c512_fp8: Height, Width
+	24,	 -4,  -4, 44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_attention_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_c512_fp8: Height, Width
+	24,	 -4,  0,  44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_attention_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_c512_fp8: Height, Width
+	24,	 0,	  -4, 44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_attention_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_attention_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_c512_fp8: Height, Width
+	24,	 -4,  -4, 44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_attention_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_c512_fp8: Height, Width
+	24,	 -4,  0,  44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_attention_projection_c512_fp8: Height, Width
+	24,	 0,	  0,  44, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_ffn_projection_c512_fp8: Height, Width
+	24,	 0,	  -4, 44, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	24,	 44,		  // window_attention_projection_output_view_c512_fp8: Height, Width
+	48,	 84,  0,  0,  // window_block_c256_upsample_fp8: Height, Width, OriginX, OriginY
+	48,	 84,  -4, -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	48,	 84,  -4, 0,  // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	48,	 84,  0,  -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	48,	 84,  0,  0,  // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	48,	 84,  -4, -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	48,	 84,  -4, 0,  // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	48,	 84,  0,  -4, 48,
+	84, // window_block_c256_output_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	96,	 168, -4, 0,  // window_block_c128_upsample_fp8: Height, Width, OriginX, OriginY
+	96,	 168, 0,  -4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	96,	 168, 0,  0,  // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	96,	 168, -4, -4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	96,	 168, -4, 0,  // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	96,	 168, 0,  -4, 96,
+	168, // window_block_c128_output_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	192, 336, 0,  0,  // window_block_c64_upsample_fp8: Height, Width, OriginX, OriginY
+	192, 336, -4, -4, // window_block_c64_fp8: Height, Width, OriginX, OriginY
+	192, 336, -4, 0,  // window_block_c64_fp8: Height, Width, OriginX, OriginY
+	192, 336, 0,  -4, 192,
+	336, // window_block_c64_output_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	384, 672, 0,  0,  384,
+	672, // window_block_c32_upsample_fp8: Height, Width, OriginX, OriginY, ResidualHeight, ResidualWidth
+	384, 672, -4, -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
+	384, 672, -4, 0,  // window_block_c32_fp8: Height, Width, OriginX, OriginY
+	384, 672, 0,  -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
 };
 static const int64_t BufferBytes_1920_1080[] = {
 	17694720LL, // input
@@ -870,32 +1042,204 @@ static const dim3 Grids_1920_1080[] = {
 	dim3(121, 72, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 	dim3(120, 73, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 };
-static const int32_t Scalars_1920_1080[] = {
-	576, 960, 0,   0,	576, 960, 576, 960, -4,	 -4,  576, 960, -4,	 0,	  576, 960, 0,	 -4,  288, 480, 288,
-	480, 0,	  0,   288, 480, 288, 480, -4,	-4,	 288, 480, -4,	0,	 288, 480, 0,	-4,	 144, 240, 144, 240,
-	0,	 0,	  144, 240, 144, 240, -4,  -4,	144, 240, -4,  0,	144, 240, 0,   -4,	144, 240, 0,   0,	144,
-	240, -4,  -4,  72,	120, 72,  120, 0,	0,	 72,  120, 72,	120, -4,  -4,  72,	120, -4,  0,   72,	120,
-	0,	 -4,  72,  120, 0,	 0,	  72,  120, -4,	 -4,  72,  120, -4,	 0,	  72,  120, 0,	 -4,  36,  60,	36,
-	0,	 0,	  60,  36,	60,	 36,  0,   0,	60,	 36,  60,  36,	0,	 0,	  60,  36,	60,	 36,  -4,  -4,	60,
-	36,	 60,  36,  0,	0,	 60,  36,  60,	36,	 -4,  0,   60,	36,	 60,  36,  0,	0,	 60,  36,  60,	36,
-	0,	 -4,  60,  36,	60,	 36,  0,   0,	60,	 36,  60,  36,	0,	 0,	  60,  36,	60,	 36,  0,   0,	60,
-	36,	 60,  36,  -4,	-4,	 60,  36,  60,	36,	 0,	  0,   60,	36,	 60,  36,  -4,	0,	 60,  36,  60,	36,
-	0,	 0,	  60,  36,	60,	 36,  0,   -4,	60,	 36,  20,  32,	60,	 20,  32,  20,	32,	 40,  80,  160, 40,
-	1,	 640, 1,   640, 1,	 640, 1,   640, 1,	 640, 40,  80,	160, 40,  1,   640, 1,	 640, 1,   640, 1,
-	640, 1,	  640, 40,	80,	 160, 40,  1,	640, 1,	  640, 1,	640, 1,	  640, 1,	640, 40,  80,  160, 40,
-	1,	 640, 1,   640, 1,	 640, 1,   640, 1,	 640, 40,  80,	160, 40,  1,   640, 1,	 640, 1,   640, 1,
-	640, 1,	  640, 40,	80,	 160, 40,  1,	640, 1,	  640, 1,	640, 1,	  640, 1,	640, 40,  80,  160, 40,
-	1,	 640, 1,   640, 1,	 640, 1,   640, 1,	 640, 40,  80,	160, 40,  1,   640, 1,	 640, 1,   640, 1,
-	640, 1,	  640, 20,	32,	 80,  20,  32,	36,	 60,  36,  0,	0,	 60,  36,  60,	36,	 0,	  0,   60,	36,
-	60,	 36,  0,   0,	60,	 36,  60,  36,	-4,	 -4,  60,  36,	60,	 36,  0,   0,	60,	 36,  60,  36,	-4,
-	0,	 60,  36,  60,	36,	 0,	  0,   60,	36,	 60,  36,  0,	-4,	 60,  36,  60,	36,	 0,	  0,   60,	36,
-	60,	 36,  0,   0,	60,	 36,  60,  36,	0,	 0,	  60,  36,	60,	 36,  -4,  -4,	60,	 36,  60,  36,	0,
-	0,	 60,  36,  60,	36,	 -4,  0,   60,	36,	 60,  36,  0,	0,	 60,  36,  60,	36,	 0,	  -4,  60,	36,
-	60,	 72,  120, 0,	0,	 72,  120, -4,	-4,	 72,  120, -4,	0,	 72,  120, 0,	-4,	 72,  120, 0,	0,
-	72,	 120, -4,  -4,	72,	 120, -4,  0,	72,	 120, 0,   -4,	72,	 120, 144, 240, -4,	 0,	  144, 240, 0,
-	-4,	 144, 240, 0,	0,	 144, 240, -4,	-4,	 144, 240, -4,	0,	 144, 240, 0,	-4,	 144, 240, 288, 480,
-	0,	 0,	  288, 480, -4,	 -4,  288, 480, -4,	 0,	  288, 480, 0,	 -4,  288, 480, 576, 960, 0,   0,	576,
-	960, 576, 960, -4,	-4,	 576, 960, -4,	0,	 576, 960, 0,	-4,
+static const int32_t GeometryArguments_1920_1080[] = {
+	576, 960, 0,  0,  576,
+	960, // window_block_c32_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	576, 960, -4, -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
+	576, 960, -4, 0,  // window_block_c32_fp8: Height, Width, OriginX, OriginY
+	576, 960, 0,  -4, 288,
+	480, // window_block_c32_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	288, 480, 0,  0,  288,
+	480, // window_block_c64_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	288, 480, -4, -4, // window_block_c64_fp8: Height, Width, OriginX, OriginY
+	288, 480, -4, 0,  // window_block_c64_fp8: Height, Width, OriginX, OriginY
+	288, 480, 0,  -4, 144,
+	240, // window_block_c64_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	144, 240, 0,  0,  144,
+	240, // window_block_c128_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	144, 240, -4, -4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	144, 240, -4, 0,  // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	144, 240, 0,  -4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	144, 240, 0,  0,  // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	144, 240, -4, -4, 72,
+	120, // window_block_c128_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	72,	 120, 0,  0,  72,
+	120, // window_block_c256_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	72,	 120, -4, -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	72,	 120, -4, 0,  // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	72,	 120, 0,  -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	72,	 120, 0,  0,  // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	72,	 120, -4, -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	72,	 120, -4, 0,  // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	72,	 120, 0,  -4, 36,
+	60, // window_block_c256_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	36,	 0,	  0,  60, // window_ffn_input_view_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_input_view_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_attention_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_c512_fp8: Height, Width
+	36,	 -4,  -4, 60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_attention_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_c512_fp8: Height, Width
+	36,	 -4,  0,  60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_attention_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_c512_fp8: Height, Width
+	36,	 0,	  -4, 60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_attention_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_attention_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_c512_fp8: Height, Width
+	36,	 -4,  -4, 60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_attention_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_c512_fp8: Height, Width
+	36,	 -4,  0,  60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_attention_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_c512_fp8: Height, Width
+	36,	 0,	  -4, 60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 20,  32, 60, // window_attention_projection_pool_c512_fp8: Height, DownsampledHeight, DownsampledWidth, Width
+	20,	 32,		  // channel_projection_c512_to_c1024_fp8: Height, Width
+	20,	 32,		  // repack_2d_to_1d_c1024_fp8: Height, Width
+	40,				  // completion_counter_clear: CounterCount
+	80,				  // completion_counter_clear: CounterCount
+	160,			  // completion_counter_clear: CounterCount
+	40,				  // completion_counter_clear: CounterCount
+	1,	 640,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	40,				  // completion_counter_clear: CounterCount
+	80,				  // completion_counter_clear: CounterCount
+	160,			  // completion_counter_clear: CounterCount
+	40,				  // completion_counter_clear: CounterCount
+	1,	 640,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	40,				  // completion_counter_clear: CounterCount
+	80,				  // completion_counter_clear: CounterCount
+	160,			  // completion_counter_clear: CounterCount
+	40,				  // completion_counter_clear: CounterCount
+	1,	 640,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	40,				  // completion_counter_clear: CounterCount
+	80,				  // completion_counter_clear: CounterCount
+	160,			  // completion_counter_clear: CounterCount
+	40,				  // completion_counter_clear: CounterCount
+	1,	 640,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	40,				  // completion_counter_clear: CounterCount
+	80,				  // completion_counter_clear: CounterCount
+	160,			  // completion_counter_clear: CounterCount
+	40,				  // completion_counter_clear: CounterCount
+	1,	 640,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	40,				  // completion_counter_clear: CounterCount
+	80,				  // completion_counter_clear: CounterCount
+	160,			  // completion_counter_clear: CounterCount
+	40,				  // completion_counter_clear: CounterCount
+	1,	 640,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	40,				  // completion_counter_clear: CounterCount
+	80,				  // completion_counter_clear: CounterCount
+	160,			  // completion_counter_clear: CounterCount
+	40,				  // completion_counter_clear: CounterCount
+	1,	 640,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	40,				  // completion_counter_clear: CounterCount
+	80,				  // completion_counter_clear: CounterCount
+	160,			  // completion_counter_clear: CounterCount
+	40,				  // completion_counter_clear: CounterCount
+	1,	 640,		  // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	 640,		  // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	20,	 32,		  // repack_1d_to_2d_c1024_fp8: Height, Width
+	80,				  // completion_counter_clear: CounterCount
+	20,	 32,  36, 60, // decoder_upsample_c1024_to_c512_fp8: InputHeight, InputWidth, OutputHeight, OutputWidth
+	36,	 0,	  0,  60, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_attention_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_c512_fp8: Height, Width
+	36,	 -4,  -4, 60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_attention_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_c512_fp8: Height, Width
+	36,	 -4,  0,  60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_attention_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_c512_fp8: Height, Width
+	36,	 0,	  -4, 60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_attention_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_attention_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_c512_fp8: Height, Width
+	36,	 -4,  -4, 60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_attention_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_c512_fp8: Height, Width
+	36,	 -4,  0,  60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_attention_projection_c512_fp8: Height, Width
+	36,	 0,	  0,  60, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_ffn_projection_c512_fp8: Height, Width
+	36,	 0,	  -4, 60, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	36,	 60,		  // window_attention_projection_output_view_c512_fp8: Height, Width
+	72,	 120, 0,  0,  // window_block_c256_upsample_fp8: Height, Width, OriginX, OriginY
+	72,	 120, -4, -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	72,	 120, -4, 0,  // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	72,	 120, 0,  -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	72,	 120, 0,  0,  // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	72,	 120, -4, -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	72,	 120, -4, 0,  // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	72,	 120, 0,  -4, 72,
+	120, // window_block_c256_output_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	144, 240, -4, 0,  // window_block_c128_upsample_fp8: Height, Width, OriginX, OriginY
+	144, 240, 0,  -4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	144, 240, 0,  0,  // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	144, 240, -4, -4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	144, 240, -4, 0,  // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	144, 240, 0,  -4, 144,
+	240, // window_block_c128_output_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	288, 480, 0,  0,  // window_block_c64_upsample_fp8: Height, Width, OriginX, OriginY
+	288, 480, -4, -4, // window_block_c64_fp8: Height, Width, OriginX, OriginY
+	288, 480, -4, 0,  // window_block_c64_fp8: Height, Width, OriginX, OriginY
+	288, 480, 0,  -4, 288,
+	480, // window_block_c64_output_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	576, 960, 0,  0,  576,
+	960, // window_block_c32_upsample_fp8: Height, Width, OriginX, OriginY, ResidualHeight, ResidualWidth
+	576, 960, -4, -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
+	576, 960, -4, 0,  // window_block_c32_fp8: Height, Width, OriginX, OriginY
+	576, 960, 0,  -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
 };
 static const int64_t BufferBytes_2560_1440[] = {
 	30146560LL, // input
@@ -1318,35 +1662,204 @@ static const dim3 Grids_2560_1440[] = {
 	dim3(161, 92, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 	dim3(160, 93, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 };
-static const int32_t Scalars_2560_1440[] = {
-	736, 1280, 0,	0,	 736, 1280, 736,  1280, -4,	 -4,  736,	1280, -4,	0,	 736, 1280, 0,	  -4,  368,
-	640, 368,  640, 0,	 0,	  368,	640,  368,	640, -4,  -4,	368,  640,	-4,	 0,	  368,	640,  0,   -4,
-	184, 320,  184, 320, 0,	  0,	184,  320,	184, 320, -4,	-4,	  184,	320, -4,  0,	184,  320, 0,
-	-4,	 184,  320, 0,	 0,	  184,	320,  -4,	-4,	 92,  160,	92,	  160,	0,	 0,	  92,	160,  92,  160,
-	-4,	 -4,   92,	160, -4,  0,	92,	  160,	0,	 -4,  92,	160,  0,	0,	 92,  160,	-4,	  -4,  92,
-	160, -4,   0,	92,	 160, 0,	-4,	  48,	80,	 48,  0,	0,	  80,	48,	 80,  48,	0,	  0,   80,
-	48,	 80,   48,	0,	 0,	  80,	48,	  80,	48,	 -4,  -4,	80,	  48,	80,	 48,  0,	0,	  80,  48,
-	80,	 48,   -4,	0,	 80,  48,	80,	  48,	0,	 0,	  80,	48,	  80,	48,	 0,	  -4,	80,	  48,  80,
-	48,	 0,	   0,	80,	 48,  80,	48,	  0,	0,	 80,  48,	80,	  48,	0,	 0,	  80,	48,	  80,  48,
-	-4,	 -4,   80,	48,	 80,  48,	0,	  0,	80,	 48,  80,	48,	  -4,	0,	 80,  48,	80,	  48,  0,
-	0,	 80,   48,	80,	 48,  0,	-4,	  80,	48,	 24,  40,	80,	  24,	40,	 24,  40,	64,	  128, 256,
-	64,	 1,	   960, 1,	 960, 1,	960,  1,	960, 1,	  960,	64,	  128,	256, 64,  1,	960,  1,   960,
-	1,	 960,  1,	960, 1,	  960,	64,	  128,	256, 64,  1,	960,  1,	960, 1,	  960,	1,	  960, 1,
-	960, 64,   128, 256, 64,  1,	960,  1,	960, 1,	  960,	1,	  960,	1,	 960, 64,	128,  256, 64,
-	1,	 960,  1,	960, 1,	  960,	1,	  960,	1,	 960, 64,	128,  256,	64,	 1,	  960,	1,	  960, 1,
-	960, 1,	   960, 1,	 960, 64,	128,  256,	64,	 1,	  960,	1,	  960,	1,	 960, 1,	960,  1,   960,
-	64,	 128,  256, 64,	 1,	  960,	1,	  960,	1,	 960, 1,	960,  1,	960, 24,  40,	120,  24,  40,
-	48,	 80,   48,	0,	 0,	  80,	48,	  80,	48,	 0,	  0,	80,	  48,	80,	 48,  0,	0,	  80,  48,
-	80,	 48,   -4,	-4,	 80,  48,	80,	  48,	0,	 0,	  80,	48,	  80,	48,	 -4,  0,	80,	  48,  80,
-	48,	 0,	   0,	80,	 48,  80,	48,	  0,	-4,	 80,  48,	80,	  48,	0,	 0,	  80,	48,	  80,  48,
-	0,	 0,	   80,	48,	 80,  48,	0,	  0,	80,	 48,  80,	48,	  -4,	-4,	 80,  48,	80,	  48,  0,
-	0,	 80,   48,	80,	 48,  -4,	0,	  80,	48,	 80,  48,	0,	  0,	80,	 48,  80,	48,	  0,   -4,
-	80,	 48,   80,	92,	 160, 0,	0,	  92,	160, -4,  -4,	92,	  160,	-4,	 0,	  92,	160,  0,   -4,
-	92,	 160,  0,	0,	 92,  160,	-4,	  -4,	92,	 160, -4,	0,	  92,	160, 0,	  -4,	92,	  160, 184,
-	320, -4,   0,	184, 320, 0,	-4,	  184,	320, 0,	  0,	184,  320,	-4,	 -4,  184,	320,  -4,  0,
-	184, 320,  0,	-4,	 184, 320,	368,  640,	0,	 0,	  368,	640,  -4,	-4,	 368, 640,	-4,	  0,   368,
-	640, 0,	   -4,	368, 640, 736,	1280, 0,	0,	 736, 1280, 736,  1280, -4,	 -4,  736,	1280, -4,  0,
-	736, 1280, 0,	-4,
+static const int32_t GeometryArguments_2560_1440[] = {
+	736,  1280, 0,	0,	736,
+	1280, // window_block_c32_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	736,  1280, -4, -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
+	736,  1280, -4, 0,	// window_block_c32_fp8: Height, Width, OriginX, OriginY
+	736,  1280, 0,	-4, 368,
+	640, // window_block_c32_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	368,  640,	0,	0,	368,
+	640, // window_block_c64_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	368,  640,	-4, -4, // window_block_c64_fp8: Height, Width, OriginX, OriginY
+	368,  640,	-4, 0,	// window_block_c64_fp8: Height, Width, OriginX, OriginY
+	368,  640,	0,	-4, 184,
+	320, // window_block_c64_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	184,  320,	0,	0,	184,
+	320, // window_block_c128_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	184,  320,	-4, -4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	184,  320,	-4, 0,	// window_block_c128_fp8: Height, Width, OriginX, OriginY
+	184,  320,	0,	-4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	184,  320,	0,	0,	// window_block_c128_fp8: Height, Width, OriginX, OriginY
+	184,  320,	-4, -4, 92,
+	160, // window_block_c128_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	92,	  160,	0,	0,	92,
+	160, // window_block_c256_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	92,	  160,	-4, -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	92,	  160,	-4, 0,	// window_block_c256_fp8: Height, Width, OriginX, OriginY
+	92,	  160,	0,	-4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	92,	  160,	0,	0,	// window_block_c256_fp8: Height, Width, OriginX, OriginY
+	92,	  160,	-4, -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	92,	  160,	-4, 0,	// window_block_c256_fp8: Height, Width, OriginX, OriginY
+	92,	  160,	0,	-4, 48,
+	80, // window_block_c256_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	48,	  0,	0,	80, // window_ffn_input_view_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_input_view_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_attention_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_c512_fp8: Height, Width
+	48,	  -4,	-4, 80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_attention_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_c512_fp8: Height, Width
+	48,	  -4,	0,	80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_attention_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_c512_fp8: Height, Width
+	48,	  0,	-4, 80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_attention_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_attention_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_c512_fp8: Height, Width
+	48,	  -4,	-4, 80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_attention_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_c512_fp8: Height, Width
+	48,	  -4,	0,	80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_attention_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_c512_fp8: Height, Width
+	48,	  0,	-4, 80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  24,	40, 80, // window_attention_projection_pool_c512_fp8: Height, DownsampledHeight, DownsampledWidth, Width
+	24,	  40,			// channel_projection_c512_to_c1024_fp8: Height, Width
+	24,	  40,			// repack_2d_to_1d_c1024_fp8: Height, Width
+	64,					// completion_counter_clear: CounterCount
+	128,				// completion_counter_clear: CounterCount
+	256,				// completion_counter_clear: CounterCount
+	64,					// completion_counter_clear: CounterCount
+	1,	  960,			// global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	64,					// completion_counter_clear: CounterCount
+	128,				// completion_counter_clear: CounterCount
+	256,				// completion_counter_clear: CounterCount
+	64,					// completion_counter_clear: CounterCount
+	1,	  960,			// global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	64,					// completion_counter_clear: CounterCount
+	128,				// completion_counter_clear: CounterCount
+	256,				// completion_counter_clear: CounterCount
+	64,					// completion_counter_clear: CounterCount
+	1,	  960,			// global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	64,					// completion_counter_clear: CounterCount
+	128,				// completion_counter_clear: CounterCount
+	256,				// completion_counter_clear: CounterCount
+	64,					// completion_counter_clear: CounterCount
+	1,	  960,			// global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	64,					// completion_counter_clear: CounterCount
+	128,				// completion_counter_clear: CounterCount
+	256,				// completion_counter_clear: CounterCount
+	64,					// completion_counter_clear: CounterCount
+	1,	  960,			// global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	64,					// completion_counter_clear: CounterCount
+	128,				// completion_counter_clear: CounterCount
+	256,				// completion_counter_clear: CounterCount
+	64,					// completion_counter_clear: CounterCount
+	1,	  960,			// global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	64,					// completion_counter_clear: CounterCount
+	128,				// completion_counter_clear: CounterCount
+	256,				// completion_counter_clear: CounterCount
+	64,					// completion_counter_clear: CounterCount
+	1,	  960,			// global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	64,					// completion_counter_clear: CounterCount
+	128,				// completion_counter_clear: CounterCount
+	256,				// completion_counter_clear: CounterCount
+	64,					// completion_counter_clear: CounterCount
+	1,	  960,			// global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  960,			// global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	24,	  40,			// repack_1d_to_2d_c1024_fp8: Height, Width
+	120,				// completion_counter_clear: CounterCount
+	24,	  40,	48, 80, // decoder_upsample_c1024_to_c512_fp8: InputHeight, InputWidth, OutputHeight, OutputWidth
+	48,	  0,	0,	80, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_attention_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_c512_fp8: Height, Width
+	48,	  -4,	-4, 80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_attention_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_c512_fp8: Height, Width
+	48,	  -4,	0,	80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_attention_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_c512_fp8: Height, Width
+	48,	  0,	-4, 80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_attention_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_attention_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_c512_fp8: Height, Width
+	48,	  -4,	-4, 80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_attention_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_c512_fp8: Height, Width
+	48,	  -4,	0,	80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_attention_projection_c512_fp8: Height, Width
+	48,	  0,	0,	80, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_ffn_projection_c512_fp8: Height, Width
+	48,	  0,	-4, 80, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	48,	  80,			// window_attention_projection_output_view_c512_fp8: Height, Width
+	92,	  160,	0,	0,	// window_block_c256_upsample_fp8: Height, Width, OriginX, OriginY
+	92,	  160,	-4, -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	92,	  160,	-4, 0,	// window_block_c256_fp8: Height, Width, OriginX, OriginY
+	92,	  160,	0,	-4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	92,	  160,	0,	0,	// window_block_c256_fp8: Height, Width, OriginX, OriginY
+	92,	  160,	-4, -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	92,	  160,	-4, 0,	// window_block_c256_fp8: Height, Width, OriginX, OriginY
+	92,	  160,	0,	-4, 92,
+	160, // window_block_c256_output_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	184,  320,	-4, 0,	// window_block_c128_upsample_fp8: Height, Width, OriginX, OriginY
+	184,  320,	0,	-4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	184,  320,	0,	0,	// window_block_c128_fp8: Height, Width, OriginX, OriginY
+	184,  320,	-4, -4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	184,  320,	-4, 0,	// window_block_c128_fp8: Height, Width, OriginX, OriginY
+	184,  320,	0,	-4, 184,
+	320, // window_block_c128_output_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	368,  640,	0,	0,	// window_block_c64_upsample_fp8: Height, Width, OriginX, OriginY
+	368,  640,	-4, -4, // window_block_c64_fp8: Height, Width, OriginX, OriginY
+	368,  640,	-4, 0,	// window_block_c64_fp8: Height, Width, OriginX, OriginY
+	368,  640,	0,	-4, 368,
+	640, // window_block_c64_output_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	736,  1280, 0,	0,	736,
+	1280, // window_block_c32_upsample_fp8: Height, Width, OriginX, OriginY, ResidualHeight, ResidualWidth
+	736,  1280, -4, -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
+	736,  1280, -4, 0,	// window_block_c32_fp8: Height, Width, OriginX, OriginY
+	736,  1280, 0,	-4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
 };
 static const int64_t BufferBytes_3840_2160[] = {
 	66846720LL, // input
@@ -1769,42 +2282,210 @@ static const dim3 Grids_3840_2160[] = {
 	dim3(241, 136, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 	dim3(240, 137, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 };
-static const int32_t Scalars_3840_2160[] = {
-	1088, 1920, 0,	  0,	1088, 1920, 1088, 1920, -4,	 -4,   1088, 1920, -4,	0,	  1088, 1920, 0,   -4,
-	544,  960,	544,  960,	0,	  0,	544,  960,	544, 960,  -4,	 -4,   544, 960,  -4,	0,	  544, 960,
-	0,	  -4,	272,  480,	272,  480,	0,	  0,	272, 480,  272,	 480,  -4,	-4,	  272,	480,  -4,  0,
-	272,  480,	0,	  -4,	272,  480,	0,	  0,	272, 480,  -4,	 -4,   136, 240,  136,	240,  0,   0,
-	136,  240,	136,  240,	-4,	  -4,	136,  240,	-4,	 0,	   136,	 240,  0,	-4,	  136,	240,  0,   0,
-	136,  240,	-4,	  -4,	136,  240,	-4,	  0,	136, 240,  0,	 -4,   68,	120,  68,	0,	  0,   120,
-	68,	  120,	68,	  0,	0,	  120,	68,	  120,	68,	 0,	   0,	 120,  68,	120,  68,	-4,	  -4,  120,
-	68,	  120,	68,	  0,	0,	  120,	68,	  120,	68,	 -4,   0,	 120,  68,	120,  68,	0,	  0,   120,
-	68,	  120,	68,	  0,	-4,	  120,	68,	  120,	68,	 0,	   0,	 120,  68,	120,  68,	0,	  0,   120,
-	68,	  120,	68,	  0,	0,	  120,	68,	  120,	68,	 -4,   -4,	 120,  68,	120,  68,	0,	  0,   120,
-	68,	  120,	68,	  -4,	0,	  120,	68,	  120,	68,	 0,	   0,	 120,  68,	120,  68,	0,	  -4,  120,
-	68,	  36,	60,	  120,	36,	  60,	36,	  60,	136, 272,  544,	 136,  1,	2160, 1,	2160, 1,   2160,
-	1,	  2160, 1,	  2160, 136,  272,	544,  136,	1,	 2160, 1,	 2160, 1,	2160, 1,	2160, 1,   2160,
-	136,  272,	544,  136,	1,	  2160, 1,	  2160, 1,	 2160, 1,	 2160, 1,	2160, 136,	272,  544, 136,
-	1,	  2160, 1,	  2160, 1,	  2160, 1,	  2160, 1,	 2160, 136,	 272,  544, 136,  1,	2160, 1,   2160,
-	1,	  2160, 1,	  2160, 1,	  2160, 136,  272,	544, 136,  1,	 2160, 1,	2160, 1,	2160, 1,   2160,
-	1,	  2160, 136,  272,	544,  136,	1,	  2160, 1,	 2160, 1,	 2160, 1,	2160, 1,	2160, 136, 272,
-	544,  136,	1,	  2160, 1,	  2160, 1,	  2160, 1,	 2160, 1,	 2160, 36,	60,	  270,	36,	  60,  68,
-	120,  68,	0,	  0,	120,  68,	120,  68,	0,	 0,	   120,	 68,   120, 68,	  0,	0,	  120, 68,
-	120,  68,	-4,	  -4,	120,  68,	120,  68,	0,	 0,	   120,	 68,   120, 68,	  -4,	0,	  120, 68,
-	120,  68,	0,	  0,	120,  68,	120,  68,	0,	 -4,   120,	 68,   120, 68,	  0,	0,	  120, 68,
-	120,  68,	0,	  0,	120,  68,	120,  68,	0,	 0,	   120,	 68,   120, 68,	  -4,	-4,	  120, 68,
-	120,  68,	0,	  0,	120,  68,	120,  68,	-4,	 0,	   120,	 68,   120, 68,	  0,	0,	  120, 68,
-	120,  68,	0,	  -4,	120,  68,	120,  136,	240, 0,	   0,	 136,  240, -4,	  -4,	136,  240, -4,
-	0,	  136,	240,  0,	-4,	  136,	240,  0,	0,	 136,  240,	 -4,   -4,	136,  240,	-4,	  0,   136,
-	240,  0,	-4,	  136,	240,  272,	480,  -4,	0,	 272,  480,	 0,	   -4,	272,  480,	0,	  0,   272,
-	480,  -4,	-4,	  272,	480,  -4,	0,	  272,	480, 0,	   -4,	 272,  480, 544,  960,	0,	  0,   544,
-	960,  -4,	-4,	  544,	960,  -4,	0,	  544,	960, 0,	   -4,	 544,  960, 1088, 1920, 0,	  0,   1088,
-	1920, 1088, 1920, -4,	-4,	  1088, 1920, -4,	0,	 1088, 1920, 0,	   -4,
+static const int32_t GeometryArguments_3840_2160[] = {
+	1088, 1920, 0,	0,	 1088,
+	1920, // window_block_c32_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	1088, 1920, -4, -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
+	1088, 1920, -4, 0,	// window_block_c32_fp8: Height, Width, OriginX, OriginY
+	1088, 1920, 0,	-4,	 544,
+	960, // window_block_c32_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	544,  960,	0,	0,	 544,
+	960, // window_block_c64_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	544,  960,	-4, -4, // window_block_c64_fp8: Height, Width, OriginX, OriginY
+	544,  960,	-4, 0,	// window_block_c64_fp8: Height, Width, OriginX, OriginY
+	544,  960,	0,	-4,	 272,
+	480, // window_block_c64_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	272,  480,	0,	0,	 272,
+	480, // window_block_c128_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	272,  480,	-4, -4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	272,  480,	-4, 0,	// window_block_c128_fp8: Height, Width, OriginX, OriginY
+	272,  480,	0,	-4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	272,  480,	0,	0,	// window_block_c128_fp8: Height, Width, OriginX, OriginY
+	272,  480,	-4, -4,	 136,
+	240, // window_block_c128_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	136,  240,	0,	0,	 136,
+	240, // window_block_c256_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	136,  240,	-4, -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	136,  240,	-4, 0,	// window_block_c256_fp8: Height, Width, OriginX, OriginY
+	136,  240,	0,	-4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	136,  240,	0,	0,	// window_block_c256_fp8: Height, Width, OriginX, OriginY
+	136,  240,	-4, -4, // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	136,  240,	-4, 0,	// window_block_c256_fp8: Height, Width, OriginX, OriginY
+	136,  240,	0,	-4,	 68,
+	120, // window_block_c256_downsample_fp8: Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth
+	68,	  0,	0,	120, // window_ffn_input_view_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_input_view_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_attention_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_c512_fp8: Height, Width
+	68,	  -4,	-4, 120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_attention_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_c512_fp8: Height, Width
+	68,	  -4,	0,	120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_attention_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_c512_fp8: Height, Width
+	68,	  0,	-4, 120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_attention_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_attention_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_c512_fp8: Height, Width
+	68,	  -4,	-4, 120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_attention_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_c512_fp8: Height, Width
+	68,	  -4,	0,	120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_attention_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_c512_fp8: Height, Width
+	68,	  0,	-4, 120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  36,	60, 120, // window_attention_projection_pool_c512_fp8: Height, DownsampledHeight, DownsampledWidth, Width
+	36,	  60,			 // channel_projection_c512_to_c1024_fp8: Height, Width
+	36,	  60,			 // repack_2d_to_1d_c1024_fp8: Height, Width
+	136,				 // completion_counter_clear: CounterCount
+	272,				 // completion_counter_clear: CounterCount
+	544,				 // completion_counter_clear: CounterCount
+	136,				 // completion_counter_clear: CounterCount
+	1,	  2160,			 // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	136,				 // completion_counter_clear: CounterCount
+	272,				 // completion_counter_clear: CounterCount
+	544,				 // completion_counter_clear: CounterCount
+	136,				 // completion_counter_clear: CounterCount
+	1,	  2160,			 // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	136,				 // completion_counter_clear: CounterCount
+	272,				 // completion_counter_clear: CounterCount
+	544,				 // completion_counter_clear: CounterCount
+	136,				 // completion_counter_clear: CounterCount
+	1,	  2160,			 // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	136,				 // completion_counter_clear: CounterCount
+	272,				 // completion_counter_clear: CounterCount
+	544,				 // completion_counter_clear: CounterCount
+	136,				 // completion_counter_clear: CounterCount
+	1,	  2160,			 // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	136,				 // completion_counter_clear: CounterCount
+	272,				 // completion_counter_clear: CounterCount
+	544,				 // completion_counter_clear: CounterCount
+	136,				 // completion_counter_clear: CounterCount
+	1,	  2160,			 // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	136,				 // completion_counter_clear: CounterCount
+	272,				 // completion_counter_clear: CounterCount
+	544,				 // completion_counter_clear: CounterCount
+	136,				 // completion_counter_clear: CounterCount
+	1,	  2160,			 // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	136,				 // completion_counter_clear: CounterCount
+	272,				 // completion_counter_clear: CounterCount
+	544,				 // completion_counter_clear: CounterCount
+	136,				 // completion_counter_clear: CounterCount
+	1,	  2160,			 // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	136,				 // completion_counter_clear: CounterCount
+	272,				 // completion_counter_clear: CounterCount
+	544,				 // completion_counter_clear: CounterCount
+	136,				 // completion_counter_clear: CounterCount
+	1,	  2160,			 // global_ffn_expand_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_ffn_contract_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_qkv_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_attention_chained_c1024_fp8: BatchCount, TokensPerBatch
+	1,	  2160,			 // global_projection_c1024_fp8: BatchCount, TokensPerBatch
+	36,	  60,			 // repack_1d_to_2d_c1024_fp8: Height, Width
+	270,				 // completion_counter_clear: CounterCount
+	36,	  60,	68, 120, // decoder_upsample_c1024_to_c512_fp8: InputHeight, InputWidth, OutputHeight, OutputWidth
+	68,	  0,	0,	120, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_attention_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_c512_fp8: Height, Width
+	68,	  -4,	-4, 120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_attention_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_c512_fp8: Height, Width
+	68,	  -4,	0,	120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_attention_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_c512_fp8: Height, Width
+	68,	  0,	-4, 120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_attention_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_attention_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_c512_fp8: Height, Width
+	68,	  -4,	-4, 120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_attention_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_c512_fp8: Height, Width
+	68,	  -4,	0,	120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_attention_projection_c512_fp8: Height, Width
+	68,	  0,	0,	120, // window_ffn_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_ffn_projection_c512_fp8: Height, Width
+	68,	  0,	-4, 120, // window_qkv_c512_fp8: Height, OriginX, OriginY, Width
+	68,	  120,			 // window_attention_projection_output_view_c512_fp8: Height, Width
+	136,  240,	0,	0,	 // window_block_c256_upsample_fp8: Height, Width, OriginX, OriginY
+	136,  240,	-4, -4,	 // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	136,  240,	-4, 0,	 // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	136,  240,	0,	-4,	 // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	136,  240,	0,	0,	 // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	136,  240,	-4, -4,	 // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	136,  240,	-4, 0,	 // window_block_c256_fp8: Height, Width, OriginX, OriginY
+	136,  240,	0,	-4,	 136,
+	240, // window_block_c256_output_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	272,  480,	-4, 0,	// window_block_c128_upsample_fp8: Height, Width, OriginX, OriginY
+	272,  480,	0,	-4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	272,  480,	0,	0,	// window_block_c128_fp8: Height, Width, OriginX, OriginY
+	272,  480,	-4, -4, // window_block_c128_fp8: Height, Width, OriginX, OriginY
+	272,  480,	-4, 0,	// window_block_c128_fp8: Height, Width, OriginX, OriginY
+	272,  480,	0,	-4,	 272,
+	480, // window_block_c128_output_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	544,  960,	0,	0,	// window_block_c64_upsample_fp8: Height, Width, OriginX, OriginY
+	544,  960,	-4, -4, // window_block_c64_fp8: Height, Width, OriginX, OriginY
+	544,  960,	-4, 0,	// window_block_c64_fp8: Height, Width, OriginX, OriginY
+	544,  960,	0,	-4,	 544,
+	960, // window_block_c64_output_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
+	1088, 1920, 0,	0,	 1088,
+	1920, // window_block_c32_upsample_fp8: Height, Width, OriginX, OriginY, ResidualHeight, ResidualWidth
+	1088, 1920, -4, -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
+	1088, 1920, -4, 0,	// window_block_c32_fp8: Height, Width, OriginX, OriginY
+	1088, 1920, 0,	-4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
 };
 static const FGeometryPlanSpec GeometryPlans[] = {
-	{1280, 720, BufferBytes_1280_720, Grids_1280_720, Scalars_1280_720},
-	{1920, 1080, BufferBytes_1920_1080, Grids_1920_1080, Scalars_1920_1080},
-	{2560, 1440, BufferBytes_2560_1440, Grids_2560_1440, Scalars_2560_1440},
-	{3840, 2160, BufferBytes_3840_2160, Grids_3840_2160, Scalars_3840_2160},
+	{1280, 720, BufferBytes_1280_720, Grids_1280_720, GeometryArguments_1280_720},
+	{1920, 1080, BufferBytes_1920_1080, Grids_1920_1080, GeometryArguments_1920_1080},
+	{2560, 1440, BufferBytes_2560_1440, Grids_2560_1440, GeometryArguments_2560_1440},
+	{3840, 2160, BufferBytes_3840_2160, Grids_3840_2160, GeometryArguments_3840_2160},
 };
 
 static const FGeometryPlanSpec& SelectGeometryPlan(int64_t Width, int64_t Height)

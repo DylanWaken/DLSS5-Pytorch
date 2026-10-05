@@ -21,7 +21,7 @@ __global__ __maxnreg__(168) void input_preprocess_window_c32_fp16(Parameters r_P
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ dlssnr::kernels::input_features::FSharedFeatures s_Features;
-	const auto& r_Input = reinterpret_cast<const dlssnr::kernels::input_features::FParameters&>(r_Parameters);
+	const dlssnr::kernels::input_features::FParameters& r_Input = r_Parameters;
 	dlssnr::kernels::window_preprocess::RunPreprocess<false, false>(r_Input, s_Features);
 #endif
 }

@@ -6,11 +6,11 @@ namespace dlssnr::reconstructed::completion_counter_clear
 {
 using ClearParameters = dlssnr::reconstructed::global_repack_layout::ClearParameters;
 
-__global__ void completion_counter_clear(ClearParameters r_P)
+__global__ void completion_counter_clear(ClearParameters r_Parameters)
 {
 	const int32_t g_CounterIndex = int32_t(blockIdx.x * blockDim.x + threadIdx.x);
-	if (g_CounterIndex >= r_P.Count)
+	if (g_CounterIndex >= r_Parameters.CounterCount)
 		return;
-	reinterpret_cast<int32_t*>(r_P.g_Counters)[g_CounterIndex] = -1;
+	reinterpret_cast<int32_t*>(r_Parameters.g_Counters)[g_CounterIndex] = -1;
 }
 } // namespace dlssnr::reconstructed::completion_counter_clear

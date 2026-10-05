@@ -122,14 +122,14 @@ __device__ __forceinline__ uint32_t RcpHalf2(uint32_t r_PackedHalfBits)
 // Half words, so sharing this sequence introduces no conversion or wider math.
 __device__ __forceinline__ uint32_t ClampedHalfPolynomial(uint32_t r_Input, uint32_t r_UpperBound,
 														  uint32_t r_LowerBound, uint32_t r_AbsoluteSlope,
-														  uint32_t r_AbsoluteIntercept, uint32_t r_Offset)
+														  uint32_t r_AbsoluteIntercept, uint32_t r_GateOffset)
 {
 	const uint32_t r_UpperClamped = HalfMin(r_Input, r_UpperBound);
 	const uint32_t r_Clamped = HalfMax(r_UpperClamped, r_LowerBound);
 	const uint32_t r_Absolute = HalfAbs(r_Clamped);
-	const uint32_t r_Affine = HalfFma(r_AbsoluteSlope, r_Absolute, r_AbsoluteIntercept);
-	const uint32_t r_Weight = HalfFma(r_Clamped, r_Affine, r_Offset);
-	return HalfMul(r_Input, r_Weight);
+	const uint32_t r_AbsoluteAffine = HalfFma(r_AbsoluteSlope, r_Absolute, r_AbsoluteIntercept);
+	const uint32_t r_ActivationGate = HalfFma(r_Clamped, r_AbsoluteAffine, r_GateOffset);
+	return HalfMul(r_Input, r_ActivationGate);
 }
 
 // The recovered FFN gate shared by every window/global expansion. Its named

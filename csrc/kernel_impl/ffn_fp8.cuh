@@ -24,11 +24,11 @@
 
 namespace dlssnr::reconstructed::window_ffn_c512_fp8
 {
-__global__ __maxnreg__(128) void window_ffn_c512_fp8(Parameters ParameterBlock)
+__global__ __maxnreg__(128) void window_ffn_c512_fp8(Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ __align__(512) unsigned char s_Storage[8208];
-	dlssnr::kernels::window_ffn::Forward<true>(ParameterBlock, s_Storage);
+	dlssnr::kernels::window_ffn::Forward<true>(r_Parameters, s_Storage);
 #endif
 }
 } // namespace dlssnr::reconstructed::window_ffn_c512_fp8
@@ -40,11 +40,11 @@ __global__ __maxnreg__(128) void window_ffn_c512_fp8(Parameters ParameterBlock)
 
 namespace dlssnr::reconstructed::window_ffn_input_view_c512_fp8
 {
-__global__ __maxnreg__(168) void window_ffn_input_view_c512_fp8(Parameters ParameterBlock)
+__global__ __maxnreg__(168) void window_ffn_input_view_c512_fp8(Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ __align__(512) unsigned char s_Storage[8208];
-	dlssnr::kernels::window_ffn::Forward<true, true>(ParameterBlock, s_Storage);
+	dlssnr::kernels::window_ffn::Forward<true, true>(r_Parameters, s_Storage);
 #endif
 }
 } // namespace dlssnr::reconstructed::window_ffn_input_view_c512_fp8

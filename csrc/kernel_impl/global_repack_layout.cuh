@@ -28,37 +28,40 @@ __device__ __forceinline__ uint32_t SpatialToken(uint32_t g_TokenIndex, uint32_t
 	return ((g_Y / 4u) * (g_Width / 4u) + g_X / 4u) * 16u + (g_Y % 4u) * 4u + g_X % 4u;
 }
 
-template <bool r_bFP8, bool r_bTo1D> __device__ __forceinline__ void CopyWords(Parameters r_P)
+template <bool bFp8, bool bToTokenLayout> __device__ __forceinline__ void CopyWords(Parameters r_Parameters)
 {
-	constexpr uint32_t r_Words = r_bFP8 ? 256u : 512u;
-	constexpr uint32_t r_Alignment = r_bFP8 ? 32u : 16u;
-	const uint32_t r_Tokens = uint32_t(r_P.Height) * uint32_t(r_P.Width);
-	const uint32_t r_Padded = (r_Tokens + r_Alignment - 1u) / r_Alignment * r_Alignment;
-	const uint32_t g_Limit = (r_bTo1D ? r_Padded : r_Tokens) * r_Words;
-	const auto* g_Input = reinterpret_cast<const uint32_t*>(r_P.g_Input);
-	auto* g_Output = reinterpret_cast<uint32_t*>(r_P.g_Output);
-	const uint32_t g_Stride = gridDim.x * blockDim.x;
-	for (uint32_t g_WordIndex = blockIdx.x * blockDim.x + threadIdx.x; g_WordIndex < g_Limit;
-		 g_WordIndex += g_Stride)
+	constexpr uint32_t CONST_WORDS_PER_TOKEN = bFp8 ? 256u : 512u;
+	constexpr uint32_t CONST_TOKEN_ALIGNMENT = bFp8 ? 32u : 16u;
+	const uint32_t g_TokenCount = uint32_t(r_Parameters.Height) * uint32_t(r_Parameters.Width);
+	const uint32_t g_PaddedTokenCount =
+		(g_TokenCount + CONST_TOKEN_ALIGNMENT - 1u) / CONST_TOKEN_ALIGNMENT * CONST_TOKEN_ALIGNMENT;
+	const uint32_t g_WordCount = (bToTokenLayout ? g_PaddedTokenCount : g_TokenCount) * CONST_WORDS_PER_TOKEN;
+	const auto* g_Input = reinterpret_cast<const uint32_t*>(r_Parameters.g_Input);
+	auto* g_Output = reinterpret_cast<uint32_t*>(r_Parameters.g_Output);
+	const uint32_t g_WordStride = gridDim.x * blockDim.x;
+	for (uint32_t g_WordIndex = blockIdx.x * blockDim.x + threadIdx.x; g_WordIndex < g_WordCount;
+		 g_WordIndex += g_WordStride)
 	{
-		const uint32_t g_TokenIndex = g_WordIndex / r_Words, g_ChannelWord = g_WordIndex % r_Words;
-		const uint32_t g_TokenWord = PhysicalWord<r_Words>(g_TokenIndex, g_ChannelWord);
-		if constexpr (r_bTo1D)
+		const uint32_t g_TokenIndex = g_WordIndex / CONST_WORDS_PER_TOKEN,
+					   g_ChannelWord = g_WordIndex % CONST_WORDS_PER_TOKEN;
+		const uint32_t g_TokenWord = PhysicalWord<CONST_WORDS_PER_TOKEN>(g_TokenIndex, g_ChannelWord);
+		if constexpr (bToTokenLayout)
 		{
-			uint32_t r_Value = 0;
+			uint32_t r_CopiedWord = 0;
 			// Forward tail writes +0 bits and never reads the spatial input.
-			if (g_TokenIndex < r_Tokens)
+			if (g_TokenIndex < g_TokenCount)
 			{
-				const uint32_t g_SpatialToken = SpatialToken(g_TokenIndex, uint32_t(r_P.Width));
-				r_Value = g_Input[PhysicalWord<r_Words>(g_SpatialToken, g_ChannelWord)];
+				const uint32_t g_SpatialToken = SpatialToken(g_TokenIndex, uint32_t(r_Parameters.Width));
+				r_CopiedWord = g_Input[PhysicalWord<CONST_WORDS_PER_TOKEN>(g_SpatialToken, g_ChannelWord)];
 			}
-			g_Output[g_TokenWord] = r_Value;
+			g_Output[g_TokenWord] = r_CopiedWord;
 		}
 		else
 		{
 			// Inverse launched tail threads perform neither load nor store.
-			const uint32_t g_SpatialToken = SpatialToken(g_TokenIndex, uint32_t(r_P.Width));
-			g_Output[PhysicalWord<r_Words>(g_SpatialToken, g_ChannelWord)] = g_Input[g_TokenWord];
+			const uint32_t g_SpatialToken = SpatialToken(g_TokenIndex, uint32_t(r_Parameters.Width));
+			g_Output[PhysicalWord<CONST_WORDS_PER_TOKEN>(g_SpatialToken, g_ChannelWord)] =
+				g_Input[g_TokenWord];
 		}
 	}
 }

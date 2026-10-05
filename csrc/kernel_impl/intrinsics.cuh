@@ -20,9 +20,10 @@ __device__ __forceinline__ uint32_t SharedAddress(unsigned char* s_SharedStorage
 __device__ __forceinline__ uint32_t Elected(uint32_t r_MemberMask)
 {
 	uint32_t r_ElectedWord;
-	asm volatile("{ .reg .pred p; elect.sync _|p,%1; selp.b32 %0,1,0,p; }"
-				 : "=r"(r_ElectedWord)
-				 : "r"(r_MemberMask));
+	asm volatile(
+		"{ .reg .pred r_bElectedLane; elect.sync _|r_bElectedLane,%1; selp.b32 %0,1,0,r_bElectedLane; }"
+		: "=r"(r_ElectedWord)
+		: "r"(r_MemberMask));
 	return r_ElectedWord;
 }
 
@@ -85,10 +86,10 @@ __device__ __forceinline__ uint32_t FloatSqrtApproxFtzBits(uint32_t r_InputBits)
 __device__ __forceinline__ uint32_t PublishFourE4(uint32_t r_LowHalfPair, uint32_t r_HighHalfPair)
 {
 	uint32_t r_PackedE4Word;
-	asm("{ .reg .b16 LowPair, HighPair;\n"
-		"cvt.rn.satfinite.e4m3x2.f16x2 LowPair, %1;\n"
-		"cvt.rn.satfinite.e4m3x2.f16x2 HighPair, %2;\n"
-		"mov.b32 %0, {LowPair, HighPair}; }"
+	asm("{ .reg .b16 r_LowE4Pair, r_HighE4Pair;\n"
+		"cvt.rn.satfinite.e4m3x2.f16x2 r_LowE4Pair, %1;\n"
+		"cvt.rn.satfinite.e4m3x2.f16x2 r_HighE4Pair, %2;\n"
+		"mov.b32 %0, {r_LowE4Pair, r_HighE4Pair}; }"
 		: "=r"(r_PackedE4Word)
 		: "r"(r_LowHalfPair), "r"(r_HighHalfPair));
 	return r_PackedE4Word;
@@ -165,11 +166,12 @@ __device__ __forceinline__ void MmaE4(uint32_t& r_OutputWord0, uint32_t& r_Outpu
 // Store one aligned 16-byte vector without allocating an L1 line.
 __device__ __forceinline__ void StoreNoAllocate(uint64_t g_GlobalAddress, uint4 r_PackedWords)
 {
-	asm volatile("{ .reg .b128 v; mov.b128 v,{%1,%2,%3,%4}; st.global.L1::no_allocate.b128 [%0],v; }"
-				 :
-				 : "l"(g_GlobalAddress), "r"(r_PackedWords.x), "r"(r_PackedWords.y), "r"(r_PackedWords.z),
-				   "r"(r_PackedWords.w)
-				 : "memory");
+	asm volatile(
+		"{ .reg .b128 r_StoreVector; mov.b128 r_StoreVector,{%1,%2,%3,%4}; st.global.L1::no_allocate.b128 [%0],r_StoreVector; }"
+		:
+		: "l"(g_GlobalAddress), "r"(r_PackedWords.x), "r"(r_PackedWords.y), "r"(r_PackedWords.z),
+		  "r"(r_PackedWords.w)
+		: "memory");
 }
 
 // Accumulate an M16xN8xK16 Half matrix product into two packed Half words.
@@ -287,7 +289,7 @@ __device__ __forceinline__ uint32_t NativeSubFtzF32(uint32_t r_LhsBits, uint32_t
 __device__ __forceinline__ bool NativeSetpEquFtzF32(uint32_t r_LhsBits, uint32_t r_RhsBits)
 {
 	uint32_t r_PredicateWord;
-	asm("{ .reg .pred p; setp.equ.ftz.f32 p,%1,%2; selp.u32 %0,1,0,p; }"
+	asm("{ .reg .pred r_bEqualOrUnordered; setp.equ.ftz.f32 r_bEqualOrUnordered,%1,%2; selp.u32 %0,1,0,r_bEqualOrUnordered; }"
 		: "=r"(r_PredicateWord)
 		: "r"(r_LhsBits), "r"(r_RhsBits));
 	return r_PredicateWord != 0;
@@ -368,7 +370,7 @@ __device__ __forceinline__ uint16_t NativeSubF16(uint16_t r_LhsBits, uint16_t r_
 __device__ __forceinline__ bool NativeSetpGeFtzF32(uint32_t r_LhsBits, uint32_t r_RhsBits)
 {
 	uint32_t r_PredicateWord;
-	asm("{ .reg .pred p; setp.ge.ftz.f32 p,%1,%2; selp.u32 %0,1,0,p; }"
+	asm("{ .reg .pred r_bGreaterEqual; setp.ge.ftz.f32 r_bGreaterEqual,%1,%2; selp.u32 %0,1,0,r_bGreaterEqual; }"
 		: "=r"(r_PredicateWord)
 		: "r"(r_LhsBits), "r"(r_RhsBits));
 	return r_PredicateWord != 0;
@@ -378,7 +380,7 @@ __device__ __forceinline__ bool NativeSetpGeFtzF32(uint32_t r_LhsBits, uint32_t 
 __device__ __forceinline__ bool NativeSetpGeuFtzF32(uint32_t r_LhsBits, uint32_t r_RhsBits)
 {
 	uint32_t r_PredicateWord;
-	asm("{ .reg .pred p; setp.geu.ftz.f32 p,%1,%2; selp.u32 %0,1,0,p; }"
+	asm("{ .reg .pred r_bGreaterEqualOrUnordered; setp.geu.ftz.f32 r_bGreaterEqualOrUnordered,%1,%2; selp.u32 %0,1,0,r_bGreaterEqualOrUnordered; }"
 		: "=r"(r_PredicateWord)
 		: "r"(r_LhsBits), "r"(r_RhsBits));
 	return r_PredicateWord != 0;
@@ -388,7 +390,7 @@ __device__ __forceinline__ bool NativeSetpGeuFtzF32(uint32_t r_LhsBits, uint32_t
 __device__ __forceinline__ bool NativeSetpLeuFtzF32(uint32_t r_LhsBits, uint32_t r_RhsBits)
 {
 	uint32_t r_PredicateWord;
-	asm("{ .reg .pred p; setp.leu.ftz.f32 p,%1,%2; selp.u32 %0,1,0,p; }"
+	asm("{ .reg .pred r_bLessEqualOrUnordered; setp.leu.ftz.f32 r_bLessEqualOrUnordered,%1,%2; selp.u32 %0,1,0,r_bLessEqualOrUnordered; }"
 		: "=r"(r_PredicateWord)
 		: "r"(r_LhsBits), "r"(r_RhsBits));
 	return r_PredicateWord != 0;
@@ -398,7 +400,7 @@ __device__ __forceinline__ bool NativeSetpLeuFtzF32(uint32_t r_LhsBits, uint32_t
 __device__ __forceinline__ bool NativeSetpLtuFtzF32(uint32_t r_LhsBits, uint32_t r_RhsBits)
 {
 	uint32_t r_PredicateWord;
-	asm("{ .reg .pred p; setp.ltu.ftz.f32 p,%1,%2; selp.u32 %0,1,0,p; }"
+	asm("{ .reg .pred r_bLessOrUnordered; setp.ltu.ftz.f32 r_bLessOrUnordered,%1,%2; selp.u32 %0,1,0,r_bLessOrUnordered; }"
 		: "=r"(r_PredicateWord)
 		: "r"(r_LhsBits), "r"(r_RhsBits));
 	return r_PredicateWord != 0;
@@ -465,10 +467,11 @@ __device__ __forceinline__ uint32_t BarrierReady(unsigned char* s_SharedStorage,
 												 uint64_t r_PhaseToken)
 {
 	uint32_t r_ReadyWord;
-	asm volatile("{ .reg .pred p; mbarrier.try_wait.shared::cta.b64 p,[%1],%2; selp.b32 %0,1,0,p; }"
-				 : "=r"(r_ReadyWord)
-				 : "r"(SharedAddress(s_SharedStorage, s_BarrierOffset)), "l"(r_PhaseToken)
-				 : "memory");
+	asm volatile(
+		"{ .reg .pred r_bPhaseComplete; mbarrier.try_wait.shared::cta.b64 r_bPhaseComplete,[%1],%2; selp.b32 %0,1,0,r_bPhaseComplete; }"
+		: "=r"(r_ReadyWord)
+		: "r"(SharedAddress(s_SharedStorage, s_BarrierOffset)), "l"(r_PhaseToken)
+		: "memory");
 	return r_ReadyWord;
 }
 
@@ -487,8 +490,8 @@ __device__ __forceinline__ void CopyAsync4(unsigned char* s_SharedStorage, uint3
 __device__ __forceinline__ uint4 LoadGlobalCaOrZero(uint64_t g_Address, bool r_bValid)
 {
 	uint4 r_Result = make_uint4(0, 0, 0, 0);
-	asm volatile("{ .reg .pred p; setp.ne.u32 p, %5, 0; "
-				 "@p ld.global.ca.v4.u32 {%0,%1,%2,%3}, [%4]; }"
+	asm volatile("{ .reg .pred r_bLoadEnabled; setp.ne.u32 r_bLoadEnabled, %5, 0; "
+				 "@r_bLoadEnabled ld.global.ca.v4.u32 {%0,%1,%2,%3}, [%4]; }"
 				 : "+r"(r_Result.x), "+r"(r_Result.y), "+r"(r_Result.z), "+r"(r_Result.w)
 				 : "l"(g_Address), "r"(uint32_t(r_bValid))
 				 : "memory");

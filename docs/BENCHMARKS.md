@@ -54,4 +54,6 @@ See [training results and reproduction commands](training.md) for exact timings,
 
 Actual DLSS5 transfer-learning losses, data preparation and training procedures remain to be investigated. These timings do not establish trained output quality.
 
-The released build adds an assembler cache key after the timing run. All 81 GPU kernels, resource records and constants, host machine code and imports are byte-identical to the timed build. Installed 720p FP8/FP16 boundary and replay checks also pass. [Release identities and source hashes](semantic_release.json) and [compiled equivalence](semantic_build_equivalence.json) preserve this distinction; no new timing is attributed to the rebuilt file.
+The preceding release added an assembler cache key after the timing run. All 81 GPU kernels, resource records and constants, host machine code and imports are byte-identical to the timed build. Its installed 720p FP8/FP16 boundary and replay checks also pass. [Release identities and source hashes](semantic_release.json) and [compiled equivalence](semantic_build_equivalence.json) preserve this distinction; no new timing is attributed to the rebuilt file.
+
+The subsequent [semantic naming audit](NAMING_AUDIT.md#validation) retains all 81 device instruction payloads, constants and resources. Its changed host packing passes separate full-graph and public-dispatch validation. The charts keep the original timing samples; no fresh latency measurements are claimed for the naming rebuild.
