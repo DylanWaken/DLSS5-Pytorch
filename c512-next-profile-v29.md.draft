@@ -1,0 +1,117 @@
+# C512: measure the current dense schedules before adding another fusion
+
+The fresh graph experiment puts the sixteen C512 blocks at **2.168032 ms** at
+the 4K input anchor. Every C512 block receives B1/H68/W120/C512, or M8160 rows.
+Their individual graph medians lie between 134.464 and 136.832 microseconds.
+The four phases and block30's required raw output do not create a large timing
+outlier. This makes the common dense body the useful next place to investigate.
+
+These are the candidate graph's own block intervals. Native stage boundaries
+fuse different work, so a native family total is not a directly matched speed
+comparison. The graph-family total is the median of each replay's summed
+intervals, not the sum of separately computed medians.
+
+## Evidence and actual selected kernels
+
+Graph evidence:
+`profile/trunk-stage-events-fp8-packed-direct-20261003T080534_296106Z/analysis/stage_events.json`.
+Eager CUPTI trace:
+`profile/network-fp8-packed-20261003T080742_250708Z/reports/trace.json`.
+The CPU-only role extraction is saved in
+`outputs/c512_public_trace_attribution_v29.json.draft` with the trace hash.
+It matches each kernel to its public operator by **External id** and verifies
+the six-operation sequence separately for blocks23–30 and40–47. A C512→C256
+down-projection is explicitly excluded by its weight shape.
+
+The trace and graph measurements use v29 binary
+`54efa3f7bfe3410d3c2320b6494f50262cbb0dd60ae0a5579dabeaf0a2ea8e49`.
+The GEMM policy is `ec70c084051c4c3e`, residual policy `61acd20342d20301`,
+branch policy `23e446b1701f31ab`, and cached-window policy `86bfe65380016080`.
+
+| Public role | Compute-kernel sum, 16 blocks | Median kernel | Selected schedule/resources |
+| --- | ---: | ---: | --- |
+| W1 512→512 | 374.597 us | 23.4085 us | BM32/BN64/BK64, scalar shared loads, 38 registers, 15,360 shared bytes |
+| Eight branch FFNs | 262.533 us | 16.4320 us | One warp, 78 registers, no shared memory |
+| W4 + scaled FFN seed | 298.692 us | 18.6725 us | BM128/BN128/BK64, 102 registers, 40,960 shared bytes |
+| QKV 512→1536 | 500.742 us | 31.3445 us | BM128/BN128/BK64, ldmatrix, 79 registers, 40,960 shared bytes |
+| Window attention | 299.333 us | 18.6400 us | Four warps, 40 registers, 8,320 shared bytes |
+| Projection + scaled attention seed | 306.466 us | 19.0720 us | Same residual tile; 109 registers for block30 raw output, otherwise102 |
+
+These are eager profiler attribution numbers, not CUDA Graph benchmark times.
+They must not be added to inclusive CPU operator device-time totals. Projection
+also owns sixteen Half→E4 pack launches totaling **38.435 us**. The attention
+kernel already publishes E4 values but stores them in Half; the residual API
+packs those values back into bytes before its GEMM. W1 has a separate Python
+publication pack after its Half-output GEMM. Eliminating either pack could be
+useful, but the measured copies are much smaller than the four dense GEMMs.
+
+## The policy has not measured these W1/QKV rows
+
+The exact ungrouped FP8/EP0 W1 and QKV families in `gemm_policy.h` have M320
+and M2160 anchors only. M8160 therefore inherits the M2160 choice. W1's policy
+variant3 selects the split-capable BM32/BN64 implementation; partition equals K,
+so it has only one partition and executes the same unsplit tile as variant2.
+This is consistent with the actual mangled CUPTI symbol. QKV selects variant10.
+Endpoint clamping is correct behavior, but is not evidence of optimal speed at
+the larger row count.
+
+Root's subsequent **exploratory** v30 screen in
+`outputs/gemm_anchor_screen_v30.json` supports testing this gap: at M8160,
+W1 variant10 measured12.629 us versus variant3's23.968 us, while QKV's existing
+variant10 remained fastest at33.24 us. This screen used synthetic inputs,
+no residual seed and the older nonpaired graph helper; it establishes neither
+a promoted policy nor a whole-block improvement. It also uses a different
+binary, `de9ea93be1d9801e8934cf57a0ff498d300230b3aa0dbabe80e806ed97f24c33`.
+
+## Bounded next experiment
+
+First profile block23 at H68/W120 using its **actual public forward**, with all
+prepared real weights. Start with W1, then QKV and W4. Projection is a distinct
+role even when it shares W4's kernel symbol; block30 adds the raw-output case.
+`tuning/profile_c512_public.py.draft` provides this experiment:
+
+```powershell
+.venv\Scripts\python.exe tuning/profile_c512_public.py --block 23 --height 68 --width 120 --role w1
+.venv\Scripts\python.exe tuning/profile_c512_public.py --block 23 --height 68 --width 120 --role qkv
+.venv\Scripts\python.exe tuning/profile_c512_public.py --block 23 --height 68 --width 120 --role w4
+.venv\Scripts\python.exe tuning/profile_c512_public.py --block 30 --height 68 --width 120 --role projection
+```
+
+These commands require root to activate the draft first. No GPU execution has
+been performed by this subtask. Each run archives active source/binary identity
+and compiled policies, performs eager and three changed-input/poisoned graph
+checks, and captures a standalone CUPTI trace. Separate full/source NCU workers
+then call the same public forward. An exact mangled symbol filter and the number
+of earlier identical-symbol launches select one role inside the block. Full
+collection requests available PM sampling sections; source collection requests
+SourceCounters. The existing `ncu_report` parser saves typed counters, per-PC
+hotspots and source mappings; cuobjdump saves the exact SM-specific symbol.
+
+The input is deterministic synthetic **published state**, while all weights
+are the real extracted block weights and all later operands arise from the
+real public block. The correctness oracle uses separate ordered dense/group
+GEMMs with the original Half seed and publication points. Attention is shared
+with the candidate; this is explicitly a local composition proof, not an
+independent attention or original-DLL proof. Reference work and graph checks
+remain outside the profiler markers. Cold-cache NCU replay is not resident
+graph timing.
+
+Before implementing a kernel, use those profiles to determine whether W1's
+small tile suffers repeated shared/input traffic, short tensor issue runs,
+address/loop overhead, or a different bottleneck. Compare its existing large
+tile alternative with real W1 inputs using paired alternating CUDA Graph
+timings, independent ordered outputs, all retained outputs, mutated-input
+replays and weight immutability. Cover actual M1056/M2160/M8160 anchors and
+several real blocks before generating a measured policy. A new public policy
+still needs native trunk reproof under a new binary/journal identity.
+
+Only after this bounded schedule experiment should a new fusion be selected.
+A plain packed W1 epilogue could remove its Half temporary/publication kernel;
+the generic tiled kernel already has a plain packed epilogue, but the current
+public dense API does not expose it. A packed attention output could similarly
+remove projection's input repack. Either requires a separate measured experiment
+with the same E4 rounding and raw-output contracts. Fusing QKV with attention
+is a substantially larger change in data layout, accumulator lifetime and
+shared-memory usage; the current evidence does not justify starting there.
+
+No new speedup, native performance parity, or85% roofline gate is claimed here.

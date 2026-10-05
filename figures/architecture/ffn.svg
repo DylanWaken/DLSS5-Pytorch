@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1060" viewBox="0 0 1440 1060" role="img" aria-labelledby="title desc">
+<title id="title">Four feed-forward network families</title><desc id="desc">Linear sizes are input channels → output channels. Every branch executes; the source has no router or top-k expert selection.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="context-stroke"/></marker></defs>
+<rect width="1440" height="100%" fill="#ffffff"/>
+<text x="42" y="45" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="29" font-weight="650" text-anchor="start">Four feed-forward network families</text>
+<text x="42" y="77" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Linear sizes are input channels → output channels. Every branch executes; the source has no router or top-k expert selection.</text>
+<text x="44" y="128" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">C32 · input, finest encoder/decoder and output</text>
+<rect x="44" y="147" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="59" y="176" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Input</text>
+<text x="59" y="201" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">32 channels</text>
+<path d="M 364.0,210.0 L 388.0,210.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="388.0" y="147" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="403.0" y="176" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Expand + activate</text>
+<text x="403.0" y="201" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">W1: 32 → 128</text>
+<text x="403.0" y="223" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Piecewise activation</text>
+<path d="M 708.0,210.0 L 732.0,210.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="732.0" y="147" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="747.0" y="176" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Contract</text>
+<text x="747.0" y="201" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">W2: 128 → 32</text>
+<path d="M 1052.0,210.0 L 1076.0,210.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1076.0" y="147" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="1091.0" y="176" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Residual</text>
+<text x="1091.0" y="201" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">+ ffn_scale × R</text>
+<text x="1091.0" y="223" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Publish 32 channels</text>
+<text x="44" y="342" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">C64 / C128 / C256 · 2 / 4 / 8 parallel branches</text>
+<rect x="44" y="361" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="59" y="390" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Broadcast full X</text>
+<text x="59" y="415" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Each branch reads all C</text>
+<text x="59" y="437" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">E = C / 32 branches</text>
+<path d="M 364.0,424.0 L 388.0,424.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="388.0" y="361" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="403.0" y="390" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Each branch</text>
+<text x="403.0" y="415" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">W1[e]: C → 128 + activation</text>
+<text x="403.0" y="437" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">W2[e]: 128 → 32</text>
+<text x="403.0" y="459" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Publish branch output</text>
+<path d="M 708.0,424.0 L 732.0,424.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="732.0" y="361" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="747.0" y="390" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Join and mix</text>
+<text x="747.0" y="415" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Concatenate E × 32 = C</text>
+<text x="747.0" y="437" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">W3: C → C</text>
+<path d="M 1052.0,424.0 L 1076.0,424.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1076.0" y="361" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="1091.0" y="390" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Residual</text>
+<text x="1091.0" y="415" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">+ ffn_scale × R</text>
+<text x="1091.0" y="437" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Publish C channels</text>
+<text x="44" y="556" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">C512 · eight fixed 64-channel branches</text>
+<rect x="44" y="575" width="320.0" height="126" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
+<text x="59" y="604" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Mix then split</text>
+<text x="59" y="629" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">W1: 512 → 512</text>
+<text x="59" y="651" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Publish, then split into</text>
+<text x="59" y="673" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">8 groups of 64</text>
+<path d="M 364.0,638.0 L 388.0,638.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="388.0" y="575" width="320.0" height="126" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
+<text x="403.0" y="604" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Each branch</text>
+<text x="403.0" y="629" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">W2[e]: 64 → 256 + activation</text>
+<text x="403.0" y="651" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">W3[e]: 256 → 64</text>
+<text x="403.0" y="673" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Publish branch output</text>
+<path d="M 708.0,638.0 L 732.0,638.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="732.0" y="575" width="320.0" height="126" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
+<text x="747.0" y="604" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Join and mix</text>
+<text x="747.0" y="629" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Concatenate 8 × 64 = 512</text>
+<text x="747.0" y="651" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">W4: 512 → 512</text>
+<path d="M 1052.0,638.0 L 1076.0,638.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1076.0" y="575" width="320.0" height="126" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
+<text x="1091.0" y="604" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Residual</text>
+<text x="1091.0" y="629" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">+ ffn_scale × R</text>
+<text x="1091.0" y="651" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Publish 512 channels</text>
+<text x="44" y="770" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">C1024 · global bottleneck</text>
+<rect x="44" y="789" width="320.0" height="126" rx="12" fill="#f3eefb" stroke="#7750aa" stroke-width="1.5"/>
+<text x="59" y="818" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Input</text>
+<text x="59" y="843" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">1024 channels per token</text>
+<path d="M 364.0,852.0 L 388.0,852.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="388.0" y="789" width="320.0" height="126" rx="12" fill="#f3eefb" stroke="#7750aa" stroke-width="1.5"/>
+<text x="403.0" y="818" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Expand + activate</text>
+<text x="403.0" y="843" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">W1: 1024 → 4096</text>
+<text x="403.0" y="865" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Piecewise activation</text>
+<path d="M 708.0,852.0 L 732.0,852.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="732.0" y="789" width="320.0" height="126" rx="12" fill="#f3eefb" stroke="#7750aa" stroke-width="1.5"/>
+<text x="747.0" y="818" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Contract</text>
+<text x="747.0" y="843" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">W2: 4096 → 1024</text>
+<path d="M 1052.0,852.0 L 1076.0,852.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1076.0" y="789" width="320.0" height="126" rx="12" fill="#f3eefb" stroke="#7750aa" stroke-width="1.5"/>
+<text x="1091.0" y="818" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Residual</text>
+<text x="1091.0" y="843" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">+ ffn_scale × R</text>
+<text x="1091.0" y="865" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Publish 1024 channels</text>
+<text x="44" y="976" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Matrix dimensions come from WeightArchive.decode_block; learned matrices are transposed once into the PyTorch linear convention.</text>
+<text x="44" y="1005" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">The activation is the reconstructed piecewise function, not torch.nn.functional.silu. See the numerical primitives diagram.</text>
+<text x="44" y="1040" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">DLSSNR-PyTorch · implemented logical graph · source and shape ledger: architecture/source-map.json</text>
+</svg>

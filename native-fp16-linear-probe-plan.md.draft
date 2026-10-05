@@ -1,0 +1,120 @@
+# Bounded original Half contraction/projection probe
+
+This draft isolates two missing native FP16 contracts: original
+`cc_vit_1d_ffn_contract` and `cc_vit_1d_projection` from the unchanged
+module-5 SM120 cubin. It is a correctness experiment using Half records derived
+from the recovered checkpoint. It does not execute the DLL host, recover its
+weight-preparation code, time either implementation or validate the full graph.
+No GPU execution has occurred for this draft.
+
+The permitted shape is **batch 1, 128 tokens, 1,024 output channels**, with
+block `(32,4,1)` and grid `(8,1,4)`. Each output tile has four K partitions.
+Contraction uses K4096/partition1024; projection uses K1024/partition256. Other
+shapes, tails and batch counts are rejected. The first worker also requires
+at least 32 SMs and capacity for all 32 CTAs according to the actual original
+function's occupancy query. The caller must provide exclusive GPU work; this
+eligibility check is not a general scheduling guarantee.
+
+| Parameter byte offset | Contract |
+|---|---|
+| 0 / 8 / 16 | Disjoint input / skip / output Half buffers |
+| 24 | Derived K16/N16 Half matrix, followed by 1,024 Half scales |
+| 32 | Eight signed int32 completion counters |
+| 40 / 48 / 56 | Unused and set to zero; **no external scratch** |
+| 64 / 68 | int32 batch=1 / tokens=128 |
+
+Input allocations are 1,048,576 bytes for contraction and 262,144 for projection.
+Skip/output each use 262,144 bytes; weight-plus-scale records use 8,390,656 /
+2,099,200 bytes; counters use 32 bytes. All have external guard regions. The
+CPU address proof interprets the exact original PTX and checks actual global
+accesses, logical Half-fragment maps, per-partition K bounds and output
+coverage across 4,096 thread instances per entry. It models successful async
+copy completion and predecessor-counter readiness; it does not emulate MMA
+arithmetic or prove device-wide synchronization.
+
+Every counter starts at **âˆ’1 before every launch**, including every captured
+graph replay. Partition 0 seeds its accumulator with Half(skipÃ—scale), computes
+its K slice and stores. Partitions 1/2 perform Half reductions into output;
+partition 3 loads output, adds its partial in Half and stores. Each partition
+then release-stores its number. A later partition polls for its predecessor.
+Resetting to zero or retaining a previous final value is invalid.
+
+The original consumer uses a relaxed counter load and a CTA barrier, followed
+by weak cached output loads. Producer fences are present in SASS. This is not
+the explicit acquire sequence described by the
+[PTX memory model](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#release-and-acquire-patterns).
+The draft preserves the executable unchanged and tests its behavior empirically;
+it neither inserts stronger synchronization nor claims a general memory-model
+proof.
+
+The candidate is `ordered_linear(..., fp8=False, partition=K/4)` with baseline
+variant 1 explicitly selected and restored afterward. Both sides consume the
+same decoded block-31/38 checkpoint values. A separate checkpoint decoder
+cross-checks all matrix/scales before launching. Fixtures exercise residual
+seeding, nonzero contributions from every partition, and real-weight random
+inputs. Each has three distinct operand versions.
+
+The probe retains independent eager results, repeats the original and candidate
+with zero/poison-filled outputs, then captures the counter reset plus both
+operations. The captured output and original output are filled before replay.
+Mutation order `1,2,0` makes three real operand changes from initial version 0;
+each must match its preserved eager result byte-for-byte. All supplied
+inputs/weights/scales and guards remain immutable, and every counter must end
+at 3. Candidate outputs are extension allocations, retained and byte-checked
+rather than externally guarded. Graphs are destroyed before their raw native
+buffers or module can be released.
+
+`--execute` runs a separate worker with a bounded timeout and no retry. A
+timeout report remains failed even if earlier cases passed; it distinguishes
+confirmed process exit from unsuccessful termination. Killing the process is
+not proof that GPU/context recovery has completed. Stop and inspect after any
+timeout, mismatch, guard failure, sanitizer error or incomplete counter.
+
+Static checks (no CUDA):
+
+```powershell
+.\.venv\Scripts\python.exe tests\test_vendor_fp16_linear_probe_cpu.py.draft
+.\.venv\Scripts\python.exe tools\vendor_fp16_linear_probe.py.draft --blocks 31 --output outputs\fp16-linear-cpu.json.draft
+```
+
+The bounded address proof and independent protocol/runtime review are complete
+and pinned in the draft. CPU checks pass; **no native launch has run**. The first
+**root-scheduled future smoke** is only block 31 projection/residual seeding:
+
+```powershell
+& "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.4\bin\compute-sanitizer.bat" --tool memcheck --launch-timeout 60 --error-exitcode 99 --target-processes all --log-file outputs\fp16-linear-first-memcheck.log .\.venv\Scripts\python.exe tools\vendor_fp16_linear_probe.py.draft --execute --blocks 31 --kinds projection --fixtures residual_only --timeout 120 --output outputs\fp16-linear-first.json
+```
+
+Only after that result passes should the same guarded worker cover both kinds,
+both blocks and all three fixture families, followed by bounded racecheck.
+Neither a static `completed` report nor a successful address proof is a native
+numerical pass: require `executed_gpu=true`, all expected exact cases/replays,
+matching proof/source/binary identities and clean sanitizer logs.
+
+
+## Exceptional cleanup and isolated execution
+
+The earlier frozen draft only dropped graph references before closing native
+resources. That was unsafe when a `capture_end` traceback retained the graph.
+The original files and manifests remain byte-for-byte in
+`outputs/native-probe-cleanup-review/pre-fix/`.
+
+The revised draft registers every graph before capture and retains all raw
+allocations, captured outputs, images, textures, and module owners together.
+Successful teardown synchronizes, explicitly calls `reset()` on every graph,
+and only then closes native resources in dependency order. A capture body or
+capture-end failure leaves completion uncertain. Synchronization, graph-reset,
+or resource-close failure also makes teardown uncertain. In those cases the
+whole owner is retained; no dependent module unload is attempted. The original
+failure stays primary, with cleanup failures attached as notes.
+
+The CLI runs native execution in a fresh worker. On quarantine, the worker
+writes its failed report, prints the original traceback, and exits without
+Python CUDA-object teardown. The parent enforces a finite timeout and does not
+retry. Confirmed worker exit does not establish GPU/context recovery; stop and
+inspect after any timeout or cleanup failure. CPU failure-injection tests
+exercise retained capture tracebacks, double failures, synchronization/reset/
+close failures, and stale or incomplete worker reports. No CUDA execution was
+used to validate this cleanup revision.
+
+Stream-context restoration also preserves a pending body error and is skipped after uncertain capture. Diagnostic printing or stream flushing cannot bypass the worker hard-exit. The cleanup regression suite has17 tests; together with15 FP16 and17 full-chain tests, all49 pass normally and under `-O`. Both CPU preflights passed without native CUDA execution.

@@ -1,0 +1,52 @@
+# Direct C32 trunk endpoint copies â€” isolated draft
+
+The trunk benchmark currently gathers its first C32 plane buffer into BHWC with `index_select` and scatters its last BHWC buffer into native 4Ã—4 tiles with `index_copy_`. Both conversions are timed. This experiment replaces those two byte permutations with CUDA operators that compute addresses directly. It makes no arithmetic changes to the network.
+
+**Status:** CPU mapping/schema/provenance checks pass. CUDA execution, compiled SASS, sanitizer results, timings and native replay are not yet established. No deployment policy is changed. The original kernels and NGX host are not executed by the isolated adapter benchmark.
+
+## Operator contracts
+
+`_inference_trunk_plane_to_bhwc(source, batch, height, width)` accepts an exact flat CUDA uint8 plane buffer and allocates contiguous BHWC uint8 output with C32.
+
+`_inference_trunk_bhwc_to_tile(source, out=None)` accepts CUDA uint8 BHWC C32 and returns a flat tiled buffer. It allocates by default. Its optional `Tensor(a!)` output writes the caller's existing endpoint directly, matching the indexed trunk baseline without an extra copy. Supplied output must have the exact flat byte length, dtype and device, be contiguous and 16-byte aligned, and use a different storage allocation from the input. Rejecting all shared storage is deliberately conservative: generic overlap checks can return an inconclusive result for a strided source.
+
+Both operators accept batch zero, positive H/W multiples of four at least eight, and at most `INT_MAX` total bytes. Dimension arithmetic is checked before multiplication, including empty batches. Input offsets and noncontiguous inputs are normalized with an ordinary contiguous/alignment copy inside the call. This additional work therefore remains inside timing and graph capture. Supplied output is never silently copied. CUDA device guards and the current stream are used; the kernels contain no host synchronization, device queries, floating-point operations, or global state. They are private eager/CUDA Graph operators; no functionalization or training contract is implied.
+
+## Why each byte has one owner
+
+For a 16-channel plane, the low four physical byte bits are `[c2,c1,c3,c0]`. Channel bit `c4` chooses one of two complete HÃ—W planes. A thread loads a 16-byte physical vector, rearranges its four words into natural channel order and writes one complete BHWC vector.
+
+Within each 4Ã—4 native tile, physical offset bits from high to low are `[y0,x1,x0,c2,c1,c4,y1,c3,c0]`. These are exactly the two local y bits, two local x bits and five channel bits, each used once. Tiles and batches occupy disjoint intervals, extending that local bijection to every allowed dimension.
+
+A warp owns one complete 512-byte tile. Each lane loads 16 contiguous BHWC bytes, forms channel pairs separated by eight, and uses full-warp shuffles to obtain the four words for its output vector. All four candidate words are shuffled before selecting the destination's channel pair; selecting first would use the wrong sending-lane selector. Tail conditions are warp-uniform, and there are no CTA barriers or shared memory. The first draft intentionally isolates address/index elimination; a shuffle-count or load-scheduling optimization needs separate measurements.
+
+The CPU proof symbolically executes vector byte concatenation and shuffle source lanes and compares both maps to the retained independent `down_offsets`/`image_offsets` helpers. It also proves local bit bijections. Seven enumerated cases include empty and multiple batches. Independent review enumerated 48 additional geometries and 219,648 bytes in each direction, plus every grid-stride owner at the maximum legal tile count. That proof does not substitute for a compiled memory check.
+
+## Verification and timing
+
+The staged GPU tests compare each conversion separately against the old maps, so a round-trip cancellation cannot hide an error. They cover offsets, strided inputs, empty batches, allocation guards, source immutability, supplied outputs, alias rejection including stride-two shared storage, invalid sizes/dtypes/devices/bounds and gradient-bearing invalid inputs. Capture tests mutate the input after capture, poison outputs, replay explicitly on the selected stream, and compare every replay. The optional second-device test skips if only one GPU exists.
+
+The pair benchmark runs both indexed and direct conversions from the same resident plane input to the same semantic outputs: a retained BHWC intermediate and a retained tiled endpoint for each captured call. In fixed-output mode, the tiled endpoint is shared across calls by contract; all intermediate buffers remain distinct. It compares both default allocation and fixed-output modes. Index arrays are prepared outside timing as in the retained baseline, while both copies stay inside every timed call. Each graph has an independent eager oracle; graph capture alone is never treated as execution. Every captured call output is retained and checked. The report states the unique retained output count and byte budget; GPU UUID, driver and seed are recorded. Three input mutations and poisoned replays precede timing, and timing order alternates between implementations. Physical-input guards and any supplied fixed-output guards are checked again afterward. Allocating outputs have byte/replay checks; only a separate sanitizer run can establish their out-of-bounds safety.
+
+The native trunk draft adds `--trunk-io indexed|direct`, defaulting to `indexed`. Direct mode passes the existing fixed output to the optional-out operator. Independent `output_index` verification, Half-storage unpack/pack, all network calls, native kernels and all guard/replay checks remain. The mode, exact operators and contract version enter rows, runtime metadata and resume settings. The existing extension binary hash also enters runtime resume identity. **Use a new output path and journal for each mode/build; never reuse the prior native-range journal.**
+
+## Activation and bounded commands
+
+The complete file list and draft hashes are in `outputs/trunk_endpoint_draft_manifest.json.draft`. Root should copy the three CUDA/C++ drafts, two tests, proof and benchmark helpers, and the two native helper drafts only after review. Native helper drafts must be applied together. If an active helper changed since the saved base hash, rebase only the endpoint hunks instead of overwriting newer work. No other model/inference source changes are needed. The normal build discovers the new `.cu` and `.cpp` files after `.draft` is removed.
+
+After root builds and installs the experimental binary:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests/test_trunk_endpoint.py tests/test_trunk_endpoint_cpu.py -q
+& "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.4\bin\compute-sanitizer.bat" --tool memcheck --launch-timeout 300 --error-exitcode 99 --target-processes all --log-file outputs/trunk_endpoint_v29_memcheck.log .\.venv\Scripts\python.exe -m pytest tests/test_trunk_endpoint.py -q
+.\.venv\Scripts\python.exe tuning/benchmark_trunk_endpoint.py --execute --output-mode both --output outputs/trunk_endpoint_v29.json
+```
+
+For a fresh native trunk sample, keep the same valid resolution, timing settings, model policy and compiled binary for both modes and change only `--trunk-io` and the output file:
+
+```powershell
+.\.venv\Scripts\python.exe tools/vendor_trunk.py --valid-width 1920 --valid-height 1080 --packed-activations --native-attention chained --trunk-io indexed --output outputs/vendor_trunk_v29_indexed_1080p.json
+.\.venv\Scripts\python.exe tools/vendor_trunk.py --valid-width 1920 --valid-height 1080 --packed-activations --native-attention chained --trunk-io direct --output outputs/vendor_trunk_v29_direct_1080p.json
+```
+
+Whole-range replay uses `run_tuning.py native-range ... --families trunk --trunk-io direct` with a fresh output/journal. First inspect and record which prepared kernels actually dispatch: endpoint gains must not be mixed with an unreported canonical-versus-cache change. Even a faster pair does not establish native trunk parity in speed or the 85% hardware utilization target.

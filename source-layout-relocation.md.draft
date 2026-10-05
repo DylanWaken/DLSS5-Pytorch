@@ -1,0 +1,52 @@
+# Staged source layout cleanup
+
+The bundle at `outputs/source_layout_relocation_v35/` contains **15 draft compilation inputs** and `relocation.patch.draft`. The activation manifest maps every draft path to its eventual active target, pins the old source hashes and pins each staged file. Nothing in this bundle has been activated or compiled.
+
+## What changes
+
+Five actual GPU kernel definitions move from launcher files into implementation headers:
+
+| Unchanged CUDA translation unit | New implementation header |
+| --- | --- |
+| `kernel_launcher/block32_rotated.cu` | `kernel_impl/block32_rotated_prepare.cuh` |
+| `kernel_launcher/block32_register.cu` | `kernel_impl/block32_register_probe.cuh` |
+| `kernel_launcher/window_block_vector_weight.cu` | `kernel_impl/window_vector_weight_prepare.cuh` |
+| `kernel_launcher/window_block_small_vector_weight.cu` | `kernel_impl/window_small_vector_weight_prepare.cuh` |
+| `kernel_launcher/residual_seed_probe.cu` | `kernel_impl/residual_seed_probe.cuh` |
+
+Each launcher includes its new header at the exact old definition site. The first four kernels retain their anonymous namespace inside `dlssnr`; the residual probe retains its named `dlssnr` scope and complete `template<bool VECTOR>` declaration. The implementation headers intentionally have no namespace wrapper or dependencies: their preceding includes and scope are supplied by the original translation unit. A short `#pragma once` envelope protects repeated inclusion. Kernel names, bodies, surrounding launch code and validation are unchanged.
+
+Two host implementation prefixes move without editing their bytes:
+
+- `torch_api/inference.cpp` → `kernel_launcher/inference_composition.cpp`: contracts, reshaping, seed handling, packing and linear/BMM/group composition.
+- `torch_api/post70_inference.cpp` → `kernel_launcher/post70_dispatch.cpp`: post70 contracts, compiled-policy selection and fused/composed output-head paths.
+
+Their complete `TORCH_LIBRARY_FRAGMENT`/`TORCH_LIBRARY_IMPL` suffixes remain byte-identical in the API files. A shared `kernel_launcher/deployment_composition.h` declares the same 11 C++ functions; its `ops.h` include also supplies the existing CUDA launch-function declarations used by registration. No schema, default argument, public symbol, device check, stream selection, allocation or arithmetic is changed. No forwarding call is added to a runtime path. `setup.py` already discovers both new `.cpp` files recursively and needs no edit.
+
+The host implementation translation units do change; only the five CUDA translation units remain the same. Error source locations and debug line information can change. Source preservation does not promise binary identity before a build.
+
+## Training and API responsibilities
+
+`torch_api/training.cpp`, `torch_api/register.cpp` and `torch_api/attention_math.cpp` remain untouched. ATen training compositions, custom autograd state and binding adapters are appropriate to the user's requested Torch API layer. The user explicitly allowed reuse of existing Torch operands and kernels for FP32/BF16 training. Moving that training code or replacing it with new CUDA implementations is not necessary for this layout cleanup.
+
+Diagnostic wrappers and API validation elsewhere also remain unchanged. The patch removes the identified GPU-definition placement violations and the two substantial deployment host-composition implementations without claiming that every API file contains registrations alone.
+
+## CPU proof and independent review
+
+`tools/draft_source_layout_relocation.py.draft --write` reproducibly writes only draft files below the staging directory. It verifies that its input files did not change during generation.
+
+`tools/source_layout_relocation_proof.py.draft` reconstructs every original CUDA source byte-for-byte by replacing the staged include with the exact staged definition. This checks the entire surrounding source, include order, namespace scope and translation-unit path, not just function names. The residual template is included in the checked bytes. It separately compares each complete moved host prefix and complete registration suffix, and validates the shared declarations against the unchanged definitions.
+
+The saved `cpu_proof.json.draft` passes. `tests/test_source_layout_relocation_cpu.py.draft` has **17 passing CPU cases**, including deliberate arithmetic, namespace, duplicate-include, template, translation-unit, schema, binding and declaration corruptions. No Torch or CUDA import is needed. These are pre-activation proof tests: they intentionally fail when the pinned old active source differs. They are not a claim that the rebuilt extension has been tested.
+
+The C512 agent independently reviewed the bundle with no blocker. It executed all 17 CPU cases and independently reconstructed the five original CUDA translation units and both API sources byte-for-byte. It checked namespace/linkage preservation, all 11 declarations, existing GEMM/preparation declarations, recursive build discovery, single registration ownership and unchanged training/autograd files. The review is recorded in `independent_review.json.draft`. It does not replace the later build/SASS/runtime checks.
+
+## Activation and later validation
+
+1. Finish and close the current v35 ordinary GEMM journal before changing any active input. Preserve its source archive and binary.
+2. Re-run the CPU proof against the still-pinned active sources. Review all 15 manifest mappings and copy only those staged files to their target names in the next ordinary-policy build. Do not indiscriminately copy unrelated old `.draft` files.
+3. Confirm the activated targets match their manifest hashes. Build with the intended complete architecture set. New source and binary hashes require a new journal; the previous scan cannot be resumed with the rebuilt extension.
+4. Compare exact architecture-specific SASS and resources for all five moved kernels and other kernels in the affected CUDA translation units. Verify mangled names, instructions/encodings, registers, shared/local/stack usage and launch dimensions. Source line tables and whole-DLL hashes are expected to differ. Investigate instruction changes rather than assuming a relocation is neutral.
+5. Run existing register-pack, rotated-cache, small/wide vector-cache and residual-seed tests, including graph and bit-pattern cases. Run deployment linear/group/BMM and post70/public-model tests to exercise the new host linkage and unchanged schema registrations. Follow with the normal suite and required sanitizer checks for the new build.
+
+The relocation is deliberately separate from policy changes and performance claims. Its purpose is source organization; no speedup, instruction identity or runtime validation is claimed for the unbuilt drafts.

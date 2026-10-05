@@ -1,0 +1,54 @@
+# Ordinary GEMM variant 11 integration
+
+This draft exposes the private large-tile ordered-partition schedule through the ordinary GEMM catalogue. It adds no policy anchor and changes no prepared-model route until fresh measurements produce a reviewed policy. The private `_gemm_large_split` operator remains available and unchanged.
+
+## The ID is qualified by its operator family
+
+Variant11 already names a prepacked activation schedule for layout1. That meaning, and prepacked IDs12–14, remain unchanged. The new meaning applies only to **layout0, epilogue0**: ordinary row-major GEMM with raw Half output. The saved and compiled policy keys already include layout, epilogue, precision, architectural partition, N, K and batch count.
+
+| Family | Allowed selected IDs |
+| --- | --- |
+| Ordinary raw GEMM, layout0/epilogue0 | 1–11 |
+| Ordinary fused activation, layout0/epilogue1 or2 | 1–10 |
+| Persistent prepacked activation, layout1 | Existing1–14 meanings |
+| Direct grouped layouts2/3 | Existing1–10 meanings |
+
+A forced override11 on a grouped or row-major activation composition still has a correct composed fallback. It is not exported as a new direct grouped or fused-activation schedule. The grouped FFN tuner can include it as a measured *composed baseline* without adding any fused FFN ID.
+
+The new read-only `compiled_gemm_catalog_version()` diagnostic returns `ordinary_raw_large_ordered_split11_v1`. Ordinary scanners require this capability before timing new11; otherwise an old extension would silently treat forced11 as its historical baseline fallback. Device metadata records this version alongside the policy and binary identity.
+
+## Exact schedule and bounded fallback
+
+The C++ change is confined to `try_tiled_gemm` in the launcher and the catalogue diagnostic. For ordinary11 it reuses `launch_tile<FP8,true,128,128,FP8?64:32,32,64,true>`, with256 threads. `SPLIT=true` selects the existing no-chain kernel instantiation: each CTA computes one of the caller's architectural partitions. It does not choose a new partition length.
+
+Partition0 alone receives the Half seed as its first MMA accumulator. Later partitions start at zero. Each partition traverses K in its original ascending MMA order, including a final shorter aligned partition. The existing `ordered_partition_sum_kernel` adds partition results in ascending order with Half rounding after each addition. One-partition calls write directly to the output and need no sum kernel. FP8 uses K32 MMA on SM89+; FP16 uses K16 MMA on SM80+.
+
+The public path declines the new schedule and uses the existing exact baseline when an operand is not16-byte aligned, when more than32 partitions would be needed, when padded M/N or the CTA grid exceed the bounded integer contract, or when partition scratch would exceed1GiB. These checks happen before scratch allocation. Existing front-end checks still reject invalid shapes, devices, dtypes or partitions; fallback does not change invalid inputs into valid ones. Empty outputs return before the new branch, so there is no division by zero in scratch accounting.
+
+The seed, precision conversions, current CUDA stream/device guard and autograd wrapper contracts remain unchanged. The planner retains the requested tensor dimensions. The private operator's own stricter validation is unchanged; public11 adds safe fallback for valid public calls outside the private schedule's bounds.
+
+## Catalogue and scanner changes
+
+`tuning/gemm_variants.py` is an offline catalogue; deployment selection remains entirely C++. It centralizes ordinary IDs1–11 and the dispatcher-inclusive comparison set0–11. The full ordinary scanner now retains and validates all twelve graphs, updates its output budget and trial/median checks accordingly, and considers11 in the common-winner gate. Its timing protocol and catalogue version change, so the old66-case preflight cannot be resumed or relabeled as a twelve-candidate run.
+
+The staged changes cover:
+
+- `gemm_policy.py`: allow11 only in the ordinary raw family while preserving prepacked meanings. Existing policy files regenerate a byte-identical header.
+- `gemm_benchmark.py`: include11 by default, filter candidates by family, and require the rebuilt catalogue before timing raw11.
+- `resolution_sweep.py`: include11 for ordinary cases, preserve prepacked11–14, and pin a catalogue identity in the legacy journal. An old journal without that identity rejects resume.
+- `gemm_deployment_measure.py` and `resolution_gemm_deployment.py`: twelve graphs, full evidence checks, catalogue identity and updated promotion candidates.
+- `gemm_deployment_longscan.py`: use the new catalogue and a new controller protocol; retain the decoded cache, all pre/post identity checks and immediate SQLite commits.
+- `group_ffn_measure.py`, its standalone benchmark, range runner and policy validator: admit11 only as a composed baseline. Direct-group selected IDs and fused candidates are unchanged.
+- `run_tuning.py`: add `gemm-deployment-longscan` as an alias for the reviewed longscan controller.
+
+The dedicated group benchmark still enumerates direct IDs1–10. Historical private large-split comparisons intentionally keep their original named incumbents0–10 versus the private candidate. These historical reports are not silently expanded or promoted.
+
+## Validation and activation
+
+The generator `tools/draft_gemm_variant11.py.draft` writes only `.draft` files. Its output manifest is `outputs/gemm_variant11_draft_manifest.json.draft`. The separately written new tests are `tests/test_gemm_variant11_cpu.py.draft` and `tests/test_gemm_variant11.py.draft`; include them alongside the manifest-listed updated tests during activation. The obsolete alternative `gemm_deployment_longscan_catalog11.py.draft` from the initial staging pass is not part of the current manifest and should not be activated.
+
+CPU validation passed30 catalogue/scanner tests plus10 longscan tests against the staged twelve-candidate modules. These cover old prepacked IDs, unchanged generated policy bytes, ordinary family qualification, all-weights/both-orders promotion, twelve-graph accounting, rejection of old protocol evidence, guard anchors, final-case and no-op identity checks, cache ownership and durable resume. C512's independent review found no arithmetic or fallback blocker in the launcher.
+
+The new GPU test draft adds35 focused cases covering FP8/FP16, seeds, irregular M/N and final partitions, more-than32-partition fallback, offset and strided inputs with guards, three retained graph outputs with changed inputs/weights/seeds, nonfinite/signed-zero behavior, FP16 K16 boundaries, empty outputs and unchanged FP16 backward behavior. The existing tiled and grouped test drafts also add override11. No GPU test, build or automatic policy promotion was performed by this draft task.
+
+Root should activate and build the reviewed catalogue, verify the diagnostic, run focused tests/sanitizers, then start a **new** bounded preflight and longscan journal with the final candidate binary. Policy export must retain the existing complete-family and rejected-shape guard rules. A resident GEMM win does not establish a full-network/native-DLL win or the85% throughput gate.

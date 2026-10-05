@@ -1,0 +1,68 @@
+# Offline W1-only comparison in the actual public C512 block
+
+This experiment checks whether selecting the existing W1 GEMM variant10 improves
+the whole C512 block. It changes no production dispatch or arithmetic. Both
+graphs call the same prepared public block with the same input and real weights.
+
+After review and activation:
+
+```powershell
+.venv\Scripts\python.exe tuning/benchmark_c512_w1.py --output outputs/c512_w1_paired_v30.json
+```
+
+Dependencies are `tuning/profile_c512_public.py` (the reviewed ordered oracle and
+bit comparison), existing prepared-block/checkpoint helpers, and the installed
+extension. The controller pins and archives source files, the exact extension,
+checkpoint manifest, device metadata, and compiled GEMM/residual/branch/cache
+policy versions. An installed binary or active-source change aborts the run.
+
+The nine cases are blocks23,47,30 at all three anchors, independently checked
+against `Geometry.from_valid` and `graph_schedule`:
+
+| Valid input | C512 H×W | M | Phases for23/47/30 |
+| --- | --- | ---: | --- |
+| 1280×720 | 24×44 | 1056 | 0/3/3 |
+| 1920×1080 | 36×60 | 2160 | 0/3/3 |
+| 3840×2160 | 68×120 | 8160 | 0/3/3 |
+
+Block30 retains its required raw Half output. Other blocks request packed output
+only. The input is deterministic synthetic published state, while every block
+weight is real. The independent composition forces ordered dense/group GEMMs and
+keeps every Half seed and E4 publication point; attention is shared with the
+candidate. This does not independently reprove attention or invoke the DLL.
+
+The offline intercept is installed on the numerics instance only while invoking
+the public block. It identifies W1 by both exact weight and input object identity,
+requires W1 to be the first linear, and requires QKV to be the only other linear.
+Only the candidate W1 call sees override10. The override is restored to zero
+before any branch, residual, attention or QKV work. A `finally` restores the
+original method and override on all exit paths. Capture records the resulting
+kernels; CUDA Graph replay runs no Python policy logic. Captured role visits and
+compiled selector predictions are stored explicitly, with no kernel-trace claim.
+
+Both graphs retain every output from every invocation. The default is eight
+calls per graph, reduced equally when the128MiB combined output budget requires
+it. Nonempty outputs must have disjoint live storage. The harness replays each
+graph before reading capture outputs, checks every output against the ordered
+composition, then collects eleven paired rounds in each order. The22 pairs are
+randomly shuffled with a saved seed. Fresh CUDA events time only graph replay;
+each elapsed value is divided by the common call count.
+
+After timing, every output is checked against a freshly computed reference.
+Three input fixtures, including two changed inputs, are then copied into the
+same captured input. All retained outputs are poisoned and both graphs replayed
+and checked separately. The harness finally restores the first fixture, replays
+both graphs and recomputes the full reference. Input and all prepared weights
+must remain byte-identical to their expected values.
+
+The default full-block gate requires **more than3% improvement**, both in the
+overall medians and separately in each timing order. Every selected case has an
+individual result. `scope_complete` is true only for all nine contracts; subset
+results cannot stand in for the full requested scope. No policy is promoted by
+this script. The isolated real-weight scanner supplies the policy evidence,
+and any eventual compiled change requires native reproof under a new journal.
+
+CPU checks cover exact identity/order interception, restoration on exceptions,
+baseline override behavior, geometry, balanced random pair orders, and rejecting
+a speed gain that exists in only one timing order. GPU execution remains queued
+for root after review; this draft contains no performance result.

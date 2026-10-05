@@ -1,0 +1,143 @@
+# Native FP16 reference: kernels exist, full-graph contracts remain unvalidated
+
+The pinned original DLL contains genuine FP16 implementations of every major
+network stage. A native FP16 trunk is therefore plausible on SM120, but it is
+not ready to benchmark: only ordinary C32/C64/C128/C256 blocks have bounded
+native parity evidence. C512, global attention, resolution transitions and
+renderer endpoints still require their own Half layouts, records and launch
+protocols. The completed 931-geometry native comparison is **FP8 blocks 1–69**;
+it provides no native FP16 speed or full-graph parity result.
+
+This is a CPU-only audit. It reread the original PE resources, verified all
+seven extracted PTX/cubin hashes and checked every non-FP8 entry against cached
+SASS. It did not import Torch, execute CUDA or change an active source file.
+[The reproducible evidence](../outputs/v35-native-fp16-feasibility/evidence.json.draft)
+records every symbol, source line, parameter size, asset hash and runtime report
+used below.
+
+## What is present in the original binary
+
+Original DLL SHA256:
+`e16bcf15e16e13f527491cdf7845b2fe6521a738d8f7c9c721866a8496e1fc8e`.
+All seven extracted NR modules target **SM120, PTX 9.4**. They contain 109
+non-FP8 entrypoints with actual
+`mma.sync.aligned.m16n8k16.row.col.f16.f16.f16.f16`, plus two repacks and a
+counter-clear utility. All 112 names occur in cached original SASS.
+
+The table lists ordinary entry names; the evidence also preserves the exact
+wait, chained, tilesync and view variants. A matching name or argument-record
+size does not establish a safe launch configuration.
+
+| Graph role | Original FP16 entry / PTX location | Argument bytes | Current contract evidence |
+|---|---|---:|---|
+| Block 0, adapter and initial block/downsample | `cc_tinlayout_fused_pre_block_swin_1h_32_1` and `_ds`; [module 0](../assets/vendor_modules/module_0.ptx), lines 21 / 29454 | 264 | Symbols only for FP16; textures, conditioning and derived pre-record unmapped |
+| C32, blocks 1–4 and 66–69 | `cc_tinlayout_fused_swin_1h_32_1`; module 0:228944; `_inpview`, `_outview`, `_ds`, `_upsample` also present | 96 | Ordinary block bounded parity; transition/view variants unvalidated |
+| C64, blocks 5–8 / 62–65 | `cc_tinlayout_fused_swin_2h_64_2`; [module 1](../assets/vendor_modules/module_1.ptx):41; same four view/transition suffixes | 88 | Ordinary block bounded parity |
+| C128, blocks 9–14 / 56–61 | `cc_tinlayout_fused_swin_4h_128_4`; [module 2](../assets/vendor_modules/module_2.ptx):41; same suffixes | 88 | Ordinary block bounded parity |
+| C256, blocks 15–22 / 48–55 | `cc_tinlayout_fused_swin_8h_256_8`; [module 3](../assets/vendor_modules/module_3.ptx):41; same suffixes | 88 | Ordinary block bounded parity |
+| C512, blocks 23–30 / 40–47 | `cc_split_swin_16h_ffwd_512`, `ffwd_proj_512`, `qkv_512`, `proj_512`; [module 4](../assets/vendor_modules/module_4.ptx):109 / 43051 / 87243 / 119676 | 56 / 72 / 56 / 72 | Four-stage FP16 buffers, branch records and launches unvalidated; input/output views exist |
+| Block 30 downsample/head | `cc_split_swin_16h_proj_pool_512`, `cc_split_swin_16h_final_head_512`; module 4:155736 / 176244 | 80 / 40 | Half pool/head storage and padded transitions unvalidated |
+| Global blocks 31–38 | `cc_vit_1d_ffn_expand`, `ffn_contract`, `qkv`, `attention`, `projection`; [module 5](../assets/vendor_modules/module_5.ptx):167633 / 192448 / 213677 / 239908 / 256974 | 72 / 72 / 80 / 64 / 72 | FP16 arithmetic exists; partition/completion ABI and whole-block parity unvalidated |
+| Spatial/token bridges | `cc_vit_1d_repack_2d_to_1d`, `cc_vit_1d_repack_1d_to_2d`; module 5:166989 / 167359 | 24 | Half token/image layout and padding unvalidated |
+| Block 39 upsample/projection | `cc_dec_input_upsample_1024_512`; [module 6](../assets/vendor_modules/module_6.ptx):25 | 80 | Half split projection, skip, counters and cropped target contract unvalidated |
+| Block 70/head | `cc_tinlayout_fused_post_block_swin_1h_32`; module 0:61096; blend/mask/full-rectangle alternatives also exist | 184, or 312 for alternatives | FP16 feature/adapter layouts and surface contract unvalidated |
+
+These are original **SM120** kernels, not a runnable unchanged native reference
+for RTX 30-series SM86 or SM80. Candidate FP16 compilation/support on SM80+
+remains a separate claim. Retargeting this PTX would create a rebuilt reference,
+not establish original-DLL speed on those devices. This audit covers the seven
+NR bundles, not the eight older utility bundles excluded during extraction.
+
+## Weights and arithmetic
+
+The PE contains one 147,695,410-byte `10/WEIGHTS_HT/1033` resource and a version
+resource. Its recovered checkpoint has 153 records across 11 stages. Most
+learned matrices are packed E4M3; the 16→32 input adapter and 32→4 head already
+store Half matrices. There is no separately identified FP16 checkpoint or
+verified DLL-host conversion routine.
+
+Finite decoded E4 values are exactly representable in Half. Existing probes
+derive native Half records from those same learned values, repack matrices to
+K16/N16 fragments, preserve Half scales/biases and float head scales, and use
+the original FP16 record offsets. Ordinary C32 grows from 20,672 to 32,960
+bytes; derived C64/C128/C256 allocations are 106,816 / 361,024 / 1,311,808 bytes.
+This is a reference with **derived Half records**, not recovered higher-
+precision trained weights. Transition, C512, global, pre and post records
+still need equivalent offset/read-coverage proofs.
+
+Half activation storage also has a different fragment map: each 4×4 image
+tile has 512 bytes per 16-channel plane. Doubling FP8 offsets is not a valid
+layout conversion. The ordinary address proofs cover this map, actual reads
+and stores, alignment, guarded bounds and shared-memory epochs.
+
+The candidate's FP16 mode keeps intermediate publications in Half, whereas
+FP8 mode rounds them to E4M3. That is a real network-arithmetic distinction.
+The original ordinary-block tests support the Half mode in their tested
+scope. The [normalization SASS audit](native-fp16-arithmetic-audit.md.draft)
+and [global Q/K trace](fp16-global-norm-sass-trace.md.draft) confirm that the
+separate-looking PTX squares compile to the existing Half multiply/FMA tree;
+they do not justify an alternative normalizer or prove the global launch ABI.
+
+The main protocol risk is visible in original global FP16 code. Its contraction
+and projection issue `red.global.v4.f16x2.add.noftz` into Half output after
+the initial partition stores, with completion polling. Their parameter reads
+do not consume the FP8 scratch pointer used by the current helper. QKV also
+differs from the FP8 scratch contract. Partition order, seed placement,
+initialization, counters, visibility, tail storage and forward progress must
+be recovered and tested; the presence of reductions alone proves neither
+ordered equivalence nor nondeterminism.
+
+## What has actually run
+
+| Saved native FP16 proof | Cases and shapes | Result and limits |
+|---|---|---|
+| [C32 v24](../outputs/vendor_fp16_c32_v24.json) | 16 cases, 16×24; four fixtures × four phases, real block 1 included | Byte-exact; 48 ordinary + 48 poisoned graph replays; memcheck zero errors |
+| [Wider encoder v28](../outputs/vendor_fp16_window_v28_retry.json) | 48 cases, 8×8; blocks 5/9/15, four fixtures × four phases | Byte-exact; 144 + 144 replays; memcheck zero errors |
+| [Wider decoder v28](../outputs/vendor_fp16_window_v28_decoder.json) | 48 cases, 12×20; ordinary blocks 63/57/49, same fixtures/phases | Byte-exact; 144 + 144 replays; memcheck zero errors; **not** an upsample/transition test |
+| [Wider racecheck v28](../outputs/vendor_fp16_window_v28_race_corrected.json) | 12 real-weight cases, 8×8, blocks 5/9/15 × four phases | Byte-exact; 36 + 36 replays; zero hazards/errors/warnings |
+
+Every report checks supplied inputs/weights and allocation guards. Candidate
+outputs use extension allocations and retained byte comparisons, not external
+red zones. The evidence pins the historical v24/v28 candidate hashes; these
+are not fresh v35 validations. All four reports explicitly state
+`native_speed=false`, `dll_host_executed=false` and
+`dll_host_conversion_verified=false`. There is no native FP16 timing gate.
+
+## Smallest honest path to a full reference
+
+1. Add a separate FP16 contract path to the native helpers, leaving the FP8
+   runner intact. Reuse pinned Driver API loading, guards, lifetime management,
+   poisoned graphs and journal machinery. Derive and byte-verify Half records
+   and layouts for each missing family before introducing its launch.
+2. Validate C512 stages and each transition/view/repack independently, including
+   padded extents used by `Geometry`. Then recover global FP16 partition and
+   completion behavior with bounded guarded fixtures, repeated capture/replay
+   and sanitizers. A matching Q/K norm is only one checkpoint in that proof.
+3. Build a resident FP16 blocks 1–69 chain with Half skip/branch buffers, fresh
+   boundary and repeat checks, and the exact original Half symbols. Measure
+   matching physical Half endpoints and include candidate layout adapters.
+   Reuse continuous geometry enumeration only after these contracts pass.
+4. Treat 0–70/renderer coverage separately. FP16 pre0 requires the original
+   texture/conditioning prefix and derived pre-record; post70 requires Half
+   input/adapter layouts and the surface/blend contract. Existing FP8 feature
+   instrumentation and the null-texture RGB+zero-alpha post probe do not
+   establish general FP16 preprocessing, fourth neural logit or renderer
+   composition. Never label an instrumented prefix as unchanged DLL execution.
+
+The present `native_benchmark.py` rejects FP16, and `vendor_trunk.py`,
+`vendor_global_block.py`, `vendor_window512_block.py` and `vendor_connectors.py`
+hard-code FP8 symbols, byte allocations or scratch protocols. A suffix switch
+is insufficient. Use the ordered extension as the candidate arithmetic
+reference; its ordinary floating matmul reference backend is not an exact
+native MMA oracle. No active harness changes are proposed in this audit.
+
+Reproduce the CPU evidence from the project root:
+
+```powershell
+.\.venv\Scripts\python.exe outputs\v35-native-fp16-feasibility\inspect.py.draft
+```
+
+Evidence SHA256:
+`aad45285b326461e2c0296545187d7f982a18f09ef38376a089999cee3c23f7c`.
+The result establishes available code and bounded existing evidence. It does
+not establish native FP16 trunk/full-graph parity, speed or an 85% roofline gate.

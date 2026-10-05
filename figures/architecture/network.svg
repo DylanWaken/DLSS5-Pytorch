@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1175" viewBox="0 0 1440 1175" role="img" aria-labelledby="title desc">
+<title id="title">DLSS-NR network architecture</title><desc id="desc">71 numbered records · five encoder levels · global attention · five decoder levels · 4K example fields shown as W × H</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="context-stroke"/></marker></defs>
+<rect width="1440" height="100%" fill="#ffffff"/>
+<text x="42" y="45" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="29" font-weight="650" text-anchor="start">DLSS-NR network architecture</text>
+<text x="42" y="77" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">71 numbered records · five encoder levels · global attention · five decoder levels · 4K example fields shown as W × H</text>
+<rect x="25" y="245" width="1390" height="830" rx="18" fill="#f8fafc" stroke="#d8e1ed" stroke-width="1.5"/>
+<text x="720" y="268" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="650" text-anchor="middle">FP8 prepared-feature deployment boundary: blocks 1–69</text>
+<rect x="60" y="114" width="370" height="105" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="75" y="143" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Input stage · block 0</text>
+<text x="75" y="168" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Padded features: 3840 × 2176 × 16</text>
+<text x="75" y="190" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Adapter 16 → 32 + window block</text>
+<rect x="1010" y="114" width="370" height="105" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
+<text x="1025" y="143" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Output stage · block 70</text>
+<text x="1025" y="168" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Full-field merge + window block</text>
+<text x="1025" y="190" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Head 32 → 4; optional crop</text>
+<path d="M 430,169 L 1010,169" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<text x="720" y="155" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="middle">Full-resolution block-0 skip</text>
+<rect x="60" y="292" width="370" height="94" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="75" y="321" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Encoder C32 · blocks 1–4</text>
+<text x="75" y="346" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">4 window blocks · 1920 × 1088</text>
+<text x="75" y="368" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Save tail skip; pool + project down</text>
+<rect x="1010" y="292" width="370" height="94" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
+<text x="1025" y="321" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Decoder C32 · blocks 66–69</text>
+<text x="1025" y="346" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">4 window blocks · 1920 × 1088</text>
+<text x="1025" y="368" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Project + upsample + skip first</text>
+<path d="M 430,343 L 1010,343" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<text x="720" y="330" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="middle">C32 skip: block 4 → 66</text>
+<path d="M 245,219 L 245,292" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="64" y="240" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="14" font-weight="400" text-anchor="start">2 × 2 mean pool</text>
+<path d="M 1195,292 L 1195,219" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="60" y="427" width="370" height="94" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="75" y="456" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Encoder C64 · blocks 5–8</text>
+<text x="75" y="481" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">4 window blocks · 960 × 544</text>
+<text x="75" y="503" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Save tail skip; pool + project down</text>
+<rect x="1010" y="427" width="370" height="94" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
+<text x="1025" y="456" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Decoder C64 · blocks 62–65</text>
+<text x="1025" y="481" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">4 window blocks · 960 × 544</text>
+<text x="1025" y="503" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Project + upsample + skip first</text>
+<path d="M 430,478 L 1010,478" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<text x="720" y="465" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="middle">C64 skip: block 8 → 62</text>
+<path d="M 245,386 L 245,427" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M 1195,427 L 1195,386" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="60" y="562" width="370" height="94" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="75" y="591" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Encoder C128 · blocks 9–14</text>
+<text x="75" y="616" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">6 window blocks · 480 × 272</text>
+<text x="75" y="638" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Save tail skip; pool + project down</text>
+<rect x="1010" y="562" width="370" height="94" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
+<text x="1025" y="591" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Decoder C128 · blocks 56–61</text>
+<text x="1025" y="616" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">6 window blocks · 480 × 272</text>
+<text x="1025" y="638" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Project + upsample + skip first</text>
+<path d="M 430,613 L 1010,613" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<text x="720" y="600" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="middle">C128 skip: block 14 → 56</text>
+<path d="M 245,521 L 245,562" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M 1195,562 L 1195,521" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="60" y="697" width="370" height="94" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="75" y="726" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Encoder C256 · blocks 15–22</text>
+<text x="75" y="751" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">8 window blocks · 240 × 136</text>
+<text x="75" y="773" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Save tail skip; pool + project down</text>
+<rect x="1010" y="697" width="370" height="94" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
+<text x="1025" y="726" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Decoder C256 · blocks 48–55</text>
+<text x="1025" y="751" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">8 window blocks · 240 × 136</text>
+<text x="1025" y="773" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Project + upsample + skip first</text>
+<path d="M 430,748 L 1010,748" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<text x="720" y="735" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="middle">C256 skip: block 22 → 48</text>
+<path d="M 245,656 L 245,697" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M 1195,697 L 1195,656" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="60" y="832" width="370" height="94" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="75" y="861" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Encoder C512 · blocks 23–30</text>
+<text x="75" y="886" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">8 window blocks · 120 × 68</text>
+<text x="75" y="908" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Save tail skip; pool + project down</text>
+<rect x="1010" y="832" width="370" height="94" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
+<text x="1025" y="861" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Decoder C512 · blocks 40–47</text>
+<text x="1025" y="886" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">8 window blocks · 120 × 68</text>
+<text x="1025" y="908" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Block 39 merges here first</text>
+<path d="M 430,883 L 1010,883" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<text x="720" y="870" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="middle">C512 skip: block 30 → 39</text>
+<path d="M 245,791 L 245,832" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M 1195,832 L 1195,791" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="480" y="975" width="480" height="85" rx="12" fill="#f3eefb" stroke="#7750aa" stroke-width="1.5"/>
+<text x="495" y="1004" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Global bottleneck · blocks 31–38</text>
+<text x="495" y="1029" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">8 global blocks · 60 × 36 × 1024</text>
+<text x="495" y="1051" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">32 heads; 2160 tokens, K/V padded to 2176</text>
+<path d="M 245,926 L 245,1017 L 480,1017" fill="none" stroke="#7750aa" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M 960,1017 L 1195,1017 L 1195,926" fill="none" stroke="#7750aa" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="65" y="973" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" text-anchor="start">512 → 1024 after pool</text>
+<text x="1010" y="973" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" text-anchor="start">39: 1024 → 512, upsample</text>
+<text x="44" y="1105" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Solid arrows: main state. Dashed amber arrows: learned-scale skip merges. Fields include padding, not just valid image pixels.</text>
+<text x="44" y="1131" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Training covers input through output. Block 39 is transition-only. Renderer feature preparation and temporal reprojection are external.</text>
+<text x="44" y="1155" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">DLSSNR-PyTorch · implemented logical graph · source and shape ledger: architecture/source-map.json</text>
+</svg>

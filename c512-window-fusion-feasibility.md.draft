@@ -1,0 +1,145 @@
+# C512 fusion: use the native stage boundaries and enough independent CTAs
+
+A direct `C=512` extension of the C256 whole-window kernel is not a useful first
+experiment. It changes the FFN architecture, exceeds the naive register budget,
+and launches too few independent windows. A bounded QKV-plus-attention stage
+with four heads per CTA is the practical next experiment. This is a CPU-only
+feasibility analysis; no speed or roofline gain is inferred.
+
+## The arithmetic that must remain
+
+C512 first computes a dense 512→512 W1 and publishes E4 bytes. It then executes
+eight 64→256→64 branches, with cubic Half arithmetic and E4 publications after
+expansion and contraction. W4 is a second dense 512→512, initialized with the
+Half-rounded product of the original published input and FFN scale. Published
+FFN feeds the dense 512→1536 QKV. Sixteen independent 32-channel heads use64-token
+shifted windows. The final dense 512→512 is initialized from published FFN times
+the attention scale; block30 also retains raw Half output for pooling.
+
+The C256 expert block instead has grouped full-input256→128→32 branches before
+its dense projection. Merely increasing its channel template silently implements
+the wrong C512 FFN. Every C512 dense/branch accumulation is one ascending K chain;
+none of the global C1024 partition/reassociation rules apply.
+
+## Measured hardware and compiled resource evidence
+
+The saved SM120 NCU device attributes report 188 SMs,65,536 registers per block
+and per SM,255 registers per thread,1,024 threads per block,1,536 threads/48 warps
+per SM,49,152 default shared bytes per block,101,376 opt-in shared bytes per
+block,102,400 shared bytes per SM and 1,024 reserved shared bytes per CTA.
+These values come from
+`profile/window-vector-weights-fp8-b15-136x240-p1-v3-20261003T050345_438229Z/analysis/full_metrics.json`,
+not assumptions about SM100/B200.
+
+The existing rolled C256 vector-cache kernel uses 168 registers at 256 threads
+and 16,384 shared bytes. Keeping that per-thread footprint while expanding to
+512 threads would require86,016 registers, above the 65,536-register block limit.
+A 512-thread design needs no more than128 allocated registers per thread to
+fit one CTA, accounting for allocation granularity. Simply forcing a register
+cap could spill and is not a performance solution.
+
+Read-only `cuobjdump --dump-resource-usage` on the original pinned
+`assets/vendor_modules/module_4.cubin` confirms these actual resources:
+
+| Native stage | Threads | Registers/thread | Shared bytes | Grid structure |
+| --- | ---: | ---: | ---: | --- |
+| W1 + branches | 256 | 128 | 9,232 | Two CTAs per unshifted8×8 window |
+| W4 + residual | 128 | 128 | 13,336 | Twice the horizontal8-pixel tile count |
+| QKV + attention | 128 | 168 | 9,232 | Four CTAs per shifted8×8 window |
+| Projection + residual | 256 | 102 | 13,336 | Twice the horizontal8-pixel tile count |
+
+All four original functions report zero stack and local bytes. The resource
+extract is saved in `outputs/c512_native_resource_audit.json.draft`, pinned to
+cubin SHA256 `97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569`.
+Input/output-view and pooled-output variants have different launches and are
+not conflated with this ordinary four-stage contract.
+
+The PTX supports the deliberate ownership split. Native branch weight addressing
+uses `(tid.y & 3)*64 + ctaid.z*256`; the later branch index is
+`(tid.y & 3) + ctaid.z*4`. QKV uses `ctaid.z*384 + tid.y*96`, exactly four
+96-channel Q/K/V head groups per CTA. QKV's128 threads are four head warps.
+Its declared shared input is8,192 bytes plus16 bytes of copy barriers; compiled
+shared usage is9,232. Both native stages contain bulk global-to-shared copies
+and mbarrier synchronization. The smaller native staging allocation is evidence
+of a streamed design; copying its entire asynchronous protocol requires a
+separate address/order proof, not a mechanical source translation.
+
+## Why one CTA for the whole window is a poor starting point
+
+Phase0 has18,40 and 135 C512 windows at the 720p,1080p and 4K anchors. At4K the
+other phases have 135 or144 windows. One CTA per window therefore cannot occupy
+all 188 SMs even if resources were free. Four CTAs per window produce 72,160
+and 540 phase0 CTAs respectively, matching the native QKV decomposition.
+The small anchors can still underfill the device; the 85% utilization target is
+not automatically achievable for every small isolated workload.
+
+A 256-thread whole-window variant could process two heads per warp sequentially
+and use two 32KiB shared exchange pages to keep FFN and attention alive. Its 64KiB
+allocation would need explicit opt-in, limit residency, and still leave only
+one CTA per window. A 512-thread version with one head per warp would need to
+shorten register lifetimes substantially to fit the block limit. Neither solves
+the independent-window count.
+
+Splitting final query rows across several whole-block CTAs would require each
+CTA to recompute full-window FFN and K/V, because all 64 keys contribute to every
+query row. Splitting output channels still requires all attention heads for the
+final dense projection. That duplication is an arithmetic cost, not a free way
+to increase occupancy. We should retain global stage boundaries where they
+avoid duplicated work and provide independent CTA ownership.
+
+## First private prototype: four-head QKV plus attention
+
+Use128 threads per CTA and grid `(window, head_group)`, where `head_group=0..3`.
+Warp `w` owns head `4*head_group+w`, all 64 window tokens and 32 channels. Reuse
+the existing canonical vector B-cache layout for QKV `[1536,512]`; each warp's
+matrix row begins at `head*96 + kind*32`. All16 ascending K32 steps remain in
+their original order. The cache contains the same bytes and does not rotate K.
+
+The first version can allocate one read-only `Exchange<512>` of 32,768 bytes.
+The four warps cooperatively fill its 16 channel groups: warp `w` loads groups
+`w, w+4, w+8, w+12`, for all four M16 tiles. Each exchange element has one
+writer, followed by one unconditional CTA barrier. Every head warp then reads
+the same immutable input. This avoids introducing an asynchronous shared-memory
+pipeline before correctness and actual resource costs are established.
+
+After QKV, keep the existing Q/K Half normalization tree, Q head-scale rounding,
+E4 publication, V transpose, physical token order, bias addressing, bit-affine
+exponential, Half denominator tree/floor/reciprocal, E4 probabilities and PV K32
+order. Output packed BHWC directly. A Half-storage diagnostic output, if added,
+must decode the same published E4 values rather than expose un-published PV.
+Packed output can feed the existing residual operator directly, removing its
+current attention Half-to-E4 input repack without changing arithmetic.
+
+Publication needs no cross-head exchange: each warp scatters only its own head.
+For a valid logical `(y,x)`, the shifted-window inverse is uniquely
+`wx=floor((x+sx)/8)`, `wy=floor((y+sy)/8)`, and the token within that window is
+unique. Head groups partition all 16 heads. Thus valid `(batch,y,x,channel)`
+outputs have one writer; invalid padded tokens execute warp-wide shuffles but
+perform no global store. The implementation must prove that ownership against
+the existing physical-token helper for every phase and four-aligned tail.
+
+At the native168-register footprint,128 threads require21,504 registers;
+three such CTAs would require64,512 registers. Three32KiB exchanges plus the
+reported reserved shared bytes total101,376 bytes, just below the reported
+102,400-byte SM limit. This is arithmetic feasibility only: compiled register
+allocation, carveout and actual occupancy must be measured. The new kernel's
+register count is unknown until compilation; it must not inherit a guessed
+168-register claim from the native implementation.
+
+This stage currently costs about31.34us QKV plus18.64us attention per block in
+the saved eager v29 trace. Fusing it can avoid materializing the 25,067,520-byte
+Half QKV tensor at M8160, but reduced traffic is not a speed estimate. The
+existing QKV GEMM reuses weights over larger M tiles; the fused M64/head-local
+schedule may trade some of that reuse for less temporary traffic. Benchmark it
+against the selected public QKV-plus-attention route, including the final
+publication and matched output storage, before considering public dispatch.
+
+The alternative small prototype is W1 plus the independent branches, leaving W4
+as its current residual GEMM. A warp can own one 64-channel branch and M16 rows:
+16 W1 accumulator words, eight published input words, streamed32-channel hidden
+chunks and 16 contraction accumulator words. Two/four/eight branch warps per CTA
+can vary independent CTA count without duplicating matrix arithmetic. That
+proposal remains secondary until the current QKV-attention experiment is measured.
+
+No new kernel has been compiled or executed by this feasibility audit. All
+resource and native-ownership claims above are bounded to saved artifacts.

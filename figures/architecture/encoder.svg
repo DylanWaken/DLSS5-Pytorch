@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1240" viewBox="0 0 1440 1240" role="img" aria-labelledby="title desc">
+<title id="title">Encoder stages · preserve detail, reduce spatial size</title><desc id="desc">Each row is one complete level. The last block exposes a published skip and a raw tail for the downsampling path.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="context-stroke"/></marker></defs>
+<rect width="1440" height="100%" fill="#ffffff"/>
+<text x="42" y="45" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="29" font-weight="650" text-anchor="start">Encoder stages · preserve detail, reduce spatial size</text>
+<text x="42" y="77" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Each row is one complete level. The last block exposes a published skip and a raw tail for the downsampling path.</text>
+<text x="44" y="123" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Level 0 · C32 · 1920 × 1088</text>
+<rect x="44" y="142" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="59" y="171" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Blocks 1–4</text>
+<text x="59" y="196" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">4 × FFN + window attention</text>
+<text x="59" y="218" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">1 heads × 32 channels</text>
+<path d="M 364.0,202.0 L 388.0,202.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="388.0" y="142" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="403.0" y="171" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Tail has two views</text>
+<text x="403.0" y="196" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Published block 4 → skip</text>
+<text x="403.0" y="218" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Skip consumed at block 66</text>
+<text x="403.0" y="240" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Raw tail → pooling path</text>
+<path d="M 708.0,202.0 L 732.0,202.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="732.0" y="142" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="747.0" y="171" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">2 × 2 mean pool</text>
+<text x="747.0" y="196" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Average in FP32; cast back</text>
+<text x="747.0" y="218" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Pad to the next level field</text>
+<path d="M 1052.0,202.0 L 1076.0,202.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1076.0" y="142" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="1091.0" y="171" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Projection 32 → 64</text>
+<text x="1091.0" y="196" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Learned per-pixel linear</text>
+<text x="1091.0" y="218" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Next field: 960 × 544</text>
+<text x="44" y="306" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Skip storage is taken before downsampling; it retains this level&#x27;s width, height and channel count.</text>
+<text x="44" y="328" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Level 1 · C64 · 960 × 544</text>
+<rect x="44" y="347" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="59" y="376" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Blocks 5–8</text>
+<text x="59" y="401" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">4 × FFN + window attention</text>
+<text x="59" y="423" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">2 heads × 32 channels</text>
+<path d="M 364.0,407.0 L 388.0,407.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="388.0" y="347" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="403.0" y="376" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Tail has two views</text>
+<text x="403.0" y="401" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Published block 8 → skip</text>
+<text x="403.0" y="423" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Skip consumed at block 62</text>
+<text x="403.0" y="445" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Raw tail → pooling path</text>
+<path d="M 708.0,407.0 L 732.0,407.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="732.0" y="347" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="747.0" y="376" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">2 × 2 mean pool</text>
+<text x="747.0" y="401" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Average in FP32; cast back</text>
+<text x="747.0" y="423" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Pad to the next level field</text>
+<path d="M 1052.0,407.0 L 1076.0,407.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1076.0" y="347" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="1091.0" y="376" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Projection 64 → 128</text>
+<text x="1091.0" y="401" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Learned per-pixel linear</text>
+<text x="1091.0" y="423" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Next field: 480 × 272</text>
+<text x="44" y="511" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Skip storage is taken before downsampling; it retains this level&#x27;s width, height and channel count.</text>
+<text x="44" y="533" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Level 2 · C128 · 480 × 272</text>
+<rect x="44" y="552" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="59" y="581" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Blocks 9–14</text>
+<text x="59" y="606" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">6 × FFN + window attention</text>
+<text x="59" y="628" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">4 heads × 32 channels</text>
+<path d="M 364.0,612.0 L 388.0,612.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="388.0" y="552" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="403.0" y="581" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Tail has two views</text>
+<text x="403.0" y="606" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Published block 14 → skip</text>
+<text x="403.0" y="628" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Skip consumed at block 56</text>
+<text x="403.0" y="650" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Raw tail → pooling path</text>
+<path d="M 708.0,612.0 L 732.0,612.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="732.0" y="552" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="747.0" y="581" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">2 × 2 mean pool</text>
+<text x="747.0" y="606" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Average in FP32; cast back</text>
+<text x="747.0" y="628" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Pad to the next level field</text>
+<path d="M 1052.0,612.0 L 1076.0,612.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1076.0" y="552" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="1091.0" y="581" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Projection 128 → 256</text>
+<text x="1091.0" y="606" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Learned per-pixel linear</text>
+<text x="1091.0" y="628" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Next field: 240 × 136</text>
+<text x="44" y="716" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Skip storage is taken before downsampling; it retains this level&#x27;s width, height and channel count.</text>
+<text x="44" y="738" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Level 3 · C256 · 240 × 136</text>
+<rect x="44" y="757" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="59" y="786" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Blocks 15–22</text>
+<text x="59" y="811" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">8 × FFN + window attention</text>
+<text x="59" y="833" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">8 heads × 32 channels</text>
+<path d="M 364.0,817.0 L 388.0,817.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="388.0" y="757" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="403.0" y="786" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Tail has two views</text>
+<text x="403.0" y="811" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Published block 22 → skip</text>
+<text x="403.0" y="833" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Skip consumed at block 48</text>
+<text x="403.0" y="855" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Raw tail → pooling path</text>
+<path d="M 708.0,817.0 L 732.0,817.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="732.0" y="757" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="747.0" y="786" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">2 × 2 mean pool</text>
+<text x="747.0" y="811" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Average in FP32; cast back</text>
+<text x="747.0" y="833" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Pad to the next level field</text>
+<path d="M 1052.0,817.0 L 1076.0,817.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1076.0" y="757" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="1091.0" y="786" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Projection 256 → 512</text>
+<text x="1091.0" y="811" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Learned per-pixel linear</text>
+<text x="1091.0" y="833" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Next field: 120 × 68</text>
+<text x="44" y="921" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Skip storage is taken before downsampling; it retains this level&#x27;s width, height and channel count.</text>
+<text x="44" y="943" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Level 4 · C512 · 120 × 68</text>
+<rect x="44" y="962" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="59" y="991" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Blocks 23–30</text>
+<text x="59" y="1016" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">8 × FFN + window attention</text>
+<text x="59" y="1038" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">16 heads × 32 channels</text>
+<path d="M 364.0,1022.0 L 388.0,1022.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="388.0" y="962" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="403.0" y="991" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Tail has two views</text>
+<text x="403.0" y="1016" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Published block 30 → skip</text>
+<text x="403.0" y="1038" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Skip consumed at block 39</text>
+<text x="403.0" y="1060" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Raw tail → pooling path</text>
+<path d="M 708.0,1022.0 L 732.0,1022.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="732.0" y="962" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="747.0" y="991" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">2 × 2 mean pool</text>
+<text x="747.0" y="1016" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Average in FP32; cast back</text>
+<text x="747.0" y="1038" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Pad to the next level field</text>
+<path d="M 1052.0,1022.0 L 1076.0,1022.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1076.0" y="962" width="320.0" height="120" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="1091.0" y="991" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Projection 512 → 1024</text>
+<text x="1091.0" y="1016" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Learned per-pixel linear</text>
+<text x="1091.0" y="1038" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Next field: 60 × 36</text>
+<text x="44" y="1126" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Skip storage is taken before downsampling; it retains this level&#x27;s width, height and channel count.</text>
+<text x="44" y="1173" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">At C64/C128/C256 the FFN uses parallel branches; C512 has a pre-projection and eight branches. See the FFN expansion diagram.</text>
+<text x="44" y="1201" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Source: DLSSNR.forward → _encoder_stage → Numerics.pool → down_projection. Shifts advance per spatial level.</text>
+<text x="44" y="1220" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">DLSSNR-PyTorch · implemented logical graph · source and shape ledger: architecture/source-map.json</text>
+</svg>

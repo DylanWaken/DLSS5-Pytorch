@@ -1,0 +1,177 @@
+# Next FP8 opportunity: remove indexed endpoint conversion, then test persistent tiled stages
+
+The next low-risk experiment should replace the two generic indexed endpoint
+conversions in the native-layout trunk entry with direct integer-map kernels.
+This preserves the compared input/output contract and every arithmetic kernel.
+It is more concrete than another speculative dense-loop schedule: the current
+source materializes one 64-bit index per output byte, and reads those indices
+on every timed replay. It does not establish a speed gain until measured.
+
+## Evidence and scope
+
+The completed v24 run compares the original extracted blocks 1–69, including
+native transitions and repacks, against our prepared packed trunk. All 931
+geometries pass boundary/integrity checks but fail the speed gate. At geometry
+900, the geometry containing 3840x2160, the original median is 6.354710 ms and
+the candidate median is 12.020021 ms. This is historical v24 evidence; v28's new
+cache policies require a new run and journal.
+
+The current `tools/vendor_trunk.py` still performs:
+
+```
+state = first.index_select(0, input_index).reshape(1, H, W, 32)
+... all existing packed block arithmetic ...
+output.index_copy_(0, output_index, packed(state).reshape(-1))
+```
+
+Both calls execute inside `candidate_call`, hence inside the timed graph.
+The input is the original 16-channel plane layout and the output the original
+4x4 tile/C-fragment layout. Their maps are immutable but remain int64 arrays.
+Caching allocation/preparation removes setup work, not their replay loads.
+
+At the 4K geometry, this trunk boundary is `[1088,1920,32]`:
+
+| Logical data volume per trunk replay | Bytes |
+|---|---:|
+| One packed endpoint (`N=H*W*32`) | 66,846,720 |
+| Two int64 index arrays (`16*N`) | 1,069,547,520 |
+| Input/output payload read + write in both conversions (`4*N`) | 267,386,880 |
+
+These are source-level required index/payload values, **not measured DRAM
+transactions**. Cache reuse, transaction coalescing and graph behavior must be
+measured. In particular, do not convert 1.07 GB into a claimed latency saving
+using nominal bandwidth, or attribute the entire 5.67 ms trunk gap to adapters.
+
+The isolated matched-native window benchmark has the same indexed adapter
+pattern. At phase 0, C64 544x960, v27 cache3 measures 524.109 us with physical
+I/O adapters versus 75.690 us for native. Its separate resident-kernel report
+measures cache3 at 123.440 us. C128 272x480 has 290.118 us with adapters versus
+70.960 us native; its separate resident kernel measures 88.082 us. The graphs,
+fixtures and retained-output budgets differ between these reports, so their
+differences are **not an isolated adapter measurement**. They do justify
+measuring the adapter pair explicitly instead of interpreting the whole
+matched-I/O ratio as an arithmetic-kernel ratio.
+
+## First experiment: direct endpoint operators
+
+Add private, graph-compatible CUDA operators with explicit layout contracts:
+
+- Original plane bytes → logical BHWC packed bytes at the trunk input.
+- Logical BHWC packed bytes → original tile/C-fragment bytes at the output.
+
+Compute the existing address maps directly from tile, lane and channel bits.
+No global index tensor is required. Keep the exact existing logical byte order
+and output allocation, with no publication, rounding, normalization or weight
+change. Start with C32 and the actual 4-aligned trunk geometries. The plane and
+tile formula oracles already exist in `vendor_downsample_probe.down_offsets`
+and `vendor_window_benchmark.image_offsets`; use them independently in CPU
+enumeration and GPU byte comparisons.
+
+There is already a reviewed C32 precedent: the private
+`post70_physical_io.cuh` implements direct `plane_offset` and `tile_offset`
+load policies, with CPU mapping evidence in `post70_physical_layout.py`.
+Reuse those formulas as a reference, but retain the independent NumPy maps
+as the test oracle. This proposal extends the storage treatment to trunk
+endpoints; it does not claim post70's performance transfers to them.
+
+A 4x4 tile has 512 bytes at C32. A CTA can process several such tiles and move
+aligned 16-byte groups, using lane/register exchange where the source and
+destination vector orders differ. The tile formula is a bijection, so each
+output byte has one owner and no atomics are needed. Initial validation must
+include offset inputs/outputs, phase-independent endpoint shapes, nondefault
+streams, empty batches, bounds/overflow rejection, immutable source checks and
+poisoned CUDA Graph replays. This is a storage operator, so reject autograd.
+
+Measure three graphs with identical retained outputs and call budgets: old
+adapter pair, new adapter pair, and the complete trunk with only the adapter
+implementation changed. Retain the old path as a forced baseline. Run a fresh
+native anchor journal with the same original allocations and all 74 published
+boundary checks. Endpoint conversions remain timed; none is moved outside the
+measurement. Report changes in both latency and actual NCU traffic/instructions.
+
+If direct maps win, fuse input conversion into block1 loads and output
+conversion into block69 stores as a separate experiment. This removes the
+temporary BHWC endpoint copies too, but requires a new operand-layout contract
+and a fresh proof. Do not combine both experiments initially.
+
+## Why this is not the whole remaining problem
+
+There is still an arithmetic/scheduling gap after excluding standalone
+adapters. At phase 1, C256 136x240, the v27 resident candidates measure:
+
+| Candidate | Resident median (us) |
+|---|---:|
+| Existing public selection | 111.134 |
+| Vector cache3 | 88.970 |
+| Rolling B prefetch | 81.270 |
+| Ping-pong B prefetch | 85.407 |
+| Fused QKV M32 | 93.803 |
+| Fused QKV M64 | 86.407 |
+
+The original matched-entry report measures 72.390 us. Its protocol differs
+from the resident table, so this is context, not a new fair native gate. It
+shows why endpoint work and kernel work need separate measurements. QKV reuse
+alone did not beat rolling prefetch in this case. The v26 compiled M64 QKV
+path preserved the intended reuse but used 208 registers versus cache3's 168;
+v27 ping-pong removed 504 carry moves per warp/window while sinking future
+loads in eight of nine dense loops. The pending three-bank experiment addresses
+that specific compiled first-consumer distance and should be measured before
+adding another prefetch variant.
+
+## Second layout hypothesis, only after endpoint attribution
+
+Test a short same-width stage that retains native-like tiled activations
+between blocks, starting with C64. Keep the current canonical math, prepared
+weight cache and exact K order; change only state load/store addressing.
+
+The source currently assembles each canonical input A fragment from four
+scalar 32-bit global loads, and reloads scalar residual pairs later. The
+original C64 PTX explicitly reads lane fragments with
+`ld.weak.global.cg.v4.u32` from aligned `tile_base + lane*16` addresses
+(`assets/vendor_sources/window64.ptx`, first input load at line 80).
+The historical C64 NCU profile's largest long-scoreboard source location is
+the initial `STS.128` consuming preceding input loads (317 samples), not a B
+weight load. This supports testing input representation for C64, rather than
+assuming more B prefetch will fix its dominant stall. C128's corresponding
+profile instead has a 463-sample QMMA dependency on scalar B loads, which the
+new vector cache already targets. These are old profiles, so first re-profile
+the selected v28 C64 route before implementing the stage experiment.
+
+Use an explicit tiled operand representation across at least two consecutive
+blocks and time conversion at both stage endpoints. A one-block experiment
+that adds two full conversion passes can hide an intrinsic load/store benefit.
+The native layout contains channel/fragment permutations; do not reinterpret
+the canonical A/weight cache blindly or import the C32 rotation into C64.
+Map every A byte and residual pair back to logical coordinates, preserve all
+barriers, and prove old/new publication bytes for every phase. Integrate the
+layout into down/up transitions only after the short stage wins; those
+operators have separate raw residual and skip consumers.
+
+This sequence produces a useful result even if persistent tiling fails: direct
+endpoint conversion is independently testable and removes a known replay
+dependency. Neither experiment implies full DLL/NGX parity, a native speed
+win, or the 85% roofline gate.
+
+## Pinned evidence used for this proposal
+
+- Completed trunk: `outputs/native-trunk-v24-completion.json`; binary
+  `baab87033c6725bd298db2d42fb00a48f2d19290471574ade2dc3a6ff9c9cf98`.
+- Inspected trunk adapter source `tools/vendor_trunk.py` SHA256
+  `b5c08ec027ca4f57e615d72bc07436a1d9734f8074c59b207d16bfb7ca78562b`.
+- Inspected window adapter source `tools/vendor_window_benchmark.py` SHA256
+  `1fe32cf39b671669fa5c6fb889f532ef18c753c55a9fc0d30f7c5b20c6abb70d`.
+- Resident C256 report `outputs/window_all_candidates_v27.json` SHA256
+  `5d8b4eead5e6fd2939e930f9468082433750c0ab96f661354e0f1008b17be682`.
+- Resident phase0 small-cache report
+  `outputs/window_small_vector_weight_v27_phase0.json` SHA256
+  `29810ac37ede02998e31fd76066ccb881fb1c44874fca103b0d103355701d3c4`.
+- Matched native reports:
+  `outputs/vendor_window_small_cache_v27_c64_544x960_v3.json`,
+  `outputs/vendor_window_small_cache_v27_c128_272x480_v3.json`,
+  `outputs/vendor_window_vector_prefetch_v27_b15_136x240_p1.json`.
+- Compiled schedule audits:
+  `profile/qkv-sass-v26-cpu-20261003T055001Z/REPORT.md` and
+  `profile/pingpong-sass-v27-cpu-20261003T061500Z/REPORT.md`.
+- Historical C64/C128 source counters:
+  `profile/window-experts-fp8-b5-288x480-p1-20261003T020729_047224Z` and
+  `profile/window-experts-fp8-b9-272x480-p1-v3-20261003T025018_741479Z`.

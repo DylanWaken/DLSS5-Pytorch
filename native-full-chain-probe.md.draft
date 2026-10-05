@@ -1,0 +1,123 @@
+# Bounded original block0→70 correctness probe
+
+The draft joins the recovered original endpoints to the existing original trunk. It is a **correctness experiment, with no timing or speed ratio**. It executes unchanged original cubins for pre0 DS, blocks1–69 and post70, and compares them with the currently installed public `PreparedInference` model using the checkpoint already verified against all153 original records.
+
+The draft has not executed on a GPU. Thirteen CPU tests currently pass. CPU preflight proves the bounded parameter fields, endpoint ownership and exact trunk-constructor edits; it does not establish native runtime parity.
+
+## What is connected
+
+1. Original `cc_tinlayout_fused_pre_block_swin_1h_32_1_ds_fp8` writes the full C32 tiled skip and the exact-half C32 channel-plane pool.
+2. Block1 borrows that pooled allocation **before its parameters are built**. There is no CPU copy or reinterpretation between the native stages.
+3. The existing original trunk retains its two global repacks and all down/up skip connections. Its block69 call selects `cc_tinlayout_fused_swin_1h_32_1_outview_fp8`, so its output is the channel-plane input required by post70.
+4. Original `cc_tinlayout_fused_post_block_swin_1h_32_fp8` reads block69's plane plus the retained block0 full tiled skip and writes an RGBA32F surface.
+
+The isolated `EndpointTrunk` constructor is a copy of the current `NativeTrunk`. CPU preflight reconstructs it from the live original class and permits only its class/signature change, initial borrowed pre0 producer, and block69 output-view selection. All other network construction text must remain identical. Existing trunk/native files are untouched.
+
+Native post70 uses null optional proxy/history/motion/blend textures, output scale1 and conversion flag0. Its surface exposes **three raw neural RGB values and positive-zero alpha**. The fourth learned head logit is not exposed. The candidate's fourth channel is checked only for agreement between its own eager composed head and captured normal public head; this is never reported as original parity. No renderer or NGX host recreation is attempted.
+
+## Input and extent limits
+
+Original pre0 accepts a proxy texture and controls, not an arbitrary prepared feature tensor. A separately assembled diagnostic copies the original DS entry's actual16-lane Half feature prefix, then returns before learned arithmetic. Those values are converted exactly to float32 and fed to the public candidate model. The original network always runs from the **unchanged original cubin**, separately from this diagnostic. The probe checks that diagnostic capture leaves all published native outputs unchanged.
+
+Each seed uses constant proxy colors in the order black → colored → bright → black. It verifies that each of the three transitions changes both the texture fixture and captured features, and that returning to black reproduces the initial feature/RGB digests. The seed is fixed within each captured graph. No-history controls retain the prior reviewed pre0 fixture ABI; this is not a general input-preprocessing parity claim.
+
+| Accepted valid size | Actual full field (W×H) | First pooled field | Global tokens |
+| --- | --- | --- | ---: |
+| 320×320 | 320×320 | 160×160 | 64 |
+| 640×360 | 640×384 | 320×192 | 96 |
+| 1280×720 | 1344×768 | 672×384 | 288 |
+
+Only these three actual `Geometry` cases are accepted by the execution CLI. The default is640×360, reusing the existing96-token global component shape. The320×320 case's64 global tokens satisfy the reused native ABI bounds, but whole-chain execution at this size is new evidence, not inherited from a larger-field proof; it remains an optional broader check.
+
+The old pre0 helper caps standalone validation fields at256. The new local builder keeps its exact parameter bytes, handles and controls, changing only the field transforms/extents and exact-half target. Tests compare every byte with the old builder at four sizes up to256, two capture-pointer cases and three seeds. Preflight reuses the pinned DS register/pool-order proof, enumerates every actual pooled four-byte store, checks one owner per byte, proves the full/two-plane maps are bijective, and proves all2048 diagnostic bytes per CTA have exactly one writer. Full dimensions are divisible by8; the dangerous padded DS clear branch is skipped. No padded pre0 target is accepted.
+
+## What the runtime proof checks
+
+- Eager original outputs establish references before graph capture. Capture itself is never counted as execution.
+- All76 published pre/trunk boundaries are compared to the public model's collected boundaries. The composed eager candidate post/head supplies an additional internal cross-check of the normal captured public head.
+- One native whole-chain graph and one public candidate graph are retained per seed. Both are replayed for each of the four fixtures. Every logical native published byte, the native surface and the entire candidate head are poisoned before the respective replay. Unwritten native padding is preserved, including global Q/K/V tails.
+- Original weights, all candidate tensors/caches, captured feature storage, proxy upload/texture and every native linear allocation's outer guards are checked. Native completion counters and the surface's bottom/right guard border are checked after execution. Allocation and image owners outlive every graph replay.
+- Native and candidate work, image copies and graph capture use the runner's guarded stream. The caller stream is preserved and ordered before resource destruction.
+- Every original module hash, the diagnostic source/binary/assembler, candidate binary, all153 record identity, compiled policy/catalogue versions, actual prepared cache metadata and source inventory are recorded. Binary/source identity is rechecked at completion. Actual selection remains in C++; the harness supplies no Python variant override.
+
+This is77 comparison endpoints per fixture:76 packed publications plus exposed RGB/zero alpha. There is no original post70 internal-publication or fourth-logit claim. The three new actual field sizes are **CPU-proved and GPU-unverified** until the execution report succeeds.
+
+## Files and activation
+
+The manifest is [manifest.json.draft](../outputs/native-full-chain-draft/manifest.json.draft). Proposed files are `tools/vendor_full_chain_probe.py`, `tests/test_vendor_full_chain_cpu.py`, `tests/test_vendor_full_chain.py` and this document. No C++ or original native helper changes are needed. The prospective C512 model hook is not required; the harness records whichever installed public prepared route it actually runs. Later policy/hook changes require a fresh proof and fresh source/binary identity.
+
+Keep these files staged while the v35 scan remains frozen. Adding an active `tools/vendor_*.py` file changes the native journal's source identity, even though it does not alter existing native harnesses. Do not insert this tool into an existing native journal and call it a no-op resume.
+
+From the repository root, CPU-only now:
+
+```powershell
+.venv\Scripts\python.exe -B tests\test_vendor_full_chain_cpu.py.draft
+.venv\Scripts\python.exe -B tools\vendor_full_chain_probe.py.draft --valid-sizes 320x320 640x360 1280x720 --output outputs\native-full-chain-draft\preflight.json.draft
+```
+
+After review and when root owns the exclusive GPU slot, the first sanitizer run may execute the draft directly; it does not require a new extension build:
+
+```powershell
+compute-sanitizer --tool memcheck --launch-timeout 300 --error-exitcode 99 --target-processes all --log-file outputs\native-full-chain-smoke-memcheck.log .venv\Scripts\python.exe -B tools\vendor_full_chain_probe.py.draft --execute --valid-sizes 640x360 --seeds 0 --output outputs\native-full-chain-smoke.json
+```
+
+This command includes a diagnostic-only `ptxas --gpu-name=sm_120` compilation in the report's sibling `diagnostic` directory. It never changes or recompiles the native baseline cubin. The300-second attach timeout accommodates CPU preflight, weight verification and model preparation. A missing original/candidate entry or ABI mismatch is an error, not a skip.
+
+After that first run passes, the broader bounded proof is:
+
+```powershell
+compute-sanitizer --tool memcheck --launch-timeout 300 --error-exitcode 99 --target-processes all --log-file outputs\native-full-chain-bounded-memcheck.log .venv\Scripts\python.exe -B tools\vendor_full_chain_probe.py.draft --execute --valid-sizes 320x320 640x360 1280x720 --seeds 0 20261003 --output outputs\native-full-chain-bounded.json
+```
+
+After activation, the single integration test is explicitly opt-in:
+
+```powershell
+$env:DLSSNR_NATIVE_FULL_CHAIN_TEST = '1'
+.venv\Scripts\python.exe -B -m pytest tests\test_vendor_full_chain.py -q
+```
+
+Its scope is two seeds at640×360, eight native and eight candidate poisoned graph replays, and six actual feature changes. No racecheck result is claimed or implied by memcheck. An unfiltered whole-chain racecheck can be expensive; plan any later bounded race investigation around a specific unresolved shared-memory concern and preserve the actual filter/scope in its evidence.
+
+The probe deliberately emits no latency, throughput, native speed ratio or roofline claim: original texture preprocessing and candidate pre-captured feature inputs are different input boundaries. A later fair speed experiment must include matching preprocessing/layout/output work inside both timed calls.
+
+
+## Exceptional cleanup and isolated execution
+
+The earlier frozen draft only dropped graph references before closing native
+resources. That was unsafe when a `capture_end` traceback retained the graph.
+The original files and manifests remain byte-for-byte in
+`outputs/native-probe-cleanup-review/pre-fix/`.
+
+The revised draft registers every graph before capture and retains all raw
+allocations, captured outputs, images, textures, and module owners together.
+Successful teardown synchronizes, explicitly calls `reset()` on every graph,
+and only then closes native resources in dependency order. A capture body or
+capture-end failure leaves completion uncertain. Synchronization, graph-reset,
+or resource-close failure also makes teardown uncertain. In those cases the
+whole owner is retained; no dependent module unload is attempted. The original
+failure stays primary, with cleanup failures attached as notes.
+
+The CLI runs native execution in a fresh worker. On quarantine, the worker
+writes its failed report, prints the original traceback, and exits without
+Python CUDA-object teardown. The parent enforces a finite timeout and does not
+retry. Confirmed worker exit does not establish GPU/context recovery; stop and
+inspect after any timeout or cleanup failure. CPU failure-injection tests
+exercise retained capture tracebacks, double failures, synchronization/reset/
+close failures, and stale or incomplete worker reports. No CUDA execution was
+used to validate this cleanup revision.
+
+The full-chain worker defaults to600 seconds (`--timeout`, allowed1..1800); diagnostic assembler calls are separately limited to60 seconds, with15 seconds for its version query. Runtime interfaces, native parameter records and comparison boundaries are unchanged.
+
+Stream-context restoration also preserves a pending body error and is skipped after uncertain capture. Diagnostic printing or stream flushing cannot bypass the worker hard-exit. The cleanup regression suite has17 tests; together with15 FP16 and17 full-chain tests, all49 pass normally and under `-O`. Both CPU preflights passed without native CUDA execution.
+
+
+## Padded-field scope of this bounded probe
+
+`Geometry.valid_size` identifies the requested geometry used to derive the padded
+field. This draft supplies **padded full H/W**, not visible valid H/W, to pre0
+parameter offsets208/212 and post70 offsets172/176. Its proxy image also has full
+H/W, and the candidate runs with `crop=False`. Therefore this is a bounded
+**padded-feature/full-field correctness** experiment. It does not prove the
+original renderer's visible-size mirror, edge or crop behavior. Reported RGB
+comparisons cover the full padded field, plus the explicitly guarded surface
+border. This scope remains separate from any later endpoint coverage matrix.

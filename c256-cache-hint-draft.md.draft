@@ -1,0 +1,103 @@
+# Address-only K+2 hints on the winning rolling kernel
+
+This private draft tests L1 and L2 hints separately while retaining the
+rolling kernel's existing demand loads, carry copies and ordered MMA work.
+It follows the v28 result: three register banks were byte-exact but lost all
+twelve phase-1 comparisons across both measurement orders. Those timings are
+in `outputs/window_threebank_v28.json` and
+`outputs/window_threebank_v28_reverse.json`; they do not qualify this new
+uncompiled experiment.
+
+The new private entry point is:
+
+```text
+_inference_window_block_cache_hint(
+    state, w1, w2, w3, qkv_weight, projection_weight,
+    ffn_scale, attn_scale, head_scale, bias,
+    phase=0, packed_output=True, raw_output=False, hint_level=1)
+```
+
+`hint_level=1` selects L1; `2` selects L2. Other values are rejected. The
+existing C256 FP8 cache contract, half/byte input options, packed output,
+optional raw-half output, graph/current-stream behavior, alignment handling
+and inference-only restriction are preserved. All choice is private C++
+template dispatch. There is no production policy or graph change.
+
+At the top of each rolled iteration K, the new code issues an address-only
+hint for K+2 when it exists, before the unchanged K+1 demand load. Each hint
+uses exactly the same tile/lane address as that future demand load. For
+C256, only K2 through K7 are hinted; K8 and K9 are never requested. The two
+128-bit-vector addresses per lane are retained without a density or cache
+layout change. This makes the L1/L2 comparison a single-variable experiment.
+
+The assembly uses `prefetch.global.L1` or `prefetch.global.L2`, with no output
+register operands, under `__CUDA_ARCH__ >= 890`. Its address input and memory
+clobber do not create a read of the future B data. There are still sixteen
+source B data words, compared with twenty-four in the rejected three-bank
+trial. Extra address registers and instruction scheduling remain compiler
+decisions. The existing architecture validation is copied from rolling.
+
+The generator proves that removing the hint helper, its one guarded call and
+template-argument plumbing restores the active rolling kernel exactly. This
+includes W2, normalization, attention, publication, every actual B/A load,
+carry, accumulator operation, shared write and all seven barriers. The CPU
+address proof separately checks all expert/chunk, W3, Q/K/V and projection
+subranges, and generic step counts 1–11. Hint events must precede the existing
+next-B loads; deleting them must reproduce the original event stream.
+
+For all C256 mappings, the proof counts 27,648 hint addresses and unchanged
+36,864 vector B loads, 73,728 shared A reads and 294,912 lane MMA events.
+The 442,368-byte sum of addressed vector spans is an address-coverage count,
+not an estimate of cache-line traffic. Actual request merging, line fetching
+and retention require compiled code and counters.
+
+Files awaiting root activation/build:
+
+- `tools/draft_window_cache_hint.py.draft`
+- `csrc/kernel_impl/window_block_cache_hint.cuh.draft`
+- `csrc/kernel_launcher/window_block_cache_hint.cu.draft`
+- `csrc/torch_api/window_block_cache_hint.cpp.draft`
+- `tools/window_cache_hint_proof.py.draft`
+- `tests/test_window_cache_hint_schedule.py.draft`
+- `tests/test_window_cache_hint.py.draft`
+- `tests/benchmark_window_cache_hint.py.draft`
+
+The benchmark's default three paths are rolling, L1 and L2. Each round
+measures every path in a seeded shuffled order; `--reverse` reverses the same
+round order. Weights/caches remain resident. Each graph holds distinct outputs
+and is warmed before one CUDA-event sample per round. Graph construction and
+cache preparation are excluded from resident timing. Returned bytes and
+operand immutability are checked for every timing run; separate warmed graph
+replays poison outputs before three correctness checks. `--all-candidates`
+adds the other canonical, selected, cache, paired, ping-pong, three-bank and
+QKV variants, for seventeen paths total.
+The default result is a rolling-only screen: the all-incumbents performance
+gate remains null unless all seventeen paths are measured.
+
+After explicit activation and a successful build, the intended paired run is:
+
+```powershell
+.\.venv\Scripts\python.exe tests/benchmark_window_cache_hint.py --output outputs/window_cache_hint_v29.json
+.\.venv\Scripts\python.exe tests/benchmark_window_cache_hint.py --reverse --output outputs/window_cache_hint_v29_reverse.json
+```
+
+The version label is illustrative until root chooses a build. GPU tests have
+not run for this draft. They cover both hint levels, all four phases, batch
+and spatial tails, half/packed inputs, optional raw outputs, real checkpoint
+blocks 15/49, tiny/extreme publication patterns, offset/noncontiguous operands,
+mutating CUDA graphs, nondefault streams, invalid contracts and autograd
+rejection.
+
+Before interpreting timing, inspect SASS for retained hint instructions,
+actual K+2 address bounds, issue position relative to the later demand load,
+unchanged MMA order, registers, spills and barriers. PTX `asm volatile` and a
+memory clobber do not promise final SASS scheduling. A hint emitted beside
+the demand load would fail the early-cache-warming hypothesis even if its
+source position is correct. The earlier NCU evidence suggests testing L1
+first, but neither hint guarantees data readiness or a speedup.
+
+Only a useful measured hint should receive a fresh NCU study and native
+physical-I/O comparison. It must beat the fastest measured incumbent by more
+than 3% for its exact contract to be considered for later selection. The
+full original-DLL speed requirement and 85% hardware-resource threshold
+remain outstanding; local improvement alone does not pass them.
