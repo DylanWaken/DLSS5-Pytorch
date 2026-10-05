@@ -1,0 +1,1582 @@
+{
+  "scope": "SM120 FP8 isolated kernels; NCU replay durations and resident CUDA-event measurements are separate scopes",
+  "sources": {
+    "qkv-matched-ncu-v16-v19.json": {
+      "path": "profile/semantic-global-fp8-v16-source-audit/analysis/qkv-matched-ncu-v16-v19.json",
+      "sha256": "189424ce298a361bcfad4f02012167922dd455ad7846fc8d4f5bfdebbc377908",
+      "data": [
+        {
+          "report": "profile\\semantic-globalqkv-fp8-v16-full\\reports\\full.ncu-repz",
+          "kernel": "cc_vit_1d_qkv_fp8",
+          "metrics": {
+            "gpu__time_duration.sum": 19232.0,
+            "launch__registers_per_thread": 163,
+            "smsp__inst_executed.sum": 1343808.0,
+            "lts__throughput.avg.pct_of_peak_sustained_elapsed": 10.836181105315394,
+            "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": 12.925782336315697,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 8.347982071004113,
+            "smsp__average_warps_issue_stalled_long_scoreboard_per_issue_active.ratio": 2.2643500720979497,
+            "smsp__average_warps_issue_stalled_wait_per_issue_active.ratio": 3.6405745188931027,
+            "smsp__average_warps_issue_stalled_branch_resolving_per_issue_active.ratio": 1.8595845839389273,
+            "smsp__average_warps_issue_stalled_barrier_per_issue_active.ratio": 0.3629185766173304,
+            "smsp__average_warps_issue_stalled_math_pipe_throttle_per_issue_active.ratio": 1.0110332797257124
+          },
+          "top_stall_pcs": [
+            {
+              "pc": 77332419328,
+              "sass": "      SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR13], R17",
+              "source": null,
+              "stalls": {
+                "wait": 8,
+                "branch_resolving": 126,
+                "selected": 11,
+                "misc": 12,
+                "no_instructions": 4
+              }
+            },
+            {
+              "pc": 77332419344,
+              "sass": "@!P0  BRA 0x12015f12f0",
+              "source": null,
+              "stalls": {
+                "wait": 1,
+                "selected": 1,
+                "long_scoreboard": 89
+              }
+            },
+            {
+              "pc": 77332397984,
+              "sass": "      QMMA.16832.F16.E4M3.E4M3 R118, R8, R108, R118",
+              "source": null,
+              "stalls": {
+                "short_scoreboard": 7,
+                "long_scoreboard": 30
+              }
+            },
+            {
+              "pc": 77332402128,
+              "sass": "@!P0  LDG.E.128.STRONG.SM R64, desc[UR14][R78.64]",
+              "source": null,
+              "stalls": {
+                "barrier": 26
+              }
+            },
+            {
+              "pc": 77332397712,
+              "sass": "      S2R R145, SR_LANEID",
+              "source": null,
+              "stalls": {
+                "branch_resolving": 17,
+                "selected": 1,
+                "no_instructions": 1
+              }
+            },
+            {
+              "pc": 77332418736,
+              "sass": "      ERRBAR",
+              "source": null,
+              "stalls": {
+                "membar": 15
+              }
+            },
+            {
+              "pc": 77332419312,
+              "sass": "      YIELD",
+              "source": null,
+              "stalls": {
+                "branch_resolving": 8,
+                "no_instructions": 5
+              }
+            },
+            {
+              "pc": 77332400352,
+              "sass": "      SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR13], R17",
+              "source": null,
+              "stalls": {
+                "long_scoreboard": 12
+              }
+            },
+            {
+              "pc": 77332393728,
+              "sass": "      LDC R1, c[0x0][0x37c]",
+              "source": null,
+              "stalls": {
+                "no_instructions": 12
+              }
+            },
+            {
+              "pc": 77332419024,
+              "sass": "      YIELD",
+              "source": null,
+              "stalls": {
+                "no_instructions": 12
+              }
+            },
+            {
+              "pc": 77332419360,
+              "sass": "      BRA 0x12015ec900",
+              "source": null,
+              "stalls": {
+                "wait": 8,
+                "selected": 3
+              }
+            },
+            {
+              "pc": 77332398800,
+              "sass": "      QMMA.16832.F16.E4M3.E4M3 R122, R24, R42, R122",
+              "source": null,
+              "stalls": {
+                "wait": 5,
+                "selected": 1,
+                "math_pipe_throttle": 4
+              }
+            }
+          ]
+        },
+        {
+          "report": "profile\\semantic-globalqkv-fp8-v16-full\\reports\\full.ncu-repz",
+          "kernel": "global_qkv_c1024_fp8",
+          "metrics": {
+            "gpu__time_duration.sum": 22048.0,
+            "launch__registers_per_thread": 164,
+            "smsp__inst_executed.sum": 1419040.0,
+            "lts__throughput.avg.pct_of_peak_sustained_elapsed": 9.46162830560727,
+            "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": 11.09935608288838,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 8.256896701511893,
+            "smsp__average_warps_issue_stalled_long_scoreboard_per_issue_active.ratio": 2.8211829529423107,
+            "smsp__average_warps_issue_stalled_wait_per_issue_active.ratio": 4.092477178575356,
+            "smsp__average_warps_issue_stalled_branch_resolving_per_issue_active.ratio": 1.858654489808942,
+            "smsp__average_warps_issue_stalled_barrier_per_issue_active.ratio": 0.3906574389765356,
+            "smsp__average_warps_issue_stalled_math_pipe_throttle_per_issue_active.ratio": 0.0007820996932702765
+          },
+          "top_stall_pcs": [
+            {
+              "pc": 77332448160,
+              "sass": "      SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR9+0x2000], R7",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/memoryops.cuh",
+                44
+              ],
+              "stalls": {
+                "wait": 17,
+                "branch_resolving": 104,
+                "selected": 5,
+                "misc": 4,
+                "no_instructions": 3
+              }
+            },
+            {
+              "pc": 77332448176,
+              "sass": "@!P0  BRA 0x12015f8390",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/memoryops.cuh",
+                44
+              ],
+              "stalls": {
+                "wait": 4,
+                "long_scoreboard": 100
+              }
+            },
+            {
+              "pc": 77332429520,
+              "sass": "      LDCU.64 UR4, c[0x0][0x3b0]",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/global_qkv.cuh",
+                232
+              ],
+              "stalls": {
+                "barrier": 36,
+                "branch_resolving": 1
+              }
+            },
+            {
+              "pc": 77332425104,
+              "sass": "      QMMA.16832.F16.E4M3.E4M3 R2, R4, R96, R2",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/intrinsics.cuh",
+                219
+              ],
+              "stalls": {
+                "short_scoreboard": 10,
+                "long_scoreboard": 27
+              }
+            },
+            {
+              "pc": 77332448192,
+              "sass": "      BRA 0x12015f3340",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/memoryops.cuh",
+                44
+              ],
+              "stalls": {
+                "wait": 10,
+                "selected": 8
+              }
+            },
+            {
+              "pc": 77332448144,
+              "sass": "      YIELD",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/intrinsics.cuh",
+                719
+              ],
+              "stalls": {
+                "branch_resolving": 8,
+                "no_instructions": 8
+              }
+            },
+            {
+              "pc": 77332447568,
+              "sass": "      ERRBAR",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/global_qkv.cuh",
+                237
+              ],
+              "stalls": {
+                "membar": 14
+              }
+            },
+            {
+              "pc": 77332425840,
+              "sass": "      NOP",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/intrinsics.cuh",
+                219
+              ],
+              "stalls": {
+                "wait": 11,
+                "selected": 2
+              }
+            },
+            {
+              "pc": 77332427568,
+              "sass": "@!P0  BRA 0x12015f8390",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/intrinsics.cuh",
+                719
+              ],
+              "stalls": {
+                "wait": 1,
+                "selected": 1,
+                "long_scoreboard": 11
+              }
+            },
+            {
+              "pc": 77332425776,
+              "sass": "      NOP",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/intrinsics.cuh",
+                219
+              ],
+              "stalls": {
+                "wait": 10,
+                "selected": 2
+              }
+            },
+            {
+              "pc": 77332427552,
+              "sass": "      SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR9+0x2000], R7",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/intrinsics.cuh",
+                719
+              ],
+              "stalls": {
+                "long_scoreboard": 11
+              }
+            },
+            {
+              "pc": 77332425808,
+              "sass": "      NOP",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/intrinsics.cuh",
+                219
+              ],
+              "stalls": {
+                "wait": 10
+              }
+            }
+          ]
+        },
+        {
+          "report": "profile\\semantic-globalqkv-fp8-v16-source\\reports\\source.ncu-repz",
+          "kernel": "cc_vit_1d_qkv_fp8",
+          "metrics": {
+            "gpu__time_duration.sum": 18528.0,
+            "launch__registers_per_thread": 163,
+            "smsp__inst_executed.sum": 1340968.0
+          },
+          "top_stall_pcs": [
+            {
+              "pc": 77332419328,
+              "sass": "      SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR13], R17",
+              "source": null,
+              "stalls": {
+                "selected": 8,
+                "wait": 14,
+                "branch_resolving": 118,
+                "misc": 6,
+                "no_instructions": 5
+              }
+            },
+            {
+              "pc": 77332419344,
+              "sass": "@!P0  BRA 0x12015f12f0",
+              "source": null,
+              "stalls": {
+                "selected": 1,
+                "wait": 5,
+                "long_scoreboard": 104
+              }
+            },
+            {
+              "pc": 77332402128,
+              "sass": "@!P0  LDG.E.128.STRONG.SM R64, desc[UR14][R78.64]",
+              "source": null,
+              "stalls": {
+                "barrier": 30
+              }
+            },
+            {
+              "pc": 77332397984,
+              "sass": "      QMMA.16832.F16.E4M3.E4M3 R118, R8, R108, R118",
+              "source": null,
+              "stalls": {
+                "long_scoreboard": 20,
+                "short_scoreboard": 9
+              }
+            },
+            {
+              "pc": 77332397712,
+              "sass": "      S2R R145, SR_LANEID",
+              "source": null,
+              "stalls": {
+                "selected": 1,
+                "branch_resolving": 17
+              }
+            },
+            {
+              "pc": 77332419040,
+              "sass": "      SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [R5+URZ], R3",
+              "source": null,
+              "stalls": {
+                "selected": 1,
+                "wait": 3,
+                "branch_resolving": 12,
+                "no_instructions": 1
+              }
+            },
+            {
+              "pc": 77332400368,
+              "sass": "@!P0  BRA 0x12015f12f0",
+              "source": null,
+              "stalls": {
+                "wait": 1,
+                "long_scoreboard": 13
+              }
+            },
+            {
+              "pc": 77332419024,
+              "sass": "      YIELD",
+              "source": null,
+              "stalls": {
+                "branch_resolving": 1,
+                "no_instructions": 12
+              }
+            },
+            {
+              "pc": 77332418736,
+              "sass": "      ERRBAR",
+              "source": null,
+              "stalls": {
+                "membar": 13
+              }
+            },
+            {
+              "pc": 77332419360,
+              "sass": "      BRA 0x12015ec900",
+              "source": null,
+              "stalls": {
+                "selected": 3,
+                "wait": 9
+              }
+            },
+            {
+              "pc": 77332400384,
+              "sass": "@!P1  BRA 0x12015ebe50",
+              "source": null,
+              "stalls": {
+                "wait": 12
+              }
+            },
+            {
+              "pc": 77332399808,
+              "sass": "      LDC.64 R148, c[0x0][0x3a0]",
+              "source": null,
+              "stalls": {
+                "wait": 4,
+                "branch_resolving": 7
+              }
+            }
+          ]
+        },
+        {
+          "report": "profile\\semantic-globalqkv-fp8-v16-source\\reports\\source.ncu-repz",
+          "kernel": "global_qkv_c1024_fp8",
+          "metrics": {
+            "gpu__time_duration.sum": 21408.0,
+            "launch__registers_per_thread": 164,
+            "smsp__inst_executed.sum": 1413362.0
+          },
+          "top_stall_pcs": [
+            {
+              "pc": 77332448160,
+              "sass": "      SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR9+0x2000], R7",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/memoryops.cuh",
+                44
+              ],
+              "stalls": {
+                "selected": 6,
+                "wait": 12,
+                "branch_resolving": 128,
+                "misc": 5,
+                "no_instructions": 2
+              }
+            },
+            {
+              "pc": 77332448176,
+              "sass": "@!P0  BRA 0x12015f8390",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/memoryops.cuh",
+                44
+              ],
+              "stalls": {
+                "selected": 7,
+                "wait": 2,
+                "long_scoreboard": 116
+              }
+            },
+            {
+              "pc": 77332429520,
+              "sass": "      LDCU.64 UR4, c[0x0][0x3b0]",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/global_qkv.cuh",
+                232
+              ],
+              "stalls": {
+                "barrier": 36
+              }
+            },
+            {
+              "pc": 77332448144,
+              "sass": "      YIELD",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/intrinsics.cuh",
+                719
+              ],
+              "stalls": {
+                "branch_resolving": 15,
+                "no_instructions": 3
+              }
+            },
+            {
+              "pc": 77332425104,
+              "sass": "      QMMA.16832.F16.E4M3.E4M3 R2, R4, R96, R2",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/intrinsics.cuh",
+                219
+              ],
+              "stalls": {
+                "long_scoreboard": 12,
+                "short_scoreboard": 6
+              }
+            },
+            {
+              "pc": 77332447568,
+              "sass": "      ERRBAR",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/global_qkv.cuh",
+                237
+              ],
+              "stalls": {
+                "membar": 15
+              }
+            },
+            {
+              "pc": 77332427584,
+              "sass": "@P1   BRA 0x12015f28b0",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/global_qkv.cuh",
+                214
+              ],
+              "stalls": {
+                "selected": 1,
+                "wait": 10,
+                "branch_resolving": 3
+              }
+            },
+            {
+              "pc": 77332425392,
+              "sass": "      NOP",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/tiled_mma.cuh",
+                43
+              ],
+              "stalls": {
+                "selected": 1,
+                "wait": 11
+              }
+            },
+            {
+              "pc": 77332427568,
+              "sass": "@!P0  BRA 0x12015f8390",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/intrinsics.cuh",
+                719
+              ],
+              "stalls": {
+                "selected": 1,
+                "wait": 1,
+                "long_scoreboard": 10
+              }
+            },
+            {
+              "pc": 77332448192,
+              "sass": "      BRA 0x12015f3340",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/memoryops.cuh",
+                44
+              ],
+              "stalls": {
+                "selected": 2,
+                "wait": 10
+              }
+            },
+            {
+              "pc": 77332447856,
+              "sass": "      YIELD",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/intrinsics.cuh",
+                719
+              ],
+              "stalls": {
+                "no_instructions": 12
+              }
+            },
+            {
+              "pc": 77332426256,
+              "sass": "      NOP",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v16/csrc/kernel_impl/intrinsics.cuh",
+                219
+              ],
+              "stalls": {
+                "selected": 1,
+                "wait": 9
+              }
+            }
+          ]
+        },
+        {
+          "report": "profile\\semantic-globalqkv-fp8-v19-full\\reports\\full.ncu-repz",
+          "kernel": "cc_vit_1d_qkv_fp8",
+          "metrics": {
+            "gpu__time_duration.sum": 18752.0,
+            "launch__registers_per_thread": 163,
+            "smsp__inst_executed.sum": 1358346.0,
+            "lts__throughput.avg.pct_of_peak_sustained_elapsed": 10.985230452650805,
+            "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": 12.98348756008856,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 8.29421204398452,
+            "smsp__average_warps_issue_stalled_long_scoreboard_per_issue_active.ratio": 2.3217862531601354,
+            "smsp__average_warps_issue_stalled_wait_per_issue_active.ratio": 3.6580089213881406,
+            "smsp__average_warps_issue_stalled_branch_resolving_per_issue_active.ratio": 1.838234704657961,
+            "smsp__average_warps_issue_stalled_barrier_per_issue_active.ratio": 0.3270063818273958,
+            "smsp__average_warps_issue_stalled_math_pipe_throttle_per_issue_active.ratio": 1.0096643599705675
+          },
+          "top_stall_pcs": [
+            {
+              "pc": 77332419328,
+              "sass": "      SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR13], R17",
+              "source": null,
+              "stalls": {
+                "wait": 12,
+                "branch_resolving": 106,
+                "selected": 9,
+                "misc": 5,
+                "no_instructions": 8
+              }
+            },
+            {
+              "pc": 77332419344,
+              "sass": "@!P0  BRA 0x12015f12f0",
+              "source": null,
+              "stalls": {
+                "wait": 1,
+                "selected": 4,
+                "long_scoreboard": 83
+              }
+            },
+            {
+              "pc": 77332397984,
+              "sass": "      QMMA.16832.F16.E4M3.E4M3 R118, R8, R108, R118",
+              "source": null,
+              "stalls": {
+                "selected": 1,
+                "short_scoreboard": 10,
+                "long_scoreboard": 31
+              }
+            },
+            {
+              "pc": 77332402128,
+              "sass": "@!P0  LDG.E.128.STRONG.SM R64, desc[UR14][R78.64]",
+              "source": null,
+              "stalls": {
+                "barrier": 27
+              }
+            },
+            {
+              "pc": 77332397712,
+              "sass": "      S2R R145, SR_LANEID",
+              "source": null,
+              "stalls": {
+                "wait": 1,
+                "branch_resolving": 16,
+                "selected": 1,
+                "misc": 1,
+                "no_instructions": 1
+              }
+            },
+            {
+              "pc": 77332418736,
+              "sass": "      ERRBAR",
+              "source": null,
+              "stalls": {
+                "membar": 18
+              }
+            },
+            {
+              "pc": 77332400352,
+              "sass": "      SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR13], R17",
+              "source": null,
+              "stalls": {
+                "selected": 1,
+                "long_scoreboard": 14
+              }
+            },
+            {
+              "pc": 77332400368,
+              "sass": "@!P0  BRA 0x12015f12f0",
+              "source": null,
+              "stalls": {
+                "selected": 1,
+                "long_scoreboard": 14
+              }
+            },
+            {
+              "pc": 77332398464,
+              "sass": "      QMMA.16832.F16.E4M3.E4M3 R2, R4, R28, R2",
+              "source": null,
+              "stalls": {
+                "wait": 8,
+                "math_pipe_throttle": 6
+              }
+            },
+            {
+              "pc": 77332400384,
+              "sass": "@!P1  BRA 0x12015ebe50",
+              "source": null,
+              "stalls": {
+                "wait": 12,
+                "branch_resolving": 1
+              }
+            },
+            {
+              "pc": 77332419360,
+              "sass": "      BRA 0x12015ec900",
+              "source": null,
+              "stalls": {
+                "wait": 10,
+                "selected": 3
+              }
+            },
+            {
+              "pc": 77332398240,
+              "sass": "      QMMA.16832.F16.E4M3.E4M3 R136, R8, R28, R136",
+              "source": null,
+              "stalls": {
+                "wait": 8,
+                "math_pipe_throttle": 4
+              }
+            }
+          ]
+        },
+        {
+          "report": "profile\\semantic-globalqkv-fp8-v19-full\\reports\\full.ncu-repz",
+          "kernel": "global_qkv_c1024_fp8",
+          "metrics": {
+            "gpu__time_duration.sum": 18592.0,
+            "launch__registers_per_thread": 158,
+            "smsp__inst_executed.sum": 1376569.0,
+            "lts__throughput.avg.pct_of_peak_sustained_elapsed": 11.100267348049305,
+            "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": 13.137506768391704,
+            "sm__warps_active.avg.pct_of_peak_sustained_active": 8.364664504932959,
+            "smsp__average_warps_issue_stalled_long_scoreboard_per_issue_active.ratio": 2.2585324903407096,
+            "smsp__average_warps_issue_stalled_wait_per_issue_active.ratio": 4.139957147874957,
+            "smsp__average_warps_issue_stalled_branch_resolving_per_issue_active.ratio": 1.7979894625922024,
+            "smsp__average_warps_issue_stalled_barrier_per_issue_active.ratio": 0.40141482262030204,
+            "smsp__average_warps_issue_stalled_math_pipe_throttle_per_issue_active.ratio": 0.0008092729188619599
+          },
+          "top_stall_pcs": [
+            {
+              "pc": 77332445616,
+              "sass": "      SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR9+0x2000], R11",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/memoryops.cuh",
+                44
+              ],
+              "stalls": {
+                "wait": 14,
+                "branch_resolving": 127,
+                "selected": 7,
+                "misc": 9,
+                "no_instructions": 9
+              }
+            },
+            {
+              "pc": 77332445632,
+              "sass": "@!P0  BRA 0x12015f79a0",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/memoryops.cuh",
+                44
+              ],
+              "stalls": {
+                "wait": 2,
+                "selected": 3,
+                "long_scoreboard": 101
+              }
+            },
+            {
+              "pc": 77332425088,
+              "sass": "      QMMA.16832.F16.E4M3.E4M3 R58, R8, R4, R58",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/tiled_mma.cuh",
+                43
+              ],
+              "stalls": {
+                "short_scoreboard": 6,
+                "long_scoreboard": 31
+              }
+            },
+            {
+              "pc": 77332430048,
+              "sass": "      LDCU.64 UR4, c[0x0][0x3a0]",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/global_qkv.cuh",
+                142
+              ],
+              "stalls": {
+                "barrier": 30
+              }
+            },
+            {
+              "pc": 77332445648,
+              "sass": "      BRA 0x12015f3330",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/memoryops.cuh",
+                44
+              ],
+              "stalls": {
+                "wait": 14,
+                "selected": 9
+              }
+            },
+            {
+              "pc": 77332445600,
+              "sass": "      YIELD",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/intrinsics.cuh",
+                719
+              ],
+              "stalls": {
+                "branch_resolving": 11,
+                "no_instructions": 5
+              }
+            },
+            {
+              "pc": 77332427568,
+              "sass": "@P1   BRA 0x12015f28a0",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/global_qkv.cuh",
+                243
+              ],
+              "stalls": {
+                "wait": 15
+              }
+            },
+            {
+              "pc": 77332427552,
+              "sass": "@!P0  BRA 0x12015f79a0",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/intrinsics.cuh",
+                719
+              ],
+              "stalls": {
+                "long_scoreboard": 14
+              }
+            },
+            {
+              "pc": 77332426560,
+              "sass": "      NOP",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/intrinsics.cuh",
+                219
+              ],
+              "stalls": {
+                "wait": 12
+              }
+            },
+            {
+              "pc": 77332445328,
+              "sass": "      SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR8+0x2000], R9",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/memoryops.cuh",
+                44
+              ],
+              "stalls": {
+                "branch_resolving": 9,
+                "misc": 1,
+                "no_instructions": 2
+              }
+            },
+            {
+              "pc": 77332421888,
+              "sass": "      LDC R1, c[0x0][0x37c]",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/global_qkv_fp8.cuh",
+                5
+              ],
+              "stalls": {
+                "no_instructions": 11
+              }
+            },
+            {
+              "pc": 77332425536,
+              "sass": "      NOP",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/intrinsics.cuh",
+                219
+              ],
+              "stalls": {
+                "wait": 8,
+                "selected": 1
+              }
+            }
+          ]
+        },
+        {
+          "report": "profile\\semantic-globalqkv-fp8-v19-source\\reports\\source.ncu-repz",
+          "kernel": "cc_vit_1d_qkv_fp8",
+          "metrics": {
+            "gpu__time_duration.sum": 19104.0,
+            "launch__registers_per_thread": 163,
+            "smsp__inst_executed.sum": 1346082.0
+          },
+          "top_stall_pcs": [
+            {
+              "pc": 77332419328,
+              "sass": "      SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR13], R17",
+              "source": null,
+              "stalls": {
+                "selected": 12,
+                "wait": 12,
+                "branch_resolving": 121,
+                "misc": 2,
+                "no_instructions": 6
+              }
+            },
+            {
+              "pc": 77332419344,
+              "sass": "@!P0  BRA 0x12015f12f0",
+              "source": null,
+              "stalls": {
+                "selected": 6,
+                "wait": 5,
+                "long_scoreboard": 95
+              }
+            },
+            {
+              "pc": 77332397984,
+              "sass": "      QMMA.16832.F16.E4M3.E4M3 R118, R8, R108, R118",
+              "source": null,
+              "stalls": {
+                "long_scoreboard": 49,
+                "short_scoreboard": 11
+              }
+            },
+            {
+              "pc": 77332402128,
+              "sass": "@!P0  LDG.E.128.STRONG.SM R64, desc[UR14][R78.64]",
+              "source": null,
+              "stalls": {
+                "barrier": 36
+              }
+            },
+            {
+              "pc": 77332419040,
+              "sass": "      SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [R5+URZ], R3",
+              "source": null,
+              "stalls": {
+                "wait": 4,
+                "branch_resolving": 18
+              }
+            },
+            {
+              "pc": 77332400368,
+              "sass": "@!P0  BRA 0x12015f12f0",
+              "source": null,
+              "stalls": {
+                "selected": 1,
+                "long_scoreboard": 18
+              }
+            },
+            {
+              "pc": 77332397712,
+              "sass": "      S2R R145, SR_LANEID",
+              "source": null,
+              "stalls": {
+                "selected": 1,
+                "wait": 1,
+                "branch_resolving": 15,
+                "misc": 1
+              }
+            },
+            {
+              "pc": 77332400384,
+              "sass": "@!P1  BRA 0x12015ebe50",
+              "source": null,
+              "stalls": {
+                "wait": 18
+              }
+            },
+            {
+              "pc": 77332419360,
+              "sass": "      BRA 0x12015ec900",
+              "source": null,
+              "stalls": {
+                "selected": 4,
+                "wait": 10
+              }
+            },
+            {
+              "pc": 77332419312,
+              "sass": "      YIELD",
+              "source": null,
+              "stalls": {
+                "branch_resolving": 10,
+                "no_instructions": 4
+              }
+            },
+            {
+              "pc": 77332398576,
+              "sass": "      QMMA.16832.F16.E4M3.E4M3 R104, R16, R40, R104",
+              "source": null,
+              "stalls": {
+                "selected": 1,
+                "wait": 6,
+                "math_pipe_throttle": 5
+              }
+            },
+            {
+              "pc": 77332418736,
+              "sass": "      ERRBAR",
+              "source": null,
+              "stalls": {
+                "membar": 11
+              }
+            }
+          ]
+        },
+        {
+          "report": "profile\\semantic-globalqkv-fp8-v19-source\\reports\\source.ncu-repz",
+          "kernel": "global_qkv_c1024_fp8",
+          "metrics": {
+            "gpu__time_duration.sum": 18816.0,
+            "launch__registers_per_thread": 158,
+            "smsp__inst_executed.sum": 1368421.0
+          },
+          "top_stall_pcs": [
+            {
+              "pc": 77332445616,
+              "sass": "      SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR9+0x2000], R11",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/memoryops.cuh",
+                44
+              ],
+              "stalls": {
+                "selected": 6,
+                "wait": 11,
+                "branch_resolving": 128,
+                "misc": 4,
+                "no_instructions": 3
+              }
+            },
+            {
+              "pc": 77332445632,
+              "sass": "@!P0  BRA 0x12015f79a0",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/memoryops.cuh",
+                44
+              ],
+              "stalls": {
+                "selected": 4,
+                "wait": 3,
+                "long_scoreboard": 98
+              }
+            },
+            {
+              "pc": 77332425088,
+              "sass": "      QMMA.16832.F16.E4M3.E4M3 R58, R8, R4, R58",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/tiled_mma.cuh",
+                43
+              ],
+              "stalls": {
+                "long_scoreboard": 31,
+                "short_scoreboard": 10
+              }
+            },
+            {
+              "pc": 77332430048,
+              "sass": "      LDCU.64 UR4, c[0x0][0x3a0]",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/global_qkv.cuh",
+                142
+              ],
+              "stalls": {
+                "barrier": 32
+              }
+            },
+            {
+              "pc": 77332427552,
+              "sass": "@!P0  BRA 0x12015f79a0",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/intrinsics.cuh",
+                719
+              ],
+              "stalls": {
+                "selected": 1,
+                "wait": 1,
+                "long_scoreboard": 12
+              }
+            },
+            {
+              "pc": 77332445648,
+              "sass": "      BRA 0x12015f3330",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/memoryops.cuh",
+                44
+              ],
+              "stalls": {
+                "selected": 4,
+                "wait": 10
+              }
+            },
+            {
+              "pc": 77332427568,
+              "sass": "@P1   BRA 0x12015f28a0",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/global_qkv.cuh",
+                243
+              ],
+              "stalls": {
+                "wait": 11,
+                "branch_resolving": 2
+              }
+            },
+            {
+              "pc": 77332445024,
+              "sass": "      ERRBAR",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/global_qkv.cuh",
+                274
+              ],
+              "stalls": {
+                "membar": 13
+              }
+            },
+            {
+              "pc": 77332421888,
+              "sass": "      LDC R1, c[0x0][0x37c]",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/global_qkv_fp8.cuh",
+                5
+              ],
+              "stalls": {
+                "no_instructions": 13
+              }
+            },
+            {
+              "pc": 77332427008,
+              "sass": "      ISETP.GE.AND P0, PT, R74, R3, PT",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/global_contract.cuh",
+                74
+              ],
+              "stalls": {
+                "selected": 1,
+                "wait": 6,
+                "branch_resolving": 4
+              }
+            },
+            {
+              "pc": 77332445600,
+              "sass": "      YIELD",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/intrinsics.cuh",
+                719
+              ],
+              "stalls": {
+                "branch_resolving": 6,
+                "no_instructions": 5
+              }
+            },
+            {
+              "pc": 77332426304,
+              "sass": "      NOP",
+              "source": [
+                "D:/Research/DLSSNR-PyTorch/outputs/semantic-rewrite/build-v19/csrc/kernel_impl/intrinsics.cuh",
+                219
+              ],
+              "stalls": {
+                "wait": 10
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "qkv-static-instructions-v17-v19-v22.json": {
+      "path": "profile/semantic-global-fp8-v16-source-audit/analysis/qkv-static-instructions-v17-v19-v22.json",
+      "sha256": "ec5bb2aae15907392e7649b2b6f97d144c23df3280adfff196694f1046255c26",
+      "data": {
+        "v17": {
+          "LDC": 1,
+          "LDC.64": 3,
+          "S2R": 5,
+          "UMOV": 9,
+          "LDCU.64": 10,
+          "S2UR": 1,
+          "UIADD3.64": 1,
+          "IMAD": 26,
+          "SHF.R.S32.HI": 11,
+          "ULEA": 1,
+          "LEA.HI": 2,
+          "IABS": 3,
+          "I2F.RP": 1,
+          "LOP3.LUT": 11,
+          "SHF.L.U32": 5,
+          "VOTEU.ALL": 3,
+          "MUFU.RCP": 1,
+          "LDCU": 2,
+          "IADD3": 28,
+          "F2I.FTZ.U32.TRUNC.NTZ": 1,
+          "UIMAD": 1,
+          "UIADD3": 5,
+          "USHF.L.U32": 2,
+          "MOV": 92,
+          "SYNCS.EXCH.64": 2,
+          "IMAD.HI.U32": 2,
+          "BAR.SYNC.DEFER_BLOCKING": 3,
+          "ISETP.GT.U32.AND": 1,
+          "ISETP.GE.U32.AND": 1,
+          "ISETP.GE.AND": 15,
+          "IMAD.SHL.U32": 7,
+          "ISETP.NE.U32.AND": 1,
+          "ISETP.NE.AND": 6,
+          "IMAD.WIDE.U32": 9,
+          "SEL": 1,
+          "IADD.64": 14,
+          "LDG.E.128.STRONG.SM": 36,
+          "BSSY": 6,
+          "LEA": 16,
+          "BRA": 114,
+          "BRA.DIV": 4,
+          "ELECT": 8,
+          "R2UR": 5,
+          "UIMAD.WIDE.U32": 2,
+          "UBLKCP.S.G": 4,
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR": 4,
+          "STS.128": 4,
+          "BSYNC": 6,
+          "VOTEU.ANY": 4,
+          "R2UR.BROADCAST": 6,
+          "NOP": 103,
+          "SYNCS.ARRIVE.TRANS64.ART0": 2,
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT": 4,
+          "CS2R": 96,
+          "WARPSYNC.ALL": 3,
+          "LDS.128": 8,
+          "QMMA.16832.F16.E4M3.E4M3": 96,
+          "LDG.E.NA.STRONG.GPU": 2,
+          "NANOSLEEP": 1,
+          "BSSY.RECONVERGENT": 39,
+          "STG.E.NA.128": 36,
+          "BSYNC.RECONVERGENT": 39,
+          "HADD2": 160,
+          "HMUL2": 160,
+          "LD.E": 1,
+          "HFMA2": 32,
+          "SHFL.BFLY": 32,
+          "SHF.L.W.U32.HI": 16,
+          "HMNMX2": 16,
+          "HADD2.F32": 16,
+          "MUFU.RSQ": 16,
+          "F2F.F16.F32": 16,
+          "F2FP.F16.F32.PACK_AB": 1,
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C": 96,
+          "PRMT": 48,
+          "LEA.HI.X": 9,
+          "IMAD.WIDE": 1,
+          "MOVM.16.MT88": 32,
+          "SHF.R.U32.HI": 4,
+          "EXIT": 2,
+          "MEMBAR.ALL.CTA": 1,
+          "MEMBAR.ALL.GPU": 1,
+          "ERRBAR": 1,
+          "CGAERRBAR": 1,
+          "STG.E.NA.STRONG.GPU": 1,
+          "WARPSYNC.COLLECTIVE": 4,
+          "ENDCOLLECTIVE": 4,
+          "YIELD": 2
+        },
+        "v19": {
+          "LDC": 1,
+          "LDC.64": 3,
+          "S2R": 5,
+          "UMOV": 9,
+          "LDCU.64": 11,
+          "S2UR": 1,
+          "UIADD3.64": 1,
+          "IMAD": 28,
+          "SHF.R.S32.HI": 10,
+          "ULEA": 1,
+          "LEA.HI": 2,
+          "IABS": 3,
+          "I2F.RP": 1,
+          "MUFU.RCP": 1,
+          "IADD3": 32,
+          "F2I.FTZ.U32.TRUNC.NTZ": 1,
+          "MOV": 102,
+          "IMAD.HI.U32": 2,
+          "LOP3.LUT": 13,
+          "IMAD.SHL.U32": 10,
+          "ISETP.GT.U32.AND": 1,
+          "VOTEU.ALL": 3,
+          "LDCU": 2,
+          "ISETP.GE.U32.AND": 1,
+          "ISETP.GE.AND": 16,
+          "ISETP.NE.U32.AND": 1,
+          "ISETP.NE.AND": 5,
+          "IMAD.WIDE.U32": 10,
+          "UIMAD": 1,
+          "SEL": 1,
+          "UIADD3": 5,
+          "USHF.L.U32": 2,
+          "IADD.64": 16,
+          "SYNCS.EXCH.64": 2,
+          "BAR.SYNC.DEFER_BLOCKING": 3,
+          "LDG.E.128.STRONG.SM": 36,
+          "BSSY": 7,
+          "LEA": 15,
+          "BRA": 37,
+          "BRA.DIV": 4,
+          "ELECT": 8,
+          "R2UR": 5,
+          "UIMAD.WIDE.U32": 2,
+          "UBLKCP.S.G": 4,
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR": 4,
+          "STS.128": 4,
+          "BSYNC": 7,
+          "VOTEU.ANY": 4,
+          "R2UR.BROADCAST": 6,
+          "NOP": 102,
+          "SYNCS.ARRIVE.TRANS64.ART0": 2,
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT": 4,
+          "CS2R": 95,
+          "SHF.L.U32": 1,
+          "WARPSYNC.ALL": 3,
+          "LDS.128": 8,
+          "QMMA.16832.F16.E4M3.E4M3": 96,
+          "LDG.E.NA.STRONG.GPU": 2,
+          "NANOSLEEP": 1,
+          "LD.E": 1,
+          "BSSY.RECONVERGENT": 11,
+          "HADD2": 160,
+          "HMUL2": 160,
+          "HFMA2": 32,
+          "SHFL.BFLY": 32,
+          "SHF.L.W.U32.HI": 16,
+          "HMNMX2": 16,
+          "HADD2.F32": 16,
+          "MUFU.RSQ": 16,
+          "F2F.F16.F32": 16,
+          "F2FP.F16.F32.PACK_AB": 1,
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C": 96,
+          "PRMT": 48,
+          "LEA.HI.X": 8,
+          "STG.E.NA.128": 36,
+          "BSYNC.RECONVERGENT": 11,
+          "IMAD.WIDE": 4,
+          "MOVM.16.MT88": 32,
+          "SHF.R.U32.HI": 4,
+          "EXIT": 2,
+          "MEMBAR.ALL.CTA": 1,
+          "MEMBAR.ALL.GPU": 1,
+          "ERRBAR": 1,
+          "CGAERRBAR": 1,
+          "STG.E.NA.STRONG.GPU": 1,
+          "WARPSYNC.COLLECTIVE": 4,
+          "ENDCOLLECTIVE": 4,
+          "YIELD": 2
+        },
+        "v21": {
+          "LDC": 1,
+          "LDC.64": 3,
+          "S2R": 5,
+          "UMOV": 9,
+          "LDCU.64": 11,
+          "S2UR": 1,
+          "UIADD3.64": 1,
+          "IMAD": 17,
+          "SHF.R.S32.HI": 10,
+          "ULEA": 1,
+          "LEA.HI": 2,
+          "IABS": 3,
+          "I2F.RP": 1,
+          "MUFU.RCP": 1,
+          "IADD3": 32,
+          "F2I.FTZ.U32.TRUNC.NTZ": 1,
+          "MOV": 105,
+          "IMAD.HI.U32": 2,
+          "LOP3.LUT": 13,
+          "SHF.L.U32": 11,
+          "ISETP.GT.U32.AND": 1,
+          "VOTEU.ALL": 3,
+          "LDCU": 2,
+          "ISETP.GE.U32.AND": 1,
+          "ISETP.GE.AND": 16,
+          "ISETP.NE.U32.AND": 1,
+          "ISETP.NE.AND": 5,
+          "IMAD.WIDE.U32": 10,
+          "UIMAD": 1,
+          "SEL": 1,
+          "UIADD3": 5,
+          "USHF.L.U32": 2,
+          "IADD.64": 16,
+          "SYNCS.EXCH.64": 2,
+          "BAR.SYNC.DEFER_BLOCKING": 3,
+          "LDG.E.128.STRONG.SM": 36,
+          "BSSY": 7,
+          "LEA": 26,
+          "BRA": 37,
+          "BRA.DIV": 4,
+          "ELECT": 8,
+          "R2UR": 5,
+          "UIMAD.WIDE.U32": 2,
+          "UBLKCP.S.G": 4,
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR": 4,
+          "STS.128": 4,
+          "BSYNC": 7,
+          "VOTEU.ANY": 4,
+          "R2UR.BROADCAST": 6,
+          "NOP": 107,
+          "SYNCS.ARRIVE.TRANS64.ART0": 2,
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT": 4,
+          "CS2R": 95,
+          "WARPSYNC.ALL": 3,
+          "LDS.128": 8,
+          "QMMA.16832.F16.E4M3.E4M3": 96,
+          "LDG.E.NA.STRONG.GPU": 2,
+          "NANOSLEEP": 1,
+          "LD.E": 1,
+          "BSSY.RECONVERGENT": 11,
+          "HADD2": 160,
+          "HMUL2": 160,
+          "HFMA2": 32,
+          "SHFL.BFLY": 32,
+          "SHF.L.W.U32.HI": 16,
+          "HMNMX2": 16,
+          "HADD2.F32": 16,
+          "MUFU.RSQ": 16,
+          "F2F.F16.F32": 16,
+          "F2FP.F16.F32.PACK_AB": 1,
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C": 96,
+          "LEA.HI.X": 8,
+          "STG.E.NA.128": 36,
+          "BSYNC.RECONVERGENT": 11,
+          "IMAD.WIDE": 4,
+          "MOVM.16.MT88": 32,
+          "SHF.R.U32.HI": 4,
+          "EXIT": 2,
+          "MEMBAR.ALL.CTA": 1,
+          "MEMBAR.ALL.GPU": 1,
+          "ERRBAR": 1,
+          "CGAERRBAR": 1,
+          "STG.E.NA.STRONG.GPU": 1,
+          "WARPSYNC.COLLECTIVE": 4,
+          "ENDCOLLECTIVE": 4,
+          "YIELD": 2
+        },
+        "v22": {
+          "LDC": 1,
+          "LDC.64": 3,
+          "S2R": 5,
+          "UMOV": 9,
+          "LDCU.64": 11,
+          "S2UR": 1,
+          "UIADD3.64": 1,
+          "IMAD": 18,
+          "SHF.R.S32.HI": 10,
+          "ULEA": 1,
+          "LEA.HI": 2,
+          "IABS": 3,
+          "I2F.RP": 1,
+          "MUFU.RCP": 1,
+          "IADD3": 32,
+          "F2I.FTZ.U32.TRUNC.NTZ": 1,
+          "MOV": 100,
+          "IMAD.HI.U32": 2,
+          "LOP3.LUT": 13,
+          "SHF.L.U32": 11,
+          "ISETP.GT.U32.AND": 1,
+          "VOTEU.ALL": 3,
+          "LDCU": 2,
+          "ISETP.GE.U32.AND": 1,
+          "ISETP.GE.AND": 19,
+          "ISETP.NE.U32.AND": 1,
+          "ISETP.NE.AND": 8,
+          "IMAD.WIDE.U32": 10,
+          "UIMAD": 1,
+          "SEL": 1,
+          "UIADD3": 5,
+          "USHF.L.U32": 2,
+          "IADD.64": 16,
+          "SYNCS.EXCH.64": 2,
+          "BAR.SYNC.DEFER_BLOCKING": 3,
+          "LDG.E.128.STRONG.SM": 36,
+          "BSSY": 7,
+          "LEA": 25,
+          "BRA": 37,
+          "BRA.DIV": 4,
+          "ELECT": 8,
+          "R2UR": 5,
+          "UIMAD.WIDE.U32": 2,
+          "UBLKCP.S.G": 4,
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR": 4,
+          "STS.128": 4,
+          "BSYNC": 7,
+          "VOTEU.ANY": 4,
+          "R2UR.BROADCAST": 6,
+          "NOP": 103,
+          "SYNCS.ARRIVE.TRANS64.ART0": 2,
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT": 4,
+          "CS2R": 96,
+          "WARPSYNC.ALL": 3,
+          "LDS.128": 8,
+          "QMMA.16832.F16.E4M3.E4M3": 96,
+          "LDG.E.NA.STRONG.GPU": 2,
+          "NANOSLEEP": 1,
+          "LD.E": 1,
+          "BSSY.RECONVERGENT": 11,
+          "HADD2": 160,
+          "HMUL2": 160,
+          "HFMA2": 32,
+          "SHFL.BFLY": 32,
+          "SHF.L.W.U32.HI": 16,
+          "HMNMX2": 16,
+          "HADD2.F32": 16,
+          "MUFU.RSQ": 16,
+          "F2F.F16.F32": 16,
+          "F2FP.F16.F32.PACK_AB": 1,
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C": 96,
+          "LEA.HI.X": 8,
+          "STG.E.NA.128": 36,
+          "BSYNC.RECONVERGENT": 11,
+          "P2R": 2,
+          "IMAD.WIDE": 4,
+          "MOVM.16.MT88": 32,
+          "SHF.R.U32.HI": 4,
+          "EXIT": 2,
+          "MEMBAR.ALL.CTA": 1,
+          "MEMBAR.ALL.GPU": 1,
+          "ERRBAR": 1,
+          "CGAERRBAR": 1,
+          "STG.E.NA.STRONG.GPU": 1,
+          "WARPSYNC.COLLECTIVE": 4,
+          "ENDCOLLECTIVE": 4,
+          "YIELD": 2
+        }
+      }
+    },
+    "qkv-contract-projection-timing.json": {
+      "path": "profile/semantic-global-fp8-v16-source-audit/analysis/qkv-contract-projection-timing.json",
+      "sha256": "5c7019af4baa048c22016d3c75756921f19b2aec5e7e79fc3980d987371f086c",
+      "data": [
+        {
+          "result": "outputs\\semantic-rewrite\\qkv-v17-fp8\\result.json",
+          "entry": "global_qkv_c1024_fp8",
+          "calls": 8,
+          "native_us_sum": 114.8767489939928,
+          "candidate_us_sum": 138.68325110524893,
+          "median_ratio": 1.2055430762730053,
+          "all_output_scratch_counter_guard_checks_pass": true
+        },
+        {
+          "result": "outputs\\semantic-rewrite\\qkv-v19-fp8\\result.json",
+          "entry": "global_qkv_c1024_fp8",
+          "calls": 8,
+          "native_us_sum": 115.08250096812844,
+          "candidate_us_sum": 116.24550027772784,
+          "median_ratio": 1.011194584924386,
+          "all_output_scratch_counter_guard_checks_pass": true
+        },
+        {
+          "result": "outputs\\semantic-rewrite\\qkv-v22-fp8\\result.json",
+          "entry": "global_qkv_c1024_fp8",
+          "calls": 8,
+          "native_us_sum": 114.869249984622,
+          "candidate_us_sum": 115.53125036880374,
+          "median_ratio": 1.004597812125588,
+          "all_output_scratch_counter_guard_checks_pass": true
+        },
+        {
+          "result": "outputs\\semantic-rewrite\\compare-v24-fp8\\result.json",
+          "entry": "global_ffn_contract_c1024_fp8",
+          "calls": 8,
+          "native_us_sum": 151.59125067293644,
+          "candidate_us_sum": 151.87150053679943,
+          "median_ratio": 1.0019822925616824,
+          "all_output_scratch_counter_guard_checks_pass": true
+        },
+        {
+          "result": "outputs\\semantic-rewrite\\compare-v24-fp8\\result.json",
+          "entry": "global_qkv_c1024_fp8",
+          "calls": 8,
+          "native_us_sum": 114.89750165492296,
+          "candidate_us_sum": 115.89225055649877,
+          "median_ratio": 1.008639089539054,
+          "all_output_scratch_counter_guard_checks_pass": true
+        },
+        {
+          "result": "outputs\\semantic-rewrite\\compare-v24-fp8\\result.json",
+          "entry": "global_projection_c1024_fp8",
+          "calls": 8,
+          "native_us_sum": 87.69974950700998,
+          "candidate_us_sum": 89.02149926871061,
+          "median_ratio": 1.0127934478427107,
+          "all_output_scratch_counter_guard_checks_pass": true
+        }
+      ]
+    }
+  }
+}

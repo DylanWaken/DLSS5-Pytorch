@@ -2,7 +2,7 @@
 
 The FP16 route implements the same prepared-feature trunk as FP8: blocks 1-69, 36 reusable compute/repack kernels, 152 compute/repack calls and 33 counter clears. Kernel selection, launch parameters and intermediate ownership live in C++; Python only prepares weights and calls the plan.
 
-The final four-size measurements and raw timing pairs are in [the speed overview](BENCHMARKS.md). The qualified binary SHA-256 is `121ac8d04229deb97e8700f8943e882766f70c70df0cd3f4c7ad9ca69f8073f8`.
+This report preserves the first complete FP16 integration and its profiling history. The current readable CUDA implementation has newer [four-size measurements](BENCHMARKS.md) and [source/optimization details](SEMANTIC_RECONSTRUCTION.md). The historical binary SHA-256 discussed below is `121ac8d04229deb97e8700f8943e882766f70c70df0cd3f4c7ad9ca69f8073f8`.
 
 The benchmark target is SM120 on an RTX PRO 6000 Blackwell, batch one, at 720p, 1080p, 2560x1440 and 4K. The reference loads the original extracted FP16 cubins directly. It does not recompile the reference PTX or time the complete DLL/NGX renderer pipeline. Blocks 0 and 70 remain outside both deployment trunks.
 
