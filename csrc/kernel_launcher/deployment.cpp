@@ -1,7 +1,7 @@
 #include "deployment.h"
 #include "windows_dispatch.inl"
 #include "c512_dispatch.inl"
-#include "kernel_abi.h"
+#include "kernel_impl/kernel_abi.h"
 #include "compiled_resolution_policy.h"
 #include <c10/cuda/CUDAGuard.h>
 #include <c10/cuda/CUDAStream.h>
@@ -171,6 +171,105 @@ FDeploymentPlan<bFp16>::FDeploymentPlan(at::Tensor Input, std::vector<at::Tensor
 		}
 	}
 	TORCH_CHECK(UniqueKernels.size() == 37, "36 compute/repack entries plus counter clear expected");
+}
+
+template <bool bFp16>
+std::vector<c10::intrusive_ptr<FPreparedKernelHandle>> FDeploymentPlan<bFp16>::PrepareKernels() const
+{
+	std::vector<c10::intrusive_ptr<FPreparedKernelHandle>> Prepared;
+	Prepared.reserve(Calls.size());
+	for (const auto& Call : Calls)
+	{
+		std::vector<at::Tensor> Inputs, Outputs;
+		std::vector<int64_t> InputBytes, OutputBytes;
+		std::vector<FPhysicalTensorBinding> Bindings;
+		auto ParameterBlock = Call.ParameterBlock;
+		for (const auto& Binding : Call.Bindings)
+		{
+			const auto& Tensor = (Binding.bRecord ? PackedWeightRecords : Buffers).at(Binding.SourceIndex);
+			auto& Tensors = Binding.bMutable ? Outputs : Inputs;
+			auto& Extents = Binding.bMutable ? OutputBytes : InputBytes;
+			Bindings.push_back({Binding.ParameterOffset, Tensors.size(), Binding.bMutable});
+			Tensors.push_back(Tensor);
+			Extents.push_back(Tensor.numel());
+			// Descriptors must never retain hidden device addresses from the plan.
+			std::memset(ParameterBlock.data() + Binding.ParameterOffset, 0, sizeof(uint64_t));
+		}
+		auto Descriptor = std::make_shared<FPhysicalKernelDescriptor>(
+			Call.Name, DeviceIndex, Call.Function, Call.Grid, Call.Block, ParameterBlock, std::move(Bindings),
+			std::move(InputBytes), std::move(OutputBytes));
+		Prepared.push_back(
+			RegisterPreparedKernel(std::move(Descriptor), std::move(Inputs), std::move(Outputs)));
+	}
+	return Prepared;
+}
+
+template <bool bFp16> std::vector<at::Tensor> FDeploymentPlan<bFp16>::GetTensorArguments() const
+{
+	auto Arguments = Buffers;
+	Arguments.insert(Arguments.end(), PackedWeightRecords.begin(), PackedWeightRecords.end());
+	return Arguments;
+}
+
+template <bool bFp16> std::vector<std::vector<int64_t>> FDeploymentPlan<bFp16>::GetKernelTensorIndices() const
+{
+	std::vector<std::vector<int64_t>> Indices;
+	for (const auto& Call : Calls)
+	{
+		std::vector<int64_t> Inputs, Outputs;
+		for (const auto& Binding : Call.Bindings)
+			(Binding.bMutable ? Outputs : Inputs)
+				.push_back(int64_t(Binding.SourceIndex + (Binding.bRecord ? Buffers.size() : 0)));
+		Indices.push_back(std::move(Inputs));
+		Indices.push_back(std::move(Outputs));
+	}
+	return Indices;
+}
+
+// Output-view C32 is an individual export outside the prepared-feature trunk.
+// Reuse the existing validated window geometry/ABI packer without launching it.
+static c10::intrusive_ptr<FPreparedKernelHandle> PrepareOutputView(bool bFp16, at::Tensor Input,
+																   at::Tensor PackedWeights,
+																   at::Tensor Output, int64_t Height,
+																   int64_t Width, int64_t Phase)
+{
+	const int EntryIndex =
+		WindowEntryId(32, bFp16 ? EWindowPrecision::Fp16 : EWindowPrecision::Fp8, EWindowKind::Ordinary);
+	WindowPrepareEntry(Input, EntryIndex);
+	auto Entry = WindowGetEntrySpec(EntryIndex);
+	Entry.KindValue = EWindowKind::OutputView;
+	Entry.Stub = bFp16 ? reinterpret_cast<const void*>(&window_block_c32_output_view_fp16)
+					   : reinterpret_cast<const void*>(&window_block_c32_output_view_fp8);
+	c10::cuda::CUDAGuard DeviceGuard(Input.device());
+	cudaFuncAttributes Attributes{};
+	C10_CUDA_CHECK(cudaFuncGetAttributes(&Attributes, Entry.Stub));
+	TORCH_CHECK(Attributes.binaryVersion == 120 && Attributes.maxThreadsPerBlock >= 32,
+				"C32 output-view entry requires the admitted SM120 block");
+	const auto Requirements = WindowGetBufferRequirements(EntryIndex, Height, Width, Phase);
+	auto ParameterBlock = WindowBuildParameterBlock(Entry, Requirements, 0, 0, 0, 0, 0, int32_t(Height),
+													int32_t(Width), int(Phase));
+	const std::vector<FPhysicalTensorBinding> Bindings{{0, 0, false}, {16, 1, false}, {8, 0, true}};
+	auto Descriptor = std::make_shared<FPhysicalKernelDescriptor>(
+		bFp16 ? "window_block_c32_output_view_fp16" : "window_block_c32_output_view_fp8", Input.get_device(),
+		Entry.Stub, dim3(Requirements.Grid[0], Requirements.Grid[1], Requirements.Grid[2]),
+		dim3(Requirements.Block[0], Requirements.Block[1], Requirements.Block[2]), ParameterBlock, Bindings,
+		std::vector<int64_t>{Requirements.InputBytes, Requirements.RecordBytes},
+		std::vector<int64_t>{Requirements.OutputBytes});
+	return RegisterPreparedKernel(std::move(Descriptor), {Input, PackedWeights}, {Output});
+}
+
+c10::intrusive_ptr<FPreparedKernelHandle> PrepareOutputView_fp8(at::Tensor Input, at::Tensor PackedWeights,
+																at::Tensor Output, int64_t Height,
+																int64_t Width, int64_t Phase)
+{
+	return PrepareOutputView(false, Input, PackedWeights, Output, Height, Width, Phase);
+}
+
+c10::intrusive_ptr<FPreparedKernelHandle> PrepareOutputView_fp16(at::Tensor Input, at::Tensor PackedWeights,
+																 at::Tensor Output, int64_t Height,
+																 int64_t Width, int64_t Phase)
+{
+	return PrepareOutputView(true, Input, PackedWeights, Output, Height, Width, Phase);
 }
 
 template <bool bFp16> at::Tensor FDeploymentPlan<bFp16>::Run()

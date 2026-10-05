@@ -2,9 +2,13 @@
 #include "../kernel_launcher/deployment.h"
 #include "../kernel_launcher/windows_dispatch.h"
 #include "../kernel_launcher/c512_dispatch.h"
+#include "prepared_ops.h"
+#include "../kernel_launcher/frontend_dispatch.h"
 
 TORCH_LIBRARY(dlssnr, Library)
 {
+	RegisterPreparedKernelSchemas(Library);
+	RegisterFrontendKernels(Library);
 	Library.class_<FDeploymentPlan_fp8>("DeploymentPlan_fp8")
 		.def("run_fp8", &FDeploymentPlan_fp8::Run_fp8)
 		.def("buffer", &FDeploymentPlan_fp8::GetBuffer)
@@ -13,7 +17,10 @@ TORCH_LIBRARY(dlssnr, Library)
 		.def("boundary_names", &FDeploymentPlan_fp8::GetBoundaryNames)
 		.def("guards_intact", &FDeploymentPlan_fp8::GuardsIntact)
 		.def("poison", &FDeploymentPlan_fp8::Poison)
-		.def("resources", &FDeploymentPlan_fp8::GetResources);
+		.def("resources", &FDeploymentPlan_fp8::GetResources)
+		.def("prepare_kernels", &FDeploymentPlan_fp8::PrepareKernels)
+		.def("tensor_arguments", &FDeploymentPlan_fp8::GetTensorArguments)
+		.def("kernel_tensor_indices", &FDeploymentPlan_fp8::GetKernelTensorIndices);
 	Library.def("create_plan_fp8", &CreatePlan_fp8);
 	Library.def("create_plan_for_resolution_fp8", &CreatePlanForResolution_fp8);
 	Library.def("record_names_fp8", &RecordNames_fp8);
@@ -26,7 +33,10 @@ TORCH_LIBRARY(dlssnr, Library)
 		.def("boundary_names", &FDeploymentPlan_fp16::GetBoundaryNames)
 		.def("guards_intact", &FDeploymentPlan_fp16::GuardsIntact)
 		.def("poison", &FDeploymentPlan_fp16::Poison)
-		.def("resources", &FDeploymentPlan_fp16::GetResources);
+		.def("resources", &FDeploymentPlan_fp16::GetResources)
+		.def("prepare_kernels", &FDeploymentPlan_fp16::PrepareKernels)
+		.def("tensor_arguments", &FDeploymentPlan_fp16::GetTensorArguments)
+		.def("kernel_tensor_indices", &FDeploymentPlan_fp16::GetKernelTensorIndices);
 	Library.def("create_plan_fp16", &CreatePlan_fp16);
 	Library.def("create_plan_for_resolution_fp16", &CreatePlanForResolution_fp16);
 	Library.def("record_names_fp16", &RecordNames_fp16);

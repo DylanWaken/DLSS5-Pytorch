@@ -1,5 +1,5 @@
 #pragma once
-#include "../kernel_launcher/kernel_abi.h"
+#include "kernel_abi.h"
 #include "intrinsics.cuh"
 #include "memoryops.cuh"
 #include "mma.cuh"

@@ -1,4 +1,4 @@
-"""Normal source build: 10 reconstructed CUDA families and two host TUs.
+"""Normal source build: one CUDA translation unit per exported kernel.
 
 This is an SM120-only deployment extension. It registers Torch operators and
 classes; it deliberately has no Python PyInit entry point.
@@ -51,10 +51,10 @@ class RegistrationOnlyBuildExtension(BuildExtension):
         # setuptools otherwise synthesizes /EXPORT:PyInit__C on Windows.
         return []
 
-cuda=sorted((ROOT/'csrc/kernel_launcher').glob('reconstructed_*.cu'))
-host=[ROOT/'csrc/kernel_launcher/deployment.cpp',ROOT/'csrc/torch_api/extension.cpp']
-if len(cuda)!=10 or not all(p.is_file() for p in host):
-    raise RuntimeError('Expected the staged 10 CUDA emission TUs and two shared host TUs.')
+cuda=sorted((ROOT/'csrc/kernel_impl').glob('*.cu'))
+host=sorted((ROOT/'csrc/kernel_launcher').glob('*.cpp')) + sorted((ROOT/'csrc/torch_api').glob('*.cpp'))
+if len(cuda)!=81 or not host or list((ROOT/'csrc/kernel_launcher').glob('*.cu')):
+    raise RuntimeError('Expected 81 named kernel implementation TUs and host-only launchers.')
 
 setup(name='dlssnr',version='0.1.0',description='Reconstructed SM120 CUDA deployment',
     packages=find_packages(),

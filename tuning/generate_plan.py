@@ -12,7 +12,7 @@ PREP = Path(__file__).resolve().parent
 OUT = ROOT / 'csrc' / 'kernel_launcher'
 
 def load(name):
-    return json.loads((PREP / name).read_text())
+    return json.loads((PREP / name).read_text(encoding='utf-8'))
 
 def load_abi_fields():
     """Read names from compiler-checked offsets, resolving shared ABI aliases.
@@ -20,7 +20,7 @@ def load_abi_fields():
     Generation fails when a written offset has no checked field. Neither the
     generated plans nor a second schema can silently redefine the native ABI.
     """
-    source = (OUT / 'kernel_abi.h').read_text()
+    source = (ROOT / 'csrc' / 'kernel_impl' / 'kernel_abi.h').read_text(encoding='utf-8')
     fields_by_type = {}
     for parameter_type, field, offset in re.findall(
             r'offsetof\((\w+),\s*(\w+)\)\s*==\s*(\d+)', source):
@@ -68,9 +68,10 @@ def build_plan(schedule):
         if name not in buffers:
             raise ValueError('unknown schedule buffer ' + name)
         return 'address(%d)' % names.index(name)
-    def add(symbol, fn, abi, grid, block, fields, all_resident=False):
+    def add(symbol, fn, abi, grid, block, fields, all_resident=False, mutable_offsets=()):
         calls.append(dict(symbol=symbol, fn=fn, abi=abi, grid=grid, block=block,
-                          fields=fields, all_resident=all_resident))
+                          fields=fields, all_resident=all_resident,
+                          mutable_offsets=list(mutable_offsets)))
     previous = None
     for n in schedule['positions']:
         b, symbol = n['block'], n['original_symbol']
@@ -81,7 +82,7 @@ def build_plan(schedule):
                     words = buffers[name]['storage_bytes'] // 4
                     add('cc_cb_clear', canonical['cc_cb_clear'], 16,
                         [(words+255)//256,1,1], [256,1,1],
-                        [(0,8,ptr(name)),(8,4,str(words))])
+                        [(0,8,ptr(name)),(8,4,str(words))], mutable_offsets=[0])
         previous = b
         ins, outs = n['input_buffers'], n['output_buffers']
         fields = []
@@ -158,7 +159,10 @@ def build_plan(schedule):
                 for off,v in zip((64,68,72,76),(bottleneck_height,bottleneck_width,decoder_height,decoder_width)):scalar(off,v)
                 resident=True
         else:raise ValueError(symbol)
-        add(symbol,fn,n['abi_bytes'],n['grid'],n['block_dim'],fields,resident)
+        output_addresses = {ptr(name) for name in outs.values()}
+        mutable_offsets = [offset for offset, size, value in fields
+                           if size == 8 and value in output_addresses]
+        add(symbol,fn,n['abi_bytes'],n['grid'],n['block_dim'],fields,resident,mutable_offsets)
     if len(calls)!=185 or len({n['original_symbol'] for n in schedule['positions']})!=36:
         raise ValueError('schedule census')
     if len(records)!=142:raise ValueError('record census')
@@ -243,26 +247,38 @@ struct FGeometryPlanSpec {
         lines += [f'    {{ // {call["symbol"]}',
                   f'        using FParameters = {parameter_type};',
                   '        FKernelCall KernelCall{reinterpret_cast<const void*>(&%s), Geometry->Grids[%d], dim3(%s), %d, %s};'
-                  % (call['fn'], call_index, block, call['abi'], str(call['all_resident']).lower())]
+                  % (call['fn'], call_index, block, call['abi'], str(call['all_resident']).lower()),
+                  f'        KernelCall.Name = "{call["fn"]}";']
         for offset, size, value in call['fields']:
             cpp_type = 'uint64_t' if size == 8 else 'int32_t'
             if size == 4:
                 value = f'Geometry->GeometryArguments[{scalar_index}]'
                 scalar_index += 1
             if size == 8:
+                binding = re.fullmatch(r'(record_)?address\((\d+)\)', value)
+                if not binding:
+                    raise ValueError(f'unknown tensor pointer binding: {value}')
+                mutable = offset in call['mutable_offsets']
+                lines.append(f'        KernelCall.Bind(offsetof(FParameters, {entry_fields[offset]}), '
+                             f'{binding[2]}, {str(bool(binding[1])).lower()}, {str(mutable).lower()});')
                 value = value.replace('record_address(', 'GetRecordAddress(').replace('address(', 'GetBufferAddress(')
             field_name = entry_fields[offset]
             lines.append(f'        KernelCall.Set<{cpp_type}>(offsetof(FParameters, {field_name}), {value});')
         lines += ['        Calls.push_back(KernelCall);', '    }']
     lines += ['}']
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / 'plan_geometry.h').write_text(header, newline='\n')
+    (OUT / 'plan_geometry.h').write_text(header, encoding='utf-8', newline='\n')
     suffix = '' if precision == 'fp8' else '_fp16'
-    (OUT / f'plan_geometry{suffix}_generated.inl').write_text('\n'.join(tables).replace('FP8 trunk', precision.upper() + ' trunk') + '\n', newline='\n')
-    (OUT / f'plan{suffix}_generated.inl').write_text('\n'.join(lines).replace('FDeploymentPlan_fp8::BuildCalls()', f'FDeploymentPlan<{str(precision == "fp16").lower()}>::BuildCalls()').replace('void FDeploymentPlan<', 'template <> void FDeploymentPlan<').replace('native FP8', 'native ' + precision.upper()) + '\n', newline='\n')
+    (OUT / f'plan_geometry{suffix}_generated.inl').write_text('\n'.join(tables).replace('FP8 trunk', precision.upper() + ' trunk') + '\n', encoding='utf-8', newline='\n')
+    (OUT / f'plan{suffix}_generated.inl').write_text('\n'.join(lines).replace('FDeploymentPlan_fp8::BuildCalls()', f'FDeploymentPlan<{str(precision == "fp16").lower()}>::BuildCalls()').replace('void FDeploymentPlan<', 'template <> void FDeploymentPlan<').replace('native FP8', 'native ' + precision.upper()) + '\n', encoding='utf-8', newline='\n')
+    entries = ['// Generated from canonical_kernel_names.json; all individual public CUDA exports.',
+               'static const char* PreparedKernelNames[] = {']
+    entries += [f'    "{name}",' for name in sorted(load('canonical_kernel_names.json').values())]
+    entries += ['};']
+    (OUT / 'prepared_kernel_names_generated.inl').write_text('\n'.join(entries) + '\n', encoding='utf-8', newline='\n')
     for (width, height), plan, schedule in zip(RESOLUTIONS, plans, schedules):
-        (PREP / f'plan{suffix}_{width}_{height}.json').write_text(json.dumps(plan, indent=2) + '\n')
-        (PREP / f'network_schedule_{precision}_{width}_{height}.json').write_text(json.dumps(schedule, indent=2) + '\n')
+        (PREP / f'plan{suffix}_{width}_{height}.json').write_text(json.dumps(plan, indent=2) + '\n', encoding='utf-8')
+        (PREP / f'network_schedule_{precision}_{width}_{height}.json').write_text(json.dumps(schedule, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(dict(resolutions=RESOLUTIONS, calls=185, buffers=len(names),
                           scalar_fields=scalar_index, kernel_sequence_shared=True)))
 

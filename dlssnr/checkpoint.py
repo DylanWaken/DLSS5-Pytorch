@@ -119,7 +119,8 @@ def _natural(state, block, name):
 def _half_matrix(value, k, n):
     value = promote_tensor(value, torch.float16).reshape(k, n).cpu().numpy()
     rows, cols = np.arange(k, dtype=np.int64)[:, None], np.arange(n, dtype=np.int64)[None, :]
-    output = np.empty(k * align_up(n, 16), dtype="<f2")
+    # Native records pad narrow heads to N16; unused channels must be deterministic.
+    output = np.zeros(k * align_up(n, 16), dtype="<f2")
     output[packed_f16_weight_index(rows, cols, n)] = value
     return output.tobytes()
 
@@ -135,6 +136,33 @@ def pack_kernel_fp16(state, block, kind):
     """Pack original K16 records from losslessly widened checkpoint tensors."""
     c = block_channels(block)
     get = lambda name: _natural(state, block, name)
+    if (block == 0 and kind in ("window", "preprocess")) or (block == 70 and kind in ("window", "postprocess")):
+        if block == 0:
+            layout = dict(w1=0, w2=8192, input_adapter=16400, ffn_scale=17424,
+                          qkv=17504, bias=23648, head_scale=31840, projection=31856, attn_scale=33904)
+            matrices = [("w1", 32, 128), ("w2", 128, 32), ("input_adapter", 16, 32),
+                        ("qkv", 32, 96), ("projection", 32, 32)]
+            vectors = ("ffn_scale", "head_scale", "attn_scale")
+            output = bytearray(33984)
+        else:
+            layout = dict(w1=0, w2=8192, ffn_scale=16400, input_scale=16464, adapter_scale=16528,
+                          qkv=16592, bias=22736, head_scale=30928, projection=30944,
+                          attn_scale=32992, head=33072)
+            matrices = [("w1", 32, 128), ("w2", 128, 32), ("qkv", 32, 96),
+                        ("projection", 32, 32), ("head", 32, 4)]
+            vectors = ("ffn_scale", "input_scale", "adapter_scale", "head_scale", "attn_scale")
+            output = bytearray(34096)
+        # The input adapter and output head stay Half in both native precisions.
+        for name, rows, columns in matrices:
+            raw = _half_matrix(get(name), rows, columns)
+            output[layout[name]:layout[name] + len(raw)] = raw
+        for name in vectors:
+            dtype = torch.float32 if name == "head_scale" else torch.float16
+            raw = promote_tensor(get(name), dtype).cpu().numpy().tobytes()
+            output[layout[name]:layout[name] + len(raw)] = raw
+        raw = _half_bias(get("bias"))
+        output[layout["bias"]:layout["bias"] + len(raw)] = raw
+        return bytes(output)
     if kind == "window" and c in (32, 64, 128, 256) and block not in (0, 70):
         if c == 32:
             layout = dict(w1=0, w2=8192, ffn_scale=16400, qkv=16480, relative=22624,
@@ -279,7 +307,9 @@ class Checkpoint:
             raw = pack_kernel_fp16(self._state, block, kind)
             return torch.from_numpy(np.frombuffer(raw, dtype=np.uint8).copy()).to(device)
         c = block_channels(block)
-        if kind == "window" and c in (32, 64, 128, 256) and block not in (0, 70):
+        if (block == 0 and kind in ("window", "preprocess")) or (block == 70 and kind in ("window", "postprocess")):
+            layer = 0
+        elif kind == "window" and c in (32, 64, 128, 256) and block not in (0, 70):
             layer = 0
         elif c == 512 and block != 39 and kind in ("ffn", "qkv"):
             layer = 0 if kind == "ffn" else 2

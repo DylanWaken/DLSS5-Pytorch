@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include "plan_geometry.h"
+#include "prepared_kernel.h"
 
 struct FBufferSpec
 {
@@ -22,6 +23,20 @@ struct FKernelCall
 	int AbiBytes;
 	bool bAllResident;
 	alignas(8) std::array<unsigned char, 96> ParameterBlock{};
+	const char* Name = nullptr;
+
+	struct FBinding
+	{
+		size_t ParameterOffset, SourceIndex;
+		bool bRecord, bMutable;
+	};
+
+	std::vector<FBinding> Bindings;
+
+	void Bind(size_t ParameterOffset, size_t SourceIndex, bool bRecord, bool bMutable)
+	{
+		Bindings.push_back({ParameterOffset, SourceIndex, bRecord, bMutable});
+	}
 
 	template <class TValue> void Set(size_t FieldOffset, TValue FieldValue)
 	{
@@ -56,6 +71,9 @@ template <bool bFp16> class FDeploymentPlan : public torch::CustomClassHolder
 	at::Tensor GetBuffer(const std::string& Name) const;
 	bool GuardsIntact() const;
 	void Poison(int64_t PoisonByte);
+	std::vector<c10::intrusive_ptr<FPreparedKernelHandle>> PrepareKernels() const;
+	std::vector<at::Tensor> GetTensorArguments() const;
+	std::vector<std::vector<int64_t>> GetKernelTensorIndices() const;
 
 	std::vector<int64_t> GetResources() const
 	{

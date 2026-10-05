@@ -1,6 +1,6 @@
 #pragma once
 #include "kernel_impl/intrinsics.cuh"
-#include "kernel_launcher/kernel_abi.h"
+#include "kernel_impl/kernel_abi.h"
 
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 
@@ -136,7 +136,7 @@ __device__ __forceinline__ FCubicAxis ComputeCubicAxis(float PixelPosition, floa
 	return r_Filter;
 }
 
-// Called by both RunPreprocess and RunPostprocess; keep one implementation of the temporal filter.
+// Called by both preprocessing and postprocessing entries; keep one implementation of the temporal filter.
 // Five filtered samples form a cross: left/top/center/bottom/right. The original
 // omits four corner products and renormalizes the retained weights. The cubic
 // coefficients match Catmull-Rom algebra; naming its intended filter is inferred.

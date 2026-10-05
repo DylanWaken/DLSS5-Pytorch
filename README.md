@@ -53,19 +53,34 @@ head.square().mean().backward()  # Diagnostic only; not a task loss.
 
 See the [training guide](docs/training.md) for input contracts and benchmarking, or the [deployment guide](docs/API_MIGRATION.md) for FP8/FP16 entry points and packed-buffer preparation. The [FP16 integration report](docs/FP16_DEPLOYMENT.md) explains recovered layouts and profiler-guided tuning. Training does not require the custom CUDA extension.
 
+Deployment supports a single C++ call or individually composable Torch kernels:
+
+```python
+from dlssnr import prepare_kernels
+
+result = plan.run_fp16()  # Complete prepared-feature trunk in C++.
+sequence = prepare_kernels(plan)
+compiled = torch.compile(sequence, fullgraph=True)
+result = compiled(*sequence.tensors)
+kernel = sequence.kernels[0]
+kernel(kernel.inputs, kernel.outputs)  # One named CUDA kernel.
+```
+
+All 81 entries have individual Torch operators. Default Inductor and `aot_eager` are tested; the measured Windows/PyTorch 2.8 setup uses `triton-windows==3.4.0.post21` for Inductor. The [deployment guide](docs/API_MIGRATION.md) covers installation, tensor layouts, frontend preparation and composing a bound chain for C++ execution.
+
 **Actual DLSS5 transfer-learning methodology, task losses, data preparation and training procedures still require investigation.** This is a minimal trainable implementation.
 
 ## Speed overview
 
-**FP8 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **6.584 ms reconstructed / 6.698 ms original**.
+**FP8 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **6.731 ms reconstructed / 6.855 ms original**.
 
 ![FP8 deployment latency at 720p, 1080p, 2K and 4K](docs/figures/deployment_fp8_resolutions.svg)
 
-**FP16 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **11.462 ms reconstructed / 11.720 ms original**.
+**FP16 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **11.445 ms reconstructed / 11.746 ms original**.
 
 ![FP16 deployment latency at 720p, 1080p, 2K and 4K](docs/figures/deployment_fp16_resolutions.svg)
 
-These are fresh measurements after the kernel-body cleanup. Inference charts exclude input/output stages and DLL host processing.
+These are fresh measurements of the per-entry CUDA source build. Inference charts exclude input/output stages and DLL host processing.
 
 **Training:** full-network FP32/BF16 forward and backward, with checkpointing, batch one and no optimizer. At 4K, peak allocated memory is **52.4 / 43.3 GiB**, respectively.
 
@@ -84,7 +99,7 @@ See [benchmark scope and detailed results](docs/BENCHMARKS.md) for methodology, 
 
 ## Project layout and further reading
 
-`csrc/kernel_impl` groups kernels by operation and FP8/FP16 precision, with shared math and memory helpers. `kernel_launcher` owns the ABI, launches and selection; `torch_api` exposes PyTorch operators. `dlssnr` contains the Python entry points and training model. `tests` and `tuning` hold validation and offline policy tools.
+`csrc/kernel_impl` contains one exact-name `.cu` file per exported kernel: its global function shows storage, loops, pipelining and writeback. Shared intrinsics, `MMA`, memory helpers and ABI declarations live alongside them. `kernel_launcher` contains host dispatch and launch policies; `torch_api` registers the PyTorch interfaces. `dlssnr` contains Python entry points and the training model. `tests` and `tuning` hold validation and offline policy tools.
 
 - [Architecture atlas](docs/ARCHITECTURE.md) · [Current coverage and limitations](docs/RECONSTRUCTION_STATUS.md)
 - [Kernel reading guide](docs/KERNEL_READING_GUIDE.md) · [Source layout and shared helpers](docs/SOURCE_LAYOUT.md) · [Code conventions](docs/CODE_READABILITY.md) · [Naming audit](docs/NAMING_AUDIT.md) · [Readable CUDA reconstruction](docs/SEMANTIC_RECONSTRUCTION.md) · [Historical optimization log](docs/optimization_log_2026-10-05.md)

@@ -1,7 +1,8 @@
-"""Inspect CUDA source ownership without assuming one kernel per file.
+"""Inspect CUDA source ownership and enforce one named entry per CUDA file.
 
-The canonical exported name is the inventory key; a grouped operation header may
-define several entries and shared templated bodies. This is a structural audit,
+The canonical exported name is the inventory key. The collector can read older
+grouped snapshots for comparison; active sources use self-contained entries.
+This is a structural audit,
 not a C++ compiler or a numerical/performance qualification.
 
     python -B tools/kernel_sources.py --output outputs/kernel-sources.json
@@ -97,6 +98,7 @@ def collect(csrc, *, allow_legacy_namespaces=False):
                 "line": source.count("\n", 0, kernel.start()) + 1,
                 "parameters": " ".join(kernel[2].split()),
                 "template_calls": calls,
+                "body_lines": source[kernel.end():end].count("\n"),
             }
 
     def closure(path, seen):
@@ -138,6 +140,27 @@ def check_roster(inventory):
         raise ValueError("FP8/FP16 canonical entry families differ")
 
 
+def check_entry_layout(inventory, csrc):
+    """Require readable device entries in kernel_impl and host-only launchers."""
+    csrc = Path(csrc)
+    for name, entry in inventory["entries"].items():
+        expected = f"kernel_impl/{name}.cu"
+        if entry["header"] != expected or entry["emission_unit"] != expected:
+            raise ValueError(f"{name}: expected its own named CUDA file {expected}")
+        if name != "completion_counter_clear" and entry["body_lines"] < 20:
+            raise ValueError(f"{name}: global entry must contain its execution flow")
+    for path in (csrc / "kernel_launcher").rglob("*"):
+        if path.suffix not in SOURCE_SUFFIXES:
+            continue
+        code = _without_comments_and_strings(path.read_text(encoding="utf8"))
+        if path.suffix == ".cu" or re.search(r"\b(?:__device__|__global__|__shared__)\b", code):
+            raise ValueError(f"{path.name}: kernel_launcher must contain only host code")
+    for path in (csrc / "kernel_impl").glob("*.cuh"):
+        code = _without_comments_and_strings(path.read_text(encoding="utf8"))
+        if re.search(r"\bRun(?:Window|Global|Spatial|Channel|Decoder|Preprocess|Postprocess)\w*\s*\(", code):
+            raise ValueError(f"{path.name}: kernel orchestration belongs in the global entry")
+
+
 def compare_exports(candidate, baseline, *, allow_namespace_migration=False):
     """Compare linkage exactly unless an explicit historical migration is requested."""
     def exported(inventory):
@@ -163,6 +186,7 @@ def main():
         parser.error("--allow-namespace-migration requires --baseline-csrc")
     inventory = collect(args.csrc)
     check_roster(inventory)
+    check_entry_layout(inventory, args.csrc)
     if args.baseline_csrc:
         baseline = collect(args.baseline_csrc, allow_legacy_namespaces=args.allow_namespace_migration)
         compare_exports(inventory, baseline, allow_namespace_migration=args.allow_namespace_migration)

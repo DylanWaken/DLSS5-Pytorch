@@ -21,6 +21,7 @@ CPU_TESTS = (
     "test_resolution_policy_cpu.py",
     "test_resolution_policy_extrema_cpu.py",
     "test_reconstructed_benchmark_cpu.py",
+    "test_prepared_kernel_api_cpu.py",
 )
 
 def main():

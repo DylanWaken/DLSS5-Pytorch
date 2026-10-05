@@ -33,11 +33,11 @@ AccumulateTile(FMmaAccumulatorTile<SpatialFragments, ChannelGroups>& r_Accumulat
 			{
 				const uint4 r_InputFragment = r_InputFragments[r_Spatial][r_KSubtile];
 				const uint4 r_WeightFragment = r_WeightFragments[r_KSubtile][r_ChannelGroup];
-				MultiplyAccumulate<Precision>(
+				MMA<Precision>(
 					{r_OutputFragment[0], r_OutputFragment[1]},
 					{r_InputFragment.x, r_InputFragment.y, r_InputFragment.z, r_InputFragment.w},
 					{r_WeightFragment.x, r_WeightFragment.y}, {r_OutputFragment[0], r_OutputFragment[1]});
-				MultiplyAccumulate<Precision>(
+				MMA<Precision>(
 					{r_OutputFragment[2], r_OutputFragment[3]},
 					{r_InputFragment.x, r_InputFragment.y, r_InputFragment.z, r_InputFragment.w},
 					{r_WeightFragment.z, r_WeightFragment.w}, {r_OutputFragment[2], r_OutputFragment[3]});

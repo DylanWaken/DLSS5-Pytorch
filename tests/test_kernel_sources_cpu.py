@@ -6,7 +6,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from tools.kernel_sources import check_roster, collect, compare_exports, _without_comments_and_strings
+from tools.kernel_sources import check_roster, check_entry_layout, collect, compare_exports, _without_comments_and_strings
 
 
 class KernelSourcesCPUTest(unittest.TestCase):
@@ -23,10 +23,14 @@ class KernelSourcesCPUTest(unittest.TestCase):
         )
 
     def test_active_sources_have_complete_paired_exports_and_one_owner(self):
-        check_roster(collect(ROOT / "csrc"))
+        inventory = collect(ROOT / "csrc")
+        check_roster(inventory)
+        check_entry_layout(inventory, ROOT / "csrc")
 
     def test_algorithm_headers_do_not_reintroduce_register_transcripts(self):
-        for path in (ROOT / "csrc/kernel_impl").glob("*.cuh"):
+        for path in (ROOT / "csrc/kernel_impl").glob("*"):
+            if path.suffix not in {".cu", ".cuh"}:
+                continue
             with self.subTest(header=path.name):
                 source = path.read_text(encoding="utf-8")
                 code = _without_comments_and_strings(source)
@@ -39,10 +43,19 @@ class KernelSourcesCPUTest(unittest.TestCase):
                     self.assertLessEqual(len(source.splitlines()), 600)
 
     def test_numerical_bit_patterns_are_named_before_conversion(self):
-        for path in (ROOT / "csrc/kernel_impl").glob("*.cuh"):
+        for path in (ROOT / "csrc/kernel_impl").glob("*"):
+            if path.suffix not in {".cu", ".cuh"}:
+                continue
             with self.subTest(header=path.name):
                 code = _without_comments_and_strings(path.read_text(encoding="utf-8"))
                 self.assertNotRegex(code, r"\bFloatToHalf2\s*\(\s*(?:0x[0-9a-fA-F]{6,}|[0-9]{6,})[uUlL]*\s*\)")
+
+    def test_grouped_historical_layout_is_not_admitted_as_current(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.make_fixture(root)
+            with self.assertRaisesRegex(ValueError, "own named CUDA file"):
+                check_entry_layout(collect(root), root)
 
     def test_interfaces_do_not_regress_to_offset_named_parameters(self):
         # Byte offsets belong in ABI assertions, not in the field's identity.

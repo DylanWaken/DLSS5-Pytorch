@@ -40,9 +40,8 @@ struct FMmaOutput
 // Output references are passed directly to the exact ISA wrapper; no repacking,
 // accumulator conversion or extra assignment is introduced by this interface.
 template <EMmaInputPrecision InputPrecision>
-__device__ __forceinline__ void MultiplyAccumulate(FMmaOutput r_Output, FMmaAFragment r_LeftOperand,
-												   FMmaBFragment r_RightOperand,
-												   FMmaAccumulator r_Accumulator)
+__device__ __forceinline__ void MMA(FMmaOutput r_Output, FMmaAFragment r_LeftOperand,
+									FMmaBFragment r_RightOperand, FMmaAccumulator r_Accumulator)
 {
 	if constexpr (InputPrecision == EMmaInputPrecision::Fp8)
 	{

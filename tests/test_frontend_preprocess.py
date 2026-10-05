@@ -105,6 +105,8 @@ def execute(args, report):
     report["weight_sha256"] = hashlib.sha256(raw_record).hexdigest()
     report["native_cubin_sha256"] = hashlib.sha256(artifacts.modules[32]).hexdigest()
     report["candidate_cubin_sha256"] = hashlib.sha256(args.cubin.read_bytes()).hexdigest()
+    downsample_cubin = args.downsample_cubin or args.cubin
+    report["candidate_downsample_cubin_sha256"] = hashlib.sha256(downsample_cubin.read_bytes()).hexdigest()
     element_bytes = 1 if args.precision == "fp8" else 2
     height, width = args.height, args.width
     with NativeGraphOwner(stream.synchronize, label="preprocess semantic comparison") as owner:
@@ -132,7 +134,8 @@ def execute(args, report):
             candidate_name = "input_preprocess_window" + ("_downsample" if downsample else "") + "_c32_" + args.precision
             candidate_symbol = "semantic_" + candidate_name if args.standalone else candidate_name
             native = owner.own(VendorModule(artifacts.modules[32], stream.cuda_stream, native_name, 264))
-            candidate = owner.own(VendorModule(args.cubin.read_bytes(), stream.cuda_stream, candidate_symbol, 264))
+            candidate_image = downsample_cubin if downsample else args.cubin
+            candidate = owner.own(VendorModule(candidate_image.read_bytes(), stream.cuda_stream, candidate_symbol, 264))
             for case in args.cases:
                 for seed in args.seeds:
                     blobs = [parameters(handles, outputs[role][1], weights[1], pools[role][1] if downsample else 0,
@@ -184,6 +187,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--cubin", type=Path, required=True)
+    parser.add_argument("--downsample-cubin", type=Path,
+                        help="Separate pre-downsample image for one-entry CUDA compilation units")
     parser.add_argument("--precision", choices=["fp8", "fp16"], required=True)
     parser.add_argument("--standalone", action="store_true", help="Use semantic_* extern-C entry names")
     parser.add_argument("--height", type=int, default=24)
@@ -201,6 +206,8 @@ def main():
     args.output.parent.mkdir(parents=True, exist_ok=True)
     try:
         required = [args.cubin, ROOT / f"ckpts/dlss5_nr_{args.precision}.pt", ROOT / "assets/original/nvngx_dlssnr.dll"]
+        if args.downsample_cubin:
+            required.append(args.downsample_cubin)
         required.extend(ROOT / f"assets/vendor_modules/module_{index}.cubin" for index in range(7))
         missing = [str(path) for path in required if not path.is_file()]
         if args.execute and missing:

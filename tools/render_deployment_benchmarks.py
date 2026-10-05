@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "docs/figures/kernel_locality_deployment_measurements.json"
+DATA = ROOT / "docs/figures/global_entry_deployment_measurements.json"
 
 
 def render(precision, rows):
@@ -40,7 +40,7 @@ def render(precision, rows):
         svg.append(f'<text x="1015" y="{y+29}" text-anchor="middle" font-size="18" font-weight="600">{delta:+.2f}%</text>')
     svg += [
         f'<text x="42" y="512" font-size="14" class="muted">64 alternating pairs; paired-ratio medians. {gate}</text>',
-        '<text x="42" y="537" font-size="13" class="muted">Excludes input/output stages and DLL host work. Data: kernel_locality_deployment_measurements.json.</text>',
+        '<text x="42" y="537" font-size="13" class="muted">Excludes input/output stages and DLL host work. Data: global_entry_deployment_measurements.json.</text>',
         '</svg>',
     ]
     output = ROOT / f"docs/figures/deployment_{precision}_resolutions.svg"

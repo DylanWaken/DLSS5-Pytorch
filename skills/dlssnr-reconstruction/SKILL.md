@@ -5,7 +5,42 @@ description: Reconstruct, integrate, qualify and document this repository's DLSS
 
 # DLSS-NR reconstruction workflow
 
-For the current build, read `docs/RECONSTRUCTION_STATUS.md`, `docs/NAMING_AUDIT.md` and `docs/FLAT_SYMBOLS.md`. The dated UEv2 snapshot below is historical; later semantic reconstruction and naming-audit receipts supersede its coverage and timing statements.
+## Current source-ownership rule
+
+The latest user requirement supersedes the older canonical-body/ABI-adapter
+layout described in historical notes below. Every exported kernel has a named
+`csrc/kernel_impl/<exact_export_name>.cu` file, with the actual `extern "C"
+__global__` function owning storage, staging, loops, synchronization and
+writebacks. Do not restore a one-line export that forwards the whole operation
+to `Run*`, a macro, an include fragment or a whole-body lambda.
+
+Keep a helper used only by one entry in that entry's file. Shared headers are
+for substantial repeated arithmetic/layout logic, real profile/storage types
+and intrinsics. Local lambdas may share small repeated pipeline steps while
+remaining visible inside the global body. The typed ABI is now
+`kernel_impl/kernel_abi.h`; `kernel_launcher` is host-only. The fragment
+interface is `MMA(...)`, renamed from `MultiplyAccumulate`.
+
+Read [the kernel reading guide](../../docs/KERNEL_READING_GUIDE.md) and
+[the source layout](../../docs/SOURCE_LAYOUT.md) for concrete entry filenames.
+The current [source audit](../../docs/global_entry_audit.json) records 81 CUDA
+compilation units and 25 shared headers. The
+[validation receipt](../../docs/global_entry_validation.json) pins the built
+candidate `aa207d37…`: 50/81 GPU instruction payloads, 72/81 decoded resource
+records and all 81 entry constant sections match the preceding build. Fresh
+native boundary/replay checks and
+[paired measurements](../../docs/figures/global_entry_deployment_measurements.json)
+qualify all eight FP8/FP16 graph cases at 720p, 1080p, 2K/1440p and 4K within
+the 1% latency gate in each execution order. Scope remains the SM120 batch-one
+prepared-feature trunk, blocks 1–69. The receipt separately records 70 CPU
+checks per Python mode, 18 tensor-facing native frontend fixtures, 36 C32
+output-view cases per precision and 24 C512 dispatcher cases.
+
+For the current build, read `docs/RECONSTRUCTION_STATUS.md` and the portable
+receipts above. The previous `kernel_locality_validation.json` qualifies the
+earlier canonical-function layout. Naming, flat-symbol and dated UEv2 records
+below remain historical; preserve their original source, binary and timing
+identities rather than carrying results forward from source inspection alone.
 
 Read `docs/RECONSTRUCTION_STATUS.md` and the exact run receipts before acting. Reconciled snapshot: 2026-10-05. The latest qualified **UEv2 normal 81-entry source build**, binary `88b7a94a…`, passes the fixed SM120, batch-one, prepared-feature FP8 trunk at 720p, 1080p, 1440p and 2160p. Its final 4K paired result is **6.496523 ms versus 6.452048 ms original**, ratio **1.006893098**: approximately **0.689% slower**. Both execution-order medians meet the user's accepted **within-1%** slowdown limit; the other three measured resolutions are faster than the original. Further performance optimization stopped at the user's criterion. Installation is a separate root-owned receipt, not inferred from qualification.
 
@@ -27,7 +62,7 @@ Use this skill for this repository's PTX-to-readable-CUDA reconstruction, family
 
 The selected trunk contains 36 FP8 entries and 36 independent Half counterparts. The 4K FP8 schedule repeats 36 kernels at 152 compute/repack positions; 33 explicit counter-clear calls make **185 launches**. It retains 142 packed records and exposes 74 physical boundaries. Do not confuse unique functions, graph positions, logical blocks and profiling launches.
 
-The source census totals 81: those 72 entries, counter clear, four plain pre/post entries, two pre-downsample entries and two C32 output-view entries. Equivalently, it is **40 precision pairs plus clear**, not 81 algorithms. These extras do not establish renderer-host equivalence. The historical fast development relink retained 73 entries, including the 37 scheduled functions, while omitting eight frontend/output extras. The qualified normal source build compiles all 81 from source through ten CUDA and two host translation units; the historical 73-entry relink is not the current deployment.
+The source census totals 81: those 72 entries, counter clear, four plain pre/post entries, two pre-downsample entries and two C32 output-view entries. Equivalently, it is **40 precision pairs plus clear**, not 81 algorithms. These extras do not establish renderer-host equivalence. The historical fast development relink retained 73 entries, including the 37 scheduled functions, while omitting eight frontend/output extras. That historical qualified normal source build compiled all 81 through ten CUDA and two host translation units; neither its layout nor the 73-entry relink describes the current per-entry-file build.
 
 C512 has nine genuine families and 18 precision-specific entries, reused at 65 actual FP8 positions in blocks 23–30 and 40–47. Input view, output view, fused pool and the final adapter are distinct contracts. In particular, actual outview is **block 47**, not block 29. Do not create per-block copies of common compute. Do not erase a real layout/fusion distinction just because the matrix dimensions match.
 
@@ -65,7 +100,7 @@ For original split reductions, recompute occupancy from the **actual compiled fu
 
 ## Reuse accepted objects and verify the linked product
 
-The historical development relink used **19 accepted CUDA COFF objects plus two newly compiled common C++ host TUs**. It is a diagnostic acceleration recipe, separate from the current normal source build of ten CUDA and two host TUs. Retain device objects and required host stubs, exclude donor Torch registration/API objects, and preserve exact by-value `Parameters` declarations in the common host dispatcher when reproducing that historical route.
+The historical development relink used **19 accepted CUDA COFF objects plus two newly compiled common C++ host TUs**. It is a diagnostic acceleration recipe, separate from the later historical normal source build of ten CUDA and two host TUs and the current per-entry-file build. Retain device objects and required host stubs, exclude donor Torch registration/API objects, and preserve exact by-value `Parameters` declarations in the common host dispatcher when reproducing that historical route.
 
 Before compiling, bind source manifests, objects, compiler/linker/toolchain executables, consumed environment/Ninja text and dependency-seal JSON. Confirm the command's actual object set, not merely a count. Keep the binary private and record the held process Job's exit, timeout, cleanup, active-member and final-identity evidence.
 
@@ -243,7 +278,7 @@ launcher. Preserve timing identities instead of relabeling old samples as fresh.
 ## Keep project C++ symbols flat
 
 Do not add project namespaces, anonymous namespaces or `using namespace`
-directives. Call operation helpers directly, such as `RunWindow32(...)`. Give
+directives. Call shared primitives directly, such as `LinearWindow32(...)` or `MMA(...)`. Give
 shared helpers and types enough operation context to be unique: global
 `FWindow32Profile`, `FSpatialProjectionArguments`, `FResolutionSelection` and
 `EC512KernelRole` are examples. Avoid replacing namespace hierarchy with an
@@ -287,20 +322,21 @@ Record scope-specific rename maps: the same spelling can denote a host tensor in
 one function and a real global pointer in another. Compare tokens and ABI fields,
 rebuild and inspect compiled code before carrying forward performance evidence.
 
-## Keep the kernel schedule in one readable body
+## Keep the schedule inside the actual global entry
 
-Use `docs/KERNEL_READING_GUIDE.md` to locate the canonical implementation before
-editing an exported ABI adapter. Each main function must expose its ownership,
-storage, pipeline prefill, main loops, synchronization/recycling and writebacks.
-Move one-use stage/epilogue helpers into that body. Local lambdas may share
-repeated prefill/refill or publication logic; their definitions must be visible
-inside the same function. Avoid a new layer of forwarding wrappers.
+Use `docs/KERNEL_READING_GUIDE.md` to find the exact named `.cu` file. Its
+`extern "C" __global__` function must expose ownership, register/shared storage,
+pipeline prefill, main loops, synchronization/recycling and final writebacks.
+Include fused sampling or frontend flow in that same body. Do not reintroduce
+an exported ABI adapter around a shared whole-kernel implementation.
 
-Keep external helpers only for intrinsics or substantial reused computation.
-Common MMA/normalization and fused window blocks are valid examples. Record
-their actual users and the storage/arithmetic contract they preserve. Shared
-slabs reused by fused stages remain explicitly caller-owned; do not allocate
-duplicate slabs solely to make a helper self-contained.
+Move one-use stage/epilogue logic into the global body. A short local lambda may
+share repeated prefill/refill or publication work; keep its definition visible
+there. Any small file-local helper must remain with its owning entry. Shared
+helpers are for intrinsics or substantial repeated math/layout operations such
+as `MMA`, normalization, softmax and fragment packing. Record real callers and
+contracts. Profiles shared by a precision pair are legitimate; duplicate shared
+slabs or a hidden complete window schedule are not.
 
 Source localization can change lifetime, FMA contraction, predicate scope or
 compiler scheduling. Preserve native operation order and every rounding and
