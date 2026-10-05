@@ -1,0 +1,33 @@
+# Attribute the remaining trunk time before the next kernel change
+
+The best-supported next target to investigate is the repeated C64/C128/C256 window family. This is a priority for measurement, not a claim that it is still the largest category after all recent changes.
+
+The latest saved full-network attribution is from v20. Its 36 wider window operators account for 4.227 ms of measured device work: C64 1.053 ms, C128 1.326 ms and C256 1.848 ms. That same profile attributes 1.455 ms to eight C32 blocks. These are eager-profiler attribution values with overhead, and the profile predates the cached wider path and several other improvements. Do not add its matching low-level kernel rows to the operator totals: that would double count the same work.
+
+More current evidence establishes that this family remains reducible. The corrected v28 paired full-model experiment, with the same binary, inputs, weights and retained outputs, measured canonical/cached 4K medians of 12.893/12.275 ms in one order and 12.913/12.301 ms in reverse order. The cache intervention is therefore worth investigating further, but these measurements do not reveal its remaining total cost. The separately measured cached native trunk at the largest sampled field is 11.208 ms versus the original kernels' 6.296 ms. Those scopes differ from the full model and the isolated endpoint-pair benchmark; no cross-harness timing subtraction is used here.
+
+## What the existing profiler cannot answer
+
+`tuning/profile_network.py` runs one eager full model including blocks0/70. It records operator and kernel totals but has no current graph-stage attribution. It also omits `compiled_window_cached_policy_version` from its explicit policy-family list. A new run would help identify kernels, but its timing cannot be treated as the resident blocks1–69 graph breakdown.
+
+The draft `tuning/profile_trunk_stages.py.draft` wraps the existing, unchanged `benchmark_trunk` calls instead. It does not duplicate their inference implementation or change any kernel selection. It retains the native helper's actual preparation metadata, all 74 boundary checks, weight/guard checks and poisoned endpoint replay proof.
+
+## One controlled attribution experiment
+
+Start with the 4K geometry and direct endpoints on the installed v29 binary. The runner records a clean graph baseline, captures a graph with external CUDA timing-event nodes, then records another clean baseline. One inference is captured per graph. The report includes both instrumentation/baseline ratios; interpret small intervals cautiously if event-node overhead is material.
+
+For the candidate, module pre/post hooks place event pairs around every actual block forward. The intervals between block pairs directly measure the five down transitions, transition39, four up transitions and both endpoint conversions. Ordinary gaps are retained as a separate category instead of assigned to a kernel. Every graph replay therefore has a complete, non-overlapping event partition. Category totals are summed within each replay and then summarized; they are not sums of unrelated medians.
+
+For the original path, a temporary proxy brackets each existing native node. Original fused down/up blocks include their transitions. Transition39 and explicit repacks are separate. This scope differs from the candidate's module-only brackets, so native/candidate family columns are explicitly **not** per-stage speed gates. Their purpose is to expose each actual graph's time distribution.
+
+Each instrumented graph gets three poisoned endpoint replays before timing and three afterward, plus the inherited input/weight/guard checks. The exact extension is copied into a fresh `profile/` directory; active source hashes and all runtime policy versions, including `compiled_window_cached_policy_version`, are recorded and checked for changes. No vendor helper is edited. Twelve CPU tests currently cover interval classification, aggregation, actual proxy visit recording, exact stage order, complete source dependency capture and setup cleanup. The capture must visit exactly 68 candidate blocks or 71 native nodes in the expected order, so a missing hook cannot disappear into a telescoping gap sum. CUDA event behavior still needs root execution.
+
+After activation by root:
+
+```powershell
+.\.venv\Scripts\python.exe tuning/profile_trunk_stages.py --execute --valid-width 3840 --valid-height 2160 --trunk-io direct --warmups 3 --repeats 15
+```
+
+Repeat at 1280×720 after the first run is validated. Rank the candidate categories from these new results. Then collect full/source NCU and SASS for the dominant actual variant at its measured shape and phase using the existing family profilers. If C512, global blocks or transitions now dominate, change the priority accordingly. Do not implement another wide-window schedule based only on the old v20 profile.
+
+The source hashes and exact historical numbers are saved in `outputs/next_trunk_attribution_evidence.json.draft`.

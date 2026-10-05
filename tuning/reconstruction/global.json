@@ -1,0 +1,3255 @@
+{
+  "status": "CATALOG_EXISTING_FIXED_GLOBAL_COMPUTE_APIS",
+  "gpu": false,
+  "build": false,
+  "extension_loaded": false,
+  "entries": [
+    {
+      "key": "expand_fp8",
+      "family": "ffn",
+      "role": "expand",
+      "precision": "FP8 E4M3",
+      "original": {
+        "module": 5,
+        "symbol": "cc_vit_1d_ffn_expand_fp8",
+        "entry_sha256": "141fd4708fa7a8e827a2c9daedcbff9fe364e75dfce3484d2cc83c8d1143043e",
+        "module_line": 179527,
+        "source_module_sha256": "641ca106cd3e211587f873de41ba4350608413687b1bb99c33fa7529f82b510c"
+      },
+      "callable": {
+        "cpp": "dlssnr::c1024_ffn_expand_fp8_reconstructed_out",
+        "signature": "at::Tensor c1024_ffn_expand_fp8_reconstructed_out(const at::Tensor& state,const at::Tensor& record,at::Tensor high)",
+        "torch_schema": "_c1024_ffn_expand_fp8_reconstructed_out(Tensor state, Tensor record, Tensor(a!) high) -> Tensor(a!)",
+        "torch_operator": "torch.ops.dlssnr._c1024_ffn_expand_fp8_reconstructed_out",
+        "return_aliases": [
+          "high"
+        ]
+      },
+      "direct_kernel": {
+        "cpp": "dlssnr::c1024_ffn_expand_fp8_reconstructed::kernel",
+        "parameter_type": "dlssnr::c1024_ffn_expand_fp8_reconstructed::Parameters",
+        "host_declaration": "void kernel(Parameters parameters);",
+        "source_declaration": "__global__ __maxnreg__(168) void kernel(Parameters parameters) {",
+        "cudaLaunchKernel_argument_count": 1,
+        "argument_semantics": "The single host argument points to the entire zero-initialized Parameters struct value; uint64 fields contain device addresses.",
+        "compiled_architecture": "sm_120",
+        "source_shared_allocation": {
+          "alignment": 512,
+          "bytes": 24600
+        },
+        "admission_scope": "Exposing the existing retained host stub does not broaden the admitted fixed pilot or replace occupancy, alias, extent, device, stream and lifetime validation."
+      },
+      "pilot": {
+        "batch": 1,
+        "tokens": 2160,
+        "padded_tokens": 2176,
+        "grid": [
+          544,
+          1,
+          1
+        ],
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "dynamic_shared_bytes": 0,
+        "arbitrary_shape_admitted": false
+      },
+      "buffers": [
+        {
+          "name": "state",
+          "bytes": 2228224,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "record",
+          "bytes": 4194320,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "high",
+          "bytes": 8912896,
+          "mutable": true,
+          "alignment": 16
+        }
+      ],
+      "abi": {
+        "bytes": 72,
+        "alignment": 8,
+        "fields": {
+          "state": 0,
+          "skip": 8,
+          "high": 16,
+          "record": 24,
+          "counter": 32,
+          "scratch": 40,
+          "reserved0": 48,
+          "reserved1": 56,
+          "batch": 64,
+          "tokens": 68
+        },
+        "zero_initialized_unpassed_fields": [
+          "skip",
+          "counter",
+          "scratch",
+          "reserved0",
+          "reserved1"
+        ],
+        "scalar_values": {
+          "batch": 1,
+          "tokens": 2160
+        }
+      },
+      "record": {
+        "bytes": 4194320,
+        "matrix_bytes": 4194304,
+        "name": "block31.layer0.layer",
+        "sha256": "837dddf52feeff1f6143b4aa0efc3ec3df4889dc3614bf1db3dc2f79089777a4",
+        "stage_offset": 0,
+        "unused_fp8_tail_bytes": 16,
+        "source_fp8": {
+          "bytes": 4194320,
+          "matrix_bytes": 4194304,
+          "name": "block31.layer0.layer",
+          "sha256": "837dddf52feeff1f6143b4aa0efc3ec3df4889dc3614bf1db3dc2f79089777a4",
+          "stage_offset": 0,
+          "unused_fp8_tail_bytes": 16
+        },
+        "prefix_bytes": 0,
+        "suffix_bytes": 16,
+        "suffix_semantics": "unused 16-byte original record tail",
+        "physical_matrix_layout": "original recovered packed FP8 B-fragment bytes",
+        "origin": "Exact original FP8 checkpoint record bytes; no conversion."
+      },
+      "prepare": {
+        "cpp": "dlssnr::prepare_c1024_ffn_reconstructed",
+        "torch_operator": "torch.ops.dlssnr._prepare_c1024_ffn_reconstructed",
+        "variant": 0,
+        "outside_capture_required_even_cached": true,
+        "SM": 120,
+        "min_max_threads_per_block": 128,
+        "launch_ctas": 544,
+        "all_split_ctas_must_fit_compiled_capacity": false,
+        "additional_sm_count_ge_launch_ctas": false,
+        "original_and_cuda_queried_independently_by_qualification": true
+      },
+      "synchronization": {
+        "counter": null,
+        "description": "No counter or scratch pointer is exposed or reset; expansion publishes activated high."
+      },
+      "native_node_mapping": {
+        "blocks": [
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38
+        ],
+        "stage": "expand",
+        "buffer_aliases": {
+          "state": "input",
+          "high": "expanded",
+          "record": "weight0"
+        },
+        "checkpoint_layer": 0,
+        "mapping_scope": "Actual FP8 NativeBlock descriptors and existing global chain composition"
+      },
+      "sources": {
+        "launcher": "csrc/kernel_launcher/c1024_ffn_reconstructed.cu.draft",
+        "api": "csrc/torch_api/c1024_ffn_reconstructed.cpp.draft",
+        "body": "csrc/kernel_impl/c1024_ffn_expand_fp8_reconstructed.cuh.draft",
+        "helpers": "csrc/kernel_impl/c1024_ffn_expand_fp8_reconstructed_ops.cuh.draft"
+      },
+      "source_shared_regions": [
+        {
+          "alignment": 512,
+          "name": "_ZZNK6tin3_114Conv1d1x1LayerIN7HNetCpp14cc_vit_1d_impl20CCFfnExpandConfigF16ILi64ELb0ELb0EEENS_10cc_samples21MpCubicSiluActivationELNS_5DTypeE2EE12forward_implEPKjPjiiSB_PiSC_SC_SA_E20shared_input_storage",
+          "bytes": 24576
+        },
+        {
+          "alignment": 8,
+          "name": "_ZZNK6tin3_114Conv1d1x1LayerIN7HNetCpp14cc_vit_1d_impl20CCFfnExpandConfigF16ILi64ELb0ELb0EEENS_10cc_samples21MpCubicSiluActivationELNS_5DTypeE2EE12forward_implEPKjPjiiSB_PiSC_SC_SA_E27shared_copy_barrier_storage",
+          "bytes": 24
+        }
+      ],
+      "compiled_resources": {
+        "object": {
+          "REG": 140,
+          "STACK": 0,
+          "SHARED": 25624,
+          "LOCAL": 0
+        },
+        "linked": {
+          "REG": 140,
+          "STACK": 0,
+          "SHARED": 25624,
+          "LOCAL": 0
+        },
+        "native": {
+          "REG": 139,
+          "STACK": 0,
+          "SHARED": 25624,
+          "LOCAL": 0
+        }
+      },
+      "donor": {
+        "build": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/build.json",
+        "build_sha256": "2d5352058d61c46a7e43bbd1a38d8fe44b23daece8fdebcddfbd6d7633d5d09a",
+        "binary": {
+          "bytes": 450201600,
+          "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "sha256": "7cde559cb0e8067278f424a8e9093bfb0ea4a762b55491d0d8009e4abf7ff369"
+        },
+        "launcher_object_path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\temp.win-amd64-cpython-311\\Release\\csrc\\kernel_launcher\\c1024_ffn_reconstructed.obj",
+        "launcher_object_sha256": "0060b15a3fb5563e262bfa9dfb3d878cf231bd6fdbd344d75cebd4b5719b3340",
+        "api_object_key": "csrc/torch_api/c1024_ffn_reconstructed.obj",
+        "api_object_sha256": "905a6d96a5660741e5d4d08295de50d42536d7ae02b93f7b02b5b1d13c54d4ca",
+        "symbol": "_ZN6dlssnr34c1024_ffn_expand_fp8_reconstructed6kernelENS0_10ParametersE",
+        "architecture": "sm_120",
+        "object_rehash_performed": false,
+        "source_bytes_verified": true
+      },
+      "evidence": {
+        "extraction_receipt": "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/receipt.json",
+        "compiled_review": "outputs/c1024-ffn-cuda-reconstruction/compiled-review/review.json.draft",
+        "saved_artifacts": [
+          {
+            "role": "object",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_expand_fp8_reconstructed.object.sass.txt",
+            "sha256": "9a83cccbd436e3ed4394d1668016d8e289d83dab27e30e9d21f7730f9de8b97a"
+          },
+          {
+            "role": "object",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_expand_fp8_reconstructed.object.resources.txt",
+            "sha256": "dfe87f8fe062d76d2de238d415273e1520b7e83e318075d67ce36ae46762ad1b"
+          },
+          {
+            "role": "linked",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_expand_fp8_reconstructed.linked.sass.txt",
+            "sha256": "423c68a808247f73c541165deed0c21f8587a5d8d691d3dfb55ff58ea6b61f4b"
+          },
+          {
+            "role": "linked",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_expand_fp8_reconstructed.linked.resources.txt",
+            "sha256": "a84ed785f3c35d63b87d579b310c3e631f3f9d03653211496e287c1927331871"
+          },
+          {
+            "role": "native",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_expand_fp8_reconstructed.native.sass.txt",
+            "sha256": "974282c2d27aa26a60ba6e80ea8ce5ab923af45d3f955b004c8439026f861209"
+          },
+          {
+            "role": "native",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_expand_fp8_reconstructed.native.resources.txt",
+            "sha256": "89ac41962355bfe56cd2da0f74a9de0bd61e0eed1ee31c80bbeb52c4f48830b9"
+          }
+        ]
+      }
+    },
+    {
+      "key": "contract_fp8",
+      "family": "ffn",
+      "role": "contract",
+      "precision": "FP8 E4M3",
+      "original": {
+        "module": 5,
+        "symbol": "cc_vit_1d_ffn_contract_fp8",
+        "entry_sha256": "f021e9b21444a0f52c1da50be877d23d8e0929d7ad1f0eeca2494f4f6508e3b9",
+        "module_line": 202923,
+        "source_module_sha256": "641ca106cd3e211587f873de41ba4350608413687b1bb99c33fa7529f82b510c"
+      },
+      "callable": {
+        "cpp": "dlssnr::c1024_ffn_contract_fp8_reconstructed_out",
+        "signature": "at::Tensor c1024_ffn_contract_fp8_reconstructed_out(const at::Tensor& state,const at::Tensor& record,const at::Tensor& skip,at::Tensor high,at::Tensor counter,at::Tensor scratch)",
+        "torch_schema": "_c1024_ffn_contract_fp8_reconstructed_out(Tensor state, Tensor record, Tensor skip, Tensor(a!) high, Tensor(b!) counter, Tensor(c!) scratch) -> Tensor(a!)",
+        "torch_operator": "torch.ops.dlssnr._c1024_ffn_contract_fp8_reconstructed_out",
+        "return_aliases": [
+          "high"
+        ]
+      },
+      "direct_kernel": {
+        "cpp": "dlssnr::c1024_ffn_contract_fp8_reconstructed::kernel",
+        "parameter_type": "dlssnr::c1024_ffn_contract_fp8_reconstructed::Parameters",
+        "host_declaration": "void kernel(Parameters parameters);",
+        "source_declaration": "__global__ __maxnreg__(168) void kernel(Parameters parameters) {",
+        "cudaLaunchKernel_argument_count": 1,
+        "argument_semantics": "The single host argument points to the entire zero-initialized Parameters struct value; uint64 fields contain device addresses.",
+        "compiled_architecture": "sm_120",
+        "source_shared_allocation": {
+          "alignment": 512,
+          "bytes": 16400
+        },
+        "admission_scope": "Exposing the existing retained host stub does not broaden the admitted fixed pilot or replace occupancy, alias, extent, device, stream and lifetime validation."
+      },
+      "pilot": {
+        "batch": 1,
+        "tokens": 2160,
+        "padded_tokens": 2176,
+        "grid": [
+          136,
+          1,
+          4
+        ],
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "dynamic_shared_bytes": 0,
+        "arbitrary_shape_admitted": false
+      },
+      "buffers": [
+        {
+          "name": "state",
+          "bytes": 8912896,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "record",
+          "bytes": 4196352,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "skip",
+          "bytes": 2228224,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "high",
+          "bytes": 2228224,
+          "mutable": true,
+          "alignment": 16
+        },
+        {
+          "name": "counter",
+          "bytes": 544,
+          "mutable": true,
+          "alignment": 4
+        },
+        {
+          "name": "scratch",
+          "bytes": 4456448,
+          "mutable": true,
+          "alignment": 16
+        }
+      ],
+      "abi": {
+        "bytes": 72,
+        "alignment": 8,
+        "fields": {
+          "state": 0,
+          "skip": 8,
+          "high": 16,
+          "record": 24,
+          "counter": 32,
+          "scratch": 40,
+          "reserved0": 48,
+          "reserved1": 56,
+          "batch": 64,
+          "tokens": 68
+        },
+        "zero_initialized_unpassed_fields": [
+          "reserved0",
+          "reserved1"
+        ],
+        "scalar_values": {
+          "batch": 1,
+          "tokens": 2160
+        }
+      },
+      "record": {
+        "bytes": 4196352,
+        "matrix_bytes": 4194304,
+        "name": "block31.layer1.layer",
+        "sha256": "143e90b9d5e8359ad8e20bb4f780765014136a838efbadb91c95329b525942f0",
+        "stage_offset": 4194320,
+        "unused_fp8_tail_bytes": 0,
+        "source_fp8": {
+          "bytes": 4196352,
+          "matrix_bytes": 4194304,
+          "name": "block31.layer1.layer",
+          "sha256": "143e90b9d5e8359ad8e20bb4f780765014136a838efbadb91c95329b525942f0",
+          "stage_offset": 4194320,
+          "unused_fp8_tail_bytes": 0
+        },
+        "prefix_bytes": 0,
+        "suffix_bytes": 2048,
+        "suffix_semantics": "1024 Half residual scales",
+        "physical_matrix_layout": "original recovered packed FP8 B-fragment bytes",
+        "origin": "Exact original FP8 checkpoint record bytes; no conversion."
+      },
+      "prepare": {
+        "cpp": "dlssnr::prepare_c1024_ffn_reconstructed",
+        "torch_operator": "torch.ops.dlssnr._prepare_c1024_ffn_reconstructed",
+        "variant": 1,
+        "outside_capture_required_even_cached": true,
+        "SM": 120,
+        "min_max_threads_per_block": 128,
+        "launch_ctas": 544,
+        "all_split_ctas_must_fit_compiled_capacity": true,
+        "additional_sm_count_ge_launch_ctas": false,
+        "original_and_cuda_queried_independently_by_qualification": true
+      },
+      "synchronization": {
+        "partitions": 4,
+        "K_per_partition": 1024,
+        "reset_before_each_call": -1,
+        "final": 3,
+        "poll": "ld.relaxed.gpu.global.L1::no_allocate.s32; signed counter >= CTA.z - 1; nanosleep retry; CTA synchronization",
+        "release": "Leader st.release.gpu.global.L1::no_allocate.s32 publishes CTA.z after output/partial publication and CTA barrier",
+        "counter_word_mapping": "8*(CTA.x % ceil(M/128)) + CTA.x//ceil(M/128); shared by z partitions",
+        "partial_storage": "separate Half accumulation scratch",
+        "ordered_flow": "z0 initializes partial, z1/z2 apply ordered packed-Half reductions, z3 combines its contribution and publishes scaled residual output",
+        "no_hidden_reset_in_out_api": true,
+        "scope": "No partition serialization or weakened capacity admission; contents are caller preconditions, not host-side value checks."
+      },
+      "native_node_mapping": {
+        "blocks": [
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38
+        ],
+        "stage": "contract",
+        "buffer_aliases": {
+          "state": "expanded",
+          "skip": "input",
+          "high": "contracted",
+          "counter": "contract_counter",
+          "scratch": "contract_scratch",
+          "record": "weight1"
+        },
+        "checkpoint_layer": 1,
+        "mapping_scope": "Actual FP8 NativeBlock descriptors and existing global chain composition"
+      },
+      "sources": {
+        "launcher": "csrc/kernel_launcher/c1024_ffn_reconstructed.cu.draft",
+        "api": "csrc/torch_api/c1024_ffn_reconstructed.cpp.draft",
+        "body": "csrc/kernel_impl/c1024_ffn_contract_fp8_reconstructed.cuh.draft",
+        "helpers": "csrc/kernel_impl/c1024_ffn_contract_fp8_reconstructed_ops.cuh.draft"
+      },
+      "source_shared_regions": [
+        {
+          "alignment": 512,
+          "name": "_ZZNK6tin3_114Conv1d1x1LayerIN7HNetCpp14cc_vit_1d_impl22CCFfnContractConfigFP8ILb0ELb0EEENS_12NoActivationELNS_5DTypeE2EE12forward_implEPKjPjiiSA_PiSB_SB_S9_E20shared_input_storage",
+          "bytes": 16384
+        },
+        {
+          "alignment": 8,
+          "name": "_ZZNK6tin3_114Conv1d1x1LayerIN7HNetCpp14cc_vit_1d_impl22CCFfnContractConfigFP8ILb0ELb0EEENS_12NoActivationELNS_5DTypeE2EE12forward_implEPKjPjiiSA_PiSB_SB_S9_E27shared_copy_barrier_storage",
+          "bytes": 16
+        }
+      ],
+      "compiled_resources": {
+        "object": {
+          "REG": 159,
+          "STACK": 0,
+          "SHARED": 17424,
+          "LOCAL": 0
+        },
+        "linked": {
+          "REG": 159,
+          "STACK": 0,
+          "SHARED": 17424,
+          "LOCAL": 0
+        },
+        "native": {
+          "REG": 157,
+          "STACK": 0,
+          "SHARED": 17424,
+          "LOCAL": 0
+        }
+      },
+      "donor": {
+        "build": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/build.json",
+        "build_sha256": "2d5352058d61c46a7e43bbd1a38d8fe44b23daece8fdebcddfbd6d7633d5d09a",
+        "binary": {
+          "bytes": 450201600,
+          "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "sha256": "7cde559cb0e8067278f424a8e9093bfb0ea4a762b55491d0d8009e4abf7ff369"
+        },
+        "launcher_object_path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\temp.win-amd64-cpython-311\\Release\\csrc\\kernel_launcher\\c1024_ffn_reconstructed.obj",
+        "launcher_object_sha256": "0060b15a3fb5563e262bfa9dfb3d878cf231bd6fdbd344d75cebd4b5719b3340",
+        "api_object_key": "csrc/torch_api/c1024_ffn_reconstructed.obj",
+        "api_object_sha256": "905a6d96a5660741e5d4d08295de50d42536d7ae02b93f7b02b5b1d13c54d4ca",
+        "symbol": "_ZN6dlssnr36c1024_ffn_contract_fp8_reconstructed6kernelENS0_10ParametersE",
+        "architecture": "sm_120",
+        "object_rehash_performed": false,
+        "source_bytes_verified": true
+      },
+      "evidence": {
+        "extraction_receipt": "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/receipt.json",
+        "compiled_review": "outputs/c1024-ffn-cuda-reconstruction/compiled-review/review.json.draft",
+        "saved_artifacts": [
+          {
+            "role": "object",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_contract_fp8_reconstructed.object.sass.txt",
+            "sha256": "21a1b70f7e3998609d067076a053f534edc796b4ad019c80fe10489226e51718"
+          },
+          {
+            "role": "object",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_contract_fp8_reconstructed.object.resources.txt",
+            "sha256": "740b05f841164d4809bb4f46850c32b58658b9e13a00e15f7abfd3da1d97583d"
+          },
+          {
+            "role": "linked",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_contract_fp8_reconstructed.linked.sass.txt",
+            "sha256": "2410c15c6f5b84b8c49bb0246fba4c7f4b7b60eae05cace9b3eab837221229ab"
+          },
+          {
+            "role": "linked",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_contract_fp8_reconstructed.linked.resources.txt",
+            "sha256": "da6b586e8225d2655a2f92bd6c13f9673126e82b1ce7dc0818befd5e0c38716d"
+          },
+          {
+            "role": "native",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_contract_fp8_reconstructed.native.sass.txt",
+            "sha256": "bcfc542dbd85df39720335e9036102df43d8e78923d43646f03ebd1383a70160"
+          },
+          {
+            "role": "native",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_contract_fp8_reconstructed.native.resources.txt",
+            "sha256": "acd910e2fd7227c347073603e55f3975a19b176f1b1e73e27702939e8395fb88"
+          }
+        ]
+      }
+    },
+    {
+      "key": "expand_half",
+      "family": "ffn",
+      "role": "expand",
+      "precision": "Half",
+      "original": {
+        "module": 5,
+        "symbol": "cc_vit_1d_ffn_expand",
+        "entry_sha256": "b11c22f199dee0ee82c3f40bb15e4f1a4f4ea162dc78ac1a71d35243bcdd7b48",
+        "module_line": 167633,
+        "source_module_sha256": "641ca106cd3e211587f873de41ba4350608413687b1bb99c33fa7529f82b510c"
+      },
+      "callable": {
+        "cpp": "dlssnr::c1024_ffn_expand_half_reconstructed_out",
+        "signature": "at::Tensor c1024_ffn_expand_half_reconstructed_out(const at::Tensor& state,const at::Tensor& record,at::Tensor high)",
+        "torch_schema": "_c1024_ffn_expand_half_reconstructed_out(Tensor state, Tensor record, Tensor(a!) high) -> Tensor(a!)",
+        "torch_operator": "torch.ops.dlssnr._c1024_ffn_expand_half_reconstructed_out",
+        "return_aliases": [
+          "high"
+        ]
+      },
+      "direct_kernel": {
+        "cpp": "dlssnr::c1024_ffn_expand_half_reconstructed::kernel",
+        "parameter_type": "dlssnr::c1024_ffn_expand_half_reconstructed::Parameters",
+        "host_declaration": "void kernel(Parameters parameters);",
+        "source_declaration": "__global__ __maxnreg__(168) void kernel(Parameters parameters) {",
+        "cudaLaunchKernel_argument_count": 1,
+        "argument_semantics": "The single host argument points to the entire zero-initialized Parameters struct value; uint64 fields contain device addresses.",
+        "compiled_architecture": "sm_120",
+        "source_shared_allocation": {
+          "alignment": 512,
+          "bytes": 24600
+        },
+        "admission_scope": "Exposing the existing retained host stub does not broaden the admitted fixed pilot or replace occupancy, alias, extent, device, stream and lifetime validation."
+      },
+      "pilot": {
+        "batch": 1,
+        "tokens": 128,
+        "padded_tokens": 128,
+        "grid": [
+          32,
+          1,
+          1
+        ],
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "dynamic_shared_bytes": 0,
+        "arbitrary_shape_admitted": false
+      },
+      "buffers": [
+        {
+          "name": "state",
+          "bytes": 262144,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "record",
+          "bytes": 8388608,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "high",
+          "bytes": 1048576,
+          "mutable": true,
+          "alignment": 16
+        }
+      ],
+      "abi": {
+        "bytes": 72,
+        "alignment": 8,
+        "fields": {
+          "state": 0,
+          "skip": 8,
+          "high": 16,
+          "record": 24,
+          "counter": 32,
+          "scratch": 40,
+          "reserved0": 48,
+          "reserved1": 56,
+          "batch": 64,
+          "tokens": 68
+        },
+        "zero_initialized_unpassed_fields": [
+          "skip",
+          "counter",
+          "scratch",
+          "reserved0",
+          "reserved1"
+        ],
+        "scalar_values": {
+          "batch": 1,
+          "tokens": 128
+        }
+      },
+      "record": {
+        "K": 1024,
+        "N": 4096,
+        "bytes": 8388608,
+        "full_matrix_bijections": true,
+        "nan_codes": 0,
+        "origin": "Derived finite checkpoint values in original Half K16 map; not a recovered original Half asset or host preparation.",
+        "scale_bytes": 0,
+        "sha256": "92dd0bcdc2b9c3683800b7b91c30dfce086470aff5cf187f62c8a61eb48b1d38",
+        "source_fp8": {
+          "bytes": 4194320,
+          "matrix_bytes": 4194304,
+          "name": "block31.layer0.layer",
+          "sha256": "837dddf52feeff1f6143b4aa0efc3ec3df4889dc3614bf1db3dc2f79089777a4",
+          "stage_offset": 0,
+          "unused_fp8_tail_bytes": 16
+        },
+        "prefix_bytes": 0,
+        "matrix_bytes": 8388608,
+        "suffix_bytes": 0,
+        "suffix_semantics": "none",
+        "physical_matrix_layout": "independent K16 Half B-fragment map; finite decoded original FP8 values",
+        "original_half_host_preparation_recovered": false
+      },
+      "prepare": {
+        "cpp": "dlssnr::prepare_c1024_ffn_reconstructed",
+        "torch_operator": "torch.ops.dlssnr._prepare_c1024_ffn_reconstructed",
+        "variant": 2,
+        "outside_capture_required_even_cached": true,
+        "SM": 120,
+        "min_max_threads_per_block": 128,
+        "launch_ctas": 32,
+        "all_split_ctas_must_fit_compiled_capacity": false,
+        "additional_sm_count_ge_launch_ctas": false,
+        "original_and_cuda_queried_independently_by_qualification": true
+      },
+      "synchronization": {
+        "counter": null,
+        "description": "No counter or scratch pointer is exposed or reset; expansion publishes activated high."
+      },
+      "native_node_mapping": {
+        "blocks": [
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38
+        ],
+        "stage": "expand",
+        "buffer_aliases": {
+          "state": "input",
+          "high": "expanded",
+          "record": "weight0"
+        },
+        "checkpoint_layer": 0,
+        "mapping_scope": "Role-equivalent independent Half pilot; no recovered full Half network host descriptors"
+      },
+      "sources": {
+        "launcher": "csrc/kernel_launcher/c1024_ffn_reconstructed.cu.draft",
+        "api": "csrc/torch_api/c1024_ffn_reconstructed.cpp.draft",
+        "body": "csrc/kernel_impl/c1024_ffn_expand_half_reconstructed.cuh.draft",
+        "helpers": "csrc/kernel_impl/c1024_ffn_expand_half_reconstructed_ops.cuh.draft"
+      },
+      "source_shared_regions": [
+        {
+          "alignment": 512,
+          "name": "_ZZNK6tin3_114Conv1d1x1LayerIN7HNetCpp14cc_vit_1d_impl20CCFfnExpandConfigF16ILi32ELb0ELb0EEENS_10cc_samples21MpCubicSiluActivationELNS_5DTypeE1EE12forward_implEPKjPjiiSB_PiSC_SC_SA_E20shared_input_storage",
+          "bytes": 24576
+        },
+        {
+          "alignment": 8,
+          "name": "_ZZNK6tin3_114Conv1d1x1LayerIN7HNetCpp14cc_vit_1d_impl20CCFfnExpandConfigF16ILi32ELb0ELb0EEENS_10cc_samples21MpCubicSiluActivationELNS_5DTypeE1EE12forward_implEPKjPjiiSB_PiSC_SC_SA_E27shared_copy_barrier_storage",
+          "bytes": 24
+        }
+      ],
+      "compiled_resources": {
+        "object": {
+          "REG": 139,
+          "STACK": 0,
+          "SHARED": 25624,
+          "LOCAL": 0
+        },
+        "linked": {
+          "REG": 139,
+          "STACK": 0,
+          "SHARED": 25624,
+          "LOCAL": 0
+        },
+        "native": {
+          "REG": 137,
+          "STACK": 0,
+          "SHARED": 25624,
+          "LOCAL": 0
+        }
+      },
+      "donor": {
+        "build": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/build.json",
+        "build_sha256": "2d5352058d61c46a7e43bbd1a38d8fe44b23daece8fdebcddfbd6d7633d5d09a",
+        "binary": {
+          "bytes": 450201600,
+          "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "sha256": "7cde559cb0e8067278f424a8e9093bfb0ea4a762b55491d0d8009e4abf7ff369"
+        },
+        "launcher_object_path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\temp.win-amd64-cpython-311\\Release\\csrc\\kernel_launcher\\c1024_ffn_reconstructed.obj",
+        "launcher_object_sha256": "0060b15a3fb5563e262bfa9dfb3d878cf231bd6fdbd344d75cebd4b5719b3340",
+        "api_object_key": "csrc/torch_api/c1024_ffn_reconstructed.obj",
+        "api_object_sha256": "905a6d96a5660741e5d4d08295de50d42536d7ae02b93f7b02b5b1d13c54d4ca",
+        "symbol": "_ZN6dlssnr35c1024_ffn_expand_half_reconstructed6kernelENS0_10ParametersE",
+        "architecture": "sm_120",
+        "object_rehash_performed": false,
+        "source_bytes_verified": true
+      },
+      "evidence": {
+        "extraction_receipt": "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/receipt.json",
+        "compiled_review": "outputs/c1024-ffn-cuda-reconstruction/compiled-review/review.json.draft",
+        "saved_artifacts": [
+          {
+            "role": "object",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_expand_half_reconstructed.object.sass.txt",
+            "sha256": "a0565ec9e5a946685645a7a4dadfadd2910de10504854b77a418864d766ed4b0"
+          },
+          {
+            "role": "object",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_expand_half_reconstructed.object.resources.txt",
+            "sha256": "cf0e0f78b852694d8181bb22126b1d4fe248b26df699dd408d17f4b68efc26e0"
+          },
+          {
+            "role": "linked",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_expand_half_reconstructed.linked.sass.txt",
+            "sha256": "6966d3383b807d2ac8b8a4d21839de56522a303b4c1fd11e4f48c124abaa6478"
+          },
+          {
+            "role": "linked",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_expand_half_reconstructed.linked.resources.txt",
+            "sha256": "f294938e75476af426d68d7a9e49376a06cd76108eb7b198bfa9708e1a204fb4"
+          },
+          {
+            "role": "native",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_expand_half_reconstructed.native.sass.txt",
+            "sha256": "8fe3e7434e8b3630c58b1e71544a9e6aa42846586fc213ac6344e96239bb4b48"
+          },
+          {
+            "role": "native",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_expand_half_reconstructed.native.resources.txt",
+            "sha256": "6834d923993cdd2f2a1e5cd9cc791236b611a6d307b3b0e9ca3bb334630a40ea"
+          }
+        ]
+      }
+    },
+    {
+      "key": "contract_half",
+      "family": "ffn",
+      "role": "contract",
+      "precision": "Half",
+      "original": {
+        "module": 5,
+        "symbol": "cc_vit_1d_ffn_contract",
+        "entry_sha256": "30738b9070a9bab17f078ed84667e69daeb55a2b1d34922dbe84f2f09e39e294",
+        "module_line": 192448,
+        "source_module_sha256": "641ca106cd3e211587f873de41ba4350608413687b1bb99c33fa7529f82b510c"
+      },
+      "callable": {
+        "cpp": "dlssnr::c1024_ffn_contract_half_reconstructed_out",
+        "signature": "at::Tensor c1024_ffn_contract_half_reconstructed_out(const at::Tensor& state,const at::Tensor& record,const at::Tensor& skip,at::Tensor high,at::Tensor counter)",
+        "torch_schema": "_c1024_ffn_contract_half_reconstructed_out(Tensor state, Tensor record, Tensor skip, Tensor(a!) high, Tensor(b!) counter) -> Tensor(a!)",
+        "torch_operator": "torch.ops.dlssnr._c1024_ffn_contract_half_reconstructed_out",
+        "return_aliases": [
+          "high"
+        ]
+      },
+      "direct_kernel": {
+        "cpp": "dlssnr::c1024_ffn_contract_half_reconstructed::kernel",
+        "parameter_type": "dlssnr::c1024_ffn_contract_half_reconstructed::Parameters",
+        "host_declaration": "void kernel(Parameters parameters);",
+        "source_declaration": "__global__ __maxnreg__(168) void kernel(Parameters parameters) {",
+        "cudaLaunchKernel_argument_count": 1,
+        "argument_semantics": "The single host argument points to the entire zero-initialized Parameters struct value; uint64 fields contain device addresses.",
+        "compiled_architecture": "sm_120",
+        "source_shared_allocation": {
+          "alignment": 512,
+          "bytes": 24600
+        },
+        "admission_scope": "Exposing the existing retained host stub does not broaden the admitted fixed pilot or replace occupancy, alias, extent, device, stream and lifetime validation."
+      },
+      "pilot": {
+        "batch": 1,
+        "tokens": 128,
+        "padded_tokens": 128,
+        "grid": [
+          8,
+          1,
+          4
+        ],
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "dynamic_shared_bytes": 0,
+        "arbitrary_shape_admitted": false
+      },
+      "buffers": [
+        {
+          "name": "state",
+          "bytes": 1048576,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "record",
+          "bytes": 8390656,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "skip",
+          "bytes": 262144,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "high",
+          "bytes": 262144,
+          "mutable": true,
+          "alignment": 16
+        },
+        {
+          "name": "counter",
+          "bytes": 32,
+          "mutable": true,
+          "alignment": 4
+        }
+      ],
+      "abi": {
+        "bytes": 72,
+        "alignment": 8,
+        "fields": {
+          "state": 0,
+          "skip": 8,
+          "high": 16,
+          "record": 24,
+          "counter": 32,
+          "scratch": 40,
+          "reserved0": 48,
+          "reserved1": 56,
+          "batch": 64,
+          "tokens": 68
+        },
+        "zero_initialized_unpassed_fields": [
+          "scratch",
+          "reserved0",
+          "reserved1"
+        ],
+        "scalar_values": {
+          "batch": 1,
+          "tokens": 128
+        }
+      },
+      "record": {
+        "K": 4096,
+        "N": 1024,
+        "bytes": 8390656,
+        "full_matrix_bijections": true,
+        "nan_codes": 0,
+        "origin": "Derived finite checkpoint values in original Half K16 map; not a recovered original Half asset or host preparation.",
+        "scale_bytes": 2048,
+        "sha256": "696b6620ace97de515c197ac497bdbee41adca23948ffba140644a7ec01f6250",
+        "source_fp8": {
+          "bytes": 4196352,
+          "matrix_bytes": 4194304,
+          "name": "block31.layer1.layer",
+          "sha256": "143e90b9d5e8359ad8e20bb4f780765014136a838efbadb91c95329b525942f0",
+          "stage_offset": 4194320,
+          "unused_fp8_tail_bytes": 0
+        },
+        "prefix_bytes": 0,
+        "matrix_bytes": 8388608,
+        "suffix_bytes": 2048,
+        "suffix_semantics": "1024 Half residual scales",
+        "physical_matrix_layout": "independent K16 Half B-fragment map; finite decoded original FP8 values",
+        "original_half_host_preparation_recovered": false
+      },
+      "prepare": {
+        "cpp": "dlssnr::prepare_c1024_ffn_reconstructed",
+        "torch_operator": "torch.ops.dlssnr._prepare_c1024_ffn_reconstructed",
+        "variant": 3,
+        "outside_capture_required_even_cached": true,
+        "SM": 120,
+        "min_max_threads_per_block": 128,
+        "launch_ctas": 32,
+        "all_split_ctas_must_fit_compiled_capacity": true,
+        "additional_sm_count_ge_launch_ctas": true,
+        "original_and_cuda_queried_independently_by_qualification": true
+      },
+      "synchronization": {
+        "partitions": 4,
+        "K_per_partition": 1024,
+        "reset_before_each_call": -1,
+        "final": 3,
+        "poll": "ld.relaxed.gpu.global.L1::no_allocate.s32; signed counter >= CTA.z - 1; nanosleep retry; CTA synchronization",
+        "release": "Leader st.release.gpu.global.L1::no_allocate.s32 publishes CTA.z after output/partial publication and CTA barrier",
+        "counter_word_mapping": "8*(CTA.x % ceil(M/128)) + CTA.x//ceil(M/128); shared by z partitions",
+        "partial_storage": "high output buffer itself",
+        "ordered_flow": "z0 initializes partial, z1/z2 apply ordered packed-Half reductions, z3 combines its contribution and publishes scaled residual output",
+        "no_hidden_reset_in_out_api": true,
+        "scope": "No partition serialization or weakened capacity admission; contents are caller preconditions, not host-side value checks."
+      },
+      "native_node_mapping": {
+        "blocks": [
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38
+        ],
+        "stage": "contract",
+        "buffer_aliases": {
+          "state": "expanded",
+          "skip": "input",
+          "high": "contracted",
+          "counter": "contract_counter",
+          "record": "weight1"
+        },
+        "checkpoint_layer": 1,
+        "mapping_scope": "Role-equivalent independent Half pilot; no recovered full Half network host descriptors"
+      },
+      "sources": {
+        "launcher": "csrc/kernel_launcher/c1024_ffn_reconstructed.cu.draft",
+        "api": "csrc/torch_api/c1024_ffn_reconstructed.cpp.draft",
+        "body": "csrc/kernel_impl/c1024_ffn_contract_half_reconstructed.cuh.draft",
+        "helpers": "csrc/kernel_impl/c1024_ffn_contract_half_reconstructed_ops.cuh.draft"
+      },
+      "source_shared_regions": [
+        {
+          "alignment": 512,
+          "name": "_ZZNK6tin3_114Conv1d1x1LayerIN7HNetCpp14cc_vit_1d_impl19CCFfnContractConfigILb0ELb0EEENS_12NoActivationELNS_5DTypeE1EE12forward_implEPKjPjiiSA_PiSB_SB_S9_E20shared_input_storage",
+          "bytes": 24576
+        },
+        {
+          "alignment": 8,
+          "name": "_ZZNK6tin3_114Conv1d1x1LayerIN7HNetCpp14cc_vit_1d_impl19CCFfnContractConfigILb0ELb0EEENS_12NoActivationELNS_5DTypeE1EE12forward_implEPKjPjiiSA_PiSB_SB_S9_E27shared_copy_barrier_storage",
+          "bytes": 24
+        }
+      ],
+      "compiled_resources": {
+        "object": {
+          "REG": 148,
+          "STACK": 0,
+          "SHARED": 25624,
+          "LOCAL": 0
+        },
+        "linked": {
+          "REG": 148,
+          "STACK": 0,
+          "SHARED": 25624,
+          "LOCAL": 0
+        },
+        "native": {
+          "REG": 149,
+          "STACK": 0,
+          "SHARED": 25624,
+          "LOCAL": 0
+        }
+      },
+      "donor": {
+        "build": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/build.json",
+        "build_sha256": "2d5352058d61c46a7e43bbd1a38d8fe44b23daece8fdebcddfbd6d7633d5d09a",
+        "binary": {
+          "bytes": 450201600,
+          "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "sha256": "7cde559cb0e8067278f424a8e9093bfb0ea4a762b55491d0d8009e4abf7ff369"
+        },
+        "launcher_object_path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\temp.win-amd64-cpython-311\\Release\\csrc\\kernel_launcher\\c1024_ffn_reconstructed.obj",
+        "launcher_object_sha256": "0060b15a3fb5563e262bfa9dfb3d878cf231bd6fdbd344d75cebd4b5719b3340",
+        "api_object_key": "csrc/torch_api/c1024_ffn_reconstructed.obj",
+        "api_object_sha256": "905a6d96a5660741e5d4d08295de50d42536d7ae02b93f7b02b5b1d13c54d4ca",
+        "symbol": "_ZN6dlssnr37c1024_ffn_contract_half_reconstructed6kernelENS0_10ParametersE",
+        "architecture": "sm_120",
+        "object_rehash_performed": false,
+        "source_bytes_verified": true
+      },
+      "evidence": {
+        "extraction_receipt": "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/receipt.json",
+        "compiled_review": "outputs/c1024-ffn-cuda-reconstruction/compiled-review/review.json.draft",
+        "saved_artifacts": [
+          {
+            "role": "object",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_contract_half_reconstructed.object.sass.txt",
+            "sha256": "e50793b658bc59215d257b2513e4fdf231f77f924994a40ce7444c09236acd80"
+          },
+          {
+            "role": "object",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_contract_half_reconstructed.object.resources.txt",
+            "sha256": "0ee9269265ea01a9470c8c7b82e45f85f0727ffd62b70b6eb4eadd6ff2a5288f"
+          },
+          {
+            "role": "linked",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_contract_half_reconstructed.linked.sass.txt",
+            "sha256": "f4cef47880bad602461ea3eb66c5b992fb15ca039c13e400fd5a3935448fb980"
+          },
+          {
+            "role": "linked",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_contract_half_reconstructed.linked.resources.txt",
+            "sha256": "33e14f48c37df1d4a5d88ef1874864c95aa16c7c2accbc12847736e68f975afb"
+          },
+          {
+            "role": "native",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_contract_half_reconstructed.native.sass.txt",
+            "sha256": "51e0807e8a057fec58b6442c0a24e233775da35be1d027882a47919952c68d1d"
+          },
+          {
+            "role": "native",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-ffn-cuda-reconstruction\\compiled-extraction-v1\\c1024_ffn_contract_half_reconstructed.native.resources.txt",
+            "sha256": "0a7f0fadb381269dd3d1cff1a86bd748620249261c4592dc3c3dd0439e1ff1b5"
+          }
+        ]
+      }
+    },
+    {
+      "key": "qkv_fp8",
+      "family": "attention",
+      "role": "qkv",
+      "precision": "FP8 E4M3",
+      "original": {
+        "module": 5,
+        "symbol": "cc_vit_1d_qkv_fp8",
+        "entry_sha256": "2162dd1d411686d460bf0a520dd215e69c2897664194c3f5fc2035f4d60e72a5",
+        "module_line": 227828,
+        "source_module_sha256": "641ca106cd3e211587f873de41ba4350608413687b1bb99c33fa7529f82b510c"
+      },
+      "callable": {
+        "cpp": "dlssnr::c1024_qkv_fp8_reconstructed_out",
+        "signature": "std::tuple<at::Tensor,at::Tensor,at::Tensor> c1024_qkv_fp8_reconstructed_out(const at::Tensor& state,const at::Tensor& record,at::Tensor q,at::Tensor k,at::Tensor v,at::Tensor counter,at::Tensor scratch)",
+        "torch_schema": "_c1024_qkv_fp8_reconstructed_out(Tensor state,Tensor record,Tensor(a!) q,Tensor(b!) k,Tensor(c!) v,Tensor(d!) counter,Tensor(e!) scratch) -> (Tensor(a!),Tensor(b!),Tensor(c!))",
+        "torch_operator": "torch.ops.dlssnr._c1024_qkv_fp8_reconstructed_out",
+        "return_aliases": [
+          "q",
+          "k",
+          "v"
+        ]
+      },
+      "direct_kernel": {
+        "cpp": "dlssnr::c1024_qkv_fp8_reconstructed::kernel",
+        "parameter_type": "dlssnr::c1024_qkv_fp8_reconstructed::Parameters",
+        "host_declaration": "void kernel(Parameters parameters);",
+        "source_declaration": "__global__ __maxnreg__(168) void kernel(Parameters parameters) {",
+        "cudaLaunchKernel_argument_count": 1,
+        "argument_semantics": "The single host argument points to the entire zero-initialized Parameters struct value; uint64 fields contain device addresses.",
+        "compiled_architecture": "sm_120",
+        "source_shared_allocation": {
+          "alignment": 512,
+          "bytes": 8208
+        },
+        "admission_scope": "Exposing the existing retained host stub does not broaden the admitted fixed pilot or replace occupancy, alias, extent, device, stream and lifetime validation."
+      },
+      "pilot": {
+        "batch": 1,
+        "tokens": 2160,
+        "padded_tokens": 2176,
+        "grid": [
+          272,
+          1,
+          2
+        ],
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "dynamic_shared_bytes": 0,
+        "arbitrary_shape_admitted": false
+      },
+      "buffers": [
+        {
+          "name": "state",
+          "bytes": 2228224,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "record",
+          "bytes": 3145856,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "q",
+          "bytes": 2228224,
+          "mutable": true,
+          "alignment": 16
+        },
+        {
+          "name": "k",
+          "bytes": 2228224,
+          "mutable": true,
+          "alignment": 16
+        },
+        {
+          "name": "v",
+          "bytes": 2228224,
+          "mutable": true,
+          "alignment": 16
+        },
+        {
+          "name": "counter",
+          "bytes": 1088,
+          "mutable": true,
+          "alignment": 4
+        },
+        {
+          "name": "scratch",
+          "bytes": 13369344,
+          "mutable": true,
+          "alignment": 16
+        }
+      ],
+      "abi": {
+        "bytes": 80,
+        "alignment": 8,
+        "fields": {
+          "state": 0,
+          "q": 8,
+          "k": 16,
+          "v": 24,
+          "record": 32,
+          "counter": 40,
+          "scratch": 48,
+          "reserved0": 56,
+          "reserved1": 64,
+          "batch": 72,
+          "tokens": 76
+        },
+        "zero_initialized_unpassed_fields": [
+          "reserved0",
+          "reserved1"
+        ],
+        "scalar_values": {
+          "batch": 1,
+          "tokens": 2160
+        }
+      },
+      "record": {
+        "K": 1024,
+        "N": 3072,
+        "complete_matrix_bijections": true,
+        "fp8_bytes": 3145856,
+        "fp8_sha256": "8317de7004196a2fbb6d87603b9083f71ef3dddfbe3a1dcc618edd65b6eb9cd9",
+        "half_bytes": 6291584,
+        "half_sha256": "3ef1d48e38c27ce76ce7d2a4642bce14efe64e21d4dfc5a81f7a07274b921c8e",
+        "name": "block31.layer2.layer",
+        "origin": "Exact original FP8 checkpoint record bytes; no conversion.",
+        "prefix_bytes": 128,
+        "stage_offset": 8390672,
+        "suffix_bytes": 0,
+        "bytes": 3145856,
+        "sha256": "8317de7004196a2fbb6d87603b9083f71ef3dddfbe3a1dcc618edd65b6eb9cd9",
+        "matrix_bytes": 3145728,
+        "prefix_semantics": "original 128-byte QKV prefix, preserved unchanged",
+        "suffix_semantics": "none",
+        "physical_matrix_layout": "original recovered packed FP8 B-fragment bytes"
+      },
+      "prepare": {
+        "cpp": "dlssnr::prepare_c1024_attention_reconstructed",
+        "torch_operator": "torch.ops.dlssnr._prepare_c1024_attention_reconstructed",
+        "variant": 0,
+        "outside_capture_required_even_cached": true,
+        "SM": 120,
+        "min_max_threads_per_block": 128,
+        "launch_ctas": 544,
+        "all_split_ctas_must_fit_compiled_capacity": true,
+        "additional_sm_count_ge_launch_ctas": false,
+        "original_and_cuda_queried_independently_by_qualification": true
+      },
+      "synchronization": {
+        "partitions": 2,
+        "K_per_partition": 512,
+        "reset_before_each_call": -1,
+        "final": 1,
+        "poll": "ld.relaxed.gpu.global.L1::no_allocate.s32; signed counter >= CTA.z - 1; nanosleep retry; CTA synchronization",
+        "release": "Leader st.release.gpu.global.L1::no_allocate.s32 publishes CTA.z after output/partial publication and CTA barrier",
+        "counter_word_mapping": "16*(CTA.x % ceil(M/128)) + CTA.x//ceil(M/128); shared by z partitions",
+        "partial_storage": "separate Half accumulation scratch",
+        "ordered_flow": "z0 writes partial; z1 consumes/combines then publishes final Q/K/V",
+        "no_hidden_reset_in_out_api": true,
+        "scope": "No partition serialization or weakened capacity admission; contents are caller preconditions, not host-side value checks."
+      },
+      "native_node_mapping": {
+        "blocks": [
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38
+        ],
+        "stage": "qkv",
+        "buffer_aliases": {
+          "state": "contracted",
+          "q": "Q",
+          "k": "K",
+          "v": "V",
+          "counter": "qkv_counter",
+          "scratch": "qkv_scratch",
+          "record": "weight2"
+        },
+        "checkpoint_layer": 2,
+        "mapping_scope": "Actual FP8 NativeBlock descriptors and existing global chain composition"
+      },
+      "sources": {
+        "launcher": "csrc/kernel_launcher/c1024_attention_reconstructed.cu.draft",
+        "api": "csrc/torch_api/c1024_attention_reconstructed.cpp.draft",
+        "body": "csrc/kernel_impl/c1024_qkv_fp8_reconstructed.cuh.draft",
+        "helpers": "csrc/kernel_impl/c1024_qkv_fp8_reconstructed_ops.cuh.draft"
+      },
+      "source_shared_regions": [
+        {
+          "alignment": 512,
+          "name": "_ZZNK6tin3_114Conv1dQKVLayerINS_15Conv1dQKVConfigILi32ELi32ELi1024ELi128ELi32ELi2ELi2ELi2ELb0ELb0ELi128ENS_10OOBRdByDimILj3EJNS_8DimOOBRdILi0ELNS_19OutOfBoundsPolicyRdE2EEEEEENS_14LayerOutputOOBILj3ES6_NS_10OOBWrByDimILj3EJNS_8DimOOBWrILi0ELNS_19OutOfBoundsPolicyWrE0EEEEEEEEEELNS_5DTypeE2EE12forward_implEPKjPjSJ_SJ_SJ_iiPiSK_SK_E20shared_input_storage",
+          "bytes": 8192
+        },
+        {
+          "alignment": 8,
+          "name": "_ZZNK6tin3_114Conv1dQKVLayerINS_15Conv1dQKVConfigILi32ELi32ELi1024ELi128ELi32ELi2ELi2ELi2ELb0ELb0ELi128ENS_10OOBRdByDimILj3EJNS_8DimOOBRdILi0ELNS_19OutOfBoundsPolicyRdE2EEEEEENS_14LayerOutputOOBILj3ES6_NS_10OOBWrByDimILj3EJNS_8DimOOBWrILi0ELNS_19OutOfBoundsPolicyWrE0EEEEEEEEEELNS_5DTypeE2EE12forward_implEPKjPjSJ_SJ_SJ_iiPiSK_SK_E27shared_copy_barrier_storage",
+          "bytes": 16
+        }
+      ],
+      "compiled_resources": {
+        "object": {
+          "REG": 162,
+          "STACK": 0,
+          "SHARED": 9232,
+          "LOCAL": 0
+        },
+        "linked": {
+          "REG": 162,
+          "STACK": 0,
+          "SHARED": 9232,
+          "LOCAL": 0
+        },
+        "native": {
+          "REG": 163,
+          "STACK": 0,
+          "SHARED": 9232,
+          "LOCAL": 0
+        }
+      },
+      "donor": {
+        "build": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/build.json",
+        "build_sha256": "3a7df9d6783db9f9fc0f2b564ec6cc8ff7888a170d9c03697d00bf3128a950e9",
+        "binary": {
+          "bytes": 452183552,
+          "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "sha256": "c798f358c1c414dda6a697433b9ef86aba9a59790311d5e69c1a382f69ca43e6"
+        },
+        "launcher_object_path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\temp.win-amd64-cpython-311\\Release\\csrc\\kernel_launcher\\c1024_attention_reconstructed.obj",
+        "launcher_object_sha256": "ff79056c40b3e813403aa04af22f4dc4da963621294f0be733a18ed24aa60af8",
+        "api_object_key": "csrc/torch_api/c1024_attention_reconstructed.obj",
+        "api_object_sha256": "d51f15f388faef3cb5d59b3bc221b69cc863b253a9e8049e57bfa6413bd7cfbd",
+        "symbol": "_ZN6dlssnr27c1024_qkv_fp8_reconstructed6kernelENS0_10ParametersE",
+        "architecture": "sm_120",
+        "object_rehash_performed": false,
+        "source_bytes_verified": true
+      },
+      "evidence": {
+        "extraction_receipt": "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/receipt.json",
+        "compiled_review": "outputs/c1024-attention-cuda-reconstruction/compiled-review/review.json.draft",
+        "saved_artifacts": [
+          {
+            "role": "object",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_qkv_fp8_reconstructed.object.sass.txt",
+            "sha256": "3e159f616ee6bc56be484573efbee6c1b3676d86a07f2d966b048ac0e4dee65f"
+          },
+          {
+            "role": "object",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_qkv_fp8_reconstructed.object.resources.txt",
+            "sha256": "358d9a5e36952c92891ec25478a9d1c5f7a5f2e786600865314bd974e545a0c8"
+          },
+          {
+            "role": "linked",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_qkv_fp8_reconstructed.linked.sass.txt",
+            "sha256": "0e0761166898da1d8187e36c3009eee4e9af4993a673298d89b68c7dccfdef8b"
+          },
+          {
+            "role": "linked",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_qkv_fp8_reconstructed.linked.resources.txt",
+            "sha256": "f8cf20a7b3ff0aec9a92e4ea7174ae4bc7ce0a8d7759d1dbad792016eb1f7731"
+          },
+          {
+            "role": "native",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_qkv_fp8_reconstructed.native.sass.txt",
+            "sha256": "3020423d2e4951fe94a33ce74a484fb926da26851f5deda73c379969d833628f"
+          },
+          {
+            "role": "native",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_qkv_fp8_reconstructed.native.resources.txt",
+            "sha256": "64e59bb0cb8dff80af025602dc6a1d6c5d7b937e11d55f9c6448e54c8549530d"
+          }
+        ]
+      }
+    },
+    {
+      "key": "attention_fp8",
+      "family": "attention",
+      "role": "attention",
+      "precision": "FP8 E4M3",
+      "original": {
+        "module": 5,
+        "symbol": "cc_vit_1d_attention_chained_fp8",
+        "entry_sha256": "34e59b48478275533281ffe1e10976d5a05a0c1287b0d5c223bf03913f955eb4",
+        "module_line": 252913,
+        "source_module_sha256": "641ca106cd3e211587f873de41ba4350608413687b1bb99c33fa7529f82b510c"
+      },
+      "callable": {
+        "cpp": "dlssnr::c1024_attention_chained_fp8_reconstructed_out",
+        "signature": "at::Tensor c1024_attention_chained_fp8_reconstructed_out(const at::Tensor& q,const at::Tensor& k,const at::Tensor& v,const at::Tensor& predecessor_counter,at::Tensor high,at::Tensor completion_counter)",
+        "torch_schema": "_c1024_attention_chained_fp8_reconstructed_out(Tensor q,Tensor k,Tensor v,Tensor predecessor_counter,Tensor(a!) high,Tensor(b!) completion_counter) -> Tensor(a!)",
+        "torch_operator": "torch.ops.dlssnr._c1024_attention_chained_fp8_reconstructed_out",
+        "return_aliases": [
+          "high"
+        ]
+      },
+      "direct_kernel": {
+        "cpp": "dlssnr::c1024_attention_chained_fp8_reconstructed::kernel",
+        "parameter_type": "dlssnr::c1024_attention_chained_fp8_reconstructed::Parameters",
+        "host_declaration": "void kernel(Parameters parameters);",
+        "source_declaration": "__global__ __maxnreg__(168) void kernel(Parameters parameters) {",
+        "cudaLaunchKernel_argument_count": 1,
+        "argument_semantics": "The single host argument points to the entire zero-initialized Parameters struct value; uint64 fields contain device addresses.",
+        "compiled_architecture": "sm_120",
+        "source_shared_allocation": {
+          "alignment": 512,
+          "bytes": 8208
+        },
+        "admission_scope": "Exposing the existing retained host stub does not broaden the admitted fixed pilot or replace occupancy, alias, extent, device, stream and lifetime validation."
+      },
+      "pilot": {
+        "batch": 1,
+        "tokens": 2160,
+        "padded_tokens": 2176,
+        "grid": [
+          32,
+          9,
+          1
+        ],
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "dynamic_shared_bytes": 0,
+        "arbitrary_shape_admitted": false
+      },
+      "buffers": [
+        {
+          "name": "q",
+          "bytes": 2228224,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "k",
+          "bytes": 2228224,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "v",
+          "bytes": 2228224,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "predecessor_counter",
+          "bytes": 1088,
+          "mutable": false,
+          "alignment": 4
+        },
+        {
+          "name": "high",
+          "bytes": 2228224,
+          "mutable": true,
+          "alignment": 16
+        },
+        {
+          "name": "completion_counter",
+          "bytes": 2176,
+          "mutable": true,
+          "alignment": 4
+        }
+      ],
+      "abi": {
+        "bytes": 64,
+        "alignment": 8,
+        "fields": {
+          "q": 0,
+          "k": 8,
+          "v": 16,
+          "high": 24,
+          "reserved": 32,
+          "predecessor_counter": 40,
+          "completion_counter": 48,
+          "batch": 56,
+          "tokens": 60
+        },
+        "zero_initialized_unpassed_fields": [
+          "reserved"
+        ],
+        "scalar_values": {
+          "batch": 1,
+          "tokens": 2160
+        }
+      },
+      "record": null,
+      "prepare": {
+        "cpp": "dlssnr::prepare_c1024_attention_reconstructed",
+        "torch_operator": "torch.ops.dlssnr._prepare_c1024_attention_reconstructed",
+        "variant": 1,
+        "outside_capture_required_even_cached": true,
+        "SM": 120,
+        "min_max_threads_per_block": 128,
+        "launch_ctas": 288,
+        "all_split_ctas_must_fit_compiled_capacity": false,
+        "additional_sm_count_ge_launch_ctas": false,
+        "original_and_cuda_queried_independently_by_qualification": true
+      },
+      "synchronization": {
+        "predecessor": {
+          "abi_offset": 40,
+          "mutable_by_consumer": false,
+          "original_poll": "ld.relaxed.gpu.global.L1::no_allocate.s32; signed value >= 0",
+          "qualification_precondition": "Actual fresh QKV producer completes on the same current stream before each fixture/invocation/replay; retained predecessor words are final 1. Never synthesize readiness or reset predecessor at chained entry."
+        },
+        "completion": {
+          "abi_offset": 48,
+          "reset_before_each_call": -1,
+          "final": 0,
+          "original_optional": true,
+          "current_api_requires_buffer": true,
+          "publication": "CTA barrier and leader-only st.release.gpu.global.L1::no_allocate.s32 after output publication"
+        },
+        "scope": "Chained entry is distinct from plain attention. Serial fresh-producer setup is the qualified composition contract, not proof of the recovered native host overlap schedule. Relaxed polling is not upgraded to acquire; no universal scheduling/progress proof."
+      },
+      "native_node_mapping": {
+        "blocks": [
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38
+        ],
+        "stage": "attention",
+        "buffer_aliases": {
+          "q": "Q",
+          "k": "K",
+          "v": "V",
+          "high": "attended",
+          "predecessor_counter": "qkv_counter",
+          "completion_counter": "attention_counter"
+        },
+        "checkpoint_layer": null,
+        "mapping_scope": "Actual FP8 NativeBlock descriptors and existing global chain composition"
+      },
+      "sources": {
+        "launcher": "csrc/kernel_launcher/c1024_attention_reconstructed.cu.draft",
+        "api": "csrc/torch_api/c1024_attention_reconstructed.cpp.draft",
+        "body": "csrc/kernel_impl/c1024_attention_chained_fp8_reconstructed.cuh.draft",
+        "helpers": "csrc/kernel_impl/c1024_attention_chained_fp8_reconstructed_ops.cuh.draft"
+      },
+      "source_shared_regions": [
+        {
+          "alignment": 512,
+          "name": "_ZZNK6tin3_116Attention1dLayerINS_17Attention1dConfigILi32ELi32ELi128ELi64ELi32ELi2ELb1ELb0ENS_10OOBRdByDimILj3EJNS_8DimOOBRdILi0ELNS_19OutOfBoundsPolicyRdE2EEEEEENS_14LayerOutputOOBILj3ES6_NS_10OOBWrByDimILj3EJNS_8DimOOBWrILi0ELNS_19OutOfBoundsPolicyWrE0EEEEEEEELi2ELi2ELi2ELi8ELi8EEELNS_5DTypeE2EE7forwardEPKjSI_SI_PjiiPiSK_E18shared_key_storage",
+          "bytes": 4096
+        },
+        {
+          "alignment": 512,
+          "name": "_ZZNK6tin3_116Attention1dLayerINS_17Attention1dConfigILi32ELi32ELi128ELi64ELi32ELi2ELb1ELb0ENS_10OOBRdByDimILj3EJNS_8DimOOBRdILi0ELNS_19OutOfBoundsPolicyRdE2EEEEEENS_14LayerOutputOOBILj3ES6_NS_10OOBWrByDimILj3EJNS_8DimOOBWrILi0ELNS_19OutOfBoundsPolicyWrE0EEEEEEEELi2ELi2ELi2ELi8ELi8EEELNS_5DTypeE2EE7forwardEPKjSI_SI_PjiiPiSK_E20shared_value_storage",
+          "bytes": 4096
+        },
+        {
+          "alignment": 8,
+          "name": "_ZZNK6tin3_116Attention1dLayerINS_17Attention1dConfigILi32ELi32ELi128ELi64ELi32ELi2ELb1ELb0ENS_10OOBRdByDimILj3EJNS_8DimOOBRdILi0ELNS_19OutOfBoundsPolicyRdE2EEEEEENS_14LayerOutputOOBILj3ES6_NS_10OOBWrByDimILj3EJNS_8DimOOBWrILi0ELNS_19OutOfBoundsPolicyWrE0EEEEEEEELi2ELi2ELi2ELi8ELi8EEELNS_5DTypeE2EE7forwardEPKjSI_SI_PjiiPiSK_E30key_value_copy_barrier_storage",
+          "bytes": 16
+        }
+      ],
+      "compiled_resources": {
+        "object": {
+          "REG": 160,
+          "STACK": 0,
+          "SHARED": 9232,
+          "LOCAL": 0
+        },
+        "linked": {
+          "REG": 160,
+          "STACK": 0,
+          "SHARED": 9232,
+          "LOCAL": 0
+        },
+        "native": {
+          "REG": 153,
+          "STACK": 0,
+          "SHARED": 9232,
+          "LOCAL": 0
+        }
+      },
+      "donor": {
+        "build": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/build.json",
+        "build_sha256": "3a7df9d6783db9f9fc0f2b564ec6cc8ff7888a170d9c03697d00bf3128a950e9",
+        "binary": {
+          "bytes": 452183552,
+          "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "sha256": "c798f358c1c414dda6a697433b9ef86aba9a59790311d5e69c1a382f69ca43e6"
+        },
+        "launcher_object_path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\temp.win-amd64-cpython-311\\Release\\csrc\\kernel_launcher\\c1024_attention_reconstructed.obj",
+        "launcher_object_sha256": "ff79056c40b3e813403aa04af22f4dc4da963621294f0be733a18ed24aa60af8",
+        "api_object_key": "csrc/torch_api/c1024_attention_reconstructed.obj",
+        "api_object_sha256": "d51f15f388faef3cb5d59b3bc221b69cc863b253a9e8049e57bfa6413bd7cfbd",
+        "symbol": "_ZN6dlssnr41c1024_attention_chained_fp8_reconstructed6kernelENS0_10ParametersE",
+        "architecture": "sm_120",
+        "object_rehash_performed": false,
+        "source_bytes_verified": true
+      },
+      "evidence": {
+        "extraction_receipt": "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/receipt.json",
+        "compiled_review": "outputs/c1024-attention-cuda-reconstruction/compiled-review/review.json.draft",
+        "saved_artifacts": [
+          {
+            "role": "object",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_attention_chained_fp8_reconstructed.object.sass.txt",
+            "sha256": "b658e51165f563a0d704b1461f8f2a3a0047a0b7a20ae34a87bfa42fe613fb3a"
+          },
+          {
+            "role": "object",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_attention_chained_fp8_reconstructed.object.resources.txt",
+            "sha256": "236fc6d1c95b6893685d5c897ad04a2fcccc9664b9c95700cc28241820e83d6d"
+          },
+          {
+            "role": "linked",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_attention_chained_fp8_reconstructed.linked.sass.txt",
+            "sha256": "4a5326fedab6761854cbaacc883a1cc10fcb674f5f54647a984d5b4bc5e0145b"
+          },
+          {
+            "role": "linked",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_attention_chained_fp8_reconstructed.linked.resources.txt",
+            "sha256": "e61b870803fc038b002dfcfc0c607adf4cbeb712ab2c8ea2556f018e241c477b"
+          },
+          {
+            "role": "native",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_attention_chained_fp8_reconstructed.native.sass.txt",
+            "sha256": "cdc5700af7f1453168436dd08e416647e90a2422b8e30c60dec93cd14114e626"
+          },
+          {
+            "role": "native",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_attention_chained_fp8_reconstructed.native.resources.txt",
+            "sha256": "3750a555b05253a4e28e86181880aec8bfc6a293d05b4b50d70dec98ac340fca"
+          }
+        ]
+      }
+    },
+    {
+      "key": "projection_fp8",
+      "family": "attention",
+      "role": "projection",
+      "precision": "FP8 E4M3",
+      "original": {
+        "module": 5,
+        "symbol": "cc_vit_1d_projection_fp8",
+        "entry_sha256": "57f36b563261b0bc87579df3180c89bff5563e1ccc3ac787e9875fee18c45125",
+        "module_line": 272165,
+        "source_module_sha256": "641ca106cd3e211587f873de41ba4350608413687b1bb99c33fa7529f82b510c"
+      },
+      "callable": {
+        "cpp": "dlssnr::c1024_projection_fp8_reconstructed_out",
+        "signature": "at::Tensor c1024_projection_fp8_reconstructed_out(const at::Tensor& state,const at::Tensor& record,const at::Tensor& skip,at::Tensor high,at::Tensor counter,at::Tensor scratch)",
+        "torch_schema": "_c1024_projection_fp8_reconstructed_out(Tensor state,Tensor record,Tensor skip,Tensor(a!) high,Tensor(b!) counter,Tensor(c!) scratch) -> Tensor(a!)",
+        "torch_operator": "torch.ops.dlssnr._c1024_projection_fp8_reconstructed_out",
+        "return_aliases": [
+          "high"
+        ]
+      },
+      "direct_kernel": {
+        "cpp": "dlssnr::c1024_projection_fp8_reconstructed::kernel",
+        "parameter_type": "dlssnr::c1024_projection_fp8_reconstructed::Parameters",
+        "host_declaration": "void kernel(Parameters parameters);",
+        "source_declaration": "__global__ __maxnreg__(168) void kernel(Parameters parameters) {",
+        "cudaLaunchKernel_argument_count": 1,
+        "argument_semantics": "The single host argument points to the entire zero-initialized Parameters struct value; uint64 fields contain device addresses.",
+        "compiled_architecture": "sm_120",
+        "source_shared_allocation": {
+          "alignment": 512,
+          "bytes": 8208
+        },
+        "admission_scope": "Exposing the existing retained host stub does not broaden the admitted fixed pilot or replace occupancy, alias, extent, device, stream and lifetime validation."
+      },
+      "pilot": {
+        "batch": 1,
+        "tokens": 2160,
+        "padded_tokens": 2176,
+        "grid": [
+          136,
+          1,
+          4
+        ],
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "dynamic_shared_bytes": 0,
+        "arbitrary_shape_admitted": false
+      },
+      "buffers": [
+        {
+          "name": "state",
+          "bytes": 2228224,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "record",
+          "bytes": 1050624,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "skip",
+          "bytes": 2228224,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "high",
+          "bytes": 2228224,
+          "mutable": true,
+          "alignment": 16
+        },
+        {
+          "name": "counter",
+          "bytes": 544,
+          "mutable": true,
+          "alignment": 4
+        },
+        {
+          "name": "scratch",
+          "bytes": 4456448,
+          "mutable": true,
+          "alignment": 16
+        }
+      ],
+      "abi": {
+        "bytes": 72,
+        "alignment": 8,
+        "fields": {
+          "state": 0,
+          "skip": 8,
+          "high": 16,
+          "record": 24,
+          "counter": 32,
+          "scratch": 40,
+          "reserved0": 48,
+          "reserved1": 56,
+          "batch": 64,
+          "tokens": 68
+        },
+        "zero_initialized_unpassed_fields": [
+          "reserved0",
+          "reserved1"
+        ],
+        "scalar_values": {
+          "batch": 1,
+          "tokens": 2160
+        }
+      },
+      "record": {
+        "K": 1024,
+        "N": 1024,
+        "complete_matrix_bijections": true,
+        "fp8_bytes": 1050624,
+        "fp8_sha256": "b6f9873dc316a54ef68483aa785e704308e2a4c75c709bf4737cdbc717fce8cd",
+        "half_bytes": 2099200,
+        "half_sha256": "54493dd8af78b1b4e259a73f8d7bd02f3f60e2a54d965ab0b891ed4c6abff6fe",
+        "name": "block31.layer4.layer",
+        "origin": "Exact original FP8 checkpoint record bytes; no conversion.",
+        "prefix_bytes": 0,
+        "stage_offset": 11536530,
+        "suffix_bytes": 2048,
+        "bytes": 1050624,
+        "sha256": "b6f9873dc316a54ef68483aa785e704308e2a4c75c709bf4737cdbc717fce8cd",
+        "matrix_bytes": 1048576,
+        "prefix_semantics": "none",
+        "suffix_semantics": "1024 Half residual scales",
+        "physical_matrix_layout": "original recovered packed FP8 B-fragment bytes"
+      },
+      "prepare": {
+        "cpp": "dlssnr::prepare_c1024_attention_reconstructed",
+        "torch_operator": "torch.ops.dlssnr._prepare_c1024_attention_reconstructed",
+        "variant": 2,
+        "outside_capture_required_even_cached": true,
+        "SM": 120,
+        "min_max_threads_per_block": 128,
+        "launch_ctas": 544,
+        "all_split_ctas_must_fit_compiled_capacity": true,
+        "additional_sm_count_ge_launch_ctas": false,
+        "original_and_cuda_queried_independently_by_qualification": true
+      },
+      "synchronization": {
+        "partitions": 4,
+        "K_per_partition": 256,
+        "reset_before_each_call": -1,
+        "final": 3,
+        "poll": "ld.relaxed.gpu.global.L1::no_allocate.s32; signed counter >= CTA.z - 1; nanosleep retry; CTA synchronization",
+        "release": "Leader st.release.gpu.global.L1::no_allocate.s32 publishes CTA.z after output/partial publication and CTA barrier",
+        "counter_word_mapping": "8*(CTA.x % ceil(M/128)) + CTA.x//ceil(M/128); shared by z partitions",
+        "partial_storage": "separate Half accumulation scratch",
+        "ordered_flow": "z0 initializes partial, z1/z2 apply ordered packed-Half reductions, z3 combines its contribution and publishes scaled residual output",
+        "no_hidden_reset_in_out_api": true,
+        "scope": "No partition serialization or weakened capacity admission; contents are caller preconditions, not host-side value checks."
+      },
+      "native_node_mapping": {
+        "blocks": [
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38
+        ],
+        "stage": "projection",
+        "buffer_aliases": {
+          "state": "attended",
+          "skip": "contracted",
+          "high": "output",
+          "counter": "projection_counter",
+          "scratch": "projection_scratch",
+          "record": "weight4"
+        },
+        "checkpoint_layer": 4,
+        "mapping_scope": "Actual FP8 NativeBlock descriptors and existing global chain composition"
+      },
+      "sources": {
+        "launcher": "csrc/kernel_launcher/c1024_attention_reconstructed.cu.draft",
+        "api": "csrc/torch_api/c1024_attention_reconstructed.cpp.draft",
+        "body": "csrc/kernel_impl/c1024_projection_fp8_reconstructed.cuh.draft",
+        "helpers": "csrc/kernel_impl/c1024_projection_fp8_reconstructed_ops.cuh.draft"
+      },
+      "source_shared_regions": [
+        {
+          "alignment": 512,
+          "name": "_ZZNK6tin3_114Conv1d1x1LayerINS_15Conv1d1x1ConfigILi1024ELi1024ELi128ELi128ELi32ELi2ELi2ELi4ELb1ELb0ELb0ELi32ENS_10OOBRdByDimILj3EJNS_8DimOOBRdILi0ELNS_19OutOfBoundsPolicyRdE2EEEEEENS_14LayerOutputOOBILj3ES6_NS_10OOBWrByDimILj3EJNS_8DimOOBWrILi0ELNS_19OutOfBoundsPolicyWrE0EEEEEEEELb1ELi128ELi2EEENS_12NoActivationELNS_5DTypeE2EE12forward_implEPKjPjiiSK_PiSL_SL_SJ_E20shared_input_storage",
+          "bytes": 8192
+        },
+        {
+          "alignment": 8,
+          "name": "_ZZNK6tin3_114Conv1d1x1LayerINS_15Conv1d1x1ConfigILi1024ELi1024ELi128ELi128ELi32ELi2ELi2ELi4ELb1ELb0ELb0ELi32ENS_10OOBRdByDimILj3EJNS_8DimOOBRdILi0ELNS_19OutOfBoundsPolicyRdE2EEEEEENS_14LayerOutputOOBILj3ES6_NS_10OOBWrByDimILj3EJNS_8DimOOBWrILi0ELNS_19OutOfBoundsPolicyWrE0EEEEEEEELb1ELi128ELi2EEENS_12NoActivationELNS_5DTypeE2EE12forward_implEPKjPjiiSK_PiSL_SL_SJ_E27shared_copy_barrier_storage",
+          "bytes": 16
+        }
+      ],
+      "compiled_resources": {
+        "object": {
+          "REG": 142,
+          "STACK": 0,
+          "SHARED": 9232,
+          "LOCAL": 0
+        },
+        "linked": {
+          "REG": 142,
+          "STACK": 0,
+          "SHARED": 9232,
+          "LOCAL": 0
+        },
+        "native": {
+          "REG": 148,
+          "STACK": 0,
+          "SHARED": 9232,
+          "LOCAL": 0
+        }
+      },
+      "donor": {
+        "build": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/build.json",
+        "build_sha256": "3a7df9d6783db9f9fc0f2b564ec6cc8ff7888a170d9c03697d00bf3128a950e9",
+        "binary": {
+          "bytes": 452183552,
+          "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "sha256": "c798f358c1c414dda6a697433b9ef86aba9a59790311d5e69c1a382f69ca43e6"
+        },
+        "launcher_object_path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\temp.win-amd64-cpython-311\\Release\\csrc\\kernel_launcher\\c1024_attention_reconstructed.obj",
+        "launcher_object_sha256": "ff79056c40b3e813403aa04af22f4dc4da963621294f0be733a18ed24aa60af8",
+        "api_object_key": "csrc/torch_api/c1024_attention_reconstructed.obj",
+        "api_object_sha256": "d51f15f388faef3cb5d59b3bc221b69cc863b253a9e8049e57bfa6413bd7cfbd",
+        "symbol": "_ZN6dlssnr34c1024_projection_fp8_reconstructed6kernelENS0_10ParametersE",
+        "architecture": "sm_120",
+        "object_rehash_performed": false,
+        "source_bytes_verified": true
+      },
+      "evidence": {
+        "extraction_receipt": "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/receipt.json",
+        "compiled_review": "outputs/c1024-attention-cuda-reconstruction/compiled-review/review.json.draft",
+        "saved_artifacts": [
+          {
+            "role": "object",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_projection_fp8_reconstructed.object.sass.txt",
+            "sha256": "2a4b9ed2451cf79a73953b54bd1d82a531155bdf088e10de529507c0b9a16018"
+          },
+          {
+            "role": "object",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_projection_fp8_reconstructed.object.resources.txt",
+            "sha256": "62620c9217b4ccbd90d46aef88f7f82db1011448fe929430496ebbe712f4281d"
+          },
+          {
+            "role": "linked",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_projection_fp8_reconstructed.linked.sass.txt",
+            "sha256": "3047818059c16851759ce85ad14e56fc93ae413be479cd8d6e365ce0b294f842"
+          },
+          {
+            "role": "linked",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_projection_fp8_reconstructed.linked.resources.txt",
+            "sha256": "ae9e586bc236d4cd77d7176dce1cfa181fd7aa228f1a3c560b9316f75298b5c8"
+          },
+          {
+            "role": "native",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_projection_fp8_reconstructed.native.sass.txt",
+            "sha256": "be7bedb7ed05dccc5bf4b4a2bc388f52d5163fe836eb051fee4ce2b137fdab60"
+          },
+          {
+            "role": "native",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_projection_fp8_reconstructed.native.resources.txt",
+            "sha256": "3fe0121f983de0f5888217311349d568cb3c5d039db5b0fed9f4ca949afbc303"
+          }
+        ]
+      }
+    },
+    {
+      "key": "qkv_half",
+      "family": "attention",
+      "role": "qkv",
+      "precision": "Half",
+      "original": {
+        "module": 5,
+        "symbol": "cc_vit_1d_qkv",
+        "entry_sha256": "942970de733fff71c979a652e8b3d78dc93cb553b5ba83ffea40b922ed6ca6c6",
+        "module_line": 213677,
+        "source_module_sha256": "641ca106cd3e211587f873de41ba4350608413687b1bb99c33fa7529f82b510c"
+      },
+      "callable": {
+        "cpp": "dlssnr::c1024_qkv_half_reconstructed_out",
+        "signature": "std::tuple<at::Tensor,at::Tensor,at::Tensor> c1024_qkv_half_reconstructed_out(const at::Tensor& state,const at::Tensor& record,at::Tensor q,at::Tensor k,at::Tensor v,at::Tensor counter)",
+        "torch_schema": "_c1024_qkv_half_reconstructed_out(Tensor state,Tensor record,Tensor(a!) q,Tensor(b!) k,Tensor(c!) v,Tensor(d!) counter) -> (Tensor(a!),Tensor(b!),Tensor(c!))",
+        "torch_operator": "torch.ops.dlssnr._c1024_qkv_half_reconstructed_out",
+        "return_aliases": [
+          "q",
+          "k",
+          "v"
+        ]
+      },
+      "direct_kernel": {
+        "cpp": "dlssnr::c1024_qkv_half_reconstructed::kernel",
+        "parameter_type": "dlssnr::c1024_qkv_half_reconstructed::Parameters",
+        "host_declaration": "void kernel(Parameters parameters);",
+        "source_declaration": "__global__ __maxnreg__(255) void kernel(Parameters parameters) {",
+        "cudaLaunchKernel_argument_count": 1,
+        "argument_semantics": "The single host argument points to the entire zero-initialized Parameters struct value; uint64 fields contain device addresses.",
+        "compiled_architecture": "sm_120",
+        "source_shared_allocation": {
+          "alignment": 512,
+          "bytes": 16400
+        },
+        "admission_scope": "Exposing the existing retained host stub does not broaden the admitted fixed pilot or replace occupancy, alias, extent, device, stream and lifetime validation."
+      },
+      "pilot": {
+        "batch": 1,
+        "tokens": 128,
+        "padded_tokens": 128,
+        "grid": [
+          16,
+          1,
+          2
+        ],
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "dynamic_shared_bytes": 0,
+        "arbitrary_shape_admitted": false
+      },
+      "buffers": [
+        {
+          "name": "state",
+          "bytes": 262144,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "record",
+          "bytes": 6291584,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "q",
+          "bytes": 262144,
+          "mutable": true,
+          "alignment": 16
+        },
+        {
+          "name": "k",
+          "bytes": 262144,
+          "mutable": true,
+          "alignment": 16
+        },
+        {
+          "name": "v",
+          "bytes": 262144,
+          "mutable": true,
+          "alignment": 16
+        },
+        {
+          "name": "counter",
+          "bytes": 64,
+          "mutable": true,
+          "alignment": 4
+        }
+      ],
+      "abi": {
+        "bytes": 80,
+        "alignment": 8,
+        "fields": {
+          "state": 0,
+          "q": 8,
+          "k": 16,
+          "v": 24,
+          "record": 32,
+          "counter": 40,
+          "scratch": 48,
+          "reserved0": 56,
+          "reserved1": 64,
+          "batch": 72,
+          "tokens": 76
+        },
+        "zero_initialized_unpassed_fields": [
+          "scratch",
+          "reserved0",
+          "reserved1"
+        ],
+        "scalar_values": {
+          "batch": 1,
+          "tokens": 128
+        }
+      },
+      "record": {
+        "K": 1024,
+        "N": 3072,
+        "complete_matrix_bijections": true,
+        "fp8_bytes": 3145856,
+        "fp8_sha256": "8317de7004196a2fbb6d87603b9083f71ef3dddfbe3a1dcc618edd65b6eb9cd9",
+        "half_bytes": 6291584,
+        "half_sha256": "3ef1d48e38c27ce76ce7d2a4642bce14efe64e21d4dfc5a81f7a07274b921c8e",
+        "name": "block31.layer2.layer",
+        "origin": "Finite checkpoint values converted to the independently indexed original Half K16 matrix; this is not a recovered original Half asset or original host preparation.",
+        "prefix_bytes": 128,
+        "stage_offset": 8390672,
+        "suffix_bytes": 0,
+        "bytes": 6291584,
+        "sha256": "3ef1d48e38c27ce76ce7d2a4642bce14efe64e21d4dfc5a81f7a07274b921c8e",
+        "matrix_bytes": 6291456,
+        "prefix_semantics": "original 128-byte QKV prefix, preserved unchanged",
+        "suffix_semantics": "none",
+        "physical_matrix_layout": "independent K16 Half B-fragment map; finite decoded original FP8 values",
+        "original_half_host_preparation_recovered": false
+      },
+      "prepare": {
+        "cpp": "dlssnr::prepare_c1024_attention_reconstructed",
+        "torch_operator": "torch.ops.dlssnr._prepare_c1024_attention_reconstructed",
+        "variant": 3,
+        "outside_capture_required_even_cached": true,
+        "SM": 120,
+        "min_max_threads_per_block": 128,
+        "launch_ctas": 32,
+        "all_split_ctas_must_fit_compiled_capacity": true,
+        "additional_sm_count_ge_launch_ctas": true,
+        "original_and_cuda_queried_independently_by_qualification": true
+      },
+      "synchronization": {
+        "partitions": 2,
+        "K_per_partition": 512,
+        "reset_before_each_call": -1,
+        "final": 1,
+        "poll": "ld.relaxed.gpu.global.L1::no_allocate.s32; signed counter >= CTA.z - 1; nanosleep retry; CTA synchronization",
+        "release": "Leader st.release.gpu.global.L1::no_allocate.s32 publishes CTA.z after output/partial publication and CTA barrier",
+        "counter_word_mapping": "16*(CTA.x % ceil(M/128)) + CTA.x//ceil(M/128); shared by z partitions",
+        "partial_storage": "Q/K/V output buffers themselves",
+        "ordered_flow": "z0 writes partial; z1 consumes/combines then publishes final Q/K/V",
+        "no_hidden_reset_in_out_api": true,
+        "scope": "No partition serialization or weakened capacity admission; contents are caller preconditions, not host-side value checks."
+      },
+      "native_node_mapping": {
+        "blocks": [
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38
+        ],
+        "stage": "qkv",
+        "buffer_aliases": {
+          "state": "contracted",
+          "q": "Q",
+          "k": "K",
+          "v": "V",
+          "counter": "qkv_counter",
+          "record": "weight2"
+        },
+        "checkpoint_layer": 2,
+        "mapping_scope": "Role-equivalent independent Half pilot; no recovered full Half network host descriptors"
+      },
+      "sources": {
+        "launcher": "csrc/kernel_launcher/c1024_attention_reconstructed.cu.draft",
+        "api": "csrc/torch_api/c1024_attention_reconstructed.cpp.draft",
+        "body": "csrc/kernel_impl/c1024_qkv_half_reconstructed.cuh.draft",
+        "helpers": "csrc/kernel_impl/c1024_qkv_half_reconstructed_ops.cuh.draft"
+      },
+      "source_shared_regions": [
+        {
+          "alignment": 512,
+          "name": "_ZZNK6tin3_114Conv1dQKVLayerINS_15Conv1dQKVConfigILi32ELi32ELi1024ELi128ELi32ELi2ELi2ELi2ELb0ELb0ELi128ENS_10OOBRdByDimILj3EJNS_8DimOOBRdILi0ELNS_19OutOfBoundsPolicyRdE2EEEEEENS_14LayerOutputOOBILj3ES6_NS_10OOBWrByDimILj3EJNS_8DimOOBWrILi0ELNS_19OutOfBoundsPolicyWrE0EEEEEEEEEELNS_5DTypeE1EE12forward_implEPKjPjSJ_SJ_SJ_iiPiSK_SK_E20shared_input_storage",
+          "bytes": 16384
+        },
+        {
+          "alignment": 8,
+          "name": "_ZZNK6tin3_114Conv1dQKVLayerINS_15Conv1dQKVConfigILi32ELi32ELi1024ELi128ELi32ELi2ELi2ELi2ELb0ELb0ELi128ENS_10OOBRdByDimILj3EJNS_8DimOOBRdILi0ELNS_19OutOfBoundsPolicyRdE2EEEEEENS_14LayerOutputOOBILj3ES6_NS_10OOBWrByDimILj3EJNS_8DimOOBWrILi0ELNS_19OutOfBoundsPolicyWrE0EEEEEEEEEELNS_5DTypeE1EE12forward_implEPKjPjSJ_SJ_SJ_iiPiSK_SK_E27shared_copy_barrier_storage",
+          "bytes": 16
+        }
+      ],
+      "compiled_resources": {
+        "object": {
+          "REG": 210,
+          "STACK": 0,
+          "SHARED": 17424,
+          "LOCAL": 0
+        },
+        "linked": {
+          "REG": 210,
+          "STACK": 0,
+          "SHARED": 17424,
+          "LOCAL": 0
+        },
+        "native": {
+          "REG": 202,
+          "STACK": 0,
+          "SHARED": 17424,
+          "LOCAL": 0
+        }
+      },
+      "donor": {
+        "build": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/build.json",
+        "build_sha256": "3a7df9d6783db9f9fc0f2b564ec6cc8ff7888a170d9c03697d00bf3128a950e9",
+        "binary": {
+          "bytes": 452183552,
+          "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "sha256": "c798f358c1c414dda6a697433b9ef86aba9a59790311d5e69c1a382f69ca43e6"
+        },
+        "launcher_object_path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\temp.win-amd64-cpython-311\\Release\\csrc\\kernel_launcher\\c1024_attention_reconstructed.obj",
+        "launcher_object_sha256": "ff79056c40b3e813403aa04af22f4dc4da963621294f0be733a18ed24aa60af8",
+        "api_object_key": "csrc/torch_api/c1024_attention_reconstructed.obj",
+        "api_object_sha256": "d51f15f388faef3cb5d59b3bc221b69cc863b253a9e8049e57bfa6413bd7cfbd",
+        "symbol": "_ZN6dlssnr28c1024_qkv_half_reconstructed6kernelENS0_10ParametersE",
+        "architecture": "sm_120",
+        "object_rehash_performed": false,
+        "source_bytes_verified": true
+      },
+      "evidence": {
+        "extraction_receipt": "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/receipt.json",
+        "compiled_review": "outputs/c1024-attention-cuda-reconstruction/compiled-review/review.json.draft",
+        "saved_artifacts": [
+          {
+            "role": "object",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_qkv_half_reconstructed.object.sass.txt",
+            "sha256": "2234ba62bf4fb0f8aa5513d9880fffe28c36220e8494e9bfa2dca64f8791cc3d"
+          },
+          {
+            "role": "object",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_qkv_half_reconstructed.object.resources.txt",
+            "sha256": "d0c94a898b52abfbb76854deeb280de619b4c59eb797a10e83f9dbcc747b1811"
+          },
+          {
+            "role": "linked",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_qkv_half_reconstructed.linked.sass.txt",
+            "sha256": "bbccdea4e60e789ccdff42389ab767688705f2e96a0c41a480f7e57045725d06"
+          },
+          {
+            "role": "linked",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_qkv_half_reconstructed.linked.resources.txt",
+            "sha256": "d6baa17d3df41aa1dfd767dfbe03542169ea683fab9547184e35223bef5b19e3"
+          },
+          {
+            "role": "native",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_qkv_half_reconstructed.native.sass.txt",
+            "sha256": "092935ff8b4f9b207fe6f2bc38fe88fb4d5723d70cfb987e12f47be1ebb170b5"
+          },
+          {
+            "role": "native",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_qkv_half_reconstructed.native.resources.txt",
+            "sha256": "2a14c4835eadd91a424ac950b448c496a4b4d17d5a2088b47145bc0efa3b8d39"
+          }
+        ]
+      }
+    },
+    {
+      "key": "attention_half",
+      "family": "attention",
+      "role": "attention",
+      "precision": "Half",
+      "original": {
+        "module": 5,
+        "symbol": "cc_vit_1d_attention_chained",
+        "entry_sha256": "21f2f7ecf54efc77045ddf57ae7ea8855239477b5833de9716cc00218932f905",
+        "module_line": 244380,
+        "source_module_sha256": "641ca106cd3e211587f873de41ba4350608413687b1bb99c33fa7529f82b510c"
+      },
+      "callable": {
+        "cpp": "dlssnr::c1024_attention_chained_half_reconstructed_out",
+        "signature": "at::Tensor c1024_attention_chained_half_reconstructed_out(const at::Tensor& q,const at::Tensor& k,const at::Tensor& v,const at::Tensor& predecessor_counter,at::Tensor high,at::Tensor completion_counter)",
+        "torch_schema": "_c1024_attention_chained_half_reconstructed_out(Tensor q,Tensor k,Tensor v,Tensor predecessor_counter,Tensor(a!) high,Tensor(b!) completion_counter) -> Tensor(a!)",
+        "torch_operator": "torch.ops.dlssnr._c1024_attention_chained_half_reconstructed_out",
+        "return_aliases": [
+          "high"
+        ]
+      },
+      "direct_kernel": {
+        "cpp": "dlssnr::c1024_attention_chained_half_reconstructed::kernel",
+        "parameter_type": "dlssnr::c1024_attention_chained_half_reconstructed::Parameters",
+        "host_declaration": "void kernel(Parameters parameters);",
+        "source_declaration": "__global__ __maxnreg__(168) void kernel(Parameters parameters) {",
+        "cudaLaunchKernel_argument_count": 1,
+        "argument_semantics": "The single host argument points to the entire zero-initialized Parameters struct value; uint64 fields contain device addresses.",
+        "compiled_architecture": "sm_120",
+        "source_shared_allocation": {
+          "alignment": 512,
+          "bytes": 16400
+        },
+        "admission_scope": "Exposing the existing retained host stub does not broaden the admitted fixed pilot or replace occupancy, alias, extent, device, stream and lifetime validation."
+      },
+      "pilot": {
+        "batch": 1,
+        "tokens": 128,
+        "padded_tokens": 128,
+        "grid": [
+          32,
+          1,
+          1
+        ],
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "dynamic_shared_bytes": 0,
+        "arbitrary_shape_admitted": false
+      },
+      "buffers": [
+        {
+          "name": "q",
+          "bytes": 262144,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "k",
+          "bytes": 262144,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "v",
+          "bytes": 262144,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "predecessor_counter",
+          "bytes": 64,
+          "mutable": false,
+          "alignment": 4
+        },
+        {
+          "name": "high",
+          "bytes": 262144,
+          "mutable": true,
+          "alignment": 16
+        },
+        {
+          "name": "completion_counter",
+          "bytes": 128,
+          "mutable": true,
+          "alignment": 4
+        }
+      ],
+      "abi": {
+        "bytes": 64,
+        "alignment": 8,
+        "fields": {
+          "q": 0,
+          "k": 8,
+          "v": 16,
+          "high": 24,
+          "reserved": 32,
+          "predecessor_counter": 40,
+          "completion_counter": 48,
+          "batch": 56,
+          "tokens": 60
+        },
+        "zero_initialized_unpassed_fields": [
+          "reserved"
+        ],
+        "scalar_values": {
+          "batch": 1,
+          "tokens": 128
+        }
+      },
+      "record": null,
+      "prepare": {
+        "cpp": "dlssnr::prepare_c1024_attention_reconstructed",
+        "torch_operator": "torch.ops.dlssnr._prepare_c1024_attention_reconstructed",
+        "variant": 4,
+        "outside_capture_required_even_cached": true,
+        "SM": 120,
+        "min_max_threads_per_block": 128,
+        "launch_ctas": 32,
+        "all_split_ctas_must_fit_compiled_capacity": false,
+        "additional_sm_count_ge_launch_ctas": false,
+        "original_and_cuda_queried_independently_by_qualification": true
+      },
+      "synchronization": {
+        "predecessor": {
+          "abi_offset": 40,
+          "mutable_by_consumer": false,
+          "original_poll": "ld.relaxed.gpu.global.L1::no_allocate.s32; signed value >= 0",
+          "qualification_precondition": "Actual fresh QKV producer completes on the same current stream before each fixture/invocation/replay; retained predecessor words are final 1. Never synthesize readiness or reset predecessor at chained entry."
+        },
+        "completion": {
+          "abi_offset": 48,
+          "reset_before_each_call": -1,
+          "final": 0,
+          "original_optional": true,
+          "current_api_requires_buffer": true,
+          "publication": "CTA barrier and leader-only st.release.gpu.global.L1::no_allocate.s32 after output publication"
+        },
+        "scope": "Chained entry is distinct from plain attention. Serial fresh-producer setup is the qualified composition contract, not proof of the recovered native host overlap schedule. Relaxed polling is not upgraded to acquire; no universal scheduling/progress proof."
+      },
+      "native_node_mapping": {
+        "blocks": [
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38
+        ],
+        "stage": "attention",
+        "buffer_aliases": {
+          "q": "Q",
+          "k": "K",
+          "v": "V",
+          "high": "attended",
+          "predecessor_counter": "qkv_counter",
+          "completion_counter": "attention_counter"
+        },
+        "checkpoint_layer": null,
+        "mapping_scope": "Role-equivalent independent Half pilot; no recovered full Half network host descriptors"
+      },
+      "sources": {
+        "launcher": "csrc/kernel_launcher/c1024_attention_reconstructed.cu.draft",
+        "api": "csrc/torch_api/c1024_attention_reconstructed.cpp.draft",
+        "body": "csrc/kernel_impl/c1024_attention_chained_half_reconstructed.cuh.draft",
+        "helpers": "csrc/kernel_impl/c1024_attention_chained_half_reconstructed_ops.cuh.draft"
+      },
+      "source_shared_regions": [
+        {
+          "alignment": 512,
+          "name": "_ZZNK6tin3_116Attention1dLayerINS_17Attention1dConfigILi32ELi32ELi128ELi64ELi32ELi2ELb1ELb0ENS_10OOBRdByDimILj3EJNS_8DimOOBRdILi0ELNS_19OutOfBoundsPolicyRdE2EEEEEENS_14LayerOutputOOBILj3ES6_NS_10OOBWrByDimILj3EJNS_8DimOOBWrILi0ELNS_19OutOfBoundsPolicyWrE0EEEEEEEELi2ELi2ELi2ELi8ELi8EEELNS_5DTypeE1EE7forwardEPKjSI_SI_PjiiPiSK_E18shared_key_storage",
+          "bytes": 8192
+        },
+        {
+          "alignment": 512,
+          "name": "_ZZNK6tin3_116Attention1dLayerINS_17Attention1dConfigILi32ELi32ELi128ELi64ELi32ELi2ELb1ELb0ENS_10OOBRdByDimILj3EJNS_8DimOOBRdILi0ELNS_19OutOfBoundsPolicyRdE2EEEEEENS_14LayerOutputOOBILj3ES6_NS_10OOBWrByDimILj3EJNS_8DimOOBWrILi0ELNS_19OutOfBoundsPolicyWrE0EEEEEEEELi2ELi2ELi2ELi8ELi8EEELNS_5DTypeE1EE7forwardEPKjSI_SI_PjiiPiSK_E20shared_value_storage",
+          "bytes": 8192
+        },
+        {
+          "alignment": 8,
+          "name": "_ZZNK6tin3_116Attention1dLayerINS_17Attention1dConfigILi32ELi32ELi128ELi64ELi32ELi2ELb1ELb0ENS_10OOBRdByDimILj3EJNS_8DimOOBRdILi0ELNS_19OutOfBoundsPolicyRdE2EEEEEENS_14LayerOutputOOBILj3ES6_NS_10OOBWrByDimILj3EJNS_8DimOOBWrILi0ELNS_19OutOfBoundsPolicyWrE0EEEEEEEELi2ELi2ELi2ELi8ELi8EEELNS_5DTypeE1EE7forwardEPKjSI_SI_PjiiPiSK_E30key_value_copy_barrier_storage",
+          "bytes": 16
+        }
+      ],
+      "compiled_resources": {
+        "object": {
+          "REG": 156,
+          "STACK": 0,
+          "SHARED": 17424,
+          "LOCAL": 0
+        },
+        "linked": {
+          "REG": 156,
+          "STACK": 0,
+          "SHARED": 17424,
+          "LOCAL": 0
+        },
+        "native": {
+          "REG": 152,
+          "STACK": 0,
+          "SHARED": 17424,
+          "LOCAL": 0
+        }
+      },
+      "donor": {
+        "build": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/build.json",
+        "build_sha256": "3a7df9d6783db9f9fc0f2b564ec6cc8ff7888a170d9c03697d00bf3128a950e9",
+        "binary": {
+          "bytes": 452183552,
+          "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "sha256": "c798f358c1c414dda6a697433b9ef86aba9a59790311d5e69c1a382f69ca43e6"
+        },
+        "launcher_object_path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\temp.win-amd64-cpython-311\\Release\\csrc\\kernel_launcher\\c1024_attention_reconstructed.obj",
+        "launcher_object_sha256": "ff79056c40b3e813403aa04af22f4dc4da963621294f0be733a18ed24aa60af8",
+        "api_object_key": "csrc/torch_api/c1024_attention_reconstructed.obj",
+        "api_object_sha256": "d51f15f388faef3cb5d59b3bc221b69cc863b253a9e8049e57bfa6413bd7cfbd",
+        "symbol": "_ZN6dlssnr42c1024_attention_chained_half_reconstructed6kernelENS0_10ParametersE",
+        "architecture": "sm_120",
+        "object_rehash_performed": false,
+        "source_bytes_verified": true
+      },
+      "evidence": {
+        "extraction_receipt": "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/receipt.json",
+        "compiled_review": "outputs/c1024-attention-cuda-reconstruction/compiled-review/review.json.draft",
+        "saved_artifacts": [
+          {
+            "role": "object",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_attention_chained_half_reconstructed.object.sass.txt",
+            "sha256": "78c77b1565291904052cd0608ab44c54f0a7c1e14701890ddd03e51b9b3ae29c"
+          },
+          {
+            "role": "object",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_attention_chained_half_reconstructed.object.resources.txt",
+            "sha256": "b5884ab4c7d26cbad97cca56ba53697ca62dceb543fa5f30f844f13a3f3e2e08"
+          },
+          {
+            "role": "linked",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_attention_chained_half_reconstructed.linked.sass.txt",
+            "sha256": "a70c496f092780b470a3f15a03aa6bd7f0a0171c348e4d5f116253383b45694f"
+          },
+          {
+            "role": "linked",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_attention_chained_half_reconstructed.linked.resources.txt",
+            "sha256": "727af894b541a534e92b26c1839b07b0c74dd3c919ba23639db0f74c1de0039a"
+          },
+          {
+            "role": "native",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_attention_chained_half_reconstructed.native.sass.txt",
+            "sha256": "a2394ea5df5e1cc0ba6ff95fc0c310ca484a0de89f9ec685eb8230a4c777d772"
+          },
+          {
+            "role": "native",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_attention_chained_half_reconstructed.native.resources.txt",
+            "sha256": "1c10840aebe1c2f699d89a1e70e44eb90b2313d5d88edda7ff09af5bf7dfeb0e"
+          }
+        ]
+      }
+    },
+    {
+      "key": "projection_half",
+      "family": "attention",
+      "role": "projection",
+      "precision": "Half",
+      "original": {
+        "module": 5,
+        "symbol": "cc_vit_1d_projection",
+        "entry_sha256": "26006bd9d8c07db4a97e1fd2d025917d62599e05cbfebb4e26d9ea8fdee1acd1",
+        "module_line": 256974,
+        "source_module_sha256": "641ca106cd3e211587f873de41ba4350608413687b1bb99c33fa7529f82b510c"
+      },
+      "callable": {
+        "cpp": "dlssnr::c1024_projection_half_reconstructed_out",
+        "signature": "at::Tensor c1024_projection_half_reconstructed_out(const at::Tensor& state,const at::Tensor& record,const at::Tensor& skip,at::Tensor high,at::Tensor counter)",
+        "torch_schema": "_c1024_projection_half_reconstructed_out(Tensor state,Tensor record,Tensor skip,Tensor(a!) high,Tensor(b!) counter) -> Tensor(a!)",
+        "torch_operator": "torch.ops.dlssnr._c1024_projection_half_reconstructed_out",
+        "return_aliases": [
+          "high"
+        ]
+      },
+      "direct_kernel": {
+        "cpp": "dlssnr::c1024_projection_half_reconstructed::kernel",
+        "parameter_type": "dlssnr::c1024_projection_half_reconstructed::Parameters",
+        "host_declaration": "void kernel(Parameters parameters);",
+        "source_declaration": "__global__ __maxnreg__(168) void kernel(Parameters parameters) {",
+        "cudaLaunchKernel_argument_count": 1,
+        "argument_semantics": "The single host argument points to the entire zero-initialized Parameters struct value; uint64 fields contain device addresses.",
+        "compiled_architecture": "sm_120",
+        "source_shared_allocation": {
+          "alignment": 512,
+          "bytes": 16400
+        },
+        "admission_scope": "Exposing the existing retained host stub does not broaden the admitted fixed pilot or replace occupancy, alias, extent, device, stream and lifetime validation."
+      },
+      "pilot": {
+        "batch": 1,
+        "tokens": 128,
+        "padded_tokens": 128,
+        "grid": [
+          8,
+          1,
+          4
+        ],
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "dynamic_shared_bytes": 0,
+        "arbitrary_shape_admitted": false
+      },
+      "buffers": [
+        {
+          "name": "state",
+          "bytes": 262144,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "record",
+          "bytes": 2099200,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "skip",
+          "bytes": 262144,
+          "mutable": false,
+          "alignment": 16
+        },
+        {
+          "name": "high",
+          "bytes": 262144,
+          "mutable": true,
+          "alignment": 16
+        },
+        {
+          "name": "counter",
+          "bytes": 32,
+          "mutable": true,
+          "alignment": 4
+        }
+      ],
+      "abi": {
+        "bytes": 72,
+        "alignment": 8,
+        "fields": {
+          "state": 0,
+          "skip": 8,
+          "high": 16,
+          "record": 24,
+          "counter": 32,
+          "scratch": 40,
+          "reserved0": 48,
+          "reserved1": 56,
+          "batch": 64,
+          "tokens": 68
+        },
+        "zero_initialized_unpassed_fields": [
+          "scratch",
+          "reserved0",
+          "reserved1"
+        ],
+        "scalar_values": {
+          "batch": 1,
+          "tokens": 128
+        }
+      },
+      "record": {
+        "K": 1024,
+        "N": 1024,
+        "complete_matrix_bijections": true,
+        "fp8_bytes": 1050624,
+        "fp8_sha256": "b6f9873dc316a54ef68483aa785e704308e2a4c75c709bf4737cdbc717fce8cd",
+        "half_bytes": 2099200,
+        "half_sha256": "54493dd8af78b1b4e259a73f8d7bd02f3f60e2a54d965ab0b891ed4c6abff6fe",
+        "name": "block31.layer4.layer",
+        "origin": "Finite checkpoint values converted to the independently indexed original Half K16 matrix; this is not a recovered original Half asset or original host preparation.",
+        "prefix_bytes": 0,
+        "stage_offset": 11536530,
+        "suffix_bytes": 2048,
+        "bytes": 2099200,
+        "sha256": "54493dd8af78b1b4e259a73f8d7bd02f3f60e2a54d965ab0b891ed4c6abff6fe",
+        "matrix_bytes": 2097152,
+        "prefix_semantics": "none",
+        "suffix_semantics": "1024 Half residual scales",
+        "physical_matrix_layout": "independent K16 Half B-fragment map; finite decoded original FP8 values",
+        "original_half_host_preparation_recovered": false
+      },
+      "prepare": {
+        "cpp": "dlssnr::prepare_c1024_attention_reconstructed",
+        "torch_operator": "torch.ops.dlssnr._prepare_c1024_attention_reconstructed",
+        "variant": 5,
+        "outside_capture_required_even_cached": true,
+        "SM": 120,
+        "min_max_threads_per_block": 128,
+        "launch_ctas": 32,
+        "all_split_ctas_must_fit_compiled_capacity": true,
+        "additional_sm_count_ge_launch_ctas": true,
+        "original_and_cuda_queried_independently_by_qualification": true
+      },
+      "synchronization": {
+        "partitions": 4,
+        "K_per_partition": 256,
+        "reset_before_each_call": -1,
+        "final": 3,
+        "poll": "ld.relaxed.gpu.global.L1::no_allocate.s32; signed counter >= CTA.z - 1; nanosleep retry; CTA synchronization",
+        "release": "Leader st.release.gpu.global.L1::no_allocate.s32 publishes CTA.z after output/partial publication and CTA barrier",
+        "counter_word_mapping": "8*(CTA.x % ceil(M/128)) + CTA.x//ceil(M/128); shared by z partitions",
+        "partial_storage": "high output buffer itself",
+        "ordered_flow": "z0 initializes partial, z1/z2 apply ordered packed-Half reductions, z3 combines its contribution and publishes scaled residual output",
+        "no_hidden_reset_in_out_api": true,
+        "scope": "No partition serialization or weakened capacity admission; contents are caller preconditions, not host-side value checks."
+      },
+      "native_node_mapping": {
+        "blocks": [
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38
+        ],
+        "stage": "projection",
+        "buffer_aliases": {
+          "state": "attended",
+          "skip": "contracted",
+          "high": "output",
+          "counter": "projection_counter",
+          "record": "weight4"
+        },
+        "checkpoint_layer": 4,
+        "mapping_scope": "Role-equivalent independent Half pilot; no recovered full Half network host descriptors"
+      },
+      "sources": {
+        "launcher": "csrc/kernel_launcher/c1024_attention_reconstructed.cu.draft",
+        "api": "csrc/torch_api/c1024_attention_reconstructed.cpp.draft",
+        "body": "csrc/kernel_impl/c1024_projection_half_reconstructed.cuh.draft",
+        "helpers": "csrc/kernel_impl/c1024_projection_half_reconstructed_ops.cuh.draft"
+      },
+      "source_shared_regions": [
+        {
+          "alignment": 512,
+          "name": "_ZZNK6tin3_114Conv1d1x1LayerINS_15Conv1d1x1ConfigILi1024ELi1024ELi128ELi128ELi32ELi2ELi2ELi4ELb1ELb0ELb0ELi32ENS_10OOBRdByDimILj3EJNS_8DimOOBRdILi0ELNS_19OutOfBoundsPolicyRdE2EEEEEENS_14LayerOutputOOBILj3ES6_NS_10OOBWrByDimILj3EJNS_8DimOOBWrILi0ELNS_19OutOfBoundsPolicyWrE0EEEEEEEELb1ELi128ELi2EEENS_12NoActivationELNS_5DTypeE1EE12forward_implEPKjPjiiSK_PiSL_SL_SJ_E20shared_input_storage",
+          "bytes": 16384
+        },
+        {
+          "alignment": 8,
+          "name": "_ZZNK6tin3_114Conv1d1x1LayerINS_15Conv1d1x1ConfigILi1024ELi1024ELi128ELi128ELi32ELi2ELi2ELi4ELb1ELb0ELb0ELi32ENS_10OOBRdByDimILj3EJNS_8DimOOBRdILi0ELNS_19OutOfBoundsPolicyRdE2EEEEEENS_14LayerOutputOOBILj3ES6_NS_10OOBWrByDimILj3EJNS_8DimOOBWrILi0ELNS_19OutOfBoundsPolicyWrE0EEEEEEEELb1ELi128ELi2EEENS_12NoActivationELNS_5DTypeE1EE12forward_implEPKjPjiiSK_PiSL_SL_SJ_E27shared_copy_barrier_storage",
+          "bytes": 16
+        }
+      ],
+      "compiled_resources": {
+        "object": {
+          "REG": 154,
+          "STACK": 0,
+          "SHARED": 17424,
+          "LOCAL": 0
+        },
+        "linked": {
+          "REG": 154,
+          "STACK": 0,
+          "SHARED": 17424,
+          "LOCAL": 0
+        },
+        "native": {
+          "REG": 156,
+          "STACK": 0,
+          "SHARED": 17424,
+          "LOCAL": 0
+        }
+      },
+      "donor": {
+        "build": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/build.json",
+        "build_sha256": "3a7df9d6783db9f9fc0f2b564ec6cc8ff7888a170d9c03697d00bf3128a950e9",
+        "binary": {
+          "bytes": 452183552,
+          "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "sha256": "c798f358c1c414dda6a697433b9ef86aba9a59790311d5e69c1a382f69ca43e6"
+        },
+        "launcher_object_path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\temp.win-amd64-cpython-311\\Release\\csrc\\kernel_launcher\\c1024_attention_reconstructed.obj",
+        "launcher_object_sha256": "ff79056c40b3e813403aa04af22f4dc4da963621294f0be733a18ed24aa60af8",
+        "api_object_key": "csrc/torch_api/c1024_attention_reconstructed.obj",
+        "api_object_sha256": "d51f15f388faef3cb5d59b3bc221b69cc863b253a9e8049e57bfa6413bd7cfbd",
+        "symbol": "_ZN6dlssnr35c1024_projection_half_reconstructed6kernelENS0_10ParametersE",
+        "architecture": "sm_120",
+        "object_rehash_performed": false,
+        "source_bytes_verified": true
+      },
+      "evidence": {
+        "extraction_receipt": "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/receipt.json",
+        "compiled_review": "outputs/c1024-attention-cuda-reconstruction/compiled-review/review.json.draft",
+        "saved_artifacts": [
+          {
+            "role": "object",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_projection_half_reconstructed.object.sass.txt",
+            "sha256": "df4aa34473876cc57430fb04fb2bb06006ada1328ce1ea91bad084df510a40aa"
+          },
+          {
+            "role": "object",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_projection_half_reconstructed.object.resources.txt",
+            "sha256": "9da9c77b72a1509014af9d53d47886e4032859112ef56207870c4b05f63a7996"
+          },
+          {
+            "role": "linked",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_projection_half_reconstructed.linked.sass.txt",
+            "sha256": "b798dcf0b1a5fc0a2be770c2639b94679d06758df9f58b4b6d8dad43d3465096"
+          },
+          {
+            "role": "linked",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_projection_half_reconstructed.linked.resources.txt",
+            "sha256": "e62f7262b1b9138827e5d1c4dc8326ebd99756308547ff4e2e96d828ceb8c127"
+          },
+          {
+            "role": "native",
+            "kind": "sass",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_projection_half_reconstructed.native.sass.txt",
+            "sha256": "b7ba3c4a4daff973c4d07292568bc9cf6d69a4db8dbdf103084007ba7aba9000"
+          },
+          {
+            "role": "native",
+            "kind": "resources",
+            "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c1024-attention-cuda-reconstruction\\compiled-extraction-v1\\c1024_projection_half_reconstructed.native.resources.txt",
+            "sha256": "407bf0222b7625fc1adeeb1a8056f05df7a6ef41285e704779af612ad539662a"
+          }
+        ]
+      }
+    }
+  ],
+  "original_fp8_records_blocks31_to38": [
+    {
+      "block": 31,
+      "layer": 0,
+      "name": "block31.layer0.layer",
+      "bytes": 4194320,
+      "sha256": "837dddf52feeff1f6143b4aa0efc3ec3df4889dc3614bf1db3dc2f79089777a4",
+      "stage_offset": 0,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 31,
+      "layer": 1,
+      "name": "block31.layer1.layer",
+      "bytes": 4196352,
+      "sha256": "143e90b9d5e8359ad8e20bb4f780765014136a838efbadb91c95329b525942f0",
+      "stage_offset": 4194320,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 31,
+      "layer": 2,
+      "name": "block31.layer2.layer",
+      "bytes": 3145856,
+      "sha256": "8317de7004196a2fbb6d87603b9083f71ef3dddfbe3a1dcc618edd65b6eb9cd9",
+      "stage_offset": 8390672,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 31,
+      "layer": 4,
+      "name": "block31.layer4.layer",
+      "bytes": 1050624,
+      "sha256": "b6f9873dc316a54ef68483aa785e704308e2a4c75c709bf4737cdbc717fce8cd",
+      "stage_offset": 11536530,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 32,
+      "layer": 0,
+      "name": "block32.layer0.layer",
+      "bytes": 4194320,
+      "sha256": "f94a41873dc7a32ec125461adc3609b162ea59439e81ec946265878009e9f916",
+      "stage_offset": 12587154,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 32,
+      "layer": 1,
+      "name": "block32.layer1.layer",
+      "bytes": 4196352,
+      "sha256": "5c0a940e75c7df37d50098a53796a5014019844d347dabe8c34d73dff4ca6696",
+      "stage_offset": 16781474,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 32,
+      "layer": 2,
+      "name": "block32.layer2.layer",
+      "bytes": 3145856,
+      "sha256": "b46023eb5092ddcec3a1f40dd6058fc3d8a888bfa50834a639c5b3fefbe0cf05",
+      "stage_offset": 20977826,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 32,
+      "layer": 4,
+      "name": "block32.layer4.layer",
+      "bytes": 1050624,
+      "sha256": "99fdd6de02b14af6c61ff13a103405c26fe1f4caa555dbc9b5236b6d660318b4",
+      "stage_offset": 24123684,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 33,
+      "layer": 0,
+      "name": "block33.layer0.layer",
+      "bytes": 4194320,
+      "sha256": "04841b6307d7a8e47b6c66ef8a8c1c51c832c5df2ebf018354ed1b2c73d64acd",
+      "stage_offset": 25174308,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 33,
+      "layer": 1,
+      "name": "block33.layer1.layer",
+      "bytes": 4196352,
+      "sha256": "15e1920703abb4b6dd268b72868960d4921e5852e7aad6538fdf229ae88ac316",
+      "stage_offset": 29368628,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 33,
+      "layer": 2,
+      "name": "block33.layer2.layer",
+      "bytes": 3145856,
+      "sha256": "abe39fa8fa856cdfa2122100d073e6a1df3afa9c380fe88df5b6d918de0b9b1e",
+      "stage_offset": 33564980,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 33,
+      "layer": 4,
+      "name": "block33.layer4.layer",
+      "bytes": 1050624,
+      "sha256": "0fdb411c4ce9c371bc3888556afa3a5d12acbbc2d323b0b7f0ac4b8fe708b18e",
+      "stage_offset": 36710838,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 34,
+      "layer": 0,
+      "name": "block34.layer0.layer",
+      "bytes": 4194320,
+      "sha256": "d6b9697b89d7d868d050ec62d455dd424a8d42da44ba63fde47ac6898450a0c1",
+      "stage_offset": 37761462,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 34,
+      "layer": 1,
+      "name": "block34.layer1.layer",
+      "bytes": 4196352,
+      "sha256": "37355b9e0a855227999360fec3bbf24572864339ac95e78db76dd94ab0b956c2",
+      "stage_offset": 41955782,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 34,
+      "layer": 2,
+      "name": "block34.layer2.layer",
+      "bytes": 3145856,
+      "sha256": "47de657432b9856fe43d1f54814a52c5d82612983af0061c3af21d0768d7944d",
+      "stage_offset": 46152134,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 34,
+      "layer": 4,
+      "name": "block34.layer4.layer",
+      "bytes": 1050624,
+      "sha256": "42ca64487f702243e6b956d164d488d6c618a9662a480828adfc744b7d49f412",
+      "stage_offset": 49297992,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 35,
+      "layer": 0,
+      "name": "block35.layer0.layer",
+      "bytes": 4194320,
+      "sha256": "3d7e25d40e9fa7c9d6e2fdf73a4b64f0eeaa895775a083a3eeb6e8ccd1d7202b",
+      "stage_offset": 50348616,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 35,
+      "layer": 1,
+      "name": "block35.layer1.layer",
+      "bytes": 4196352,
+      "sha256": "df7ace793dc8142ae66dccc6010c70eea1a8ba9f66e8bf0acc669eb6c3b757bf",
+      "stage_offset": 54542936,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 35,
+      "layer": 2,
+      "name": "block35.layer2.layer",
+      "bytes": 3145856,
+      "sha256": "7b82af80d766be835996d05394b566d1f3d378d58aef5e6acb6e74d64f7d53f1",
+      "stage_offset": 58739288,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 35,
+      "layer": 4,
+      "name": "block35.layer4.layer",
+      "bytes": 1050624,
+      "sha256": "a1d53acf851158aae9531081ca6a58e6f48904e85bad4f8a66c7d504c940a556",
+      "stage_offset": 61885146,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 36,
+      "layer": 0,
+      "name": "block36.layer0.layer",
+      "bytes": 4194320,
+      "sha256": "b833cbb85ba4a5e509dd1a50aace8c76ffce3827ef1415bf1f429642d73ba2ec",
+      "stage_offset": 62935770,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 36,
+      "layer": 1,
+      "name": "block36.layer1.layer",
+      "bytes": 4196352,
+      "sha256": "169e6f9ac06e92704bb3487645f0d828050de741e5b446083cb1d3f21c2f829a",
+      "stage_offset": 67130090,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 36,
+      "layer": 2,
+      "name": "block36.layer2.layer",
+      "bytes": 3145856,
+      "sha256": "954c984699bf054ac2f49afe89526d44c219ef2374e66411f09efd4115c13392",
+      "stage_offset": 71326442,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 36,
+      "layer": 4,
+      "name": "block36.layer4.layer",
+      "bytes": 1050624,
+      "sha256": "2cea0c9cc438cfe9a1b4c9a352667b670dc3b4149dc2e64dae8c731aef1c4903",
+      "stage_offset": 74472300,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 37,
+      "layer": 0,
+      "name": "block37.layer0.layer",
+      "bytes": 4194320,
+      "sha256": "e36c6666015fec3458b35ffe5b44e4052dc58baaa863934a01356cc0dc022d26",
+      "stage_offset": 75522924,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 37,
+      "layer": 1,
+      "name": "block37.layer1.layer",
+      "bytes": 4196352,
+      "sha256": "b93228e97354c86a08973180f3ea549153f97ae360a0586e5f1360345b770957",
+      "stage_offset": 79717244,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 37,
+      "layer": 2,
+      "name": "block37.layer2.layer",
+      "bytes": 3145856,
+      "sha256": "2319a1aed3c121b005e210af6c44bce0bbe5ef3d5cfed548a8d95d9d5d78d16b",
+      "stage_offset": 83913596,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 37,
+      "layer": 4,
+      "name": "block37.layer4.layer",
+      "bytes": 1050624,
+      "sha256": "8db5de1bb80baad0def9a4c5b9da37f32ba5057c5fb729d340c7ca31105f0e56",
+      "stage_offset": 87059454,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 38,
+      "layer": 0,
+      "name": "block38.layer0.layer",
+      "bytes": 4194320,
+      "sha256": "a3c1dc60511c52ff3a81aab0e4bd97b694760f4f10c59fb2d807d1dcc61283f9",
+      "stage_offset": 88110078,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 38,
+      "layer": 1,
+      "name": "block38.layer1.layer",
+      "bytes": 4196352,
+      "sha256": "a052bacb2ff7735202701a58261fc0b5222019027361bcb5a380952305ab7a25",
+      "stage_offset": 92304398,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 38,
+      "layer": 2,
+      "name": "block38.layer2.layer",
+      "bytes": 3145856,
+      "sha256": "907f4b73081cdff0fddcaa54f71d995598b4745c8bd1f41c1cb2d58d7bf2ea51",
+      "stage_offset": 96500750,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    },
+    {
+      "block": 38,
+      "layer": 4,
+      "name": "block38.layer4.layer",
+      "bytes": 1050624,
+      "sha256": "8bf7f0db434c51d01644874af47ef56b3ef10cca09c3e29ced4caa3237fbcff2",
+      "stage_offset": 99646608,
+      "stage_file": "stages/vit1024.bin",
+      "stage_sha256": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71"
+    }
+  ],
+  "direct_host_interface": {
+    "header": "outputs/all-reconstructed-deployment-prep/global/global_compute_abi.h.draft",
+    "sha256": "116db43f1ec9b8e29b67dcdc5518ebaf68a2b3c1dcce538a5acc0c219d981fd7",
+    "derivation_receipt": "outputs/all-reconstructed-deployment-prep/global/global_compute_abi.json.draft",
+    "declarations": 10,
+    "device_bodies_included": false,
+    "new_translation_units": 0,
+    "symbol_resolution_tested": false,
+    "scope": "Plain C++ declarations copied from exact frozen Parameters definitions for cudaLaunchKernel on retained CUDA host stubs. The new root launcher must independently enforce its admitted schedule and preserve caller-owned storage/counter/lifetime contracts."
+  },
+  "shared_host_contract": {
+    "storage": "All arguments are exact-size contiguous rank-1 torch.uint8 physical byte buffers, including Half images and signed-int32 counters.",
+    "same_device": true,
+    "pairwise_ranges_disjoint": true,
+    "image_record_scratch_alignment": 16,
+    "counter_alignment": 4,
+    "inference_only": true,
+    "current_stream": true,
+    "recordStream_on_all_buffers": true,
+    "no_hidden_resets_in_individual_out_functions": true,
+    "graph_and_module_lifetime": "Caller retains physical inputs, records, mutable buffers and graph ownership through completion; recordStream is not a graph/module lifetime proof.",
+    "prepare_result_fields": [
+      "device",
+      "SM",
+      "registers",
+      "static_shared_bytes",
+      "local_bytes",
+      "max_threads_per_block",
+      "active_blocks_per_sm",
+      "SM_count",
+      "launch_CTAs"
+    ]
+  },
+  "existing_fp8_composition": {
+    "cpp": "dlssnr::reconstructed_global_chain4k_out",
+    "signature": "std::vector<at::Tensor>(const at::Tensor& state,std::vector<at::Tensor> records,std::vector<at::Tensor> workspaces)",
+    "prepare": "dlssnr::prepare_reconstructed_global_chain4k",
+    "blocks": [
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38
+    ],
+    "per_block_order": [
+      "expand",
+      "contract",
+      "qkv",
+      "attention_chained",
+      "projection"
+    ],
+    "record_layers": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "records": 32,
+    "workspaces": 112,
+    "returned_high_aliases": 8,
+    "captured_counter_resets": 32,
+    "reset_positions": "At each block start: contract/qkv/attention-completion/projection. Never reset the QKV predecessor between QKV and attention.",
+    "workspace_order": [
+      "expanded",
+      "contracted",
+      "Q",
+      "K",
+      "V",
+      "attended",
+      "output",
+      "contract_counter",
+      "qkv_counter",
+      "attention_counter",
+      "projection_counter",
+      "contract_scratch",
+      "qkv_scratch",
+      "projection_scratch"
+    ]
+  },
+  "physical_layout_references": {
+    "fp8_images": "outputs/c1024-ffn-cuda-runtime/selected.py.draft: maps(); original C-fragment output formula, also packed input to next linear stage",
+    "fp8_qkv": "tools/vendor_qkv_benchmark.py: physical_to_logical_mapping(): distinct Q/K/V bit permutations",
+    "half_images": "tools/vendor_fp16_inventory.py: half_output_byte_index(); independently calibrated K16/C-fragment map",
+    "half_qkv": "outputs/c1024-attention-cuda-reconstruction/attention-pilot/REPORT.md.draft: distinct scalar Q/K/V maps; Q and attention output match Half projection input",
+    "records": "FP8 bytes from exact checkpoint records; Half independently decoded/repacked with half_weight_index and preserved prefix/suffix"
+  },
+  "deployment_gaps": [
+    "These are existing fixed B1 FP8 M2160 and independent Half M128 APIs; no arbitrary resolution, batch, empty or full-M Half admission is added.",
+    "Original plain attention is not the chained entry and is not silently mapped to it. This catalog lists chained attention only.",
+    "Half records are derived finite checkpoint data, not recovered original Half assets or original Half host preparation. Only block31 derived Half fixture hashes are bound here.",
+    "Standalone chained qualification serializes a fresh actual QKV producer. The preserved native >=0 relaxed poll does not itself prove final partition readiness or recover a concurrent native host schedule.",
+    "Original and CUDA split capacity must be queried on the actual compiled functions/device. Resource counts and previous occupancy observations are not unconditional deployment admission.",
+    "Donor object/binary hashes are inherited from accepted saved receipts, not freshly rehashed or relinked. Combining them into a new deployment requires its own source/object union and final identity gate."
+  ],
+  "source_pins": {
+    "outputs/all-reconstructed-deployment-prep/global/derive_catalog_compute.py.draft": "f9a82559e5fa9c1c1e13b445c7103abcf3b2857baaafc3ef53d6c85f8dd19a5d",
+    "outputs/c1024-ffn-cuda-reconstruction/manifest.json.draft": "699225d174b909f4ebf0319957302cff32beba61d99c00ce8905ba2b6548462e",
+    "outputs/c1024-ffn-cuda-reconstruction/host-contract.json.draft": "aaaf631c8e71611698f9e28d1076e84e4b8b1c5c4779e655217837990ea33b0c",
+    "outputs/c1024-ffn-cuda-reconstruction/pilot.json.draft": "1b39fa6936c9eb78ab2b74ac0a5cba2873797237e89a8cd3b9656f946eed90b9",
+    "outputs/c1024-ffn-cuda-reconstruction/inventory.json.draft": "89d6ba34368bda28935729fa8f529451db3d2c2bb7552984931e1f81065b1484",
+    "outputs/c1024-ffn-cuda-runtime/binding.json.draft": "33548d5a8560794bdee255789691c3408046d7f1764c49bc06343d2444c44ade",
+    "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/build.json": "2d5352058d61c46a7e43bbd1a38d8fe44b23daece8fdebcddfbd6d7633d5d09a",
+    "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/receipt.json": "cc26a8469b7896c6641b6da8e0b38574be267c16b4a98f9a9699011a278f0fe6",
+    "outputs/c1024-ffn-cuda-reconstruction/compiled-review/review.json.draft": "a3269d28241243d10c855b1a84611a0f6e6b47b8d5a394aa9dfe691a930ed272",
+    "csrc/kernel_launcher/c1024_ffn_reconstructed.cu.draft": "99c740feff5ef0265489e22e784e0671c5dbc89c025642536a9cfcb5eaa331fb",
+    "csrc/torch_api/c1024_ffn_reconstructed.cpp.draft": "682f2b591c64c1cd02c93af72752258aa8cddebda4865fc997c5df5e10def080",
+    "outputs/c1024-ffn-cuda-runtime/selected.py.draft": "6a271e07c8bdf2f004a96eef80166ff273023022c91114585465fd8fe9d1f204",
+    "outputs/c1024-ffn-cuda-runtime/records.py.draft": "ef671db95a9a7293b5c3f27cb803791f477e4f200fd5730567f53b9f2b560697",
+    "csrc/kernel_impl/c1024_ffn_expand_fp8_reconstructed.cuh.draft": "db1b8da08113b0fb763f2eef8361171e81cb7d1628a23d1b4c532e0c7fb2405c",
+    "csrc/kernel_impl/c1024_ffn_expand_fp8_reconstructed_ops.cuh.draft": "c284023fc5f2df3b25c7c549f2ec9848a9290894168bb7ae35cbda08d6543e76",
+    "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/c1024_ffn_expand_fp8_reconstructed.object.resources.txt": "dfe87f8fe062d76d2de238d415273e1520b7e83e318075d67ce36ae46762ad1b",
+    "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/c1024_ffn_expand_fp8_reconstructed.linked.resources.txt": "a84ed785f3c35d63b87d579b310c3e631f3f9d03653211496e287c1927331871",
+    "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/c1024_ffn_expand_fp8_reconstructed.native.resources.txt": "89ac41962355bfe56cd2da0f74a9de0bd61e0eed1ee31c80bbeb52c4f48830b9",
+    "csrc/kernel_impl/c1024_ffn_contract_fp8_reconstructed.cuh.draft": "7aa52369c65ed897b4b2228f68d56e56ce1dbf1b3246e2dd9e643e55099182b6",
+    "csrc/kernel_impl/c1024_ffn_contract_fp8_reconstructed_ops.cuh.draft": "c7d3571f02410104fc513590006b67d93cf3da7a93e049aae9eb6a19103777d3",
+    "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/c1024_ffn_contract_fp8_reconstructed.object.resources.txt": "740b05f841164d4809bb4f46850c32b58658b9e13a00e15f7abfd3da1d97583d",
+    "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/c1024_ffn_contract_fp8_reconstructed.linked.resources.txt": "da6b586e8225d2655a2f92bd6c13f9673126e82b1ce7dc0818befd5e0c38716d",
+    "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/c1024_ffn_contract_fp8_reconstructed.native.resources.txt": "acd910e2fd7227c347073603e55f3975a19b176f1b1e73e27702939e8395fb88",
+    "csrc/kernel_impl/c1024_ffn_expand_half_reconstructed.cuh.draft": "bc03895d464db32d02a0571eca663149f6c770e86e79989e7ff165dd61c4fd7e",
+    "csrc/kernel_impl/c1024_ffn_expand_half_reconstructed_ops.cuh.draft": "c49cbadb862cda2fc99ae7dcd2709461f913790e073db544343d99cc60622fac",
+    "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/c1024_ffn_expand_half_reconstructed.object.resources.txt": "cf0e0f78b852694d8181bb22126b1d4fe248b26df699dd408d17f4b68efc26e0",
+    "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/c1024_ffn_expand_half_reconstructed.linked.resources.txt": "f294938e75476af426d68d7a9e49376a06cd76108eb7b198bfa9708e1a204fb4",
+    "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/c1024_ffn_expand_half_reconstructed.native.resources.txt": "6834d923993cdd2f2a1e5cd9cc791236b611a6d307b3b0e9ca3bb334630a40ea",
+    "csrc/kernel_impl/c1024_ffn_contract_half_reconstructed.cuh.draft": "9551cc932b886db5d1298268f496d1bd15536868589b9aa8343aecd46f624616",
+    "csrc/kernel_impl/c1024_ffn_contract_half_reconstructed_ops.cuh.draft": "21b941d4160cb7d320c306b7b0b7d5ae248e10c1fb15be1be4b9872a7f4105eb",
+    "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/c1024_ffn_contract_half_reconstructed.object.resources.txt": "0ee9269265ea01a9470c8c7b82e45f85f0727ffd62b70b6eb4eadd6ff2a5288f",
+    "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/c1024_ffn_contract_half_reconstructed.linked.resources.txt": "33e14f48c37df1d4a5d88ef1874864c95aa16c7c2accbc12847736e68f975afb",
+    "outputs/c1024-ffn-cuda-reconstruction/compiled-extraction-v1/c1024_ffn_contract_half_reconstructed.native.resources.txt": "0a7f0fadb381269dd3d1cff1a86bd748620249261c4592dc3c3dd0439e1ff1b5",
+    "outputs/c1024-attention-cuda-reconstruction/manifest.json.draft": "5b1203048e2eca0c206addbaf7a79b57561aa7320532a12709df03f2386a5b72",
+    "outputs/c1024-attention-cuda-reconstruction/host-contract.json.draft": "5dd01e5c0813bbe009f2d03728b78df2d0eafcd918c526b8e66ac5646ae9a439",
+    "outputs/c1024-attention-cuda-reconstruction/pilot.json.draft": "6cf5209dbcf6c742f81de2bb54d53001600e5158c8f8b4fabb9a96639249eb2e",
+    "outputs/c1024-attention-cuda-reconstruction/inventory.json.draft": "d6b8a39ea19ec200f68f422391442254605c272a2d1fcd1c1aae35bf8d6802e5",
+    "outputs/c1024-attention-cuda-runtime/binding.json.draft": "65682fbbb3b0c7c4f6747b5083bd64dbfa569442043c7509351586c53091d76b",
+    "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/build.json": "3a7df9d6783db9f9fc0f2b564ec6cc8ff7888a170d9c03697d00bf3128a950e9",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/receipt.json": "6ad3f43bb5986440b2d0245206a3d324e1b6314ff0a3167a629b57c9cd63d336",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-review/review.json.draft": "a00155a837c95aeb8acc3952c8911bd5d34758cc885e2c3df05ab7bb47058a79",
+    "csrc/kernel_launcher/c1024_attention_reconstructed.cu.draft": "e59b657ce6bfe853ee2861893cb296b427fd56f1a4882459e3aa24dbb2bfded7",
+    "csrc/torch_api/c1024_attention_reconstructed.cpp.draft": "d5c35adb4c468efff969aa2fd01ec52cf911adbca9de1647c89dbc436a3a6aab",
+    "outputs/c1024-attention-cuda-runtime/selected.py.draft": "8e24a5548a57c79b5bcc08a7a1baaeb0dd0f8e4c3bc0f09237b5eab7882b52a9",
+    "outputs/c1024-attention-cuda-runtime/records.py.draft": "ca79ee76c4b3c24e4c6f81a5d3ba11424616c931862e66a5879d2f6377c1add8",
+    "csrc/kernel_impl/c1024_qkv_fp8_reconstructed.cuh.draft": "db3961480320e7ad2e5fcbc9b3cd79cff6491da8a8b77ee508ef6d4fcbd1b390",
+    "csrc/kernel_impl/c1024_qkv_fp8_reconstructed_ops.cuh.draft": "526198825a49b231c1ae417a870bceb69a8093f4d25e63f8c0e98cbf38846b4c",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_qkv_fp8_reconstructed.object.resources.txt": "358d9a5e36952c92891ec25478a9d1c5f7a5f2e786600865314bd974e545a0c8",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_qkv_fp8_reconstructed.linked.resources.txt": "f8cf20a7b3ff0aec9a92e4ea7174ae4bc7ce0a8d7759d1dbad792016eb1f7731",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_qkv_fp8_reconstructed.native.resources.txt": "64e59bb0cb8dff80af025602dc6a1d6c5d7b937e11d55f9c6448e54c8549530d",
+    "csrc/kernel_impl/c1024_attention_chained_fp8_reconstructed.cuh.draft": "38c1747195c5b821c83f4bfd9091fc2977c1c29dc934ca1fd7000a60d54ac16d",
+    "csrc/kernel_impl/c1024_attention_chained_fp8_reconstructed_ops.cuh.draft": "8aee43ac1f5fd1d0c68bf29c878cd77eed19c54fec011227465647caf8fa2199",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_attention_chained_fp8_reconstructed.object.resources.txt": "236fc6d1c95b6893685d5c897ad04a2fcccc9664b9c95700cc28241820e83d6d",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_attention_chained_fp8_reconstructed.linked.resources.txt": "e61b870803fc038b002dfcfc0c607adf4cbeb712ab2c8ea2556f018e241c477b",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_attention_chained_fp8_reconstructed.native.resources.txt": "3750a555b05253a4e28e86181880aec8bfc6a293d05b4b50d70dec98ac340fca",
+    "csrc/kernel_impl/c1024_projection_fp8_reconstructed.cuh.draft": "8c1bbd102fde9101a218922c360be0ae306f2e02679a68a4ba7b482b23cbb0c0",
+    "csrc/kernel_impl/c1024_projection_fp8_reconstructed_ops.cuh.draft": "2bc14b24d8159c9e493985bf1a716050161e8842236f0562ef05619b53cbec00",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_projection_fp8_reconstructed.object.resources.txt": "62620c9217b4ccbd90d46aef88f7f82db1011448fe929430496ebbe712f4281d",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_projection_fp8_reconstructed.linked.resources.txt": "ae9e586bc236d4cd77d7176dce1cfa181fd7aa228f1a3c560b9316f75298b5c8",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_projection_fp8_reconstructed.native.resources.txt": "3fe0121f983de0f5888217311349d568cb3c5d039db5b0fed9f4ca949afbc303",
+    "csrc/kernel_impl/c1024_qkv_half_reconstructed.cuh.draft": "b75e6baa937b8ea58cd08be27adcc5d8dc940a94cc1fa183426ae5a5c6fdf3e3",
+    "csrc/kernel_impl/c1024_qkv_half_reconstructed_ops.cuh.draft": "f208471e154d7dd2cfad53c19ffec1d3299475d577b3d140c015984434f274b6",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_qkv_half_reconstructed.object.resources.txt": "d0c94a898b52abfbb76854deeb280de619b4c59eb797a10e83f9dbcc747b1811",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_qkv_half_reconstructed.linked.resources.txt": "d6baa17d3df41aa1dfd767dfbe03542169ea683fab9547184e35223bef5b19e3",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_qkv_half_reconstructed.native.resources.txt": "2a14c4835eadd91a424ac950b448c496a4b4d17d5a2088b47145bc0efa3b8d39",
+    "csrc/kernel_impl/c1024_attention_chained_half_reconstructed.cuh.draft": "71f8eb5c4144a0e13ed3e229db27eb3e6542bc8aa95abc391ee00b29047dbf18",
+    "csrc/kernel_impl/c1024_attention_chained_half_reconstructed_ops.cuh.draft": "183318d68513686878967976c29667d4000d9b18efe43aa5ae46abf0370e06f2",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_attention_chained_half_reconstructed.object.resources.txt": "b5884ab4c7d26cbad97cca56ba53697ca62dceb543fa5f30f844f13a3f3e2e08",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_attention_chained_half_reconstructed.linked.resources.txt": "727af894b541a534e92b26c1839b07b0c74dd3c919ba23639db0f74c1de0039a",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_attention_chained_half_reconstructed.native.resources.txt": "1c10840aebe1c2f699d89a1e70e44eb90b2313d5d88edda7ff09af5bf7dfeb0e",
+    "csrc/kernel_impl/c1024_projection_half_reconstructed.cuh.draft": "51a16f07085a2ef8be81a332b96e4bd5f41a08911dcc5dc37849c708026f2254",
+    "csrc/kernel_impl/c1024_projection_half_reconstructed_ops.cuh.draft": "24cb6a67767fa77c12a5ab07430b75d0ea37d5ce6815ba982c1396ba015b83da",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_projection_half_reconstructed.object.resources.txt": "9da9c77b72a1509014af9d53d47886e4032859112ef56207870c4b05f63a7996",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_projection_half_reconstructed.linked.resources.txt": "e62f7262b1b9138827e5d1c4dc8326ebd99756308547ff4e2e96d828ceb8c127",
+    "outputs/c1024-attention-cuda-reconstruction/compiled-extraction-v1/c1024_projection_half_reconstructed.native.resources.txt": "407bf0222b7625fc1adeeb1a8056f05df7a6ef41285e704779af612ad539662a",
+    "outputs/all-reconstructed-deployment-prep/global/global_compute_abi.json.draft": "1ce58da39702008b80423d93e814ee19c8b979f148b8a7126ea74347fce5064d",
+    "outputs/all-reconstructed-deployment-prep/global/derive_abi.py.draft": "320f41dce0690fbfa76317da9989e98f22d3bc3868b10f1352bad9f8fd4975ad",
+    "outputs/all-reconstructed-deployment-prep/global/global_compute_abi.h.draft": "116db43f1ec9b8e29b67dcdc5518ebaf68a2b3c1dcce538a5acc0c219d981fd7",
+    "tools/vendor_global_block.py": "e8cf89f886d0ab0b65223ad11f06563da146d9068ed138356857b009402f26f3",
+    "tools/vendor_trunk.py": "a65d83a066e2b3649195803cd4a6f8cd79784149469a59043e25145398bef611",
+    "tools/vendor_linear_benchmark.py": "683d7706cc114fa46acd51ec927325a80103f606d7701cdf3c56134ecbefe0fe",
+    "tools/vendor_qkv_benchmark.py": "e566f5bef7f73ee701a86a587bd7035fb5a60848d5d10c1bb25d253c578a754d",
+    "tools/vendor_fp16_inventory.py": "cd5c95ffce61de48260bb22d1ed656290762bbc573b529959a069559630178a8",
+    "csrc/kernel_launcher/reconstructed_global_chain4k.cpp.draft": "0e728f2f0ac8b4f68392f1ab86757227ea9b7aa37f815ad9f5a3d12921268425",
+    "csrc/torch_api/reconstructed_global_chain4k.cpp.draft": "2daa85df814ad0e74c8f1b1168350d1307b58d51159c2921359d40d33f431662",
+    "outputs/reconstructed-global-chain4k-runtime/selected.py.draft": "df03fdad53524c281cb86eac295d44925ba8da247133021625901efe4aeb2fce",
+    "outputs/c1024-attention-cuda-reconstruction/attention-pilot/REPORT.md.draft": "3e9fd325ea86ac541a820eb68b7aa713b0562cb2140784ae8ba0beabe6739d05",
+    "outputs/c1024-attention-cuda-reconstruction/independent-chained-review/REPORT.md.draft": "9f23c4472335ac529449d2137cd97bba5cc027b2ee5ff2725b4baa3dc1f4687c",
+    "outputs/c1024-attention-cuda-reconstruction/independent-qkv-projection-compiled-review/REPORT.md.draft": "be9ca33eadd431dab8677592b2d0fe1a134941aa9b092745aa8acc9218e3f8da",
+    "assets/nr/manifest.json": "29642ee8acceb50e5f5506ff9168ccb9932677474e06f73a33be7a87877f7c32"
+  }
+}

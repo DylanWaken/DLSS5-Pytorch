@@ -1,0 +1,597 @@
+{
+  "scope": "Implemented logical training graph, with separately labelled FP8 deployment boundary",
+  "source_sha256": {
+    "dlssnr/model.py": "8bf04d6337741a6af8dd8c7abe85319d054d5c1d68190eea921f4d0890f7e616",
+    "dlssnr/geometry.py": "677499c0c7bd06544581ebd719801d7d1e027fe1fa3438d5e55f3f43af5db6c1",
+    "dlssnr/weights.py": "e798528567bf1a9cdfb6d3fae74224dc2147af67b0714c70a27d8402523738f0"
+  },
+  "valid_example": [
+    3840,
+    2160
+  ],
+  "full_padded_example": [
+    3840,
+    2176
+  ],
+  "schedule": [
+    {
+      "block": 0,
+      "channels": 32,
+      "width": 3840,
+      "height": 2176,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 1,
+      "channels": 32,
+      "width": 1920,
+      "height": 1088,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 2,
+      "channels": 32,
+      "width": 1920,
+      "height": 1088,
+      "kind": "window",
+      "phase": 1
+    },
+    {
+      "block": 3,
+      "channels": 32,
+      "width": 1920,
+      "height": 1088,
+      "kind": "window",
+      "phase": 2
+    },
+    {
+      "block": 4,
+      "channels": 32,
+      "width": 1920,
+      "height": 1088,
+      "kind": "window",
+      "phase": 3
+    },
+    {
+      "block": 5,
+      "channels": 64,
+      "width": 960,
+      "height": 544,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 6,
+      "channels": 64,
+      "width": 960,
+      "height": 544,
+      "kind": "window",
+      "phase": 1
+    },
+    {
+      "block": 7,
+      "channels": 64,
+      "width": 960,
+      "height": 544,
+      "kind": "window",
+      "phase": 2
+    },
+    {
+      "block": 8,
+      "channels": 64,
+      "width": 960,
+      "height": 544,
+      "kind": "window",
+      "phase": 3
+    },
+    {
+      "block": 9,
+      "channels": 128,
+      "width": 480,
+      "height": 272,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 10,
+      "channels": 128,
+      "width": 480,
+      "height": 272,
+      "kind": "window",
+      "phase": 1
+    },
+    {
+      "block": 11,
+      "channels": 128,
+      "width": 480,
+      "height": 272,
+      "kind": "window",
+      "phase": 2
+    },
+    {
+      "block": 12,
+      "channels": 128,
+      "width": 480,
+      "height": 272,
+      "kind": "window",
+      "phase": 3
+    },
+    {
+      "block": 13,
+      "channels": 128,
+      "width": 480,
+      "height": 272,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 14,
+      "channels": 128,
+      "width": 480,
+      "height": 272,
+      "kind": "window",
+      "phase": 1
+    },
+    {
+      "block": 15,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 16,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 1
+    },
+    {
+      "block": 17,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 2
+    },
+    {
+      "block": 18,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 3
+    },
+    {
+      "block": 19,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 20,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 1
+    },
+    {
+      "block": 21,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 2
+    },
+    {
+      "block": 22,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 3
+    },
+    {
+      "block": 23,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 24,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 1
+    },
+    {
+      "block": 25,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 2
+    },
+    {
+      "block": 26,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 3
+    },
+    {
+      "block": 27,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 28,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 1
+    },
+    {
+      "block": 29,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 2
+    },
+    {
+      "block": 30,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 3
+    },
+    {
+      "block": 31,
+      "channels": 1024,
+      "width": 60,
+      "height": 36,
+      "kind": "global",
+      "phase": null
+    },
+    {
+      "block": 32,
+      "channels": 1024,
+      "width": 60,
+      "height": 36,
+      "kind": "global",
+      "phase": null
+    },
+    {
+      "block": 33,
+      "channels": 1024,
+      "width": 60,
+      "height": 36,
+      "kind": "global",
+      "phase": null
+    },
+    {
+      "block": 34,
+      "channels": 1024,
+      "width": 60,
+      "height": 36,
+      "kind": "global",
+      "phase": null
+    },
+    {
+      "block": 35,
+      "channels": 1024,
+      "width": 60,
+      "height": 36,
+      "kind": "global",
+      "phase": null
+    },
+    {
+      "block": 36,
+      "channels": 1024,
+      "width": 60,
+      "height": 36,
+      "kind": "global",
+      "phase": null
+    },
+    {
+      "block": 37,
+      "channels": 1024,
+      "width": 60,
+      "height": 36,
+      "kind": "global",
+      "phase": null
+    },
+    {
+      "block": 38,
+      "channels": 1024,
+      "width": 60,
+      "height": 36,
+      "kind": "global",
+      "phase": null
+    },
+    {
+      "block": 39,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "transition",
+      "phase": null
+    },
+    {
+      "block": 40,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 41,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 1
+    },
+    {
+      "block": 42,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 2
+    },
+    {
+      "block": 43,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 3
+    },
+    {
+      "block": 44,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 45,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 1
+    },
+    {
+      "block": 46,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 2
+    },
+    {
+      "block": 47,
+      "channels": 512,
+      "width": 120,
+      "height": 68,
+      "kind": "window",
+      "phase": 3
+    },
+    {
+      "block": 48,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 49,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 1
+    },
+    {
+      "block": 50,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 2
+    },
+    {
+      "block": 51,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 3
+    },
+    {
+      "block": 52,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 53,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 1
+    },
+    {
+      "block": 54,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 2
+    },
+    {
+      "block": 55,
+      "channels": 256,
+      "width": 240,
+      "height": 136,
+      "kind": "window",
+      "phase": 3
+    },
+    {
+      "block": 56,
+      "channels": 128,
+      "width": 480,
+      "height": 272,
+      "kind": "window",
+      "phase": 2
+    },
+    {
+      "block": 57,
+      "channels": 128,
+      "width": 480,
+      "height": 272,
+      "kind": "window",
+      "phase": 3
+    },
+    {
+      "block": 58,
+      "channels": 128,
+      "width": 480,
+      "height": 272,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 59,
+      "channels": 128,
+      "width": 480,
+      "height": 272,
+      "kind": "window",
+      "phase": 1
+    },
+    {
+      "block": 60,
+      "channels": 128,
+      "width": 480,
+      "height": 272,
+      "kind": "window",
+      "phase": 2
+    },
+    {
+      "block": 61,
+      "channels": 128,
+      "width": 480,
+      "height": 272,
+      "kind": "window",
+      "phase": 3
+    },
+    {
+      "block": 62,
+      "channels": 64,
+      "width": 960,
+      "height": 544,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 63,
+      "channels": 64,
+      "width": 960,
+      "height": 544,
+      "kind": "window",
+      "phase": 1
+    },
+    {
+      "block": 64,
+      "channels": 64,
+      "width": 960,
+      "height": 544,
+      "kind": "window",
+      "phase": 2
+    },
+    {
+      "block": 65,
+      "channels": 64,
+      "width": 960,
+      "height": 544,
+      "kind": "window",
+      "phase": 3
+    },
+    {
+      "block": 66,
+      "channels": 32,
+      "width": 1920,
+      "height": 1088,
+      "kind": "window",
+      "phase": 0
+    },
+    {
+      "block": 67,
+      "channels": 32,
+      "width": 1920,
+      "height": 1088,
+      "kind": "window",
+      "phase": 1
+    },
+    {
+      "block": 68,
+      "channels": 32,
+      "width": 1920,
+      "height": 1088,
+      "kind": "window",
+      "phase": 2
+    },
+    {
+      "block": 69,
+      "channels": 32,
+      "width": 1920,
+      "height": 1088,
+      "kind": "window",
+      "phase": 3
+    },
+    {
+      "block": 70,
+      "channels": 32,
+      "width": 3840,
+      "height": 2176,
+      "kind": "window",
+      "phase": 1
+    }
+  ],
+  "diagrams": [
+    "decoder.svg",
+    "encoder.svg",
+    "endpoints.svg",
+    "ffn.svg",
+    "global_attention.svg",
+    "network.svg",
+    "numerics.svg",
+    "residual_block.svg",
+    "window_attention.svg"
+  ]
+}

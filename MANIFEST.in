@@ -1,0 +1,3 @@
+recursive-include csrc *.h *.cuh *.inl *.cpp *.cu
+recursive-include tuning *.py *.json *.h
+include README.md NOTICE LICENSE-OpenDLSS-NR

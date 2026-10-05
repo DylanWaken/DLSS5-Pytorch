@@ -1,0 +1,67 @@
+# Active source layout audit — v35 freeze
+
+This CPU-only audit found **five GPU kernel definitions in `kernel_launcher`**. No GPU function definitions or CUDA launch sites were found in `torch_api`. The API directory does contain host implementations beyond registration, including one complete policy dispatcher. Public Python does not choose a GPU architecture or tuned kernel variant; it still describes graph, precision and storage routes.
+
+No active files were changed, no extension was built, and no GPU was queried or used. The scan covers active `.cu`, `.cpp`, `.h` and `.cuh` files only: 42 in `kernel_impl`, 63 in `kernel_launcher`, and 48 in `torch_api`. Drafts, patches and cached vendor source are excluded. The exact inspected source hashes are recorded in [the machine-readable inventory](../outputs/source_layout_audit_v35.json.draft); its source-set SHA-256 is `fcd3e3070d466d7980817a4afdec229e800c06ec93b7c14f78e8d2b3c7f7dd7e`. The audit rechecked those bytes before saving the report.
+
+## GPU definitions to relocate
+
+| Active source location | Actual definition | Role |
+| --- | --- | --- |
+| `csrc/kernel_launcher/block32_rotated.cu:17` | `prepare_rotated_weight_kernel` | Prepares the C32 canonical/rotated weight cache. |
+| `csrc/kernel_launcher/block32_register.cu:14` | `register_pack_probe_kernel` | Private register-based FP8 publication probe. |
+| `csrc/kernel_launcher/window_block_vector_weight.cu:19` | `prepare_window_vector_weight_kernel` | Prepares the C256 canonical/vector weight cache. |
+| `csrc/kernel_launcher/window_block_small_vector_weight.cu:19` | `prepare_window_small_vector_weight_kernel` | Prepares the C64/C128 canonical/vector weight cache. |
+| `csrc/kernel_launcher/residual_seed_probe.cu:14` | `residual_seed_pair_probe_kernel<VECTOR>` | Private Half seed-bit diagnostic. |
+
+These are function bodies, not declarations. Cache preparation and diagnostic kernels are GPU implementations too, so their bodies belong under `kernel_impl` even though they are outside the steady-state network or private APIs. Their validation, allocation, launch dimensions and current-stream calls can remain in the launchers.
+
+The following three matches are **forward declarations** and are not implementation-placement violations:
+
+- `gemm.cu:13`: `ordered_partition_vector8_kernel(...);`
+- `gemm_large_split.cu:13`: `ordered_partition_sum_kernel(...);`
+- `ordered_reduce_vector.cu:11`: `ordered_partition_sum_kernel(...);`
+
+No explicit `__device__` or `__host__` bodies were found in launcher/API source, and no `C10_DEVICE`, `C10_HOST_DEVICE`, `CUDA_HOST_DEVICE`, `__forceinline__`, or `__launch_bounds__` aliases were found there. This is a lexical source audit, supplemented by inspection of the eight qualifier matches; it is not a preprocessed compiler audit. CUDA `<<<...>>>` launch sites in the launcher directory are expected.
+
+## API layer: broader than registration
+
+The user's original wording calls this directory the “torch api layer.” The stricter audit criterion, “only registration,” would also require moving the following host implementation categories. These are separate from the five GPU-placement violations.
+
+| Source | Logic beyond schemas/registration | Suggested destination if enforcing registration-only |
+| --- | --- | --- |
+| `torch_api/post70_inference.cpp:28` | Full tensor contracts, device and shape calculation, policy lookup, fused/composed route and output-head composition. | `kernel_launcher/post70_dispatch.cpp`; leave API declarations and registrations. |
+| `torch_api/inference.cpp:34` | Linear/BMM/group-linear reshaping, seed broadcasting, packing, matrix-layout handling and operator composition. | A host-only `kernel_launcher/inference.cpp`. |
+| `torch_api/global_prepacked.cpp:16`, `global_prepacked_vector.cpp:11`, `global_prepacked_prefetch.cpp:11` | Preparation followed by the relevant attention launch, plus no-autograd wrappers. | The corresponding host launch/dispatch layer. |
+| `torch_api/training.cpp:12` | Training contracts, device capability check and ATen arithmetic for FP32/BF16 forward/backward. | A host-only training implementation file if the directory must contain registration only. This does not require custom training CUDA kernels. |
+| `torch_api/register.cpp:10`, `attention_math.cpp:9` | Custom autograd classes, saved tensors, backward formulas and host API adapters. | A separate host autograd implementation file; retain registration here. |
+| Multiple API binding files | No-grad checks, diagnostic `selected_*` wrappers and compiled-policy version accessors. | These are normal API adaptation, but even these small wrappers must move under a literal registration-only rule. |
+
+The strongest production dispatch exception is `post70_inference.cpp`: it queries `device_sm` and branches on the compiled policy itself. The `selected_*` functions in other API files mainly expose diagnostics for tests/tuners; their presence does not mean Python selects a production kernel. This audit does not propose merging host/autograd cleanup into the small device-definition relocation.
+
+## Public Python routing
+
+`dlssnr/__init__.py` is a minimal lazy import. `dlssnr/ops.py` loads the extension and forwards dispatcher attributes. Active `dlssnr/*.py` contains no device-capability query, `selected_*` call, SM policy read or explicit tuned-variant override. A second independent read by the C512 agent reached the same conclusion.
+
+The remaining Python decisions are visible and should be described accurately:
+
+- `inference.py:69` and `:76` route fixed channel families to the global, window or block operators. `PackedInferenceBlock.forward` does the same for byte storage. C++ selects a kernel within those operators.
+- `inference.py:35` chooses the FP16 residual operator versus an explicitly prepared seed plus linear operation. This is a precision/composition choice, not an architecture or measured-shape policy.
+- `inference.py:120` and `:126` handle byte/Half storage, packing and Half adapter weights. Those decisions are part of the arithmetic/storage contract.
+- `inference.py:247` identifies which graph operands need cache-preparation APIs. The returned tensor rank determines buffer/view bookkeeping; the C++ preparation API decides whether to create a hardware-specific cache. `_window_weights` selects an available cached operand, not a kernel variant.
+- `model.py:228` selects the requested reference/extension backend and training/deployment arithmetic. Training reuse of Torch operands was explicitly requested.
+
+`run_tests.py` is a pytest entry point. `run_tuning.py` selects offline workflows and generates C++ policies; offline Python tuning is expected and is not runtime deployment selection.
+
+If “all kernel selection in C++” is intended to include every semantic choice between public operators, the precision/composition and channel routing above would need a broader graph-dispatch refactor. The current implementation already keeps hardware and tuned-variant selection in C++, so that broader interpretation should not be silently mixed into a file-placement patch.
+
+## Small later-build relocation plan
+
+1. Add five narrowly scoped implementation headers: `block32_rotated_prepare.cuh`, `block32_register_probe.cuh`, `window_vector_weight_prepare.cuh`, `window_small_vector_weight_prepare.cuh`, and `residual_seed_probe.cuh` under `kernel_impl`.
+2. Move each existing definition byte-for-byte, including the residual probe's template line. Replace its old location with the new header include **at that same namespace scope**. Four definitions currently have anonymous-namespace linkage; the residual probe has `dlssnr` linkage. Preserve both. Do not add a new namespace wrapper or move the include outside its old scope.
+3. Keep the original translation units, preceding dependency includes/macros, kernel names, launchers, argument lists, dimensions, streams and validation unchanged. Do not deduplicate the two weight-packers during this patch.
+4. Add a CPU source-placement check that rejects active device function bodies outside `kernel_impl` but accepts the three forward declarations. Compare extracted definition text hashes before/after relocation. The inventory generator is [a draft read-only helper](../tools/audit_source_layout.py.draft), not an activated test.
+5. In a later authorized build, compare exact architecture-specific cubin/SASS instructions and resource usage for the moved kernels and affected translation units. Check mangled symbols, instruction/encoding sequences, registers, shared/local/stack storage, and launch parameters. Source paths/line information and the complete DLL hash will change; **unchanged source bodies alone do not establish instruction identity**.
+6. Run the existing cache/packing/seed-probe correctness and graph tests. Use the new binary/source identity for any new benchmark journal; do not resume the frozen v35 scan with the rebuilt binary.
+
+The stale comments in the two active vector-cache launchers also merit a later wording correction: they still describe the kernels as private/uncompiled experiments even though public cached dispatch now calls them. That comment cleanup can be reviewed separately; no behavioral change is needed.

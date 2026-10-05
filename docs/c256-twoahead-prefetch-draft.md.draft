@@ -1,0 +1,77 @@
+# Two-K-ahead rolling B-prefetch draft
+
+This private draft starts from the measured v25 rolling-prefetch kernel. It
+adds a third eight-word B bank, leaving W2, normalization, attention, output
+publication, cache layout, and all seven barriers unchanged. No active source,
+production policy, binary or GPU execution is changed by these draft files.
+
+The [fresh source analysis](../profile/window-vector-prefetch-fp8-b15-136x240-p1-v3-20261003T062752_050764Z/ANALYSIS.md)
+finds 2,416 of 4,129 long-scoreboard samples at carry MOVs consuming the next
+global B load. One MMA group of lookahead is often insufficient. The source
+experiment requests the future fragment two MMA groups ahead:
+
+```text
+current = load K0
+if present: next = load K1
+for K = 0..7:
+    if K+2 exists: future = load K+2
+    compute K from current
+    if K+1 exists: current = next
+    if K+2 exists: next = future
+```
+
+**This source schedule does not guarantee two groups of latency hiding.** The
+`next = future` copy itself reads the future registers after computing K.
+If SASS retains that copy at the loop tail, it can wait on the K+2 load before
+K+1 computes. Moving the final MMA use farther away is insufficient when an
+earlier copy consumes the value. The experiment tests what the compiler does
+with the longer-lived queue; its first-consumer distance, not just its MMA-use
+distance, must be inspected before interpreting timing.
+
+A separate three-fixed-bank, three-step unrolled loop could avoid that early
+copy, at the cost of a larger body and the load-sinking risk already observed
+in the ping-pong experiment. That alternative is not implemented here.
+
+The draft declares 24 B words instead of 16. For each eight-step dense call it
+loads exactly eight B fragments, reads the same 32 shared A fragments and
+executes the same 128 lane MMA events. Seven next-to-current carries and six
+future-to-next carries perform 104 source word assignments, versus 56 in the
+one-step version. The final two iterations never request K8 or K9. Actual
+register allocation, instructions, occupancy and spills require compilation
+and SASS evidence; the existing one-CTA residency is not a promise for this
+variant.
+
+`tools/draft_window_twoahead_prefetch.py.draft` reproduces:
+
+- `csrc/kernel_impl/window_block_twoahead_prefetch.cuh.draft`
+- `csrc/kernel_launcher/window_block_twoahead_prefetch.cu.draft`
+- `csrc/torch_api/window_block_twoahead_prefetch.cpp.draft`
+
+The private schema is `_inference_window_block_twoahead_prefetch`, with the
+same ten tensors, `phase=0`, `packed_output=True` and `raw_output=False` as the
+rolling-prefetch op. It accepts half or byte storage for FP8 C256 input and
+the existing five immutable dual weight caches. Published output is byte;
+optional raw output is half. It has no backward implementation.
+
+The CPU trace and mutation regressions live in
+`tools/window_twoahead_prefetch_proof.py.draft` and
+`tests/test_window_twoahead_schedule.py.draft`. They prove steps 1–9, exactly
+once B loads, register-bank value lifetimes, copy order, ascending accumulator
+K, two-step **source** lookahead, and bounded cache addresses. Normalization
+restores all executable v25 source outside the changed schedule. The saved
+proof explicitly makes no claim about compiled first-consumer distance.
+
+`tests/test_window_twoahead_prefetch.py.draft` contains GPU comparisons with
+independent composition, canonical/cache variants, pair prefetch, rolling
+prefetch, ping-pong and both QKV tile sizes. It covers all phases, tails,
+storage/raw flags, real checkpoint weights, misalignment, noncontiguity,
+immutable operands, and capture replay with changed inputs/scales/caches.
+These draft GPU tests have not been executed.
+
+`tests/benchmark_window_twoahead_prefetch.py.draft` compares all fourteen
+existing paths plus the new one. It uses resident weights, distinct-output
+CUDA graphs, a memory budget, shuffled/reversed measurement orders, exact byte
+checks and poisoned graph replays. Promotion requires more than 3% improvement
+against the fastest existing path. Its logical resident timing cannot replace
+the matched original physical-I/O speed gate or the 85% gate; both remain
+unmet by the current implementation.

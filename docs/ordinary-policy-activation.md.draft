@@ -1,0 +1,93 @@
+# Activate the completed v35 ordinary GEMM policy
+
+This runbook is a draft for **after** `outputs/gemm-deployment-v35` completes. No policy, header or binary has been copied by this review. The scan measures the existing ordinary FP8 row-major/raw-output variants0–12, including transition roles, across 931 geometries, 4,283 dispatch keys and 10,376 real-weight contracts. It does not measure the FP16, packed-weight, grouped-epilogue or other component families. In particular, it establishes neither continuous FP16 performance nor native FP16 full-graph equivalence/performance.
+
+Keep the measured binary, catalog, active sources and policies frozen until the completed no-op export has been verified and staged. The currently pinned policy version is `ec70c084051c4c3e`, the catalog is `ordinary_raw_large_ordered_split12_vector_v1`, and the v35 binary SHA256 is `44905141c7f400547e7cf44b9a45ca8852dc79af4565f6b5b6f12187bf6d2166`.
+
+## 1. Finish, no-op resume, then export once
+
+Use the existing [scan command/checklist](../outputs/v35-ordinary-preflight-review/README.md), with the same 4096 MiB budget and all other settings. Do not switch controllers or output directories. The required order is:
+
+1. Full run returns successfully; run `check_stage.py --stage full`.
+2. Identical completed resume adds zero records; run `--stage noop`.
+3. Identical resume with `--export-drafts` writes the final report/policy/header; run `--stage export`.
+
+All three checks use `--run outputs/gemm-deployment-v35`. Require exactly 10,376 verified physical records and 4,283 complete keys. A count of 931 alone refers to geometries and is insufficient. SQLite is the durable authority; JSON must contain exactly the same records. Historical failures may remain only when their keys now have verified results.
+
+Do not run another completed resume between export and staging: it rewrites report bookkeeping, changing the report hash referenced by the draft policy. If that happens, export and verify again. Preserve the raw JSON, SQLite and stage-check files; never edit timing samples to obtain a promotion.
+
+## 2. Verify the exact export and stage it separately
+
+The existing stage checker only establishes header existence. The additional draft verifier closes that gap:
+
+```powershell
+.venv\Scripts\python.exe -B tools/prepare_ordinary_activation.py.draft `
+  --run outputs/gemm-deployment-v35 `
+  --stage-dir outputs/ordinary-v35-policy-activation
+```
+
+Use a new, disjoint outputs directory. This helper performs no GPU work and never writes into `tuning/` or `csrc/`. It checks:
+
+- The canonical complete integer-resolution geometry/workload domain, source/runtime/catalog/checkpoint identity, per-record compiled-selection provenance, and full/no-op/export record digests.
+- Every record's proof and timing samples, exact JSON/SQLite equality, resolved failure history, and unchanged final evidence hashes.
+- Recomputed winners and guards using the unchanged exporter; an exact comparison of all merged records and provenance, not merely policy validity.
+- Deterministic header bytes generated from **all** saved `gemm_sm_*.json` policies, and agreement of the old table version with the measured compiled version.
+
+It then writes `activation.json`, the replacement JSON/header, unchanged other-SM GEMM files, and hash-verified `previous/` rollback copies into the new directory. Record the SHA256 of `activation.json`; it is the handoff identity. The complete raw scan remains in its original directory.
+
+At review time the old SM120 policy has 512 rows. Only 30 belong to the 15 scanned families; **482 unrelated-family rows must survive unchanged**. Old anchors outside the requested keys also remain intact. The verifier reports exact replacement, new-key and untouched counts rather than assuming every measured key becomes a new winner.
+
+The legacy table contains 420 valid rows without an explicit `layout` field.
+Family lookup must apply the production defaults (`epilogue=0`, `layout=0`)
+without adding fields to those stored dictionaries. The corrected draft verifier
+does this only for comparison keys; the original rows and their metadata are
+preserved. The pre-fix verifier, test, runbook, review and exact old-policy fixture
+are archived under `outputs/v35-ordinary-activation-review/pre-legacy-default-fix/`.
+The historical five-bundle plan still pins the pre-fix verifier; use the separately
+reviewed six-bundle plan's explicit preparer-hash override after the fix. Do not
+rewrite its old lock to hide the changed dependency.
+
+Inspect `activation.json` → `merge`. A new winner must beat the faster of current compiled0 and ordered baseline1 by more than 3% for every weight member in both timing orders. Each non-winning measured M in an accepted family gets a guard retaining the resolved compiled choice. If that guard cannot satisfy the existing policy validator, the **whole family is blocked and keeps its old rows**. Do not weaken the validator, discard those M values or copy only winning anchors: nearest-M selection could otherwise transfer a winning configuration across a measured losing case. Blocked families are explicit coverage of the promotion limitation, not missing measurement records and not a numerical failure.
+
+## 3. Copy only the two reviewed activation files
+
+After verifying the staged hashes, the intended live changes are only:
+
+```text
+outputs/ordinary-v35-policy-activation/gemm_sm_120.json
+    -> tuning/gemm_sm_120.json
+outputs/ordinary-v35-policy-activation/gemm_policy.h
+    -> csrc/kernel_launcher/gemm_policy.h
+```
+
+Do not replace the whole tuning directory or regenerate a header from SM120 alone. Other device policies, layouts, precisions, component policies and their measurements stay in place. The stage's `preserved_active_gemm_files` and `preserved_component_policy_files` hashes make this check explicit.
+
+Do not activate the C512 model/helper hook or its newly measured policy in this step. The agreed order is ordinary policy export/build, then the C512 sweep on that resulting baseline, then C512 model/policy integration and the next original-trunk range comparison. An isolated private experiment may share the build only if it leaves all measured public variants0–12 and their arithmetic unchanged; archive those additional source changes separately.
+
+## 4. Build, then check the actual compiled table in a fresh process
+
+Use the existing `build_windows.ps1 -NoInplace` build flow and archive the resulting binary, source snapshot and build log. The flag keeps the installed v35 binary available until the new build is ready. No build command was executed by this review.
+
+Before installing the new binary, run the metadata-only checker on its explicit path:
+
+```powershell
+.venv\Scripts\python.exe -B tools/check_ordinary_compiled.py.draft `
+  --manifest outputs/ordinary-v35-policy-activation/activation.json `
+  --binary build/lib.win-amd64-cpython-311/dlssnr/_C.cp311-win_amd64.pyd `
+  --installed --execute `
+  --output outputs/ordinary-v35-policy-activation/compiled-build-check.json
+```
+
+Here `--installed` checks the copied **JSON/header and preserved policy files**; the explicit `--binary` may still point to the uninstalled build. The worker starts a fresh interpreter, loads that exact library and calls only host metadata operations. It creates no CUDA tensors and issues no kernels. It checks every staged anchor, midpoint/lower-tie transition, endpoint clamp and family/device isolation against the Python policy oracle.
+
+Require `passed=true`, the expected compiled policy version, the unchanged catalog string and zero mismatched queries. The policy version hashes all SM/key/variant dispatch records; it is **not** the JSON hash, binary hash or catalog string. A metadata-only policy change can legitimately retain its old version. The checker records the new binary SHA separately.
+
+After installing the exact verified binary, repeat with `--binary dlssnr/_C.cp311-win_amd64.pyd` and a distinct output filename. A source header alone does not prove that the rebuilt library contains it. Do not resume the old v35 timing journal with the new binary/table.
+
+## 5. Validate execution and retain the scope of the evidence
+
+Host lookup agreement is not a GPU launch trace or numerical validation. Run the applicable policy/catalog tests, actual ordinary GEMM tests including variants11/12, seeded partitions and odd/tail/offset cases, capture/mutation tests and the full model suite. Run focused memcheck/racecheck for changed selections where needed. Archive logs with the new binary/source identity. Then repeat the established complete-model timings under the same IO/precision/settings as the v35 baseline before using the new ordinary table as the C512 tuning baseline.
+
+Nearest-M lookup uses lower M on ties and endpoint configurations outside the stored range; it never clamps tensor dimensions or changes partition boundaries. Those transferred configurations do not establish measured speed at unmeasured shapes. Full ordinary coverage is component evidence, not complete-network performance, original-DLL speed or 85% hardware utilization. The exported provenance keeps both native-speed and roofline gates unverified.
+
+If validation fails, keep all new evidence, restore both `previous/` JSON/header files, and reinstall the archived v35 binary as one consistent set. Recheck its compiled version before any further baseline comparison. Do not restore only a header or relabel results from the new binary as v35.

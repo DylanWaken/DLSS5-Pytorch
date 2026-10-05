@@ -1,0 +1,6 @@
+{
+  "OpenDLSS-NR": {"url": "https://github.com/maanHimself/OpenDLSS-NR", "commit": "9d08f4184bbcb9d858e2fb7a7834ec0837a9d2f1"},
+  "kda": {"url": "https://github.com/NVlabs/kda", "commit": "ef6ce617693ef0782b3ecb9f37e39bbf10226a90"},
+  "KernelWiki": {"url": "https://github.com/mit-han-lab/KernelWiki", "commit": "76d27b56f804e7e7295d4c570e1e5d7eef4b0a75"},
+  "ncu-report-skill": {"url": "https://github.com/mit-han-lab/ncu-report-skill", "commit": "d1887948c7d53690cfe6605f59c1329b8a1c6bb5"}
+}

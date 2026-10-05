@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68", "torch>=2.8", "ninja"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dlssnr-pytorch"
+version = "0.1.0"
+description = "DLSS-NR research operators and differentiable PyTorch network"
+requires-python = ">=3.10"
+dependencies = ["torch>=2.8", "numpy>=1.24"]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+include = ["dlssnr*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["cuda: requires CUDA extension", "assets: requires extracted model weights"]

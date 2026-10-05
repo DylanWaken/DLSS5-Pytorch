@@ -1,0 +1,71 @@
+# C256 backend screen: unchanged PTX, three runtime paths
+
+This draft compares the two reviewed SM120 cubins with the **installed v35 rolling operator**. Its default six cases are blocks 15 and 49 at 48×84, 72×120 and 136×240, phase 1, packed input, packed output and no raw endpoint. The weights, scales and bias come from the real checkpoint. Inputs are three deterministic synthetic tensors published to FP8; they are not full-model upstream captures.
+
+The first one-contract runtime smoke completed its numerical comparisons and three actual changed-input replays, but memcheck rejected sixteen API diagnostics from deliberate out-of-range parameter-count queries. That run is **not a sanitizer pass**. This revised draft removes those queries; its new runtime validation is pending. The helper compiles nothing, changes no installed software or policy, and never loads the original NGX DLL host. This is a component screen, with no native-DLL, whole-network or roofline claim.
+
+## What is held constant
+
+| Path | Code | Launch |
+|---|---|---|
+| `installed_v35_rolling` | Installed `_inference_window_block_vector_prefetch` | Existing PyTorch/C++ launcher |
+| `driver_cuda12_8` | Exact reassembly of the four archived v35 symbols | CUDA driver in Torch's context/stream |
+| `driver_cuda13_4` | The same archived PTX assembled by 13.4 | The same driver wrapper |
+
+The installed binary must be SHA256 `44905141c7f400547e7cf44b9a45ca8852dc79af4565f6b5b6f12187bf6d2166`. The helper pins the backend handoff (`b0c17f13…d5990`), launch sidecar (`897a222d…809dd`), all cubin/PTX/SASS/compiler evidence, assembler/tool files, all 499 frozen active source files, checkpoint manifest and eleven stage payloads. It repeats these checks before and after every case and at completion. Consequently this draft must run **before** later source/policy activation; it is deliberately not portable to a newer installed build.
+
+The exact reviewed runtime bundle manifest and its independently recorded SHA must also be supplied for execution. Do not recompute a new digest merely to bypass a failed identity check. There is no resume or policy export.
+
+## ABI, buffers and lifetime
+
+The CUDA entry has eighteen separate parameters: twelve 64-bit pointers followed by six 32-bit integers. The exact count, types and order are checked against all four hash-pinned PTX entry declarations and the pinned cubin launch contract. At runtime `cuFuncGetParamInfo` queries only valid indices0..17 and checks every offset and size. It never intentionally calls index18, and CUDA API errors are not suppressed. The inherited module loader receives parameter-zero size8, while the complete argument record is120 bytes.
+
+The previous four-file bundle, manifests, independent review and first smoke evidence are byte-preserved under `outputs/c256-backend-runtime-history/v1-first-smoke/`; its `archive.json.draft` maps original paths to hashes. Protocolv2 changes this ABI diagnostic only; arithmetic, launch parameters, lifetime safeguards and paired measurement boundaries are unchanged. Fresh execution must use new result/log filenames and the new reviewed manifest.
+
+Pointer order is state, W1, W2, W3, QKV, projection, FFN scale, attention scale, head scale, bias, packed output and optional raw output. Each of the five weight pointers addresses the **second half of its dual cache**, exactly as in the installed launcher. A no-raw entry gets a null raw pointer. Scalars are height, width, `nx`, `ny`, `sx`, `sy`; block size is 256 threads and grid size is `nx*ny` for the bounded batch-one contract. Dynamic shared memory is zero.
+
+Modules load before capture, using the existing CUDA context. The helper retains module owners, cubin bytes, prepared tensors, output owners, ctypes scalar storage and all eighteen argument addresses through graph use. All driver launches assert the expected current device, context and stream. On success, each native graph is explicitly destroyed with `graph.reset()` before its Python references are cleared and before modules unload. Borrowed function wrappers close before their module owner, on the selected device before restoring the caller device.
+
+A failed capture can leave a graph referenced by the exception traceback. Explicit reset covers that case too. If capture, reset, synchronization or execution fails, the helper conservatively retains its module groups until the isolated worker exits; it does not unload a cubin through a potentially live graph. Reset is idempotent, remaining graphs still receive cleanup after one reset fails, and cleanup diagnostics annotate the original error rather than replacing it. A worker with retained failure lifetimes rejects further execution. Run the optional GPU tests with `-x` and restart the worker after any failure; the test module keeps one runtime instance across cases so reimport cannot bypass this guard.
+
+The source allocates 16,384 shared bytes; cuobjdump reports 17,408. Driver attributes are recorded and required to agree between backends, without pretending those two shared-memory figures describe the same accounting category.
+
+Guarded allocations surround input, canonical weights/scales/bias, prepared caches and both driver output paths. Every nonempty output interval across all three graphs must be disjoint. The installed operator allocates its own outputs; those are checked by byte equality, poisoned replay and later sanitizer execution, not claimed to have external guards.
+
+## Correctness and timing protocol
+
+The independent local oracle uses canonical checkpoint weights, forced ordinary GEMM variant 1, separate cubic activation/publication, the retained attention operator and a separate seeded projection. It does not call the rolling whole-block kernel or either cubin. Its scalar math still shares the existing implementation, so it is not an independently executed native-DLL proof.
+
+An eager oracle is saved before warmup/capture. All three paths retain every captured output, perform a first real replay before reading results, and compare all bytes. Capturing a graph alone is never treated as executing it. All resident inputs/caches are checked before any fixture can be overwritten.
+
+Each round shuffles all three paths deterministically, measures that order, then measures its exact reverse. Each path receives graph warmups before its event interval. Only graph replay is timed. Both driver allocations and module/cache preparation occur outside capture/timing; the installed operator's allocations happen at graph construction, outside the timed replay. The combined byte budget covers all three retained output sets and conservative guard overhead. It does not claim to cover fixtures, weights, oracle intermediates or runtime memory.
+
+After every sweep, a fresh ordered oracle must equal the saved oracle; all retained outputs and immutable operands are rechecked. Then all three retained graphs replay the actual changed-input sequence **1 → 2 → 0**. Every nonempty output must change relative to the previous fixture. Every output is poisoned with the bitwise complement of its new expected bytes before replay. The final fixture-zero digest must return to the initial digest. Every per-call output is checked, including earlier graph invocations.
+
+The report contains raw normal/reverse samples and within-sweep speed ratios, including 13.4 versus both driver 12.8 and the installed operator. A faster isolated result would still need correctness/sanitizer approval and an independently scoped integration decision. The helper never promotes it.
+
+## Future commands, only after source freeze and GPU ownership permit
+
+Run CPU tests and inspect the CPU-only preflight first:
+
+```powershell
+.venv\Scripts\python.exe -B tests\test_benchmark_c256_backend_cpu.py.draft
+.venv\Scripts\python.exe -B -O tests\test_benchmark_c256_backend_cpu.py.draft
+.venv\Scripts\python.exe -B tuning\benchmark_c256_backend.py.draft --all-io --all-phases
+```
+
+Use the final manifest digest from the reviewed handoff in place of `REVIEWED_SHA`. Start with one small contract and two retained invocations:
+
+```powershell
+compute-sanitizer --tool memcheck --launch-timeout 300 --target-processes all --error-exitcode 99 --log-file outputs\c256-backend-smoke-v2-memcheck.log .venv\Scripts\python.exe -B tuning\benchmark_c256_backend.py.draft --execute --case 15,48,84 --rounds 1 --warmups 1 --calls 2 --review-manifest outputs\c256-backend-runtime-draft\manifest.json.draft --review-manifest-sha256 REVIEWED_SHA --output outputs\c256-backend-smoke-v2.json
+```
+
+Expand to all four I/O variants and all phases on that same small field with `--all-io --all-phases`. This is sixteen bounded cases, distinct from the default six shape/weight contracts. For a bounded racecheck pass, select the shared kernel-name substring `--kernel-name kns=window_block_vector_prefetch`; record that the filter covers the three rolling implementations but does not instrument the oracle GEMMs/attention. Keep memcheck unfiltered. Sanitizer timings are not benchmark evidence.
+
+After correctness checks, the six-case timing command includes both normal and reverse orders automatically:
+
+```powershell
+.venv\Scripts\python.exe -B tuning\benchmark_c256_backend.py.draft --execute --review-manifest outputs\c256-backend-runtime-draft\manifest.json.draft --review-manifest-sha256 REVIEWED_SHA --output outputs\c256-backend-six-contracts-v2.json
+```
+
+`--all-io` expands the six anchors to 24 cases; adding `--all-phases` gives 96. The optional staged pytest file contains sixteen GPU cases for the small field. It requires both `DLSSNR_C256_BACKEND_TEST=1` and `DLSSNR_C256_BACKEND_MANIFEST_SHA=REVIEWED_SHA`; those tests have not executed. The `.draft` files should be run directly or reviewed by an explicit loader, not copied into active source during the v35 scan.

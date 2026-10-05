@@ -1,0 +1,1542 @@
+{
+  "direct_interface": {
+    "argument_array": "One void* argument points to complete Parameters, not one pointer per field.",
+    "declarations": 7,
+    "link_scope": "Plain C++ declarations match retained NVCC host-stub namespace/signature. No link test performed; root union must confirm resolved host stubs and unchanged device artifacts.",
+    "path": "outputs/all-reconstructed-deployment-prep/global/global_connectors_abi.h.draft",
+    "sha256": "ef92afef2d3754a79e7195f2b74ff915c27093bad6cd84c13aa70a99eefc74d4",
+    "source_structs_equal": true
+  },
+  "donors": {
+    "repack_clear": {
+      "binary": {
+        "bytes": 446020096,
+        "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\global-repack-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+        "sha256": "24ad92a019847bb641e97314a84ea8c4322bc82ca34f492161285ded9beb53ad"
+      },
+      "build_manifest": "outputs/global-repack-cuda-reconstruction/build-draft/run-v1/build.json",
+      "new_cuda_architectures": "12.0",
+      "new_objects": 2,
+      "object_donors": {
+        "outputs/global-repack-cuda-reconstruction/build-draft/run-v1/overlay/build/temp.win-amd64-cpython-311/Release/csrc/kernel_launcher/global_repack_reconstructed.obj": "5f9de2453c10d2958f3304b6594c14cfe13e61f9b1320c0b3599897e275501ce",
+        "outputs/global-repack-cuda-reconstruction/build-draft/run-v1/overlay/build/temp.win-amd64-cpython-311/Release/csrc/torch_api/global_repack_reconstructed.obj": "3cb6d2723f0059ddfd42f317e7d6ebd48122976a8ee90ca5e87c0e80217aafb5"
+      },
+      "retained_objects": 122,
+      "source_count": 574,
+      "source_members": {
+        "csrc/kernel_impl/global_repack_reconstructed.cuh": "91474d0f0e60790fcbd927f51b0e2fc78ce98fc5f77403c18c33cf76d5e7b2ff",
+        "csrc/kernel_launcher/global_repack_reconstructed.cu": "d89717141686c63417b0563c1aa941083a5b4973200e356d64bdf551df1ec954",
+        "csrc/torch_api/global_repack_reconstructed.cpp": "091c4268bf0ed8d4a66ba93359903690d57f82ed8cbf769cb6f4761404cd03a2"
+      },
+      "verification": "Small frozen sources and manifest files rehashed here. Object/binary hashes are accepted manifest pins, not freshly rehashed."
+    },
+    "up512": {
+      "binary": {
+        "bytes": 451463168,
+        "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\decoder-up512-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+        "sha256": "f58f39a585d02adc640a25f591878d02d1477a94807ec89d8f6b877700eb67a9"
+      },
+      "build_manifest": "outputs/decoder-up512-cuda-reconstruction/build-draft/run-v1/build.json",
+      "new_cuda_architectures": "12.0",
+      "new_objects": 2,
+      "object_donors": {
+        "outputs/decoder-up512-cuda-reconstruction/build-draft/run-v1/overlay/build/temp.win-amd64-cpython-311/Release/csrc/kernel_launcher/decoder_up512_reconstructed.obj": "e029725904124951525c95c8bcdfc175585f82cc7ecd7a60924c04c237b11be5",
+        "outputs/decoder-up512-cuda-reconstruction/build-draft/run-v1/overlay/build/temp.win-amd64-cpython-311/Release/csrc/torch_api/decoder_up512_reconstructed.obj": "7f0874bd55101696a503741feff211226f9614507c597052a1c6184d41c667b8"
+      },
+      "retained_objects": 132,
+      "source_count": 620,
+      "source_members": {
+        "csrc/kernel_impl/decoder_up512_fp8_reconstructed.cuh": "ab6e407d2b00e111ed588b1d97695b9a99491ef532fa2bcbb18641b8628d3555",
+        "csrc/kernel_impl/decoder_up512_fp8_reconstructed_ops.cuh": "2551fa1bb225a4c97a2c20a59cf54c337139942bac95892f10cfa2452ff7ff8f",
+        "csrc/kernel_impl/decoder_up512_half_reconstructed.cuh": "b7b3acd1c22e1311b8cfb284135e0c82eb070bb9584e7bfa83652efa5133392c",
+        "csrc/kernel_impl/decoder_up512_half_reconstructed_ops.cuh": "f2229499d4aeba3b6221137464b2a60f350a0fb0ff62e78eec1614fc5f443aef",
+        "csrc/kernel_launcher/decoder_up512_reconstructed.cu": "2627d71e22cd47570602083354e4d8899f44ae56778178c6ede515a5b26959b8",
+        "csrc/torch_api/decoder_up512_reconstructed.cpp": "88a98318f8d2cdda3042e13700f304623cd5c62fc3705e530db5987bba2319f6"
+      },
+      "verification": "Small frozen sources and manifest files rehashed here. Object/binary hashes are accepted manifest pins, not freshly rehashed."
+    }
+  },
+  "entries": [
+    {
+      "abi": {
+        "alignment": 8,
+        "bytes": 80,
+        "dimension_order": [
+          "low_height",
+          "low_width",
+          "high_height",
+          "high_width"
+        ],
+        "pointer_offsets": {
+          "counter": 32,
+          "high": 16,
+          "low": 0,
+          "record": 56,
+          "scratch": 48,
+          "skip": 8
+        },
+        "unused_pointer_slots": [
+          24,
+          40
+        ]
+      },
+      "actual_native_nodes": [
+        "repack-38-39 -> block-39 -> block-40; skip retained from block-30 output"
+      ],
+      "direct_stub": "dlssnr::decoder_up512_fp8_reconstructed::kernel(dlssnr::decoder_up512_fp8_reconstructed::Parameters)",
+      "donor": "up512",
+      "frozen_wrapper": "at::Tensor dlssnr::decoder_up512_fp8_reconstructed_out(const at::Tensor& low, const at::Tensor& skip, const at::Tensor& record, at::Tensor high, at::Tensor counter, at::Tensor scratch)",
+      "id": "up512_fp8",
+      "original": {
+        "cubin": "assets/vendor_modules/module_6.cubin",
+        "entry": "cc_dec_input_upsample_1024_512_fp8",
+        "entry_line": 14285,
+        "module": 6,
+        "ptx": "assets/vendor_modules/module_6.ptx"
+      },
+      "physical": {
+        "layout": "Native spatial 4x4 tile; not BHWC.",
+        "pairwise_disjoint": true,
+        "record_stream": true,
+        "same_device": true,
+        "scalar_byte_offset": "(t//16)*C*16+(c//32)*512+(t%8)*64+((c%8)//2)*16+((c%32)//16)*8+((t%16)//8)*4+((c%16)//8)*2+c%2",
+        "tile_token": "t=16*((y//4)*(W//4)+x//4)+4*(y%4)+x%4",
+        "wrapper_dtype": "All arguments are raw uint8, including Half/records/counter."
+      },
+      "prepare": {
+        "accepted_candidate": {
+          "active_blocks_per_sm": 6,
+          "admitted": true,
+          "capacity": 1128,
+          "launch_ctas": 1080,
+          "max_threads": 384,
+          "scheduler_progress_proven": false,
+          "sm_count": 188
+        },
+        "accepted_native": {
+          "active_blocks_per_sm": 6,
+          "admitted": true,
+          "capacity": 1128,
+          "launch_ctas": 1080,
+          "max_threads": 384,
+          "scheduler_progress_proven": false,
+          "sm_count": 188
+        },
+        "admission": "SM120; query exact retained function attributes and occupancy at block64/dynamic0; maxThreads>=64 and activeBlocksPerSM*SMcount >= all CTAs (1080 FP8,32 Half). Recheck after relink. Native oracle independently admitted; no progress proof.",
+        "capture": "Prepare outside capture even on cache hits. Direct launch must reproduce checks outside capture.",
+        "variant": 0,
+        "wrapper": "dlssnr::prepare_decoder_up512_reconstructed(const at::Tensor& anchor, int64_t variant)"
+      },
+      "protocol": {
+        "final": 3,
+        "ordering": "Original relaxed GPU polling and release GPU stores; do not infer host overlap or formal acquire/progress proof.",
+        "predecessor_counter": false,
+        "reset": -1,
+        "reset_scope": "Every invocation/captured replay, same stream, before kernel; no hidden reset.",
+        "scratch": "Projected-low Half tile. z0 writes all; z1/z2 wait then atomic-add; z3 waits and reads, adds own partial only in registers, publishes high. Final scratch contains z0+z1+z2.",
+        "words": 270
+      },
+      "qualification": {
+        "fixture": {
+          "block": 39,
+          "independent_maps": {
+            "high": {
+              "bytes": 4177920,
+              "complete_bijection": true,
+              "element_bytes": 1,
+              "offsets_sha256": "1e8f23aca873415bef2d58090c20aeb828d154d14abff433e15d840728965448",
+              "shape": [
+                68,
+                120,
+                512
+              ]
+            },
+            "low": {
+              "bytes": 2211840,
+              "complete_bijection": true,
+              "element_bytes": 1,
+              "offsets_sha256": "10a1611e78c5a43ac438c48edba53c452b8d38dc771fe6f63634e3adfe8ed247",
+              "shape": [
+                36,
+                60,
+                1024
+              ]
+            },
+            "skip": {
+              "bytes": 4177920,
+              "complete_bijection": true,
+              "element_bytes": 1,
+              "offsets_sha256": "1e8f23aca873415bef2d58090c20aeb828d154d14abff433e15d840728965448",
+              "shape": [
+                68,
+                120,
+                512
+              ]
+            }
+          },
+          "kind": "actual original block39 FP8 graph physical fixture",
+          "record": {
+            "K": 1024,
+            "N": 512,
+            "complete_matrix_bijections": true,
+            "fp8_bytes": 525312,
+            "fp8_logical_k": "inverse_packed_input_index(logical_k)",
+            "fp8_matrix_bytes": 524288,
+            "fp8_sha256": "e7fa32bd2a8fe680eb90cfddbae7492ffedbb87fd7284cc229a2a122dc8c4fb8",
+            "half_bytes": 1049600,
+            "half_logical_k": "logical_k, independent native K16 mapping",
+            "half_matrix_bytes": 1048576,
+            "half_sha256": "31afde625bacc47929de0ea42b5633c16742c84dbb34e26ae02498fa66261b4c",
+            "name": "block39.layer0.layer",
+            "origin": "Finite block39 FP8 checkpoint values converted to the independently indexed Half matrix with unchanged Half scale suffix; not a recovered original Half asset or original DLL host preparation.",
+            "prefix_bytes": 0,
+            "resource_offset": 123721268,
+            "source_matrix_finite": true,
+            "source_scale_finite": true,
+            "stage_offset": 0,
+            "stage_path": "assets/nr/model/stages/decoder512.bin",
+            "stage_sha256": "19a3fd197ef6677d83637fc83d9e667101df4e8b2b23d5c2abd611ecb9d001e0",
+            "suffix_bytes": 1024,
+            "suffix_preserved_byte_exact": true,
+            "suffix_sha256": "b0852373b221cdbb9ba438df210055f02f98247e894e07506801e31a27e14b24"
+          },
+          "renderer_input": false,
+          "stage": "output",
+          "synthetic_root_input": true
+        },
+        "mutable_endpoints": [
+          "high",
+          "counter",
+          "scratch"
+        ],
+        "receipts": [
+          "outputs/decoder-up512-cuda-runtime-v2/run-p0-contracts-v1/receipt.json",
+          "outputs/decoder-up512-cuda-runtime-v2/run-p0-finite-v1/receipt.json",
+          "outputs/decoder-up512-cuda-runtime-v2/run-p0-exceptional-v1/receipt.json",
+          "outputs/decoder-up512-cuda-runtime-v2/run-p0-memcheck-v1/receipt.json",
+          "outputs/decoder-up512-cuda-runtime-v2/run-p0-racecheck-v1/receipt.json",
+          "outputs/decoder-up512-cuda-runtime-v2/run-p0-paired-v1/receipt.json"
+        ],
+        "scope": "Actual4K physical field after verified74-boundary native prefix, synthetic root input"
+      },
+      "record": {
+        "K": 1024,
+        "N": 512,
+        "complete_matrix_bijections": true,
+        "fp8_bytes": 525312,
+        "fp8_logical_k": "inverse_packed_input_index(logical_k)",
+        "fp8_matrix_bytes": 524288,
+        "fp8_sha256": "e7fa32bd2a8fe680eb90cfddbae7492ffedbb87fd7284cc229a2a122dc8c4fb8",
+        "half_bytes": 1049600,
+        "half_logical_k": "logical_k, independent native K16 mapping",
+        "half_matrix_bytes": 1048576,
+        "half_sha256": "31afde625bacc47929de0ea42b5633c16742c84dbb34e26ae02498fa66261b4c",
+        "name": "block39.layer0.layer",
+        "origin": "Finite block39 FP8 checkpoint values converted to the independently indexed Half matrix with unchanged Half scale suffix; not a recovered original Half asset or original DLL host preparation.",
+        "prefix_bytes": 0,
+        "resource_offset": 123721268,
+        "selected_bytes": 525312,
+        "selected_origin": "Original recovered FP8 bytes unchanged",
+        "selected_sha256": "e7fa32bd2a8fe680eb90cfddbae7492ffedbb87fd7284cc229a2a122dc8c4fb8",
+        "source_matrix_finite": true,
+        "source_scale_finite": true,
+        "stage_offset": 0,
+        "stage_path": "assets/nr/model/stages/decoder512.bin",
+        "stage_sha256": "19a3fd197ef6677d83637fc83d9e667101df4e8b2b23d5c2abd611ecb9d001e0",
+        "suffix_bytes": 1024,
+        "suffix_preserved_byte_exact": true,
+        "suffix_sha256": "b0852373b221cdbb9ba438df210055f02f98247e894e07506801e31a27e14b24"
+      },
+      "source_anchors": [
+        "csrc/kernel_launcher/decoder_up512_reconstructed.cu.draft:55",
+        "csrc/kernel_launcher/decoder_up512_reconstructed.cu.draft:75",
+        "tools/vendor_connectors.py:20",
+        "tools/vendor_trunk.py:129"
+      ],
+      "specification": {
+        "abi_bytes": 80,
+        "batch": 1,
+        "block": [
+          32,
+          2,
+          1
+        ],
+        "buffers": [
+          {
+            "alignment": 16,
+            "bytes": 2211840,
+            "mutable": false,
+            "name": "low"
+          },
+          {
+            "alignment": 16,
+            "bytes": 4177920,
+            "mutable": false,
+            "name": "skip"
+          },
+          {
+            "alignment": 16,
+            "bytes": 525312,
+            "mutable": false,
+            "name": "record"
+          },
+          {
+            "alignment": 16,
+            "bytes": 4177920,
+            "mutable": true,
+            "name": "high"
+          },
+          {
+            "alignment": 4,
+            "bytes": 1080,
+            "mutable": true,
+            "name": "counter"
+          },
+          {
+            "alignment": 16,
+            "bytes": 2211840,
+            "mutable": true,
+            "name": "scratch"
+          }
+        ],
+        "ctas": 1080,
+        "dimension_offsets": [
+          64,
+          68,
+          72,
+          76
+        ],
+        "final_counter": 3,
+        "grid": [
+          30,
+          9,
+          4
+        ],
+        "high_height": 68,
+        "high_width": 120,
+        "kind": "fp8",
+        "low_height": 36,
+        "low_width": 60,
+        "pointer_offsets": {
+          "counter": 32,
+          "high": 16,
+          "low": 0,
+          "record": 56,
+          "scratch": 48,
+          "skip": 8
+        },
+        "variant": 0
+      },
+      "torch_operator": "_decoder_up512_fp8_reconstructed_out"
+    },
+    {
+      "abi": {
+        "alignment": 8,
+        "bytes": 80,
+        "dimension_order": [
+          "low_height",
+          "low_width",
+          "high_height",
+          "high_width"
+        ],
+        "pointer_offsets": {
+          "counter": 32,
+          "high": 16,
+          "low": 0,
+          "record": 56,
+          "scratch": 24,
+          "skip": 8
+        },
+        "unused_pointer_slots": [
+          40,
+          48
+        ]
+      },
+      "actual_native_nodes": [],
+      "direct_stub": "dlssnr::decoder_up512_half_reconstructed::kernel(dlssnr::decoder_up512_half_reconstructed::Parameters)",
+      "donor": "up512",
+      "frozen_wrapper": "at::Tensor dlssnr::decoder_up512_half_reconstructed_out(const at::Tensor& low, const at::Tensor& skip, const at::Tensor& record, at::Tensor high, at::Tensor counter, at::Tensor scratch)",
+      "id": "up512_half",
+      "original": {
+        "cubin": "assets/vendor_modules/module_6.cubin",
+        "entry": "cc_dec_input_upsample_1024_512",
+        "entry_line": 25,
+        "module": 6,
+        "ptx": "assets/vendor_modules/module_6.ptx"
+      },
+      "physical": {
+        "layout": "Native spatial 4x4 tile; not BHWC.",
+        "pairwise_disjoint": true,
+        "record_stream": true,
+        "same_device": true,
+        "scalar_byte_offset": "(t//16)*C*32+(c//16)*512+(t%8)*64+((c%8)//2)*16+((c//8)%2)*8+((t%16)//8)*4+(c%2)*2",
+        "tile_token": "t=16*((y//4)*(W//4)+x//4)+4*(y%4)+x%4",
+        "wrapper_dtype": "All arguments are raw uint8, including Half/records/counter."
+      },
+      "prepare": {
+        "accepted_candidate": {
+          "active_blocks_per_sm": 6,
+          "admitted": true,
+          "capacity": 1128,
+          "launch_ctas": 32,
+          "max_threads": 384,
+          "scheduler_progress_proven": false,
+          "sm_count": 188
+        },
+        "accepted_native": {
+          "active_blocks_per_sm": 6,
+          "admitted": true,
+          "capacity": 1128,
+          "launch_ctas": 32,
+          "max_threads": 384,
+          "scheduler_progress_proven": false,
+          "sm_count": 188
+        },
+        "admission": "SM120; query exact retained function attributes and occupancy at block64/dynamic0; maxThreads>=64 and activeBlocksPerSM*SMcount >= all CTAs (1080 FP8,32 Half). Recheck after relink. Native oracle independently admitted; no progress proof.",
+        "capture": "Prepare outside capture even on cache hits. Direct launch must reproduce checks outside capture.",
+        "variant": 1,
+        "wrapper": "dlssnr::prepare_decoder_up512_reconstructed(const at::Tensor& anchor, int64_t variant)"
+      },
+      "protocol": {
+        "final": 3,
+        "ordering": "Original relaxed GPU polling and release GPU stores; do not infer host overlap or formal acquire/progress proof.",
+        "predecessor_counter": false,
+        "reset": -1,
+        "reset_scope": "Every invocation/captured replay, same stream, before kernel; no hidden reset.",
+        "scratch": "Projected-low Half tile. z0 writes all; z1/z2 wait then atomic-add; z3 waits and reads, adds own partial only in registers, publishes high. Final scratch contains z0+z1+z2.",
+        "words": 8
+      },
+      "qualification": {
+        "fixture": {
+          "independent_maps": {
+            "high": {
+              "bytes": 262144,
+              "complete_bijection": true,
+              "element_bytes": 2,
+              "offsets_sha256": "6a99d2b338148fef1b6ff7f746c3c92599ada240f9d26fdf47f800f54f2f5c3f",
+              "shape": [
+                16,
+                16,
+                512
+              ]
+            },
+            "low": {
+              "bytes": 131072,
+              "complete_bijection": true,
+              "element_bytes": 2,
+              "offsets_sha256": "da5f857a0a2d38c464bfd730de52eef7cfa771586eab7332250efa8b531173cb",
+              "shape": [
+                8,
+                8,
+                1024
+              ]
+            },
+            "skip": {
+              "bytes": 262144,
+              "complete_bijection": true,
+              "element_bytes": 2,
+              "offsets_sha256": "6a99d2b338148fef1b6ff7f746c3c92599ada240f9d26fdf47f800f54f2f5c3f",
+              "shape": [
+                16,
+                16,
+                512
+              ]
+            }
+          },
+          "kind": "bounded Half8x8 to16x16 physical fixture",
+          "origin": "Finite block39 FP8 checkpoint values converted to the independently indexed Half matrix with unchanged Half scale suffix; not a recovered original Half asset or original DLL host preparation.",
+          "original_half_host_preparation_recovered": false,
+          "record_sha256": "31afde625bacc47929de0ea42b5633c16742c84dbb34e26ae02498fa66261b4c",
+          "source_record_sha256": "e7fa32bd2a8fe680eb90cfddbae7492ffedbb87fd7284cc229a2a122dc8c4fb8"
+        },
+        "mutable_endpoints": [
+          "high",
+          "counter",
+          "scratch"
+        ],
+        "receipts": [
+          "outputs/decoder-up512-cuda-runtime-v2/run-p1-contracts-v1/receipt.json",
+          "outputs/decoder-up512-cuda-runtime-v2/run-p1-finite-v1/receipt.json",
+          "outputs/decoder-up512-cuda-runtime-v2/run-p1-exceptional-v1/receipt.json",
+          "outputs/decoder-up512-cuda-runtime-v2/run-p1-memcheck-v1/receipt.json",
+          "outputs/decoder-up512-cuda-runtime-v2/run-p1-racecheck-v1/receipt.json",
+          "outputs/decoder-up512-cuda-runtime-v2/run-p1-paired-v1/receipt.json"
+        ],
+        "scope": "Independent Half8x8->16x16; derived finite FP8-checkpoint Half record; original Half host preparation not recovered"
+      },
+      "record": {
+        "K": 1024,
+        "N": 512,
+        "complete_matrix_bijections": true,
+        "fp8_bytes": 525312,
+        "fp8_logical_k": "inverse_packed_input_index(logical_k)",
+        "fp8_matrix_bytes": 524288,
+        "fp8_sha256": "e7fa32bd2a8fe680eb90cfddbae7492ffedbb87fd7284cc229a2a122dc8c4fb8",
+        "half_bytes": 1049600,
+        "half_logical_k": "logical_k, independent native K16 mapping",
+        "half_matrix_bytes": 1048576,
+        "half_sha256": "31afde625bacc47929de0ea42b5633c16742c84dbb34e26ae02498fa66261b4c",
+        "name": "block39.layer0.layer",
+        "origin": "Finite block39 FP8 checkpoint values converted to the independently indexed Half matrix with unchanged Half scale suffix; not a recovered original Half asset or original DLL host preparation.",
+        "prefix_bytes": 0,
+        "resource_offset": 123721268,
+        "selected_bytes": 1049600,
+        "selected_origin": "Finite block39 FP8 checkpoint values converted to the independently indexed Half matrix with unchanged Half scale suffix; not a recovered original Half asset or original DLL host preparation.",
+        "selected_sha256": "31afde625bacc47929de0ea42b5633c16742c84dbb34e26ae02498fa66261b4c",
+        "source_matrix_finite": true,
+        "source_scale_finite": true,
+        "stage_offset": 0,
+        "stage_path": "assets/nr/model/stages/decoder512.bin",
+        "stage_sha256": "19a3fd197ef6677d83637fc83d9e667101df4e8b2b23d5c2abd611ecb9d001e0",
+        "suffix_bytes": 1024,
+        "suffix_preserved_byte_exact": true,
+        "suffix_sha256": "b0852373b221cdbb9ba438df210055f02f98247e894e07506801e31a27e14b24"
+      },
+      "source_anchors": [
+        "csrc/kernel_launcher/decoder_up512_reconstructed.cu.draft:55",
+        "csrc/kernel_launcher/decoder_up512_reconstructed.cu.draft:108",
+        "tools/vendor_connectors.py:20",
+        "tools/vendor_trunk.py:129"
+      ],
+      "specification": {
+        "abi_bytes": 80,
+        "batch": 1,
+        "block": [
+          32,
+          2,
+          1
+        ],
+        "buffers": [
+          {
+            "alignment": 16,
+            "bytes": 131072,
+            "mutable": false,
+            "name": "low"
+          },
+          {
+            "alignment": 16,
+            "bytes": 262144,
+            "mutable": false,
+            "name": "skip"
+          },
+          {
+            "alignment": 16,
+            "bytes": 1049600,
+            "mutable": false,
+            "name": "record"
+          },
+          {
+            "alignment": 16,
+            "bytes": 262144,
+            "mutable": true,
+            "name": "high"
+          },
+          {
+            "alignment": 4,
+            "bytes": 32,
+            "mutable": true,
+            "name": "counter"
+          },
+          {
+            "alignment": 16,
+            "bytes": 65536,
+            "mutable": true,
+            "name": "scratch"
+          }
+        ],
+        "ctas": 32,
+        "dimension_offsets": [
+          64,
+          68,
+          72,
+          76
+        ],
+        "final_counter": 3,
+        "grid": [
+          4,
+          2,
+          4
+        ],
+        "high_height": 16,
+        "high_width": 16,
+        "kind": "half",
+        "low_height": 8,
+        "low_width": 8,
+        "pointer_offsets": {
+          "counter": 32,
+          "high": 16,
+          "low": 0,
+          "record": 56,
+          "scratch": 24,
+          "skip": 8
+        },
+        "variant": 1
+      },
+      "torch_operator": "_decoder_up512_half_reconstructed_out"
+    },
+    {
+      "abi": {
+        "alignment": 8,
+        "bytes": 24,
+        "i32_offsets": {
+          "height": 16,
+          "width": 20
+        },
+        "pointer_offsets": {
+          "input": 0,
+          "output": 8
+        }
+      },
+      "actual_4k": {
+        "grid_x": 2176,
+        "height": 36,
+        "padded_tokens": 2176,
+        "spatial_bytes": 2211840,
+        "token_bytes": 2228224,
+        "tokens": 2160,
+        "width": 60
+      },
+      "actual_native_nodes": [
+        "repack-30-31"
+      ],
+      "admission": {
+        "arithmetic": "Mp*256 <= INT32_MAX//2",
+        "geometry": "0<=H,W<=16384, multiples of4",
+        "prepare": "No prepare or all-CTA residency guard. Disjoint storage, same current stream, retain owners. Half covering grid is chosen native-compatible, not recovered original DLL host launch."
+      },
+      "counters": null,
+      "direct_stub": "dlssnr::global_repack_reconstructed::fp8_to1d(dlssnr::global_repack_reconstructed::Parameters)",
+      "donor": "repack_clear",
+      "frozen_wrapper": "at::Tensor dlssnr::global_repack_reconstructed_out(const at::Tensor& input, at::Tensor output, int64_t height, int64_t width, bool to_1d)",
+      "id": "repack_fp8_to1d",
+      "launch": {
+        "block": [
+          256,
+          1,
+          1
+        ],
+        "dynamic_shared_bytes": 0,
+        "grid": [
+          "Mp*256//256",
+          1,
+          1
+        ],
+        "grid_stride": true,
+        "zero": "Host returns without launch"
+      },
+      "original": {
+        "cubin": "assets/vendor_modules/module_5.cubin",
+        "entry": "cc_vit_1d_repack_2d_to_1d_fp8",
+        "entry_line": 167173,
+        "module": 5,
+        "ptx": "assets/vendor_modules/module_5.ptx"
+      },
+      "physical": {
+        "M": "H*W",
+        "Mp": "ceil(M/32)*32",
+        "copy": "word(tile_token(m),j) -> word(m,j)",
+        "note": "Unchanged dword bits. Half mapping independent; not FP8 stride doubled.",
+        "tile_token": "t=16*((y//4)*(W//4)+x//4)+4*(y%4)+x%4",
+        "word_bytes": 4,
+        "word_offset": "4096*(t//16)+128*(j//8)+16*(t%8)+4*(j%4)+2*((j%8)//4)+(t%16)//8",
+        "words_per_token": 256
+      },
+      "qualification": {
+        "cases": [
+          {
+            "alias": true,
+            "all_bits_native_exact": true,
+            "direction": "to1d",
+            "dtype": "FP8",
+            "guards": true,
+            "height": 4,
+            "input_immutable": true,
+            "kind": "repack",
+            "literal_address_exact": true,
+            "physical_bytes": 32768,
+            "replays": 3,
+            "width": 4
+          },
+          {
+            "alias": true,
+            "all_bits_native_exact": true,
+            "direction": "to1d",
+            "dtype": "FP8",
+            "guards": true,
+            "height": 4,
+            "input_immutable": true,
+            "kind": "repack",
+            "literal_address_exact": true,
+            "physical_bytes": 32768,
+            "replays": 3,
+            "width": 8
+          },
+          {
+            "alias": true,
+            "all_bits_native_exact": true,
+            "direction": "to1d",
+            "dtype": "FP8",
+            "guards": true,
+            "height": 4,
+            "input_immutable": true,
+            "kind": "repack",
+            "literal_address_exact": true,
+            "physical_bytes": 262144,
+            "replays": 3,
+            "width": 64
+          }
+        ],
+        "limit": "Accepted GPU repack cases4x4/4x8/4x64 with3changed replays; these receipts alone do not qualify full36x60 composition.",
+        "receipts": [
+          "outputs/global-repack-cuda-runtime/run-numerical-v1/receipt.json",
+          "outputs/global-repack-cuda-runtime/run-memcheck-v1/receipt.json",
+          "outputs/global-repack-cuda-runtime/run-racecheck-v1/receipt.json",
+          "outputs/global-repack-cuda-runtime/run-paired-v1/receipt.json"
+        ]
+      },
+      "record": null,
+      "source_anchors": [
+        "csrc/kernel_launcher/global_repack_reconstructed.cu.draft:11",
+        "csrc/kernel_impl/global_repack_reconstructed.cuh.draft:22",
+        "tools/vendor_connectors.py:79"
+      ],
+      "tails": "Forward explicitly writes zero for padded tokens without source read. Reverse does not access output beyond M. No arithmetic conversions.",
+      "tensors": {
+        "alignment_bytes": 4,
+        "channels": 1024,
+        "contiguous": true,
+        "disjoint": true,
+        "dtype": "uint8",
+        "exact_elements": "input=(M if to1d else Mp)*1024, output=(Mp if to1d else M)*1024",
+        "input_layout": "spatial tile",
+        "output_layout": "token",
+        "rank": 1
+      },
+      "to_1d": true,
+      "torch_operator": "_global_repack_reconstructed_out"
+    },
+    {
+      "abi": {
+        "alignment": 8,
+        "bytes": 24,
+        "i32_offsets": {
+          "height": 16,
+          "width": 20
+        },
+        "pointer_offsets": {
+          "input": 0,
+          "output": 8
+        }
+      },
+      "actual_4k": {
+        "grid_x": 2176,
+        "height": 36,
+        "padded_tokens": 2176,
+        "spatial_bytes": 2211840,
+        "token_bytes": 2228224,
+        "tokens": 2160,
+        "width": 60
+      },
+      "actual_native_nodes": [
+        "repack-38-39"
+      ],
+      "admission": {
+        "arithmetic": "Mp*256 <= INT32_MAX//2",
+        "geometry": "0<=H,W<=16384, multiples of4",
+        "prepare": "No prepare or all-CTA residency guard. Disjoint storage, same current stream, retain owners. Half covering grid is chosen native-compatible, not recovered original DLL host launch."
+      },
+      "counters": null,
+      "direct_stub": "dlssnr::global_repack_reconstructed::fp8_to2d(dlssnr::global_repack_reconstructed::Parameters)",
+      "donor": "repack_clear",
+      "frozen_wrapper": "at::Tensor dlssnr::global_repack_reconstructed_out(const at::Tensor& input, at::Tensor output, int64_t height, int64_t width, bool to_1d)",
+      "id": "repack_fp8_to2d",
+      "launch": {
+        "block": [
+          256,
+          1,
+          1
+        ],
+        "dynamic_shared_bytes": 0,
+        "grid": [
+          "Mp*256//256",
+          1,
+          1
+        ],
+        "grid_stride": true,
+        "zero": "Host returns without launch"
+      },
+      "original": {
+        "cubin": "assets/vendor_modules/module_5.cubin",
+        "entry": "cc_vit_1d_repack_1d_to_2d_fp8",
+        "entry_line": 167499,
+        "module": 5,
+        "ptx": "assets/vendor_modules/module_5.ptx"
+      },
+      "physical": {
+        "M": "H*W",
+        "Mp": "ceil(M/32)*32",
+        "copy": "word(m,j) -> word(tile_token(m),j)",
+        "note": "Unchanged dword bits. Half mapping independent; not FP8 stride doubled.",
+        "tile_token": "t=16*((y//4)*(W//4)+x//4)+4*(y%4)+x%4",
+        "word_bytes": 4,
+        "word_offset": "4096*(t//16)+128*(j//8)+16*(t%8)+4*(j%4)+2*((j%8)//4)+(t%16)//8",
+        "words_per_token": 256
+      },
+      "qualification": {
+        "cases": [
+          {
+            "alias": true,
+            "all_bits_native_exact": true,
+            "direction": "to2d",
+            "dtype": "FP8",
+            "guards": true,
+            "height": 4,
+            "input_immutable": true,
+            "kind": "repack",
+            "literal_address_exact": true,
+            "physical_bytes": 16384,
+            "replays": 3,
+            "width": 4
+          },
+          {
+            "alias": true,
+            "all_bits_native_exact": true,
+            "direction": "to2d",
+            "dtype": "FP8",
+            "guards": true,
+            "height": 4,
+            "input_immutable": true,
+            "kind": "repack",
+            "literal_address_exact": true,
+            "physical_bytes": 32768,
+            "replays": 3,
+            "width": 8
+          },
+          {
+            "alias": true,
+            "all_bits_native_exact": true,
+            "direction": "to2d",
+            "dtype": "FP8",
+            "guards": true,
+            "height": 4,
+            "input_immutable": true,
+            "kind": "repack",
+            "literal_address_exact": true,
+            "physical_bytes": 262144,
+            "replays": 3,
+            "width": 64
+          }
+        ],
+        "limit": "Accepted GPU repack cases4x4/4x8/4x64 with3changed replays; these receipts alone do not qualify full36x60 composition.",
+        "receipts": [
+          "outputs/global-repack-cuda-runtime/run-numerical-v1/receipt.json",
+          "outputs/global-repack-cuda-runtime/run-memcheck-v1/receipt.json",
+          "outputs/global-repack-cuda-runtime/run-racecheck-v1/receipt.json",
+          "outputs/global-repack-cuda-runtime/run-paired-v1/receipt.json"
+        ]
+      },
+      "record": null,
+      "source_anchors": [
+        "csrc/kernel_launcher/global_repack_reconstructed.cu.draft:11",
+        "csrc/kernel_impl/global_repack_reconstructed.cuh.draft:22",
+        "tools/vendor_connectors.py:79"
+      ],
+      "tails": "Forward explicitly writes zero for padded tokens without source read. Reverse does not access output beyond M. No arithmetic conversions.",
+      "tensors": {
+        "alignment_bytes": 4,
+        "channels": 1024,
+        "contiguous": true,
+        "disjoint": true,
+        "dtype": "uint8",
+        "exact_elements": "input=(M if to1d else Mp)*1024, output=(Mp if to1d else M)*1024",
+        "input_layout": "token",
+        "output_layout": "spatial tile",
+        "rank": 1
+      },
+      "to_1d": false,
+      "torch_operator": "_global_repack_reconstructed_out"
+    },
+    {
+      "abi": {
+        "alignment": 8,
+        "bytes": 24,
+        "i32_offsets": {
+          "height": 16,
+          "width": 20
+        },
+        "pointer_offsets": {
+          "input": 0,
+          "output": 8
+        }
+      },
+      "actual_4k": {
+        "grid_x": 4320,
+        "height": 36,
+        "padded_tokens": 2160,
+        "spatial_bytes": 4423680,
+        "token_bytes": 4423680,
+        "tokens": 2160,
+        "width": 60
+      },
+      "actual_native_nodes": [],
+      "admission": {
+        "arithmetic": "Mp*512 <= INT32_MAX//2",
+        "geometry": "0<=H,W<=16384, multiples of4",
+        "prepare": "No prepare or all-CTA residency guard. Disjoint storage, same current stream, retain owners. Half covering grid is chosen native-compatible, not recovered original DLL host launch."
+      },
+      "counters": null,
+      "direct_stub": "dlssnr::global_repack_reconstructed::half_to1d(dlssnr::global_repack_reconstructed::Parameters)",
+      "donor": "repack_clear",
+      "frozen_wrapper": "at::Tensor dlssnr::global_repack_reconstructed_out(const at::Tensor& input, at::Tensor output, int64_t height, int64_t width, bool to_1d)",
+      "id": "repack_half_to1d",
+      "launch": {
+        "block": [
+          256,
+          1,
+          1
+        ],
+        "dynamic_shared_bytes": 0,
+        "grid": [
+          "Mp*512//256",
+          1,
+          1
+        ],
+        "grid_stride": true,
+        "zero": "Host returns without launch"
+      },
+      "original": {
+        "cubin": "assets/vendor_modules/module_5.cubin",
+        "entry": "cc_vit_1d_repack_2d_to_1d",
+        "entry_line": 166989,
+        "module": 5,
+        "ptx": "assets/vendor_modules/module_5.ptx"
+      },
+      "physical": {
+        "M": "H*W",
+        "Mp": "ceil(M/16)*16",
+        "copy": "word(tile_token(m),j) -> word(m,j)",
+        "note": "Unchanged dword bits. Half mapping independent; not FP8 stride doubled.",
+        "tile_token": "t=16*((y//4)*(W//4)+x//4)+4*(y%4)+x%4",
+        "word_bytes": 4,
+        "word_offset": "8192*(t//16)+128*(j//8)+16*(t%8)+4*(j%4)+2*((j%8)//4)+(t%16)//8",
+        "words_per_token": 512
+      },
+      "qualification": {
+        "cases": [
+          {
+            "alias": true,
+            "all_bits_native_exact": true,
+            "direction": "to1d",
+            "dtype": "Half",
+            "guards": true,
+            "height": 4,
+            "input_immutable": true,
+            "kind": "repack",
+            "literal_address_exact": true,
+            "physical_bytes": 32768,
+            "replays": 3,
+            "width": 4
+          },
+          {
+            "alias": true,
+            "all_bits_native_exact": true,
+            "direction": "to1d",
+            "dtype": "Half",
+            "guards": true,
+            "height": 4,
+            "input_immutable": true,
+            "kind": "repack",
+            "literal_address_exact": true,
+            "physical_bytes": 65536,
+            "replays": 3,
+            "width": 8
+          },
+          {
+            "alias": true,
+            "all_bits_native_exact": true,
+            "direction": "to1d",
+            "dtype": "Half",
+            "guards": true,
+            "height": 4,
+            "input_immutable": true,
+            "kind": "repack",
+            "literal_address_exact": true,
+            "physical_bytes": 524288,
+            "replays": 3,
+            "width": 64
+          }
+        ],
+        "limit": "Accepted GPU repack cases4x4/4x8/4x64 with3changed replays; these receipts alone do not qualify full36x60 composition.",
+        "receipts": [
+          "outputs/global-repack-cuda-runtime/run-numerical-v1/receipt.json",
+          "outputs/global-repack-cuda-runtime/run-memcheck-v1/receipt.json",
+          "outputs/global-repack-cuda-runtime/run-racecheck-v1/receipt.json",
+          "outputs/global-repack-cuda-runtime/run-paired-v1/receipt.json"
+        ]
+      },
+      "record": null,
+      "source_anchors": [
+        "csrc/kernel_launcher/global_repack_reconstructed.cu.draft:11",
+        "csrc/kernel_impl/global_repack_reconstructed.cuh.draft:28",
+        "tools/vendor_connectors.py:79"
+      ],
+      "tails": "Forward explicitly writes zero for padded tokens without source read. Reverse does not access output beyond M. No arithmetic conversions.",
+      "tensors": {
+        "alignment_bytes": 4,
+        "channels": 1024,
+        "contiguous": true,
+        "disjoint": true,
+        "dtype": "Half",
+        "exact_elements": "input=(M if to1d else Mp)*1024, output=(Mp if to1d else M)*1024",
+        "input_layout": "spatial tile",
+        "output_layout": "token",
+        "rank": 1
+      },
+      "to_1d": true,
+      "torch_operator": "_global_repack_reconstructed_out"
+    },
+    {
+      "abi": {
+        "alignment": 8,
+        "bytes": 24,
+        "i32_offsets": {
+          "height": 16,
+          "width": 20
+        },
+        "pointer_offsets": {
+          "input": 0,
+          "output": 8
+        }
+      },
+      "actual_4k": {
+        "grid_x": 4320,
+        "height": 36,
+        "padded_tokens": 2160,
+        "spatial_bytes": 4423680,
+        "token_bytes": 4423680,
+        "tokens": 2160,
+        "width": 60
+      },
+      "actual_native_nodes": [],
+      "admission": {
+        "arithmetic": "Mp*512 <= INT32_MAX//2",
+        "geometry": "0<=H,W<=16384, multiples of4",
+        "prepare": "No prepare or all-CTA residency guard. Disjoint storage, same current stream, retain owners. Half covering grid is chosen native-compatible, not recovered original DLL host launch."
+      },
+      "counters": null,
+      "direct_stub": "dlssnr::global_repack_reconstructed::half_to2d(dlssnr::global_repack_reconstructed::Parameters)",
+      "donor": "repack_clear",
+      "frozen_wrapper": "at::Tensor dlssnr::global_repack_reconstructed_out(const at::Tensor& input, at::Tensor output, int64_t height, int64_t width, bool to_1d)",
+      "id": "repack_half_to2d",
+      "launch": {
+        "block": [
+          256,
+          1,
+          1
+        ],
+        "dynamic_shared_bytes": 0,
+        "grid": [
+          "Mp*512//256",
+          1,
+          1
+        ],
+        "grid_stride": true,
+        "zero": "Host returns without launch"
+      },
+      "original": {
+        "cubin": "assets/vendor_modules/module_5.cubin",
+        "entry": "cc_vit_1d_repack_1d_to_2d",
+        "entry_line": 167359,
+        "module": 5,
+        "ptx": "assets/vendor_modules/module_5.ptx"
+      },
+      "physical": {
+        "M": "H*W",
+        "Mp": "ceil(M/16)*16",
+        "copy": "word(m,j) -> word(tile_token(m),j)",
+        "note": "Unchanged dword bits. Half mapping independent; not FP8 stride doubled.",
+        "tile_token": "t=16*((y//4)*(W//4)+x//4)+4*(y%4)+x%4",
+        "word_bytes": 4,
+        "word_offset": "8192*(t//16)+128*(j//8)+16*(t%8)+4*(j%4)+2*((j%8)//4)+(t%16)//8",
+        "words_per_token": 512
+      },
+      "qualification": {
+        "cases": [
+          {
+            "alias": true,
+            "all_bits_native_exact": true,
+            "direction": "to2d",
+            "dtype": "Half",
+            "guards": true,
+            "height": 4,
+            "input_immutable": true,
+            "kind": "repack",
+            "literal_address_exact": true,
+            "physical_bytes": 32768,
+            "replays": 3,
+            "width": 4
+          },
+          {
+            "alias": true,
+            "all_bits_native_exact": true,
+            "direction": "to2d",
+            "dtype": "Half",
+            "guards": true,
+            "height": 4,
+            "input_immutable": true,
+            "kind": "repack",
+            "literal_address_exact": true,
+            "physical_bytes": 65536,
+            "replays": 3,
+            "width": 8
+          },
+          {
+            "alias": true,
+            "all_bits_native_exact": true,
+            "direction": "to2d",
+            "dtype": "Half",
+            "guards": true,
+            "height": 4,
+            "input_immutable": true,
+            "kind": "repack",
+            "literal_address_exact": true,
+            "physical_bytes": 524288,
+            "replays": 3,
+            "width": 64
+          }
+        ],
+        "limit": "Accepted GPU repack cases4x4/4x8/4x64 with3changed replays; these receipts alone do not qualify full36x60 composition.",
+        "receipts": [
+          "outputs/global-repack-cuda-runtime/run-numerical-v1/receipt.json",
+          "outputs/global-repack-cuda-runtime/run-memcheck-v1/receipt.json",
+          "outputs/global-repack-cuda-runtime/run-racecheck-v1/receipt.json",
+          "outputs/global-repack-cuda-runtime/run-paired-v1/receipt.json"
+        ]
+      },
+      "record": null,
+      "source_anchors": [
+        "csrc/kernel_launcher/global_repack_reconstructed.cu.draft:11",
+        "csrc/kernel_impl/global_repack_reconstructed.cuh.draft:28",
+        "tools/vendor_connectors.py:79"
+      ],
+      "tails": "Forward explicitly writes zero for padded tokens without source read. Reverse does not access output beyond M. No arithmetic conversions.",
+      "tensors": {
+        "alignment_bytes": 4,
+        "channels": 1024,
+        "contiguous": true,
+        "disjoint": true,
+        "dtype": "Half",
+        "exact_elements": "input=(M if to1d else Mp)*1024, output=(Mp if to1d else M)*1024",
+        "input_layout": "token",
+        "output_layout": "spatial tile",
+        "rank": 1
+      },
+      "to_1d": false,
+      "torch_operator": "_global_repack_reconstructed_out"
+    },
+    {
+      "abi": {
+        "alignment": 8,
+        "bytes": 16,
+        "i32_count_offset": 8,
+        "pointer_offset": 0,
+        "reserved_zero_offset": 12
+      },
+      "actual_native_nodes": [],
+      "admission": "0..INT32_MAX words; no prepare or occupancy gate; same-stream reset-before-consumer ordering.",
+      "capture": "33clear calls for8chained global blocks plus up512. Keep separate allocations. Reset only before own producer, never between completed QKV and its chained consumer. A byte payload can use an int32 view without copying.",
+      "direct_stub": "dlssnr::global_repack_reconstructed::counter_clear(dlssnr::global_repack_reconstructed::ClearParameters)",
+      "donor": "repack_clear",
+      "effects": "q=blockIdx.x*blockDim.x+threadIdx.x; signed q<count -> store int32 -1; tail preserved.",
+      "frozen_wrapper": "at::Tensor dlssnr::global_counter_clear_reconstructed_out(at::Tensor counters)",
+      "id": "counter_clear",
+      "launch": {
+        "block": [
+          256,
+          1,
+          1
+        ],
+        "dynamic_shared_bytes": 0,
+        "grid": [
+          "ceil(count/256)",
+          1,
+          1
+        ],
+        "grid_stride": false,
+        "zero": "No launch"
+      },
+      "native_runner": "Existing global/up512 __call__ uses fill_(255), not original cc_cb_clear. Proposed reset-stub substitution is a new composed path requiring qualification.",
+      "original": {
+        "cubin": "assets/vendor_modules/module_6.cubin",
+        "entry": "cc_cb_clear",
+        "entry_line": 29534,
+        "module": 6,
+        "ptx": "assets/vendor_modules/module_6.ptx"
+      },
+      "qualification": {
+        "cases": [
+          {
+            "empty_no_launch": true,
+            "guards": true,
+            "kind": "clear",
+            "native_exact": null,
+            "words": 0
+          },
+          {
+            "empty_no_launch": false,
+            "guards": true,
+            "kind": "clear",
+            "native_exact": true,
+            "words": 1
+          },
+          {
+            "empty_no_launch": false,
+            "guards": true,
+            "kind": "clear",
+            "native_exact": true,
+            "words": 255
+          },
+          {
+            "empty_no_launch": false,
+            "guards": true,
+            "kind": "clear",
+            "native_exact": true,
+            "words": 256
+          },
+          {
+            "empty_no_launch": false,
+            "guards": true,
+            "kind": "clear",
+            "native_exact": true,
+            "words": 257
+          },
+          {
+            "empty_no_launch": false,
+            "guards": true,
+            "kind": "clear",
+            "native_exact": true,
+            "words": 32768
+          }
+        ],
+        "receipts": [
+          "outputs/global-repack-cuda-runtime/run-numerical-v1/receipt.json",
+          "outputs/global-repack-cuda-runtime/run-memcheck-v1/receipt.json",
+          "outputs/global-repack-cuda-runtime/run-racecheck-v1/receipt.json",
+          "outputs/global-repack-cuda-runtime/run-paired-v1/receipt.json"
+        ]
+      },
+      "reset_targets_4k": [
+        {
+          "final": 3,
+          "stage": "each global31..38 contraction",
+          "words": 136
+        },
+        {
+          "final": 1,
+          "stage": "each global31..38 QKV",
+          "words": 272
+        },
+        {
+          "final": 0,
+          "stage": "each global31..38 chained attention",
+          "words": 544
+        },
+        {
+          "final": 3,
+          "stage": "each global31..38 projection",
+          "words": 136
+        },
+        {
+          "final": 3,
+          "stage": "up51239",
+          "words": 270
+        }
+      ],
+      "source_anchors": [
+        "csrc/kernel_launcher/global_repack_reconstructed.cu.draft:62",
+        "tools/vendor_global_block.py:103",
+        "tools/vendor_connectors.py:68"
+      ],
+      "tensors": {
+        "alignment_bytes": 4,
+        "contiguous": true,
+        "dtype": "int32",
+        "mutable": true,
+        "rank": 1
+      },
+      "torch_operator": "_global_counter_clear_reconstructed_out"
+    }
+  ],
+  "executed_build_or_extraction": false,
+  "executed_gpu": false,
+  "handoffs": [
+    {
+      "action": "Keep native C1024 spatial tile down output; repack into native token buffer and retain that layout through globals. Keep block30 high C512 tile skip separately.",
+      "edge": "block30 down -> repack_to1d -> globals31..38",
+      "spatial_bytes": 2211840,
+      "token_bytes": 2228224
+    },
+    {
+      "action": "Reverse token-to-tile repack output directly supplies low; retained block30 high supplies skip; up512 high is already ordinary block40 C512 tile input. No BHWC conversion needed.",
+      "edge": "global38 -> repack_to2d -> up512 -> block40"
+    },
+    {
+      "action": "Physical maps compatible, but current up512 Half launcher is fixed8x8. Full4K Half requires separate launcher/address/record/qualification/admission expansion. Byte views preserve storage but do not broaden proof.",
+      "edge": "Half repack -> Half up512"
+    },
+    {
+      "action": "Direct int32 reset of each preallocated payload inside replay before its own producer. Same stream and lifetime through last consumer.",
+      "edge": "counter_clear -> split stages"
+    }
+  ],
+  "limits": [
+    "Catalog checks accepted receipt/proof hashes and quiescent Jobs, not fresh GPU execution or complete owner revalidation.",
+    "No whole-network Half or recovered original Half host weights claim.",
+    "New composite/direct-stub launch must reproduce all wrapper guards, preparation/admission and lifetimes; no transfer of same-binary qualification without checking new product.",
+    "Only plain up512 entries selected; tilesync originals are distinct."
+  ],
+  "original_module_pins": {
+    "assets/vendor_modules/module_5.cubin": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+    "assets/vendor_modules/module_5.ptx": "641ca106cd3e211587f873de41ba4350608413687b1bb99c33fa7529f82b510c",
+    "assets/vendor_modules/module_6.cubin": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a",
+    "assets/vendor_modules/module_6.ptx": "dd63005c827e9fd50bc02f01f9d5f95d534023674d440eba5561f4f4b60a0c5c"
+  },
+  "pins": {
+    "csrc/kernel_impl/decoder_up512_fp8_reconstructed.cuh.draft": "ab6e407d2b00e111ed588b1d97695b9a99491ef532fa2bcbb18641b8628d3555",
+    "csrc/kernel_impl/decoder_up512_fp8_reconstructed_ops.cuh.draft": "2551fa1bb225a4c97a2c20a59cf54c337139942bac95892f10cfa2452ff7ff8f",
+    "csrc/kernel_impl/decoder_up512_half_reconstructed.cuh.draft": "b7b3acd1c22e1311b8cfb284135e0c82eb070bb9584e7bfa83652efa5133392c",
+    "csrc/kernel_impl/decoder_up512_half_reconstructed_ops.cuh.draft": "f2229499d4aeba3b6221137464b2a60f350a0fb0ff62e78eec1614fc5f443aef",
+    "csrc/kernel_impl/global_repack_reconstructed.cuh.draft": "91474d0f0e60790fcbd927f51b0e2fc78ce98fc5f77403c18c33cf76d5e7b2ff",
+    "csrc/kernel_launcher/decoder_up512_reconstructed.cu.draft": "2627d71e22cd47570602083354e4d8899f44ae56778178c6ede515a5b26959b8",
+    "csrc/kernel_launcher/global_repack_reconstructed.cu.draft": "d89717141686c63417b0563c1aa941083a5b4973200e356d64bdf551df1ec954",
+    "csrc/torch_api/decoder_up512_reconstructed.cpp.draft": "88a98318f8d2cdda3042e13700f304623cd5c62fc3705e530db5987bba2319f6",
+    "csrc/torch_api/global_repack_reconstructed.cpp.draft": "091c4268bf0ed8d4a66ba93359903690d57f82ed8cbf769cb6f4761404cd03a2",
+    "outputs/all-reconstructed-deployment-prep/global/derive_catalog_transition.py.draft": "cc6fe6ac692265fa934ed71fa5b09f6206460f53fb8350e4531546e96f6bf8b5",
+    "outputs/all-reconstructed-deployment-prep/global/global_connectors_abi.h.draft": "ef92afef2d3754a79e7195f2b74ff915c27093bad6cd84c13aa70a99eefc74d4",
+    "outputs/decoder-up512-cuda-host/fp8-calibration/evidence.json.draft": "a36819ff247587e1974b68cf37f9ca2a9d3f9889f544f26ce57fee0dc0be692e",
+    "outputs/decoder-up512-cuda-host/half-calibration/evidence.json.draft": "f7d96fb98ff04b0d2f6359947af49218be8bb2fe3403ea746da21ac70509cf0c",
+    "outputs/decoder-up512-cuda-host/half-calibration/proof.py.draft": "46e2df75a15c019d60ba0d06b7492feb46e3a4b6332e72f95852615f403a2ad8",
+    "outputs/decoder-up512-cuda-host/manifest.json.draft": "84a7b8bce1d6d77cc86b97c54a77944de6b8bdefdb369e5435df5eef539ef710",
+    "outputs/decoder-up512-cuda-host/pilot.json.draft": "33cc38cf2c6721a7ef3c5858cd45dc3efce375cd393e713583bcc60a9a62bf59",
+    "outputs/decoder-up512-cuda-reconstruction/build-draft/run-v1.job.json.draft": "43a1f31fcd88d58ba1d4b39b14b1a43221de12bf287770de6e9c6ec5c17c2356",
+    "outputs/decoder-up512-cuda-reconstruction/build-draft/run-v1/build.json": "b31ca499ea26b5d7e8661cd7dac3c7ae8105a8da22941851811fdc446b40a5ef",
+    "outputs/decoder-up512-cuda-reconstruction/build-draft/run-v1/package-receipt.json": "f2e14efbddba3abb8b6e92423c60a86143d4aeb16e1f8901e9a82d5a7dd6a02b",
+    "outputs/decoder-up512-cuda-reconstruction/compiled-extraction-v1/receipt.json": "8e88d0390b47792d3904904992124ae02ed7e9ec272400c19bbcb600e0023193",
+    "outputs/decoder-up512-cuda-reconstruction/compiled-review/review.json.draft": "02fc6782fbb352344b62fdb05b1b798454ee02e852008e7255614114ea0f4820",
+    "outputs/decoder-up512-cuda-reconstruction/manifest.json.draft": "3338787624c545a7e67e2e19f2310524482d2b192a792b884e8f1dd983b40925",
+    "outputs/decoder-up512-cuda-runtime-v2/binding.json.draft": "55939ff3c21914ceee606bb30a89b508fb4e413b94d5eece3f492b8434d9b605",
+    "outputs/decoder-up512-cuda-runtime-v2/manifest.json.draft": "2144b8ea73cb02b9d626dacdbed7a4e4372e72a47843b08c8e4d9a89deed757c",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-contracts-v1/proof.json": "8c5756be37f704669f8b2198402aaf84e469459ce8ba6623f0342f2c5d57aaa1",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-contracts-v1/receipt.json": "2bae4e820a13481081af19e862e4a42bd7734c7de6628b2fe09c9e17a1456e87",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-exceptional-v1/proof.json": "7fdbba7a3033249d76daf159dd75f7d7b4cc4450f85ef8db1498e785d385fcc6",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-exceptional-v1/receipt.json": "7462a0ba2cf71ad3d6be095221adf977e464edb144456745b2f9f66a94f608e2",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-finite-v1/proof.json": "be4231f54370bff34e99520fde3100ac5763bae530fe80c784df77553395a8f4",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-finite-v1/receipt.json": "e7c5a48adff234319e95b636d986991087a67be909184a878f035b9bb755dee5",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-memcheck-v1/proof.json": "044fe068c342d4936527656e1d46dd33d1b9322ecbad9ddc2fe01f13c10bbaff",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-memcheck-v1/receipt.json": "8689c701b455420889d386073cdef09b98de0e0fe70c47706be9bf7e00eef557",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-paired-v1/proof.json": "7eee635cf61dcbe07c17df54c5f2b04eaf2f68fc64b0c28e388116edfd3f8ba1",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-paired-v1/receipt.json": "f15c1a826ddac1413edfffa7ed32ffe475680c5ced6409c4e851a6ffbb3a5fb1",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-racecheck-v1/proof.json": "063450db0288eec67bfdf3d91b5333f14b81cfc276afac4b06e31867af0dfd94",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-racecheck-v1/receipt.json": "b44461ea8574228a5c6bd1fd34699b703d24405e913822295f7028d202d84f0f",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-contracts-v1/proof.json": "484b1ea9e049c46dbdcb9e935605abb9270509d81434f27556af5cda49beec0d",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-contracts-v1/receipt.json": "f1cc95f2e6f1dc97ba5cee56451b450d0dfb9542b4ea4afc571988828c05a6ca",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-exceptional-v1/proof.json": "15e88a03dd5c5ff24d65f031e2b86fb0155d11fcebaf2055236126559a6654c8",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-exceptional-v1/receipt.json": "9225fe10f621a6749a55c96777ec6b583fc86e54b0df3e1f0768c4f3535c8b45",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-finite-v1/proof.json": "19234eeda38b6d0829521b8b8a1992b0e684963822c61973571707c2a6f5ffd6",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-finite-v1/receipt.json": "8fe6af15c2658f2d20bb780280f45976829ac5d2be8095f84d91e25664abda52",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-memcheck-v1/proof.json": "15e88a03dd5c5ff24d65f031e2b86fb0155d11fcebaf2055236126559a6654c8",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-memcheck-v1/receipt.json": "79fb62434b9a42d6bd6fd2b5c4e2a8cc55b8293ca4221638521cfe3d99fa834c",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-paired-v1/proof.json": "5df80dd8bea3a1b4e05291adec0e4a8c23b4b5656d4e2853696ea8bf93da2416",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-paired-v1/receipt.json": "6f2514bfac095c41f2c35d8e79efb630c0352a6f4e4299a4c29898a7d2cead9a",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-racecheck-v1/proof.json": "15e88a03dd5c5ff24d65f031e2b86fb0155d11fcebaf2055236126559a6654c8",
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-racecheck-v1/receipt.json": "499a60d088563e0ce9b51a617f2f83022a3fdf9b08123f524c2953031e97a1a6",
+    "outputs/global-repack-cuda-reconstruction/build-draft/run-v1.job.json.draft": "3bf5d7f2422d5dd8c74b2b20204f4bc7cbd4f4daad8187f61b14e279faf0539e",
+    "outputs/global-repack-cuda-reconstruction/build-draft/run-v1/build.json": "0bdfb1b2abf1bb0f9733a27c6a6778a7c02eebfebda993b603b35d7cbcfb87c5",
+    "outputs/global-repack-cuda-reconstruction/build-draft/run-v1/package-receipt.json": "97d126b92123b5895761b6db97156d421d29f8a48f7c6d1b2e175e208f313773",
+    "outputs/global-repack-cuda-reconstruction/clear-audit/evidence.json.draft": "604913b84ed1e6a76ef235dd58634dd22a4815029cdff6c29e62ad374c1bb5ea",
+    "outputs/global-repack-cuda-reconstruction/compiled-extraction-v1/receipt.json": "d8cafac683fada69adbc3935f63ebb57ba29d474b7ad163859900b646dac3b33",
+    "outputs/global-repack-cuda-reconstruction/compiled-review/review.json.draft": "a275ef8b05ea2ffb515cbf3645cf168927b2255dd82d94287a2489566801ebc7",
+    "outputs/global-repack-cuda-reconstruction/half-audit/evidence.json.draft": "5a1cf81a35c7039be2b3e7bfcf09cf1d03e4a73c5bdb96cb72ffdada46bb0524",
+    "outputs/global-repack-cuda-reconstruction/manifest.json.draft": "8a12e234185291a26ba9af0f4c7ce9c7ea1c2ebc3f2bce0f3b2f0225bf44f699",
+    "outputs/global-repack-cuda-runtime/binding.json.draft": "1b0966da5958b830fb159efa12ce9eb0e24ab30c4bba2df5c6723dc1da3900ad",
+    "outputs/global-repack-cuda-runtime/manifest.json.draft": "828cd2cec739fb926e2e41b557486f93bac8e548ddb8fa2dc423fb2453ec4544",
+    "outputs/global-repack-cuda-runtime/run-memcheck-v1/proof.json": "50c71ea64a9aa375f759bc9ca084a6da7cb6bf7315dcebfddffc2f4d7466bf57",
+    "outputs/global-repack-cuda-runtime/run-memcheck-v1/receipt.json": "0c5c8e56a9d487ca43980646197ce87b3a2c828290eff98e9239ea8ba3796c8c",
+    "outputs/global-repack-cuda-runtime/run-numerical-v1/proof.json": "50c71ea64a9aa375f759bc9ca084a6da7cb6bf7315dcebfddffc2f4d7466bf57",
+    "outputs/global-repack-cuda-runtime/run-numerical-v1/receipt.json": "c9d061f34e7ee60604ee008b7723affef8b6c63c8b02f2fb9762c294809ad610",
+    "outputs/global-repack-cuda-runtime/run-paired-v1/proof.json": "1de52be59fafc76055b056124df9e51ae9cb2f89e2a59c5d05e13708c1e4ed48",
+    "outputs/global-repack-cuda-runtime/run-paired-v1/receipt.json": "04da11c736055c7329c93ca4002f3c5a7a6467c472f74512251d611107f40e69",
+    "outputs/global-repack-cuda-runtime/run-racecheck-v1/proof.json": "50c71ea64a9aa375f759bc9ca084a6da7cb6bf7315dcebfddffc2f4d7466bf57",
+    "outputs/global-repack-cuda-runtime/run-racecheck-v1/receipt.json": "5ef6f7d5a06f16b9c2317b8d5437d9d4867562cde63195c7edfd779c6a42cdee",
+    "tools/vendor_benchmark.py": "e0c0163e094c70dcb86ff3e5e0a682e4f481aa7ed30cd0e1bd3b633c612b370f",
+    "tools/vendor_connectors.py": "29bdd306a0355ae4e3e00549b24d8136fce3e12940e5b819978232b98ab78a17",
+    "tools/vendor_fp16_inventory.py": "cd5c95ffce61de48260bb22d1ed656290762bbc573b529959a069559630178a8",
+    "tools/vendor_global_block.py": "e8cf89f886d0ab0b65223ad11f06563da146d9068ed138356857b009402f26f3",
+    "tools/vendor_trunk.py": "a65d83a066e2b3649195803cd4a6f8cd79784149469a59043e25145398bef611",
+    "tools/vendor_window512_block.py": "7ac62373b88ec9cdff4d7a195ad25c5c4296824df88e9d379d27dda3236c67fe"
+  },
+  "qualification_receipts": {
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-contracts-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "contracts",
+      "proof_path": "outputs/decoder-up512-cuda-runtime-v2/run-p0-contracts-v1/proof.json",
+      "proof_sha256": "8c5756be37f704669f8b2198402aaf84e469459ce8ba6623f0342f2c5d57aaa1",
+      "receipt_sha256": "2bae4e820a13481081af19e862e4a42bd7734c7de6628b2fe09c9e17a1456e87",
+      "tool": "none",
+      "variant": 0
+    },
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-exceptional-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "exceptional",
+      "proof_path": "outputs/decoder-up512-cuda-runtime-v2/run-p0-exceptional-v1/proof.json",
+      "proof_sha256": "7fdbba7a3033249d76daf159dd75f7d7b4cc4450f85ef8db1498e785d385fcc6",
+      "receipt_sha256": "7462a0ba2cf71ad3d6be095221adf977e464edb144456745b2f9f66a94f608e2",
+      "tool": "none",
+      "variant": 0
+    },
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-finite-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "finite",
+      "proof_path": "outputs/decoder-up512-cuda-runtime-v2/run-p0-finite-v1/proof.json",
+      "proof_sha256": "be4231f54370bff34e99520fde3100ac5763bae530fe80c784df77553395a8f4",
+      "receipt_sha256": "e7c5a48adff234319e95b636d986991087a67be909184a878f035b9bb755dee5",
+      "tool": "none",
+      "variant": 0
+    },
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-memcheck-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "exceptional",
+      "proof_path": "outputs/decoder-up512-cuda-runtime-v2/run-p0-memcheck-v1/proof.json",
+      "proof_sha256": "044fe068c342d4936527656e1d46dd33d1b9322ecbad9ddc2fe01f13c10bbaff",
+      "receipt_sha256": "8689c701b455420889d386073cdef09b98de0e0fe70c47706be9bf7e00eef557",
+      "tool": "memcheck",
+      "variant": 0
+    },
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-paired-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "paired",
+      "proof_path": "outputs/decoder-up512-cuda-runtime-v2/run-p0-paired-v1/proof.json",
+      "proof_sha256": "7eee635cf61dcbe07c17df54c5f2b04eaf2f68fc64b0c28e388116edfd3f8ba1",
+      "receipt_sha256": "f15c1a826ddac1413edfffa7ed32ffe475680c5ced6409c4e851a6ffbb3a5fb1",
+      "tool": "none",
+      "variant": 0
+    },
+    "outputs/decoder-up512-cuda-runtime-v2/run-p0-racecheck-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "exceptional",
+      "proof_path": "outputs/decoder-up512-cuda-runtime-v2/run-p0-racecheck-v1/proof.json",
+      "proof_sha256": "063450db0288eec67bfdf3d91b5333f14b81cfc276afac4b06e31867af0dfd94",
+      "receipt_sha256": "b44461ea8574228a5c6bd1fd34699b703d24405e913822295f7028d202d84f0f",
+      "tool": "racecheck",
+      "variant": 0
+    },
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-contracts-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "contracts",
+      "proof_path": "outputs/decoder-up512-cuda-runtime-v2/run-p1-contracts-v1/proof.json",
+      "proof_sha256": "484b1ea9e049c46dbdcb9e935605abb9270509d81434f27556af5cda49beec0d",
+      "receipt_sha256": "f1cc95f2e6f1dc97ba5cee56451b450d0dfb9542b4ea4afc571988828c05a6ca",
+      "tool": "none",
+      "variant": 1
+    },
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-exceptional-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "exceptional",
+      "proof_path": "outputs/decoder-up512-cuda-runtime-v2/run-p1-exceptional-v1/proof.json",
+      "proof_sha256": "15e88a03dd5c5ff24d65f031e2b86fb0155d11fcebaf2055236126559a6654c8",
+      "receipt_sha256": "9225fe10f621a6749a55c96777ec6b583fc86e54b0df3e1f0768c4f3535c8b45",
+      "tool": "none",
+      "variant": 1
+    },
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-finite-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "finite",
+      "proof_path": "outputs/decoder-up512-cuda-runtime-v2/run-p1-finite-v1/proof.json",
+      "proof_sha256": "19234eeda38b6d0829521b8b8a1992b0e684963822c61973571707c2a6f5ffd6",
+      "receipt_sha256": "8fe6af15c2658f2d20bb780280f45976829ac5d2be8095f84d91e25664abda52",
+      "tool": "none",
+      "variant": 1
+    },
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-memcheck-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "exceptional",
+      "proof_path": "outputs/decoder-up512-cuda-runtime-v2/run-p1-memcheck-v1/proof.json",
+      "proof_sha256": "15e88a03dd5c5ff24d65f031e2b86fb0155d11fcebaf2055236126559a6654c8",
+      "receipt_sha256": "79fb62434b9a42d6bd6fd2b5c4e2a8cc55b8293ca4221638521cfe3d99fa834c",
+      "tool": "memcheck",
+      "variant": 1
+    },
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-paired-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "paired",
+      "proof_path": "outputs/decoder-up512-cuda-runtime-v2/run-p1-paired-v1/proof.json",
+      "proof_sha256": "5df80dd8bea3a1b4e05291adec0e4a8c23b4b5656d4e2853696ea8bf93da2416",
+      "receipt_sha256": "6f2514bfac095c41f2c35d8e79efb630c0352a6f4e4299a4c29898a7d2cead9a",
+      "tool": "none",
+      "variant": 1
+    },
+    "outputs/decoder-up512-cuda-runtime-v2/run-p1-racecheck-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "exceptional",
+      "proof_path": "outputs/decoder-up512-cuda-runtime-v2/run-p1-racecheck-v1/proof.json",
+      "proof_sha256": "15e88a03dd5c5ff24d65f031e2b86fb0155d11fcebaf2055236126559a6654c8",
+      "receipt_sha256": "499a60d088563e0ce9b51a617f2f83022a3fdf9b08123f524c2953031e97a1a6",
+      "tool": "racecheck",
+      "variant": 1
+    },
+    "outputs/global-repack-cuda-runtime/run-memcheck-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "numerical",
+      "proof_path": "outputs/global-repack-cuda-runtime/run-memcheck-v1/proof.json",
+      "proof_sha256": "50c71ea64a9aa375f759bc9ca084a6da7cb6bf7315dcebfddffc2f4d7466bf57",
+      "receipt_sha256": "0c5c8e56a9d487ca43980646197ce87b3a2c828290eff98e9239ea8ba3796c8c",
+      "tool": "memcheck",
+      "variant": null
+    },
+    "outputs/global-repack-cuda-runtime/run-numerical-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "numerical",
+      "proof_path": "outputs/global-repack-cuda-runtime/run-numerical-v1/proof.json",
+      "proof_sha256": "50c71ea64a9aa375f759bc9ca084a6da7cb6bf7315dcebfddffc2f4d7466bf57",
+      "receipt_sha256": "c9d061f34e7ee60604ee008b7723affef8b6c63c8b02f2fb9762c294809ad610",
+      "tool": "none",
+      "variant": null
+    },
+    "outputs/global-repack-cuda-runtime/run-paired-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "paired",
+      "proof_path": "outputs/global-repack-cuda-runtime/run-paired-v1/proof.json",
+      "proof_sha256": "1de52be59fafc76055b056124df9e51ae9cb2f89e2a59c5d05e13708c1e4ed48",
+      "receipt_sha256": "04da11c736055c7329c93ca4002f3c5a7a6467c472f74512251d611107f40e69",
+      "tool": "none",
+      "variant": null
+    },
+    "outputs/global-repack-cuda-runtime/run-racecheck-v1/receipt.json": {
+      "accepted": true,
+      "job_quiescent": true,
+      "mode": "numerical",
+      "proof_path": "outputs/global-repack-cuda-runtime/run-racecheck-v1/proof.json",
+      "proof_sha256": "50c71ea64a9aa375f759bc9ca084a6da7cb6bf7315dcebfddffc2f4d7466bf57",
+      "receipt_sha256": "5ef6f7d5a06f16b9c2317b8d5437d9d4867562cde63195c7edfd779c6a42cdee",
+      "tool": "racecheck",
+      "variant": null
+    }
+  },
+  "schema": "reconstructed_transition_repack_catalog_v1",
+  "status": "CPU_SOURCE_AND_ACCEPTED_ARTIFACT_CATALOG"
+}

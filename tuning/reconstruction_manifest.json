@@ -1,0 +1,4038 @@
+{
+  "status": "STAGED_RECONSTRUCTED_ONLY_SOURCE_TREE",
+  "gpu": false,
+  "compiled": false,
+  "active_sources_changed": false,
+  "entry_count": 81,
+  "unique_body_headers": 77,
+  "cuda_emission_tus": [
+    {
+      "path": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_launcher/reconstructed_c1024_compute.cu",
+      "sha256": "4da6d9622f6c72917808596127c2eb8b1fb35fbfb9cb3c79ef42443058e9230e",
+      "group": "c1024_compute",
+      "body_headers": [
+        "kernel_impl/c1024_attention_chained_fp8_reconstructed.cuh",
+        "kernel_impl/c1024_attention_chained_half_reconstructed.cuh",
+        "kernel_impl/c1024_ffn_contract_fp8_reconstructed.cuh",
+        "kernel_impl/c1024_ffn_contract_half_reconstructed.cuh",
+        "kernel_impl/c1024_ffn_expand_fp8_reconstructed.cuh",
+        "kernel_impl/c1024_ffn_expand_half_reconstructed.cuh",
+        "kernel_impl/c1024_projection_fp8_reconstructed.cuh",
+        "kernel_impl/c1024_projection_half_reconstructed.cuh",
+        "kernel_impl/c1024_qkv_fp8_reconstructed.cuh",
+        "kernel_impl/c1024_qkv_half_reconstructed.cuh"
+      ]
+    },
+    {
+      "path": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_launcher/reconstructed_c512_attention.cu",
+      "sha256": "38343ba302a41a7ab2c904e6ea61b93bc19626a2fc04a2642d7d222075fcbe10",
+      "group": "c512_attention",
+      "body_headers": [
+        "kernel_impl/c512_proj_fp8_reconstructed.cuh",
+        "kernel_impl/c512_proj_half_reconstructed.cuh",
+        "kernel_impl/c512_qkv_fp8_reconstructed.cuh",
+        "kernel_impl/c512_qkv_half_reconstructed.cuh"
+      ]
+    },
+    {
+      "path": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_launcher/reconstructed_c512_ffn.cu",
+      "sha256": "7e9fff85b7f6bbc67bd5c867a0124dec193bd629301ebd4dbbbd4001858468aa",
+      "group": "c512_ffn",
+      "body_headers": [
+        "kernel_impl/c512_ffn_half_reconstructed.cuh",
+        "kernel_impl/c512_ffn_inpview_fp8_reconstructed.cuh",
+        "kernel_impl/c512_ffn_inpview_half_reconstructed.cuh",
+        "kernel_impl/c512_ffn_proj_fp8_reconstructed.cuh",
+        "kernel_impl/c512_ffn_proj_half_reconstructed.cuh",
+        "kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed.cuh",
+        "kernel_impl/c512_ffn_proj_inpview_half_reconstructed.cuh",
+        "kernel_impl/c512_ffn_reconstructed.cuh"
+      ]
+    },
+    {
+      "path": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_launcher/reconstructed_c512_projection.cu",
+      "sha256": "ab8a42201b799a9906dc571a5b261f96aa8d7fb3a3b59c5288fb6bc1e93ab768",
+      "group": "c512_projection",
+      "body_headers": [
+        "kernel_impl/c512_final_head_fp8_reconstructed.cuh",
+        "kernel_impl/c512_final_head_half_reconstructed.cuh",
+        "kernel_impl/c512_proj_outview_fp8_reconstructed.cuh",
+        "kernel_impl/c512_proj_outview_half_reconstructed.cuh",
+        "kernel_impl/c512_proj_pool_fp8_reconstructed.cuh",
+        "kernel_impl/c512_proj_pool_half_reconstructed.cuh"
+      ]
+    },
+    {
+      "path": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_launcher/reconstructed_connectors.cu",
+      "sha256": "a8a2d69968c87957263cbf820288a5a8cbdb8037e1542a9d722e01e4eef5e70c",
+      "group": "connectors",
+      "body_headers": [
+        "kernel_impl/decoder_up512_fp8_reconstructed.cuh",
+        "kernel_impl/decoder_up512_half_reconstructed.cuh",
+        "kernel_impl/global_repack_reconstructed.cuh"
+      ]
+    },
+    {
+      "path": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_launcher/reconstructed_frontend_output.cu",
+      "sha256": "a5091c0cb8c84da051edcc8a93435b0f886ba828829a3e17432ffde522d6f6ba",
+      "group": "frontend_output",
+      "body_headers": [
+        "kernel_impl/c32_outview_fp8_reconstructed.cuh",
+        "kernel_impl/c32_outview_half_reconstructed.cuh",
+        "kernel_impl/c32_post_fp8_reconstructed.cuh",
+        "kernel_impl/c32_post_half_reconstructed.cuh",
+        "kernel_impl/c32_pre_ds_fp8_reconstructed.cuh",
+        "kernel_impl/c32_pre_ds_half_reconstructed.cuh",
+        "kernel_impl/c32_pre_fp8_reconstructed.cuh",
+        "kernel_impl/c32_pre_half_reconstructed.cuh"
+      ]
+    },
+    {
+      "path": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_launcher/reconstructed_windows_c128.cu",
+      "sha256": "250e6dd8ab78bb5a544d8333faf905d12fed0e022cb9ce602a87c1fb9ad40859",
+      "group": "windows_c128",
+      "body_headers": [
+        "kernel_impl/c128_downsample_half_reconstructed.cuh",
+        "kernel_impl/c128_downsample_reconstructed.cuh",
+        "kernel_impl/c128_inpview_fp8_reconstructed.cuh",
+        "kernel_impl/c128_inpview_half_reconstructed.cuh",
+        "kernel_impl/c128_ordinary_half_reconstructed.cuh",
+        "kernel_impl/c128_ordinary_reconstructed.cuh",
+        "kernel_impl/c128_outview_fp8_reconstructed.cuh",
+        "kernel_impl/c128_outview_half_reconstructed.cuh",
+        "kernel_impl/c128_upsample_half_reconstructed.cuh",
+        "kernel_impl/c128_upsample_reconstructed.cuh"
+      ]
+    },
+    {
+      "path": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_launcher/reconstructed_windows_c256.cu",
+      "sha256": "d3839c345b6870c1a1b09a46350a72153122344f6cb238ac54da9f6cdffa6881",
+      "group": "windows_c256",
+      "body_headers": [
+        "kernel_impl/c256_downsample_fp8_reconstructed.cuh",
+        "kernel_impl/c256_downsample_half_reconstructed.cuh",
+        "kernel_impl/c256_inpview_fp8_reconstructed.cuh",
+        "kernel_impl/c256_inpview_half_reconstructed.cuh",
+        "kernel_impl/c256_ordinary_half_reconstructed.cuh",
+        "kernel_impl/c256_ordinary_reconstructed.cuh",
+        "kernel_impl/c256_outview_fp8_reconstructed.cuh",
+        "kernel_impl/c256_outview_half_reconstructed.cuh",
+        "kernel_impl/c256_upsample_fp8_reconstructed.cuh",
+        "kernel_impl/c256_upsample_half_reconstructed.cuh"
+      ]
+    },
+    {
+      "path": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_launcher/reconstructed_windows_c32.cu",
+      "sha256": "bce08b6104622a2f6bd430561705928cc3d94f367176db6bb8c4840c5897821e",
+      "group": "windows_c32",
+      "body_headers": [
+        "kernel_impl/c32_ds_fp8_reconstructed.cuh",
+        "kernel_impl/c32_ds_half_reconstructed.cuh",
+        "kernel_impl/c32_inpview_fp8_reconstructed.cuh",
+        "kernel_impl/c32_inpview_half_reconstructed.cuh",
+        "kernel_impl/c32_ordinary_reconstructed_fp8.cuh",
+        "kernel_impl/c32_ordinary_reconstructed_half.cuh",
+        "kernel_impl/c32_upsample_fp8_reconstructed.cuh",
+        "kernel_impl/c32_upsample_half_reconstructed.cuh"
+      ]
+    },
+    {
+      "path": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_launcher/reconstructed_windows_c64.cu",
+      "sha256": "e1556157c50ac4d360d0d3e238db49f09f43166cceec00b73dcc17e682e53d0b",
+      "group": "windows_c64",
+      "body_headers": [
+        "kernel_impl/c64_down8_reconstructed.cuh",
+        "kernel_impl/c64_ds_reconstructed.cuh",
+        "kernel_impl/c64_inpview_fp8_reconstructed.cuh",
+        "kernel_impl/c64_inpview_reconstructed.cuh",
+        "kernel_impl/c64_ordinary_half_reconstructed.cuh",
+        "kernel_impl/c64_ordinary_reconstructed.cuh",
+        "kernel_impl/c64_outview_fp8_reconstructed.cuh",
+        "kernel_impl/c64_outview_reconstructed.cuh",
+        "kernel_impl/c64_upsample_fp8_reconstructed.cuh",
+        "kernel_impl/c64_upsample_reconstructed.cuh"
+      ]
+    }
+  ],
+  "source_files": {
+    "kernel_impl/c32_ordinary_reconstructed_half.cuh": {
+      "source": {
+        "path": "outputs/c32-ordinary-fullfield-fp8/build-draft/run-v1/overlay/csrc/kernel_impl/c32_ordinary_reconstructed_half.cuh",
+        "sha256": "b26b0667194390ec926b3600c825aa3e9af2dd1f533d3ee2dbe30602e3ce63df"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_ordinary_reconstructed_half.cuh",
+      "sha256": "b26b0667194390ec926b3600c825aa3e9af2dd1f533d3ee2dbe30602e3ce63df",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c32_ordinary_reconstructed_half_ops.cuh": {
+      "source": {
+        "path": "outputs/c32-ordinary-fullfield-fp8/build-draft/run-v1/overlay/csrc/kernel_impl/c32_ordinary_reconstructed_half_ops.cuh",
+        "sha256": "c5827f1987c1979ccd22498d5068b04bad31818b1d92deb6422a91b15df9c9d2"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_ordinary_reconstructed_half_ops.cuh",
+      "sha256": "c5827f1987c1979ccd22498d5068b04bad31818b1d92deb6422a91b15df9c9d2",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c32_ds_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c32-transitions-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c32_ds_half_reconstructed.cuh",
+        "sha256": "d632ccb69f8f1d583043ceb7b78cb83444aa821f0f6d22d8cd23bd6e8bc0ae7b"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_ds_half_reconstructed.cuh",
+      "sha256": "d632ccb69f8f1d583043ceb7b78cb83444aa821f0f6d22d8cd23bd6e8bc0ae7b",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c32_ds_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c32-transitions-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c32_ds_half_reconstructed_ops.cuh",
+        "sha256": "3c239346b77ebfdb5d3bb21a60db1572a6db3c60d4f16fd9ee029c7f2470d8fe"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_ds_half_reconstructed_ops.cuh",
+      "sha256": "3c239346b77ebfdb5d3bb21a60db1572a6db3c60d4f16fd9ee029c7f2470d8fe",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c32_ds_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c32-transitions-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c32_ds_fp8_reconstructed.cuh",
+        "sha256": "a5e95fff710f2525ead5aa5bc3144456290a7e369f3542b754da2eabeca8ac10"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_ds_fp8_reconstructed.cuh",
+      "sha256": "a5e95fff710f2525ead5aa5bc3144456290a7e369f3542b754da2eabeca8ac10",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c32_ds_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c32-transitions-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c32_ds_fp8_reconstructed_ops.cuh",
+        "sha256": "da6f5ca901ae7d71573b7be220b0d1800d15c0b5ce9c7f6e418ca0b39f90c525"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_ds_fp8_reconstructed_ops.cuh",
+      "sha256": "da6f5ca901ae7d71573b7be220b0d1800d15c0b5ce9c7f6e418ca0b39f90c525",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c32_ordinary_reconstructed_fp8.cuh": {
+      "source": {
+        "path": "outputs/c32-ordinary-fullfield-fp8/build-draft/run-v1/overlay/csrc/kernel_impl/c32_ordinary_reconstructed_fp8.cuh",
+        "sha256": "0c70b9b46c95b619c396187a019bb7dba6a26df465883252736b94d46ac3044f"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_ordinary_reconstructed_fp8.cuh",
+      "sha256": "0c70b9b46c95b619c396187a019bb7dba6a26df465883252736b94d46ac3044f",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c32_ordinary_reconstructed_fp8_ops.cuh": {
+      "source": {
+        "path": "outputs/c32-ordinary-fullfield-fp8/build-draft/run-v1/overlay/csrc/kernel_impl/c32_ordinary_reconstructed_fp8_ops.cuh",
+        "sha256": "99634ebff5ebc6bd9d32d0e6a92b66252ce7dee2185d95936a3fa886e88796ec"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_ordinary_reconstructed_fp8_ops.cuh",
+      "sha256": "99634ebff5ebc6bd9d32d0e6a92b66252ce7dee2185d95936a3fa886e88796ec",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c32_inpview_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c32-transitions-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c32_inpview_half_reconstructed.cuh",
+        "sha256": "dc1b550a2f6ad328a465c4e8cfa0e5ca7bba8f28154069fdd7fc296bf1e6b2f6"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_inpview_half_reconstructed.cuh",
+      "sha256": "dc1b550a2f6ad328a465c4e8cfa0e5ca7bba8f28154069fdd7fc296bf1e6b2f6",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c32_inpview_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c32-transitions-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c32_inpview_half_reconstructed_ops.cuh",
+        "sha256": "fc877be786a5ce99d7e6149eb432d81510395f480bf0d0b65baa3856203486c2"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_inpview_half_reconstructed_ops.cuh",
+      "sha256": "fc877be786a5ce99d7e6149eb432d81510395f480bf0d0b65baa3856203486c2",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c32_inpview_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c32-transitions-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c32_inpview_fp8_reconstructed.cuh",
+        "sha256": "95edb5c93af7373a483ed306bb54d84808fa235d3d78eda258085738d8f887a6"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_inpview_fp8_reconstructed.cuh",
+      "sha256": "95edb5c93af7373a483ed306bb54d84808fa235d3d78eda258085738d8f887a6",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c32_inpview_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c32-transitions-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c32_inpview_fp8_reconstructed_ops.cuh",
+        "sha256": "5126d17e1b5bc53fe6c5f678314a9958194da5b1929a20158763472ed071dda6"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_inpview_fp8_reconstructed_ops.cuh",
+      "sha256": "5126d17e1b5bc53fe6c5f678314a9958194da5b1929a20158763472ed071dda6",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c32_upsample_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c32-transitions-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c32_upsample_half_reconstructed.cuh",
+        "sha256": "33f7e430859f45a606d0d9d2dae87665f074008cbbb6d9b8c05c99a4515f5e10"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_upsample_half_reconstructed.cuh",
+      "sha256": "33f7e430859f45a606d0d9d2dae87665f074008cbbb6d9b8c05c99a4515f5e10",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c32_upsample_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c32-transitions-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c32_upsample_half_reconstructed_ops.cuh",
+        "sha256": "4137443ec71265e199e6f2ae6fa9453e1e550017cf46622a397a60d8b5d8a111"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_upsample_half_reconstructed_ops.cuh",
+      "sha256": "4137443ec71265e199e6f2ae6fa9453e1e550017cf46622a397a60d8b5d8a111",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c32_upsample_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c32-transitions-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c32_upsample_fp8_reconstructed.cuh",
+        "sha256": "f33e93997ff356b6d27e993e32670698323bff5ddf48f7b3493c5a69e88f5c49"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_upsample_fp8_reconstructed.cuh",
+      "sha256": "f33e93997ff356b6d27e993e32670698323bff5ddf48f7b3493c5a69e88f5c49",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c32_upsample_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c32-transitions-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c32_upsample_fp8_reconstructed_ops.cuh",
+        "sha256": "ede5814093c228c583301473696e5009c65d599a93d55eb2d9288b01cfc250cf"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_upsample_fp8_reconstructed_ops.cuh",
+      "sha256": "ede5814093c228c583301473696e5009c65d599a93d55eb2d9288b01cfc250cf",
+      "groups": [
+        "windows_c32"
+      ]
+    },
+    "kernel_impl/c64_ordinary_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c64-ordinary-half-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_ordinary_half_reconstructed.cuh",
+        "sha256": "6fc634fc999095ef4713733146421cb70dcbde30f04988db7a9a9f6faa1ad428"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_ordinary_half_reconstructed.cuh",
+      "sha256": "6fc634fc999095ef4713733146421cb70dcbde30f04988db7a9a9f6faa1ad428",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_ordinary_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c64-ordinary-half-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_ordinary_half_reconstructed_ops.cuh",
+        "sha256": "67b3bc375adb18dd71af28f3d29eb189f037c650840e146a6356bd8f7585c347"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_ordinary_half_reconstructed_ops.cuh",
+      "sha256": "67b3bc375adb18dd71af28f3d29eb189f037c650840e146a6356bd8f7585c347",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_ds_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c64-transitions-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_ds_reconstructed.cuh",
+        "sha256": "6b7ec9271d7633c8a9a6b8a7b4790b17dcc0a1813b115d111dbc1f9852fab475"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_ds_reconstructed.cuh",
+      "sha256": "6b7ec9271d7633c8a9a6b8a7b4790b17dcc0a1813b115d111dbc1f9852fab475",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_ds_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c64-transitions-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_ds_reconstructed_ops.cuh",
+        "sha256": "2bf5cf0aa730edad66108c7bf45d0270810134bbd8fb298aa6d9d58b83408559"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_ds_reconstructed_ops.cuh",
+      "sha256": "2bf5cf0aa730edad66108c7bf45d0270810134bbd8fb298aa6d9d58b83408559",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_down8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c64-down8-cuda-reconstruction-v4/build-draft/run-v1/overlay/csrc/kernel_impl/c64_down8_reconstructed.cuh",
+        "sha256": "6c0228fd75aa94a662d2a6d71dfe48aa69a378fc9fd022553523834349009c1e"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_down8_reconstructed.cuh",
+      "sha256": "6c0228fd75aa94a662d2a6d71dfe48aa69a378fc9fd022553523834349009c1e",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_down8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c64-down8-cuda-reconstruction-v4/build-draft/run-v1/overlay/csrc/kernel_impl/c64_down8_reconstructed_ops.cuh",
+        "sha256": "a789a4649d9653154c8e60a10297ebaba5fad53cc27f86f52ea1f0ad0c23318f"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_down8_reconstructed_ops.cuh",
+      "sha256": "a789a4649d9653154c8e60a10297ebaba5fad53cc27f86f52ea1f0ad0c23318f",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_ordinary_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c64-ordinary-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_ordinary_reconstructed.cuh",
+        "sha256": "cd93aca2c67dff12ff1623feac1159b4931b1bbc406d9d037822df11c2d6c96e"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_ordinary_reconstructed.cuh",
+      "sha256": "cd93aca2c67dff12ff1623feac1159b4931b1bbc406d9d037822df11c2d6c96e",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_ordinary_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c64-ordinary-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_ordinary_reconstructed_ops.cuh",
+        "sha256": "4a563ebe4c69d1a9048e25a7b2961a7db743fe979e1ed864651cafa43788b4a8"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_ordinary_reconstructed_ops.cuh",
+      "sha256": "4a563ebe4c69d1a9048e25a7b2961a7db743fe979e1ed864651cafa43788b4a8",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_inpview_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c64-transitions-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_inpview_reconstructed.cuh",
+        "sha256": "dde1dd410694b38cca6b080bf0f3b3f32df6e86c7da7de60edeaffc35b0e08ec"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_inpview_reconstructed.cuh",
+      "sha256": "dde1dd410694b38cca6b080bf0f3b3f32df6e86c7da7de60edeaffc35b0e08ec",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_inpview_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c64-transitions-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_inpview_reconstructed_ops.cuh",
+        "sha256": "70052e6e6f927c5734971100a02ba58cf039aa552cda40ca36391bf7db8e6d28"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_inpview_reconstructed_ops.cuh",
+      "sha256": "70052e6e6f927c5734971100a02ba58cf039aa552cda40ca36391bf7db8e6d28",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_inpview_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c64-transitions-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_inpview_fp8_reconstructed.cuh",
+        "sha256": "9b3ba95da247f5c725d65a3d3fe421bb6c68d1b45d1f47a9ab309c7f874746ee"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_inpview_fp8_reconstructed.cuh",
+      "sha256": "9b3ba95da247f5c725d65a3d3fe421bb6c68d1b45d1f47a9ab309c7f874746ee",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_inpview_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c64-transitions-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_inpview_fp8_reconstructed_ops.cuh",
+        "sha256": "aeb0ffb29824b826e8a609aa8f5eac1af4d6783ddeb59fa393dc81610b62a8bd"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_inpview_fp8_reconstructed_ops.cuh",
+      "sha256": "aeb0ffb29824b826e8a609aa8f5eac1af4d6783ddeb59fa393dc81610b62a8bd",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_outview_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c64-transitions-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_outview_reconstructed.cuh",
+        "sha256": "806b0511fe5b65ab096917de2b25c106b5c1a3269dbaac13bff5ba5484014122"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_outview_reconstructed.cuh",
+      "sha256": "806b0511fe5b65ab096917de2b25c106b5c1a3269dbaac13bff5ba5484014122",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_outview_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c64-transitions-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_outview_reconstructed_ops.cuh",
+        "sha256": "d8c8dd61fb27f8f05b3e806050b3c218ce6200f9331a66c87a9a4c04ce7e32e2"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_outview_reconstructed_ops.cuh",
+      "sha256": "d8c8dd61fb27f8f05b3e806050b3c218ce6200f9331a66c87a9a4c04ce7e32e2",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_outview_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c64-transitions-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_outview_fp8_reconstructed.cuh",
+        "sha256": "a43369efe9a091bc308df69075f91529fedeec6bd97723542517cd15c4af9b1e"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_outview_fp8_reconstructed.cuh",
+      "sha256": "a43369efe9a091bc308df69075f91529fedeec6bd97723542517cd15c4af9b1e",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_outview_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c64-transitions-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_outview_fp8_reconstructed_ops.cuh",
+        "sha256": "da398bd9d9c85a11232c4864f0861f13338725bccfe22341811d8abb9e001afa"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_outview_fp8_reconstructed_ops.cuh",
+      "sha256": "da398bd9d9c85a11232c4864f0861f13338725bccfe22341811d8abb9e001afa",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_upsample_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c64-transitions-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_upsample_reconstructed.cuh",
+        "sha256": "a1f3cdc4eb8cad3e6203324ab2b7b0d1048ddbabc7326b0277a65344440121b8"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_upsample_reconstructed.cuh",
+      "sha256": "a1f3cdc4eb8cad3e6203324ab2b7b0d1048ddbabc7326b0277a65344440121b8",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_upsample_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c64-transitions-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_upsample_reconstructed_ops.cuh",
+        "sha256": "38d602b830e1cf99a7afe1f5c0c40608fd12c944a7934fd66cc6147adba18581"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_upsample_reconstructed_ops.cuh",
+      "sha256": "38d602b830e1cf99a7afe1f5c0c40608fd12c944a7934fd66cc6147adba18581",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_upsample_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c64-transitions-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_upsample_fp8_reconstructed.cuh",
+        "sha256": "c18db8eb778051bc62193cccece872f860890cea322ede80b88edbb3c715b64c"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_upsample_fp8_reconstructed.cuh",
+      "sha256": "c18db8eb778051bc62193cccece872f860890cea322ede80b88edbb3c715b64c",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c64_upsample_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c64-transitions-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c64_upsample_fp8_reconstructed_ops.cuh",
+        "sha256": "159e8c5475e30f062278b4de7e6f5e46161317a02acb710395b3ee591a9f9271"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c64_upsample_fp8_reconstructed_ops.cuh",
+      "sha256": "159e8c5475e30f062278b4de7e6f5e46161317a02acb710395b3ee591a9f9271",
+      "groups": [
+        "windows_c64"
+      ]
+    },
+    "kernel_impl/c128_ordinary_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_ordinary_half_reconstructed.cuh",
+        "sha256": "f7d49a6222c14291690ba8b28a857684ee5f7736adb2920f71d573cd9272ec4b"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_ordinary_half_reconstructed.cuh",
+      "sha256": "f7d49a6222c14291690ba8b28a857684ee5f7736adb2920f71d573cd9272ec4b",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_ordinary_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_ordinary_half_reconstructed_ops.cuh",
+        "sha256": "8038764b423949328e6a7d675a5723d505422b17c542acabea964bbebd4aa84f"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_ordinary_half_reconstructed_ops.cuh",
+      "sha256": "8038764b423949328e6a7d675a5723d505422b17c542acabea964bbebd4aa84f",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_downsample_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_downsample_half_reconstructed.cuh",
+        "sha256": "55ab8b5bdf04c947a1a873690dcb2fe9c3606e5e44b420354f1509617c6b882d"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_downsample_half_reconstructed.cuh",
+      "sha256": "55ab8b5bdf04c947a1a873690dcb2fe9c3606e5e44b420354f1509617c6b882d",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_downsample_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_downsample_half_reconstructed_ops.cuh",
+        "sha256": "0f9e86820f4d92e7fce96c1dab6b53602369b343da54661463d41f83d61ed3ec"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_downsample_half_reconstructed_ops.cuh",
+      "sha256": "0f9e86820f4d92e7fce96c1dab6b53602369b343da54661463d41f83d61ed3ec",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_downsample_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_downsample_reconstructed.cuh",
+        "sha256": "4380abdcad0d959a04ab33f36ec9102f2bb4c0b5692872ca5f62c2dec60ac5c6"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_downsample_reconstructed.cuh",
+      "sha256": "4380abdcad0d959a04ab33f36ec9102f2bb4c0b5692872ca5f62c2dec60ac5c6",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_downsample_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_downsample_reconstructed_ops.cuh",
+        "sha256": "e80c250639f1ea5035554d8a004892ff6ab9fa552974836918924c30385bdde5"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_downsample_reconstructed_ops.cuh",
+      "sha256": "e80c250639f1ea5035554d8a004892ff6ab9fa552974836918924c30385bdde5",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_ordinary_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c128-ordinary-cuda-reconstruction-v2/build-draft/run-v1/overlay/csrc/kernel_impl/c128_ordinary_reconstructed.cuh",
+        "sha256": "eecfc8ba1322ea5377fd5bd14b057278eea61742e17a84bffff8eea8aaf0a5c4"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_ordinary_reconstructed.cuh",
+      "sha256": "eecfc8ba1322ea5377fd5bd14b057278eea61742e17a84bffff8eea8aaf0a5c4",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_ordinary_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c128-ordinary-cuda-reconstruction-v2/build-draft/run-v1/overlay/csrc/kernel_impl/c128_ordinary_reconstructed_ops.cuh",
+        "sha256": "e808fe3259b0d63c5101e763c196e1ca757bad83fbd86804bf4e551fcf72b8d3"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_ordinary_reconstructed_ops.cuh",
+      "sha256": "e808fe3259b0d63c5101e763c196e1ca757bad83fbd86804bf4e551fcf72b8d3",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_inpview_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_inpview_half_reconstructed.cuh",
+        "sha256": "ba94ba1b4cb119c4f961302020ccdd2e541e3ca1149a892bde480773f21c43a5"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_inpview_half_reconstructed.cuh",
+      "sha256": "ba94ba1b4cb119c4f961302020ccdd2e541e3ca1149a892bde480773f21c43a5",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_inpview_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_inpview_half_reconstructed_ops.cuh",
+        "sha256": "ad95c8edeec669ce36fe0123a1798f0ccc8ad3b54d3669e48a33e27d4f70d23f"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_inpview_half_reconstructed_ops.cuh",
+      "sha256": "ad95c8edeec669ce36fe0123a1798f0ccc8ad3b54d3669e48a33e27d4f70d23f",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_inpview_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_inpview_fp8_reconstructed.cuh",
+        "sha256": "2baf909c7b2023e79555afdad39ac4ed51a6416575f369a65c061dc1f25d6471"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_inpview_fp8_reconstructed.cuh",
+      "sha256": "2baf909c7b2023e79555afdad39ac4ed51a6416575f369a65c061dc1f25d6471",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_inpview_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_inpview_fp8_reconstructed_ops.cuh",
+        "sha256": "cf9644321b995454f63944fe8e7490e8c4145f7311c7944f33059dd18cdd0903"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_inpview_fp8_reconstructed_ops.cuh",
+      "sha256": "cf9644321b995454f63944fe8e7490e8c4145f7311c7944f33059dd18cdd0903",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_outview_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_outview_half_reconstructed.cuh",
+        "sha256": "5d61631783af7c115b51a03b8090d0c301eac1c69b55fba916b9bec00ab36792"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_outview_half_reconstructed.cuh",
+      "sha256": "5d61631783af7c115b51a03b8090d0c301eac1c69b55fba916b9bec00ab36792",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_outview_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_outview_half_reconstructed_ops.cuh",
+        "sha256": "b8bddc33a83b7f2155505334c1a2eb61016eb222015c2c9194efc7fe36984be3"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_outview_half_reconstructed_ops.cuh",
+      "sha256": "b8bddc33a83b7f2155505334c1a2eb61016eb222015c2c9194efc7fe36984be3",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_outview_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_outview_fp8_reconstructed.cuh",
+        "sha256": "7c53948b25cc97c593661a0f42f3b81faca3876b944e979be2daf14a5af6ce37"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_outview_fp8_reconstructed.cuh",
+      "sha256": "7c53948b25cc97c593661a0f42f3b81faca3876b944e979be2daf14a5af6ce37",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_outview_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_outview_fp8_reconstructed_ops.cuh",
+        "sha256": "3fe7e92a39f3fedc6805d92f70710911b28a803ace5d3e4f8a3ab9f976c91e5c"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_outview_fp8_reconstructed_ops.cuh",
+      "sha256": "3fe7e92a39f3fedc6805d92f70710911b28a803ace5d3e4f8a3ab9f976c91e5c",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_upsample_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_upsample_half_reconstructed.cuh",
+        "sha256": "5d310e9d72286ce8b3b71e43b1ec4ad2e73e631996424c94a2d3ca5a1c47bf46"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_upsample_half_reconstructed.cuh",
+      "sha256": "5d310e9d72286ce8b3b71e43b1ec4ad2e73e631996424c94a2d3ca5a1c47bf46",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_upsample_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_upsample_half_reconstructed_ops.cuh",
+        "sha256": "b8a381e084dae449c250bc43ee45679d3d2bf53173b60ebe71efc07abd2ddd80"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_upsample_half_reconstructed_ops.cuh",
+      "sha256": "b8a381e084dae449c250bc43ee45679d3d2bf53173b60ebe71efc07abd2ddd80",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_upsample_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_upsample_reconstructed.cuh",
+        "sha256": "673258afddab11c8f690d96ca32ee32557fcaa0906a188550604d309ecabae18"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_upsample_reconstructed.cuh",
+      "sha256": "673258afddab11c8f690d96ca32ee32557fcaa0906a188550604d309ecabae18",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c128_upsample_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c128-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c128_upsample_reconstructed_ops.cuh",
+        "sha256": "ef8e2dac8d20347793476d420405c027e8031e0f5a6715303927830f1e2d719c"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c128_upsample_reconstructed_ops.cuh",
+      "sha256": "ef8e2dac8d20347793476d420405c027e8031e0f5a6715303927830f1e2d719c",
+      "groups": [
+        "windows_c128"
+      ]
+    },
+    "kernel_impl/c256_ordinary_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_ordinary_half_reconstructed.cuh",
+        "sha256": "7e35925b667609842f8bcdbd6f1418c3a788582c507ca99899be2acd16a97b7b"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_ordinary_half_reconstructed.cuh",
+      "sha256": "7e35925b667609842f8bcdbd6f1418c3a788582c507ca99899be2acd16a97b7b",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_ordinary_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_ordinary_half_reconstructed_ops.cuh",
+        "sha256": "5dbc1c45a5f81cf82482edd212065119b778b2c9500f0dbd861904c9efb01696"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_ordinary_half_reconstructed_ops.cuh",
+      "sha256": "5dbc1c45a5f81cf82482edd212065119b778b2c9500f0dbd861904c9efb01696",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_downsample_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_downsample_half_reconstructed.cuh",
+        "sha256": "093be61ae3c6cc75c00ea1b703923ae08040a6c784e397763ade3ee7401781cf"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_downsample_half_reconstructed.cuh",
+      "sha256": "093be61ae3c6cc75c00ea1b703923ae08040a6c784e397763ade3ee7401781cf",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_downsample_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_downsample_half_reconstructed_ops.cuh",
+        "sha256": "7c56042eec57377d76c0ecd51b3372c6f39513fce6dcdfc65b8d05c256382360"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_downsample_half_reconstructed_ops.cuh",
+      "sha256": "7c56042eec57377d76c0ecd51b3372c6f39513fce6dcdfc65b8d05c256382360",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_downsample_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_downsample_fp8_reconstructed.cuh",
+        "sha256": "b2f7bf49c0f8a4540dae86e04bb4e5e99480c90a74aaf4cc687bdcec70c27f79"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_downsample_fp8_reconstructed.cuh",
+      "sha256": "b2f7bf49c0f8a4540dae86e04bb4e5e99480c90a74aaf4cc687bdcec70c27f79",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_downsample_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_downsample_fp8_reconstructed_ops.cuh",
+        "sha256": "21931c97333b8490cd1dd5f77ea7fa98e4b5b94f40bda18b42d4a98586be97a3"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_downsample_fp8_reconstructed_ops.cuh",
+      "sha256": "21931c97333b8490cd1dd5f77ea7fa98e4b5b94f40bda18b42d4a98586be97a3",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_ordinary_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c256-ordinary-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_ordinary_reconstructed.cuh",
+        "sha256": "8fa89da3a0701fca321ace8e2ab64ee8859db2711dd553952fe9420da8ab6948"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_ordinary_reconstructed.cuh",
+      "sha256": "8fa89da3a0701fca321ace8e2ab64ee8859db2711dd553952fe9420da8ab6948",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_ordinary_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c256-ordinary-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_ordinary_reconstructed_ops.cuh",
+        "sha256": "646a059967e6a395381477d82439dfae6771f23ffe29a91d36a2b3b7f0468049"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_ordinary_reconstructed_ops.cuh",
+      "sha256": "646a059967e6a395381477d82439dfae6771f23ffe29a91d36a2b3b7f0468049",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_inpview_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_inpview_half_reconstructed.cuh",
+        "sha256": "0fd804964080da4d5b0fa3ace073de1dc87801ea20914bde8b6c7d2e7cefa2be"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_inpview_half_reconstructed.cuh",
+      "sha256": "0fd804964080da4d5b0fa3ace073de1dc87801ea20914bde8b6c7d2e7cefa2be",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_inpview_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_inpview_half_reconstructed_ops.cuh",
+        "sha256": "a066c892a7cc804d6da71a10097816d3ed8149648d3dea9336b9c829a885ba20"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_inpview_half_reconstructed_ops.cuh",
+      "sha256": "a066c892a7cc804d6da71a10097816d3ed8149648d3dea9336b9c829a885ba20",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_inpview_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_inpview_fp8_reconstructed.cuh",
+        "sha256": "a4345c2196e01caa2b04cdfff82565002b00835985f2e7cd9902987fc30cb5cb"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_inpview_fp8_reconstructed.cuh",
+      "sha256": "a4345c2196e01caa2b04cdfff82565002b00835985f2e7cd9902987fc30cb5cb",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_inpview_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_inpview_fp8_reconstructed_ops.cuh",
+        "sha256": "0f2a6553cc801c1675f499fba6c1538b85280ae48411ebe84efaf18e990a82ea"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_inpview_fp8_reconstructed_ops.cuh",
+      "sha256": "0f2a6553cc801c1675f499fba6c1538b85280ae48411ebe84efaf18e990a82ea",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_outview_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_outview_half_reconstructed.cuh",
+        "sha256": "a99df2ceede30bffa13cb80aef0146f376436a4f78ee14ae5a77f0a643d61f94"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_outview_half_reconstructed.cuh",
+      "sha256": "a99df2ceede30bffa13cb80aef0146f376436a4f78ee14ae5a77f0a643d61f94",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_outview_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_outview_half_reconstructed_ops.cuh",
+        "sha256": "11d3bcbb065f81664032eac444fce9b1270d7d7efc0d8024700a3c8912c5eb15"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_outview_half_reconstructed_ops.cuh",
+      "sha256": "11d3bcbb065f81664032eac444fce9b1270d7d7efc0d8024700a3c8912c5eb15",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_outview_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_outview_fp8_reconstructed.cuh",
+        "sha256": "7c04474f58cd60dc69c5953b89a43ac424c5de2ea902e75bed95ddd3c5cadad9"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_outview_fp8_reconstructed.cuh",
+      "sha256": "7c04474f58cd60dc69c5953b89a43ac424c5de2ea902e75bed95ddd3c5cadad9",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_outview_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_outview_fp8_reconstructed_ops.cuh",
+        "sha256": "90b451a8764f5452a8b0192f1878cd4ee7de955a25810bdfd80c5a24ba4716af"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_outview_fp8_reconstructed_ops.cuh",
+      "sha256": "90b451a8764f5452a8b0192f1878cd4ee7de955a25810bdfd80c5a24ba4716af",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_upsample_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_upsample_half_reconstructed.cuh",
+        "sha256": "83a2499a2588b466a96de1d84464f4ce37f7cf1766b1f170b36c484a942af4f7"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_upsample_half_reconstructed.cuh",
+      "sha256": "83a2499a2588b466a96de1d84464f4ce37f7cf1766b1f170b36c484a942af4f7",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_upsample_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_upsample_half_reconstructed_ops.cuh",
+        "sha256": "e9590e078189f469205938e5af88b6b022d540365d8e305eb89670906d63fe0a"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_upsample_half_reconstructed_ops.cuh",
+      "sha256": "e9590e078189f469205938e5af88b6b022d540365d8e305eb89670906d63fe0a",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_upsample_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_upsample_fp8_reconstructed.cuh",
+        "sha256": "b10406c469e33143bc2d37545fb2a2d17144a43473d4a75a31fa02c255e769ef"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_upsample_fp8_reconstructed.cuh",
+      "sha256": "b10406c469e33143bc2d37545fb2a2d17144a43473d4a75a31fa02c255e769ef",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c256_upsample_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c256-window-remaining-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c256_upsample_fp8_reconstructed_ops.cuh",
+        "sha256": "0a1890545c4bf2779bb6feaccb25b5af09f23929e8134a30293b200a5a7460fd"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c256_upsample_fp8_reconstructed_ops.cuh",
+      "sha256": "0a1890545c4bf2779bb6feaccb25b5af09f23929e8134a30293b200a5a7460fd",
+      "groups": [
+        "windows_c256"
+      ]
+    },
+    "kernel_impl/c512_ffn_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_reconstructed.cuh",
+        "sha256": "59f01dbe878309e94f4673fc1f2f2be36b33a6c7e8e1b88697ad008226de49a4"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_reconstructed.cuh",
+      "sha256": "59f01dbe878309e94f4673fc1f2f2be36b33a6c7e8e1b88697ad008226de49a4",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_ffn_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_reconstructed_ops.cuh",
+        "sha256": "571ca24dd306ed4aae7316d6cdeb92d25447462f3a4511f97510b75422b8aff3"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_reconstructed_ops.cuh",
+      "sha256": "571ca24dd306ed4aae7316d6cdeb92d25447462f3a4511f97510b75422b8aff3",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_ffn_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-half-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_half_reconstructed.cuh",
+        "sha256": "a8ba9138f0b6999e2d0fa94994833258dddae46301d5e51a1628473e506d28a5"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_half_reconstructed.cuh",
+      "sha256": "a8ba9138f0b6999e2d0fa94994833258dddae46301d5e51a1628473e506d28a5",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_ffn_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-half-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_half_reconstructed_ops.cuh",
+        "sha256": "4155b5bfc3b8698522176c0be803d52d42c69b21e6d463eb2bd05696fef9453a"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_half_reconstructed_ops.cuh",
+      "sha256": "4155b5bfc3b8698522176c0be803d52d42c69b21e6d463eb2bd05696fef9453a",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_ffn_inpview_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_inpview_fp8_reconstructed.cuh",
+        "sha256": "d7122f4f068f83f6a5ef553e82d49f0845007b79fcba1316cdf8a91f5b26d7c9"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_inpview_fp8_reconstructed.cuh",
+      "sha256": "d7122f4f068f83f6a5ef553e82d49f0845007b79fcba1316cdf8a91f5b26d7c9",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_ffn_inpview_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_inpview_fp8_reconstructed_ops.cuh",
+        "sha256": "5ba9b5c42507a9408d909077621c9844e4de60f1211b3f3995970c6d7d90679f"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_inpview_fp8_reconstructed_ops.cuh",
+      "sha256": "5ba9b5c42507a9408d909077621c9844e4de60f1211b3f3995970c6d7d90679f",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_ffn_inpview_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_inpview_half_reconstructed.cuh",
+        "sha256": "72b9d1fa1442f04ec57bb35fbf8f2ecc9c85e9f57829c66031d82c74d64cd92f"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_inpview_half_reconstructed.cuh",
+      "sha256": "72b9d1fa1442f04ec57bb35fbf8f2ecc9c85e9f57829c66031d82c74d64cd92f",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_ffn_inpview_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_inpview_half_reconstructed_ops.cuh",
+        "sha256": "9f61a4f4c626239a341b531b67df7c77f0daf8b6c2b0c2b81e0e5a47d5185027"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_inpview_half_reconstructed_ops.cuh",
+      "sha256": "9f61a4f4c626239a341b531b67df7c77f0daf8b6c2b0c2b81e0e5a47d5185027",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_ffn_proj_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_fp8_reconstructed.cuh",
+        "sha256": "5322a684565f151200e18366d80b4f786f3282b83217e74bc435c029887ed404"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_proj_fp8_reconstructed.cuh",
+      "sha256": "5322a684565f151200e18366d80b4f786f3282b83217e74bc435c029887ed404",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_ffn_proj_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_fp8_reconstructed_ops.cuh",
+        "sha256": "8d7f183a3824e41a96c3f975e315a2ebbd22950005770acb69493b807c0e453c"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_proj_fp8_reconstructed_ops.cuh",
+      "sha256": "8d7f183a3824e41a96c3f975e315a2ebbd22950005770acb69493b807c0e453c",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_ffn_proj_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_half_reconstructed.cuh",
+        "sha256": "86b4cbff72971122cdb10c3759af58be0b05466653f5d0fdf630a02ca5065b40"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_proj_half_reconstructed.cuh",
+      "sha256": "86b4cbff72971122cdb10c3759af58be0b05466653f5d0fdf630a02ca5065b40",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_ffn_proj_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_half_reconstructed_ops.cuh",
+        "sha256": "3a89d8df264ddab8cc9b8af51c037ac11ea8f45f5c8cf7fb3f345939615c7b08"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_proj_half_reconstructed_ops.cuh",
+      "sha256": "3a89d8df264ddab8cc9b8af51c037ac11ea8f45f5c8cf7fb3f345939615c7b08",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed.cuh",
+        "sha256": "ac6f6e2c2781da7d6d3218d73a80e1697cc409848ddb870f86a8c392820e73f6"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed.cuh",
+      "sha256": "ac6f6e2c2781da7d6d3218d73a80e1697cc409848ddb870f86a8c392820e73f6",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed_ops.cuh",
+        "sha256": "6d8d64b9e8ba4803298acb81a63d43cf293d0740db9ff2d97ad2b292a2bbced2"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed_ops.cuh",
+      "sha256": "6d8d64b9e8ba4803298acb81a63d43cf293d0740db9ff2d97ad2b292a2bbced2",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_ffn_proj_inpview_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_inpview_half_reconstructed.cuh",
+        "sha256": "fba4e644cf73f9d14a145ea58782a49b649a3735e78cfbb0b5cc502ff6196bc5"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_proj_inpview_half_reconstructed.cuh",
+      "sha256": "fba4e644cf73f9d14a145ea58782a49b649a3735e78cfbb0b5cc502ff6196bc5",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_ffn_proj_inpview_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_inpview_half_reconstructed_ops.cuh",
+        "sha256": "baf24951a2b8484255695405315020722474d87f4200e6c01b0032855729faed"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_ffn_proj_inpview_half_reconstructed_ops.cuh",
+      "sha256": "baf24951a2b8484255695405315020722474d87f4200e6c01b0032855729faed",
+      "groups": [
+        "c512_ffn"
+      ]
+    },
+    "kernel_impl/c512_qkv_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_qkv_fp8_reconstructed.cuh",
+        "sha256": "5199142859f885df0b969a7427cadb7261aad19c8ae5a035cfe415b8f914cf76"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_qkv_fp8_reconstructed.cuh",
+      "sha256": "5199142859f885df0b969a7427cadb7261aad19c8ae5a035cfe415b8f914cf76",
+      "groups": [
+        "c512_attention"
+      ]
+    },
+    "kernel_impl/c512_qkv_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_qkv_fp8_reconstructed_ops.cuh",
+        "sha256": "d29d450991f6d496ba0fb84d903620842b451e1991ec002d2d72c8a8f9a097a5"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_qkv_fp8_reconstructed_ops.cuh",
+      "sha256": "d29d450991f6d496ba0fb84d903620842b451e1991ec002d2d72c8a8f9a097a5",
+      "groups": [
+        "c512_attention"
+      ]
+    },
+    "kernel_impl/c512_qkv_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_qkv_half_reconstructed.cuh",
+        "sha256": "081e0625351f3d3f2fdc41090625e322a32e62c7b172659e6ff9c222583333ee"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_qkv_half_reconstructed.cuh",
+      "sha256": "081e0625351f3d3f2fdc41090625e322a32e62c7b172659e6ff9c222583333ee",
+      "groups": [
+        "c512_attention"
+      ]
+    },
+    "kernel_impl/c512_qkv_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_qkv_half_reconstructed_ops.cuh",
+        "sha256": "917150a098c9d08eb3ef0c01c1ab84c32110bebccc1fa2ba9ac2778da7c2e43a"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_qkv_half_reconstructed_ops.cuh",
+      "sha256": "917150a098c9d08eb3ef0c01c1ab84c32110bebccc1fa2ba9ac2778da7c2e43a",
+      "groups": [
+        "c512_attention"
+      ]
+    },
+    "kernel_impl/c512_proj_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_fp8_reconstructed.cuh",
+        "sha256": "be737b12786bcb53a5ccf701aa7701d6b0d45d9b2625664d5434e2255bfd1e6c"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_proj_fp8_reconstructed.cuh",
+      "sha256": "be737b12786bcb53a5ccf701aa7701d6b0d45d9b2625664d5434e2255bfd1e6c",
+      "groups": [
+        "c512_attention"
+      ]
+    },
+    "kernel_impl/c512_proj_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_fp8_reconstructed_ops.cuh",
+        "sha256": "02d32061e08400e82de7398fa04119cb75111061f14cfcb06dca180204d1aa7f"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_proj_fp8_reconstructed_ops.cuh",
+      "sha256": "02d32061e08400e82de7398fa04119cb75111061f14cfcb06dca180204d1aa7f",
+      "groups": [
+        "c512_attention"
+      ]
+    },
+    "kernel_impl/c512_proj_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_half_reconstructed.cuh",
+        "sha256": "a4d5af11799a75752d7738fd4272a988ab02679b71661edb79c6701ae471d52e"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_proj_half_reconstructed.cuh",
+      "sha256": "a4d5af11799a75752d7738fd4272a988ab02679b71661edb79c6701ae471d52e",
+      "groups": [
+        "c512_attention"
+      ]
+    },
+    "kernel_impl/c512_proj_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_half_reconstructed_ops.cuh",
+        "sha256": "127295e61ad586fb1411bb30d008a5107130f9061c874ed31d160be82355d744"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_proj_half_reconstructed_ops.cuh",
+      "sha256": "127295e61ad586fb1411bb30d008a5107130f9061c874ed31d160be82355d744",
+      "groups": [
+        "c512_attention"
+      ]
+    },
+    "kernel_impl/c512_proj_outview_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_outview_fp8_reconstructed.cuh",
+        "sha256": "c7676ebd047f494c33a75642ada3d86f04b944bddb2cf91857da96a2ce1bd0c2"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_proj_outview_fp8_reconstructed.cuh",
+      "sha256": "c7676ebd047f494c33a75642ada3d86f04b944bddb2cf91857da96a2ce1bd0c2",
+      "groups": [
+        "c512_projection"
+      ]
+    },
+    "kernel_impl/c512_proj_outview_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_outview_fp8_reconstructed_ops.cuh",
+        "sha256": "3fc881a5d78c02d0a2a6be7eb1694fbed39b67763ee1310fd27b5aa4555d4c9b"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_proj_outview_fp8_reconstructed_ops.cuh",
+      "sha256": "3fc881a5d78c02d0a2a6be7eb1694fbed39b67763ee1310fd27b5aa4555d4c9b",
+      "groups": [
+        "c512_projection"
+      ]
+    },
+    "kernel_impl/c512_proj_outview_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_outview_half_reconstructed.cuh",
+        "sha256": "36b9a032d801a71efb9394c9252501656d114b01ec743d26c8ba3689adaef3c7"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_proj_outview_half_reconstructed.cuh",
+      "sha256": "36b9a032d801a71efb9394c9252501656d114b01ec743d26c8ba3689adaef3c7",
+      "groups": [
+        "c512_projection"
+      ]
+    },
+    "kernel_impl/c512_proj_outview_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_outview_half_reconstructed_ops.cuh",
+        "sha256": "6dc8effebe5d39af505308a8bc740820d14ccaf90affffda52e3a1e259a4ab06"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_proj_outview_half_reconstructed_ops.cuh",
+      "sha256": "6dc8effebe5d39af505308a8bc740820d14ccaf90affffda52e3a1e259a4ab06",
+      "groups": [
+        "c512_projection"
+      ]
+    },
+    "kernel_impl/c512_proj_pool_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_pool_fp8_reconstructed.cuh",
+        "sha256": "95653f7fe054c5822634e96c36252accba02e3972a02cb5bf931d9ed4d0ef24b"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_proj_pool_fp8_reconstructed.cuh",
+      "sha256": "95653f7fe054c5822634e96c36252accba02e3972a02cb5bf931d9ed4d0ef24b",
+      "groups": [
+        "c512_projection"
+      ]
+    },
+    "kernel_impl/c512_proj_pool_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_pool_fp8_reconstructed_ops.cuh",
+        "sha256": "7eff87c8244eaa1df34a8e9a70cf491282bd0d24e0e69de95527e4312d6c6b9c"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_proj_pool_fp8_reconstructed_ops.cuh",
+      "sha256": "7eff87c8244eaa1df34a8e9a70cf491282bd0d24e0e69de95527e4312d6c6b9c",
+      "groups": [
+        "c512_projection"
+      ]
+    },
+    "kernel_impl/c512_proj_pool_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_pool_half_reconstructed.cuh",
+        "sha256": "b00c616025cafa7b266ff15b863f914d9a47a14dcfc4ed160d7b8454bc257574"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_proj_pool_half_reconstructed.cuh",
+      "sha256": "b00c616025cafa7b266ff15b863f914d9a47a14dcfc4ed160d7b8454bc257574",
+      "groups": [
+        "c512_projection"
+      ]
+    },
+    "kernel_impl/c512_proj_pool_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_pool_half_reconstructed_ops.cuh",
+        "sha256": "b62416649c90b3cba89fde1f83db03138948921371e1878d59c0d985ade0f012"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_proj_pool_half_reconstructed_ops.cuh",
+      "sha256": "b62416649c90b3cba89fde1f83db03138948921371e1878d59c0d985ade0f012",
+      "groups": [
+        "c512_projection"
+      ]
+    },
+    "kernel_impl/c512_final_head_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_final_head_fp8_reconstructed.cuh",
+        "sha256": "7f3079e0b5c0c9bfcaf2f0e2ad09706d7a8bf639eb8069d2794fcb143ff06c73"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_final_head_fp8_reconstructed.cuh",
+      "sha256": "7f3079e0b5c0c9bfcaf2f0e2ad09706d7a8bf639eb8069d2794fcb143ff06c73",
+      "groups": [
+        "c512_projection"
+      ]
+    },
+    "kernel_impl/c512_final_head_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_final_head_fp8_reconstructed_ops.cuh",
+        "sha256": "088790a75956bf598f7320c91ed6afbf86b75b80252919e5d290fb553cec0b09"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_final_head_fp8_reconstructed_ops.cuh",
+      "sha256": "088790a75956bf598f7320c91ed6afbf86b75b80252919e5d290fb553cec0b09",
+      "groups": [
+        "c512_projection"
+      ]
+    },
+    "kernel_impl/c512_final_head_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_final_head_half_reconstructed.cuh",
+        "sha256": "b7f396f1c61c414e692653b4cfc7ddf99adb76aa2faa9bf4f84f80b27d3d773a"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_final_head_half_reconstructed.cuh",
+      "sha256": "b7f396f1c61c414e692653b4cfc7ddf99adb76aa2faa9bf4f84f80b27d3d773a",
+      "groups": [
+        "c512_projection"
+      ]
+    },
+    "kernel_impl/c512_final_head_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_final_head_half_reconstructed_ops.cuh",
+        "sha256": "1c0a64ad95cc854900246c9b0a945ebfb0b6705f9fe9f355f3f3f81cd534805e"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c512_final_head_half_reconstructed_ops.cuh",
+      "sha256": "1c0a64ad95cc854900246c9b0a945ebfb0b6705f9fe9f355f3f3f81cd534805e",
+      "groups": [
+        "c512_projection"
+      ]
+    },
+    "kernel_impl/c1024_ffn_expand_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_ffn_expand_fp8_reconstructed.cuh",
+        "sha256": "db1b8da08113b0fb763f2eef8361171e81cb7d1628a23d1b4c532e0c7fb2405c"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_ffn_expand_fp8_reconstructed.cuh",
+      "sha256": "db1b8da08113b0fb763f2eef8361171e81cb7d1628a23d1b4c532e0c7fb2405c",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_ffn_expand_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_ffn_expand_fp8_reconstructed_ops.cuh",
+        "sha256": "c284023fc5f2df3b25c7c549f2ec9848a9290894168bb7ae35cbda08d6543e76"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_ffn_expand_fp8_reconstructed_ops.cuh",
+      "sha256": "c284023fc5f2df3b25c7c549f2ec9848a9290894168bb7ae35cbda08d6543e76",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_ffn_contract_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_ffn_contract_fp8_reconstructed.cuh",
+        "sha256": "7aa52369c65ed897b4b2228f68d56e56ce1dbf1b3246e2dd9e643e55099182b6"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_ffn_contract_fp8_reconstructed.cuh",
+      "sha256": "7aa52369c65ed897b4b2228f68d56e56ce1dbf1b3246e2dd9e643e55099182b6",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_ffn_contract_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_ffn_contract_fp8_reconstructed_ops.cuh",
+        "sha256": "c7d3571f02410104fc513590006b67d93cf3da7a93e049aae9eb6a19103777d3"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_ffn_contract_fp8_reconstructed_ops.cuh",
+      "sha256": "c7d3571f02410104fc513590006b67d93cf3da7a93e049aae9eb6a19103777d3",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_ffn_expand_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_ffn_expand_half_reconstructed.cuh",
+        "sha256": "bc03895d464db32d02a0571eca663149f6c770e86e79989e7ff165dd61c4fd7e"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_ffn_expand_half_reconstructed.cuh",
+      "sha256": "bc03895d464db32d02a0571eca663149f6c770e86e79989e7ff165dd61c4fd7e",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_ffn_expand_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_ffn_expand_half_reconstructed_ops.cuh",
+        "sha256": "c49cbadb862cda2fc99ae7dcd2709461f913790e073db544343d99cc60622fac"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_ffn_expand_half_reconstructed_ops.cuh",
+      "sha256": "c49cbadb862cda2fc99ae7dcd2709461f913790e073db544343d99cc60622fac",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_ffn_contract_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_ffn_contract_half_reconstructed.cuh",
+        "sha256": "9551cc932b886db5d1298268f496d1bd15536868589b9aa8343aecd46f624616"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_ffn_contract_half_reconstructed.cuh",
+      "sha256": "9551cc932b886db5d1298268f496d1bd15536868589b9aa8343aecd46f624616",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_ffn_contract_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_ffn_contract_half_reconstructed_ops.cuh",
+        "sha256": "21b941d4160cb7d320c306b7b0b7d5ae248e10c1fb15be1be4b9872a7f4105eb"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_ffn_contract_half_reconstructed_ops.cuh",
+      "sha256": "21b941d4160cb7d320c306b7b0b7d5ae248e10c1fb15be1be4b9872a7f4105eb",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_qkv_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_qkv_fp8_reconstructed.cuh",
+        "sha256": "db3961480320e7ad2e5fcbc9b3cd79cff6491da8a8b77ee508ef6d4fcbd1b390"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_qkv_fp8_reconstructed.cuh",
+      "sha256": "db3961480320e7ad2e5fcbc9b3cd79cff6491da8a8b77ee508ef6d4fcbd1b390",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_qkv_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_qkv_fp8_reconstructed_ops.cuh",
+        "sha256": "526198825a49b231c1ae417a870bceb69a8093f4d25e63f8c0e98cbf38846b4c"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_qkv_fp8_reconstructed_ops.cuh",
+      "sha256": "526198825a49b231c1ae417a870bceb69a8093f4d25e63f8c0e98cbf38846b4c",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_attention_chained_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_attention_chained_fp8_reconstructed.cuh",
+        "sha256": "38c1747195c5b821c83f4bfd9091fc2977c1c29dc934ca1fd7000a60d54ac16d"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_attention_chained_fp8_reconstructed.cuh",
+      "sha256": "38c1747195c5b821c83f4bfd9091fc2977c1c29dc934ca1fd7000a60d54ac16d",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_attention_chained_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_attention_chained_fp8_reconstructed_ops.cuh",
+        "sha256": "8aee43ac1f5fd1d0c68bf29c878cd77eed19c54fec011227465647caf8fa2199"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_attention_chained_fp8_reconstructed_ops.cuh",
+      "sha256": "8aee43ac1f5fd1d0c68bf29c878cd77eed19c54fec011227465647caf8fa2199",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_projection_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_projection_fp8_reconstructed.cuh",
+        "sha256": "8c1bbd102fde9101a218922c360be0ae306f2e02679a68a4ba7b482b23cbb0c0"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_projection_fp8_reconstructed.cuh",
+      "sha256": "8c1bbd102fde9101a218922c360be0ae306f2e02679a68a4ba7b482b23cbb0c0",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_projection_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_projection_fp8_reconstructed_ops.cuh",
+        "sha256": "2bc14b24d8159c9e493985bf1a716050161e8842236f0562ef05619b53cbec00"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_projection_fp8_reconstructed_ops.cuh",
+      "sha256": "2bc14b24d8159c9e493985bf1a716050161e8842236f0562ef05619b53cbec00",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_qkv_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_qkv_half_reconstructed.cuh",
+        "sha256": "b75e6baa937b8ea58cd08be27adcc5d8dc940a94cc1fa183426ae5a5c6fdf3e3"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_qkv_half_reconstructed.cuh",
+      "sha256": "b75e6baa937b8ea58cd08be27adcc5d8dc940a94cc1fa183426ae5a5c6fdf3e3",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_qkv_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_qkv_half_reconstructed_ops.cuh",
+        "sha256": "f208471e154d7dd2cfad53c19ffec1d3299475d577b3d140c015984434f274b6"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_qkv_half_reconstructed_ops.cuh",
+      "sha256": "f208471e154d7dd2cfad53c19ffec1d3299475d577b3d140c015984434f274b6",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_attention_chained_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_attention_chained_half_reconstructed.cuh",
+        "sha256": "71f8eb5c4144a0e13ed3e229db27eb3e6542bc8aa95abc391ee00b29047dbf18"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_attention_chained_half_reconstructed.cuh",
+      "sha256": "71f8eb5c4144a0e13ed3e229db27eb3e6542bc8aa95abc391ee00b29047dbf18",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_attention_chained_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_attention_chained_half_reconstructed_ops.cuh",
+        "sha256": "183318d68513686878967976c29667d4000d9b18efe43aa5ae46abf0370e06f2"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_attention_chained_half_reconstructed_ops.cuh",
+      "sha256": "183318d68513686878967976c29667d4000d9b18efe43aa5ae46abf0370e06f2",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_projection_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_projection_half_reconstructed.cuh",
+        "sha256": "51a16f07085a2ef8be81a332b96e4bd5f41a08911dcc5dc37849c708026f2254"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_projection_half_reconstructed.cuh",
+      "sha256": "51a16f07085a2ef8be81a332b96e4bd5f41a08911dcc5dc37849c708026f2254",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/c1024_projection_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c1024_projection_half_reconstructed_ops.cuh",
+        "sha256": "24cb6a67767fa77c12a5ab07430b75d0ea37d5ce6815ba982c1396ba015b83da"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c1024_projection_half_reconstructed_ops.cuh",
+      "sha256": "24cb6a67767fa77c12a5ab07430b75d0ea37d5ce6815ba982c1396ba015b83da",
+      "groups": [
+        "c1024_compute"
+      ]
+    },
+    "kernel_impl/decoder_up512_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/decoder-up512-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/decoder_up512_fp8_reconstructed.cuh",
+        "sha256": "ab6e407d2b00e111ed588b1d97695b9a99491ef532fa2bcbb18641b8628d3555"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/decoder_up512_fp8_reconstructed.cuh",
+      "sha256": "ab6e407d2b00e111ed588b1d97695b9a99491ef532fa2bcbb18641b8628d3555",
+      "groups": [
+        "connectors"
+      ]
+    },
+    "kernel_impl/decoder_up512_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/decoder-up512-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/decoder_up512_fp8_reconstructed_ops.cuh",
+        "sha256": "2551fa1bb225a4c97a2c20a59cf54c337139942bac95892f10cfa2452ff7ff8f"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/decoder_up512_fp8_reconstructed_ops.cuh",
+      "sha256": "2551fa1bb225a4c97a2c20a59cf54c337139942bac95892f10cfa2452ff7ff8f",
+      "groups": [
+        "connectors"
+      ]
+    },
+    "kernel_impl/decoder_up512_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/decoder-up512-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/decoder_up512_half_reconstructed.cuh",
+        "sha256": "b7b3acd1c22e1311b8cfb284135e0c82eb070bb9584e7bfa83652efa5133392c"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/decoder_up512_half_reconstructed.cuh",
+      "sha256": "b7b3acd1c22e1311b8cfb284135e0c82eb070bb9584e7bfa83652efa5133392c",
+      "groups": [
+        "connectors"
+      ]
+    },
+    "kernel_impl/decoder_up512_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/decoder-up512-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/decoder_up512_half_reconstructed_ops.cuh",
+        "sha256": "f2229499d4aeba3b6221137464b2a60f350a0fb0ff62e78eec1614fc5f443aef"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/decoder_up512_half_reconstructed_ops.cuh",
+      "sha256": "f2229499d4aeba3b6221137464b2a60f350a0fb0ff62e78eec1614fc5f443aef",
+      "groups": [
+        "connectors"
+      ]
+    },
+    "kernel_impl/global_repack_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/global-repack-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/global_repack_reconstructed.cuh",
+        "sha256": "91474d0f0e60790fcbd927f51b0e2fc78ce98fc5f77403c18c33cf76d5e7b2ff"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/global_repack_reconstructed.cuh",
+      "sha256": "91474d0f0e60790fcbd927f51b0e2fc78ce98fc5f77403c18c33cf76d5e7b2ff",
+      "groups": [
+        "connectors"
+      ]
+    },
+    "kernel_impl/c32_pre_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_pre_fp8_reconstructed.cuh.draft",
+        "sha256": "6f8ad22f3be94eb27cf1e24dc8c77f3a58721d91418fcc25f828b3a603a32b75"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_pre_fp8_reconstructed.cuh",
+      "sha256": "6f8ad22f3be94eb27cf1e24dc8c77f3a58721d91418fcc25f828b3a603a32b75",
+      "groups": [
+        "frontend_output"
+      ]
+    },
+    "kernel_impl/c32_pre_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_pre_fp8_reconstructed_ops.cuh.draft",
+        "sha256": "fc3bebbd33cc58b601f4535b3d2d71a831908d609bddccf4222d51cf6cc708bb"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_pre_fp8_reconstructed_ops.cuh",
+      "sha256": "fc3bebbd33cc58b601f4535b3d2d71a831908d609bddccf4222d51cf6cc708bb",
+      "groups": [
+        "frontend_output"
+      ]
+    },
+    "kernel_impl/c32_pre_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_pre_half_reconstructed.cuh.draft",
+        "sha256": "30cdb666f9e598af01e51f663d8dbc9800d5f99723ab301983d48cc8551df083"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_pre_half_reconstructed.cuh",
+      "sha256": "30cdb666f9e598af01e51f663d8dbc9800d5f99723ab301983d48cc8551df083",
+      "groups": [
+        "frontend_output"
+      ]
+    },
+    "kernel_impl/c32_pre_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_pre_half_reconstructed_ops.cuh.draft",
+        "sha256": "035891c47d4510157e064260df1c091c4557c96aaf494826aeb2cc7469aaf05f"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_pre_half_reconstructed_ops.cuh",
+      "sha256": "035891c47d4510157e064260df1c091c4557c96aaf494826aeb2cc7469aaf05f",
+      "groups": [
+        "frontend_output"
+      ]
+    },
+    "kernel_impl/c32_post_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_post_fp8_reconstructed.cuh.draft",
+        "sha256": "cb025c43061b7ba1f43d7733a479228421756b2044962c91c36405a1c69215b2"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_post_fp8_reconstructed.cuh",
+      "sha256": "cb025c43061b7ba1f43d7733a479228421756b2044962c91c36405a1c69215b2",
+      "groups": [
+        "frontend_output"
+      ]
+    },
+    "kernel_impl/c32_post_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_post_fp8_reconstructed_ops.cuh.draft",
+        "sha256": "5ed60290dcd632a0fb9bce9e8868ab9fbe6b71c125a96000f16b91ace877648f"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_post_fp8_reconstructed_ops.cuh",
+      "sha256": "5ed60290dcd632a0fb9bce9e8868ab9fbe6b71c125a96000f16b91ace877648f",
+      "groups": [
+        "frontend_output"
+      ]
+    },
+    "kernel_impl/c32_post_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_post_half_reconstructed.cuh.draft",
+        "sha256": "5ff8496b7ab2727d40b79239158276cd516c159c78683ffcb70751fcfb195806"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_post_half_reconstructed.cuh",
+      "sha256": "5ff8496b7ab2727d40b79239158276cd516c159c78683ffcb70751fcfb195806",
+      "groups": [
+        "frontend_output"
+      ]
+    },
+    "kernel_impl/c32_post_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_post_half_reconstructed_ops.cuh.draft",
+        "sha256": "c50d43c7a1b540363a93ed156ccf5fd6655086851546438a087f4d319aa41db8"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_post_half_reconstructed_ops.cuh",
+      "sha256": "c50d43c7a1b540363a93ed156ccf5fd6655086851546438a087f4d319aa41db8",
+      "groups": [
+        "frontend_output"
+      ]
+    },
+    "kernel_impl/c32_pre_ds_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_pre_ds_fp8_reconstructed.cuh.draft",
+        "sha256": "f7e7f5fdce6cfc1b443a5e74a9d36f0636b8a0ef03326ff668a7d671af32d5e3"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_pre_ds_fp8_reconstructed.cuh",
+      "sha256": "f7e7f5fdce6cfc1b443a5e74a9d36f0636b8a0ef03326ff668a7d671af32d5e3",
+      "groups": [
+        "frontend_output"
+      ]
+    },
+    "kernel_impl/c32_pre_ds_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_pre_ds_fp8_reconstructed_ops.cuh.draft",
+        "sha256": "4d260bd6a5fad4f1dc15a2cd7aa17737850352d39d6566f2f5a33e08e86dbc3e"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_pre_ds_fp8_reconstructed_ops.cuh",
+      "sha256": "4d260bd6a5fad4f1dc15a2cd7aa17737850352d39d6566f2f5a33e08e86dbc3e",
+      "groups": [
+        "frontend_output"
+      ]
+    },
+    "kernel_impl/c32_pre_ds_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_pre_ds_half_reconstructed.cuh.draft",
+        "sha256": "b301c54c88516037878c2c93a35e738d4cda730f45e84ae045ea168179cbb510"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_pre_ds_half_reconstructed.cuh",
+      "sha256": "b301c54c88516037878c2c93a35e738d4cda730f45e84ae045ea168179cbb510",
+      "groups": [
+        "frontend_output"
+      ]
+    },
+    "kernel_impl/c32_pre_ds_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_pre_ds_half_reconstructed_ops.cuh.draft",
+        "sha256": "53ed3f928d41d18c2f924a73a342bce565a476a209a9e39e05316844babead84"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_pre_ds_half_reconstructed_ops.cuh",
+      "sha256": "53ed3f928d41d18c2f924a73a342bce565a476a209a9e39e05316844babead84",
+      "groups": [
+        "frontend_output"
+      ]
+    },
+    "kernel_impl/c32_outview_fp8_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_outview_fp8_reconstructed.cuh.draft",
+        "sha256": "096d46bbadb34e9b8b688ee58d8340426df8f14f3639275c72a4cd0aecff8089"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_outview_fp8_reconstructed.cuh",
+      "sha256": "096d46bbadb34e9b8b688ee58d8340426df8f14f3639275c72a4cd0aecff8089",
+      "groups": [
+        "frontend_output"
+      ]
+    },
+    "kernel_impl/c32_outview_fp8_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_outview_fp8_reconstructed_ops.cuh.draft",
+        "sha256": "6d7c904e5bcac861dd324b64766ed6abd9277c289fc636a4826f5b20e4ad366d"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_outview_fp8_reconstructed_ops.cuh",
+      "sha256": "6d7c904e5bcac861dd324b64766ed6abd9277c289fc636a4826f5b20e4ad366d",
+      "groups": [
+        "frontend_output"
+      ]
+    },
+    "kernel_impl/c32_outview_half_reconstructed.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_outview_half_reconstructed.cuh.draft",
+        "sha256": "f73013a88f7788832197545d6bd6514649bc8c4e38d8adff79852cbec6a17a80"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_outview_half_reconstructed.cuh",
+      "sha256": "f73013a88f7788832197545d6bd6514649bc8c4e38d8adff79852cbec6a17a80",
+      "groups": [
+        "frontend_output"
+      ]
+    },
+    "kernel_impl/c32_outview_half_reconstructed_ops.cuh": {
+      "source": {
+        "path": "outputs/legacy-code-archive-20261005/csrc/kernel_impl/c32_outview_half_reconstructed_ops.cuh.draft",
+        "sha256": "24ebb8e0b0d8680d0bc007f2162a059c32c56666de5a321d7e0f035fcdb1c7ef"
+      },
+      "target": "outputs/all-reconstructed-deployment-prep/clean-csrc/kernel_impl/c32_outview_half_reconstructed_ops.cuh",
+      "sha256": "24ebb8e0b0d8680d0bc007f2162a059c32c56666de5a321d7e0f035fcdb1c7ef",
+      "groups": [
+        "frontend_output"
+      ]
+    }
+  },
+  "include_dependencies": {
+    "kernel_impl/c32_ordinary_reconstructed_half_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_ordinary_reconstructed_half.cuh": {
+      "local": [
+        "kernel_impl/c32_ordinary_reconstructed_half_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c32_ds_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_ds_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c32_ds_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c32_ds_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_ds_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c32_ds_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c32_ordinary_reconstructed_fp8_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_ordinary_reconstructed_fp8.cuh": {
+      "local": [
+        "kernel_impl/c32_ordinary_reconstructed_fp8_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c32_inpview_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_inpview_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c32_inpview_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c32_inpview_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_inpview_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c32_inpview_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c32_upsample_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_upsample_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c32_upsample_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c32_upsample_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_upsample_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c32_upsample_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c64_ordinary_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c64_ordinary_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c64_ordinary_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c64_ds_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c64_ds_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c64_ds_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c64_down8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c64_down8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c64_down8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c64_ordinary_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c64_ordinary_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c64_ordinary_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c64_inpview_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c64_inpview_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c64_inpview_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c64_inpview_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c64_inpview_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c64_inpview_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c64_outview_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c64_outview_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c64_outview_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c64_outview_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c64_outview_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c64_outview_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c64_upsample_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c64_upsample_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c64_upsample_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c64_upsample_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c64_upsample_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c64_upsample_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c128_ordinary_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c128_ordinary_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c128_ordinary_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c128_downsample_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c128_downsample_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c128_downsample_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c128_downsample_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c128_downsample_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c128_downsample_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c128_ordinary_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c128_ordinary_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c128_ordinary_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c128_inpview_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c128_inpview_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c128_inpview_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c128_inpview_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c128_inpview_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c128_inpview_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c128_outview_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c128_outview_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c128_outview_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c128_outview_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c128_outview_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c128_outview_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c128_upsample_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c128_upsample_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c128_upsample_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c128_upsample_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c128_upsample_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c128_upsample_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c256_ordinary_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c256_ordinary_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c256_ordinary_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c256_downsample_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c256_downsample_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c256_downsample_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c256_downsample_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c256_downsample_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c256_downsample_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c256_ordinary_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c256_ordinary_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c256_ordinary_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c256_inpview_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c256_inpview_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c256_inpview_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c256_inpview_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c256_inpview_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c256_inpview_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c256_outview_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c256_outview_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c256_outview_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c256_outview_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c256_outview_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c256_outview_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c256_upsample_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c256_upsample_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c256_upsample_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c256_upsample_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c256_upsample_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c256_upsample_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_ffn_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_ffn_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_ffn_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_ffn_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_ffn_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_ffn_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_ffn_inpview_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_ffn_inpview_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_ffn_inpview_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_ffn_inpview_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_ffn_inpview_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_ffn_inpview_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_ffn_proj_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_ffn_proj_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_ffn_proj_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_ffn_proj_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_ffn_proj_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_ffn_proj_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_ffn_proj_inpview_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_ffn_proj_inpview_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_ffn_proj_inpview_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_qkv_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_qkv_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_qkv_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_qkv_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_qkv_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_qkv_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_proj_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_proj_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_proj_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_proj_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_proj_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_proj_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_proj_outview_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_proj_outview_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_proj_outview_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_proj_outview_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_proj_outview_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_proj_outview_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_proj_pool_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_proj_pool_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_proj_pool_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_proj_pool_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_proj_pool_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_proj_pool_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_final_head_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_final_head_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_final_head_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c512_final_head_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c512_final_head_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c512_final_head_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c1024_ffn_expand_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c1024_ffn_expand_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c1024_ffn_expand_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c1024_ffn_contract_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c1024_ffn_contract_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c1024_ffn_contract_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c1024_ffn_expand_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c1024_ffn_expand_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c1024_ffn_expand_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c1024_ffn_contract_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c1024_ffn_contract_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c1024_ffn_contract_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c1024_qkv_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c1024_qkv_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c1024_qkv_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c1024_attention_chained_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c1024_attention_chained_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c1024_attention_chained_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c1024_projection_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c1024_projection_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c1024_projection_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c1024_qkv_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c1024_qkv_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c1024_qkv_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c1024_attention_chained_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c1024_attention_chained_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c1024_attention_chained_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c1024_projection_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c1024_projection_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c1024_projection_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/decoder_up512_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/decoder_up512_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/decoder_up512_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/decoder_up512_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/decoder_up512_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/decoder_up512_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/global_repack_reconstructed.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_pre_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_pre_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c32_pre_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c32_pre_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_pre_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c32_pre_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c32_post_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_post_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c32_post_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c32_post_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_post_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c32_post_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c32_pre_ds_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_pre_ds_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c32_pre_ds_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c32_pre_ds_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_pre_ds_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c32_pre_ds_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c32_outview_fp8_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_outview_fp8_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c32_outview_fp8_reconstructed_ops.cuh"
+      ],
+      "system": []
+    },
+    "kernel_impl/c32_outview_half_reconstructed_ops.cuh": {
+      "local": [],
+      "system": [
+        "cuda_runtime.h",
+        "cuda_fp16.h",
+        "cstdint",
+        "cstddef"
+      ]
+    },
+    "kernel_impl/c32_outview_half_reconstructed.cuh": {
+      "local": [
+        "kernel_impl/c32_outview_half_reconstructed_ops.cuh"
+      ],
+      "system": []
+    }
+  },
+  "entries": [
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1",
+      "precision": "half",
+      "namespace": "c32_ordinary_reconstructed_half",
+      "body": "kernel_impl/c32_ordinary_reconstructed_half.cuh",
+      "body_sha256": "b26b0667194390ec926b3600c825aa3e9af2dd1f533d3ee2dbe30602e3ce63df",
+      "group": "windows_c32",
+      "donor": "c32ordinary",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1_ds",
+      "precision": "half",
+      "namespace": "c32_ds_half_reconstructed",
+      "body": "kernel_impl/c32_ds_half_reconstructed.cuh",
+      "body_sha256": "d632ccb69f8f1d583043ceb7b78cb83444aa821f0f6d22d8cd23bd6e8bc0ae7b",
+      "group": "windows_c32",
+      "donor": "c32transitions",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1_ds_fp8",
+      "precision": "fp8",
+      "namespace": "c32_ds_fp8_reconstructed",
+      "body": "kernel_impl/c32_ds_fp8_reconstructed.cuh",
+      "body_sha256": "a5e95fff710f2525ead5aa5bc3144456290a7e369f3542b754da2eabeca8ac10",
+      "group": "windows_c32",
+      "donor": "c32transitions",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1_fp8",
+      "precision": "fp8",
+      "namespace": "c32_ordinary_reconstructed_fp8",
+      "body": "kernel_impl/c32_ordinary_reconstructed_fp8.cuh",
+      "body_sha256": "0c70b9b46c95b619c396187a019bb7dba6a26df465883252736b94d46ac3044f",
+      "group": "windows_c32",
+      "donor": "c32ordinary",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1_inpview",
+      "precision": "half",
+      "namespace": "c32_inpview_half_reconstructed",
+      "body": "kernel_impl/c32_inpview_half_reconstructed.cuh",
+      "body_sha256": "dc1b550a2f6ad328a465c4e8cfa0e5ca7bba8f28154069fdd7fc296bf1e6b2f6",
+      "group": "windows_c32",
+      "donor": "c32transitions",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1_inpview_fp8",
+      "precision": "fp8",
+      "namespace": "c32_inpview_fp8_reconstructed",
+      "body": "kernel_impl/c32_inpview_fp8_reconstructed.cuh",
+      "body_sha256": "95edb5c93af7373a483ed306bb54d84808fa235d3d78eda258085738d8f887a6",
+      "group": "windows_c32",
+      "donor": "c32transitions",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1_upsample",
+      "precision": "half",
+      "namespace": "c32_upsample_half_reconstructed",
+      "body": "kernel_impl/c32_upsample_half_reconstructed.cuh",
+      "body_sha256": "33f7e430859f45a606d0d9d2dae87665f074008cbbb6d9b8c05c99a4515f5e10",
+      "group": "windows_c32",
+      "donor": "c32transitions",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1_upsample_fp8",
+      "precision": "fp8",
+      "namespace": "c32_upsample_fp8_reconstructed",
+      "body": "kernel_impl/c32_upsample_fp8_reconstructed.cuh",
+      "body_sha256": "f33e93997ff356b6d27e993e32670698323bff5ddf48f7b3493c5a69e88f5c49",
+      "group": "windows_c32",
+      "donor": "c32transitions",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2",
+      "precision": "half",
+      "namespace": "c64_ordinary_half_reconstructed",
+      "body": "kernel_impl/c64_ordinary_half_reconstructed.cuh",
+      "body_sha256": "6fc634fc999095ef4713733146421cb70dcbde30f04988db7a9a9f6faa1ad428",
+      "group": "windows_c64",
+      "donor": "c64half",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2_ds",
+      "precision": "half",
+      "namespace": "c64_ds_reconstructed",
+      "body": "kernel_impl/c64_ds_reconstructed.cuh",
+      "body_sha256": "6b7ec9271d7633c8a9a6b8a7b4790b17dcc0a1813b115d111dbc1f9852fab475",
+      "group": "windows_c64",
+      "donor": "c64transitions",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2_ds_fp8",
+      "precision": "fp8",
+      "namespace": "c64_down8_reconstructed",
+      "body": "kernel_impl/c64_down8_reconstructed.cuh",
+      "body_sha256": "6c0228fd75aa94a662d2a6d71dfe48aa69a378fc9fd022553523834349009c1e",
+      "group": "windows_c64",
+      "donor": "c64ds",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2_fp8",
+      "precision": "fp8",
+      "namespace": "c64_ordinary_reconstructed",
+      "body": "kernel_impl/c64_ordinary_reconstructed.cuh",
+      "body_sha256": "cd93aca2c67dff12ff1623feac1159b4931b1bbc406d9d037822df11c2d6c96e",
+      "group": "windows_c64",
+      "donor": "c64ordinary",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2_inpview",
+      "precision": "half",
+      "namespace": "c64_inpview_reconstructed",
+      "body": "kernel_impl/c64_inpview_reconstructed.cuh",
+      "body_sha256": "dde1dd410694b38cca6b080bf0f3b3f32df6e86c7da7de60edeaffc35b0e08ec",
+      "group": "windows_c64",
+      "donor": "c64transitions",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2_inpview_fp8",
+      "precision": "fp8",
+      "namespace": "c64_inpview_fp8_reconstructed",
+      "body": "kernel_impl/c64_inpview_fp8_reconstructed.cuh",
+      "body_sha256": "9b3ba95da247f5c725d65a3d3fe421bb6c68d1b45d1f47a9ab309c7f874746ee",
+      "group": "windows_c64",
+      "donor": "c64transitions",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2_outview",
+      "precision": "half",
+      "namespace": "c64_outview_reconstructed",
+      "body": "kernel_impl/c64_outview_reconstructed.cuh",
+      "body_sha256": "806b0511fe5b65ab096917de2b25c106b5c1a3269dbaac13bff5ba5484014122",
+      "group": "windows_c64",
+      "donor": "c64transitions",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2_outview_fp8",
+      "precision": "fp8",
+      "namespace": "c64_outview_fp8_reconstructed",
+      "body": "kernel_impl/c64_outview_fp8_reconstructed.cuh",
+      "body_sha256": "a43369efe9a091bc308df69075f91529fedeec6bd97723542517cd15c4af9b1e",
+      "group": "windows_c64",
+      "donor": "c64transitions",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2_upsample",
+      "precision": "half",
+      "namespace": "c64_upsample_reconstructed",
+      "body": "kernel_impl/c64_upsample_reconstructed.cuh",
+      "body_sha256": "a1f3cdc4eb8cad3e6203324ab2b7b0d1048ddbabc7326b0277a65344440121b8",
+      "group": "windows_c64",
+      "donor": "c64transitions",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_2h_64_2_upsample_fp8",
+      "precision": "fp8",
+      "namespace": "c64_upsample_fp8_reconstructed",
+      "body": "kernel_impl/c64_upsample_fp8_reconstructed.cuh",
+      "body_sha256": "c18db8eb778051bc62193cccece872f860890cea322ede80b88edbb3c715b64c",
+      "group": "windows_c64",
+      "donor": "c64transitions",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4",
+      "precision": "half",
+      "namespace": "c128_ordinary_half_reconstructed",
+      "body": "kernel_impl/c128_ordinary_half_reconstructed.cuh",
+      "body_sha256": "f7d49a6222c14291690ba8b28a857684ee5f7736adb2920f71d573cd9272ec4b",
+      "group": "windows_c128",
+      "donor": "c128remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4_ds",
+      "precision": "half",
+      "namespace": "c128_downsample_half_reconstructed",
+      "body": "kernel_impl/c128_downsample_half_reconstructed.cuh",
+      "body_sha256": "55ab8b5bdf04c947a1a873690dcb2fe9c3606e5e44b420354f1509617c6b882d",
+      "group": "windows_c128",
+      "donor": "c128remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4_ds_fp8",
+      "precision": "fp8",
+      "namespace": "c128_downsample_reconstructed",
+      "body": "kernel_impl/c128_downsample_reconstructed.cuh",
+      "body_sha256": "4380abdcad0d959a04ab33f36ec9102f2bb4c0b5692872ca5f62c2dec60ac5c6",
+      "group": "windows_c128",
+      "donor": "c128remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4_fp8",
+      "precision": "fp8",
+      "namespace": "c128_ordinary_reconstructed",
+      "body": "kernel_impl/c128_ordinary_reconstructed.cuh",
+      "body_sha256": "eecfc8ba1322ea5377fd5bd14b057278eea61742e17a84bffff8eea8aaf0a5c4",
+      "group": "windows_c128",
+      "donor": "c128ordinary",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4_inpview",
+      "precision": "half",
+      "namespace": "c128_inpview_half_reconstructed",
+      "body": "kernel_impl/c128_inpview_half_reconstructed.cuh",
+      "body_sha256": "ba94ba1b4cb119c4f961302020ccdd2e541e3ca1149a892bde480773f21c43a5",
+      "group": "windows_c128",
+      "donor": "c128remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4_inpview_fp8",
+      "precision": "fp8",
+      "namespace": "c128_inpview_fp8_reconstructed",
+      "body": "kernel_impl/c128_inpview_fp8_reconstructed.cuh",
+      "body_sha256": "2baf909c7b2023e79555afdad39ac4ed51a6416575f369a65c061dc1f25d6471",
+      "group": "windows_c128",
+      "donor": "c128remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4_outview",
+      "precision": "half",
+      "namespace": "c128_outview_half_reconstructed",
+      "body": "kernel_impl/c128_outview_half_reconstructed.cuh",
+      "body_sha256": "5d61631783af7c115b51a03b8090d0c301eac1c69b55fba916b9bec00ab36792",
+      "group": "windows_c128",
+      "donor": "c128remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4_outview_fp8",
+      "precision": "fp8",
+      "namespace": "c128_outview_fp8_reconstructed",
+      "body": "kernel_impl/c128_outview_fp8_reconstructed.cuh",
+      "body_sha256": "7c53948b25cc97c593661a0f42f3b81faca3876b944e979be2daf14a5af6ce37",
+      "group": "windows_c128",
+      "donor": "c128remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4_upsample",
+      "precision": "half",
+      "namespace": "c128_upsample_half_reconstructed",
+      "body": "kernel_impl/c128_upsample_half_reconstructed.cuh",
+      "body_sha256": "5d310e9d72286ce8b3b71e43b1ec4ad2e73e631996424c94a2d3ca5a1c47bf46",
+      "group": "windows_c128",
+      "donor": "c128remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_4h_128_4_upsample_fp8",
+      "precision": "fp8",
+      "namespace": "c128_upsample_reconstructed",
+      "body": "kernel_impl/c128_upsample_reconstructed.cuh",
+      "body_sha256": "673258afddab11c8f690d96ca32ee32557fcaa0906a188550604d309ecabae18",
+      "group": "windows_c128",
+      "donor": "c128remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8",
+      "precision": "half",
+      "namespace": "c256_ordinary_half_reconstructed",
+      "body": "kernel_impl/c256_ordinary_half_reconstructed.cuh",
+      "body_sha256": "7e35925b667609842f8bcdbd6f1418c3a788582c507ca99899be2acd16a97b7b",
+      "group": "windows_c256",
+      "donor": "c256remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8_ds",
+      "precision": "half",
+      "namespace": "c256_downsample_half_reconstructed",
+      "body": "kernel_impl/c256_downsample_half_reconstructed.cuh",
+      "body_sha256": "093be61ae3c6cc75c00ea1b703923ae08040a6c784e397763ade3ee7401781cf",
+      "group": "windows_c256",
+      "donor": "c256remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8_ds_fp8",
+      "precision": "fp8",
+      "namespace": "c256_downsample_fp8_reconstructed",
+      "body": "kernel_impl/c256_downsample_fp8_reconstructed.cuh",
+      "body_sha256": "b2f7bf49c0f8a4540dae86e04bb4e5e99480c90a74aaf4cc687bdcec70c27f79",
+      "group": "windows_c256",
+      "donor": "c256remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8_fp8",
+      "precision": "fp8",
+      "namespace": "c256_ordinary_reconstructed",
+      "body": "kernel_impl/c256_ordinary_reconstructed.cuh",
+      "body_sha256": "8fa89da3a0701fca321ace8e2ab64ee8859db2711dd553952fe9420da8ab6948",
+      "group": "windows_c256",
+      "donor": "c256ordinary",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8_inpview",
+      "precision": "half",
+      "namespace": "c256_inpview_half_reconstructed",
+      "body": "kernel_impl/c256_inpview_half_reconstructed.cuh",
+      "body_sha256": "0fd804964080da4d5b0fa3ace073de1dc87801ea20914bde8b6c7d2e7cefa2be",
+      "group": "windows_c256",
+      "donor": "c256remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8_inpview_fp8",
+      "precision": "fp8",
+      "namespace": "c256_inpview_fp8_reconstructed",
+      "body": "kernel_impl/c256_inpview_fp8_reconstructed.cuh",
+      "body_sha256": "a4345c2196e01caa2b04cdfff82565002b00835985f2e7cd9902987fc30cb5cb",
+      "group": "windows_c256",
+      "donor": "c256remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8_outview",
+      "precision": "half",
+      "namespace": "c256_outview_half_reconstructed",
+      "body": "kernel_impl/c256_outview_half_reconstructed.cuh",
+      "body_sha256": "a99df2ceede30bffa13cb80aef0146f376436a4f78ee14ae5a77f0a643d61f94",
+      "group": "windows_c256",
+      "donor": "c256remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8_outview_fp8",
+      "precision": "fp8",
+      "namespace": "c256_outview_fp8_reconstructed",
+      "body": "kernel_impl/c256_outview_fp8_reconstructed.cuh",
+      "body_sha256": "7c04474f58cd60dc69c5953b89a43ac424c5de2ea902e75bed95ddd3c5cadad9",
+      "group": "windows_c256",
+      "donor": "c256remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8_upsample",
+      "precision": "half",
+      "namespace": "c256_upsample_half_reconstructed",
+      "body": "kernel_impl/c256_upsample_half_reconstructed.cuh",
+      "body_sha256": "83a2499a2588b466a96de1d84464f4ce37f7cf1766b1f170b36c484a942af4f7",
+      "group": "windows_c256",
+      "donor": "c256remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_8h_256_8_upsample_fp8",
+      "precision": "fp8",
+      "namespace": "c256_upsample_fp8_reconstructed",
+      "body": "kernel_impl/c256_upsample_fp8_reconstructed.cuh",
+      "body_sha256": "b10406c469e33143bc2d37545fb2a2d17144a43473d4a75a31fa02c255e769ef",
+      "group": "windows_c256",
+      "donor": "c256remaining",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "precision": "fp8",
+      "namespace": "dlssnr::c512_ffn_reconstructed",
+      "body": "kernel_impl/c512_ffn_reconstructed.cuh",
+      "body_sha256": "59f01dbe878309e94f4673fc1f2f2be36b33a6c7e8e1b88697ad008226de49a4",
+      "group": "c512_ffn",
+      "donor": "ffn",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "precision": "half",
+      "namespace": "dlssnr::c512_ffn_half_reconstructed",
+      "body": "kernel_impl/c512_ffn_half_reconstructed.cuh",
+      "body_sha256": "a8ba9138f0b6999e2d0fa94994833258dddae46301d5e51a1628473e506d28a5",
+      "group": "c512_ffn",
+      "donor": "ffn_half",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_ffwd_inpview_512_fp8",
+      "precision": "fp8",
+      "namespace": "dlssnr::c512_ffn_inpview_fp8_reconstructed",
+      "body": "kernel_impl/c512_ffn_inpview_fp8_reconstructed.cuh",
+      "body_sha256": "d7122f4f068f83f6a5ef553e82d49f0845007b79fcba1316cdf8a91f5b26d7c9",
+      "group": "c512_ffn",
+      "donor": "ffn_variants",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_ffwd_inpview_512",
+      "precision": "half",
+      "namespace": "dlssnr::c512_ffn_inpview_half_reconstructed",
+      "body": "kernel_impl/c512_ffn_inpview_half_reconstructed.cuh",
+      "body_sha256": "72b9d1fa1442f04ec57bb35fbf8f2ecc9c85e9f57829c66031d82c74d64cd92f",
+      "group": "c512_ffn",
+      "donor": "ffn_variants",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "precision": "fp8",
+      "namespace": "dlssnr::c512_ffn_proj_fp8_reconstructed",
+      "body": "kernel_impl/c512_ffn_proj_fp8_reconstructed.cuh",
+      "body_sha256": "5322a684565f151200e18366d80b4f786f3282b83217e74bc435c029887ed404",
+      "group": "c512_ffn",
+      "donor": "ffn_variants",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "precision": "half",
+      "namespace": "dlssnr::c512_ffn_proj_half_reconstructed",
+      "body": "kernel_impl/c512_ffn_proj_half_reconstructed.cuh",
+      "body_sha256": "86b4cbff72971122cdb10c3759af58be0b05466653f5d0fdf630a02ca5065b40",
+      "group": "c512_ffn",
+      "donor": "ffn_variants",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_inpview_512_fp8",
+      "precision": "fp8",
+      "namespace": "dlssnr::c512_ffn_proj_inpview_fp8_reconstructed",
+      "body": "kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed.cuh",
+      "body_sha256": "ac6f6e2c2781da7d6d3218d73a80e1697cc409848ddb870f86a8c392820e73f6",
+      "group": "c512_ffn",
+      "donor": "ffn_variants",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_inpview_512",
+      "precision": "half",
+      "namespace": "dlssnr::c512_ffn_proj_inpview_half_reconstructed",
+      "body": "kernel_impl/c512_ffn_proj_inpview_half_reconstructed.cuh",
+      "body_sha256": "fba4e644cf73f9d14a145ea58782a49b649a3735e78cfbb0b5cc502ff6196bc5",
+      "group": "c512_ffn",
+      "donor": "ffn_variants",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "precision": "fp8",
+      "namespace": "dlssnr::c512_qkv_fp8_reconstructed",
+      "body": "kernel_impl/c512_qkv_fp8_reconstructed.cuh",
+      "body_sha256": "5199142859f885df0b969a7427cadb7261aad19c8ae5a035cfe415b8f914cf76",
+      "group": "c512_attention",
+      "donor": "attention",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "precision": "half",
+      "namespace": "dlssnr::c512_qkv_half_reconstructed",
+      "body": "kernel_impl/c512_qkv_half_reconstructed.cuh",
+      "body_sha256": "081e0625351f3d3f2fdc41090625e322a32e62c7b172659e6ff9c222583333ee",
+      "group": "c512_attention",
+      "donor": "attention",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "precision": "fp8",
+      "namespace": "dlssnr::c512_proj_fp8_reconstructed",
+      "body": "kernel_impl/c512_proj_fp8_reconstructed.cuh",
+      "body_sha256": "be737b12786bcb53a5ccf701aa7701d6b0d45d9b2625664d5434e2255bfd1e6c",
+      "group": "c512_attention",
+      "donor": "attention",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "precision": "half",
+      "namespace": "dlssnr::c512_proj_half_reconstructed",
+      "body": "kernel_impl/c512_proj_half_reconstructed.cuh",
+      "body_sha256": "a4d5af11799a75752d7738fd4272a988ab02679b71661edb79c6701ae471d52e",
+      "group": "c512_attention",
+      "donor": "attention",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_proj_512_outview_fp8",
+      "precision": "fp8",
+      "namespace": "dlssnr::c512_proj_outview_fp8_reconstructed",
+      "body": "kernel_impl/c512_proj_outview_fp8_reconstructed.cuh",
+      "body_sha256": "c7676ebd047f494c33a75642ada3d86f04b944bddb2cf91857da96a2ce1bd0c2",
+      "group": "c512_projection",
+      "donor": "projection_variants",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_proj_512_outview",
+      "precision": "half",
+      "namespace": "dlssnr::c512_proj_outview_half_reconstructed",
+      "body": "kernel_impl/c512_proj_outview_half_reconstructed.cuh",
+      "body_sha256": "36b9a032d801a71efb9394c9252501656d114b01ec743d26c8ba3689adaef3c7",
+      "group": "c512_projection",
+      "donor": "projection_variants",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_proj_pool_512_fp8",
+      "precision": "fp8",
+      "namespace": "dlssnr::c512_proj_pool_fp8_reconstructed",
+      "body": "kernel_impl/c512_proj_pool_fp8_reconstructed.cuh",
+      "body_sha256": "95653f7fe054c5822634e96c36252accba02e3972a02cb5bf931d9ed4d0ef24b",
+      "group": "c512_projection",
+      "donor": "projection_variants",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_proj_pool_512",
+      "precision": "half",
+      "namespace": "dlssnr::c512_proj_pool_half_reconstructed",
+      "body": "kernel_impl/c512_proj_pool_half_reconstructed.cuh",
+      "body_sha256": "b00c616025cafa7b266ff15b863f914d9a47a14dcfc4ed160d7b8454bc257574",
+      "group": "c512_projection",
+      "donor": "projection_variants",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_final_head_512_fp8",
+      "precision": "fp8",
+      "namespace": "dlssnr::c512_final_head_fp8_reconstructed",
+      "body": "kernel_impl/c512_final_head_fp8_reconstructed.cuh",
+      "body_sha256": "7f3079e0b5c0c9bfcaf2f0e2ad09706d7a8bf639eb8069d2794fcb143ff06c73",
+      "group": "c512_projection",
+      "donor": "projection_variants",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_split_swin_16h_final_head_512",
+      "precision": "half",
+      "namespace": "dlssnr::c512_final_head_half_reconstructed",
+      "body": "kernel_impl/c512_final_head_half_reconstructed.cuh",
+      "body_sha256": "b7f396f1c61c414e692653b4cfc7ddf99adb76aa2faa9bf4f84f80b27d3d773a",
+      "group": "c512_projection",
+      "donor": "projection_variants",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_vit_1d_ffn_expand_fp8",
+      "precision": "fp8",
+      "namespace": "dlssnr::c1024_ffn_expand_fp8_reconstructed",
+      "body": "kernel_impl/c1024_ffn_expand_fp8_reconstructed.cuh",
+      "body_sha256": "db1b8da08113b0fb763f2eef8361171e81cb7d1628a23d1b4c532e0c7fb2405c",
+      "group": "c1024_compute",
+      "donor": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/build.json",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_vit_1d_ffn_contract_fp8",
+      "precision": "fp8",
+      "namespace": "dlssnr::c1024_ffn_contract_fp8_reconstructed",
+      "body": "kernel_impl/c1024_ffn_contract_fp8_reconstructed.cuh",
+      "body_sha256": "7aa52369c65ed897b4b2228f68d56e56ce1dbf1b3246e2dd9e643e55099182b6",
+      "group": "c1024_compute",
+      "donor": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/build.json",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_vit_1d_ffn_expand",
+      "precision": "half",
+      "namespace": "dlssnr::c1024_ffn_expand_half_reconstructed",
+      "body": "kernel_impl/c1024_ffn_expand_half_reconstructed.cuh",
+      "body_sha256": "bc03895d464db32d02a0571eca663149f6c770e86e79989e7ff165dd61c4fd7e",
+      "group": "c1024_compute",
+      "donor": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/build.json",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_vit_1d_ffn_contract",
+      "precision": "half",
+      "namespace": "dlssnr::c1024_ffn_contract_half_reconstructed",
+      "body": "kernel_impl/c1024_ffn_contract_half_reconstructed.cuh",
+      "body_sha256": "9551cc932b886db5d1298268f496d1bd15536868589b9aa8343aecd46f624616",
+      "group": "c1024_compute",
+      "donor": "outputs/c1024-ffn-cuda-reconstruction/build-draft/run-v1/build.json",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_vit_1d_qkv_fp8",
+      "precision": "fp8",
+      "namespace": "dlssnr::c1024_qkv_fp8_reconstructed",
+      "body": "kernel_impl/c1024_qkv_fp8_reconstructed.cuh",
+      "body_sha256": "db3961480320e7ad2e5fcbc9b3cd79cff6491da8a8b77ee508ef6d4fcbd1b390",
+      "group": "c1024_compute",
+      "donor": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/build.json",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_vit_1d_attention_chained_fp8",
+      "precision": "fp8",
+      "namespace": "dlssnr::c1024_attention_chained_fp8_reconstructed",
+      "body": "kernel_impl/c1024_attention_chained_fp8_reconstructed.cuh",
+      "body_sha256": "38c1747195c5b821c83f4bfd9091fc2977c1c29dc934ca1fd7000a60d54ac16d",
+      "group": "c1024_compute",
+      "donor": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/build.json",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_vit_1d_projection_fp8",
+      "precision": "fp8",
+      "namespace": "dlssnr::c1024_projection_fp8_reconstructed",
+      "body": "kernel_impl/c1024_projection_fp8_reconstructed.cuh",
+      "body_sha256": "8c1bbd102fde9101a218922c360be0ae306f2e02679a68a4ba7b482b23cbb0c0",
+      "group": "c1024_compute",
+      "donor": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/build.json",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_vit_1d_qkv",
+      "precision": "half",
+      "namespace": "dlssnr::c1024_qkv_half_reconstructed",
+      "body": "kernel_impl/c1024_qkv_half_reconstructed.cuh",
+      "body_sha256": "b75e6baa937b8ea58cd08be27adcc5d8dc940a94cc1fa183426ae5a5c6fdf3e3",
+      "group": "c1024_compute",
+      "donor": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/build.json",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_vit_1d_attention_chained",
+      "precision": "half",
+      "namespace": "dlssnr::c1024_attention_chained_half_reconstructed",
+      "body": "kernel_impl/c1024_attention_chained_half_reconstructed.cuh",
+      "body_sha256": "71f8eb5c4144a0e13ed3e229db27eb3e6542bc8aa95abc391ee00b29047dbf18",
+      "group": "c1024_compute",
+      "donor": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/build.json",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_vit_1d_projection",
+      "precision": "half",
+      "namespace": "dlssnr::c1024_projection_half_reconstructed",
+      "body": "kernel_impl/c1024_projection_half_reconstructed.cuh",
+      "body_sha256": "51a16f07085a2ef8be81a332b96e4bd5f41a08911dcc5dc37849c708026f2254",
+      "group": "c1024_compute",
+      "donor": "outputs/c1024-attention-cuda-reconstruction/build-draft/run-v1/build.json",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_dec_input_upsample_1024_512_fp8",
+      "precision": "fp8",
+      "namespace": "decoder_up512_fp8_reconstructed",
+      "body": "kernel_impl/decoder_up512_fp8_reconstructed.cuh",
+      "body_sha256": "ab6e407d2b00e111ed588b1d97695b9a99491ef532fa2bcbb18641b8628d3555",
+      "group": "connectors",
+      "donor": "up512",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_dec_input_upsample_1024_512",
+      "precision": "half",
+      "namespace": "decoder_up512_half_reconstructed",
+      "body": "kernel_impl/decoder_up512_half_reconstructed.cuh",
+      "body_sha256": "b7b3acd1c22e1311b8cfb284135e0c82eb070bb9584e7bfa83652efa5133392c",
+      "group": "connectors",
+      "donor": "up512",
+      "selected_extra": false,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_vit_1d_repack_2d_to_1d_fp8",
+      "precision": "fp8",
+      "namespace": "global_repack_reconstructed",
+      "body": "kernel_impl/global_repack_reconstructed.cuh",
+      "body_sha256": "91474d0f0e60790fcbd927f51b0e2fc78ce98fc5f77403c18c33cf76d5e7b2ff",
+      "group": "connectors",
+      "donor": "repack_clear",
+      "selected_extra": false,
+      "body_entries": 5
+    },
+    {
+      "original_symbol": "cc_vit_1d_repack_1d_to_2d_fp8",
+      "precision": "fp8",
+      "namespace": "global_repack_reconstructed",
+      "body": "kernel_impl/global_repack_reconstructed.cuh",
+      "body_sha256": "91474d0f0e60790fcbd927f51b0e2fc78ce98fc5f77403c18c33cf76d5e7b2ff",
+      "group": "connectors",
+      "donor": "repack_clear",
+      "selected_extra": false,
+      "body_entries": 5
+    },
+    {
+      "original_symbol": "cc_vit_1d_repack_2d_to_1d",
+      "precision": "half",
+      "namespace": "global_repack_reconstructed",
+      "body": "kernel_impl/global_repack_reconstructed.cuh",
+      "body_sha256": "91474d0f0e60790fcbd927f51b0e2fc78ce98fc5f77403c18c33cf76d5e7b2ff",
+      "group": "connectors",
+      "donor": "repack_clear",
+      "selected_extra": false,
+      "body_entries": 5
+    },
+    {
+      "original_symbol": "cc_vit_1d_repack_1d_to_2d",
+      "precision": "half",
+      "namespace": "global_repack_reconstructed",
+      "body": "kernel_impl/global_repack_reconstructed.cuh",
+      "body_sha256": "91474d0f0e60790fcbd927f51b0e2fc78ce98fc5f77403c18c33cf76d5e7b2ff",
+      "group": "connectors",
+      "donor": "repack_clear",
+      "selected_extra": false,
+      "body_entries": 5
+    },
+    {
+      "original_symbol": "cc_cb_clear",
+      "precision": "control",
+      "namespace": "global_repack_reconstructed",
+      "body": "kernel_impl/global_repack_reconstructed.cuh",
+      "body_sha256": "91474d0f0e60790fcbd927f51b0e2fc78ce98fc5f77403c18c33cf76d5e7b2ff",
+      "group": "connectors",
+      "donor": "repack_clear",
+      "selected_extra": false,
+      "body_entries": 5
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_pre_block_swin_1h_32_1_fp8",
+      "precision": "fp8",
+      "namespace": "c32_pre_fp8_reconstructed",
+      "body": "kernel_impl/c32_pre_fp8_reconstructed.cuh",
+      "body_sha256": "6f8ad22f3be94eb27cf1e24dc8c77f3a58721d91418fcc25f828b3a603a32b75",
+      "group": "frontend_output",
+      "donor": null,
+      "selected_extra": true,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_pre_block_swin_1h_32_1",
+      "precision": "half",
+      "namespace": "c32_pre_half_reconstructed",
+      "body": "kernel_impl/c32_pre_half_reconstructed.cuh",
+      "body_sha256": "30cdb666f9e598af01e51f663d8dbc9800d5f99723ab301983d48cc8551df083",
+      "group": "frontend_output",
+      "donor": null,
+      "selected_extra": true,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_post_block_swin_1h_32_fp8",
+      "precision": "fp8",
+      "namespace": "c32_post_fp8_reconstructed",
+      "body": "kernel_impl/c32_post_fp8_reconstructed.cuh",
+      "body_sha256": "cb025c43061b7ba1f43d7733a479228421756b2044962c91c36405a1c69215b2",
+      "group": "frontend_output",
+      "donor": null,
+      "selected_extra": true,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_post_block_swin_1h_32",
+      "precision": "half",
+      "namespace": "c32_post_half_reconstructed",
+      "body": "kernel_impl/c32_post_half_reconstructed.cuh",
+      "body_sha256": "5ff8496b7ab2727d40b79239158276cd516c159c78683ffcb70751fcfb195806",
+      "group": "frontend_output",
+      "donor": null,
+      "selected_extra": true,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_pre_block_swin_1h_32_1_ds_fp8",
+      "precision": "fp8",
+      "namespace": "c32_pre_ds_fp8_reconstructed",
+      "body": "kernel_impl/c32_pre_ds_fp8_reconstructed.cuh",
+      "body_sha256": "f7e7f5fdce6cfc1b443a5e74a9d36f0636b8a0ef03326ff668a7d671af32d5e3",
+      "group": "frontend_output",
+      "donor": null,
+      "selected_extra": true,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_pre_block_swin_1h_32_1_ds",
+      "precision": "half",
+      "namespace": "c32_pre_ds_half_reconstructed",
+      "body": "kernel_impl/c32_pre_ds_half_reconstructed.cuh",
+      "body_sha256": "b301c54c88516037878c2c93a35e738d4cda730f45e84ae045ea168179cbb510",
+      "group": "frontend_output",
+      "donor": null,
+      "selected_extra": true,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1_outview_fp8",
+      "precision": "fp8",
+      "namespace": "c32_outview_fp8_reconstructed",
+      "body": "kernel_impl/c32_outview_fp8_reconstructed.cuh",
+      "body_sha256": "096d46bbadb34e9b8b688ee58d8340426df8f14f3639275c72a4cd0aecff8089",
+      "group": "frontend_output",
+      "donor": null,
+      "selected_extra": true,
+      "body_entries": 1
+    },
+    {
+      "original_symbol": "cc_tinlayout_fused_swin_1h_32_1_outview",
+      "precision": "half",
+      "namespace": "c32_outview_half_reconstructed",
+      "body": "kernel_impl/c32_outview_half_reconstructed.cuh",
+      "body_sha256": "f73013a88f7788832197545d6bd6514649bc8c4e38d8adff79852cbec6a17a80",
+      "group": "frontend_output",
+      "donor": null,
+      "selected_extra": true,
+      "body_entries": 1
+    }
+  ],
+  "root_owned_shared_host_files": "Not written by this staging script; root adds one launcher.cpp and one torch_api.cpp.",
+  "same_helper_text_except_namespace": [
+    {
+      "normalized_sha256": "0ee434fed31bc2a56df0bfde24965e32ad4ba2c2b2bc9f48b38ae80d1d25efaa",
+      "members": [
+        "kernel_impl/c32_ds_half_reconstructed_ops.cuh",
+        "kernel_impl/c32_inpview_half_reconstructed_ops.cuh",
+        "kernel_impl/c32_upsample_half_reconstructed_ops.cuh",
+        "kernel_impl/c32_outview_half_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "4c71e4bb8a7857c8a90e1eb17691b601abd9c9e980d60012f53fb60578011b7c",
+      "members": [
+        "kernel_impl/c32_ds_fp8_reconstructed_ops.cuh",
+        "kernel_impl/c32_inpview_fp8_reconstructed_ops.cuh",
+        "kernel_impl/c32_upsample_fp8_reconstructed_ops.cuh",
+        "kernel_impl/c32_outview_fp8_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "3ef3971fb639990bbab38bab3597e61c1dc24451a67fb2bf40cbfebbcef19db0",
+      "members": [
+        "kernel_impl/c64_ordinary_half_reconstructed_ops.cuh",
+        "kernel_impl/c128_ordinary_half_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "5b3b9cbf58a106c108bddc9992db1e3015295343d1b714dca772800a3e87b3a0",
+      "members": [
+        "kernel_impl/c64_ds_reconstructed_ops.cuh",
+        "kernel_impl/c64_inpview_reconstructed_ops.cuh",
+        "kernel_impl/c64_outview_reconstructed_ops.cuh",
+        "kernel_impl/c64_upsample_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "fbc8eb76e73c52ee222bba213df29357d4dccd22114a95bedc1952e4919540e5",
+      "members": [
+        "kernel_impl/c64_inpview_fp8_reconstructed_ops.cuh",
+        "kernel_impl/c64_outview_fp8_reconstructed_ops.cuh",
+        "kernel_impl/c64_upsample_fp8_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "66a1906b7f8bcda93f963902d7c8f1b5e89346cf3b147a0c1068d7e156cccbe0",
+      "members": [
+        "kernel_impl/c128_downsample_half_reconstructed_ops.cuh",
+        "kernel_impl/c256_downsample_half_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "4b23cd110fc6c2462c0db02aacd9d22138e82caaa2fc891e8613a1f632f5f85b",
+      "members": [
+        "kernel_impl/c128_inpview_half_reconstructed_ops.cuh",
+        "kernel_impl/c128_outview_half_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "460cb98721b5420cce93d0eca51d0104fc58be83e3089d8198b6903e15e5627e",
+      "members": [
+        "kernel_impl/c128_inpview_fp8_reconstructed_ops.cuh",
+        "kernel_impl/c128_outview_fp8_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "947839efd43a6ef60da733f7f1e6c4593a4c84503c455554b02ac03d63998715",
+      "members": [
+        "kernel_impl/c128_upsample_half_reconstructed_ops.cuh",
+        "kernel_impl/c256_upsample_half_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "a533658bf82f4692fff2060932983907bcfa2e92b608fa84d5348902e1b34504",
+      "members": [
+        "kernel_impl/c256_inpview_half_reconstructed_ops.cuh",
+        "kernel_impl/c256_outview_half_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "c49bb05ba5e5c24204ba2fbc91b77f7fa2abc285dbafe763f9f1851caa0bed20",
+      "members": [
+        "kernel_impl/c256_inpview_fp8_reconstructed_ops.cuh",
+        "kernel_impl/c256_outview_fp8_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "567d2c541a29b35fd629967d601f2e993ffaded361dec111accdb6323b9f4add",
+      "members": [
+        "kernel_impl/c512_ffn_reconstructed_ops.cuh",
+        "kernel_impl/c512_qkv_fp8_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "4d18892d1f59c831500cd273b296158401fdcc764be381671e87f4bc1c708d02",
+      "members": [
+        "kernel_impl/c512_ffn_half_reconstructed_ops.cuh",
+        "kernel_impl/c512_qkv_half_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "9ab8ce5a2c2034feade4ed8e3fc76b2e2a047ecaea3426d464e90b5422a8ab25",
+      "members": [
+        "kernel_impl/c512_ffn_proj_fp8_reconstructed_ops.cuh",
+        "kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed_ops.cuh",
+        "kernel_impl/c512_proj_fp8_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "7a0aa5c17fea93eab0f52509c2ec4935f11ce9f3faa374ca4aaf86578a429e52",
+      "members": [
+        "kernel_impl/c512_ffn_proj_half_reconstructed_ops.cuh",
+        "kernel_impl/c512_ffn_proj_inpview_half_reconstructed_ops.cuh",
+        "kernel_impl/c512_proj_half_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "3cb3733f392df382e3256fd4ddb813e30d5dd97c267739b59ad4b96d995addbb",
+      "members": [
+        "kernel_impl/c1024_ffn_expand_fp8_reconstructed_ops.cuh",
+        "kernel_impl/c1024_ffn_contract_fp8_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    },
+    {
+      "normalized_sha256": "12b6b1973b0454aaa59af76e769c5399d5db91cbff62df99e68a790973be2a36",
+      "members": [
+        "kernel_impl/c1024_ffn_expand_half_reconstructed_ops.cuh",
+        "kernel_impl/c1024_ffn_contract_half_reconstructed_ops.cuh"
+      ],
+      "normalization": "namespace identifier, comments, whitespace only; all types/constants/layout fields preserved"
+    }
+  ],
+  "limits": [
+    "Copied body/ops text is unchanged; grouped recompilation has not been performed and does not inherit donor emitted-code identity.",
+    "Root frontend/output extras are frozen source only, no accepted object donor.",
+    "Do not combine donor objects with recompilation of the same body."
+  ]
+}

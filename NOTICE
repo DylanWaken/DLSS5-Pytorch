@@ -1,0 +1,11 @@
+DLSSNR-PyTorch graph, checkpoint layout and numerical contracts are adapted from
+OpenDLSS-NR, Copyright (c) 2026 maan, under the MIT license. The full license is
+provided in LICENSE-OpenDLSS-NR. Original source:
+https://github.com/maanHimself/OpenDLSS-NR
+Pinned revision: 9d08f4184bbcb9d858e2fb7a7834ec0837a9d2f1
+
+NVIDIA KDA workflow and skills are separate development tools under third_party/.
+Their licenses remain in their individual pinned repositories.
+
+NVIDIA software and model artifacts are downloaded separately into ignored local
+assets; the source tree does not redistribute those binaries or grant rights to them.

@@ -1,0 +1,11 @@
+// Grouped CUDA body emission only. Host dispatch lives in the shared C++ TU.
+#include "kernel_impl/window_block_c64_downsample_fp8.cuh"
+#include "kernel_impl/window_block_c64_downsample_fp16.cuh"
+#include "kernel_impl/window_block_c64_input_view_fp8.cuh"
+#include "kernel_impl/window_block_c64_input_view_fp16.cuh"
+#include "kernel_impl/window_block_c64_fp16.cuh"
+#include "kernel_impl/window_block_c64_fp8.cuh"
+#include "kernel_impl/window_block_c64_output_view_fp8.cuh"
+#include "kernel_impl/window_block_c64_output_view_fp16.cuh"
+#include "kernel_impl/window_block_c64_upsample_fp8.cuh"
+#include "kernel_impl/window_block_c64_upsample_fp16.cuh"

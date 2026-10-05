@@ -1,0 +1,185 @@
+# Wider ordinary FP16 entries: CPU ABI proof and bounded probe proposal
+
+This is a staged CPU investigation of the unchanged original C64, C128 and
+C256 ordinary window entries. It does not execute CUDA, invoke the DLL host,
+establish wider FP16 numerical parity, or measure either implementation. The
+existing C32 probe is the only completed native FP16 runtime result: its 16
+fixture/phase cases and 96 replays passed byte comparison under memcheck using
+the installed v24 extension. That result cannot be generalized to these widths.
+
+## Entry and allocation contract
+
+| Channels | Native module / symbol | Block | Static shared bytes | CTA barriers |
+|---|---|---|---:|---:|
+| 64 | module1 / `cc_tinlayout_fused_swin_2h_64_2` | `(32,2,1)` | 8,192 | 6 |
+| 128 | module2 / `cc_tinlayout_fused_swin_4h_128_4` | `(32,4,1)` | 16,384 | 10 |
+| 256 | module3 / `cc_tinlayout_fused_swin_8h_256_8` | `(32,8,1)` | 32,768 | 8 |
+
+All three entries have an 88-byte argument record. Input, output and weight
+pointers occupy bytes 0, 8, 16. Byte 24 is an unused pointer slot, initialized to
+zero in the proposed record. Height, width and signed x/y origins occupy
+bytes 32, 36, 40, 44. Remaining bytes are zero. No dynamic shared allocation is
+requested. The four origins are `(0,0)`, `(-4,-4)`, `(-4,0)`, `(0,-4)`;
+grid dimensions are `ceil((W-origin_x)/8)` by `ceil((H-origin_y)/8)`.
+
+The proof is restricted to positive 4-aligned H/W between 8 and 64, and its
+enumerated cases use 8x8, 12x20, 16x24 in all four phases. It does not justify
+transition blocks, down/up sampling entries, nonordinary weight records,
+unbounded dimensions, or global-attention scratch protocols.
+
+Pinned original artifacts:
+
+| C | PTX SHA256 | Cubin SHA256 |
+|---|---|---|
+| 64 | `0ebd93ef1f85ac4b1981a2dc31e49c00273e107ebe397bb13b0a72bc97face99` | `a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae` |
+| 128 | `ea5afe1ed2dbfb125a91db607210c6905632e047e22d40f7f2ffdb1bd77e8a3e` | `9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa` |
+| 256 | `fc7b019606d6f00a3dad501b39ec7a38fe0d904b9f187b0254b92935d40565b5` | `46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084` |
+
+The tool pins both each complete PTX and the exact entry-body hash. It rejects
+unexpected parameter sizes, shared allocations, local-memory operations and
+atomics. Cubin hashes above identify the proposed future runtime binaries;
+the CPU address proof interprets PTX, not those cubins.
+
+## Half image layout
+
+Each 4x4 image tile occupies `32*C` bytes. Inside a tile, each group of 16
+channels occupies a 512-byte C-fragment plane. For tile-local token `m` and
+channel `n`:
+
+```
+lane = (m % 8)*4 + (n % 8)//2
+fragment = ((n//8)%2)*4 + ((m//8)%2)*2 + n%2
+byte = (n//16)*512 + lane*16 + fragment*2
+```
+
+The full tile index is `(y//4)*(W//4)+x//4`, with `m=(y%4)*4+x%4`.
+The enumeration proves this map is bijective and that actual original global
+addresses read every input byte and write every output byte exactly once for
+each tested case. The original cooperative readers differ: C64 distributes
+input tiles between its two warps; C128/C256 distribute channel groups. This
+is why simply copying the C32 thread mapping was insufficient.
+
+Address coverage and bijection are safety and layout evidence. They do not
+alone prove that native arithmetic assigns the intended logical value to each
+location; the identity and nonuniform runtime fixtures remain necessary.
+
+## Derived Half weight records
+
+Only the original `WEIGHTS_HT` resource is available. These records are a
+proposed conversion of its decoded E4 values to Half, using natural input
+channels and the native K16 B-fragment order. They are not a separately
+discovered original FP16 checkpoint or a verified DLL host conversion.
+
+| Region / byte offset | C64 | C128 | C256 |
+|---|---:|---:|---:|
+| Grouped W1 | 0 | 0 | 0 |
+| Grouped W2 | 32,768 | 131,072 | 524,288 |
+| W3 | 49,152 | 163,840 | 589,824 |
+| FFN scale | 57,360 | 196,624 | 720,912 |
+| QKV | 57,504 | 196,896 | 721,440 |
+| Relative bias | 82,080 | 295,200 | 1,114,656 |
+| Float head scale | 98,464 | 327,968 | 1,180,192 |
+| Projection | 98,480 | 327,984 | 1,180,224 |
+| Attention scale | 106,672 | 360,752 | 1,311,296 |
+| Logical read end | 106,800 | 361,008 | 1,311,808 |
+| Guarded payload allocation | 106,816 | 361,024 | 1,311,808 |
+
+W1 has logical shape `[C/32,C,128]`, W2`[C/32,128,32]`, W3 and projection
+`[C,C]`, QKV`[C,3C]`. Matrix bytes double when converting E4 to Half;
+Half scales/biases and Float head scales preserve their source bits. The
+16-byte separators and head-scale padding follow the original PTX offsets.
+
+The scalar Half B coordinate map is:
+
+```
+tile = (k//16)*(N//16) + n//16
+lane = (n%8)*4 + (k%8)//2
+index = tile*256 + lane*8 + ((n//8)%2)*4 + ((k//8)%2)*2 + k%2
+```
+
+For the first complete CTA of each width, actual original weight reads cover
+exactly the proposed matrix/auxiliary regions, with no padding reads:106,760,
+360,976 and 1,311,776 distinct bytes. The grouped matrix records are contiguous
+K rows with group boundaries at multiples of 16, so their local fragment order
+is unchanged by concatenation. A separate CPU decoder reconstructs all 54
+logical tensors from blocks 5/63, 9/57, 15/49 and matches the existing independent
+checkpoint decoder exactly, including group axes, relative bias and head scales.
+
+This validates the proposed conversion and actual load-region coverage. It
+does not replace native numerical comparison or prove the unavailable host
+conversion algorithm.
+
+## Address/control interpreter and evidence
+
+`tools/vendor_fp16_window_proof.py.draft` parses every instruction and follows
+only known integer addresses and control. Tensor data stays unknown. Every
+unknown instruction invalidates its destinations, including destinations that
+previously held known integers. Unknown addresses and branch predicates fail
+the proof. Backward branches have a bounded step limit.
+
+An optional conservative register slice retains every global/shared access,
+every branch and barrier, and every dynamic definition of registers that can
+reach them. It does not assume register names are SSA. Full and sliced traces
+are compared at boundary CTAs for both the first and last warp/lane of every
+width and phase.
+
+All memory accesses must be aligned and inside their exact allocation.
+Global writes can target only output. Every CTA thread must encounter the
+same sequence of barriers. Shared reads require an earlier initialized byte;
+cross-thread read/write overlap and overlapping writers within one barrier
+epoch are rejected. Same-thread reads after its own writes are allowed.
+
+The draft test suite currently passes 11 tests (with width/phase subcases),
+including malicious unknown destinations, missing initialization, shared
+write overlap, read/write hazards, bad alignment, malformed dimensions and
+independent real-weight decoding. The full 36-case address sweep passed:
+three shapes, four phases and three widths. Its report is saved at
+`outputs/vendor_fp16_window_address_proof.json.draft`. The exact weight-byte
+coverage and maximum read end remain identical across all 12 cases of each
+width. No runtime helper is enabled by this CPU result.
+
+Independent review found no blocker. It compared 480 additional full/sliced
+thread traces across all widths and phases, four boundary CTAs at 12x20,
+the first/last warp, and lanes 0, 1, 15, 16 and 31. All memory events and
+barrier sequences agreed. The reviewer also confirmed that every observed
+memory instruction has the modeled 4/16-byte width, and all live integer
+multiply/MAD instructions use the supported low/wide semantics. Input-read
+totals equal unique input coverage in every saved case.
+
+## Next guarded runtime calibration
+
+`tools/vendor_fp16_window_probe.py.draft` passed independent CPU review and
+has not executed CUDA. The default path performs only CPU asset/proof
+checks. An explicit `--execute` switch is required to launch a native entry.
+The helper pins the reviewed proof script hash as well as original cubin,
+PTX, DLL and resource hashes. Seven additional CPU tests pass, including
+all fixture roundtrips, real-weight cross-checks, every grouped FFN expert,
+W3 channel routing, and QKV's correct `[head,3,32]` column order. The initial
+CPU-only smoke report is `outputs/vendor_fp16_window_probe_cpu_smoke.json.draft`.
+
+The staged helper preserves the following reviewed contract:
+
+1. Verify DLL resource, original cubin, helper, extension and candidate source
+   hashes. Require SM120 for the unchanged original binaries.
+2. Validate the exact requested small shape/phase with this CPU interpreter
+   before creating any native allocation. Start with ordinary blocks 5, 9, 15;
+   include decoder-side blocks 63, 57, 49 as independent real-weight cases.
+3. Guard input/output/derived weights, and all externally supplied candidate
+   tensors. Check every guard and immutable payload after every verified replay
+   and after capture warmup.
+4. Use identity residual, grouped FFN basis, attention basis and actual
+   nonuniform weights; map input/output with the explicit Half map above.
+   The FFN fixture must exercise each expert and W3, not reuse C32's two-layer
+   fixture unchanged. Nonzero Q/K prevents degenerate normalization tests.
+5. Compare every published Half byte with the unchanged FP16 candidate.
+   Preserve the candidate arithmetic and report mismatches without loosening
+   comparison thresholds. The earlier PTX-only normalization discrepancy was
+   disproved by original SASS and the unchanged C32 runtime result.
+6. Poison native output before every ordinary replay, and both native and
+   retained candidate outputs before every graph replay. Then recheck output,
+   all guards and all immutable payloads. Run
+   memcheck first; add bounded racecheck for the shared-memory native entries.
+
+A successful result would establish only these ordinary entries, derived
+weights and bounded fixtures. Speed comparison, the DLL host path, transition
+blocks and the full FP16 trunk remain separate work.

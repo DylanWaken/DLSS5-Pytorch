@@ -1,0 +1,4313 @@
+{
+  "build": false,
+  "call_sites": [
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 0,
+      "entry_fp8": 2,
+      "entry_half": 3,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967319,
+      "native_node_id": 8589934615,
+      "network_block": 23,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_inpview_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block23.layer0.layer",
+        "offset": 0,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "63399444cd1c361a295167f7958cc707d8e88ec363da1cbf2ada632dcc741df5"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 1,
+      "entry_fp8": 6,
+      "entry_half": 7,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967320,
+      "native_node_id": 8589934616,
+      "network_block": 23,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_inpview_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block23.layer1.layer",
+        "offset": 524288,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "61bd7b37c8458f4baf1e401def0135d1887f416c8c8300cf02faa0225ebb9bbd"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 2,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        15,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967321,
+      "native_node_id": 8589934617,
+      "network_block": 23,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 917568,
+        "name": "block23.layer2.layer",
+        "offset": 787456,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "4418029920032fe9b68e7757bd7fc83f87c1fa56ee714db5a015f7cfef12e3a7"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 3,
+      "entry_fp8": 10,
+      "entry_half": 11,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967322,
+      "native_node_id": 8589934618,
+      "network_block": 23,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "output_owners": [
+        "high"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block23.layer3.layer",
+        "offset": 1705024,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "ad2ddbc077729a776267698f4cccbf23c87bc09d825902475777e2cbd3fd1b06"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 4,
+      "entry_fp8": 0,
+      "entry_half": 1,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967323,
+      "native_node_id": 8589934619,
+      "network_block": 24,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block24.layer0.layer",
+        "offset": 1968192,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "0b034c80329788fe6e7047cfaf63cd6a72e4b4803cddd945f053657868908059"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 5,
+      "entry_fp8": 4,
+      "entry_half": 5,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967324,
+      "native_node_id": 8589934620,
+      "network_block": 24,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block24.layer1.layer",
+        "offset": 2492480,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "2c51c65e4c202757a83622259229602cfc87816dcf99680d015bc6dc78ab8d22"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 6,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        16,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967325,
+      "native_node_id": 8589934621,
+      "network_block": 24,
+      "origin": [
+        -4,
+        -4
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 1,
+      "record": {
+        "bytes": 917568,
+        "name": "block24.layer2.layer",
+        "offset": 2755648,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "725a1e3d3f33b07ef7d45536a5a7dd895365eef69ac8a01d504103582324f745"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 7,
+      "entry_fp8": 10,
+      "entry_half": 11,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967326,
+      "native_node_id": 8589934622,
+      "network_block": 24,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "output_owners": [
+        "high"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block24.layer3.layer",
+        "offset": 3673216,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "28f4c6603895ec25746f9dc5c8fbb6f4f2b35bc0f330def31321de8ef9d864ed"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 8,
+      "entry_fp8": 0,
+      "entry_half": 1,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967327,
+      "native_node_id": 8589934623,
+      "network_block": 25,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block25.layer0.layer",
+        "offset": 3936384,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "1ec87cc7deec553a343123ff6e6a2db7248e713cdf9246f1e9918132415e2427"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 9,
+      "entry_fp8": 4,
+      "entry_half": 5,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967328,
+      "native_node_id": 8589934624,
+      "network_block": 25,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block25.layer1.layer",
+        "offset": 4460672,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "74cadb350c25a2d38d66872e90809f3efe5db51f4c5b065a539d2c18f9d8d542"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 10,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        16,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967329,
+      "native_node_id": 8589934625,
+      "network_block": 25,
+      "origin": [
+        -4,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 2,
+      "record": {
+        "bytes": 917568,
+        "name": "block25.layer2.layer",
+        "offset": 4723840,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "6aec37f51c3d2acb013e01b1e0149730b21b15f9c5cea12dc92cf71e37124029"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 11,
+      "entry_fp8": 10,
+      "entry_half": 11,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967330,
+      "native_node_id": 8589934626,
+      "network_block": 25,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "output_owners": [
+        "high"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block25.layer3.layer",
+        "offset": 5641408,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "9fa724ac790899ce5a63aaf0b5d13b03013216907a6083163b4dee42985bd56f"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 12,
+      "entry_fp8": 0,
+      "entry_half": 1,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967331,
+      "native_node_id": 8589934627,
+      "network_block": 26,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block26.layer0.layer",
+        "offset": 5904576,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "e9a984f72e9e8911c09b86b626dbf05c1898cfbaa893a4d5267f14cd9ed258cd"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 13,
+      "entry_fp8": 4,
+      "entry_half": 5,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967332,
+      "native_node_id": 8589934628,
+      "network_block": 26,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block26.layer1.layer",
+        "offset": 6428864,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "fc02ffc8d36a48310c0883a1b88333ed0ec9c47dbcd9463fdfeacc019caae221"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 14,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        15,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967333,
+      "native_node_id": 8589934629,
+      "network_block": 26,
+      "origin": [
+        0,
+        -4
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 3,
+      "record": {
+        "bytes": 917568,
+        "name": "block26.layer2.layer",
+        "offset": 6692032,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "758aadaac32583262c7863993478ac6d32179c34954638a3349c6989b688186a"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 15,
+      "entry_fp8": 10,
+      "entry_half": 11,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967334,
+      "native_node_id": 8589934630,
+      "network_block": 26,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "output_owners": [
+        "high"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block26.layer3.layer",
+        "offset": 7609600,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "2a2cd7b0fc7def1e29d14f1f0e98a2ba0a0a1d26f2f52d0c7783a53fb9bc1970"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 16,
+      "entry_fp8": 0,
+      "entry_half": 1,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967335,
+      "native_node_id": 8589934631,
+      "network_block": 27,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block27.layer0.layer",
+        "offset": 7872768,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "a01e4e9989fef611f7f73ba55892921c7f9a9142ce17f0758445029c00cb2168"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 17,
+      "entry_fp8": 4,
+      "entry_half": 5,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967336,
+      "native_node_id": 8589934632,
+      "network_block": 27,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block27.layer1.layer",
+        "offset": 8397056,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "2006d9a956b3712d7994cac157932a5e83d193d81a29f2a1c15fa860cae8c9ad"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 18,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        15,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967337,
+      "native_node_id": 8589934633,
+      "network_block": 27,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 917568,
+        "name": "block27.layer2.layer",
+        "offset": 8660224,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "431d412bb2fd2a72b67365de9a855be87c1e813f84c2196526bec70e87f7e263"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 19,
+      "entry_fp8": 10,
+      "entry_half": 11,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967338,
+      "native_node_id": 8589934634,
+      "network_block": 27,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "output_owners": [
+        "high"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block27.layer3.layer",
+        "offset": 9577792,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "1c7ca078a440b6821f7cf6531ce3b2fa7d30b70e374ccd412da58ddb689af4e5"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 20,
+      "entry_fp8": 0,
+      "entry_half": 1,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967339,
+      "native_node_id": 8589934635,
+      "network_block": 28,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block28.layer0.layer",
+        "offset": 9840960,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "f12339d64f64f178ba8e258c9b5f771eb985e40f986d70566eaf0d280c51fae2"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 21,
+      "entry_fp8": 4,
+      "entry_half": 5,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967340,
+      "native_node_id": 8589934636,
+      "network_block": 28,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block28.layer1.layer",
+        "offset": 10365248,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "6ce486b35ec916fdd38ec40d80d079581dc0581a9fd5bb9f2360761b4161b43f"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 22,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        16,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967341,
+      "native_node_id": 8589934637,
+      "network_block": 28,
+      "origin": [
+        -4,
+        -4
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 1,
+      "record": {
+        "bytes": 917568,
+        "name": "block28.layer2.layer",
+        "offset": 10628416,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "967ce7a73aee5f67a62be620d79806e8f439fe002e6c4e42b412349a015e6ead"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 23,
+      "entry_fp8": 10,
+      "entry_half": 11,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967342,
+      "native_node_id": 8589934638,
+      "network_block": 28,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "output_owners": [
+        "high"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block28.layer3.layer",
+        "offset": 11545984,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "3b44fc127317576eb7613ca7290aa7936d66417f1a740688846eb3badf2eb8a8"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 24,
+      "entry_fp8": 0,
+      "entry_half": 1,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967343,
+      "native_node_id": 8589934639,
+      "network_block": 29,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block29.layer0.layer",
+        "offset": 11809152,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "42672f1abbd74ebc0f25f54f699e85eaf9f34dd172329267ec8c4c448788290a"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 25,
+      "entry_fp8": 4,
+      "entry_half": 5,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967344,
+      "native_node_id": 8589934640,
+      "network_block": 29,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block29.layer1.layer",
+        "offset": 12333440,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "027a5512fd135e044e63b98c34f8aaf5d2cb00b84f1fc0fa42795a650a0696d7"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 26,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        16,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967345,
+      "native_node_id": 8589934641,
+      "network_block": 29,
+      "origin": [
+        -4,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 2,
+      "record": {
+        "bytes": 917568,
+        "name": "block29.layer2.layer",
+        "offset": 12596608,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "06877db4ee570bb36b50cadbf9b33585aa17090035cb97a5a0417943025ebfb6"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 27,
+      "entry_fp8": 10,
+      "entry_half": 11,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967346,
+      "native_node_id": 8589934642,
+      "network_block": 29,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "output_owners": [
+        "high"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block29.layer3.layer",
+        "offset": 13514176,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "6d2a4d0e088ea8960b2ee513cb51f183613dda89913a4893df4400248de1a88c"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 28,
+      "entry_fp8": 0,
+      "entry_half": 1,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967347,
+      "native_node_id": 8589934643,
+      "network_block": 30,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block30.layer0.layer",
+        "offset": 13777344,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "f0f6eb4560034e325821dfebf4f84121158a0b90b9fe0b840da5ffb1e94057f5"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 29,
+      "entry_fp8": 4,
+      "entry_half": 5,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967348,
+      "native_node_id": 8589934644,
+      "network_block": 30,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block30.layer1.layer",
+        "offset": 14301632,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "b9bf314bb5e5b181eada7d49d8342c863cf0ad59e3cacfca3d31f8388519e465"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 30,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        15,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967349,
+      "native_node_id": 8589934645,
+      "network_block": 30,
+      "origin": [
+        0,
+        -4
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 3,
+      "record": {
+        "bytes": 917568,
+        "name": "block30.layer2.layer",
+        "offset": 14564800,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "77255cc2533958caebaa309f19f401954cc8da26a97b6c7363d42bfb5eba9a38"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 31,
+      "entry_fp8": 14,
+      "entry_half": 15,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967350,
+      "native_node_id": 8589934646,
+      "network_block": 30,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_pool_512_fp8",
+      "output_owners": [
+        "high",
+        "pool"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block30.layer3.layer",
+        "offset": 15482368,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "d70b9d9beea7b82b37cc6a305bf9841e07a236d00708438f06b1f90bdb2e454a"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 32,
+      "entry_fp8": 16,
+      "entry_half": 17,
+      "grid": [
+        32,
+        5,
+        1
+      ],
+      "height": 36,
+      "input_owner": "pool",
+      "layer": 4,
+      "native_captured_node_id": 4294967351,
+      "native_node_id": 8589934647,
+      "network_block": 30,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_final_head_512_fp8",
+      "output_owners": [
+        "down"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524304,
+        "name": "block30.layer4.layer",
+        "offset": 15745536,
+        "path": "assets/nr/model/stages/encoder512.bin",
+        "sha256": "3ab0bf4b8e4b55cd4f60a8473d9cb0100896c1fd8328179188db43e427a50a4c"
+      },
+      "skip_owner": null,
+      "width": 60
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 33,
+      "entry_fp8": 0,
+      "entry_half": 1,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967428,
+      "native_node_id": 8589934724,
+      "network_block": 40,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block40.layer0.layer",
+        "offset": 525312,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "a36d4a79990ac0856d9230579cb5ef6a90896bdbe5452ec683cfb9573b92886e"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 34,
+      "entry_fp8": 4,
+      "entry_half": 5,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967429,
+      "native_node_id": 8589934725,
+      "network_block": 40,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block40.layer1.layer",
+        "offset": 1049600,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "e99170e79f9d78198b30b421f8226b37157cbb4bf15c6a6a6b42408cedaf839d"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 35,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        15,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967430,
+      "native_node_id": 8589934726,
+      "network_block": 40,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 917568,
+        "name": "block40.layer2.layer",
+        "offset": 1312768,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "f3dc4e363e17e38f61ff878d127d8961f858bc7a296f48e4bcf204c32bb67648"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 36,
+      "entry_fp8": 10,
+      "entry_half": 11,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967431,
+      "native_node_id": 8589934727,
+      "network_block": 40,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "output_owners": [
+        "high"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block40.layer3.layer",
+        "offset": 2230336,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "23a7753582130c7cb74c47d01a3304401d7373d40af4690523ace6f331a08ae5"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 37,
+      "entry_fp8": 0,
+      "entry_half": 1,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967432,
+      "native_node_id": 8589934728,
+      "network_block": 41,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block41.layer0.layer",
+        "offset": 2493504,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "83c88dcb8add6547b1dca74f3b8a23ba1916e9b1bebd2e6c42d5079e7d149a38"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 38,
+      "entry_fp8": 4,
+      "entry_half": 5,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967433,
+      "native_node_id": 8589934729,
+      "network_block": 41,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block41.layer1.layer",
+        "offset": 3017792,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "c710059a619e1ba9f524c73cd519e4f3e8fc3b51b3111cf2f7dbae24591d5a09"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 39,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        16,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967434,
+      "native_node_id": 8589934730,
+      "network_block": 41,
+      "origin": [
+        -4,
+        -4
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 1,
+      "record": {
+        "bytes": 917568,
+        "name": "block41.layer2.layer",
+        "offset": 3280960,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "3a8d9905ca92f0de4e30a4137a14f6248c6c5735a811a5192296262a064236a8"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 40,
+      "entry_fp8": 10,
+      "entry_half": 11,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967435,
+      "native_node_id": 8589934731,
+      "network_block": 41,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "output_owners": [
+        "high"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block41.layer3.layer",
+        "offset": 4198528,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "ff81dedea3ef5f792bdd525f507f4e33de53efd4d39709c0446dd5980ed7d415"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 41,
+      "entry_fp8": 0,
+      "entry_half": 1,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967436,
+      "native_node_id": 8589934732,
+      "network_block": 42,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block42.layer0.layer",
+        "offset": 4461696,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "ec48ed96accdf1e8ffb4983c888966182bf36856e2e2663a17521500ed29e083"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 42,
+      "entry_fp8": 4,
+      "entry_half": 5,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967437,
+      "native_node_id": 8589934733,
+      "network_block": 42,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block42.layer1.layer",
+        "offset": 4985984,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "291fdf13e493d4ec399e1e423a4303d5d6e445c3cafefb39e3196d1450f221e9"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 43,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        16,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967438,
+      "native_node_id": 8589934734,
+      "network_block": 42,
+      "origin": [
+        -4,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 2,
+      "record": {
+        "bytes": 917568,
+        "name": "block42.layer2.layer",
+        "offset": 5249152,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "7e84b86194e1c578c55d7306d8d8869d8f8eddbde7d1034368e65e0d4c325e05"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 44,
+      "entry_fp8": 10,
+      "entry_half": 11,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967439,
+      "native_node_id": 8589934735,
+      "network_block": 42,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "output_owners": [
+        "high"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block42.layer3.layer",
+        "offset": 6166720,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "9b3039596f7479a226402a8c961e2af8ccb797a127702a4b289573358550b75c"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 45,
+      "entry_fp8": 0,
+      "entry_half": 1,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967440,
+      "native_node_id": 8589934736,
+      "network_block": 43,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block43.layer0.layer",
+        "offset": 6429888,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "95eb00e2c501ef690c9c7258f48099d3ef3a897453615a06828e74c890a5f801"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 46,
+      "entry_fp8": 4,
+      "entry_half": 5,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967441,
+      "native_node_id": 8589934737,
+      "network_block": 43,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block43.layer1.layer",
+        "offset": 6954176,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "1c75c6f58dc0f4c7db50c59cb1955ccc9def98c717c7b8c1c698dc77eead5dcb"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 47,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        15,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967442,
+      "native_node_id": 8589934738,
+      "network_block": 43,
+      "origin": [
+        0,
+        -4
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 3,
+      "record": {
+        "bytes": 917568,
+        "name": "block43.layer2.layer",
+        "offset": 7217344,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "c79e7824bde317e982b3b05ea11dca9104c4b495ead4768111b46d316e4d1861"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 48,
+      "entry_fp8": 10,
+      "entry_half": 11,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967443,
+      "native_node_id": 8589934739,
+      "network_block": 43,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "output_owners": [
+        "high"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block43.layer3.layer",
+        "offset": 8134912,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "2274f369d6c1eed43d0199228e1387b16f64bcd62cfd86f278a66d32fd45c882"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 49,
+      "entry_fp8": 0,
+      "entry_half": 1,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967444,
+      "native_node_id": 8589934740,
+      "network_block": 44,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block44.layer0.layer",
+        "offset": 8398080,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "45e08cbbc8eb229191804b8a9d635eb4bd45519349f1bb892a8bb9420223e4ea"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 50,
+      "entry_fp8": 4,
+      "entry_half": 5,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967445,
+      "native_node_id": 8589934741,
+      "network_block": 44,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block44.layer1.layer",
+        "offset": 8922368,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "3e7a09996d4442c14c146357e8ed33117a4505762b4d292de21c6d55e8ba737f"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 51,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        15,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967446,
+      "native_node_id": 8589934742,
+      "network_block": 44,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 917568,
+        "name": "block44.layer2.layer",
+        "offset": 9185536,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "02290bdc13ae0b21ef8c5a66174974b6db72599873307d238d316de9c84e1824"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 52,
+      "entry_fp8": 10,
+      "entry_half": 11,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967447,
+      "native_node_id": 8589934743,
+      "network_block": 44,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "output_owners": [
+        "high"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block44.layer3.layer",
+        "offset": 10103104,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "34b2a029d6708752ca238e5cb5e04bef0c81f6f683b312c98392be21721b9fe8"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 53,
+      "entry_fp8": 0,
+      "entry_half": 1,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967448,
+      "native_node_id": 8589934744,
+      "network_block": 45,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block45.layer0.layer",
+        "offset": 10366272,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "fedb4a5a22108fef5a29c93e693cb04ba4838795854c9d27ea75e94e48410cbe"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 54,
+      "entry_fp8": 4,
+      "entry_half": 5,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967449,
+      "native_node_id": 8589934745,
+      "network_block": 45,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block45.layer1.layer",
+        "offset": 10890560,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "0d64f870f57decee4c2098a02cdc5f8a9917d06b88ecd5864efb6439bf873374"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 55,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        16,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967450,
+      "native_node_id": 8589934746,
+      "network_block": 45,
+      "origin": [
+        -4,
+        -4
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 1,
+      "record": {
+        "bytes": 917568,
+        "name": "block45.layer2.layer",
+        "offset": 11153728,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "3b39d1813b715d36800d7a743d46d225352400ae73b6fdf176375ba0070b4db1"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 56,
+      "entry_fp8": 10,
+      "entry_half": 11,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967451,
+      "native_node_id": 8589934747,
+      "network_block": 45,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "output_owners": [
+        "high"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block45.layer3.layer",
+        "offset": 12071296,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "63b7382045777dcf5d48ab3e7f471f8750f4b8f96df0808d34b42a6ece9b7cd4"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 57,
+      "entry_fp8": 0,
+      "entry_half": 1,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967452,
+      "native_node_id": 8589934748,
+      "network_block": 46,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block46.layer0.layer",
+        "offset": 12334464,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "a3c9e5d1685d5c22e1c9d6185cfea5daf7407e827ba9a15b888e463571228ad4"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 58,
+      "entry_fp8": 4,
+      "entry_half": 5,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967453,
+      "native_node_id": 8589934749,
+      "network_block": 46,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block46.layer1.layer",
+        "offset": 12858752,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "105d851765cbe451f08d5cfdc3ffe0f84ae95b2aaedaa48ba371e47c3523f51c"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 59,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        16,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967454,
+      "native_node_id": 8589934750,
+      "network_block": 46,
+      "origin": [
+        -4,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 2,
+      "record": {
+        "bytes": 917568,
+        "name": "block46.layer2.layer",
+        "offset": 13121920,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "83f87e36e583b7d8c07bfc3999e5299cfc062539c960e30a60a62fb11465131d"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 60,
+      "entry_fp8": 10,
+      "entry_half": 11,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967455,
+      "native_node_id": 8589934751,
+      "network_block": 46,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "output_owners": [
+        "high"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block46.layer3.layer",
+        "offset": 14039488,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "e66c2fb31a32966cda0963d2e8901d0979fd612d9e36576f847b1dd3856582d4"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "call_index": 61,
+      "entry_fp8": 0,
+      "entry_half": 1,
+      "grid": [
+        15,
+        9,
+        2
+      ],
+      "height": 68,
+      "input_owner": "input",
+      "layer": 0,
+      "native_captured_node_id": 4294967456,
+      "native_node_id": 8589934752,
+      "network_block": 47,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_owners": [
+        "branches"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 524288,
+        "name": "block47.layer0.layer",
+        "offset": 14302656,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "397018b5d777330822b63007f69a092ccff6a5a1fa851345fb79dfc871fa9fcf"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 62,
+      "entry_fp8": 4,
+      "entry_half": 5,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "branches",
+      "layer": 1,
+      "native_captured_node_id": 4294967457,
+      "native_node_id": 8589934753,
+      "network_block": 47,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_owners": [
+        "ffn"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block47.layer1.layer",
+        "offset": 14826944,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "94ed1eb4bd04d78ccbf7d83c3ebff974e4678d0cd58182a25e7e0c5bf0917ff3"
+      },
+      "skip_owner": "input",
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 63,
+      "entry_fp8": 8,
+      "entry_half": 9,
+      "grid": [
+        15,
+        9,
+        4
+      ],
+      "height": 68,
+      "input_owner": "ffn",
+      "layer": 2,
+      "native_captured_node_id": 4294967458,
+      "native_node_id": 8589934754,
+      "network_block": 47,
+      "origin": [
+        0,
+        -4
+      ],
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_owners": [
+        "attended"
+      ],
+      "phase": 3,
+      "record": {
+        "bytes": 917568,
+        "name": "block47.layer2.layer",
+        "offset": 15090112,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "8f950bc98fae69f66901fd29eaa3eaf4315fadcadd25ec4a8ebb82468cf5ba5d"
+      },
+      "skip_owner": null,
+      "width": 120
+    },
+    {
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "call_index": 64,
+      "entry_fp8": 12,
+      "entry_half": 13,
+      "grid": [
+        30,
+        9,
+        1
+      ],
+      "height": 68,
+      "input_owner": "attended",
+      "layer": 3,
+      "native_captured_node_id": 4294967459,
+      "native_node_id": 8589934755,
+      "network_block": 47,
+      "origin": [
+        0,
+        0
+      ],
+      "original_symbol": "cc_split_swin_16h_proj_512_outview_fp8",
+      "output_owners": [
+        "high"
+      ],
+      "phase": 0,
+      "record": {
+        "bytes": 263168,
+        "name": "block47.layer3.layer",
+        "offset": 16007680,
+        "path": "assets/nr/model/stages/decoder512.bin",
+        "sha256": "f6acb87d2210dfae4d962aec3613628eb56581812baee148175b6af4313ff2d1"
+      },
+      "skip_owner": "ffn",
+      "width": 120
+    }
+  ],
+  "counts": {
+    "actual_fp8_call_sites": 65,
+    "blocks": 16,
+    "cuda_objects_reused": 5,
+    "entries": 18,
+    "families": 9,
+    "new_cuda_objects": 0
+  },
+  "donors": {
+    "attention": {
+      "binary": {
+        "bytes": 452198912,
+        "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c512-qkv-phase-admission\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+        "sha256": "abb61be28be9a7db953d518c3724749d96089063e661a5345c0c57088a0ac7e8"
+      },
+      "build": "outputs/c512-qkv-phase-admission/build-draft/run-v1/build.json",
+      "build_sha256": "a1fcff06e8ee7bb82f766410cdd24608a717a8b0ce2085df0bdf2f39f0e61c16",
+      "launcher": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_launcher/c512_attention_reconstructed.cu",
+      "object": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/build/temp.win-amd64-cpython-311/Release/csrc/kernel_launcher/c512_attention_reconstructed.obj",
+      "object_sha256": "9618710b4c2ff8e4cfb3fe4a6f134ddb677502660b5e9313301aef1b7cc3b32e",
+      "registration_api_object_required": false,
+      "status": "accepted private build; device object unchanged"
+    },
+    "ffn": {
+      "binary": {
+        "bytes": 451027456,
+        "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c512-ffn-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+        "sha256": "cb6ab6a51b8a9ef51c752fcf9251d19ee6c57c634396b3a256b9a3a7fa33e0e9"
+      },
+      "build": "outputs/c512-ffn-cuda-reconstruction/build-draft/run-v1/build.json",
+      "build_sha256": "36693ecc14bc3408e68222de419e59a06049e93e5f3b4374b5b462ac1114fd7d",
+      "launcher": "outputs/c512-ffn-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_launcher/c512_ffn_reconstructed.cu",
+      "object": "outputs/c512-ffn-cuda-reconstruction/build-draft/run-v1/overlay/build/temp.win-amd64-cpython-311/Release/csrc/kernel_launcher/c512_ffn_reconstructed.obj",
+      "object_sha256": "34f40b1beb6b24b3b6519df63af1a35b1ed055ccbb63e7bcef8376b3ce2bf417",
+      "registration_api_object_required": false,
+      "status": "accepted private build; device object unchanged"
+    },
+    "ffn_half": {
+      "binary": {
+        "bytes": 451514368,
+        "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c512-ffn-half-cuda-reconstruction\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+        "sha256": "1e6b33cf459958cbeca5272cc0a77491d85e2967556362099d1f6c9d534b013d"
+      },
+      "build": "outputs/c512-ffn-half-cuda-reconstruction/build-draft/run-v1/build.json",
+      "build_sha256": "9a9ce3b9039090ca661efaa189752d15aea3a9d28a79f1cfa676ecdf0e5abb26",
+      "launcher": "outputs/c512-ffn-half-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_launcher/c512_ffn_half_reconstructed.cu",
+      "object": "outputs/c512-ffn-half-cuda-reconstruction/build-draft/run-v1/overlay/build/temp.win-amd64-cpython-311/Release/csrc/kernel_launcher/c512_ffn_half_reconstructed.obj",
+      "object_sha256": "b9be20bb3b878736fbcf5c1c04ddbbba98f96a5531327fccb1f684d99776eb5a",
+      "registration_api_object_required": false,
+      "status": "accepted private build; device object unchanged"
+    },
+    "ffn_variants": {
+      "binary": {
+        "bytes": 452308992,
+        "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c512-ffn-variants-cuda-host\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+        "sha256": "2c911f1ecb39c5269529ea27f270851f0bd248cfadaa41c0ef4bba02179cfd51"
+      },
+      "build": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/build.json",
+      "build_sha256": "8f034e73e4923ea8119837f4645231037e144fe42cc3012d9e1b635a14a6b640",
+      "launcher": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_launcher/c512_ffn_variants_reconstructed.cu",
+      "object": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/build/temp.win-amd64-cpython-311/Release/csrc/kernel_launcher/c512_ffn_variants_reconstructed.obj",
+      "object_sha256": "2739a09a1c47c2afefc285af2b22cf0982b28fed4207d27da2c5c9f005cec32f",
+      "registration_api_object_required": false,
+      "status": "accepted private build; device object unchanged"
+    },
+    "projection_variants": {
+      "binary": {
+        "bytes": 451864064,
+        "path": "D:\\Research\\DLSSNR-PyTorch\\outputs\\c512-projection-variants-cuda-host\\build-draft\\run-v1\\overlay\\build\\lib.win-amd64-cpython-311\\dlssnr\\_C.cp311-win_amd64.pyd",
+        "sha256": "46c68ef4c2e9cf7f2c82b9a4d6df7cd365ea5b438e1249dd1b7badf4dad5bbc4"
+      },
+      "build": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/build.json",
+      "build_sha256": "c2efd7ffc8b7c5754cde96a39c86772a52194c6ba5fc6231cdc6ae905faefb25",
+      "launcher": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_launcher/c512_projection_variants_reconstructed.cu",
+      "object": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/build/temp.win-amd64-cpython-311/Release/csrc/kernel_launcher/c512_projection_variants_reconstructed.obj",
+      "object_sha256": "b59d499dcb2082789fb5a0040b26c843fa87973f6d7eb455b0e6309861831feb",
+      "registration_api_object_required": false,
+      "status": "accepted private build; device object unchanged"
+    }
+  },
+  "entries": [
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 56,
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "bounded_half_independent_shape": null,
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_ffn_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_ffn_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "ffn",
+      "element_bytes": 1,
+      "family": "ffn",
+      "grid_formula": "ceil(W/8),ceil(H/8),2",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 0,
+      "input_roles": [
+        "state",
+        "record"
+      ],
+      "maxnreg_source_cap": 168,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          8,
+          1
+        ],
+        "grid": [
+          15,
+          9,
+          2
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_ffwd_512_fp8",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "record": {
+          "bytes": 524288,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 8,
+        "record": 16,
+        "state": 0
+      },
+      "precision": "fp8",
+      "precision_scope": "actual 4K native FP8 schedule",
+      "record_bytes": 524288,
+      "reserved_fields": "zero initialized",
+      "role": 0,
+      "scalar_fields": {
+        "height": 24,
+        "origin_x": 32,
+        "origin_y": 36,
+        "width": 28
+      },
+      "source": {
+        "body": "outputs/c512-ffn-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_reconstructed.cuh",
+        "body_sha256": "59f01dbe878309e94f4673fc1f2f2be36b33a6c7e8e1b88697ad008226de49a4",
+        "ops": "outputs/c512-ffn-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_reconstructed_ops.cuh",
+        "ops_sha256": "571ca24dd306ed4aae7316d6cdeb92d25447462f3a4511f97510b75422b8aff3"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 56,
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "bounded_half_independent_shape": [
+        16,
+        24
+      ],
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_ffn_half_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_ffn_half_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "ffn_half",
+      "element_bytes": 2,
+      "family": "ffn",
+      "grid_formula": "ceil(W/8),ceil(H/8),2",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 1,
+      "input_roles": [
+        "state",
+        "record"
+      ],
+      "maxnreg_source_cap": 255,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "grid": [
+          15,
+          9,
+          2
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_ffwd_512",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "record": {
+          "bytes": 1048576,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 8,
+        "record": 16,
+        "state": 0
+      },
+      "precision": "half",
+      "precision_scope": "independent original Half entry; full-field family chain newly admitted and unqualified",
+      "record_bytes": 1048576,
+      "reserved_fields": "zero initialized",
+      "role": 0,
+      "scalar_fields": {
+        "height": 24,
+        "origin_x": 32,
+        "origin_y": 36,
+        "width": 28
+      },
+      "source": {
+        "body": "outputs/c512-ffn-half-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_half_reconstructed.cuh",
+        "body_sha256": "a8ba9138f0b6999e2d0fa94994833258dddae46301d5e51a1628473e506d28a5",
+        "ops": "outputs/c512-ffn-half-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_half_reconstructed_ops.cuh",
+        "ops_sha256": "4155b5bfc3b8698522176c0be803d52d42c69b21e6d463eb2bd05696fef9453a"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 56,
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "bounded_half_independent_shape": null,
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_ffn_inpview_fp8_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_ffn_inpview_fp8_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "ffn_variants",
+      "element_bytes": 1,
+      "family": "ffn_input_view",
+      "grid_formula": "ceil(W/8),ceil(H/8),2",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 2,
+      "input_roles": [
+        "state",
+        "record"
+      ],
+      "maxnreg_source_cap": 168,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "grid": [
+          15,
+          9,
+          2
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_ffwd_inpview_512_fp8",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "record": {
+          "bytes": 524288,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "plane512"
+        }
+      },
+      "pointer_fields": {
+        "high": 8,
+        "record": 16,
+        "state": 0
+      },
+      "precision": "fp8",
+      "precision_scope": "actual 4K native FP8 schedule",
+      "record_bytes": 524288,
+      "reserved_fields": "zero initialized",
+      "role": 1,
+      "scalar_fields": {
+        "height": 24,
+        "origin_x": 32,
+        "origin_y": 36,
+        "width": 28
+      },
+      "source": {
+        "body": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_inpview_fp8_reconstructed.cuh",
+        "body_sha256": "d7122f4f068f83f6a5ef553e82d49f0845007b79fcba1316cdf8a91f5b26d7c9",
+        "ops": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_inpview_fp8_reconstructed_ops.cuh",
+        "ops_sha256": "5ba9b5c42507a9408d909077621c9844e4de60f1211b3f3995970c6d7d90679f"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 56,
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "bounded_half_independent_shape": [
+        16,
+        24
+      ],
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_ffn_inpview_half_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_ffn_inpview_half_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "ffn_variants",
+      "element_bytes": 2,
+      "family": "ffn_input_view",
+      "grid_formula": "ceil(W/8),ceil(H/8),2",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 3,
+      "input_roles": [
+        "state",
+        "record"
+      ],
+      "maxnreg_source_cap": 255,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "grid": [
+          15,
+          9,
+          2
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_ffwd_inpview_512",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "record": {
+          "bytes": 1048576,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "plane512"
+        }
+      },
+      "pointer_fields": {
+        "high": 8,
+        "record": 16,
+        "state": 0
+      },
+      "precision": "half",
+      "precision_scope": "independent original Half entry; full-field family chain newly admitted and unqualified",
+      "record_bytes": 1048576,
+      "reserved_fields": "zero initialized",
+      "role": 1,
+      "scalar_fields": {
+        "height": 24,
+        "origin_x": 32,
+        "origin_y": 36,
+        "width": 28
+      },
+      "source": {
+        "body": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_inpview_half_reconstructed.cuh",
+        "body_sha256": "72b9d1fa1442f04ec57bb35fbf8f2ecc9c85e9f57829c66031d82c74d64cd92f",
+        "ops": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_inpview_half_reconstructed_ops.cuh",
+        "ops_sha256": "9f61a4f4c626239a341b531b67df7c77f0daf8b6c2b0c2b81e0e5a47d5185027"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 72,
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "bounded_half_independent_shape": null,
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_ffn_proj_fp8_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_ffn_proj_fp8_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "ffn_variants",
+      "element_bytes": 1,
+      "family": "ffn_projection",
+      "grid_formula": "2*ceil(W/8),ceil(H/8),1",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 4,
+      "input_roles": [
+        "state",
+        "record",
+        "skip"
+      ],
+      "maxnreg_source_cap": 128,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "grid": [
+          30,
+          9,
+          1
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512_fp8",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "record": {
+          "bytes": 263168,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "skip": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 16,
+        "record": 24,
+        "skip": 8,
+        "state": 0
+      },
+      "precision": "fp8",
+      "precision_scope": "actual 4K native FP8 schedule",
+      "record_bytes": 263168,
+      "reserved_fields": "zero initialized",
+      "role": 2,
+      "scalar_fields": {
+        "height": 32,
+        "width": 36
+      },
+      "source": {
+        "body": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_fp8_reconstructed.cuh",
+        "body_sha256": "5322a684565f151200e18366d80b4f786f3282b83217e74bc435c029887ed404",
+        "ops": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_fp8_reconstructed_ops.cuh",
+        "ops_sha256": "8d7f183a3824e41a96c3f975e315a2ebbd22950005770acb69493b807c0e453c"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 72,
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "bounded_half_independent_shape": [
+        16,
+        24
+      ],
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_ffn_proj_half_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_ffn_proj_half_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "ffn_variants",
+      "element_bytes": 2,
+      "family": "ffn_projection",
+      "grid_formula": "2*ceil(W/8),ceil(H/8),1",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 5,
+      "input_roles": [
+        "state",
+        "record",
+        "skip"
+      ],
+      "maxnreg_source_cap": 128,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "grid": [
+          30,
+          9,
+          1
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_512",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "record": {
+          "bytes": 525312,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "skip": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 16,
+        "record": 24,
+        "skip": 8,
+        "state": 0
+      },
+      "precision": "half",
+      "precision_scope": "independent original Half entry; full-field family chain newly admitted and unqualified",
+      "record_bytes": 525312,
+      "reserved_fields": "zero initialized",
+      "role": 2,
+      "scalar_fields": {
+        "height": 32,
+        "width": 36
+      },
+      "source": {
+        "body": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_half_reconstructed.cuh",
+        "body_sha256": "86b4cbff72971122cdb10c3759af58be0b05466653f5d0fdf630a02ca5065b40",
+        "ops": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_half_reconstructed_ops.cuh",
+        "ops_sha256": "3a89d8df264ddab8cc9b8af51c037ac11ea8f45f5c8cf7fb3f345939615c7b08"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 72,
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "bounded_half_independent_shape": null,
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_ffn_proj_inpview_fp8_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_ffn_proj_inpview_fp8_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "ffn_variants",
+      "element_bytes": 1,
+      "family": "ffn_projection_input_view",
+      "grid_formula": "2*ceil(W/8),ceil(H/8),1",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 6,
+      "input_roles": [
+        "state",
+        "record",
+        "skip"
+      ],
+      "maxnreg_source_cap": 128,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "grid": [
+          30,
+          9,
+          1
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_inpview_512_fp8",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "record": {
+          "bytes": 263168,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "skip": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "plane512"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 16,
+        "record": 24,
+        "skip": 8,
+        "state": 0
+      },
+      "precision": "fp8",
+      "precision_scope": "actual 4K native FP8 schedule",
+      "record_bytes": 263168,
+      "reserved_fields": "zero initialized",
+      "role": 3,
+      "scalar_fields": {
+        "height": 32,
+        "width": 36
+      },
+      "source": {
+        "body": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed.cuh",
+        "body_sha256": "ac6f6e2c2781da7d6d3218d73a80e1697cc409848ddb870f86a8c392820e73f6",
+        "ops": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed_ops.cuh",
+        "ops_sha256": "6d8d64b9e8ba4803298acb81a63d43cf293d0740db9ff2d97ad2b292a2bbced2"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 72,
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "bounded_half_independent_shape": [
+        16,
+        24
+      ],
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_ffn_proj_inpview_half_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_ffn_proj_inpview_half_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "ffn_variants",
+      "element_bytes": 2,
+      "family": "ffn_projection_input_view",
+      "grid_formula": "2*ceil(W/8),ceil(H/8),1",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 7,
+      "input_roles": [
+        "state",
+        "record",
+        "skip"
+      ],
+      "maxnreg_source_cap": 128,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "grid": [
+          30,
+          9,
+          1
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_ffwd_proj_inpview_512",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "record": {
+          "bytes": 525312,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "skip": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "plane512"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 16,
+        "record": 24,
+        "skip": 8,
+        "state": 0
+      },
+      "precision": "half",
+      "precision_scope": "independent original Half entry; full-field family chain newly admitted and unqualified",
+      "record_bytes": 525312,
+      "reserved_fields": "zero initialized",
+      "role": 3,
+      "scalar_fields": {
+        "height": 32,
+        "width": 36
+      },
+      "source": {
+        "body": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_inpview_half_reconstructed.cuh",
+        "body_sha256": "fba4e644cf73f9d14a145ea58782a49b649a3735e78cfbb0b5cc502ff6196bc5",
+        "ops": "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_inpview_half_reconstructed_ops.cuh",
+        "ops_sha256": "baf24951a2b8484255695405315020722474d87f4200e6c01b0032855729faed"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 56,
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "bounded_half_independent_shape": null,
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_qkv_fp8_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_qkv_fp8_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "attention",
+      "element_bytes": 1,
+      "family": "qkv_attention",
+      "grid_formula": "ceil((W+sx)/8),ceil((H+sy)/8),4",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 8,
+      "input_roles": [
+        "state",
+        "record"
+      ],
+      "maxnreg_source_cap": 168,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "grid": [
+          15,
+          9,
+          4
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_qkv_512_fp8",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "record": {
+          "bytes": 917568,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 8,
+        "record": 16,
+        "state": 0
+      },
+      "precision": "fp8",
+      "precision_scope": "actual 4K native FP8 schedule",
+      "record_bytes": 917568,
+      "reserved_fields": "zero initialized",
+      "role": 4,
+      "scalar_fields": {
+        "height": 24,
+        "origin_x": 32,
+        "origin_y": 36,
+        "width": 28
+      },
+      "source": {
+        "body": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_qkv_fp8_reconstructed.cuh",
+        "body_sha256": "5199142859f885df0b969a7427cadb7261aad19c8ae5a035cfe415b8f914cf76",
+        "ops": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_qkv_fp8_reconstructed_ops.cuh",
+        "ops_sha256": "d29d450991f6d496ba0fb84d903620842b451e1991ec002d2d72c8a8f9a097a5"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 56,
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "bounded_half_independent_shape": [
+        16,
+        24
+      ],
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_qkv_half_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_qkv_half_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "attention",
+      "element_bytes": 2,
+      "family": "qkv_attention",
+      "grid_formula": "ceil((W+sx)/8),ceil((H+sy)/8),4",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 9,
+      "input_roles": [
+        "state",
+        "record"
+      ],
+      "maxnreg_source_cap": 168,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "grid": [
+          15,
+          9,
+          4
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_qkv_512",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "record": {
+          "bytes": 1704000,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 8,
+        "record": 16,
+        "state": 0
+      },
+      "precision": "half",
+      "precision_scope": "independent original Half entry; full-field family chain newly admitted and unqualified",
+      "record_bytes": 1704000,
+      "reserved_fields": "zero initialized",
+      "role": 4,
+      "scalar_fields": {
+        "height": 24,
+        "origin_x": 32,
+        "origin_y": 36,
+        "width": 28
+      },
+      "source": {
+        "body": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_qkv_half_reconstructed.cuh",
+        "body_sha256": "081e0625351f3d3f2fdc41090625e322a32e62c7b172659e6ff9c222583333ee",
+        "ops": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_qkv_half_reconstructed_ops.cuh",
+        "ops_sha256": "917150a098c9d08eb3ef0c01c1ab84c32110bebccc1fa2ba9ac2778da7c2e43a"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 72,
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "bounded_half_independent_shape": null,
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_proj_fp8_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_proj_fp8_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "attention",
+      "element_bytes": 1,
+      "family": "attention_projection",
+      "grid_formula": "2*ceil(W/8),ceil(H/8),1",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 10,
+      "input_roles": [
+        "state",
+        "record",
+        "skip"
+      ],
+      "maxnreg_source_cap": 168,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          8,
+          1
+        ],
+        "grid": [
+          30,
+          9,
+          1
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_proj_512_fp8",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "record": {
+          "bytes": 263168,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "skip": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 16,
+        "record": 24,
+        "skip": 8,
+        "state": 0
+      },
+      "precision": "fp8",
+      "precision_scope": "actual 4K native FP8 schedule",
+      "record_bytes": 263168,
+      "reserved_fields": "zero initialized",
+      "role": 5,
+      "scalar_fields": {
+        "height": 32,
+        "width": 36
+      },
+      "source": {
+        "body": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_fp8_reconstructed.cuh",
+        "body_sha256": "be737b12786bcb53a5ccf701aa7701d6b0d45d9b2625664d5434e2255bfd1e6c",
+        "ops": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_fp8_reconstructed_ops.cuh",
+        "ops_sha256": "02d32061e08400e82de7398fa04119cb75111061f14cfcb06dca180204d1aa7f"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 72,
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "bounded_half_independent_shape": [
+        16,
+        24
+      ],
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_proj_half_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_proj_half_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "attention",
+      "element_bytes": 2,
+      "family": "attention_projection",
+      "grid_formula": "2*ceil(W/8),ceil(H/8),1",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 11,
+      "input_roles": [
+        "state",
+        "record",
+        "skip"
+      ],
+      "maxnreg_source_cap": 168,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          8,
+          1
+        ],
+        "grid": [
+          30,
+          9,
+          1
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_proj_512",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "record": {
+          "bytes": 525312,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "skip": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 16,
+        "record": 24,
+        "skip": 8,
+        "state": 0
+      },
+      "precision": "half",
+      "precision_scope": "independent original Half entry; full-field family chain newly admitted and unqualified",
+      "record_bytes": 525312,
+      "reserved_fields": "zero initialized",
+      "role": 5,
+      "scalar_fields": {
+        "height": 32,
+        "width": 36
+      },
+      "source": {
+        "body": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_half_reconstructed.cuh",
+        "body_sha256": "a4d5af11799a75752d7738fd4272a988ab02679b71661edb79c6701ae471d52e",
+        "ops": "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_half_reconstructed_ops.cuh",
+        "ops_sha256": "127295e61ad586fb1411bb30d008a5107130f9061c874ed31d160be82355d744"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 72,
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "bounded_half_independent_shape": null,
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_proj_outview_fp8_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_proj_outview_fp8_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "projection_variants",
+      "element_bytes": 1,
+      "family": "attention_projection_output_view",
+      "grid_formula": "2*ceil(W/8),ceil(H/8),1",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 12,
+      "input_roles": [
+        "state",
+        "record",
+        "skip"
+      ],
+      "maxnreg_source_cap": 128,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "grid": [
+          30,
+          9,
+          1
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_proj_512_outview_fp8",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "plane512"
+        },
+        "record": {
+          "bytes": 263168,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "skip": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 16,
+        "record": 24,
+        "skip": 8,
+        "state": 0
+      },
+      "precision": "fp8",
+      "precision_scope": "actual 4K native FP8 schedule",
+      "record_bytes": 263168,
+      "reserved_fields": "zero initialized",
+      "role": 6,
+      "scalar_fields": {
+        "height": 32,
+        "width": 36
+      },
+      "source": {
+        "body": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_outview_fp8_reconstructed.cuh",
+        "body_sha256": "c7676ebd047f494c33a75642ada3d86f04b944bddb2cf91857da96a2ce1bd0c2",
+        "ops": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_outview_fp8_reconstructed_ops.cuh",
+        "ops_sha256": "3fc881a5d78c02d0a2a6be7eb1694fbed39b67763ee1310fd27b5aa4555d4c9b"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 72,
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "bounded_half_independent_shape": [
+        16,
+        24
+      ],
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_proj_outview_half_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_proj_outview_half_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "projection_variants",
+      "element_bytes": 2,
+      "family": "attention_projection_output_view",
+      "grid_formula": "2*ceil(W/8),ceil(H/8),1",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 13,
+      "input_roles": [
+        "state",
+        "record",
+        "skip"
+      ],
+      "maxnreg_source_cap": 128,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "grid": [
+          30,
+          9,
+          1
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_proj_512_outview",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "plane512"
+        },
+        "record": {
+          "bytes": 525312,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "skip": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 16,
+        "record": 24,
+        "skip": 8,
+        "state": 0
+      },
+      "precision": "half",
+      "precision_scope": "independent original Half entry; full-field family chain newly admitted and unqualified",
+      "record_bytes": 525312,
+      "reserved_fields": "zero initialized",
+      "role": 6,
+      "scalar_fields": {
+        "height": 32,
+        "width": 36
+      },
+      "source": {
+        "body": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_outview_half_reconstructed.cuh",
+        "body_sha256": "36b9a032d801a71efb9394c9252501656d114b01ec743d26c8ba3689adaef3c7",
+        "ops": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_outview_half_reconstructed_ops.cuh",
+        "ops_sha256": "6dc8effebe5d39af505308a8bc740820d14ccaf90affffda52e3a1e259a4ab06"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 80,
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "bounded_half_independent_shape": null,
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_proj_pool_fp8_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_proj_pool_fp8_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "projection_variants",
+      "element_bytes": 1,
+      "family": "attention_projection_pool",
+      "grid_formula": "2*ceil(W/8),ceil(H/8),1",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 14,
+      "input_roles": [
+        "state",
+        "record",
+        "skip"
+      ],
+      "maxnreg_source_cap": 168,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "grid": [
+          30,
+          9,
+          1
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_proj_pool_512_fp8",
+      "output_roles": [
+        "high",
+        "pool"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "pool": {
+          "bytes": "ceil(H/8)*4*ceil(W/8)*4*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "record": {
+          "bytes": 263168,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "skip": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 16,
+        "pool": 24,
+        "record": 32,
+        "skip": 8,
+        "state": 0
+      },
+      "precision": "fp8",
+      "precision_scope": "actual 4K native FP8 schedule",
+      "record_bytes": 263168,
+      "reserved_fields": "zero initialized",
+      "role": 7,
+      "scalar_fields": {
+        "height": 64,
+        "pool_height": 72,
+        "pool_width": 76,
+        "width": 68
+      },
+      "source": {
+        "body": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_pool_fp8_reconstructed.cuh",
+        "body_sha256": "95653f7fe054c5822634e96c36252accba02e3972a02cb5bf931d9ed4d0ef24b",
+        "ops": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_pool_fp8_reconstructed_ops.cuh",
+        "ops_sha256": "7eff87c8244eaa1df34a8e9a70cf491282bd0d24e0e69de95527e4312d6c6b9c"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 80,
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "bounded_half_independent_shape": [
+        16,
+        24
+      ],
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_proj_pool_half_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_proj_pool_half_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "projection_variants",
+      "element_bytes": 2,
+      "family": "attention_projection_pool",
+      "grid_formula": "2*ceil(W/8),ceil(H/8),1",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 15,
+      "input_roles": [
+        "state",
+        "record",
+        "skip"
+      ],
+      "maxnreg_source_cap": 168,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "grid": [
+          30,
+          9,
+          1
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_proj_pool_512",
+      "output_roles": [
+        "high",
+        "pool"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "pool": {
+          "bytes": "ceil(H/8)*4*ceil(W/8)*4*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "record": {
+          "bytes": 525312,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "skip": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 16,
+        "pool": 24,
+        "record": 32,
+        "skip": 8,
+        "state": 0
+      },
+      "precision": "half",
+      "precision_scope": "independent original Half entry; full-field family chain newly admitted and unqualified",
+      "record_bytes": 525312,
+      "reserved_fields": "zero initialized",
+      "role": 7,
+      "scalar_fields": {
+        "height": 64,
+        "pool_height": 72,
+        "pool_width": 76,
+        "width": 68
+      },
+      "source": {
+        "body": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_pool_half_reconstructed.cuh",
+        "body_sha256": "b00c616025cafa7b266ff15b863f914d9a47a14dcfc4ed160d7b8454bc257574",
+        "ops": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_pool_half_reconstructed_ops.cuh",
+        "ops_sha256": "b62416649c90b3cba89fde1f83db03138948921371e1878d59c0d985ade0f012"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 40,
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "bounded_half_independent_shape": null,
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_final_head_fp8_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_final_head_fp8_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "projection_variants",
+      "element_bytes": 1,
+      "family": "adapter_512_to_1024",
+      "grid_formula": "4*ceil(W/8),ceil(H/8),1",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 16,
+      "input_roles": [
+        "state",
+        "record"
+      ],
+      "maxnreg_source_cap": 168,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          8,
+          1
+        ],
+        "grid": [
+          32,
+          5,
+          1
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_final_head_512_fp8",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*1024*element_bytes",
+          "layout": "tile4x4_1024"
+        },
+        "record": {
+          "bytes": 524304,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 8,
+        "record": 16,
+        "state": 0
+      },
+      "precision": "fp8",
+      "precision_scope": "actual 4K native FP8 schedule",
+      "record_bytes": 524304,
+      "reserved_fields": "zero initialized",
+      "role": 8,
+      "scalar_fields": {
+        "height": 32,
+        "width": 36
+      },
+      "source": {
+        "body": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_final_head_fp8_reconstructed.cuh",
+        "body_sha256": "7f3079e0b5c0c9bfcaf2f0e2ad09706d7a8bf639eb8069d2794fcb143ff06c73",
+        "ops": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_final_head_fp8_reconstructed_ops.cuh",
+        "ops_sha256": "088790a75956bf598f7320c91ed6afbf86b75b80252919e5d290fb553cec0b09"
+      }
+    },
+    {
+      "abi_alignment": 8,
+      "abi_bytes": 40,
+      "block": [
+        32,
+        8,
+        1
+      ],
+      "bounded_half_independent_shape": [
+        16,
+        24
+      ],
+      "common_launcher": "dlssnr::reconstructed_c512::launch",
+      "common_signature": "std::vector<at::Tensor> launch(int64_t entry, std::vector<at::Tensor> inputs, std::vector<at::Tensor> outputs, int64_t height, int64_t width, int64_t phase)",
+      "cuda_callable": "dlssnr::c512_final_head_half_reconstructed::kernel",
+      "cuda_namespace": "dlssnr::c512_final_head_half_reconstructed",
+      "cuda_signature": "void kernel(Parameters)",
+      "donor": "projection_variants",
+      "element_bytes": 2,
+      "family": "adapter_512_to_1024",
+      "grid_formula": "4*ceil(W/8),ceil(H/8),1",
+      "host_scope": "new combined dispatcher; GPU qualification pending",
+      "id": 17,
+      "input_roles": [
+        "state",
+        "record"
+      ],
+      "maxnreg_source_cap": 168,
+      "native_launch_at_4k_field": {
+        "block": [
+          32,
+          8,
+          1
+        ],
+        "grid": [
+          32,
+          5,
+          1
+        ],
+        "origin": [
+          0,
+          0
+        ]
+      },
+      "original_symbol": "cc_split_swin_16h_final_head_512",
+      "output_roles": [
+        "high"
+      ],
+      "phases": [
+        0
+      ],
+      "physical_roles": {
+        "high": {
+          "bytes": "H*W*1024*element_bytes",
+          "layout": "tile4x4_1024"
+        },
+        "record": {
+          "bytes": 1048592,
+          "layout": "original packed per-entry record; independent K16 for Half"
+        },
+        "state": {
+          "bytes": "H*W*512*element_bytes",
+          "layout": "tile4x4_512"
+        }
+      },
+      "pointer_fields": {
+        "high": 8,
+        "record": 16,
+        "state": 0
+      },
+      "precision": "half",
+      "precision_scope": "independent original Half entry; full-field family chain newly admitted and unqualified",
+      "record_bytes": 1048592,
+      "reserved_fields": "zero initialized",
+      "role": 8,
+      "scalar_fields": {
+        "height": 32,
+        "width": 36
+      },
+      "source": {
+        "body": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_final_head_half_reconstructed.cuh",
+        "body_sha256": "b7f396f1c61c414e692653b4cfc7ddf99adb76aa2faa9bf4f84f80b27d3d773a",
+        "ops": "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_final_head_half_reconstructed_ops.cuh",
+        "ops_sha256": "1c0a64ad95cc854900246c9b0a945ebfb0b6705f9fe9f355f3f3f81cd534805e"
+      }
+    }
+  ],
+  "gpu": false,
+  "inputs": {
+    "assets/nr/manifest.json": "29642ee8acceb50e5f5506ff9168ccb9932677474e06f73a33be7a87877f7c32",
+    "outputs/all-kernel-cuda-reconstruction/roster.json.draft": "36e7912e65b1a9f6b30962ab00756ff1722ba739b3f347cb9c4b1db3e0008a3c",
+    "outputs/all-reconstructed-deployment-prep/c512/dispatch_template.inl.draft": "dbc992fec6bd073a13541f191a3d75cc97d5bd7dff0577e65bc7209c7c1b2e79",
+    "outputs/c512-ffn-cuda-reconstruction/build-draft/run-v1/build.json": "36693ecc14bc3408e68222de419e59a06049e93e5f3b4374b5b462ac1114fd7d",
+    "outputs/c512-ffn-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_reconstructed.cuh": "59f01dbe878309e94f4673fc1f2f2be36b33a6c7e8e1b88697ad008226de49a4",
+    "outputs/c512-ffn-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_reconstructed_ops.cuh": "571ca24dd306ed4aae7316d6cdeb92d25447462f3a4511f97510b75422b8aff3",
+    "outputs/c512-ffn-half-cuda-reconstruction/build-draft/run-v1/build.json": "9a9ce3b9039090ca661efaa189752d15aea3a9d28a79f1cfa676ecdf0e5abb26",
+    "outputs/c512-ffn-half-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_half_reconstructed.cuh": "a8ba9138f0b6999e2d0fa94994833258dddae46301d5e51a1628473e506d28a5",
+    "outputs/c512-ffn-half-cuda-reconstruction/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_half_reconstructed_ops.cuh": "4155b5bfc3b8698522176c0be803d52d42c69b21e6d463eb2bd05696fef9453a",
+    "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/build.json": "8f034e73e4923ea8119837f4645231037e144fe42cc3012d9e1b635a14a6b640",
+    "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_inpview_fp8_reconstructed.cuh": "d7122f4f068f83f6a5ef553e82d49f0845007b79fcba1316cdf8a91f5b26d7c9",
+    "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_inpview_fp8_reconstructed_ops.cuh": "5ba9b5c42507a9408d909077621c9844e4de60f1211b3f3995970c6d7d90679f",
+    "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_inpview_half_reconstructed.cuh": "72b9d1fa1442f04ec57bb35fbf8f2ecc9c85e9f57829c66031d82c74d64cd92f",
+    "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_inpview_half_reconstructed_ops.cuh": "9f61a4f4c626239a341b531b67df7c77f0daf8b6c2b0c2b81e0e5a47d5185027",
+    "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_fp8_reconstructed.cuh": "5322a684565f151200e18366d80b4f786f3282b83217e74bc435c029887ed404",
+    "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_fp8_reconstructed_ops.cuh": "8d7f183a3824e41a96c3f975e315a2ebbd22950005770acb69493b807c0e453c",
+    "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_half_reconstructed.cuh": "86b4cbff72971122cdb10c3759af58be0b05466653f5d0fdf630a02ca5065b40",
+    "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_half_reconstructed_ops.cuh": "3a89d8df264ddab8cc9b8af51c037ac11ea8f45f5c8cf7fb3f345939615c7b08",
+    "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed.cuh": "ac6f6e2c2781da7d6d3218d73a80e1697cc409848ddb870f86a8c392820e73f6",
+    "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_inpview_fp8_reconstructed_ops.cuh": "6d8d64b9e8ba4803298acb81a63d43cf293d0740db9ff2d97ad2b292a2bbced2",
+    "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_inpview_half_reconstructed.cuh": "fba4e644cf73f9d14a145ea58782a49b649a3735e78cfbb0b5cc502ff6196bc5",
+    "outputs/c512-ffn-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_ffn_proj_inpview_half_reconstructed_ops.cuh": "baf24951a2b8484255695405315020722474d87f4200e6c01b0032855729faed",
+    "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/build.json": "c2efd7ffc8b7c5754cde96a39c86772a52194c6ba5fc6231cdc6ae905faefb25",
+    "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_final_head_fp8_reconstructed.cuh": "7f3079e0b5c0c9bfcaf2f0e2ad09706d7a8bf639eb8069d2794fcb143ff06c73",
+    "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_final_head_fp8_reconstructed_ops.cuh": "088790a75956bf598f7320c91ed6afbf86b75b80252919e5d290fb553cec0b09",
+    "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_final_head_half_reconstructed.cuh": "b7f396f1c61c414e692653b4cfc7ddf99adb76aa2faa9bf4f84f80b27d3d773a",
+    "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_final_head_half_reconstructed_ops.cuh": "1c0a64ad95cc854900246c9b0a945ebfb0b6705f9fe9f355f3f3f81cd534805e",
+    "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_outview_fp8_reconstructed.cuh": "c7676ebd047f494c33a75642ada3d86f04b944bddb2cf91857da96a2ce1bd0c2",
+    "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_outview_fp8_reconstructed_ops.cuh": "3fc881a5d78c02d0a2a6be7eb1694fbed39b67763ee1310fd27b5aa4555d4c9b",
+    "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_outview_half_reconstructed.cuh": "36b9a032d801a71efb9394c9252501656d114b01ec743d26c8ba3689adaef3c7",
+    "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_outview_half_reconstructed_ops.cuh": "6dc8effebe5d39af505308a8bc740820d14ccaf90affffda52e3a1e259a4ab06",
+    "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_pool_fp8_reconstructed.cuh": "95653f7fe054c5822634e96c36252accba02e3972a02cb5bf931d9ed4d0ef24b",
+    "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_pool_fp8_reconstructed_ops.cuh": "7eff87c8244eaa1df34a8e9a70cf491282bd0d24e0e69de95527e4312d6c6b9c",
+    "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_pool_half_reconstructed.cuh": "b00c616025cafa7b266ff15b863f914d9a47a14dcfc4ed160d7b8454bc257574",
+    "outputs/c512-projection-variants-cuda-host/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_pool_half_reconstructed_ops.cuh": "b62416649c90b3cba89fde1f83db03138948921371e1878d59c0d985ade0f012",
+    "outputs/c512-qkv-phase-admission/build-draft/run-v1/build.json": "a1fcff06e8ee7bb82f766410cdd24608a717a8b0ce2085df0bdf2f39f0e61c16",
+    "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_fp8_reconstructed.cuh": "be737b12786bcb53a5ccf701aa7701d6b0d45d9b2625664d5434e2255bfd1e6c",
+    "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_fp8_reconstructed_ops.cuh": "02d32061e08400e82de7398fa04119cb75111061f14cfcb06dca180204d1aa7f",
+    "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_half_reconstructed.cuh": "a4d5af11799a75752d7738fd4272a988ab02679b71661edb79c6701ae471d52e",
+    "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_proj_half_reconstructed_ops.cuh": "127295e61ad586fb1411bb30d008a5107130f9061c874ed31d160be82355d744",
+    "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_qkv_fp8_reconstructed.cuh": "5199142859f885df0b969a7427cadb7261aad19c8ae5a035cfe415b8f914cf76",
+    "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_qkv_fp8_reconstructed_ops.cuh": "d29d450991f6d496ba0fb84d903620842b451e1991ec002d2d72c8a8f9a097a5",
+    "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_qkv_half_reconstructed.cuh": "081e0625351f3d3f2fdc41090625e322a32e62c7b172659e6ff9c222583333ee",
+    "outputs/c512-qkv-phase-admission/build-draft/run-v1/overlay/csrc/kernel_impl/c512_qkv_half_reconstructed_ops.cuh": "917150a098c9d08eb3ef0c01c1ab84c32110bebccc1fa2ba9ac2778da7c2e43a",
+    "profile/trunk-nsys-encoder-id4-4k-private/analysis/kernel-attribution-v2.json": "0a9bdc307fa87fdb3e39b51b85d8bd281d89cd053adb3ab5aec121a0fed583e7"
+  },
+  "limits": [
+    "Compiled donor identity does not qualify this new host dispatcher; root must build and check all boundaries/replays/guards.",
+    "Full-field Half attention phases, views and pooled boundary are new integration admission. Independent Half pilot success is not full Half network qualification.",
+    "Only68x120 C512 field and36x60 adapter field are admitted here; arbitrary720p/1080p shapes require a separate address/guard admission.",
+    "The original final_head_512 is a512-to1024 adapter, not the renderer output.",
+    "All raw caller-owned buffers and records must outlive graph use; prepare is outside capture; no conversion/allocation/record preparation is in launch.",
+    "Cap168 plain FP8 FFN is the baseline object; maxnreg128 diagnostic remains separate.",
+    "The full route must include both view boundaries and the pooled adapter; no fallback to installed computation is provided."
+  ],
+  "scope": "18 precision-specific module4 entries; all65 original 4K FP8 C512 calls share9 family configurations. No legacy/nativeDriver candidate calls.",
+  "shared_helper_identical_except_namespace": [
+    {
+      "entries": [
+        4,
+        6
+      ],
+      "sha256": "8c4e38fef8a8597ffbba43d2bcb9470732c47810ef999880830fb4e7f74170de"
+    },
+    {
+      "entries": [
+        5,
+        7
+      ],
+      "sha256": "8dac6d439183e6b6f3d71315ac8ac07d91c36186b2999b2159cbcd6054fae4b7"
+    }
+  ],
+  "status": "CPU_GENERATED_INTEGRATION_DRAFT"
+}

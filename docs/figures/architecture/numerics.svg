@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="965" viewBox="0 0 1440 965" role="img" aria-labelledby="title desc">
+<title id="title">Numerical primitives and training precision</title><desc id="desc">Exact formulas below describe the pure-PyTorch training implementation; deployment additionally has precision-specific packing and rounding.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="context-stroke"/></marker></defs>
+<rect width="1440" height="100%" fill="#ffffff"/>
+<text x="42" y="45" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="29" font-weight="650" text-anchor="start">Numerical primitives and training precision</text>
+<text x="42" y="77" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Exact formulas below describe the pure-PyTorch training implementation; deployment additionally has precision-specific packing and rounding.</text>
+<rect x="44" y="120" width="654" height="195" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="59" y="149" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Piecewise activation</text>
+<text x="59" y="174" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">b = clamp(x, −4, 4)</text>
+<text x="59" y="196" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">a = −0.055908203125 × |b| + 0.447265625</text>
+<text x="59" y="218" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">f(x) = x × (b × a + 0.89453125)</text>
+<text x="59" y="240" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Evaluate in FP32, then cast back to input dtype.</text>
+<text x="59" y="262" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Despite its source name, this is not standard SiLU.</text>
+<rect x="728" y="120" width="668" height="195" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
+<text x="743" y="149" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Per-head L2 normalization</text>
+<text x="743" y="174" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">normalize(v) = v / max(||v||₂, 1e−12)</text>
+<text x="743" y="196" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Reduce across 32 channels for Q and K separately.</text>
+<text x="743" y="218" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Compute the norm/division in FP32, then cast back.</text>
+<text x="743" y="240" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">No learned LayerNorm gain or bias in this operation.</text>
+<text x="44" y="365" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Surrogate exponential: z = clamp(a × x + b, lo, hi); E = E₀ × exp((z − b) × s × ln 2)</text>
+<rect x="44" y="391" width="654" height="179" rx="12" fill="#f3eefb" stroke="#7750aa" stroke-width="1.5"/>
+<text x="59" y="420" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Local windows</text>
+<text x="59" y="445" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">a = 0.044921875; b = 1.30078125</text>
+<text x="59" y="467" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">lo = 1.03125; hi = 1.5693359375</text>
+<text x="59" y="489" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">s = 32; E₀ = 0.025390625</text>
+<text x="59" y="511" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Normalize each 64-key row after evaluation.</text>
+<rect x="728" y="391" width="668" height="179" rx="12" fill="#f3eefb" stroke="#7750aa" stroke-width="1.5"/>
+<text x="743" y="420" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Global attention</text>
+<text x="743" y="445" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">a = 0.08953857421875; b = 1.708984375</text>
+<text x="743" y="467" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">lo = 1.439453125; hi = 1.9775390625</text>
+<text x="743" y="489" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">s = 16; E₀ = 0.083984375</text>
+<text x="743" y="511" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Correct denominator for zero-padded keys.</text>
+<rect x="44" y="620" width="654" height="215" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="59" y="649" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Precision and publication</text>
+<text x="59" y="674" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">FP32: FP32 matrix operands and floating operations.</text>
+<text x="59" y="696" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">BF16: BF16 matrix operands and working publications.</text>
+<text x="59" y="718" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">FP32 masters are recommended for both modes.</text>
+<text x="59" y="740" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Norms, exp, sums and residual arithmetic use FP32</text>
+<text x="59" y="762" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">intermediates; casts retain autograd to the masters.</text>
+<rect x="728" y="620" width="668" height="215" rx="12" fill="#fff5e5" stroke="#b86910" stroke-width="1.5"/>
+<text x="743" y="649" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Checkpointing is a memory schedule</text>
+<text x="743" y="674" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">checkpoint_blocks=True enables non-reentrant stage</text>
+<text x="743" y="696" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">checkpointing while gradients are enabled.</text>
+<text x="743" y="718" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Backward recomputes stage internals instead of</text>
+<text x="743" y="740" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">retaining every eager intermediate; no-grad bypasses it.</text>
+<text x="743" y="762" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">It does not define a task loss or training procedure.</text>
+<text x="44" y="887" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Pointwise linear layers mix channels at each pixel/token; pooling changes spatial size, and upsampling repeats rows and columns.</text>
+<text x="44" y="945" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">DLSSNR-PyTorch · implemented logical graph · source and shape ledger: architecture/source-map.json</text>
+</svg>

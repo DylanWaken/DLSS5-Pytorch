@@ -1,0 +1,50 @@
+# C256 direct publication experiment
+
+This is a private, uncompiled experiment. It changes the internal activation representation and its matching weight caches. It has no public selector, policy, model hook, speed result, or new GPU numerical result. It is separate from scalar reciprocal/rsqrt changes, pack-four conversion changes, and the frozen v36 integration plan.
+
+The original rolling C256 kernel repeatedly moves published accumulator bytes across lanes before the next tensor instruction. The proposed representation keeps those bytes where the accumulator already produces them. It uses the existing C32 permutation `P = [0,1,8,9,2,3,10,11,4,5,12,13,6,7,14,15]` independently inside every K16 group. Both activation fragments and weights must use P. The K32 instruction sequence remains ascending, but products inside each K16 are permuted; source-coordinate agreement alone cannot prove numerical equivalence.
+
+The initial input gather changes from one four-byte load to two two-byte loads for packed input. Direct C publication removes its indexed shuffles. Q and K retain the original normalization tree before publication. Probabilities retain the original denominator tree before publication. V uses the matching MOVM/XOR4/byte-permutation transpose so PV sees the same permuted physical keys. The seven shared-memory barriers, residual initialization, Half arithmetic, scalar helpers, output publication and raw-output stores remain unchanged. The first draft deliberately retains the old two-conversion-plus-OR packing expression.
+
+The source prediction is 432→48 indexed shuffles per warp/window, plus 16 new butterfly shuffles. This requires compilation confirmation. The packed input tradeoff is 16 U32 gathers becoming 32 U16 gathers per warp. Register pressure, scheduling, memory requests and latency could move either way; counts are not timing estimates.
+
+## Cache contract
+
+`_prepare_window_rotated_weight(weight)` accepts CUDA uint8 `[N,K]` or `[groups,N,K]` with positive N/K multiples of 32 and the existing SM89+ checks. It returns two independent slices: canonical snapshot in slice0, P-rotated native B placement in slice1. Preparation stays outside resident inference timing.
+
+`_inference_window_block_rotated` accepts the same ten tensor arguments and phase/packed/raw flags as the old rolling operator, but requires these new caches. It is C256 only, packed output only, with Half or packed input and optional raw Half output. It uses the current CUDA stream and device guard; noncontiguous or misaligned arguments receive the existing capture-compatible contiguous/alignment copies. There is no autograd or public fallback.
+
+The cache tensor shapes are equal to the unrotated cache shapes. Shapes cannot validate the semantic contents. The separate private preparation API and caller provenance are therefore part of the contract; passing an old unrotated cache is invalid. No device tag or Python kernel selector was added.
+
+| Operand | Groups × N × K | Slice1 bytes |
+|---|---:|---:|
+| W1 | 8 × 128 × 256 | 262,144 |
+| W2 | 8 × 32 × 128 | 32,768 |
+| W3 | 1 × 256 × 256 | 65,536 |
+| QKV | 1 × 768 × 256 | 196,608 |
+| Projection | 1 × 256 × 256 | 65,536 |
+
+One block has 622,592 bytes in each cache slice. QKV retains head-major output rows; W1/W2 pack each expert independently. Residual inputs and the retained FFN skip remain canonical.
+
+## Completed CPU evidence
+
+The coordinate proof checks 16,384 shared-A bytes, 622,592 cache bytes, 155,648 B words, and 16,384 bytes each for QK K and PV V. The unchanged normalization helper bodies match. The recovered checkpoint audit goes further: every proposed cache byte equals the original packed record byte for all 16 C256 blocks (15–22 and 48–55), all five operands and every W1/W2 group. That is 80 operands and 9,961,472 compared bytes, with zero mismatches. The audit preserves signed-zero code bits and verifies the checkpoint stage hashes; the recovered weights contain no E4 NaN codes. Normal and optimized Python reproduce the same audit hash.
+
+The kernel generator reverses its narrow substitutions back to the exact current rolling source. Added preparation CUDA definitions are in `kernel_impl`; launchers contain the host hooks and launches; `torch_api` contains bindings and the no-autograd wrapper. Nine source/fixture CPU tests and 20 retained-output benchmark tests pass in normal and optimized Python. Negative controls cover cache/input offsets, removed barriers, wrong V shuffles, bad final prefetch bounds, stale graph outputs, prior operand mutation, overlapping outputs and incomplete timing checks.
+
+## Unexecuted numerical and runtime gates
+
+The separate `probe_fp8_rotation_k256.py` plans 313 cases: nine K256 adversarial cases plus all 304 real grouped matrices from the 16 blocks. Fixtures include every incoming Half bit pattern, cancellation, midpoint neighbors, signed zero and saturation. The real weights use deterministic synthetic E4 operands and Half seeds; they are not captured upstream activations.
+
+With explicit `--execute`, the probe forces unchanged ordinary GEMM variant1 and restores the prior override in `finally`. It compares the complete contraction and every K32 intermediate Half accumulator, and checks full contractions against the explicit K32 chain. It checks immutable inputs and pins the binary, source and checkpoint. On disagreement it writes the exact operands, seed bits and outputs to a fresh counterexample file. Promotion stops. The counterexample must then be adjudicated against original native operands/results: disagreement with the old canonical reference does not by itself establish which representation matches the DLL. No tolerance relaxation is allowed.
+
+The separate GPU test draft has 320 planned cases: cache-byte/snapshot checks; all 16 real blocks, all phases and all four input/raw-output contracts; shifted tails and batch2; signed-zero/nonfinite publication controls; empty and invalid arguments; autograd rejection; and offset/noncontiguous operands under capture. Three captured output pairs must occupy disjoint byte intervals. Initial and three changed-input replays poison every retained output and check operand snapshots and storage guards. None has run.
+
+The paired resident benchmark compares old rolling with canonical caches against rotated with its own caches. Optional public cached dispatch receives the canonical cache. Both caches are prepared once outside timing and remain resident for both paths. Every graph invocation's output is retained and checked, the actual input changes in order 1→2→0, and each nonempty output must change from its previous reference. Timing uses balanced seeded order and its reverse, with a fresh independent composed oracle after timing. The reported budget covers one graph's retained outputs, not scratch or caches. This is a component timing protocol, not DLL physical-I/O timing or whole-model timing.
+
+## Required next gates
+
+1. Independently review the frozen manifest and source/coordinate/numerical-probe contracts.
+2. If root authorizes, compile only the isolated object first. Check all four IO symbols: intended indexed-shuffle removal, new V butterfly path, unchanged QMMA counts and ascending K loops, unchanged normalization/denominator instructions and output arithmetic, seven barriers, resources and spills. Keep the existing rolling kernel as a separately compiled control.
+3. Use a root-owned exclusive GPU slot for the numerical probe before promotion, then the full operator tests, sanitizer runs and native adjudication where needed. Diagnostic whole-network stage traces remain an additional debugging/native-equivalence gate, not a completed claim of this draft.
+4. Only after byte-exact gates pass, run resident paired timings, original native physical-I/O comparisons, fresh NCU/SASS and complete-model checks. Neither DLL speed nor the 85% hardware-throughput goal is satisfied by this draft.

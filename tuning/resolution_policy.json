@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "bounds": {"width_min": 1280, "width_max": 3840, "height_min": 720, "height_max": 2160},
+  "distance": "normalized_squared_2d_lower_width_height_config_ties",
+  "unmeasured_config_id": -1,
+  "anchors": [],
+  "admissions": []
+}

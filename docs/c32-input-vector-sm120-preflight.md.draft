@@ -1,0 +1,20 @@
+# C32 input-vector experiment: first SM120 object review
+
+The intended input-delivery change survives compilation. **All four private variants contain eight64-bit input loads,24 unpredicated butterfly shuffles and16 byte-permute instructions before the first tensor MMA.** The corresponding v35 packed-input rotated kernels contain32 scalar16-bit input loads. This confirms emitted instructions, not improved latency: no candidate GPU execution or timing has happened.
+
+The new artifact is the isolated SM120 object from `outputs/v36-compile-preflight/run-20261003T121103_685626Z/objects/csrc/kernel_launcher/block32_input_vector.obj`, SHA256 `83e7c6fe706ae020ab441275a5108e9bed169bf03b28ff380e2234913319ed7e`. It is not a linked or installed v36 binary. The incumbent is archived v35 binary `44905141…2166`; exact symbol names, source/output hashes, extraction commands and per-variant PCs are in [object-sm120-preflight-review.json.draft](../outputs/c32-operand-delivery-v35/object-sm120-preflight-review.json.draft).
+
+| Output storage | Raw endpoint | v35 registers | New registers | v35 static instructions | New static instructions |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Half | No | 140 | 144 | 4595 | 4626 |
+| Half | Yes | 140 | 140 | 4865 | 4890 |
+| Packed E4M3 | No | 140 | 140 | 4631 | 4655 |
+| Packed E4M3 | Yes | 140 | 140 | 4833 | 4858 |
+
+All variants report zero static shared memory, local memory and stack. The Half/no-raw variant adds four registers; actual allocation granularity and occupancy still need runtime profiling. Packed/no-raw, the principal ordinary route, keeps140 registers and adds24 static instructions. Fewer memory instructions do not imply fewer total instructions.
+
+The eight input loads occur at PCs`0x720,0xbe0,0x1010,0x1410,0x1810,0x1c10,0x2000,0x23f0`. The first load is predicated on token validity after its register pair is zero-initialized. Its three shuffles execute without that predicate. Each later conditional load reconverges with `BSYNC.RECONVERGENT` before the first shuffle; invalid token groups retain zeros and still participate. For example, the second load at`0xbe0` reconverges at`0xbf0`, then shuffles at`0xc00,0xc30,0xcb0`. The optional raw-skip branch follows the transpose, preserving the reviewed lane-participation requirement.
+
+The arithmetic body and ordinary output policy are reused from the unchanged source. Every matched variant has identical arithmetic-opcode counts:256 tensor MMA instructions,416 Half multiplies,352 Half FMAs,152 Half adds plus33 scalar-Half adds, the same conversion/publication counts and the same reciprocal/reciprocal-square-root counts. The packed variants retain32 `STG.E.U16` publication stores; requesting raw output adds32 ordinary32-bit stores. Half output retains32 or64 ordinary32-bit stores. The experiment has not selected the separately parked packed-output-store policy.
+
+These are source-preservation and emitted-instruction checks. Register allocation and scheduling differ, so this review does **not** claim identical machine instruction sequences or a complete register-dataflow equivalence proof. The independent byte-coordinate proof and later GPU equality/capture/memcheck tests remain required. The v12 NCU input-stall samples remain historical motivation; they are not measurements of this object or the current v35 path. A fresh paired benchmark and NCU profile must establish whether the coalesced loads outweigh the shuffle/address overhead.

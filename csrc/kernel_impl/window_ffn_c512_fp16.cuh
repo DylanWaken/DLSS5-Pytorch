@@ -1,0 +1,3268 @@
+// Equivalent CUDA C++ reconstruction of the original C512 FFN half entry.
+// Original scalar/control spelling retained; this is not the historical C++ source.
+#pragma once
+#include "window_ffn_c512_abi_fp16.cuh"
+
+namespace dlssnr::reconstructed::window_ffn_c512_fp16
+{
+__global__ __maxnreg__(255) void window_ffn_c512_fp16(Parameters r_Parameters)
+{
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+	__shared__ __align__(512) unsigned char s_SharedStorage[8208];
+	bool r_bPtxPredicate1, r_bPtxPredicate2, r_bPtxPredicate3, r_bPtxPredicate4, r_bPtxPredicate5,
+		r_bPtxPredicate6, r_bPtxPredicate7, r_bPtxPredicate8, r_bPtxPredicate9, r_bPtxPredicate10,
+		r_bPtxPredicate11, r_bPtxPredicate12;
+	bool r_bPtxPredicate13, r_bPtxPredicate14, r_bPtxPredicate15, r_bPtxPredicate16, r_bPtxPredicate17,
+		r_bPtxPredicate18, r_bPtxPredicate19, r_bPtxPredicate20, r_bPtxPredicate21, r_bPtxPredicate22,
+		r_bPtxPredicate23, r_bPtxPredicate24;
+	bool r_bPtxPredicate25, r_bPtxPredicate26, r_bPtxPredicate27, r_bPtxPredicate28, r_bPtxPredicate29,
+		r_bPtxPredicate30, r_bPtxPredicate31, r_bPtxPredicate32, r_bPtxPredicate33, r_bPtxPredicate34,
+		r_bPtxPredicate35, r_bPtxPredicate36;
+	bool r_bPtxPredicate37, r_bPtxPredicate38, r_bPtxPredicate39, r_bPtxPredicate40, r_bPtxPredicate41,
+		r_bPtxPredicate42, r_bPtxPredicate43, r_bPtxPredicate44, r_bPtxPredicate45, r_bPtxPredicate46,
+		r_bPtxPredicate47, r_bPtxPredicate48;
+	bool r_bPtxPredicate49, r_bPtxPredicate50, r_bPtxPredicate51, r_bPtxPredicate52, r_bPtxPredicate53;
+	uint32_t r_HeightBits, r_WidthBits, r_CtaZ, r_PtxRegister4, r_PtxRegister5, r_HeightDiv4Bits,
+		r_WidthDiv4Bits, r_ThreadY, r_PtxRegister9, r_PtxRegister10, r_PtxRegister11, r_PtxRegister12;
+	uint32_t r_PtxRegister13, r_PtxRegister14, r_PtxRegister15, r_PtxRegister16, r_PtxRegister17,
+		r_PtxRegister18, r_PtxRegister19, r_PtxRegister20, r_PtxRegister21, r_PtxRegister22, r_PtxRegister23,
+		r_PtxRegister24;
+	uint32_t r_PtxRegister25, r_PtxRegister26, r_PtxRegister27, r_CtaX, r_CtaY, r_HeightSignBits,
+		r_HeightDiv4Bias, r_HeightBiasedForDiv4, r_WidthSignBits, r_WidthDiv4Bias, r_WidthBiasedForDiv4,
+		r_ThreadX;
+	uint32_t r_PtxRegister37, r_PtxRegister38, r_PtxRegister39, r_PtxRegister40, r_BlockSizeX, r_BlockSizeY,
+		r_Float32BitsAtPtx48R43, r_LaneIndexAtPtx62, r_LaneIndexAtPtx73, r_LaneIndexAtPtx82,
+		r_LaneIndexAtPtx91, r_LaneIndexAtPtx99;
+	uint32_t r_LaneIndexAtPtx108, r_LaneIndexAtPtx117, r_LaneIndexAtPtx126, r_PtxRegister52, r_PtxRegister53,
+		r_PtxRegister54, r_PtxRegister55, r_PtxRegister56, r_PtxRegister57, r_PtxRegister58, r_PtxRegister59,
+		r_PtxRegister60;
+	uint32_t r_PtxRegister61, r_PtxRegister62, r_PtxRegister63, r_PtxRegister64, r_PtxRegister65,
+		r_PtxRegister66, r_PtxRegister67, r_PtxRegister68, r_PtxRegister69, r_LaneIndexAtPtx198,
+		r_PtxRegister71, r_PtxRegister72;
+	uint32_t r_PtxRegister73, r_PtxRegister74, r_PtxRegister75, r_PtxRegister76, r_PtxRegister77,
+		r_PtxRegister78, r_PtxRegister79, r_PtxRegister80, r_PtxRegister81, r_PtxRegister82, r_PtxRegister83,
+		r_PtxRegister84;
+	uint32_t r_PtxRegister85, r_PtxRegister86, r_PtxRegister87, r_PtxRegister88, r_PtxRegister89,
+		r_LaneIndexAtPtx261, r_PtxRegister91, r_PackedHalf2AtPtx50R92, r_PtxRegister93, r_PtxRegister94,
+		r_PtxRegister95, r_PtxRegister96;
+	uint32_t r_PtxRegister97, r_PtxRegister98, r_PtxRegister99, r_PtxRegister100, r_PtxRegister101,
+		r_PtxRegister102, r_PtxRegister103, r_PtxRegister104, r_PtxRegister105, r_PtxRegister106,
+		r_PtxRegister107, r_PtxRegister108;
+	uint32_t r_PtxRegister109, r_PtxRegister110, r_PtxRegister111, r_PtxRegister112, r_PtxRegister113,
+		r_PtxRegister114, r_LaneIndexAtPtx412, r_PtxRegister116, r_PtxRegister117, r_PtxRegister118,
+		r_PtxRegister119, r_PtxRegister120;
+	uint32_t r_PtxRegister121, r_PtxRegister122, r_PtxRegister123, r_PtxRegister124, r_PtxRegister125,
+		r_PtxRegister126, r_PtxRegister127, r_PtxRegister128, r_PtxRegister129, r_LaneIndexAtPtx467,
+		r_PtxRegister131, r_PtxRegister132;
+	uint32_t r_PtxRegister133, r_PtxRegister134, r_PtxRegister135, r_PtxRegister136, r_PtxRegister137,
+		r_PtxRegister138, r_LaneIndexAtPtx479, r_PtxRegister140, r_LaneIndexAtPtx487, r_PtxRegister142,
+		r_LaneIndexAtPtx496, r_PtxRegister144;
+	uint32_t r_LaneIndexAtPtx505, r_PtxRegister146, r_LaneIndexAtPtx514, r_PtxRegister148,
+		r_LaneIndexAtPtx523, r_PtxRegister150, r_LaneIndexAtPtx532, r_PtxRegister152, r_LaneIndexAtPtx541,
+		r_PtxRegister154, r_MmaAHalf2WordAtPtx484R155, r_MmaAHalf2WordAtPtx484R156;
+	uint32_t r_MmaAHalf2WordAtPtx484R157, r_MmaAHalf2WordAtPtx484R158, r_MmaAHalf2WordAtPtx493R159,
+		r_MmaAHalf2WordAtPtx493R160, r_MmaAHalf2WordAtPtx493R161, r_MmaAHalf2WordAtPtx493R162,
+		r_MmaAccumulatorHalf2WordAtPtx550R163, r_MmaAccumulatorHalf2WordAtPtx550R164,
+		r_MmaAccumulatorHalf2WordAtPtx557R165, r_MmaAccumulatorHalf2WordAtPtx557R166,
+		r_MmaAccumulatorHalf2WordAtPtx578R167, r_MmaAccumulatorHalf2WordAtPtx578R168;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx585R169, r_MmaAccumulatorHalf2WordAtPtx585R170,
+		r_MmaAccumulatorHalf2WordAtPtx606R171, r_MmaAccumulatorHalf2WordAtPtx606R172,
+		r_MmaAccumulatorHalf2WordAtPtx613R173, r_MmaAccumulatorHalf2WordAtPtx613R174,
+		r_MmaAccumulatorHalf2WordAtPtx634R175, r_MmaAccumulatorHalf2WordAtPtx634R176,
+		r_MmaAccumulatorHalf2WordAtPtx641R177, r_MmaAccumulatorHalf2WordAtPtx641R178,
+		r_MmaAHalf2WordAtPtx502R179, r_MmaAHalf2WordAtPtx502R180;
+	uint32_t r_MmaAHalf2WordAtPtx502R181, r_MmaAHalf2WordAtPtx502R182, r_MmaAHalf2WordAtPtx511R183,
+		r_MmaAHalf2WordAtPtx511R184, r_MmaAHalf2WordAtPtx511R185, r_MmaAHalf2WordAtPtx511R186,
+		r_MmaAccumulatorHalf2WordAtPtx662R187, r_MmaAccumulatorHalf2WordAtPtx662R188,
+		r_MmaAccumulatorHalf2WordAtPtx669R189, r_MmaAccumulatorHalf2WordAtPtx669R190,
+		r_MmaAccumulatorHalf2WordAtPtx690R191, r_MmaAccumulatorHalf2WordAtPtx690R192;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx697R193, r_MmaAccumulatorHalf2WordAtPtx697R194,
+		r_MmaAccumulatorHalf2WordAtPtx718R195, r_MmaAccumulatorHalf2WordAtPtx718R196,
+		r_MmaAccumulatorHalf2WordAtPtx725R197, r_MmaAccumulatorHalf2WordAtPtx725R198,
+		r_MmaAccumulatorHalf2WordAtPtx746R199, r_MmaAccumulatorHalf2WordAtPtx746R200,
+		r_MmaAccumulatorHalf2WordAtPtx753R201, r_MmaAccumulatorHalf2WordAtPtx753R202,
+		r_MmaAHalf2WordAtPtx520R203, r_MmaAHalf2WordAtPtx520R204;
+	uint32_t r_MmaAHalf2WordAtPtx520R205, r_MmaAHalf2WordAtPtx520R206, r_MmaAHalf2WordAtPtx529R207,
+		r_MmaAHalf2WordAtPtx529R208, r_MmaAHalf2WordAtPtx529R209, r_MmaAHalf2WordAtPtx529R210,
+		r_MmaAccumulatorHalf2WordAtPtx774R211, r_MmaAccumulatorHalf2WordAtPtx774R212,
+		r_MmaAccumulatorHalf2WordAtPtx781R213, r_MmaAccumulatorHalf2WordAtPtx781R214,
+		r_MmaAccumulatorHalf2WordAtPtx802R215, r_MmaAccumulatorHalf2WordAtPtx802R216;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx809R217, r_MmaAccumulatorHalf2WordAtPtx809R218,
+		r_MmaAccumulatorHalf2WordAtPtx830R219, r_MmaAccumulatorHalf2WordAtPtx830R220,
+		r_MmaAccumulatorHalf2WordAtPtx837R221, r_MmaAccumulatorHalf2WordAtPtx837R222,
+		r_MmaAccumulatorHalf2WordAtPtx858R223, r_MmaAccumulatorHalf2WordAtPtx858R224,
+		r_MmaAccumulatorHalf2WordAtPtx865R225, r_MmaAccumulatorHalf2WordAtPtx865R226,
+		r_MmaAHalf2WordAtPtx538R227, r_MmaAHalf2WordAtPtx538R228;
+	uint32_t r_MmaAHalf2WordAtPtx538R229, r_MmaAHalf2WordAtPtx538R230, r_MmaAHalf2WordAtPtx547R231,
+		r_MmaAHalf2WordAtPtx547R232, r_MmaAHalf2WordAtPtx547R233, r_MmaAHalf2WordAtPtx547R234,
+		r_MmaAccumulatorHalf2WordAtPtx886R235, r_MmaAccumulatorHalf2WordAtPtx886R236,
+		r_MmaAccumulatorHalf2WordAtPtx893R237, r_MmaAccumulatorHalf2WordAtPtx893R238,
+		r_MmaAccumulatorHalf2WordAtPtx914R239, r_MmaAccumulatorHalf2WordAtPtx914R240;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx921R241, r_MmaAccumulatorHalf2WordAtPtx921R242,
+		r_MmaAccumulatorHalf2WordAtPtx942R243, r_MmaAccumulatorHalf2WordAtPtx942R244,
+		r_MmaAccumulatorHalf2WordAtPtx949R245, r_MmaAccumulatorHalf2WordAtPtx949R246,
+		r_MmaAccumulatorHalf2WordAtPtx970R247, r_MmaAccumulatorHalf2WordAtPtx970R248,
+		r_MmaAccumulatorHalf2WordAtPtx977R249, r_MmaAccumulatorHalf2WordAtPtx977R250, r_LaneIndexAtPtx1002,
+		r_LaneIndexAtPtx1010;
+	uint32_t r_LaneIndexAtPtx1019, r_LaneIndexAtPtx1028, r_LaneIndexAtPtx1037, r_LaneIndexAtPtx1046,
+		r_LaneIndexAtPtx1055, r_LaneIndexAtPtx1064, r_PtxRegister259, r_PtxRegister260, r_PtxRegister261,
+		r_PtxRegister262, r_PtxRegister263, r_PtxRegister264;
+	uint32_t r_PtxRegister265, r_PtxRegister266, r_PtxRegister267, r_PtxRegister268, r_PtxRegister269,
+		r_PtxRegister270, r_PtxRegister271, r_PtxRegister272, r_PtxRegister273, r_PtxRegister274,
+		r_PtxRegister275, r_PtxRegister276;
+	uint32_t r_PtxRegister277, r_PtxRegister278, r_PtxRegister279, r_LaneIndexAtPtx1090, r_PtxRegister281,
+		r_LaneIndexAtPtx1100, r_PtxRegister283, r_LaneIndexAtPtx1109, r_PtxRegister285, r_LaneIndexAtPtx1118,
+		r_PtxRegister287, r_LaneIndexAtPtx1127;
+	uint32_t r_PtxRegister289, r_LaneIndexAtPtx1136, r_PtxRegister291, r_LaneIndexAtPtx1145, r_PtxRegister293,
+		r_LaneIndexAtPtx1154, r_PtxRegister295, r_MmaAHalf2WordAtPtx1097R296, r_MmaAHalf2WordAtPtx1097R297,
+		r_MmaAHalf2WordAtPtx1097R298, r_MmaAHalf2WordAtPtx1097R299, r_MmaAHalf2WordAtPtx1106R300;
+	uint32_t r_MmaAHalf2WordAtPtx1106R301, r_MmaAHalf2WordAtPtx1106R302, r_MmaAHalf2WordAtPtx1106R303,
+		r_MmaAccumulatorHalf2WordAtPtx1163R304, r_MmaAccumulatorHalf2WordAtPtx1163R305,
+		r_MmaAccumulatorHalf2WordAtPtx1170R306, r_MmaAccumulatorHalf2WordAtPtx1170R307,
+		r_MmaAccumulatorHalf2WordAtPtx1191R308, r_MmaAccumulatorHalf2WordAtPtx1191R309,
+		r_MmaAccumulatorHalf2WordAtPtx1198R310, r_MmaAccumulatorHalf2WordAtPtx1198R311,
+		r_MmaAccumulatorHalf2WordAtPtx1219R312;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx1219R313, r_MmaAccumulatorHalf2WordAtPtx1226R314,
+		r_MmaAccumulatorHalf2WordAtPtx1226R315, r_MmaAccumulatorHalf2WordAtPtx1247R316,
+		r_MmaAccumulatorHalf2WordAtPtx1247R317, r_MmaAccumulatorHalf2WordAtPtx1254R318,
+		r_MmaAccumulatorHalf2WordAtPtx1254R319, r_MmaAHalf2WordAtPtx1115R320, r_MmaAHalf2WordAtPtx1115R321,
+		r_MmaAHalf2WordAtPtx1115R322, r_MmaAHalf2WordAtPtx1115R323, r_MmaAHalf2WordAtPtx1124R324;
+	uint32_t r_MmaAHalf2WordAtPtx1124R325, r_MmaAHalf2WordAtPtx1124R326, r_MmaAHalf2WordAtPtx1124R327,
+		r_MmaAccumulatorHalf2WordAtPtx1275R328, r_MmaAccumulatorHalf2WordAtPtx1275R329,
+		r_MmaAccumulatorHalf2WordAtPtx1282R330, r_MmaAccumulatorHalf2WordAtPtx1282R331,
+		r_MmaAccumulatorHalf2WordAtPtx1303R332, r_MmaAccumulatorHalf2WordAtPtx1303R333,
+		r_MmaAccumulatorHalf2WordAtPtx1310R334, r_MmaAccumulatorHalf2WordAtPtx1310R335,
+		r_MmaAccumulatorHalf2WordAtPtx1331R336;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx1331R337, r_MmaAccumulatorHalf2WordAtPtx1338R338,
+		r_MmaAccumulatorHalf2WordAtPtx1338R339, r_MmaAccumulatorHalf2WordAtPtx1359R340,
+		r_MmaAccumulatorHalf2WordAtPtx1359R341, r_MmaAccumulatorHalf2WordAtPtx1366R342,
+		r_MmaAccumulatorHalf2WordAtPtx1366R343, r_MmaAHalf2WordAtPtx1133R344, r_MmaAHalf2WordAtPtx1133R345,
+		r_MmaAHalf2WordAtPtx1133R346, r_MmaAHalf2WordAtPtx1133R347, r_MmaAHalf2WordAtPtx1142R348;
+	uint32_t r_MmaAHalf2WordAtPtx1142R349, r_MmaAHalf2WordAtPtx1142R350, r_MmaAHalf2WordAtPtx1142R351,
+		r_MmaAccumulatorHalf2WordAtPtx1387R352, r_MmaAccumulatorHalf2WordAtPtx1387R353,
+		r_MmaAccumulatorHalf2WordAtPtx1394R354, r_MmaAccumulatorHalf2WordAtPtx1394R355,
+		r_MmaAccumulatorHalf2WordAtPtx1415R356, r_MmaAccumulatorHalf2WordAtPtx1415R357,
+		r_MmaAccumulatorHalf2WordAtPtx1422R358, r_MmaAccumulatorHalf2WordAtPtx1422R359,
+		r_MmaAccumulatorHalf2WordAtPtx1443R360;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx1443R361, r_MmaAccumulatorHalf2WordAtPtx1450R362,
+		r_MmaAccumulatorHalf2WordAtPtx1450R363, r_MmaAccumulatorHalf2WordAtPtx1471R364,
+		r_MmaAccumulatorHalf2WordAtPtx1471R365, r_MmaAccumulatorHalf2WordAtPtx1478R366,
+		r_MmaAccumulatorHalf2WordAtPtx1478R367, r_MmaAHalf2WordAtPtx1151R368, r_MmaAHalf2WordAtPtx1151R369,
+		r_MmaAHalf2WordAtPtx1151R370, r_MmaAHalf2WordAtPtx1151R371, r_MmaAHalf2WordAtPtx1160R372;
+	uint32_t r_MmaAHalf2WordAtPtx1160R373, r_MmaAHalf2WordAtPtx1160R374, r_MmaAHalf2WordAtPtx1160R375,
+		r_MmaAccumulatorHalf2WordAtPtx1499R376, r_MmaAccumulatorHalf2WordAtPtx1499R377,
+		r_MmaAccumulatorHalf2WordAtPtx1506R378, r_MmaAccumulatorHalf2WordAtPtx1506R379,
+		r_MmaAccumulatorHalf2WordAtPtx1527R380, r_MmaAccumulatorHalf2WordAtPtx1527R381,
+		r_MmaAccumulatorHalf2WordAtPtx1534R382, r_MmaAccumulatorHalf2WordAtPtx1534R383,
+		r_MmaAccumulatorHalf2WordAtPtx1555R384;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx1555R385, r_MmaAccumulatorHalf2WordAtPtx1562R386,
+		r_MmaAccumulatorHalf2WordAtPtx1562R387, r_MmaAccumulatorHalf2WordAtPtx1583R388,
+		r_MmaAccumulatorHalf2WordAtPtx1583R389, r_MmaAccumulatorHalf2WordAtPtx1590R390,
+		r_MmaAccumulatorHalf2WordAtPtx1590R391, r_PtxRegister392, r_PtxRegister393, r_PtxRegister394,
+		r_PtxRegister395, r_PtxRegister396;
+	uint32_t r_PtxRegister397, r_PtxRegister398, r_PtxRegister399, r_PtxRegister400, r_PtxRegister401,
+		r_PtxRegister402, r_PtxRegister403, r_PtxRegister404, r_PtxRegister405, r_PtxRegister406,
+		r_PtxRegister407, r_PtxRegister408;
+	uint32_t r_PtxRegister409, r_PtxRegister410, r_PtxRegister411, r_PtxRegister412, r_LaneIndexAtPtx1685,
+		r_LaneIndexAtPtx1695, r_LaneIndexAtPtx1704, r_LaneIndexAtPtx1714, r_MmaBHalf2WordAtPtx1692R417,
+		r_MmaBHalf2WordAtPtx1692R418, r_MmaBHalf2WordAtPtx1692R419, r_MmaBHalf2WordAtPtx1692R420;
+	uint32_t r_MmaBHalf2WordAtPtx1711R421, r_MmaBHalf2WordAtPtx1711R422,
+		r_MmaAccumulatorHalf2WordAtPtx1723R423, r_MmaAccumulatorHalf2WordAtPtx1723R424,
+		r_MmaBHalf2WordAtPtx1711R425, r_MmaBHalf2WordAtPtx1711R426, r_MmaAccumulatorHalf2WordAtPtx1730R427,
+		r_MmaAccumulatorHalf2WordAtPtx1730R428, r_MmaBHalf2WordAtPtx1701R429, r_MmaBHalf2WordAtPtx1701R430,
+		r_PtxRegister431, r_PtxRegister432;
+	uint32_t r_PtxRegister433, r_PtxRegister434, r_MmaBHalf2WordAtPtx1701R435, r_MmaBHalf2WordAtPtx1701R436,
+		r_MmaBHalf2WordAtPtx1720R437, r_MmaBHalf2WordAtPtx1720R438, r_MmaAccumulatorHalf2WordAtPtx1751R439,
+		r_MmaAccumulatorHalf2WordAtPtx1751R440, r_PtxRegister441, r_PtxRegister442, r_PtxRegister443,
+		r_PtxRegister444;
+	uint32_t r_MmaBHalf2WordAtPtx1720R445, r_MmaBHalf2WordAtPtx1720R446,
+		r_MmaAccumulatorHalf2WordAtPtx1758R447, r_MmaAccumulatorHalf2WordAtPtx1758R448,
+		r_MmaAccumulatorHalf2WordAtPtx1779R449, r_MmaAccumulatorHalf2WordAtPtx1779R450,
+		r_MmaAccumulatorHalf2WordAtPtx1786R451, r_MmaAccumulatorHalf2WordAtPtx1786R452, r_PtxRegister453,
+		r_PtxRegister454, r_PtxRegister455, r_PtxRegister456;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx1807R457, r_MmaAccumulatorHalf2WordAtPtx1807R458, r_PtxRegister459,
+		r_PtxRegister460, r_PtxRegister461, r_PtxRegister462, r_MmaAccumulatorHalf2WordAtPtx1814R463,
+		r_MmaAccumulatorHalf2WordAtPtx1814R464, r_MmaAccumulatorHalf2WordAtPtx1835R465,
+		r_MmaAccumulatorHalf2WordAtPtx1835R466, r_MmaAccumulatorHalf2WordAtPtx1842R467,
+		r_MmaAccumulatorHalf2WordAtPtx1842R468;
+	uint32_t r_PtxRegister469, r_PtxRegister470, r_PtxRegister471, r_PtxRegister472,
+		r_MmaAccumulatorHalf2WordAtPtx1863R473, r_MmaAccumulatorHalf2WordAtPtx1863R474, r_PtxRegister475,
+		r_PtxRegister476, r_PtxRegister477, r_PtxRegister478, r_MmaAccumulatorHalf2WordAtPtx1870R479,
+		r_MmaAccumulatorHalf2WordAtPtx1870R480;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx1891R481, r_MmaAccumulatorHalf2WordAtPtx1891R482,
+		r_MmaAccumulatorHalf2WordAtPtx1898R483, r_MmaAccumulatorHalf2WordAtPtx1898R484, r_PtxRegister485,
+		r_PtxRegister486, r_PtxRegister487, r_PtxRegister488, r_MmaAccumulatorHalf2WordAtPtx1919R489,
+		r_MmaAccumulatorHalf2WordAtPtx1919R490, r_PtxRegister491, r_PtxRegister492;
+	uint32_t r_PtxRegister493, r_PtxRegister494, r_MmaAccumulatorHalf2WordAtPtx1926R495,
+		r_MmaAccumulatorHalf2WordAtPtx1926R496, r_LaneIndexAtPtx1947, r_LaneIndexAtPtx1956,
+		r_LaneIndexAtPtx1965, r_LaneIndexAtPtx1974, r_MmaBHalf2WordAtPtx1953R501,
+		r_MmaBHalf2WordAtPtx1953R502, r_MmaAccumulatorHalf2WordAtPtx1737R503,
+		r_MmaAccumulatorHalf2WordAtPtx1737R504;
+	uint32_t r_MmaBHalf2WordAtPtx1953R505, r_MmaBHalf2WordAtPtx1953R506,
+		r_MmaAccumulatorHalf2WordAtPtx1744R507, r_MmaAccumulatorHalf2WordAtPtx1744R508,
+		r_MmaBHalf2WordAtPtx1971R509, r_MmaBHalf2WordAtPtx1971R510, r_MmaAccumulatorHalf2WordAtPtx1983R511,
+		r_MmaAccumulatorHalf2WordAtPtx1983R512, r_MmaBHalf2WordAtPtx1971R513, r_MmaBHalf2WordAtPtx1971R514,
+		r_MmaAccumulatorHalf2WordAtPtx1990R515, r_MmaAccumulatorHalf2WordAtPtx1990R516;
+	uint32_t r_MmaBHalf2WordAtPtx1962R517, r_MmaBHalf2WordAtPtx1962R518,
+		r_MmaAccumulatorHalf2WordAtPtx1765R519, r_MmaAccumulatorHalf2WordAtPtx1765R520, r_PtxRegister521,
+		r_PtxRegister522, r_PtxRegister523, r_PtxRegister524, r_MmaBHalf2WordAtPtx1962R525,
+		r_MmaBHalf2WordAtPtx1962R526, r_MmaAccumulatorHalf2WordAtPtx1772R527,
+		r_MmaAccumulatorHalf2WordAtPtx1772R528;
+	uint32_t r_MmaBHalf2WordAtPtx1980R529, r_MmaBHalf2WordAtPtx1980R530,
+		r_MmaAccumulatorHalf2WordAtPtx2011R531, r_MmaAccumulatorHalf2WordAtPtx2011R532, r_PtxRegister533,
+		r_PtxRegister534, r_PtxRegister535, r_PtxRegister536, r_MmaBHalf2WordAtPtx1980R537,
+		r_MmaBHalf2WordAtPtx1980R538, r_MmaAccumulatorHalf2WordAtPtx2018R539,
+		r_MmaAccumulatorHalf2WordAtPtx2018R540;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx1793R541, r_MmaAccumulatorHalf2WordAtPtx1793R542,
+		r_MmaAccumulatorHalf2WordAtPtx1800R543, r_MmaAccumulatorHalf2WordAtPtx1800R544,
+		r_MmaAccumulatorHalf2WordAtPtx2039R545, r_MmaAccumulatorHalf2WordAtPtx2039R546,
+		r_MmaAccumulatorHalf2WordAtPtx2046R547, r_MmaAccumulatorHalf2WordAtPtx2046R548,
+		r_MmaAccumulatorHalf2WordAtPtx1821R549, r_MmaAccumulatorHalf2WordAtPtx1821R550, r_PtxRegister551,
+		r_PtxRegister552;
+	uint32_t r_PtxRegister553, r_PtxRegister554, r_MmaAccumulatorHalf2WordAtPtx1828R555,
+		r_MmaAccumulatorHalf2WordAtPtx1828R556, r_MmaAccumulatorHalf2WordAtPtx2067R557,
+		r_MmaAccumulatorHalf2WordAtPtx2067R558, r_PtxRegister559, r_PtxRegister560, r_PtxRegister561,
+		r_PtxRegister562, r_MmaAccumulatorHalf2WordAtPtx2074R563, r_MmaAccumulatorHalf2WordAtPtx2074R564;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx1849R565, r_MmaAccumulatorHalf2WordAtPtx1849R566,
+		r_MmaAccumulatorHalf2WordAtPtx1856R567, r_MmaAccumulatorHalf2WordAtPtx1856R568,
+		r_MmaAccumulatorHalf2WordAtPtx2095R569, r_MmaAccumulatorHalf2WordAtPtx2095R570,
+		r_MmaAccumulatorHalf2WordAtPtx2102R571, r_MmaAccumulatorHalf2WordAtPtx2102R572,
+		r_MmaAccumulatorHalf2WordAtPtx1877R573, r_MmaAccumulatorHalf2WordAtPtx1877R574, r_PtxRegister575,
+		r_PtxRegister576;
+	uint32_t r_PtxRegister577, r_PtxRegister578, r_MmaAccumulatorHalf2WordAtPtx1884R579,
+		r_MmaAccumulatorHalf2WordAtPtx1884R580, r_MmaAccumulatorHalf2WordAtPtx2123R581,
+		r_MmaAccumulatorHalf2WordAtPtx2123R582, r_PtxRegister583, r_PtxRegister584, r_PtxRegister585,
+		r_PtxRegister586, r_MmaAccumulatorHalf2WordAtPtx2130R587, r_MmaAccumulatorHalf2WordAtPtx2130R588;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx1905R589, r_MmaAccumulatorHalf2WordAtPtx1905R590,
+		r_MmaAccumulatorHalf2WordAtPtx1912R591, r_MmaAccumulatorHalf2WordAtPtx1912R592,
+		r_MmaAccumulatorHalf2WordAtPtx2151R593, r_MmaAccumulatorHalf2WordAtPtx2151R594,
+		r_MmaAccumulatorHalf2WordAtPtx2158R595, r_MmaAccumulatorHalf2WordAtPtx2158R596,
+		r_MmaAccumulatorHalf2WordAtPtx1933R597, r_MmaAccumulatorHalf2WordAtPtx1933R598, r_PtxRegister599,
+		r_PtxRegister600;
+	uint32_t r_PtxRegister601, r_PtxRegister602, r_MmaAccumulatorHalf2WordAtPtx1940R603,
+		r_MmaAccumulatorHalf2WordAtPtx1940R604, r_MmaAccumulatorHalf2WordAtPtx2179R605,
+		r_MmaAccumulatorHalf2WordAtPtx2179R606, r_PtxRegister607, r_PtxRegister608, r_PtxRegister609,
+		r_PtxRegister610, r_MmaAccumulatorHalf2WordAtPtx2186R611, r_MmaAccumulatorHalf2WordAtPtx2186R612;
+	uint32_t r_LaneIndexAtPtx2207, r_Float32BitsAtPtx2209R614, r_Float32BitsAtPtx2216R615,
+		r_Float32BitsAtPtx2223R616, r_Float32BitsAtPtx2230R617, r_Float32BitsAtPtx2237R618,
+		r_MmaAccumulatorHalf2WordAtPtx1997R619, r_PackedHalf2AtPtx2218R620, r_PackedHalf2AtPtx2245R621,
+		r_PackedHalf2AtPtx2211R622, r_PackedHalf2AtPtx2249R623, r_PackedHalf2AtPtx2239R624;
+	uint32_t r_PackedHalf2AtPtx2253R625, r_PackedHalf2AtPtx2232R626, r_PackedHalf2AtPtx2257R627,
+		r_PackedHalf2AtPtx2225R628, r_PackedHalf2AtPtx2261R629, r_LaneIndexAtPtx2269,
+		r_MmaAccumulatorHalf2WordAtPtx1997R631, r_PackedHalf2AtPtx2272R632, r_PackedHalf2AtPtx2276R633,
+		r_PackedHalf2AtPtx2280R634, r_PackedHalf2AtPtx2284R635, r_PackedHalf2AtPtx2288R636;
+	uint32_t r_LaneIndexAtPtx2296, r_MmaAccumulatorHalf2WordAtPtx2004R638, r_PackedHalf2AtPtx2299R639,
+		r_PackedHalf2AtPtx2303R640, r_PackedHalf2AtPtx2307R641, r_PackedHalf2AtPtx2311R642,
+		r_PackedHalf2AtPtx2315R643, r_LaneIndexAtPtx2323, r_MmaAccumulatorHalf2WordAtPtx2004R645,
+		r_PackedHalf2AtPtx2326R646, r_PackedHalf2AtPtx2330R647, r_PackedHalf2AtPtx2334R648;
+	uint32_t r_PackedHalf2AtPtx2338R649, r_PackedHalf2AtPtx2342R650, r_LaneIndexAtPtx2350,
+		r_MmaAccumulatorHalf2WordAtPtx2025R652, r_PackedHalf2AtPtx2353R653, r_PackedHalf2AtPtx2357R654,
+		r_PackedHalf2AtPtx2361R655, r_PackedHalf2AtPtx2365R656, r_PackedHalf2AtPtx2369R657,
+		r_LaneIndexAtPtx2377, r_MmaAccumulatorHalf2WordAtPtx2025R659, r_PackedHalf2AtPtx2380R660;
+	uint32_t r_PackedHalf2AtPtx2384R661, r_PackedHalf2AtPtx2388R662, r_PackedHalf2AtPtx2392R663,
+		r_PackedHalf2AtPtx2396R664, r_LaneIndexAtPtx2404, r_MmaAccumulatorHalf2WordAtPtx2032R666,
+		r_PackedHalf2AtPtx2407R667, r_PackedHalf2AtPtx2411R668, r_PackedHalf2AtPtx2415R669,
+		r_PackedHalf2AtPtx2419R670, r_PackedHalf2AtPtx2423R671, r_LaneIndexAtPtx2431;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx2032R673, r_PackedHalf2AtPtx2434R674, r_PackedHalf2AtPtx2438R675,
+		r_PackedHalf2AtPtx2442R676, r_PackedHalf2AtPtx2446R677, r_PackedHalf2AtPtx2450R678,
+		r_LaneIndexAtPtx2458, r_MmaAccumulatorHalf2WordAtPtx2053R680, r_PackedHalf2AtPtx2461R681,
+		r_PackedHalf2AtPtx2465R682, r_PackedHalf2AtPtx2469R683, r_PackedHalf2AtPtx2473R684;
+	uint32_t r_PackedHalf2AtPtx2477R685, r_LaneIndexAtPtx2485, r_MmaAccumulatorHalf2WordAtPtx2053R687,
+		r_PackedHalf2AtPtx2488R688, r_PackedHalf2AtPtx2492R689, r_PackedHalf2AtPtx2496R690,
+		r_PackedHalf2AtPtx2500R691, r_PackedHalf2AtPtx2504R692, r_LaneIndexAtPtx2512,
+		r_MmaAccumulatorHalf2WordAtPtx2060R694, r_PackedHalf2AtPtx2515R695, r_PackedHalf2AtPtx2519R696;
+	uint32_t r_PackedHalf2AtPtx2523R697, r_PackedHalf2AtPtx2527R698, r_PackedHalf2AtPtx2531R699,
+		r_LaneIndexAtPtx2539, r_MmaAccumulatorHalf2WordAtPtx2060R701, r_PackedHalf2AtPtx2542R702,
+		r_PackedHalf2AtPtx2546R703, r_PackedHalf2AtPtx2550R704, r_PackedHalf2AtPtx2554R705,
+		r_PackedHalf2AtPtx2558R706, r_LaneIndexAtPtx2566, r_MmaAccumulatorHalf2WordAtPtx2081R708;
+	uint32_t r_PackedHalf2AtPtx2569R709, r_PackedHalf2AtPtx2573R710, r_PackedHalf2AtPtx2577R711,
+		r_PackedHalf2AtPtx2581R712, r_PackedHalf2AtPtx2585R713, r_LaneIndexAtPtx2593,
+		r_MmaAccumulatorHalf2WordAtPtx2081R715, r_PackedHalf2AtPtx2596R716, r_PackedHalf2AtPtx2600R717,
+		r_PackedHalf2AtPtx2604R718, r_PackedHalf2AtPtx2608R719, r_PackedHalf2AtPtx2612R720;
+	uint32_t r_LaneIndexAtPtx2620, r_MmaAccumulatorHalf2WordAtPtx2088R722, r_PackedHalf2AtPtx2623R723,
+		r_PackedHalf2AtPtx2627R724, r_PackedHalf2AtPtx2631R725, r_PackedHalf2AtPtx2635R726,
+		r_PackedHalf2AtPtx2639R727, r_LaneIndexAtPtx2647, r_MmaAccumulatorHalf2WordAtPtx2088R729,
+		r_PackedHalf2AtPtx2650R730, r_PackedHalf2AtPtx2654R731, r_PackedHalf2AtPtx2658R732;
+	uint32_t r_PackedHalf2AtPtx2662R733, r_PackedHalf2AtPtx2666R734, r_LaneIndexAtPtx2674,
+		r_MmaAccumulatorHalf2WordAtPtx2109R736, r_PackedHalf2AtPtx2677R737, r_PackedHalf2AtPtx2681R738,
+		r_PackedHalf2AtPtx2685R739, r_PackedHalf2AtPtx2689R740, r_PackedHalf2AtPtx2693R741,
+		r_LaneIndexAtPtx2701, r_MmaAccumulatorHalf2WordAtPtx2109R743, r_PackedHalf2AtPtx2704R744;
+	uint32_t r_PackedHalf2AtPtx2708R745, r_PackedHalf2AtPtx2712R746, r_PackedHalf2AtPtx2716R747,
+		r_PackedHalf2AtPtx2720R748, r_LaneIndexAtPtx2728, r_MmaAccumulatorHalf2WordAtPtx2116R750,
+		r_PackedHalf2AtPtx2731R751, r_PackedHalf2AtPtx2735R752, r_PackedHalf2AtPtx2739R753,
+		r_PackedHalf2AtPtx2743R754, r_PackedHalf2AtPtx2747R755, r_LaneIndexAtPtx2755;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx2116R757, r_PackedHalf2AtPtx2758R758, r_PackedHalf2AtPtx2762R759,
+		r_PackedHalf2AtPtx2766R760, r_PackedHalf2AtPtx2770R761, r_PackedHalf2AtPtx2774R762,
+		r_LaneIndexAtPtx2782, r_MmaAccumulatorHalf2WordAtPtx2137R764, r_PackedHalf2AtPtx2785R765,
+		r_PackedHalf2AtPtx2789R766, r_PackedHalf2AtPtx2793R767, r_PackedHalf2AtPtx2797R768;
+	uint32_t r_PackedHalf2AtPtx2801R769, r_LaneIndexAtPtx2809, r_MmaAccumulatorHalf2WordAtPtx2137R771,
+		r_PackedHalf2AtPtx2812R772, r_PackedHalf2AtPtx2816R773, r_PackedHalf2AtPtx2820R774,
+		r_PackedHalf2AtPtx2824R775, r_PackedHalf2AtPtx2828R776, r_LaneIndexAtPtx2836,
+		r_MmaAccumulatorHalf2WordAtPtx2144R778, r_PackedHalf2AtPtx2839R779, r_PackedHalf2AtPtx2843R780;
+	uint32_t r_PackedHalf2AtPtx2847R781, r_PackedHalf2AtPtx2851R782, r_PackedHalf2AtPtx2855R783,
+		r_LaneIndexAtPtx2863, r_MmaAccumulatorHalf2WordAtPtx2144R785, r_PackedHalf2AtPtx2866R786,
+		r_PackedHalf2AtPtx2870R787, r_PackedHalf2AtPtx2874R788, r_PackedHalf2AtPtx2878R789,
+		r_PackedHalf2AtPtx2882R790, r_LaneIndexAtPtx2890, r_MmaAccumulatorHalf2WordAtPtx2165R792;
+	uint32_t r_PackedHalf2AtPtx2893R793, r_PackedHalf2AtPtx2897R794, r_PackedHalf2AtPtx2901R795,
+		r_PackedHalf2AtPtx2905R796, r_PackedHalf2AtPtx2909R797, r_LaneIndexAtPtx2917,
+		r_MmaAccumulatorHalf2WordAtPtx2165R799, r_PackedHalf2AtPtx2920R800, r_PackedHalf2AtPtx2924R801,
+		r_PackedHalf2AtPtx2928R802, r_PackedHalf2AtPtx2932R803, r_PackedHalf2AtPtx2936R804;
+	uint32_t r_LaneIndexAtPtx2944, r_MmaAccumulatorHalf2WordAtPtx2172R806, r_PackedHalf2AtPtx2947R807,
+		r_PackedHalf2AtPtx2951R808, r_PackedHalf2AtPtx2955R809, r_PackedHalf2AtPtx2959R810,
+		r_PackedHalf2AtPtx2963R811, r_LaneIndexAtPtx2971, r_MmaAccumulatorHalf2WordAtPtx2172R813,
+		r_PackedHalf2AtPtx2974R814, r_PackedHalf2AtPtx2978R815, r_PackedHalf2AtPtx2982R816;
+	uint32_t r_PackedHalf2AtPtx2986R817, r_PackedHalf2AtPtx2990R818, r_LaneIndexAtPtx2998,
+		r_MmaAccumulatorHalf2WordAtPtx2193R820, r_PackedHalf2AtPtx3001R821, r_PackedHalf2AtPtx3005R822,
+		r_PackedHalf2AtPtx3009R823, r_PackedHalf2AtPtx3013R824, r_PackedHalf2AtPtx3017R825,
+		r_LaneIndexAtPtx3025, r_MmaAccumulatorHalf2WordAtPtx2193R827, r_PackedHalf2AtPtx3028R828;
+	uint32_t r_PackedHalf2AtPtx3032R829, r_PackedHalf2AtPtx3036R830, r_PackedHalf2AtPtx3040R831,
+		r_PackedHalf2AtPtx3044R832, r_LaneIndexAtPtx3052, r_MmaAccumulatorHalf2WordAtPtx2200R834,
+		r_PackedHalf2AtPtx3055R835, r_PackedHalf2AtPtx3059R836, r_PackedHalf2AtPtx3063R837,
+		r_PackedHalf2AtPtx3067R838, r_PackedHalf2AtPtx3071R839, r_LaneIndexAtPtx3079;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx2200R841, r_PackedHalf2AtPtx3082R842, r_PackedHalf2AtPtx3086R843,
+		r_PackedHalf2AtPtx3090R844, r_PackedHalf2AtPtx3094R845, r_PackedHalf2AtPtx3098R846,
+		r_LaneIndexAtPtx3106, r_LaneIndexAtPtx3115, r_LaneIndexAtPtx3124, r_LaneIndexAtPtx3133,
+		r_LaneIndexAtPtx3142, r_LaneIndexAtPtx3151;
+	uint32_t r_LaneIndexAtPtx3160, r_LaneIndexAtPtx3169, r_MmaAHalf2WordAtPtx2265R855,
+		r_MmaAHalf2WordAtPtx2292R856, r_MmaAHalf2WordAtPtx2319R857, r_MmaAHalf2WordAtPtx2346R858,
+		r_MmaBHalf2WordAtPtx3112R859, r_MmaBHalf2WordAtPtx3112R860, r_MmaBHalf2WordAtPtx3112R861,
+		r_MmaBHalf2WordAtPtx3112R862, r_MmaAHalf2WordAtPtx2373R863, r_MmaAHalf2WordAtPtx2400R864;
+	uint32_t r_MmaAHalf2WordAtPtx2427R865, r_MmaAHalf2WordAtPtx2454R866, r_MmaBHalf2WordAtPtx3148R867,
+		r_MmaBHalf2WordAtPtx3148R868, r_MmaAccumulatorHalf2WordAtPtx3177R869,
+		r_MmaAccumulatorHalf2WordAtPtx3177R870, r_MmaBHalf2WordAtPtx3148R871, r_MmaBHalf2WordAtPtx3148R872,
+		r_MmaAccumulatorHalf2WordAtPtx3184R873, r_MmaAccumulatorHalf2WordAtPtx3184R874,
+		r_MmaBHalf2WordAtPtx3121R875, r_MmaBHalf2WordAtPtx3121R876;
+	uint32_t r_MmaBHalf2WordAtPtx3121R877, r_MmaBHalf2WordAtPtx3121R878, r_MmaBHalf2WordAtPtx3157R879,
+		r_MmaBHalf2WordAtPtx3157R880, r_MmaAccumulatorHalf2WordAtPtx3205R881,
+		r_MmaAccumulatorHalf2WordAtPtx3205R882, r_MmaBHalf2WordAtPtx3157R883, r_MmaBHalf2WordAtPtx3157R884,
+		r_MmaAccumulatorHalf2WordAtPtx3212R885, r_MmaAccumulatorHalf2WordAtPtx3212R886,
+		r_MmaBHalf2WordAtPtx3130R887, r_MmaBHalf2WordAtPtx3130R888;
+	uint32_t r_MmaBHalf2WordAtPtx3130R889, r_MmaBHalf2WordAtPtx3130R890, r_MmaBHalf2WordAtPtx3166R891,
+		r_MmaBHalf2WordAtPtx3166R892, r_MmaAccumulatorHalf2WordAtPtx3233R893,
+		r_MmaAccumulatorHalf2WordAtPtx3233R894, r_MmaBHalf2WordAtPtx3166R895, r_MmaBHalf2WordAtPtx3166R896,
+		r_MmaAccumulatorHalf2WordAtPtx3240R897, r_MmaAccumulatorHalf2WordAtPtx3240R898,
+		r_MmaBHalf2WordAtPtx3139R899, r_MmaBHalf2WordAtPtx3139R900;
+	uint32_t r_MmaBHalf2WordAtPtx3139R901, r_MmaBHalf2WordAtPtx3139R902, r_MmaBHalf2WordAtPtx3174R903,
+		r_MmaBHalf2WordAtPtx3174R904, r_MmaAccumulatorHalf2WordAtPtx3261R905,
+		r_MmaAccumulatorHalf2WordAtPtx3261R906, r_MmaBHalf2WordAtPtx3174R907, r_MmaBHalf2WordAtPtx3174R908,
+		r_MmaAccumulatorHalf2WordAtPtx3268R909, r_MmaAccumulatorHalf2WordAtPtx3268R910,
+		r_MmaAHalf2WordAtPtx2481R911, r_MmaAHalf2WordAtPtx2508R912;
+	uint32_t r_MmaAHalf2WordAtPtx2535R913, r_MmaAHalf2WordAtPtx2562R914, r_MmaAHalf2WordAtPtx2589R915,
+		r_MmaAHalf2WordAtPtx2616R916, r_MmaAHalf2WordAtPtx2643R917, r_MmaAHalf2WordAtPtx2670R918,
+		r_MmaAccumulatorHalf2WordAtPtx3289R919, r_MmaAccumulatorHalf2WordAtPtx3289R920,
+		r_MmaAccumulatorHalf2WordAtPtx3296R921, r_MmaAccumulatorHalf2WordAtPtx3296R922,
+		r_MmaAccumulatorHalf2WordAtPtx3317R923, r_MmaAccumulatorHalf2WordAtPtx3317R924;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx3324R925, r_MmaAccumulatorHalf2WordAtPtx3324R926,
+		r_MmaAccumulatorHalf2WordAtPtx3345R927, r_MmaAccumulatorHalf2WordAtPtx3345R928,
+		r_MmaAccumulatorHalf2WordAtPtx3352R929, r_MmaAccumulatorHalf2WordAtPtx3352R930,
+		r_MmaAccumulatorHalf2WordAtPtx3373R931, r_MmaAccumulatorHalf2WordAtPtx3373R932,
+		r_MmaAccumulatorHalf2WordAtPtx3380R933, r_MmaAccumulatorHalf2WordAtPtx3380R934,
+		r_MmaAHalf2WordAtPtx2697R935, r_MmaAHalf2WordAtPtx2724R936;
+	uint32_t r_MmaAHalf2WordAtPtx2751R937, r_MmaAHalf2WordAtPtx2778R938, r_MmaAHalf2WordAtPtx2805R939,
+		r_MmaAHalf2WordAtPtx2832R940, r_MmaAHalf2WordAtPtx2859R941, r_MmaAHalf2WordAtPtx2886R942,
+		r_MmaAccumulatorHalf2WordAtPtx3401R943, r_MmaAccumulatorHalf2WordAtPtx3401R944,
+		r_MmaAccumulatorHalf2WordAtPtx3408R945, r_MmaAccumulatorHalf2WordAtPtx3408R946,
+		r_MmaAccumulatorHalf2WordAtPtx3429R947, r_MmaAccumulatorHalf2WordAtPtx3429R948;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx3436R949, r_MmaAccumulatorHalf2WordAtPtx3436R950,
+		r_MmaAccumulatorHalf2WordAtPtx3457R951, r_MmaAccumulatorHalf2WordAtPtx3457R952,
+		r_MmaAccumulatorHalf2WordAtPtx3464R953, r_MmaAccumulatorHalf2WordAtPtx3464R954,
+		r_MmaAccumulatorHalf2WordAtPtx3485R955, r_MmaAccumulatorHalf2WordAtPtx3485R956,
+		r_MmaAccumulatorHalf2WordAtPtx3492R957, r_MmaAccumulatorHalf2WordAtPtx3492R958,
+		r_MmaAHalf2WordAtPtx2913R959, r_MmaAHalf2WordAtPtx2940R960;
+	uint32_t r_MmaAHalf2WordAtPtx2967R961, r_MmaAHalf2WordAtPtx2994R962, r_MmaAHalf2WordAtPtx3021R963,
+		r_MmaAHalf2WordAtPtx3048R964, r_MmaAHalf2WordAtPtx3075R965, r_MmaAHalf2WordAtPtx3102R966,
+		r_MmaAccumulatorHalf2WordAtPtx3513R967, r_MmaAccumulatorHalf2WordAtPtx3513R968,
+		r_MmaAccumulatorHalf2WordAtPtx3520R969, r_MmaAccumulatorHalf2WordAtPtx3520R970,
+		r_MmaAccumulatorHalf2WordAtPtx3541R971, r_MmaAccumulatorHalf2WordAtPtx3541R972;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx3548R973, r_MmaAccumulatorHalf2WordAtPtx3548R974,
+		r_MmaAccumulatorHalf2WordAtPtx3569R975, r_MmaAccumulatorHalf2WordAtPtx3569R976,
+		r_MmaAccumulatorHalf2WordAtPtx3576R977, r_MmaAccumulatorHalf2WordAtPtx3576R978,
+		r_MmaAccumulatorHalf2WordAtPtx3597R979, r_MmaAccumulatorHalf2WordAtPtx3597R980,
+		r_MmaAccumulatorHalf2WordAtPtx3604R981, r_MmaAccumulatorHalf2WordAtPtx3604R982, r_PtxRegister983,
+		r_PtxRegister984;
+	uint32_t r_PtxRegister985, r_LaneIndexAtPtx3640, r_LaneIndexAtPtx3648, r_LaneIndexAtPtx3657,
+		r_LaneIndexAtPtx3666, r_LaneIndexAtPtx3680, r_LaneIndexAtPtx3689, r_LaneIndexAtPtx3698,
+		r_LaneIndexAtPtx3707, r_PtxRegister994, r_PtxRegister995, r_PtxRegister996;
+	uint32_t r_PtxRegister997, r_LaneIndexAtPtx3727, r_LaneIndexAtPtx3735, r_LaneIndexAtPtx3744,
+		r_LaneIndexAtPtx3753, r_LaneIndexAtPtx3765, r_LaneIndexAtPtx3774, r_LaneIndexAtPtx3783,
+		r_LaneIndexAtPtx3792, r_PtxRegister1006, r_PtxRegister1007, r_MmaAccumulatorHalf2WordAtPtx289R1008;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx290R1009, r_MmaAccumulatorHalf2WordAtPtx291R1010,
+		r_MmaAccumulatorHalf2WordAtPtx292R1011, r_MmaAccumulatorHalf2WordAtPtx293R1012,
+		r_MmaAccumulatorHalf2WordAtPtx294R1013, r_MmaAccumulatorHalf2WordAtPtx295R1014,
+		r_MmaAccumulatorHalf2WordAtPtx296R1015, r_MmaAccumulatorHalf2WordAtPtx297R1016,
+		r_MmaAccumulatorHalf2WordAtPtx298R1017, r_MmaAccumulatorHalf2WordAtPtx299R1018,
+		r_MmaAccumulatorHalf2WordAtPtx300R1019, r_MmaAccumulatorHalf2WordAtPtx301R1020;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx302R1021, r_MmaAccumulatorHalf2WordAtPtx303R1022,
+		r_MmaAccumulatorHalf2WordAtPtx304R1023, r_MmaAccumulatorHalf2WordAtPtx305R1024,
+		r_MmaAccumulatorHalf2WordAtPtx306R1025, r_MmaAccumulatorHalf2WordAtPtx307R1026,
+		r_MmaAccumulatorHalf2WordAtPtx308R1027, r_MmaAccumulatorHalf2WordAtPtx309R1028,
+		r_MmaAccumulatorHalf2WordAtPtx310R1029, r_MmaAccumulatorHalf2WordAtPtx311R1030,
+		r_MmaAccumulatorHalf2WordAtPtx312R1031, r_MmaAccumulatorHalf2WordAtPtx313R1032;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx314R1033, r_MmaAccumulatorHalf2WordAtPtx315R1034,
+		r_MmaAccumulatorHalf2WordAtPtx316R1035, r_MmaAccumulatorHalf2WordAtPtx317R1036,
+		r_MmaAccumulatorHalf2WordAtPtx318R1037, r_MmaAccumulatorHalf2WordAtPtx319R1038,
+		r_MmaAccumulatorHalf2WordAtPtx320R1039, r_MmaAccumulatorHalf2WordAtPtx321R1040,
+		r_MmaAccumulatorHalf2WordAtPtx322R1041, r_MmaAccumulatorHalf2WordAtPtx323R1042,
+		r_MmaAccumulatorHalf2WordAtPtx324R1043, r_MmaAccumulatorHalf2WordAtPtx325R1044;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx326R1045, r_MmaAccumulatorHalf2WordAtPtx327R1046,
+		r_MmaAccumulatorHalf2WordAtPtx328R1047, r_MmaAccumulatorHalf2WordAtPtx329R1048,
+		r_MmaAccumulatorHalf2WordAtPtx330R1049, r_MmaAccumulatorHalf2WordAtPtx331R1050,
+		r_MmaAccumulatorHalf2WordAtPtx332R1051, r_MmaAccumulatorHalf2WordAtPtx333R1052,
+		r_MmaAccumulatorHalf2WordAtPtx334R1053, r_MmaAccumulatorHalf2WordAtPtx335R1054,
+		r_MmaAccumulatorHalf2WordAtPtx336R1055, r_MmaAccumulatorHalf2WordAtPtx337R1056;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx338R1057, r_MmaAccumulatorHalf2WordAtPtx339R1058,
+		r_MmaAccumulatorHalf2WordAtPtx340R1059, r_MmaAccumulatorHalf2WordAtPtx341R1060,
+		r_MmaAccumulatorHalf2WordAtPtx342R1061, r_MmaAccumulatorHalf2WordAtPtx343R1062,
+		r_MmaAccumulatorHalf2WordAtPtx344R1063, r_MmaAccumulatorHalf2WordAtPtx345R1064,
+		r_MmaAccumulatorHalf2WordAtPtx346R1065, r_MmaAccumulatorHalf2WordAtPtx347R1066,
+		r_MmaAccumulatorHalf2WordAtPtx348R1067, r_MmaAccumulatorHalf2WordAtPtx349R1068;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx350R1069, r_MmaAccumulatorHalf2WordAtPtx351R1070,
+		r_MmaAccumulatorHalf2WordAtPtx352R1071, r_PtxRegister1072, r_MmaBHalf2WordAtPtx67R1073,
+		r_MmaBHalf2WordAtPtx67R1074, r_MmaBHalf2WordAtPtx67R1075, r_MmaBHalf2WordAtPtx67R1076,
+		r_MmaBHalf2WordAtPtx78R1077, r_MmaBHalf2WordAtPtx78R1078, r_MmaBHalf2WordAtPtx78R1079,
+		r_MmaBHalf2WordAtPtx78R1080;
+	uint32_t r_MmaBHalf2WordAtPtx87R1081, r_MmaBHalf2WordAtPtx87R1082, r_MmaBHalf2WordAtPtx87R1083,
+		r_MmaBHalf2WordAtPtx87R1084, r_MmaBHalf2WordAtPtx96R1085, r_MmaBHalf2WordAtPtx96R1086,
+		r_MmaBHalf2WordAtPtx96R1087, r_MmaBHalf2WordAtPtx96R1088, r_MmaBHalf2WordAtPtx105R1089,
+		r_MmaBHalf2WordAtPtx105R1090, r_MmaBHalf2WordAtPtx105R1091, r_MmaBHalf2WordAtPtx105R1092;
+	uint32_t r_MmaBHalf2WordAtPtx114R1093, r_MmaBHalf2WordAtPtx114R1094, r_MmaBHalf2WordAtPtx114R1095,
+		r_MmaBHalf2WordAtPtx114R1096, r_MmaBHalf2WordAtPtx123R1097, r_MmaBHalf2WordAtPtx123R1098,
+		r_MmaBHalf2WordAtPtx123R1099, r_MmaBHalf2WordAtPtx123R1100, r_MmaBHalf2WordAtPtx132R1101,
+		r_MmaBHalf2WordAtPtx132R1102, r_MmaBHalf2WordAtPtx132R1103, r_MmaBHalf2WordAtPtx132R1104;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx1619R1105, r_MmaAccumulatorHalf2WordAtPtx1620R1106,
+		r_MmaAccumulatorHalf2WordAtPtx1621R1107, r_MmaAccumulatorHalf2WordAtPtx1622R1108,
+		r_MmaAccumulatorHalf2WordAtPtx1623R1109, r_MmaAccumulatorHalf2WordAtPtx1624R1110,
+		r_MmaAccumulatorHalf2WordAtPtx1625R1111, r_MmaAccumulatorHalf2WordAtPtx1626R1112,
+		r_MmaAccumulatorHalf2WordAtPtx1627R1113, r_MmaAccumulatorHalf2WordAtPtx1628R1114,
+		r_MmaAccumulatorHalf2WordAtPtx1629R1115, r_MmaAccumulatorHalf2WordAtPtx1630R1116;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx1631R1117, r_MmaAccumulatorHalf2WordAtPtx1632R1118,
+		r_MmaAccumulatorHalf2WordAtPtx1633R1119, r_MmaAccumulatorHalf2WordAtPtx1634R1120,
+		r_MmaAccumulatorHalf2WordAtPtx1635R1121, r_MmaAccumulatorHalf2WordAtPtx1636R1122,
+		r_MmaAccumulatorHalf2WordAtPtx1637R1123, r_MmaAccumulatorHalf2WordAtPtx1638R1124,
+		r_MmaAccumulatorHalf2WordAtPtx1639R1125, r_MmaAccumulatorHalf2WordAtPtx1640R1126,
+		r_MmaAccumulatorHalf2WordAtPtx1641R1127, r_MmaAccumulatorHalf2WordAtPtx1642R1128;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx1643R1129, r_MmaAccumulatorHalf2WordAtPtx1644R1130,
+		r_MmaAccumulatorHalf2WordAtPtx1645R1131, r_MmaAccumulatorHalf2WordAtPtx1646R1132,
+		r_MmaAccumulatorHalf2WordAtPtx1647R1133, r_MmaAccumulatorHalf2WordAtPtx1648R1134,
+		r_MmaAccumulatorHalf2WordAtPtx1649R1135, r_MmaAccumulatorHalf2WordAtPtx1650R1136,
+		r_MmaAccumulatorHalf2WordAtPtx1651R1137, r_MmaAccumulatorHalf2WordAtPtx1652R1138,
+		r_MmaAccumulatorHalf2WordAtPtx1653R1139, r_MmaAccumulatorHalf2WordAtPtx1654R1140;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx1655R1141, r_MmaAccumulatorHalf2WordAtPtx1656R1142,
+		r_MmaAccumulatorHalf2WordAtPtx1657R1143, r_MmaAccumulatorHalf2WordAtPtx1658R1144,
+		r_MmaAccumulatorHalf2WordAtPtx1659R1145, r_MmaAccumulatorHalf2WordAtPtx1660R1146,
+		r_MmaAccumulatorHalf2WordAtPtx1661R1147, r_MmaAccumulatorHalf2WordAtPtx1662R1148,
+		r_MmaAccumulatorHalf2WordAtPtx1663R1149, r_MmaAccumulatorHalf2WordAtPtx1664R1150,
+		r_MmaAccumulatorHalf2WordAtPtx1665R1151, r_MmaAccumulatorHalf2WordAtPtx1666R1152;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx1667R1153, r_MmaAccumulatorHalf2WordAtPtx1668R1154,
+		r_MmaAccumulatorHalf2WordAtPtx1669R1155, r_MmaAccumulatorHalf2WordAtPtx1670R1156,
+		r_MmaAccumulatorHalf2WordAtPtx1671R1157, r_MmaAccumulatorHalf2WordAtPtx1672R1158,
+		r_MmaAccumulatorHalf2WordAtPtx1673R1159, r_MmaAccumulatorHalf2WordAtPtx1674R1160,
+		r_MmaAccumulatorHalf2WordAtPtx1675R1161, r_MmaAccumulatorHalf2WordAtPtx1676R1162,
+		r_MmaAccumulatorHalf2WordAtPtx1677R1163, r_MmaAccumulatorHalf2WordAtPtx1678R1164;
+	uint32_t r_MmaAccumulatorHalf2WordAtPtx1679R1165, r_MmaAccumulatorHalf2WordAtPtx1680R1166,
+		r_MmaAccumulatorHalf2WordAtPtx1681R1167, r_MmaAccumulatorHalf2WordAtPtx1682R1168, r_PtxRegister1169;
+	uint64_t g_StateBaseAddress, g_OutputBaseAddress, r_PtxU64Register3, r_PtxU64Register4,
+		g_StateByteAddressAtPtx286, r_PtxU64Register6, r_PtxU64Register7, g_OutputByteAddressAtPtx3636,
+		g_OutputByteAddressAtPtx3723, r_PtxU64Register10, r_PtxU64Register11, r_PtxU64Register12;
+	uint64_t r_PtxU64Register13, r_PtxU64Register14, r_PtxU64Register15, r_PtxU64Register16,
+		r_PtxU64Register17, r_PtxU64Register18, r_PtxU64Register19, r_PtxU64Register20, r_PtxU64Register21,
+		r_PtxU64Register22, r_PtxU64Register23, r_PtxU64Register24;
+	uint64_t r_PtxU64Register25, r_PtxU64Register26, r_PtxU64Register27, r_PtxU64Register28,
+		r_PtxU64Register29, r_PtxU64Register30, r_PtxU64Register31, r_PtxU64Register32, r_PtxU64Register33,
+		r_PtxU64Register34, r_PtxU64Register35, r_PtxU64Register36;
+	uint64_t r_PtxU64Register37, g_StateByteAddressAtPtx184, r_PtxU64Register39, r_PtxU64Register40,
+		r_PtxU64Register41, g_StateByteAddressAtPtx247, r_PtxU64Register43, r_PtxU64Register44,
+		r_PtxU64Register45, r_PtxU64Register46, r_PtxU64Register47, r_PtxU64Register48;
+	uint64_t r_PtxU64Register49, r_PtxU64Register50, r_PtxU64Register51, r_PtxU64Register52,
+		r_PtxU64Register53, r_PtxU64Register54, r_PtxU64Register55, r_PtxU64Register56, r_PtxU64Register57,
+		r_PtxU64Register58, r_PtxU64Register59, r_PtxU64Register60;
+	uint64_t r_PtxU64Register61, r_PtxU64Register62, r_PtxU64Register63, r_PtxU64Register64,
+		r_PtxU64Register65, r_PtxU64Register66, r_PtxU64Register67, r_PtxU64Register68, r_PtxU64Register69,
+		r_PtxU64Register70, r_PtxU64Register71, r_PtxU64Register72;
+	uint64_t r_PtxU64Register73, r_PtxU64Register74, r_PtxU64Register75, r_PtxU64Register76,
+		r_PtxU64Register77, r_PtxU64Register78, r_PtxU64Register79, r_PtxU64Register80, r_PtxU64Register81,
+		r_PtxU64Register82, r_PtxU64Register83, r_PtxU64Register84;
+	uint64_t r_PtxU64Register85, r_PtxU64Register86, r_PtxU64Register87, r_PtxU64Register88,
+		r_PtxU64Register89, r_PtxU64Register90, r_PtxU64Register91, r_PtxU64Register92, r_PtxU64Register93,
+		r_PtxU64Register94, r_PtxU64Register95, r_PtxU64Register96;
+	uint64_t r_PtxU64Register97, r_PtxU64Register98, r_PtxU64Register99, r_PtxU64Register100,
+		r_PtxU64Register101, r_PtxU64Register102, r_PtxU64Register103, r_PtxU64Register104,
+		r_PtxU64Register105, r_PtxU64Register106, r_PtxU64Register107, r_PtxU64Register108;
+	uint64_t r_PtxU64Register109, r_PtxU64Register110, r_PtxU64Register111, r_PtxU64Register112,
+		r_PtxU64Register113, r_PtxU64Register114, r_PtxU64Register115, r_PtxU64Register116,
+		r_PtxU64Register117, r_PtxU64Register118, r_PtxU64Register119, r_PtxU64Register120;
+	uint64_t r_PtxU64Register121, r_PtxU64Register122, r_PtxU64Register123, r_PtxU64Register124,
+		r_PtxU64Register125, g_OutputByteAddressAtPtx3643, g_OutputByteAddressAtPtx3652,
+		g_OutputByteAddressAtPtx3661, g_OutputByteAddressAtPtx3670, r_PtxU64Register130, r_PtxU64Register131,
+		g_OutputByteAddressAtPtx3651;
+	uint64_t r_PtxU64Register133, g_OutputByteAddressAtPtx3660, r_PtxU64Register135,
+		g_OutputByteAddressAtPtx3669, g_OutputByteAddressAtPtx3684, g_OutputByteAddressAtPtx3693,
+		g_OutputByteAddressAtPtx3702, g_OutputByteAddressAtPtx3711, r_PtxU64Register141,
+		g_OutputByteAddressAtPtx3683, r_PtxU64Register143, g_OutputByteAddressAtPtx3692;
+	uint64_t r_PtxU64Register145, g_OutputByteAddressAtPtx3701, r_PtxU64Register147,
+		g_OutputByteAddressAtPtx3710, r_PtxU64Register149, g_OutputByteAddressAtPtx3730,
+		g_OutputByteAddressAtPtx3739, g_OutputByteAddressAtPtx3748, g_OutputByteAddressAtPtx3757,
+		r_PtxU64Register154, r_PtxU64Register155, g_OutputByteAddressAtPtx3738;
+	uint64_t r_PtxU64Register157, g_OutputByteAddressAtPtx3747, r_PtxU64Register159,
+		g_OutputByteAddressAtPtx3756, g_OutputByteAddressAtPtx3769, g_OutputByteAddressAtPtx3778,
+		g_OutputByteAddressAtPtx3787, g_OutputByteAddressAtPtx3796, r_PtxU64Register165,
+		g_OutputByteAddressAtPtx3768, r_PtxU64Register167, g_OutputByteAddressAtPtx3777;
+	uint64_t r_PtxU64Register169, g_OutputByteAddressAtPtx3786, r_PtxU64Register171,
+		g_OutputByteAddressAtPtx3795, r_PtxU64Register173, r_PtxU64Register174, r_PtxU64Register175,
+		r_PtxU64Register176;
+	// Phase: physical_abi_setup. Bind caller-owned physical buffers and geometry from the original ABI. Address words are not logical BHWC tensors.
+	g_StateBaseAddress = uint64_t(r_Parameters.g_State);   // PTX L13
+	g_OutputBaseAddress = uint64_t(r_Parameters.g_High);   // PTX L14
+	r_PtxU64Register175 = uint64_t(r_Parameters.g_Record); // PTX L15
+	r_HeightBits = uint32_t(r_Parameters.Height);
+	r_WidthBits = uint32_t(r_Parameters.Width);										  // PTX L16
+	r_CtaX = uint32_t(blockIdx.x);													  // PTX L17
+	r_CtaY = uint32_t(blockIdx.y);													  // PTX L18
+	r_CtaZ = uint32_t(blockIdx.z);													  // PTX L19
+	r_PtxRegister4 = ShiftLeft(uint32_t(r_CtaY), uint32_t(1));						  // PTX L20
+	r_PtxRegister5 = ShiftLeft(uint32_t(r_CtaX), uint32_t(1));						  // PTX L21
+	r_HeightSignBits = ShiftRightSigned(int32_t(r_HeightBits), uint32_t(31));		  // PTX L22
+	r_HeightDiv4Bias = ShiftRight(uint32_t(r_HeightSignBits), uint32_t(30));		  // PTX L23
+	r_HeightBiasedForDiv4 = uint32_t(r_HeightBits) + uint32_t(r_HeightDiv4Bias);	  // PTX L24
+	r_HeightDiv4Bits = ShiftRightSigned(int32_t(r_HeightBiasedForDiv4), uint32_t(2)); // PTX L25
+	r_WidthSignBits = ShiftRightSigned(int32_t(r_WidthBits), uint32_t(31));			  // PTX L26
+	r_WidthDiv4Bias = ShiftRight(uint32_t(r_WidthSignBits), uint32_t(30));			  // PTX L27
+	r_WidthBiasedForDiv4 = uint32_t(r_WidthBits) + uint32_t(r_WidthDiv4Bias);		  // PTX L28
+	r_WidthDiv4Bits = ShiftRightSigned(int32_t(r_WidthBiasedForDiv4), uint32_t(2));	  // PTX L29
+	r_ThreadX = uint32_t(threadIdx.x);												  // PTX L30
+	r_ThreadY = uint32_t(threadIdx.y);												  // PTX L31
+	r_PtxRegister37 = r_ThreadX | r_ThreadY;										  // PTX L32
+	r_bPtxPredicate5 = uint32_t(r_PtxRegister37) != uint32_t(0);					  // PTX L33
+	if (r_bPtxPredicate5)
+	{
+		goto L__BB0_2;
+	} // PTX L34
+	r_BlockSizeX = uint32_t(blockDim.x);							   // PTX L35
+	r_BlockSizeY = uint32_t(blockDim.y);							   // PTX L36
+	r_PtxRegister39 = uint32_t(r_BlockSizeX) * uint32_t(r_BlockSizeY); // PTX L37
+	r_PtxRegister38 = uint32_t(8192u /* two native mbarriers */);	   // PTX L38
+	// Native barrier initialization; one CTA synchronization follows both barriers.
+	// Phase: shared_pipeline_setup. Initialize the original CTA-shared barrier state. Arrival counts and synchronization remain unchanged.
+	BarrierInit(s_SharedStorage, r_PtxRegister38, r_PtxRegister39); // PTX L40
+	r_PtxRegister40 = uint32_t(r_PtxRegister38) + uint32_t(8);		// PTX L42
+	// Native barrier initialization; one CTA synchronization follows both barriers.
+	BarrierInit(s_SharedStorage, r_PtxRegister40, r_PtxRegister39); // PTX L44
+L__BB0_2:															// PTX L46
+	// Phase: cta_rendezvous. CTA rendezvous retained at the original control-flow boundary before subsequent shared-memory work.
+	__syncthreads();																			// PTX L47
+	r_Float32BitsAtPtx48R43 = uint32_t(0);														// PTX L48
+	r_PackedHalf2AtPtx50R92 = FloatToHalf2(r_Float32BitsAtPtx48R43);							// PTX L50
+	r_PtxRegister52 = ShiftLeft(uint32_t(r_ThreadY), uint32_t(6));								// PTX L55
+	r_PtxRegister53 = ShiftLeft(uint32_t(r_CtaZ), uint32_t(8));									// PTX L56
+	r_PtxRegister54 = uint32_t(r_PtxRegister52) + uint32_t(r_PtxRegister53);					// PTX L57
+	r_PtxRegister9 = ShiftLeft(uint32_t(r_PtxRegister54), uint32_t(3));							// PTX L58
+	r_PtxU64Register18 = uint64_t(uint32_t(r_PtxRegister9)) * uint64_t(uint32_t(4));			// PTX L59
+	r_PtxU64Register19 = uint64_t(r_PtxU64Register175) + uint64_t(r_PtxU64Register18);			// PTX L60
+	r_LaneIndexAtPtx62 = uint32_t((threadIdx.x & 31u));											// PTX L62
+	r_PtxU64Register20 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx62)) * int64_t(int32_t(16))); // PTX L64
+	r_PtxU64Register10 = uint64_t(r_PtxU64Register19) + uint64_t(r_PtxU64Register20);			// PTX L65
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register10));
+		r_MmaBHalf2WordAtPtx67R1073 = r_Value.x;
+		r_MmaBHalf2WordAtPtx67R1074 = r_Value.y;
+		r_MmaBHalf2WordAtPtx67R1075 = r_Value.z;
+		r_MmaBHalf2WordAtPtx67R1076 = r_Value.w;
+	} // PTX L67
+	r_PtxRegister55 = r_PtxRegister9 | 128;														// PTX L69
+	r_PtxU64Register21 = uint64_t(uint32_t(r_PtxRegister55)) * uint64_t(uint32_t(4));			// PTX L70
+	r_PtxU64Register22 = uint64_t(r_PtxU64Register175) + uint64_t(r_PtxU64Register21);			// PTX L71
+	r_LaneIndexAtPtx73 = uint32_t((threadIdx.x & 31u));											// PTX L73
+	r_PtxU64Register23 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx73)) * int64_t(int32_t(16))); // PTX L75
+	r_PtxU64Register11 = uint64_t(r_PtxU64Register22) + uint64_t(r_PtxU64Register23);			// PTX L76
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register11));
+		r_MmaBHalf2WordAtPtx78R1077 = r_Value.x;
+		r_MmaBHalf2WordAtPtx78R1078 = r_Value.y;
+		r_MmaBHalf2WordAtPtx78R1079 = r_Value.z;
+		r_MmaBHalf2WordAtPtx78R1080 = r_Value.w;
+	} // PTX L78
+	r_PtxU64Register24 = uint64_t(r_PtxU64Register22) + uint64_t(512);							// PTX L80
+	r_LaneIndexAtPtx82 = uint32_t((threadIdx.x & 31u));											// PTX L82
+	r_PtxU64Register25 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx82)) * int64_t(int32_t(16))); // PTX L84
+	r_PtxU64Register12 = uint64_t(r_PtxU64Register24) + uint64_t(r_PtxU64Register25);			// PTX L85
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register12));
+		r_MmaBHalf2WordAtPtx87R1081 = r_Value.x;
+		r_MmaBHalf2WordAtPtx87R1082 = r_Value.y;
+		r_MmaBHalf2WordAtPtx87R1083 = r_Value.z;
+		r_MmaBHalf2WordAtPtx87R1084 = r_Value.w;
+	} // PTX L87
+	r_PtxU64Register26 = uint64_t(r_PtxU64Register22) + uint64_t(1024);							// PTX L89
+	r_LaneIndexAtPtx91 = uint32_t((threadIdx.x & 31u));											// PTX L91
+	r_PtxU64Register27 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx91)) * int64_t(int32_t(16))); // PTX L93
+	r_PtxU64Register13 = uint64_t(r_PtxU64Register26) + uint64_t(r_PtxU64Register27);			// PTX L94
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register13));
+		r_MmaBHalf2WordAtPtx96R1085 = r_Value.x;
+		r_MmaBHalf2WordAtPtx96R1086 = r_Value.y;
+		r_MmaBHalf2WordAtPtx96R1087 = r_Value.z;
+		r_MmaBHalf2WordAtPtx96R1088 = r_Value.w;
+	} // PTX L96
+	r_LaneIndexAtPtx99 = uint32_t((threadIdx.x & 31u));											// PTX L99
+	r_PtxU64Register28 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx99)) * int64_t(int32_t(16))); // PTX L101
+	r_PtxU64Register29 = uint64_t(r_PtxU64Register19) + uint64_t(r_PtxU64Register28);			// PTX L102
+	r_PtxU64Register14 = uint64_t(r_PtxU64Register29) + uint64_t(16384);						// PTX L103
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register14));
+		r_MmaBHalf2WordAtPtx105R1089 = r_Value.x;
+		r_MmaBHalf2WordAtPtx105R1090 = r_Value.y;
+		r_MmaBHalf2WordAtPtx105R1091 = r_Value.z;
+		r_MmaBHalf2WordAtPtx105R1092 = r_Value.w;
+	} // PTX L105
+	r_LaneIndexAtPtx108 = uint32_t((threadIdx.x & 31u));										 // PTX L108
+	r_PtxU64Register30 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx108)) * int64_t(int32_t(16))); // PTX L110
+	r_PtxU64Register31 = uint64_t(r_PtxU64Register22) + uint64_t(r_PtxU64Register30);			 // PTX L111
+	r_PtxU64Register15 = uint64_t(r_PtxU64Register31) + uint64_t(16384);						 // PTX L112
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register15));
+		r_MmaBHalf2WordAtPtx114R1093 = r_Value.x;
+		r_MmaBHalf2WordAtPtx114R1094 = r_Value.y;
+		r_MmaBHalf2WordAtPtx114R1095 = r_Value.z;
+		r_MmaBHalf2WordAtPtx114R1096 = r_Value.w;
+	} // PTX L114
+	r_LaneIndexAtPtx117 = uint32_t((threadIdx.x & 31u));										 // PTX L117
+	r_PtxU64Register32 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx117)) * int64_t(int32_t(16))); // PTX L119
+	r_PtxU64Register33 = uint64_t(r_PtxU64Register24) + uint64_t(r_PtxU64Register32);			 // PTX L120
+	r_PtxU64Register16 = uint64_t(r_PtxU64Register33) + uint64_t(16384);						 // PTX L121
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register16));
+		r_MmaBHalf2WordAtPtx123R1097 = r_Value.x;
+		r_MmaBHalf2WordAtPtx123R1098 = r_Value.y;
+		r_MmaBHalf2WordAtPtx123R1099 = r_Value.z;
+		r_MmaBHalf2WordAtPtx123R1100 = r_Value.w;
+	} // PTX L123
+	r_LaneIndexAtPtx126 = uint32_t((threadIdx.x & 31u));										 // PTX L126
+	r_PtxU64Register34 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx126)) * int64_t(int32_t(16))); // PTX L128
+	r_PtxU64Register35 = uint64_t(r_PtxU64Register26) + uint64_t(r_PtxU64Register34);			 // PTX L129
+	r_PtxU64Register17 = uint64_t(r_PtxU64Register35) + uint64_t(16384);						 // PTX L130
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register17));
+		r_MmaBHalf2WordAtPtx132R1101 = r_Value.x;
+		r_MmaBHalf2WordAtPtx132R1102 = r_Value.y;
+		r_MmaBHalf2WordAtPtx132R1103 = r_Value.z;
+		r_MmaBHalf2WordAtPtx132R1104 = r_Value.w;
+	} // PTX L132
+	r_PtxRegister10 = r_ThreadY & 1;										  // PTX L134
+	r_PtxRegister56 = ShiftRight(uint32_t(r_ThreadY), uint32_t(1));			  // PTX L135
+	r_PtxRegister57 = r_PtxRegister56 & 1;									  // PTX L136
+	r_PtxRegister58 = ShiftRight(uint32_t(r_ThreadY), uint32_t(2));			  // PTX L137
+	r_PtxRegister59 = ShiftLeft(uint32_t(r_PtxRegister58), uint32_t(9));	  // PTX L138
+	r_PtxRegister60 = ShiftLeft(uint32_t(r_ThreadY), uint32_t(7));			  // PTX L139
+	r_PtxRegister11 = r_PtxRegister60 & 256;								  // PTX L140
+	r_PtxRegister12 = r_PtxRegister59 | r_PtxRegister11;					  // PTX L141
+	r_PtxRegister13 = r_PtxRegister60 & 128;								  // PTX L142
+	r_PtxRegister61 = uint32_t(r_PtxRegister58) + uint32_t(r_PtxRegister4);	  // PTX L143
+	r_PtxRegister14 = uint32_t(r_PtxRegister57) + uint32_t(r_PtxRegister5);	  // PTX L144
+	r_PtxRegister15 = r_HeightBits & -4;									  // PTX L145
+	r_bPtxPredicate6 = uint32_t(r_PtxRegister15) != uint32_t(4);			  // PTX L146
+	r_bPtxPredicate7 = uint32_t(r_PtxRegister15) == uint32_t(4);			  // PTX L147
+	r_bPtxPredicate8 = int32_t(r_PtxRegister61) >= int32_t(r_HeightDiv4Bits); // PTX L148
+	r_PtxRegister62 = uint32_t(r_PtxRegister61) * uint32_t(r_WidthDiv4Bits);  // PTX L149
+	r_PtxRegister16 = r_bPtxPredicate7 ? 0 : r_PtxRegister62;				  // PTX L150
+	r_bPtxPredicate52 = bool(0);											  // PTX L151
+	r_bPtxPredicate9 = r_bPtxPredicate6 & r_bPtxPredicate8;					  // PTX L152
+	r_PtxRegister1006 = uint32_t(r_PtxRegister14);							  // PTX L153
+	if (r_bPtxPredicate9)
+	{
+		goto L__BB0_5;
+	} // PTX L154
+	r_PtxRegister63 = r_WidthBits & -4;							  // PTX L155
+	r_bPtxPredicate10 = uint32_t(r_PtxRegister63) == uint32_t(4); // PTX L156
+	r_bPtxPredicate52 = bool(-1);								  // PTX L157
+	r_PtxRegister1006 = uint32_t(0);							  // PTX L158
+	if (r_bPtxPredicate10)
+	{
+		goto L__BB0_5;
+	} // PTX L159
+	r_bPtxPredicate52 = int32_t(r_PtxRegister14) < int32_t(r_WidthDiv4Bits);   // PTX L160
+	r_PtxRegister1006 = uint32_t(r_PtxRegister14);							   // PTX L161
+L__BB0_5:																	   // PTX L162
+	r_PtxRegister64 = uint32_t(r_PtxRegister16) + uint32_t(r_PtxRegister1006); // PTX L163
+	r_PtxRegister65 = ShiftLeft(uint32_t(r_PtxRegister64), uint32_t(12));	   // PTX L164
+	r_PtxRegister66 = r_PtxRegister65 | r_PtxRegister13;					   // PTX L165
+	r_PtxU64Register36 = SignExtendWordBits(r_PtxRegister66);				   // PTX L166
+	r_PtxU64Register3 = r_bPtxPredicate52 ? r_PtxU64Register36 : 0;			   // PTX L167
+	r_PtxRegister67 = uint32_t(r_PtxRegister12) + uint32_t(r_PtxRegister13);   // PTX L168
+	r_PtxRegister68 = ShiftLeft(uint32_t(r_PtxRegister67), uint32_t(2));	   // PTX L169
+	r_PtxRegister69 = uint32_t(0u /* native shared-input region */);		   // PTX L170
+	r_PtxRegister75 = uint32_t(r_PtxRegister69) + uint32_t(r_PtxRegister68);   // PTX L171
+	r_bPtxPredicate11 = !r_bPtxPredicate52;									   // PTX L172
+	if (r_bPtxPredicate11)
+	{
+		goto L__BB0_8;
+	} // PTX L173
+	r_PtxRegister74 = uint32_t(-1);								  // PTX L174
+	r_PtxRegister73 = Elected(r_PtxRegister74);					  // PTX L176
+	r_bPtxPredicate12 = uint32_t(r_PtxRegister73) == uint32_t(0); // PTX L182
+	if (r_bPtxPredicate12)
+	{
+		goto L__BB0_9;
+	} // PTX L183
+	g_StateByteAddressAtPtx184 = g_StateBaseAddress;										  // PTX L184
+	r_PtxU64Register39 = ShiftLeft(uint64_t(r_PtxU64Register3), uint32_t(2));				  // PTX L185
+	r_PtxU64Register37 = uint64_t(g_StateByteAddressAtPtx184) + uint64_t(r_PtxU64Register39); // PTX L186
+	r_PtxRegister77 = uint32_t(8192u /* two native mbarriers */);							  // PTX L187
+	r_PtxRegister76 = uint32_t(512);														  // PTX L188
+	// Native elected-lane bulk transfer; original expect/arrive/wait order retained.
+	// Phase: asynchronous_staging. Begin asynchronous global-to-shared staging. Keep the surrounding predicates, fill path and wait protocol together.
+	CopyBulk(s_SharedStorage, r_PtxRegister75, r_PtxU64Register37, r_PtxRegister76,
+			 r_PtxRegister77);												 // PTX L190
+	BarrierExpect(s_SharedStorage, r_PtxRegister77, r_PtxRegister76);		 // PTX L193
+	goto L__BB0_9;															 // PTX L195
+L__BB0_8:																	 // PTX L196
+	r_LaneIndexAtPtx198 = uint32_t((threadIdx.x & 31u));					 // PTX L198
+	r_PtxRegister72 = ShiftLeft(uint32_t(r_LaneIndexAtPtx198), uint32_t(4)); // PTX L200
+	r_PtxRegister71 = uint32_t(r_PtxRegister75) + uint32_t(r_PtxRegister72); // PTX L201
+	*reinterpret_cast<uint4*>(s_SharedStorage + uint32_t(r_PtxRegister71)) =
+		make_uint4(r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92,
+				   r_PackedHalf2AtPtx50R92);								   // PTX L203
+L__BB0_9:																	   // PTX L205
+	r_PtxRegister78 = uint32_t(r_ThreadY) + uint32_t(4);					   // PTX L206
+	r_PtxRegister79 = ShiftRight(uint32_t(r_PtxRegister78), uint32_t(2));	   // PTX L207
+	r_PtxRegister80 = ShiftLeft(uint32_t(r_PtxRegister79), uint32_t(9));	   // PTX L208
+	r_PtxRegister17 = r_PtxRegister80 | r_PtxRegister11;					   // PTX L209
+	r_PtxRegister81 = uint32_t(r_PtxRegister79) + uint32_t(r_PtxRegister4);	   // PTX L210
+	r_bPtxPredicate13 = int32_t(r_PtxRegister81) >= int32_t(r_HeightDiv4Bits); // PTX L211
+	r_PtxRegister82 = uint32_t(r_PtxRegister81) * uint32_t(r_WidthDiv4Bits);   // PTX L212
+	r_PtxRegister18 = r_bPtxPredicate7 ? 0 : r_PtxRegister82;				   // PTX L213
+	r_bPtxPredicate53 = bool(0);											   // PTX L214
+	r_bPtxPredicate14 = r_bPtxPredicate6 & r_bPtxPredicate13;				   // PTX L215
+	r_PtxRegister1007 = uint32_t(r_PtxRegister14);							   // PTX L216
+	if (r_bPtxPredicate14)
+	{
+		goto L__BB0_12;
+	} // PTX L217
+	r_PtxRegister83 = r_WidthBits & -4;							  // PTX L218
+	r_bPtxPredicate15 = uint32_t(r_PtxRegister83) == uint32_t(4); // PTX L219
+	r_bPtxPredicate53 = bool(-1);								  // PTX L220
+	r_PtxRegister1007 = uint32_t(0);							  // PTX L221
+	if (r_bPtxPredicate15)
+	{
+		goto L__BB0_12;
+	} // PTX L222
+	r_bPtxPredicate53 = int32_t(r_PtxRegister14) < int32_t(r_WidthDiv4Bits);   // PTX L223
+	r_PtxRegister1007 = uint32_t(r_PtxRegister14);							   // PTX L224
+L__BB0_12:																	   // PTX L225
+	r_PtxRegister84 = uint32_t(r_PtxRegister18) + uint32_t(r_PtxRegister1007); // PTX L226
+	r_PtxRegister85 = ShiftLeft(uint32_t(r_PtxRegister84), uint32_t(12));	   // PTX L227
+	r_PtxRegister86 = r_PtxRegister85 | r_PtxRegister13;					   // PTX L228
+	r_PtxU64Register40 = SignExtendWordBits(r_PtxRegister86);				   // PTX L229
+	r_PtxU64Register4 = r_bPtxPredicate53 ? r_PtxU64Register40 : 0;			   // PTX L230
+	r_PtxRegister87 = uint32_t(r_PtxRegister17) + uint32_t(r_PtxRegister13);   // PTX L231
+	r_PtxRegister88 = ShiftLeft(uint32_t(r_PtxRegister87), uint32_t(2));	   // PTX L232
+	r_PtxRegister89 = uint32_t(0u /* native shared-input region */);		   // PTX L233
+	r_PtxRegister96 = uint32_t(r_PtxRegister89) + uint32_t(r_PtxRegister88);   // PTX L234
+	r_bPtxPredicate16 = !r_bPtxPredicate53;									   // PTX L235
+	if (r_bPtxPredicate16)
+	{
+		goto L__BB0_15;
+	} // PTX L236
+	r_PtxRegister95 = uint32_t(-1);								  // PTX L237
+	r_PtxRegister94 = Elected(r_PtxRegister95);					  // PTX L239
+	r_bPtxPredicate17 = uint32_t(r_PtxRegister94) == uint32_t(0); // PTX L245
+	if (r_bPtxPredicate17)
+	{
+		goto L__BB0_16;
+	} // PTX L246
+	g_StateByteAddressAtPtx247 = g_StateBaseAddress;										  // PTX L247
+	r_PtxU64Register43 = ShiftLeft(uint64_t(r_PtxU64Register4), uint32_t(2));				  // PTX L248
+	r_PtxU64Register41 = uint64_t(g_StateByteAddressAtPtx247) + uint64_t(r_PtxU64Register43); // PTX L249
+	r_PtxRegister98 = uint32_t(8192u /* two native mbarriers */);							  // PTX L250
+	r_PtxRegister97 = uint32_t(512);														  // PTX L251
+	// Native elected-lane bulk transfer; original expect/arrive/wait order retained.
+	CopyBulk(s_SharedStorage, r_PtxRegister96, r_PtxU64Register41, r_PtxRegister97,
+			 r_PtxRegister98);												 // PTX L253
+	BarrierExpect(s_SharedStorage, r_PtxRegister98, r_PtxRegister97);		 // PTX L256
+	goto L__BB0_16;															 // PTX L258
+L__BB0_15:																	 // PTX L259
+	r_LaneIndexAtPtx261 = uint32_t((threadIdx.x & 31u));					 // PTX L261
+	r_PtxRegister93 = ShiftLeft(uint32_t(r_LaneIndexAtPtx261), uint32_t(4)); // PTX L263
+	r_PtxRegister91 = uint32_t(r_PtxRegister96) + uint32_t(r_PtxRegister93); // PTX L264
+	*reinterpret_cast<uint4*>(s_SharedStorage + uint32_t(r_PtxRegister91)) =
+		make_uint4(r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92,
+				   r_PackedHalf2AtPtx50R92);					  // PTX L266
+L__BB0_16:														  // PTX L268
+	r_PtxRegister99 = uint32_t(8192u /* two native mbarriers */); // PTX L269
+	r_PtxRegister100 = uint32_t(1);								  // PTX L270
+	// Phase: shared_stage_readiness. Shared-stage readiness protocol: preserve the original arrival token, polling condition and consumer order.
+	r_PtxU64Register44 = BarrierArrive(s_SharedStorage, r_PtxRegister99, r_PtxRegister100); // PTX L272
+L__BB0_17:																					// PTX L274
+	r_PtxRegister102 = uint32_t(8192u /* two native mbarriers */);							// PTX L275
+	r_PtxRegister101 = BarrierReady(s_SharedStorage, r_PtxRegister102, r_PtxU64Register44); // PTX L277
+	r_bPtxPredicate18 = uint32_t(r_PtxRegister101) == uint32_t(0);							// PTX L283
+	if (r_bPtxPredicate18)
+	{
+		goto L__BB0_17;
+	} // PTX L284
+	r_PtxRegister19 = r_WidthBits & -4;											// PTX L285
+	g_StateByteAddressAtPtx286 = g_StateBaseAddress;							// PTX L286
+	r_bPtxPredicate1 = int32_t(r_PtxRegister81) < int32_t(r_HeightDiv4Bits);	// PTX L287
+	r_PtxRegister1072 = uint32_t(0);											// PTX L288
+	r_MmaAccumulatorHalf2WordAtPtx289R1008 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L289
+	r_MmaAccumulatorHalf2WordAtPtx290R1009 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L290
+	r_MmaAccumulatorHalf2WordAtPtx291R1010 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L291
+	r_MmaAccumulatorHalf2WordAtPtx292R1011 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L292
+	r_MmaAccumulatorHalf2WordAtPtx293R1012 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L293
+	r_MmaAccumulatorHalf2WordAtPtx294R1013 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L294
+	r_MmaAccumulatorHalf2WordAtPtx295R1014 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L295
+	r_MmaAccumulatorHalf2WordAtPtx296R1015 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L296
+	r_MmaAccumulatorHalf2WordAtPtx297R1016 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L297
+	r_MmaAccumulatorHalf2WordAtPtx298R1017 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L298
+	r_MmaAccumulatorHalf2WordAtPtx299R1018 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L299
+	r_MmaAccumulatorHalf2WordAtPtx300R1019 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L300
+	r_MmaAccumulatorHalf2WordAtPtx301R1020 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L301
+	r_MmaAccumulatorHalf2WordAtPtx302R1021 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L302
+	r_MmaAccumulatorHalf2WordAtPtx303R1022 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L303
+	r_MmaAccumulatorHalf2WordAtPtx304R1023 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L304
+	r_MmaAccumulatorHalf2WordAtPtx305R1024 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L305
+	r_MmaAccumulatorHalf2WordAtPtx306R1025 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L306
+	r_MmaAccumulatorHalf2WordAtPtx307R1026 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L307
+	r_MmaAccumulatorHalf2WordAtPtx308R1027 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L308
+	r_MmaAccumulatorHalf2WordAtPtx309R1028 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L309
+	r_MmaAccumulatorHalf2WordAtPtx310R1029 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L310
+	r_MmaAccumulatorHalf2WordAtPtx311R1030 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L311
+	r_MmaAccumulatorHalf2WordAtPtx312R1031 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L312
+	r_MmaAccumulatorHalf2WordAtPtx313R1032 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L313
+	r_MmaAccumulatorHalf2WordAtPtx314R1033 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L314
+	r_MmaAccumulatorHalf2WordAtPtx315R1034 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L315
+	r_MmaAccumulatorHalf2WordAtPtx316R1035 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L316
+	r_MmaAccumulatorHalf2WordAtPtx317R1036 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L317
+	r_MmaAccumulatorHalf2WordAtPtx318R1037 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L318
+	r_MmaAccumulatorHalf2WordAtPtx319R1038 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L319
+	r_MmaAccumulatorHalf2WordAtPtx320R1039 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L320
+	r_MmaAccumulatorHalf2WordAtPtx321R1040 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L321
+	r_MmaAccumulatorHalf2WordAtPtx322R1041 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L322
+	r_MmaAccumulatorHalf2WordAtPtx323R1042 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L323
+	r_MmaAccumulatorHalf2WordAtPtx324R1043 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L324
+	r_MmaAccumulatorHalf2WordAtPtx325R1044 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L325
+	r_MmaAccumulatorHalf2WordAtPtx326R1045 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L326
+	r_MmaAccumulatorHalf2WordAtPtx327R1046 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L327
+	r_MmaAccumulatorHalf2WordAtPtx328R1047 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L328
+	r_MmaAccumulatorHalf2WordAtPtx329R1048 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L329
+	r_MmaAccumulatorHalf2WordAtPtx330R1049 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L330
+	r_MmaAccumulatorHalf2WordAtPtx331R1050 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L331
+	r_MmaAccumulatorHalf2WordAtPtx332R1051 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L332
+	r_MmaAccumulatorHalf2WordAtPtx333R1052 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L333
+	r_MmaAccumulatorHalf2WordAtPtx334R1053 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L334
+	r_MmaAccumulatorHalf2WordAtPtx335R1054 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L335
+	r_MmaAccumulatorHalf2WordAtPtx336R1055 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L336
+	r_MmaAccumulatorHalf2WordAtPtx337R1056 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L337
+	r_MmaAccumulatorHalf2WordAtPtx338R1057 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L338
+	r_MmaAccumulatorHalf2WordAtPtx339R1058 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L339
+	r_MmaAccumulatorHalf2WordAtPtx340R1059 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L340
+	r_MmaAccumulatorHalf2WordAtPtx341R1060 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L341
+	r_MmaAccumulatorHalf2WordAtPtx342R1061 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L342
+	r_MmaAccumulatorHalf2WordAtPtx343R1062 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L343
+	r_MmaAccumulatorHalf2WordAtPtx344R1063 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L344
+	r_MmaAccumulatorHalf2WordAtPtx345R1064 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L345
+	r_MmaAccumulatorHalf2WordAtPtx346R1065 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L346
+	r_MmaAccumulatorHalf2WordAtPtx347R1066 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L347
+	r_MmaAccumulatorHalf2WordAtPtx348R1067 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L348
+	r_MmaAccumulatorHalf2WordAtPtx349R1068 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L349
+	r_MmaAccumulatorHalf2WordAtPtx350R1069 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L350
+	r_MmaAccumulatorHalf2WordAtPtx351R1070 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L351
+	r_MmaAccumulatorHalf2WordAtPtx352R1071 = uint32_t(r_PackedHalf2AtPtx50R92); // PTX L352
+L__BB0_19:																		// PTX L353
+	r_bPtxPredicate19 = int32_t(r_PtxRegister14) < int32_t(r_WidthDiv4Bits);	// PTX L354
+	r_bPtxPredicate20 = int32_t(r_PtxRegister61) < int32_t(r_HeightDiv4Bits);	// PTX L355
+	r_bPtxPredicate21 = int32_t(r_PtxRegister61) >= int32_t(r_HeightDiv4Bits);	// PTX L356
+	r_bPtxPredicate22 = uint32_t(r_PtxRegister19) == uint32_t(4);				// PTX L357
+	r_bPtxPredicate23 = uint32_t(r_PtxRegister15) == uint32_t(4);				// PTX L358
+	r_bPtxPredicate2 = uint32_t(r_PtxRegister15) != uint32_t(4);				// PTX L359
+	r_PtxRegister103 = ShiftRight(uint32_t(r_PtxRegister1072), uint32_t(5));	// PTX L360
+	r_PtxRegister104 = r_PtxRegister103 & 1;									// PTX L361
+	r_PtxRegister20 = uint32_t(r_PtxRegister1072) + uint32_t(32);				// PTX L362
+	r_PtxRegister105 = ShiftLeft(uint32_t(r_PtxRegister1072), uint32_t(7));		// PTX L363
+	r_PtxRegister21 = r_PtxRegister105 & 4096;									// PTX L364
+	r_PtxRegister22 = r_PtxRegister21 ^ 4096;									// PTX L365
+	r_bPtxPredicate24 = uint32_t(r_PtxRegister104) == uint32_t(0);				// PTX L366
+	r_PtxRegister106 = uint32_t(8192u /* two native mbarriers */);				// PTX L367
+	r_PtxRegister107 = uint32_t(r_PtxRegister106) + uint32_t(8);				// PTX L368
+	r_PtxRegister138 = r_bPtxPredicate24 ? r_PtxRegister107 : r_PtxRegister106; // PTX L369
+	r_bPtxPredicate25 = r_bPtxPredicate2 & r_bPtxPredicate21;					// PTX L370
+	r_bPtxPredicate26 = r_bPtxPredicate23 | r_bPtxPredicate20;					// PTX L371
+	r_bPtxPredicate27 = r_bPtxPredicate25 | r_bPtxPredicate22;					// PTX L372
+	r_PtxRegister108 = r_bPtxPredicate25 ? r_PtxRegister14 : 0;					// PTX L373
+	r_PtxRegister23 = r_bPtxPredicate22 ? r_PtxRegister108 : r_PtxRegister14;	// PTX L374
+	r_bPtxPredicate28 = r_bPtxPredicate27 | r_bPtxPredicate19;					// PTX L375
+	r_bPtxPredicate3 = r_bPtxPredicate28 & r_bPtxPredicate26;					// PTX L376
+	r_PtxU64Register173 = uint64_t(0);											// PTX L377
+	r_bPtxPredicate29 = !r_bPtxPredicate3;										// PTX L378
+	if (r_bPtxPredicate29)
+	{
+		goto L__BB0_21;
+	} // PTX L379
+	r_PtxRegister109 = uint32_t(r_PtxRegister16) + uint32_t(r_PtxRegister23);	// PTX L380
+	r_PtxRegister110 = ShiftRight(uint32_t(r_PtxRegister20), uint32_t(4));		// PTX L381
+	r_PtxRegister111 = uint32_t(r_PtxRegister110) + uint32_t(r_PtxRegister10);	// PTX L382
+	r_PtxRegister112 = ShiftLeft(uint32_t(r_PtxRegister109), uint32_t(12));		// PTX L383
+	r_PtxRegister113 = ShiftLeft(uint32_t(r_PtxRegister111), uint32_t(7));		// PTX L384
+	r_PtxRegister114 = uint32_t(r_PtxRegister112) + uint32_t(r_PtxRegister113); // PTX L385
+	r_PtxU64Register173 = SignExtendWordBits(r_PtxRegister114);					// PTX L386
+L__BB0_21:																		// PTX L387
+	if (r_bPtxPredicate29)
+	{
+		goto L__BB0_24;
+	} // PTX L388
+	r_PtxRegister120 = uint32_t(-1);							   // PTX L389
+	r_PtxRegister119 = Elected(r_PtxRegister120);				   // PTX L391
+	r_bPtxPredicate30 = uint32_t(r_PtxRegister119) == uint32_t(0); // PTX L397
+	if (r_bPtxPredicate30)
+	{
+		goto L__BB0_25;
+	} // PTX L398
+	r_PtxRegister121 = uint32_t(r_PtxRegister75) + uint32_t(r_PtxRegister22);				  // PTX L399
+	r_PtxU64Register46 = ShiftLeft(uint64_t(r_PtxU64Register173), uint32_t(2));				  // PTX L400
+	r_PtxU64Register45 = uint64_t(g_StateByteAddressAtPtx286) + uint64_t(r_PtxU64Register46); // PTX L401
+	r_PtxRegister122 = uint32_t(512);														  // PTX L402
+	// Native elected-lane bulk transfer; original expect/arrive/wait order retained.
+	CopyBulk(s_SharedStorage, r_PtxRegister121, r_PtxU64Register45, r_PtxRegister122,
+			 r_PtxRegister138);													// PTX L404
+	BarrierExpect(s_SharedStorage, r_PtxRegister138, r_PtxRegister122);			// PTX L407
+	goto L__BB0_25;																// PTX L409
+L__BB0_24:																		// PTX L410
+	r_LaneIndexAtPtx412 = uint32_t((threadIdx.x & 31u));						// PTX L412
+	r_PtxRegister117 = uint32_t(r_PtxRegister75) + uint32_t(r_PtxRegister22);	// PTX L414
+	r_PtxRegister118 = ShiftLeft(uint32_t(r_LaneIndexAtPtx412), uint32_t(4));	// PTX L415
+	r_PtxRegister116 = uint32_t(r_PtxRegister117) + uint32_t(r_PtxRegister118); // PTX L416
+	*reinterpret_cast<uint4*>(s_SharedStorage + uint32_t(r_PtxRegister116)) =
+		make_uint4(r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92,
+				   r_PackedHalf2AtPtx50R92);								   // PTX L418
+L__BB0_25:																	   // PTX L420
+	r_bPtxPredicate31 = int32_t(r_PtxRegister81) >= int32_t(r_HeightDiv4Bits); // PTX L421
+	r_bPtxPredicate32 = int32_t(r_PtxRegister14) < int32_t(r_WidthDiv4Bits);   // PTX L422
+	r_bPtxPredicate33 = uint32_t(r_PtxRegister19) == uint32_t(4);			   // PTX L423
+	r_bPtxPredicate34 = uint32_t(r_PtxRegister15) == uint32_t(4);			   // PTX L424
+	r_bPtxPredicate35 = r_bPtxPredicate2 & r_bPtxPredicate31;				   // PTX L425
+	r_bPtxPredicate36 = r_bPtxPredicate34 | r_bPtxPredicate1;				   // PTX L426
+	r_bPtxPredicate37 = r_bPtxPredicate35 | r_bPtxPredicate33;				   // PTX L427
+	r_PtxRegister123 = r_bPtxPredicate35 ? r_PtxRegister14 : 0;				   // PTX L428
+	r_PtxRegister24 = r_bPtxPredicate33 ? r_PtxRegister123 : r_PtxRegister14;  // PTX L429
+	r_bPtxPredicate38 = r_bPtxPredicate37 | r_bPtxPredicate32;				   // PTX L430
+	r_bPtxPredicate4 = r_bPtxPredicate38 & r_bPtxPredicate36;				   // PTX L431
+	r_PtxU64Register174 = uint64_t(0);										   // PTX L432
+	r_bPtxPredicate39 = !r_bPtxPredicate4;									   // PTX L433
+	if (r_bPtxPredicate39)
+	{
+		goto L__BB0_27;
+	} // PTX L434
+	r_PtxRegister124 = uint32_t(r_PtxRegister18) + uint32_t(r_PtxRegister24);	// PTX L435
+	r_PtxRegister125 = ShiftRight(uint32_t(r_PtxRegister20), uint32_t(4));		// PTX L436
+	r_PtxRegister126 = uint32_t(r_PtxRegister125) + uint32_t(r_PtxRegister10);	// PTX L437
+	r_PtxRegister127 = ShiftLeft(uint32_t(r_PtxRegister124), uint32_t(12));		// PTX L438
+	r_PtxRegister128 = ShiftLeft(uint32_t(r_PtxRegister126), uint32_t(7));		// PTX L439
+	r_PtxRegister129 = uint32_t(r_PtxRegister127) + uint32_t(r_PtxRegister128); // PTX L440
+	r_PtxU64Register174 = SignExtendWordBits(r_PtxRegister129);					// PTX L441
+L__BB0_27:																		// PTX L442
+	if (r_bPtxPredicate39)
+	{
+		goto L__BB0_30;
+	} // PTX L443
+	r_PtxRegister135 = uint32_t(-1);							   // PTX L444
+	r_PtxRegister134 = Elected(r_PtxRegister135);				   // PTX L446
+	r_bPtxPredicate40 = uint32_t(r_PtxRegister134) == uint32_t(0); // PTX L452
+	if (r_bPtxPredicate40)
+	{
+		goto L__BB0_31;
+	} // PTX L453
+	r_PtxRegister136 = uint32_t(r_PtxRegister96) + uint32_t(r_PtxRegister22);				  // PTX L454
+	r_PtxU64Register48 = ShiftLeft(uint64_t(r_PtxU64Register174), uint32_t(2));				  // PTX L455
+	r_PtxU64Register47 = uint64_t(g_StateByteAddressAtPtx286) + uint64_t(r_PtxU64Register48); // PTX L456
+	r_PtxRegister137 = uint32_t(512);														  // PTX L457
+	// Native elected-lane bulk transfer; original expect/arrive/wait order retained.
+	CopyBulk(s_SharedStorage, r_PtxRegister136, r_PtxU64Register47, r_PtxRegister137,
+			 r_PtxRegister138);													// PTX L459
+	BarrierExpect(s_SharedStorage, r_PtxRegister138, r_PtxRegister137);			// PTX L462
+	goto L__BB0_31;																// PTX L464
+L__BB0_30:																		// PTX L465
+	r_LaneIndexAtPtx467 = uint32_t((threadIdx.x & 31u));						// PTX L467
+	r_PtxRegister132 = uint32_t(r_PtxRegister96) + uint32_t(r_PtxRegister22);	// PTX L469
+	r_PtxRegister133 = ShiftLeft(uint32_t(r_LaneIndexAtPtx467), uint32_t(4));	// PTX L470
+	r_PtxRegister131 = uint32_t(r_PtxRegister132) + uint32_t(r_PtxRegister133); // PTX L471
+	*reinterpret_cast<uint4*>(s_SharedStorage + uint32_t(r_PtxRegister131)) =
+		make_uint4(r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92,
+				   r_PackedHalf2AtPtx50R92);									// PTX L473
+L__BB0_31:																		// PTX L475
+	r_PtxRegister260 = uint32_t(0u /* native shared-input region */);			// PTX L476
+	r_PtxRegister261 = uint32_t(r_PtxRegister260) + uint32_t(r_PtxRegister21);	// PTX L477
+	r_LaneIndexAtPtx479 = uint32_t((threadIdx.x & 31u));						// PTX L479
+	r_PtxRegister262 = ShiftLeft(uint32_t(r_LaneIndexAtPtx479), uint32_t(4));	// PTX L481
+	r_PtxRegister140 = uint32_t(r_PtxRegister261) + uint32_t(r_PtxRegister262); // PTX L482
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister140));
+		r_MmaAHalf2WordAtPtx484R155 = r_Value.x;
+		r_MmaAHalf2WordAtPtx484R156 = r_Value.y;
+		r_MmaAHalf2WordAtPtx484R157 = r_Value.z;
+		r_MmaAHalf2WordAtPtx484R158 = r_Value.w;
+	} // PTX L484
+	r_LaneIndexAtPtx487 = uint32_t((threadIdx.x & 31u));						// PTX L487
+	r_PtxRegister263 = ShiftLeft(uint32_t(r_LaneIndexAtPtx487), uint32_t(4));	// PTX L489
+	r_PtxRegister264 = uint32_t(r_PtxRegister261) + uint32_t(r_PtxRegister263); // PTX L490
+	r_PtxRegister142 = uint32_t(r_PtxRegister264) + uint32_t(512);				// PTX L491
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister142));
+		r_MmaAHalf2WordAtPtx493R159 = r_Value.x;
+		r_MmaAHalf2WordAtPtx493R160 = r_Value.y;
+		r_MmaAHalf2WordAtPtx493R161 = r_Value.z;
+		r_MmaAHalf2WordAtPtx493R162 = r_Value.w;
+	} // PTX L493
+	r_LaneIndexAtPtx496 = uint32_t((threadIdx.x & 31u));						// PTX L496
+	r_PtxRegister265 = ShiftLeft(uint32_t(r_LaneIndexAtPtx496), uint32_t(4));	// PTX L498
+	r_PtxRegister266 = uint32_t(r_PtxRegister261) + uint32_t(r_PtxRegister265); // PTX L499
+	r_PtxRegister144 = uint32_t(r_PtxRegister266) + uint32_t(1024);				// PTX L500
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister144));
+		r_MmaAHalf2WordAtPtx502R179 = r_Value.x;
+		r_MmaAHalf2WordAtPtx502R180 = r_Value.y;
+		r_MmaAHalf2WordAtPtx502R181 = r_Value.z;
+		r_MmaAHalf2WordAtPtx502R182 = r_Value.w;
+	} // PTX L502
+	r_LaneIndexAtPtx505 = uint32_t((threadIdx.x & 31u));						// PTX L505
+	r_PtxRegister267 = ShiftLeft(uint32_t(r_LaneIndexAtPtx505), uint32_t(4));	// PTX L507
+	r_PtxRegister268 = uint32_t(r_PtxRegister261) + uint32_t(r_PtxRegister267); // PTX L508
+	r_PtxRegister146 = uint32_t(r_PtxRegister268) + uint32_t(1536);				// PTX L509
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister146));
+		r_MmaAHalf2WordAtPtx511R183 = r_Value.x;
+		r_MmaAHalf2WordAtPtx511R184 = r_Value.y;
+		r_MmaAHalf2WordAtPtx511R185 = r_Value.z;
+		r_MmaAHalf2WordAtPtx511R186 = r_Value.w;
+	} // PTX L511
+	r_LaneIndexAtPtx514 = uint32_t((threadIdx.x & 31u));						// PTX L514
+	r_PtxRegister269 = ShiftLeft(uint32_t(r_LaneIndexAtPtx514), uint32_t(4));	// PTX L516
+	r_PtxRegister270 = uint32_t(r_PtxRegister261) + uint32_t(r_PtxRegister269); // PTX L517
+	r_PtxRegister148 = uint32_t(r_PtxRegister270) + uint32_t(2048);				// PTX L518
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister148));
+		r_MmaAHalf2WordAtPtx520R203 = r_Value.x;
+		r_MmaAHalf2WordAtPtx520R204 = r_Value.y;
+		r_MmaAHalf2WordAtPtx520R205 = r_Value.z;
+		r_MmaAHalf2WordAtPtx520R206 = r_Value.w;
+	} // PTX L520
+	r_LaneIndexAtPtx523 = uint32_t((threadIdx.x & 31u));						// PTX L523
+	r_PtxRegister271 = ShiftLeft(uint32_t(r_LaneIndexAtPtx523), uint32_t(4));	// PTX L525
+	r_PtxRegister272 = uint32_t(r_PtxRegister261) + uint32_t(r_PtxRegister271); // PTX L526
+	r_PtxRegister150 = uint32_t(r_PtxRegister272) + uint32_t(2560);				// PTX L527
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister150));
+		r_MmaAHalf2WordAtPtx529R207 = r_Value.x;
+		r_MmaAHalf2WordAtPtx529R208 = r_Value.y;
+		r_MmaAHalf2WordAtPtx529R209 = r_Value.z;
+		r_MmaAHalf2WordAtPtx529R210 = r_Value.w;
+	} // PTX L529
+	r_LaneIndexAtPtx532 = uint32_t((threadIdx.x & 31u));						// PTX L532
+	r_PtxRegister273 = ShiftLeft(uint32_t(r_LaneIndexAtPtx532), uint32_t(4));	// PTX L534
+	r_PtxRegister274 = uint32_t(r_PtxRegister261) + uint32_t(r_PtxRegister273); // PTX L535
+	r_PtxRegister152 = uint32_t(r_PtxRegister274) + uint32_t(3072);				// PTX L536
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister152));
+		r_MmaAHalf2WordAtPtx538R227 = r_Value.x;
+		r_MmaAHalf2WordAtPtx538R228 = r_Value.y;
+		r_MmaAHalf2WordAtPtx538R229 = r_Value.z;
+		r_MmaAHalf2WordAtPtx538R230 = r_Value.w;
+	} // PTX L538
+	r_LaneIndexAtPtx541 = uint32_t((threadIdx.x & 31u));						// PTX L541
+	r_PtxRegister275 = ShiftLeft(uint32_t(r_LaneIndexAtPtx541), uint32_t(4));	// PTX L543
+	r_PtxRegister276 = uint32_t(r_PtxRegister261) + uint32_t(r_PtxRegister275); // PTX L544
+	r_PtxRegister154 = uint32_t(r_PtxRegister276) + uint32_t(3584);				// PTX L545
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister154));
+		r_MmaAHalf2WordAtPtx547R231 = r_Value.x;
+		r_MmaAHalf2WordAtPtx547R232 = r_Value.y;
+		r_MmaAHalf2WordAtPtx547R233 = r_Value.z;
+		r_MmaAHalf2WordAtPtx547R234 = r_Value.w;
+	} // PTX L547
+	// Phase: tensor_accumulation. Tensor-fragment accumulation starts here. The selected helper retains the independent K32 FP8 or K16 FP16 operand contract.
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx550R163, r_MmaAccumulatorHalf2WordAtPtx550R164,
+			r_MmaAHalf2WordAtPtx484R155, r_MmaAHalf2WordAtPtx484R156, r_MmaAHalf2WordAtPtx484R157,
+			r_MmaAHalf2WordAtPtx484R158, r_MmaBHalf2WordAtPtx67R1073, r_MmaBHalf2WordAtPtx67R1074,
+			r_MmaAccumulatorHalf2WordAtPtx352R1071, r_MmaAccumulatorHalf2WordAtPtx351R1070); // PTX L550
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx557R165, r_MmaAccumulatorHalf2WordAtPtx557R166,
+			r_MmaAHalf2WordAtPtx484R155, r_MmaAHalf2WordAtPtx484R156, r_MmaAHalf2WordAtPtx484R157,
+			r_MmaAHalf2WordAtPtx484R158, r_MmaBHalf2WordAtPtx67R1075, r_MmaBHalf2WordAtPtx67R1076,
+			r_MmaAccumulatorHalf2WordAtPtx350R1069, r_MmaAccumulatorHalf2WordAtPtx349R1068); // PTX L557
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx352R1071, r_MmaAccumulatorHalf2WordAtPtx351R1070,
+			r_MmaAHalf2WordAtPtx493R159, r_MmaAHalf2WordAtPtx493R160, r_MmaAHalf2WordAtPtx493R161,
+			r_MmaAHalf2WordAtPtx493R162, r_MmaBHalf2WordAtPtx105R1089, r_MmaBHalf2WordAtPtx105R1090,
+			r_MmaAccumulatorHalf2WordAtPtx550R163,
+			r_MmaAccumulatorHalf2WordAtPtx550R164); // PTX L564
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx350R1069, r_MmaAccumulatorHalf2WordAtPtx349R1068,
+			r_MmaAHalf2WordAtPtx493R159, r_MmaAHalf2WordAtPtx493R160, r_MmaAHalf2WordAtPtx493R161,
+			r_MmaAHalf2WordAtPtx493R162, r_MmaBHalf2WordAtPtx105R1091, r_MmaBHalf2WordAtPtx105R1092,
+			r_MmaAccumulatorHalf2WordAtPtx557R165,
+			r_MmaAccumulatorHalf2WordAtPtx557R166); // PTX L571
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx578R167, r_MmaAccumulatorHalf2WordAtPtx578R168,
+			r_MmaAHalf2WordAtPtx484R155, r_MmaAHalf2WordAtPtx484R156, r_MmaAHalf2WordAtPtx484R157,
+			r_MmaAHalf2WordAtPtx484R158, r_MmaBHalf2WordAtPtx78R1077, r_MmaBHalf2WordAtPtx78R1078,
+			r_MmaAccumulatorHalf2WordAtPtx348R1067, r_MmaAccumulatorHalf2WordAtPtx347R1066); // PTX L578
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx585R169, r_MmaAccumulatorHalf2WordAtPtx585R170,
+			r_MmaAHalf2WordAtPtx484R155, r_MmaAHalf2WordAtPtx484R156, r_MmaAHalf2WordAtPtx484R157,
+			r_MmaAHalf2WordAtPtx484R158, r_MmaBHalf2WordAtPtx78R1079, r_MmaBHalf2WordAtPtx78R1080,
+			r_MmaAccumulatorHalf2WordAtPtx346R1065, r_MmaAccumulatorHalf2WordAtPtx345R1064); // PTX L585
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx348R1067, r_MmaAccumulatorHalf2WordAtPtx347R1066,
+			r_MmaAHalf2WordAtPtx493R159, r_MmaAHalf2WordAtPtx493R160, r_MmaAHalf2WordAtPtx493R161,
+			r_MmaAHalf2WordAtPtx493R162, r_MmaBHalf2WordAtPtx114R1093, r_MmaBHalf2WordAtPtx114R1094,
+			r_MmaAccumulatorHalf2WordAtPtx578R167,
+			r_MmaAccumulatorHalf2WordAtPtx578R168); // PTX L592
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx346R1065, r_MmaAccumulatorHalf2WordAtPtx345R1064,
+			r_MmaAHalf2WordAtPtx493R159, r_MmaAHalf2WordAtPtx493R160, r_MmaAHalf2WordAtPtx493R161,
+			r_MmaAHalf2WordAtPtx493R162, r_MmaBHalf2WordAtPtx114R1095, r_MmaBHalf2WordAtPtx114R1096,
+			r_MmaAccumulatorHalf2WordAtPtx585R169,
+			r_MmaAccumulatorHalf2WordAtPtx585R170); // PTX L599
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx606R171, r_MmaAccumulatorHalf2WordAtPtx606R172,
+			r_MmaAHalf2WordAtPtx484R155, r_MmaAHalf2WordAtPtx484R156, r_MmaAHalf2WordAtPtx484R157,
+			r_MmaAHalf2WordAtPtx484R158, r_MmaBHalf2WordAtPtx87R1081, r_MmaBHalf2WordAtPtx87R1082,
+			r_MmaAccumulatorHalf2WordAtPtx344R1063, r_MmaAccumulatorHalf2WordAtPtx343R1062); // PTX L606
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx613R173, r_MmaAccumulatorHalf2WordAtPtx613R174,
+			r_MmaAHalf2WordAtPtx484R155, r_MmaAHalf2WordAtPtx484R156, r_MmaAHalf2WordAtPtx484R157,
+			r_MmaAHalf2WordAtPtx484R158, r_MmaBHalf2WordAtPtx87R1083, r_MmaBHalf2WordAtPtx87R1084,
+			r_MmaAccumulatorHalf2WordAtPtx342R1061, r_MmaAccumulatorHalf2WordAtPtx341R1060); // PTX L613
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx344R1063, r_MmaAccumulatorHalf2WordAtPtx343R1062,
+			r_MmaAHalf2WordAtPtx493R159, r_MmaAHalf2WordAtPtx493R160, r_MmaAHalf2WordAtPtx493R161,
+			r_MmaAHalf2WordAtPtx493R162, r_MmaBHalf2WordAtPtx123R1097, r_MmaBHalf2WordAtPtx123R1098,
+			r_MmaAccumulatorHalf2WordAtPtx606R171,
+			r_MmaAccumulatorHalf2WordAtPtx606R172); // PTX L620
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx342R1061, r_MmaAccumulatorHalf2WordAtPtx341R1060,
+			r_MmaAHalf2WordAtPtx493R159, r_MmaAHalf2WordAtPtx493R160, r_MmaAHalf2WordAtPtx493R161,
+			r_MmaAHalf2WordAtPtx493R162, r_MmaBHalf2WordAtPtx123R1099, r_MmaBHalf2WordAtPtx123R1100,
+			r_MmaAccumulatorHalf2WordAtPtx613R173,
+			r_MmaAccumulatorHalf2WordAtPtx613R174); // PTX L627
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx634R175, r_MmaAccumulatorHalf2WordAtPtx634R176,
+			r_MmaAHalf2WordAtPtx484R155, r_MmaAHalf2WordAtPtx484R156, r_MmaAHalf2WordAtPtx484R157,
+			r_MmaAHalf2WordAtPtx484R158, r_MmaBHalf2WordAtPtx96R1085, r_MmaBHalf2WordAtPtx96R1086,
+			r_MmaAccumulatorHalf2WordAtPtx340R1059, r_MmaAccumulatorHalf2WordAtPtx339R1058); // PTX L634
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx641R177, r_MmaAccumulatorHalf2WordAtPtx641R178,
+			r_MmaAHalf2WordAtPtx484R155, r_MmaAHalf2WordAtPtx484R156, r_MmaAHalf2WordAtPtx484R157,
+			r_MmaAHalf2WordAtPtx484R158, r_MmaBHalf2WordAtPtx96R1087, r_MmaBHalf2WordAtPtx96R1088,
+			r_MmaAccumulatorHalf2WordAtPtx338R1057, r_MmaAccumulatorHalf2WordAtPtx337R1056); // PTX L641
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx340R1059, r_MmaAccumulatorHalf2WordAtPtx339R1058,
+			r_MmaAHalf2WordAtPtx493R159, r_MmaAHalf2WordAtPtx493R160, r_MmaAHalf2WordAtPtx493R161,
+			r_MmaAHalf2WordAtPtx493R162, r_MmaBHalf2WordAtPtx132R1101, r_MmaBHalf2WordAtPtx132R1102,
+			r_MmaAccumulatorHalf2WordAtPtx634R175,
+			r_MmaAccumulatorHalf2WordAtPtx634R176); // PTX L648
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx338R1057, r_MmaAccumulatorHalf2WordAtPtx337R1056,
+			r_MmaAHalf2WordAtPtx493R159, r_MmaAHalf2WordAtPtx493R160, r_MmaAHalf2WordAtPtx493R161,
+			r_MmaAHalf2WordAtPtx493R162, r_MmaBHalf2WordAtPtx132R1103, r_MmaBHalf2WordAtPtx132R1104,
+			r_MmaAccumulatorHalf2WordAtPtx641R177,
+			r_MmaAccumulatorHalf2WordAtPtx641R178); // PTX L655
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx662R187, r_MmaAccumulatorHalf2WordAtPtx662R188,
+			r_MmaAHalf2WordAtPtx502R179, r_MmaAHalf2WordAtPtx502R180, r_MmaAHalf2WordAtPtx502R181,
+			r_MmaAHalf2WordAtPtx502R182, r_MmaBHalf2WordAtPtx67R1073, r_MmaBHalf2WordAtPtx67R1074,
+			r_MmaAccumulatorHalf2WordAtPtx336R1055, r_MmaAccumulatorHalf2WordAtPtx335R1054); // PTX L662
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx669R189, r_MmaAccumulatorHalf2WordAtPtx669R190,
+			r_MmaAHalf2WordAtPtx502R179, r_MmaAHalf2WordAtPtx502R180, r_MmaAHalf2WordAtPtx502R181,
+			r_MmaAHalf2WordAtPtx502R182, r_MmaBHalf2WordAtPtx67R1075, r_MmaBHalf2WordAtPtx67R1076,
+			r_MmaAccumulatorHalf2WordAtPtx334R1053, r_MmaAccumulatorHalf2WordAtPtx333R1052); // PTX L669
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx336R1055, r_MmaAccumulatorHalf2WordAtPtx335R1054,
+			r_MmaAHalf2WordAtPtx511R183, r_MmaAHalf2WordAtPtx511R184, r_MmaAHalf2WordAtPtx511R185,
+			r_MmaAHalf2WordAtPtx511R186, r_MmaBHalf2WordAtPtx105R1089, r_MmaBHalf2WordAtPtx105R1090,
+			r_MmaAccumulatorHalf2WordAtPtx662R187,
+			r_MmaAccumulatorHalf2WordAtPtx662R188); // PTX L676
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx334R1053, r_MmaAccumulatorHalf2WordAtPtx333R1052,
+			r_MmaAHalf2WordAtPtx511R183, r_MmaAHalf2WordAtPtx511R184, r_MmaAHalf2WordAtPtx511R185,
+			r_MmaAHalf2WordAtPtx511R186, r_MmaBHalf2WordAtPtx105R1091, r_MmaBHalf2WordAtPtx105R1092,
+			r_MmaAccumulatorHalf2WordAtPtx669R189,
+			r_MmaAccumulatorHalf2WordAtPtx669R190); // PTX L683
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx690R191, r_MmaAccumulatorHalf2WordAtPtx690R192,
+			r_MmaAHalf2WordAtPtx502R179, r_MmaAHalf2WordAtPtx502R180, r_MmaAHalf2WordAtPtx502R181,
+			r_MmaAHalf2WordAtPtx502R182, r_MmaBHalf2WordAtPtx78R1077, r_MmaBHalf2WordAtPtx78R1078,
+			r_MmaAccumulatorHalf2WordAtPtx332R1051, r_MmaAccumulatorHalf2WordAtPtx331R1050); // PTX L690
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx697R193, r_MmaAccumulatorHalf2WordAtPtx697R194,
+			r_MmaAHalf2WordAtPtx502R179, r_MmaAHalf2WordAtPtx502R180, r_MmaAHalf2WordAtPtx502R181,
+			r_MmaAHalf2WordAtPtx502R182, r_MmaBHalf2WordAtPtx78R1079, r_MmaBHalf2WordAtPtx78R1080,
+			r_MmaAccumulatorHalf2WordAtPtx330R1049, r_MmaAccumulatorHalf2WordAtPtx329R1048); // PTX L697
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx332R1051, r_MmaAccumulatorHalf2WordAtPtx331R1050,
+			r_MmaAHalf2WordAtPtx511R183, r_MmaAHalf2WordAtPtx511R184, r_MmaAHalf2WordAtPtx511R185,
+			r_MmaAHalf2WordAtPtx511R186, r_MmaBHalf2WordAtPtx114R1093, r_MmaBHalf2WordAtPtx114R1094,
+			r_MmaAccumulatorHalf2WordAtPtx690R191,
+			r_MmaAccumulatorHalf2WordAtPtx690R192); // PTX L704
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx330R1049, r_MmaAccumulatorHalf2WordAtPtx329R1048,
+			r_MmaAHalf2WordAtPtx511R183, r_MmaAHalf2WordAtPtx511R184, r_MmaAHalf2WordAtPtx511R185,
+			r_MmaAHalf2WordAtPtx511R186, r_MmaBHalf2WordAtPtx114R1095, r_MmaBHalf2WordAtPtx114R1096,
+			r_MmaAccumulatorHalf2WordAtPtx697R193,
+			r_MmaAccumulatorHalf2WordAtPtx697R194); // PTX L711
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx718R195, r_MmaAccumulatorHalf2WordAtPtx718R196,
+			r_MmaAHalf2WordAtPtx502R179, r_MmaAHalf2WordAtPtx502R180, r_MmaAHalf2WordAtPtx502R181,
+			r_MmaAHalf2WordAtPtx502R182, r_MmaBHalf2WordAtPtx87R1081, r_MmaBHalf2WordAtPtx87R1082,
+			r_MmaAccumulatorHalf2WordAtPtx328R1047, r_MmaAccumulatorHalf2WordAtPtx327R1046); // PTX L718
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx725R197, r_MmaAccumulatorHalf2WordAtPtx725R198,
+			r_MmaAHalf2WordAtPtx502R179, r_MmaAHalf2WordAtPtx502R180, r_MmaAHalf2WordAtPtx502R181,
+			r_MmaAHalf2WordAtPtx502R182, r_MmaBHalf2WordAtPtx87R1083, r_MmaBHalf2WordAtPtx87R1084,
+			r_MmaAccumulatorHalf2WordAtPtx326R1045, r_MmaAccumulatorHalf2WordAtPtx325R1044); // PTX L725
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx328R1047, r_MmaAccumulatorHalf2WordAtPtx327R1046,
+			r_MmaAHalf2WordAtPtx511R183, r_MmaAHalf2WordAtPtx511R184, r_MmaAHalf2WordAtPtx511R185,
+			r_MmaAHalf2WordAtPtx511R186, r_MmaBHalf2WordAtPtx123R1097, r_MmaBHalf2WordAtPtx123R1098,
+			r_MmaAccumulatorHalf2WordAtPtx718R195,
+			r_MmaAccumulatorHalf2WordAtPtx718R196); // PTX L732
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx326R1045, r_MmaAccumulatorHalf2WordAtPtx325R1044,
+			r_MmaAHalf2WordAtPtx511R183, r_MmaAHalf2WordAtPtx511R184, r_MmaAHalf2WordAtPtx511R185,
+			r_MmaAHalf2WordAtPtx511R186, r_MmaBHalf2WordAtPtx123R1099, r_MmaBHalf2WordAtPtx123R1100,
+			r_MmaAccumulatorHalf2WordAtPtx725R197,
+			r_MmaAccumulatorHalf2WordAtPtx725R198); // PTX L739
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx746R199, r_MmaAccumulatorHalf2WordAtPtx746R200,
+			r_MmaAHalf2WordAtPtx502R179, r_MmaAHalf2WordAtPtx502R180, r_MmaAHalf2WordAtPtx502R181,
+			r_MmaAHalf2WordAtPtx502R182, r_MmaBHalf2WordAtPtx96R1085, r_MmaBHalf2WordAtPtx96R1086,
+			r_MmaAccumulatorHalf2WordAtPtx324R1043, r_MmaAccumulatorHalf2WordAtPtx323R1042); // PTX L746
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx753R201, r_MmaAccumulatorHalf2WordAtPtx753R202,
+			r_MmaAHalf2WordAtPtx502R179, r_MmaAHalf2WordAtPtx502R180, r_MmaAHalf2WordAtPtx502R181,
+			r_MmaAHalf2WordAtPtx502R182, r_MmaBHalf2WordAtPtx96R1087, r_MmaBHalf2WordAtPtx96R1088,
+			r_MmaAccumulatorHalf2WordAtPtx322R1041, r_MmaAccumulatorHalf2WordAtPtx321R1040); // PTX L753
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx324R1043, r_MmaAccumulatorHalf2WordAtPtx323R1042,
+			r_MmaAHalf2WordAtPtx511R183, r_MmaAHalf2WordAtPtx511R184, r_MmaAHalf2WordAtPtx511R185,
+			r_MmaAHalf2WordAtPtx511R186, r_MmaBHalf2WordAtPtx132R1101, r_MmaBHalf2WordAtPtx132R1102,
+			r_MmaAccumulatorHalf2WordAtPtx746R199,
+			r_MmaAccumulatorHalf2WordAtPtx746R200); // PTX L760
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx322R1041, r_MmaAccumulatorHalf2WordAtPtx321R1040,
+			r_MmaAHalf2WordAtPtx511R183, r_MmaAHalf2WordAtPtx511R184, r_MmaAHalf2WordAtPtx511R185,
+			r_MmaAHalf2WordAtPtx511R186, r_MmaBHalf2WordAtPtx132R1103, r_MmaBHalf2WordAtPtx132R1104,
+			r_MmaAccumulatorHalf2WordAtPtx753R201,
+			r_MmaAccumulatorHalf2WordAtPtx753R202); // PTX L767
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx774R211, r_MmaAccumulatorHalf2WordAtPtx774R212,
+			r_MmaAHalf2WordAtPtx520R203, r_MmaAHalf2WordAtPtx520R204, r_MmaAHalf2WordAtPtx520R205,
+			r_MmaAHalf2WordAtPtx520R206, r_MmaBHalf2WordAtPtx67R1073, r_MmaBHalf2WordAtPtx67R1074,
+			r_MmaAccumulatorHalf2WordAtPtx320R1039, r_MmaAccumulatorHalf2WordAtPtx319R1038); // PTX L774
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx781R213, r_MmaAccumulatorHalf2WordAtPtx781R214,
+			r_MmaAHalf2WordAtPtx520R203, r_MmaAHalf2WordAtPtx520R204, r_MmaAHalf2WordAtPtx520R205,
+			r_MmaAHalf2WordAtPtx520R206, r_MmaBHalf2WordAtPtx67R1075, r_MmaBHalf2WordAtPtx67R1076,
+			r_MmaAccumulatorHalf2WordAtPtx318R1037, r_MmaAccumulatorHalf2WordAtPtx317R1036); // PTX L781
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx320R1039, r_MmaAccumulatorHalf2WordAtPtx319R1038,
+			r_MmaAHalf2WordAtPtx529R207, r_MmaAHalf2WordAtPtx529R208, r_MmaAHalf2WordAtPtx529R209,
+			r_MmaAHalf2WordAtPtx529R210, r_MmaBHalf2WordAtPtx105R1089, r_MmaBHalf2WordAtPtx105R1090,
+			r_MmaAccumulatorHalf2WordAtPtx774R211,
+			r_MmaAccumulatorHalf2WordAtPtx774R212); // PTX L788
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx318R1037, r_MmaAccumulatorHalf2WordAtPtx317R1036,
+			r_MmaAHalf2WordAtPtx529R207, r_MmaAHalf2WordAtPtx529R208, r_MmaAHalf2WordAtPtx529R209,
+			r_MmaAHalf2WordAtPtx529R210, r_MmaBHalf2WordAtPtx105R1091, r_MmaBHalf2WordAtPtx105R1092,
+			r_MmaAccumulatorHalf2WordAtPtx781R213,
+			r_MmaAccumulatorHalf2WordAtPtx781R214); // PTX L795
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx802R215, r_MmaAccumulatorHalf2WordAtPtx802R216,
+			r_MmaAHalf2WordAtPtx520R203, r_MmaAHalf2WordAtPtx520R204, r_MmaAHalf2WordAtPtx520R205,
+			r_MmaAHalf2WordAtPtx520R206, r_MmaBHalf2WordAtPtx78R1077, r_MmaBHalf2WordAtPtx78R1078,
+			r_MmaAccumulatorHalf2WordAtPtx316R1035, r_MmaAccumulatorHalf2WordAtPtx315R1034); // PTX L802
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx809R217, r_MmaAccumulatorHalf2WordAtPtx809R218,
+			r_MmaAHalf2WordAtPtx520R203, r_MmaAHalf2WordAtPtx520R204, r_MmaAHalf2WordAtPtx520R205,
+			r_MmaAHalf2WordAtPtx520R206, r_MmaBHalf2WordAtPtx78R1079, r_MmaBHalf2WordAtPtx78R1080,
+			r_MmaAccumulatorHalf2WordAtPtx314R1033, r_MmaAccumulatorHalf2WordAtPtx313R1032); // PTX L809
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx316R1035, r_MmaAccumulatorHalf2WordAtPtx315R1034,
+			r_MmaAHalf2WordAtPtx529R207, r_MmaAHalf2WordAtPtx529R208, r_MmaAHalf2WordAtPtx529R209,
+			r_MmaAHalf2WordAtPtx529R210, r_MmaBHalf2WordAtPtx114R1093, r_MmaBHalf2WordAtPtx114R1094,
+			r_MmaAccumulatorHalf2WordAtPtx802R215,
+			r_MmaAccumulatorHalf2WordAtPtx802R216); // PTX L816
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx314R1033, r_MmaAccumulatorHalf2WordAtPtx313R1032,
+			r_MmaAHalf2WordAtPtx529R207, r_MmaAHalf2WordAtPtx529R208, r_MmaAHalf2WordAtPtx529R209,
+			r_MmaAHalf2WordAtPtx529R210, r_MmaBHalf2WordAtPtx114R1095, r_MmaBHalf2WordAtPtx114R1096,
+			r_MmaAccumulatorHalf2WordAtPtx809R217,
+			r_MmaAccumulatorHalf2WordAtPtx809R218); // PTX L823
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx830R219, r_MmaAccumulatorHalf2WordAtPtx830R220,
+			r_MmaAHalf2WordAtPtx520R203, r_MmaAHalf2WordAtPtx520R204, r_MmaAHalf2WordAtPtx520R205,
+			r_MmaAHalf2WordAtPtx520R206, r_MmaBHalf2WordAtPtx87R1081, r_MmaBHalf2WordAtPtx87R1082,
+			r_MmaAccumulatorHalf2WordAtPtx312R1031, r_MmaAccumulatorHalf2WordAtPtx311R1030); // PTX L830
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx837R221, r_MmaAccumulatorHalf2WordAtPtx837R222,
+			r_MmaAHalf2WordAtPtx520R203, r_MmaAHalf2WordAtPtx520R204, r_MmaAHalf2WordAtPtx520R205,
+			r_MmaAHalf2WordAtPtx520R206, r_MmaBHalf2WordAtPtx87R1083, r_MmaBHalf2WordAtPtx87R1084,
+			r_MmaAccumulatorHalf2WordAtPtx310R1029, r_MmaAccumulatorHalf2WordAtPtx309R1028); // PTX L837
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx312R1031, r_MmaAccumulatorHalf2WordAtPtx311R1030,
+			r_MmaAHalf2WordAtPtx529R207, r_MmaAHalf2WordAtPtx529R208, r_MmaAHalf2WordAtPtx529R209,
+			r_MmaAHalf2WordAtPtx529R210, r_MmaBHalf2WordAtPtx123R1097, r_MmaBHalf2WordAtPtx123R1098,
+			r_MmaAccumulatorHalf2WordAtPtx830R219,
+			r_MmaAccumulatorHalf2WordAtPtx830R220); // PTX L844
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx310R1029, r_MmaAccumulatorHalf2WordAtPtx309R1028,
+			r_MmaAHalf2WordAtPtx529R207, r_MmaAHalf2WordAtPtx529R208, r_MmaAHalf2WordAtPtx529R209,
+			r_MmaAHalf2WordAtPtx529R210, r_MmaBHalf2WordAtPtx123R1099, r_MmaBHalf2WordAtPtx123R1100,
+			r_MmaAccumulatorHalf2WordAtPtx837R221,
+			r_MmaAccumulatorHalf2WordAtPtx837R222); // PTX L851
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx858R223, r_MmaAccumulatorHalf2WordAtPtx858R224,
+			r_MmaAHalf2WordAtPtx520R203, r_MmaAHalf2WordAtPtx520R204, r_MmaAHalf2WordAtPtx520R205,
+			r_MmaAHalf2WordAtPtx520R206, r_MmaBHalf2WordAtPtx96R1085, r_MmaBHalf2WordAtPtx96R1086,
+			r_MmaAccumulatorHalf2WordAtPtx308R1027, r_MmaAccumulatorHalf2WordAtPtx307R1026); // PTX L858
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx865R225, r_MmaAccumulatorHalf2WordAtPtx865R226,
+			r_MmaAHalf2WordAtPtx520R203, r_MmaAHalf2WordAtPtx520R204, r_MmaAHalf2WordAtPtx520R205,
+			r_MmaAHalf2WordAtPtx520R206, r_MmaBHalf2WordAtPtx96R1087, r_MmaBHalf2WordAtPtx96R1088,
+			r_MmaAccumulatorHalf2WordAtPtx306R1025, r_MmaAccumulatorHalf2WordAtPtx305R1024); // PTX L865
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx308R1027, r_MmaAccumulatorHalf2WordAtPtx307R1026,
+			r_MmaAHalf2WordAtPtx529R207, r_MmaAHalf2WordAtPtx529R208, r_MmaAHalf2WordAtPtx529R209,
+			r_MmaAHalf2WordAtPtx529R210, r_MmaBHalf2WordAtPtx132R1101, r_MmaBHalf2WordAtPtx132R1102,
+			r_MmaAccumulatorHalf2WordAtPtx858R223,
+			r_MmaAccumulatorHalf2WordAtPtx858R224); // PTX L872
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx306R1025, r_MmaAccumulatorHalf2WordAtPtx305R1024,
+			r_MmaAHalf2WordAtPtx529R207, r_MmaAHalf2WordAtPtx529R208, r_MmaAHalf2WordAtPtx529R209,
+			r_MmaAHalf2WordAtPtx529R210, r_MmaBHalf2WordAtPtx132R1103, r_MmaBHalf2WordAtPtx132R1104,
+			r_MmaAccumulatorHalf2WordAtPtx865R225,
+			r_MmaAccumulatorHalf2WordAtPtx865R226); // PTX L879
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx886R235, r_MmaAccumulatorHalf2WordAtPtx886R236,
+			r_MmaAHalf2WordAtPtx538R227, r_MmaAHalf2WordAtPtx538R228, r_MmaAHalf2WordAtPtx538R229,
+			r_MmaAHalf2WordAtPtx538R230, r_MmaBHalf2WordAtPtx67R1073, r_MmaBHalf2WordAtPtx67R1074,
+			r_MmaAccumulatorHalf2WordAtPtx304R1023, r_MmaAccumulatorHalf2WordAtPtx303R1022); // PTX L886
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx893R237, r_MmaAccumulatorHalf2WordAtPtx893R238,
+			r_MmaAHalf2WordAtPtx538R227, r_MmaAHalf2WordAtPtx538R228, r_MmaAHalf2WordAtPtx538R229,
+			r_MmaAHalf2WordAtPtx538R230, r_MmaBHalf2WordAtPtx67R1075, r_MmaBHalf2WordAtPtx67R1076,
+			r_MmaAccumulatorHalf2WordAtPtx302R1021, r_MmaAccumulatorHalf2WordAtPtx301R1020); // PTX L893
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx304R1023, r_MmaAccumulatorHalf2WordAtPtx303R1022,
+			r_MmaAHalf2WordAtPtx547R231, r_MmaAHalf2WordAtPtx547R232, r_MmaAHalf2WordAtPtx547R233,
+			r_MmaAHalf2WordAtPtx547R234, r_MmaBHalf2WordAtPtx105R1089, r_MmaBHalf2WordAtPtx105R1090,
+			r_MmaAccumulatorHalf2WordAtPtx886R235,
+			r_MmaAccumulatorHalf2WordAtPtx886R236); // PTX L900
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx302R1021, r_MmaAccumulatorHalf2WordAtPtx301R1020,
+			r_MmaAHalf2WordAtPtx547R231, r_MmaAHalf2WordAtPtx547R232, r_MmaAHalf2WordAtPtx547R233,
+			r_MmaAHalf2WordAtPtx547R234, r_MmaBHalf2WordAtPtx105R1091, r_MmaBHalf2WordAtPtx105R1092,
+			r_MmaAccumulatorHalf2WordAtPtx893R237,
+			r_MmaAccumulatorHalf2WordAtPtx893R238); // PTX L907
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx914R239, r_MmaAccumulatorHalf2WordAtPtx914R240,
+			r_MmaAHalf2WordAtPtx538R227, r_MmaAHalf2WordAtPtx538R228, r_MmaAHalf2WordAtPtx538R229,
+			r_MmaAHalf2WordAtPtx538R230, r_MmaBHalf2WordAtPtx78R1077, r_MmaBHalf2WordAtPtx78R1078,
+			r_MmaAccumulatorHalf2WordAtPtx300R1019, r_MmaAccumulatorHalf2WordAtPtx299R1018); // PTX L914
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx921R241, r_MmaAccumulatorHalf2WordAtPtx921R242,
+			r_MmaAHalf2WordAtPtx538R227, r_MmaAHalf2WordAtPtx538R228, r_MmaAHalf2WordAtPtx538R229,
+			r_MmaAHalf2WordAtPtx538R230, r_MmaBHalf2WordAtPtx78R1079, r_MmaBHalf2WordAtPtx78R1080,
+			r_MmaAccumulatorHalf2WordAtPtx298R1017, r_MmaAccumulatorHalf2WordAtPtx297R1016); // PTX L921
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx300R1019, r_MmaAccumulatorHalf2WordAtPtx299R1018,
+			r_MmaAHalf2WordAtPtx547R231, r_MmaAHalf2WordAtPtx547R232, r_MmaAHalf2WordAtPtx547R233,
+			r_MmaAHalf2WordAtPtx547R234, r_MmaBHalf2WordAtPtx114R1093, r_MmaBHalf2WordAtPtx114R1094,
+			r_MmaAccumulatorHalf2WordAtPtx914R239,
+			r_MmaAccumulatorHalf2WordAtPtx914R240); // PTX L928
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx298R1017, r_MmaAccumulatorHalf2WordAtPtx297R1016,
+			r_MmaAHalf2WordAtPtx547R231, r_MmaAHalf2WordAtPtx547R232, r_MmaAHalf2WordAtPtx547R233,
+			r_MmaAHalf2WordAtPtx547R234, r_MmaBHalf2WordAtPtx114R1095, r_MmaBHalf2WordAtPtx114R1096,
+			r_MmaAccumulatorHalf2WordAtPtx921R241,
+			r_MmaAccumulatorHalf2WordAtPtx921R242); // PTX L935
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx942R243, r_MmaAccumulatorHalf2WordAtPtx942R244,
+			r_MmaAHalf2WordAtPtx538R227, r_MmaAHalf2WordAtPtx538R228, r_MmaAHalf2WordAtPtx538R229,
+			r_MmaAHalf2WordAtPtx538R230, r_MmaBHalf2WordAtPtx87R1081, r_MmaBHalf2WordAtPtx87R1082,
+			r_MmaAccumulatorHalf2WordAtPtx296R1015, r_MmaAccumulatorHalf2WordAtPtx295R1014); // PTX L942
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx949R245, r_MmaAccumulatorHalf2WordAtPtx949R246,
+			r_MmaAHalf2WordAtPtx538R227, r_MmaAHalf2WordAtPtx538R228, r_MmaAHalf2WordAtPtx538R229,
+			r_MmaAHalf2WordAtPtx538R230, r_MmaBHalf2WordAtPtx87R1083, r_MmaBHalf2WordAtPtx87R1084,
+			r_MmaAccumulatorHalf2WordAtPtx294R1013, r_MmaAccumulatorHalf2WordAtPtx293R1012); // PTX L949
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx296R1015, r_MmaAccumulatorHalf2WordAtPtx295R1014,
+			r_MmaAHalf2WordAtPtx547R231, r_MmaAHalf2WordAtPtx547R232, r_MmaAHalf2WordAtPtx547R233,
+			r_MmaAHalf2WordAtPtx547R234, r_MmaBHalf2WordAtPtx123R1097, r_MmaBHalf2WordAtPtx123R1098,
+			r_MmaAccumulatorHalf2WordAtPtx942R243,
+			r_MmaAccumulatorHalf2WordAtPtx942R244); // PTX L956
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx294R1013, r_MmaAccumulatorHalf2WordAtPtx293R1012,
+			r_MmaAHalf2WordAtPtx547R231, r_MmaAHalf2WordAtPtx547R232, r_MmaAHalf2WordAtPtx547R233,
+			r_MmaAHalf2WordAtPtx547R234, r_MmaBHalf2WordAtPtx123R1099, r_MmaBHalf2WordAtPtx123R1100,
+			r_MmaAccumulatorHalf2WordAtPtx949R245,
+			r_MmaAccumulatorHalf2WordAtPtx949R246); // PTX L963
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx970R247, r_MmaAccumulatorHalf2WordAtPtx970R248,
+			r_MmaAHalf2WordAtPtx538R227, r_MmaAHalf2WordAtPtx538R228, r_MmaAHalf2WordAtPtx538R229,
+			r_MmaAHalf2WordAtPtx538R230, r_MmaBHalf2WordAtPtx96R1085, r_MmaBHalf2WordAtPtx96R1086,
+			r_MmaAccumulatorHalf2WordAtPtx292R1011, r_MmaAccumulatorHalf2WordAtPtx291R1010); // PTX L970
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx977R249, r_MmaAccumulatorHalf2WordAtPtx977R250,
+			r_MmaAHalf2WordAtPtx538R227, r_MmaAHalf2WordAtPtx538R228, r_MmaAHalf2WordAtPtx538R229,
+			r_MmaAHalf2WordAtPtx538R230, r_MmaBHalf2WordAtPtx96R1087, r_MmaBHalf2WordAtPtx96R1088,
+			r_MmaAccumulatorHalf2WordAtPtx290R1009, r_MmaAccumulatorHalf2WordAtPtx289R1008); // PTX L977
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx292R1011, r_MmaAccumulatorHalf2WordAtPtx291R1010,
+			r_MmaAHalf2WordAtPtx547R231, r_MmaAHalf2WordAtPtx547R232, r_MmaAHalf2WordAtPtx547R233,
+			r_MmaAHalf2WordAtPtx547R234, r_MmaBHalf2WordAtPtx132R1101, r_MmaBHalf2WordAtPtx132R1102,
+			r_MmaAccumulatorHalf2WordAtPtx970R247,
+			r_MmaAccumulatorHalf2WordAtPtx970R248); // PTX L984
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx290R1009, r_MmaAccumulatorHalf2WordAtPtx289R1008,
+			r_MmaAHalf2WordAtPtx547R231, r_MmaAHalf2WordAtPtx547R232, r_MmaAHalf2WordAtPtx547R233,
+			r_MmaAHalf2WordAtPtx547R234, r_MmaBHalf2WordAtPtx132R1103, r_MmaBHalf2WordAtPtx132R1104,
+			r_MmaAccumulatorHalf2WordAtPtx977R249,
+			r_MmaAccumulatorHalf2WordAtPtx977R250);												  // PTX L991
+	r_PtxRegister277 = ShiftLeft(uint32_t(r_PtxRegister20), uint32_t(8));						  // PTX L997
+	r_PtxRegister278 = uint32_t(r_PtxRegister277) + uint32_t(r_PtxRegister9);					  // PTX L998
+	r_PtxU64Register57 = uint64_t(int64_t(int32_t(r_PtxRegister278)) * int64_t(int32_t(4)));	  // PTX L999
+	r_PtxU64Register58 = uint64_t(r_PtxU64Register175) + uint64_t(r_PtxU64Register57);			  // PTX L1000
+	r_LaneIndexAtPtx1002 = uint32_t((threadIdx.x & 31u));										  // PTX L1002
+	r_PtxU64Register59 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1002)) * int64_t(int32_t(16))); // PTX L1004
+	r_PtxU64Register49 = uint64_t(r_PtxU64Register58) + uint64_t(r_PtxU64Register59);			  // PTX L1005
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register49));
+		r_MmaBHalf2WordAtPtx67R1073 = r_Value.x;
+		r_MmaBHalf2WordAtPtx67R1074 = r_Value.y;
+		r_MmaBHalf2WordAtPtx67R1075 = r_Value.z;
+		r_MmaBHalf2WordAtPtx67R1076 = r_Value.w;
+	} // PTX L1007
+	r_LaneIndexAtPtx1010 = uint32_t((threadIdx.x & 31u));										  // PTX L1010
+	r_PtxU64Register60 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1010)) * int64_t(int32_t(16))); // PTX L1012
+	r_PtxU64Register61 = uint64_t(r_PtxU64Register58) + uint64_t(r_PtxU64Register60);			  // PTX L1013
+	r_PtxU64Register50 = uint64_t(r_PtxU64Register61) + uint64_t(512);							  // PTX L1014
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register50));
+		r_MmaBHalf2WordAtPtx78R1077 = r_Value.x;
+		r_MmaBHalf2WordAtPtx78R1078 = r_Value.y;
+		r_MmaBHalf2WordAtPtx78R1079 = r_Value.z;
+		r_MmaBHalf2WordAtPtx78R1080 = r_Value.w;
+	} // PTX L1016
+	r_LaneIndexAtPtx1019 = uint32_t((threadIdx.x & 31u));										  // PTX L1019
+	r_PtxU64Register62 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1019)) * int64_t(int32_t(16))); // PTX L1021
+	r_PtxU64Register63 = uint64_t(r_PtxU64Register58) + uint64_t(r_PtxU64Register62);			  // PTX L1022
+	r_PtxU64Register51 = uint64_t(r_PtxU64Register63) + uint64_t(1024);							  // PTX L1023
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register51));
+		r_MmaBHalf2WordAtPtx87R1081 = r_Value.x;
+		r_MmaBHalf2WordAtPtx87R1082 = r_Value.y;
+		r_MmaBHalf2WordAtPtx87R1083 = r_Value.z;
+		r_MmaBHalf2WordAtPtx87R1084 = r_Value.w;
+	} // PTX L1025
+	r_LaneIndexAtPtx1028 = uint32_t((threadIdx.x & 31u));										  // PTX L1028
+	r_PtxU64Register64 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1028)) * int64_t(int32_t(16))); // PTX L1030
+	r_PtxU64Register65 = uint64_t(r_PtxU64Register58) + uint64_t(r_PtxU64Register64);			  // PTX L1031
+	r_PtxU64Register52 = uint64_t(r_PtxU64Register65) + uint64_t(1536);							  // PTX L1032
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register52));
+		r_MmaBHalf2WordAtPtx96R1085 = r_Value.x;
+		r_MmaBHalf2WordAtPtx96R1086 = r_Value.y;
+		r_MmaBHalf2WordAtPtx96R1087 = r_Value.z;
+		r_MmaBHalf2WordAtPtx96R1088 = r_Value.w;
+	} // PTX L1034
+	r_LaneIndexAtPtx1037 = uint32_t((threadIdx.x & 31u));										  // PTX L1037
+	r_PtxU64Register66 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1037)) * int64_t(int32_t(16))); // PTX L1039
+	r_PtxU64Register67 = uint64_t(r_PtxU64Register58) + uint64_t(r_PtxU64Register66);			  // PTX L1040
+	r_PtxU64Register53 = uint64_t(r_PtxU64Register67) + uint64_t(16384);						  // PTX L1041
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register53));
+		r_MmaBHalf2WordAtPtx105R1089 = r_Value.x;
+		r_MmaBHalf2WordAtPtx105R1090 = r_Value.y;
+		r_MmaBHalf2WordAtPtx105R1091 = r_Value.z;
+		r_MmaBHalf2WordAtPtx105R1092 = r_Value.w;
+	} // PTX L1043
+	r_LaneIndexAtPtx1046 = uint32_t((threadIdx.x & 31u));										  // PTX L1046
+	r_PtxU64Register68 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1046)) * int64_t(int32_t(16))); // PTX L1048
+	r_PtxU64Register69 = uint64_t(r_PtxU64Register58) + uint64_t(r_PtxU64Register68);			  // PTX L1049
+	r_PtxU64Register54 = uint64_t(r_PtxU64Register69) + uint64_t(16896);						  // PTX L1050
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register54));
+		r_MmaBHalf2WordAtPtx114R1093 = r_Value.x;
+		r_MmaBHalf2WordAtPtx114R1094 = r_Value.y;
+		r_MmaBHalf2WordAtPtx114R1095 = r_Value.z;
+		r_MmaBHalf2WordAtPtx114R1096 = r_Value.w;
+	} // PTX L1052
+	r_LaneIndexAtPtx1055 = uint32_t((threadIdx.x & 31u));										  // PTX L1055
+	r_PtxU64Register70 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1055)) * int64_t(int32_t(16))); // PTX L1057
+	r_PtxU64Register71 = uint64_t(r_PtxU64Register58) + uint64_t(r_PtxU64Register70);			  // PTX L1058
+	r_PtxU64Register55 = uint64_t(r_PtxU64Register71) + uint64_t(17408);						  // PTX L1059
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register55));
+		r_MmaBHalf2WordAtPtx123R1097 = r_Value.x;
+		r_MmaBHalf2WordAtPtx123R1098 = r_Value.y;
+		r_MmaBHalf2WordAtPtx123R1099 = r_Value.z;
+		r_MmaBHalf2WordAtPtx123R1100 = r_Value.w;
+	} // PTX L1061
+	r_LaneIndexAtPtx1064 = uint32_t((threadIdx.x & 31u));										  // PTX L1064
+	r_PtxU64Register72 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1064)) * int64_t(int32_t(16))); // PTX L1066
+	r_PtxU64Register73 = uint64_t(r_PtxU64Register58) + uint64_t(r_PtxU64Register72);			  // PTX L1067
+	r_PtxU64Register56 = uint64_t(r_PtxU64Register73) + uint64_t(17920);						  // PTX L1068
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register56));
+		r_MmaBHalf2WordAtPtx132R1101 = r_Value.x;
+		r_MmaBHalf2WordAtPtx132R1102 = r_Value.y;
+		r_MmaBHalf2WordAtPtx132R1103 = r_Value.z;
+		r_MmaBHalf2WordAtPtx132R1104 = r_Value.w;
+	} // PTX L1070
+	r_PtxRegister259 = uint32_t(1);															 // PTX L1072
+	r_PtxU64Register74 = BarrierArrive(s_SharedStorage, r_PtxRegister138, r_PtxRegister259); // PTX L1074
+L__BB0_32:																					 // PTX L1076
+	r_PtxRegister279 = BarrierReady(s_SharedStorage, r_PtxRegister138, r_PtxU64Register74);	 // PTX L1078
+	r_bPtxPredicate41 = uint32_t(r_PtxRegister279) == uint32_t(0);							 // PTX L1084
+	if (r_bPtxPredicate41)
+	{
+		goto L__BB0_32;
+	} // PTX L1085
+	r_bPtxPredicate42 = uint32_t(r_PtxRegister1072) < uint32_t(448); // PTX L1086
+	r_PtxRegister1072 = uint32_t(r_PtxRegister20);					 // PTX L1087
+	if (r_bPtxPredicate42)
+	{
+		goto L__BB0_19;
+	} // PTX L1088
+	r_LaneIndexAtPtx1090 = uint32_t((threadIdx.x & 31u));						// PTX L1090
+	r_PtxRegister392 = ShiftLeft(uint32_t(r_LaneIndexAtPtx1090), uint32_t(4));	// PTX L1092
+	r_PtxRegister393 = uint32_t(0u /* native shared-input region */);			// PTX L1093
+	r_PtxRegister394 = uint32_t(r_PtxRegister393) + uint32_t(r_PtxRegister392); // PTX L1094
+	r_PtxRegister281 = uint32_t(r_PtxRegister394) + uint32_t(4096);				// PTX L1095
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister281));
+		r_MmaAHalf2WordAtPtx1097R296 = r_Value.x;
+		r_MmaAHalf2WordAtPtx1097R297 = r_Value.y;
+		r_MmaAHalf2WordAtPtx1097R298 = r_Value.z;
+		r_MmaAHalf2WordAtPtx1097R299 = r_Value.w;
+	} // PTX L1097
+	r_LaneIndexAtPtx1100 = uint32_t((threadIdx.x & 31u));						// PTX L1100
+	r_PtxRegister395 = ShiftLeft(uint32_t(r_LaneIndexAtPtx1100), uint32_t(4));	// PTX L1102
+	r_PtxRegister396 = uint32_t(r_PtxRegister393) + uint32_t(r_PtxRegister395); // PTX L1103
+	r_PtxRegister283 = uint32_t(r_PtxRegister396) + uint32_t(4608);				// PTX L1104
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister283));
+		r_MmaAHalf2WordAtPtx1106R300 = r_Value.x;
+		r_MmaAHalf2WordAtPtx1106R301 = r_Value.y;
+		r_MmaAHalf2WordAtPtx1106R302 = r_Value.z;
+		r_MmaAHalf2WordAtPtx1106R303 = r_Value.w;
+	} // PTX L1106
+	r_LaneIndexAtPtx1109 = uint32_t((threadIdx.x & 31u));						// PTX L1109
+	r_PtxRegister397 = ShiftLeft(uint32_t(r_LaneIndexAtPtx1109), uint32_t(4));	// PTX L1111
+	r_PtxRegister398 = uint32_t(r_PtxRegister393) + uint32_t(r_PtxRegister397); // PTX L1112
+	r_PtxRegister285 = uint32_t(r_PtxRegister398) + uint32_t(5120);				// PTX L1113
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister285));
+		r_MmaAHalf2WordAtPtx1115R320 = r_Value.x;
+		r_MmaAHalf2WordAtPtx1115R321 = r_Value.y;
+		r_MmaAHalf2WordAtPtx1115R322 = r_Value.z;
+		r_MmaAHalf2WordAtPtx1115R323 = r_Value.w;
+	} // PTX L1115
+	r_LaneIndexAtPtx1118 = uint32_t((threadIdx.x & 31u));						// PTX L1118
+	r_PtxRegister399 = ShiftLeft(uint32_t(r_LaneIndexAtPtx1118), uint32_t(4));	// PTX L1120
+	r_PtxRegister400 = uint32_t(r_PtxRegister393) + uint32_t(r_PtxRegister399); // PTX L1121
+	r_PtxRegister287 = uint32_t(r_PtxRegister400) + uint32_t(5632);				// PTX L1122
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister287));
+		r_MmaAHalf2WordAtPtx1124R324 = r_Value.x;
+		r_MmaAHalf2WordAtPtx1124R325 = r_Value.y;
+		r_MmaAHalf2WordAtPtx1124R326 = r_Value.z;
+		r_MmaAHalf2WordAtPtx1124R327 = r_Value.w;
+	} // PTX L1124
+	r_LaneIndexAtPtx1127 = uint32_t((threadIdx.x & 31u));						// PTX L1127
+	r_PtxRegister401 = ShiftLeft(uint32_t(r_LaneIndexAtPtx1127), uint32_t(4));	// PTX L1129
+	r_PtxRegister402 = uint32_t(r_PtxRegister393) + uint32_t(r_PtxRegister401); // PTX L1130
+	r_PtxRegister289 = uint32_t(r_PtxRegister402) + uint32_t(6144);				// PTX L1131
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister289));
+		r_MmaAHalf2WordAtPtx1133R344 = r_Value.x;
+		r_MmaAHalf2WordAtPtx1133R345 = r_Value.y;
+		r_MmaAHalf2WordAtPtx1133R346 = r_Value.z;
+		r_MmaAHalf2WordAtPtx1133R347 = r_Value.w;
+	} // PTX L1133
+	r_LaneIndexAtPtx1136 = uint32_t((threadIdx.x & 31u));						// PTX L1136
+	r_PtxRegister403 = ShiftLeft(uint32_t(r_LaneIndexAtPtx1136), uint32_t(4));	// PTX L1138
+	r_PtxRegister404 = uint32_t(r_PtxRegister393) + uint32_t(r_PtxRegister403); // PTX L1139
+	r_PtxRegister291 = uint32_t(r_PtxRegister404) + uint32_t(6656);				// PTX L1140
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister291));
+		r_MmaAHalf2WordAtPtx1142R348 = r_Value.x;
+		r_MmaAHalf2WordAtPtx1142R349 = r_Value.y;
+		r_MmaAHalf2WordAtPtx1142R350 = r_Value.z;
+		r_MmaAHalf2WordAtPtx1142R351 = r_Value.w;
+	} // PTX L1142
+	r_LaneIndexAtPtx1145 = uint32_t((threadIdx.x & 31u));						// PTX L1145
+	r_PtxRegister405 = ShiftLeft(uint32_t(r_LaneIndexAtPtx1145), uint32_t(4));	// PTX L1147
+	r_PtxRegister406 = uint32_t(r_PtxRegister393) + uint32_t(r_PtxRegister405); // PTX L1148
+	r_PtxRegister293 = uint32_t(r_PtxRegister406) + uint32_t(7168);				// PTX L1149
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister293));
+		r_MmaAHalf2WordAtPtx1151R368 = r_Value.x;
+		r_MmaAHalf2WordAtPtx1151R369 = r_Value.y;
+		r_MmaAHalf2WordAtPtx1151R370 = r_Value.z;
+		r_MmaAHalf2WordAtPtx1151R371 = r_Value.w;
+	} // PTX L1151
+	r_LaneIndexAtPtx1154 = uint32_t((threadIdx.x & 31u));						// PTX L1154
+	r_PtxRegister407 = ShiftLeft(uint32_t(r_LaneIndexAtPtx1154), uint32_t(4));	// PTX L1156
+	r_PtxRegister408 = uint32_t(r_PtxRegister393) + uint32_t(r_PtxRegister407); // PTX L1157
+	r_PtxRegister295 = uint32_t(r_PtxRegister408) + uint32_t(7680);				// PTX L1158
+	{
+		const uint4 r_Value = *reinterpret_cast<const uint4*>(s_SharedStorage + uint32_t(r_PtxRegister295));
+		r_MmaAHalf2WordAtPtx1160R372 = r_Value.x;
+		r_MmaAHalf2WordAtPtx1160R373 = r_Value.y;
+		r_MmaAHalf2WordAtPtx1160R374 = r_Value.z;
+		r_MmaAHalf2WordAtPtx1160R375 = r_Value.w;
+	} // PTX L1160
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1163R304, r_MmaAccumulatorHalf2WordAtPtx1163R305,
+			r_MmaAHalf2WordAtPtx1097R296, r_MmaAHalf2WordAtPtx1097R297, r_MmaAHalf2WordAtPtx1097R298,
+			r_MmaAHalf2WordAtPtx1097R299, r_MmaBHalf2WordAtPtx67R1073, r_MmaBHalf2WordAtPtx67R1074,
+			r_MmaAccumulatorHalf2WordAtPtx352R1071,
+			r_MmaAccumulatorHalf2WordAtPtx351R1070); // PTX L1163
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1170R306, r_MmaAccumulatorHalf2WordAtPtx1170R307,
+			r_MmaAHalf2WordAtPtx1097R296, r_MmaAHalf2WordAtPtx1097R297, r_MmaAHalf2WordAtPtx1097R298,
+			r_MmaAHalf2WordAtPtx1097R299, r_MmaBHalf2WordAtPtx67R1075, r_MmaBHalf2WordAtPtx67R1076,
+			r_MmaAccumulatorHalf2WordAtPtx350R1069,
+			r_MmaAccumulatorHalf2WordAtPtx349R1068); // PTX L1170
+	MmaHalf(r_PtxRegister431, r_PtxRegister432, r_MmaAHalf2WordAtPtx1106R300, r_MmaAHalf2WordAtPtx1106R301,
+			r_MmaAHalf2WordAtPtx1106R302, r_MmaAHalf2WordAtPtx1106R303, r_MmaBHalf2WordAtPtx105R1089,
+			r_MmaBHalf2WordAtPtx105R1090, r_MmaAccumulatorHalf2WordAtPtx1163R304,
+			r_MmaAccumulatorHalf2WordAtPtx1163R305); // PTX L1177
+	MmaHalf(r_PtxRegister433, r_PtxRegister434, r_MmaAHalf2WordAtPtx1106R300, r_MmaAHalf2WordAtPtx1106R301,
+			r_MmaAHalf2WordAtPtx1106R302, r_MmaAHalf2WordAtPtx1106R303, r_MmaBHalf2WordAtPtx105R1091,
+			r_MmaBHalf2WordAtPtx105R1092, r_MmaAccumulatorHalf2WordAtPtx1170R306,
+			r_MmaAccumulatorHalf2WordAtPtx1170R307); // PTX L1184
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1191R308, r_MmaAccumulatorHalf2WordAtPtx1191R309,
+			r_MmaAHalf2WordAtPtx1097R296, r_MmaAHalf2WordAtPtx1097R297, r_MmaAHalf2WordAtPtx1097R298,
+			r_MmaAHalf2WordAtPtx1097R299, r_MmaBHalf2WordAtPtx78R1077, r_MmaBHalf2WordAtPtx78R1078,
+			r_MmaAccumulatorHalf2WordAtPtx348R1067,
+			r_MmaAccumulatorHalf2WordAtPtx347R1066); // PTX L1191
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1198R310, r_MmaAccumulatorHalf2WordAtPtx1198R311,
+			r_MmaAHalf2WordAtPtx1097R296, r_MmaAHalf2WordAtPtx1097R297, r_MmaAHalf2WordAtPtx1097R298,
+			r_MmaAHalf2WordAtPtx1097R299, r_MmaBHalf2WordAtPtx78R1079, r_MmaBHalf2WordAtPtx78R1080,
+			r_MmaAccumulatorHalf2WordAtPtx346R1065,
+			r_MmaAccumulatorHalf2WordAtPtx345R1064); // PTX L1198
+	MmaHalf(r_PtxRegister441, r_PtxRegister442, r_MmaAHalf2WordAtPtx1106R300, r_MmaAHalf2WordAtPtx1106R301,
+			r_MmaAHalf2WordAtPtx1106R302, r_MmaAHalf2WordAtPtx1106R303, r_MmaBHalf2WordAtPtx114R1093,
+			r_MmaBHalf2WordAtPtx114R1094, r_MmaAccumulatorHalf2WordAtPtx1191R308,
+			r_MmaAccumulatorHalf2WordAtPtx1191R309); // PTX L1205
+	MmaHalf(r_PtxRegister443, r_PtxRegister444, r_MmaAHalf2WordAtPtx1106R300, r_MmaAHalf2WordAtPtx1106R301,
+			r_MmaAHalf2WordAtPtx1106R302, r_MmaAHalf2WordAtPtx1106R303, r_MmaBHalf2WordAtPtx114R1095,
+			r_MmaBHalf2WordAtPtx114R1096, r_MmaAccumulatorHalf2WordAtPtx1198R310,
+			r_MmaAccumulatorHalf2WordAtPtx1198R311); // PTX L1212
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1219R312, r_MmaAccumulatorHalf2WordAtPtx1219R313,
+			r_MmaAHalf2WordAtPtx1097R296, r_MmaAHalf2WordAtPtx1097R297, r_MmaAHalf2WordAtPtx1097R298,
+			r_MmaAHalf2WordAtPtx1097R299, r_MmaBHalf2WordAtPtx87R1081, r_MmaBHalf2WordAtPtx87R1082,
+			r_MmaAccumulatorHalf2WordAtPtx344R1063,
+			r_MmaAccumulatorHalf2WordAtPtx343R1062); // PTX L1219
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1226R314, r_MmaAccumulatorHalf2WordAtPtx1226R315,
+			r_MmaAHalf2WordAtPtx1097R296, r_MmaAHalf2WordAtPtx1097R297, r_MmaAHalf2WordAtPtx1097R298,
+			r_MmaAHalf2WordAtPtx1097R299, r_MmaBHalf2WordAtPtx87R1083, r_MmaBHalf2WordAtPtx87R1084,
+			r_MmaAccumulatorHalf2WordAtPtx342R1061,
+			r_MmaAccumulatorHalf2WordAtPtx341R1060); // PTX L1226
+	MmaHalf(r_PtxRegister521, r_PtxRegister522, r_MmaAHalf2WordAtPtx1106R300, r_MmaAHalf2WordAtPtx1106R301,
+			r_MmaAHalf2WordAtPtx1106R302, r_MmaAHalf2WordAtPtx1106R303, r_MmaBHalf2WordAtPtx123R1097,
+			r_MmaBHalf2WordAtPtx123R1098, r_MmaAccumulatorHalf2WordAtPtx1219R312,
+			r_MmaAccumulatorHalf2WordAtPtx1219R313); // PTX L1233
+	MmaHalf(r_PtxRegister523, r_PtxRegister524, r_MmaAHalf2WordAtPtx1106R300, r_MmaAHalf2WordAtPtx1106R301,
+			r_MmaAHalf2WordAtPtx1106R302, r_MmaAHalf2WordAtPtx1106R303, r_MmaBHalf2WordAtPtx123R1099,
+			r_MmaBHalf2WordAtPtx123R1100, r_MmaAccumulatorHalf2WordAtPtx1226R314,
+			r_MmaAccumulatorHalf2WordAtPtx1226R315); // PTX L1240
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1247R316, r_MmaAccumulatorHalf2WordAtPtx1247R317,
+			r_MmaAHalf2WordAtPtx1097R296, r_MmaAHalf2WordAtPtx1097R297, r_MmaAHalf2WordAtPtx1097R298,
+			r_MmaAHalf2WordAtPtx1097R299, r_MmaBHalf2WordAtPtx96R1085, r_MmaBHalf2WordAtPtx96R1086,
+			r_MmaAccumulatorHalf2WordAtPtx340R1059,
+			r_MmaAccumulatorHalf2WordAtPtx339R1058); // PTX L1247
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1254R318, r_MmaAccumulatorHalf2WordAtPtx1254R319,
+			r_MmaAHalf2WordAtPtx1097R296, r_MmaAHalf2WordAtPtx1097R297, r_MmaAHalf2WordAtPtx1097R298,
+			r_MmaAHalf2WordAtPtx1097R299, r_MmaBHalf2WordAtPtx96R1087, r_MmaBHalf2WordAtPtx96R1088,
+			r_MmaAccumulatorHalf2WordAtPtx338R1057,
+			r_MmaAccumulatorHalf2WordAtPtx337R1056); // PTX L1254
+	MmaHalf(r_PtxRegister533, r_PtxRegister534, r_MmaAHalf2WordAtPtx1106R300, r_MmaAHalf2WordAtPtx1106R301,
+			r_MmaAHalf2WordAtPtx1106R302, r_MmaAHalf2WordAtPtx1106R303, r_MmaBHalf2WordAtPtx132R1101,
+			r_MmaBHalf2WordAtPtx132R1102, r_MmaAccumulatorHalf2WordAtPtx1247R316,
+			r_MmaAccumulatorHalf2WordAtPtx1247R317); // PTX L1261
+	MmaHalf(r_PtxRegister535, r_PtxRegister536, r_MmaAHalf2WordAtPtx1106R300, r_MmaAHalf2WordAtPtx1106R301,
+			r_MmaAHalf2WordAtPtx1106R302, r_MmaAHalf2WordAtPtx1106R303, r_MmaBHalf2WordAtPtx132R1103,
+			r_MmaBHalf2WordAtPtx132R1104, r_MmaAccumulatorHalf2WordAtPtx1254R318,
+			r_MmaAccumulatorHalf2WordAtPtx1254R319); // PTX L1268
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1275R328, r_MmaAccumulatorHalf2WordAtPtx1275R329,
+			r_MmaAHalf2WordAtPtx1115R320, r_MmaAHalf2WordAtPtx1115R321, r_MmaAHalf2WordAtPtx1115R322,
+			r_MmaAHalf2WordAtPtx1115R323, r_MmaBHalf2WordAtPtx67R1073, r_MmaBHalf2WordAtPtx67R1074,
+			r_MmaAccumulatorHalf2WordAtPtx336R1055,
+			r_MmaAccumulatorHalf2WordAtPtx335R1054); // PTX L1275
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1282R330, r_MmaAccumulatorHalf2WordAtPtx1282R331,
+			r_MmaAHalf2WordAtPtx1115R320, r_MmaAHalf2WordAtPtx1115R321, r_MmaAHalf2WordAtPtx1115R322,
+			r_MmaAHalf2WordAtPtx1115R323, r_MmaBHalf2WordAtPtx67R1075, r_MmaBHalf2WordAtPtx67R1076,
+			r_MmaAccumulatorHalf2WordAtPtx334R1053,
+			r_MmaAccumulatorHalf2WordAtPtx333R1052); // PTX L1282
+	MmaHalf(r_PtxRegister453, r_PtxRegister454, r_MmaAHalf2WordAtPtx1124R324, r_MmaAHalf2WordAtPtx1124R325,
+			r_MmaAHalf2WordAtPtx1124R326, r_MmaAHalf2WordAtPtx1124R327, r_MmaBHalf2WordAtPtx105R1089,
+			r_MmaBHalf2WordAtPtx105R1090, r_MmaAccumulatorHalf2WordAtPtx1275R328,
+			r_MmaAccumulatorHalf2WordAtPtx1275R329); // PTX L1289
+	MmaHalf(r_PtxRegister455, r_PtxRegister456, r_MmaAHalf2WordAtPtx1124R324, r_MmaAHalf2WordAtPtx1124R325,
+			r_MmaAHalf2WordAtPtx1124R326, r_MmaAHalf2WordAtPtx1124R327, r_MmaBHalf2WordAtPtx105R1091,
+			r_MmaBHalf2WordAtPtx105R1092, r_MmaAccumulatorHalf2WordAtPtx1282R330,
+			r_MmaAccumulatorHalf2WordAtPtx1282R331); // PTX L1296
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1303R332, r_MmaAccumulatorHalf2WordAtPtx1303R333,
+			r_MmaAHalf2WordAtPtx1115R320, r_MmaAHalf2WordAtPtx1115R321, r_MmaAHalf2WordAtPtx1115R322,
+			r_MmaAHalf2WordAtPtx1115R323, r_MmaBHalf2WordAtPtx78R1077, r_MmaBHalf2WordAtPtx78R1078,
+			r_MmaAccumulatorHalf2WordAtPtx332R1051,
+			r_MmaAccumulatorHalf2WordAtPtx331R1050); // PTX L1303
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1310R334, r_MmaAccumulatorHalf2WordAtPtx1310R335,
+			r_MmaAHalf2WordAtPtx1115R320, r_MmaAHalf2WordAtPtx1115R321, r_MmaAHalf2WordAtPtx1115R322,
+			r_MmaAHalf2WordAtPtx1115R323, r_MmaBHalf2WordAtPtx78R1079, r_MmaBHalf2WordAtPtx78R1080,
+			r_MmaAccumulatorHalf2WordAtPtx330R1049,
+			r_MmaAccumulatorHalf2WordAtPtx329R1048); // PTX L1310
+	MmaHalf(r_PtxRegister459, r_PtxRegister460, r_MmaAHalf2WordAtPtx1124R324, r_MmaAHalf2WordAtPtx1124R325,
+			r_MmaAHalf2WordAtPtx1124R326, r_MmaAHalf2WordAtPtx1124R327, r_MmaBHalf2WordAtPtx114R1093,
+			r_MmaBHalf2WordAtPtx114R1094, r_MmaAccumulatorHalf2WordAtPtx1303R332,
+			r_MmaAccumulatorHalf2WordAtPtx1303R333); // PTX L1317
+	MmaHalf(r_PtxRegister461, r_PtxRegister462, r_MmaAHalf2WordAtPtx1124R324, r_MmaAHalf2WordAtPtx1124R325,
+			r_MmaAHalf2WordAtPtx1124R326, r_MmaAHalf2WordAtPtx1124R327, r_MmaBHalf2WordAtPtx114R1095,
+			r_MmaBHalf2WordAtPtx114R1096, r_MmaAccumulatorHalf2WordAtPtx1310R334,
+			r_MmaAccumulatorHalf2WordAtPtx1310R335); // PTX L1324
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1331R336, r_MmaAccumulatorHalf2WordAtPtx1331R337,
+			r_MmaAHalf2WordAtPtx1115R320, r_MmaAHalf2WordAtPtx1115R321, r_MmaAHalf2WordAtPtx1115R322,
+			r_MmaAHalf2WordAtPtx1115R323, r_MmaBHalf2WordAtPtx87R1081, r_MmaBHalf2WordAtPtx87R1082,
+			r_MmaAccumulatorHalf2WordAtPtx328R1047,
+			r_MmaAccumulatorHalf2WordAtPtx327R1046); // PTX L1331
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1338R338, r_MmaAccumulatorHalf2WordAtPtx1338R339,
+			r_MmaAHalf2WordAtPtx1115R320, r_MmaAHalf2WordAtPtx1115R321, r_MmaAHalf2WordAtPtx1115R322,
+			r_MmaAHalf2WordAtPtx1115R323, r_MmaBHalf2WordAtPtx87R1083, r_MmaBHalf2WordAtPtx87R1084,
+			r_MmaAccumulatorHalf2WordAtPtx326R1045,
+			r_MmaAccumulatorHalf2WordAtPtx325R1044); // PTX L1338
+	MmaHalf(r_PtxRegister551, r_PtxRegister552, r_MmaAHalf2WordAtPtx1124R324, r_MmaAHalf2WordAtPtx1124R325,
+			r_MmaAHalf2WordAtPtx1124R326, r_MmaAHalf2WordAtPtx1124R327, r_MmaBHalf2WordAtPtx123R1097,
+			r_MmaBHalf2WordAtPtx123R1098, r_MmaAccumulatorHalf2WordAtPtx1331R336,
+			r_MmaAccumulatorHalf2WordAtPtx1331R337); // PTX L1345
+	MmaHalf(r_PtxRegister553, r_PtxRegister554, r_MmaAHalf2WordAtPtx1124R324, r_MmaAHalf2WordAtPtx1124R325,
+			r_MmaAHalf2WordAtPtx1124R326, r_MmaAHalf2WordAtPtx1124R327, r_MmaBHalf2WordAtPtx123R1099,
+			r_MmaBHalf2WordAtPtx123R1100, r_MmaAccumulatorHalf2WordAtPtx1338R338,
+			r_MmaAccumulatorHalf2WordAtPtx1338R339); // PTX L1352
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1359R340, r_MmaAccumulatorHalf2WordAtPtx1359R341,
+			r_MmaAHalf2WordAtPtx1115R320, r_MmaAHalf2WordAtPtx1115R321, r_MmaAHalf2WordAtPtx1115R322,
+			r_MmaAHalf2WordAtPtx1115R323, r_MmaBHalf2WordAtPtx96R1085, r_MmaBHalf2WordAtPtx96R1086,
+			r_MmaAccumulatorHalf2WordAtPtx324R1043,
+			r_MmaAccumulatorHalf2WordAtPtx323R1042); // PTX L1359
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1366R342, r_MmaAccumulatorHalf2WordAtPtx1366R343,
+			r_MmaAHalf2WordAtPtx1115R320, r_MmaAHalf2WordAtPtx1115R321, r_MmaAHalf2WordAtPtx1115R322,
+			r_MmaAHalf2WordAtPtx1115R323, r_MmaBHalf2WordAtPtx96R1087, r_MmaBHalf2WordAtPtx96R1088,
+			r_MmaAccumulatorHalf2WordAtPtx322R1041,
+			r_MmaAccumulatorHalf2WordAtPtx321R1040); // PTX L1366
+	MmaHalf(r_PtxRegister559, r_PtxRegister560, r_MmaAHalf2WordAtPtx1124R324, r_MmaAHalf2WordAtPtx1124R325,
+			r_MmaAHalf2WordAtPtx1124R326, r_MmaAHalf2WordAtPtx1124R327, r_MmaBHalf2WordAtPtx132R1101,
+			r_MmaBHalf2WordAtPtx132R1102, r_MmaAccumulatorHalf2WordAtPtx1359R340,
+			r_MmaAccumulatorHalf2WordAtPtx1359R341); // PTX L1373
+	MmaHalf(r_PtxRegister561, r_PtxRegister562, r_MmaAHalf2WordAtPtx1124R324, r_MmaAHalf2WordAtPtx1124R325,
+			r_MmaAHalf2WordAtPtx1124R326, r_MmaAHalf2WordAtPtx1124R327, r_MmaBHalf2WordAtPtx132R1103,
+			r_MmaBHalf2WordAtPtx132R1104, r_MmaAccumulatorHalf2WordAtPtx1366R342,
+			r_MmaAccumulatorHalf2WordAtPtx1366R343); // PTX L1380
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1387R352, r_MmaAccumulatorHalf2WordAtPtx1387R353,
+			r_MmaAHalf2WordAtPtx1133R344, r_MmaAHalf2WordAtPtx1133R345, r_MmaAHalf2WordAtPtx1133R346,
+			r_MmaAHalf2WordAtPtx1133R347, r_MmaBHalf2WordAtPtx67R1073, r_MmaBHalf2WordAtPtx67R1074,
+			r_MmaAccumulatorHalf2WordAtPtx320R1039,
+			r_MmaAccumulatorHalf2WordAtPtx319R1038); // PTX L1387
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1394R354, r_MmaAccumulatorHalf2WordAtPtx1394R355,
+			r_MmaAHalf2WordAtPtx1133R344, r_MmaAHalf2WordAtPtx1133R345, r_MmaAHalf2WordAtPtx1133R346,
+			r_MmaAHalf2WordAtPtx1133R347, r_MmaBHalf2WordAtPtx67R1075, r_MmaBHalf2WordAtPtx67R1076,
+			r_MmaAccumulatorHalf2WordAtPtx318R1037,
+			r_MmaAccumulatorHalf2WordAtPtx317R1036); // PTX L1394
+	MmaHalf(r_PtxRegister469, r_PtxRegister470, r_MmaAHalf2WordAtPtx1142R348, r_MmaAHalf2WordAtPtx1142R349,
+			r_MmaAHalf2WordAtPtx1142R350, r_MmaAHalf2WordAtPtx1142R351, r_MmaBHalf2WordAtPtx105R1089,
+			r_MmaBHalf2WordAtPtx105R1090, r_MmaAccumulatorHalf2WordAtPtx1387R352,
+			r_MmaAccumulatorHalf2WordAtPtx1387R353); // PTX L1401
+	MmaHalf(r_PtxRegister471, r_PtxRegister472, r_MmaAHalf2WordAtPtx1142R348, r_MmaAHalf2WordAtPtx1142R349,
+			r_MmaAHalf2WordAtPtx1142R350, r_MmaAHalf2WordAtPtx1142R351, r_MmaBHalf2WordAtPtx105R1091,
+			r_MmaBHalf2WordAtPtx105R1092, r_MmaAccumulatorHalf2WordAtPtx1394R354,
+			r_MmaAccumulatorHalf2WordAtPtx1394R355); // PTX L1408
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1415R356, r_MmaAccumulatorHalf2WordAtPtx1415R357,
+			r_MmaAHalf2WordAtPtx1133R344, r_MmaAHalf2WordAtPtx1133R345, r_MmaAHalf2WordAtPtx1133R346,
+			r_MmaAHalf2WordAtPtx1133R347, r_MmaBHalf2WordAtPtx78R1077, r_MmaBHalf2WordAtPtx78R1078,
+			r_MmaAccumulatorHalf2WordAtPtx316R1035,
+			r_MmaAccumulatorHalf2WordAtPtx315R1034); // PTX L1415
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1422R358, r_MmaAccumulatorHalf2WordAtPtx1422R359,
+			r_MmaAHalf2WordAtPtx1133R344, r_MmaAHalf2WordAtPtx1133R345, r_MmaAHalf2WordAtPtx1133R346,
+			r_MmaAHalf2WordAtPtx1133R347, r_MmaBHalf2WordAtPtx78R1079, r_MmaBHalf2WordAtPtx78R1080,
+			r_MmaAccumulatorHalf2WordAtPtx314R1033,
+			r_MmaAccumulatorHalf2WordAtPtx313R1032); // PTX L1422
+	MmaHalf(r_PtxRegister475, r_PtxRegister476, r_MmaAHalf2WordAtPtx1142R348, r_MmaAHalf2WordAtPtx1142R349,
+			r_MmaAHalf2WordAtPtx1142R350, r_MmaAHalf2WordAtPtx1142R351, r_MmaBHalf2WordAtPtx114R1093,
+			r_MmaBHalf2WordAtPtx114R1094, r_MmaAccumulatorHalf2WordAtPtx1415R356,
+			r_MmaAccumulatorHalf2WordAtPtx1415R357); // PTX L1429
+	MmaHalf(r_PtxRegister477, r_PtxRegister478, r_MmaAHalf2WordAtPtx1142R348, r_MmaAHalf2WordAtPtx1142R349,
+			r_MmaAHalf2WordAtPtx1142R350, r_MmaAHalf2WordAtPtx1142R351, r_MmaBHalf2WordAtPtx114R1095,
+			r_MmaBHalf2WordAtPtx114R1096, r_MmaAccumulatorHalf2WordAtPtx1422R358,
+			r_MmaAccumulatorHalf2WordAtPtx1422R359); // PTX L1436
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1443R360, r_MmaAccumulatorHalf2WordAtPtx1443R361,
+			r_MmaAHalf2WordAtPtx1133R344, r_MmaAHalf2WordAtPtx1133R345, r_MmaAHalf2WordAtPtx1133R346,
+			r_MmaAHalf2WordAtPtx1133R347, r_MmaBHalf2WordAtPtx87R1081, r_MmaBHalf2WordAtPtx87R1082,
+			r_MmaAccumulatorHalf2WordAtPtx312R1031,
+			r_MmaAccumulatorHalf2WordAtPtx311R1030); // PTX L1443
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1450R362, r_MmaAccumulatorHalf2WordAtPtx1450R363,
+			r_MmaAHalf2WordAtPtx1133R344, r_MmaAHalf2WordAtPtx1133R345, r_MmaAHalf2WordAtPtx1133R346,
+			r_MmaAHalf2WordAtPtx1133R347, r_MmaBHalf2WordAtPtx87R1083, r_MmaBHalf2WordAtPtx87R1084,
+			r_MmaAccumulatorHalf2WordAtPtx310R1029,
+			r_MmaAccumulatorHalf2WordAtPtx309R1028); // PTX L1450
+	MmaHalf(r_PtxRegister575, r_PtxRegister576, r_MmaAHalf2WordAtPtx1142R348, r_MmaAHalf2WordAtPtx1142R349,
+			r_MmaAHalf2WordAtPtx1142R350, r_MmaAHalf2WordAtPtx1142R351, r_MmaBHalf2WordAtPtx123R1097,
+			r_MmaBHalf2WordAtPtx123R1098, r_MmaAccumulatorHalf2WordAtPtx1443R360,
+			r_MmaAccumulatorHalf2WordAtPtx1443R361); // PTX L1457
+	MmaHalf(r_PtxRegister577, r_PtxRegister578, r_MmaAHalf2WordAtPtx1142R348, r_MmaAHalf2WordAtPtx1142R349,
+			r_MmaAHalf2WordAtPtx1142R350, r_MmaAHalf2WordAtPtx1142R351, r_MmaBHalf2WordAtPtx123R1099,
+			r_MmaBHalf2WordAtPtx123R1100, r_MmaAccumulatorHalf2WordAtPtx1450R362,
+			r_MmaAccumulatorHalf2WordAtPtx1450R363); // PTX L1464
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1471R364, r_MmaAccumulatorHalf2WordAtPtx1471R365,
+			r_MmaAHalf2WordAtPtx1133R344, r_MmaAHalf2WordAtPtx1133R345, r_MmaAHalf2WordAtPtx1133R346,
+			r_MmaAHalf2WordAtPtx1133R347, r_MmaBHalf2WordAtPtx96R1085, r_MmaBHalf2WordAtPtx96R1086,
+			r_MmaAccumulatorHalf2WordAtPtx308R1027,
+			r_MmaAccumulatorHalf2WordAtPtx307R1026); // PTX L1471
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1478R366, r_MmaAccumulatorHalf2WordAtPtx1478R367,
+			r_MmaAHalf2WordAtPtx1133R344, r_MmaAHalf2WordAtPtx1133R345, r_MmaAHalf2WordAtPtx1133R346,
+			r_MmaAHalf2WordAtPtx1133R347, r_MmaBHalf2WordAtPtx96R1087, r_MmaBHalf2WordAtPtx96R1088,
+			r_MmaAccumulatorHalf2WordAtPtx306R1025,
+			r_MmaAccumulatorHalf2WordAtPtx305R1024); // PTX L1478
+	MmaHalf(r_PtxRegister583, r_PtxRegister584, r_MmaAHalf2WordAtPtx1142R348, r_MmaAHalf2WordAtPtx1142R349,
+			r_MmaAHalf2WordAtPtx1142R350, r_MmaAHalf2WordAtPtx1142R351, r_MmaBHalf2WordAtPtx132R1101,
+			r_MmaBHalf2WordAtPtx132R1102, r_MmaAccumulatorHalf2WordAtPtx1471R364,
+			r_MmaAccumulatorHalf2WordAtPtx1471R365); // PTX L1485
+	MmaHalf(r_PtxRegister585, r_PtxRegister586, r_MmaAHalf2WordAtPtx1142R348, r_MmaAHalf2WordAtPtx1142R349,
+			r_MmaAHalf2WordAtPtx1142R350, r_MmaAHalf2WordAtPtx1142R351, r_MmaBHalf2WordAtPtx132R1103,
+			r_MmaBHalf2WordAtPtx132R1104, r_MmaAccumulatorHalf2WordAtPtx1478R366,
+			r_MmaAccumulatorHalf2WordAtPtx1478R367); // PTX L1492
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1499R376, r_MmaAccumulatorHalf2WordAtPtx1499R377,
+			r_MmaAHalf2WordAtPtx1151R368, r_MmaAHalf2WordAtPtx1151R369, r_MmaAHalf2WordAtPtx1151R370,
+			r_MmaAHalf2WordAtPtx1151R371, r_MmaBHalf2WordAtPtx67R1073, r_MmaBHalf2WordAtPtx67R1074,
+			r_MmaAccumulatorHalf2WordAtPtx304R1023,
+			r_MmaAccumulatorHalf2WordAtPtx303R1022); // PTX L1499
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1506R378, r_MmaAccumulatorHalf2WordAtPtx1506R379,
+			r_MmaAHalf2WordAtPtx1151R368, r_MmaAHalf2WordAtPtx1151R369, r_MmaAHalf2WordAtPtx1151R370,
+			r_MmaAHalf2WordAtPtx1151R371, r_MmaBHalf2WordAtPtx67R1075, r_MmaBHalf2WordAtPtx67R1076,
+			r_MmaAccumulatorHalf2WordAtPtx302R1021,
+			r_MmaAccumulatorHalf2WordAtPtx301R1020); // PTX L1506
+	MmaHalf(r_PtxRegister485, r_PtxRegister486, r_MmaAHalf2WordAtPtx1160R372, r_MmaAHalf2WordAtPtx1160R373,
+			r_MmaAHalf2WordAtPtx1160R374, r_MmaAHalf2WordAtPtx1160R375, r_MmaBHalf2WordAtPtx105R1089,
+			r_MmaBHalf2WordAtPtx105R1090, r_MmaAccumulatorHalf2WordAtPtx1499R376,
+			r_MmaAccumulatorHalf2WordAtPtx1499R377); // PTX L1513
+	MmaHalf(r_PtxRegister487, r_PtxRegister488, r_MmaAHalf2WordAtPtx1160R372, r_MmaAHalf2WordAtPtx1160R373,
+			r_MmaAHalf2WordAtPtx1160R374, r_MmaAHalf2WordAtPtx1160R375, r_MmaBHalf2WordAtPtx105R1091,
+			r_MmaBHalf2WordAtPtx105R1092, r_MmaAccumulatorHalf2WordAtPtx1506R378,
+			r_MmaAccumulatorHalf2WordAtPtx1506R379); // PTX L1520
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1527R380, r_MmaAccumulatorHalf2WordAtPtx1527R381,
+			r_MmaAHalf2WordAtPtx1151R368, r_MmaAHalf2WordAtPtx1151R369, r_MmaAHalf2WordAtPtx1151R370,
+			r_MmaAHalf2WordAtPtx1151R371, r_MmaBHalf2WordAtPtx78R1077, r_MmaBHalf2WordAtPtx78R1078,
+			r_MmaAccumulatorHalf2WordAtPtx300R1019,
+			r_MmaAccumulatorHalf2WordAtPtx299R1018); // PTX L1527
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1534R382, r_MmaAccumulatorHalf2WordAtPtx1534R383,
+			r_MmaAHalf2WordAtPtx1151R368, r_MmaAHalf2WordAtPtx1151R369, r_MmaAHalf2WordAtPtx1151R370,
+			r_MmaAHalf2WordAtPtx1151R371, r_MmaBHalf2WordAtPtx78R1079, r_MmaBHalf2WordAtPtx78R1080,
+			r_MmaAccumulatorHalf2WordAtPtx298R1017,
+			r_MmaAccumulatorHalf2WordAtPtx297R1016); // PTX L1534
+	MmaHalf(r_PtxRegister491, r_PtxRegister492, r_MmaAHalf2WordAtPtx1160R372, r_MmaAHalf2WordAtPtx1160R373,
+			r_MmaAHalf2WordAtPtx1160R374, r_MmaAHalf2WordAtPtx1160R375, r_MmaBHalf2WordAtPtx114R1093,
+			r_MmaBHalf2WordAtPtx114R1094, r_MmaAccumulatorHalf2WordAtPtx1527R380,
+			r_MmaAccumulatorHalf2WordAtPtx1527R381); // PTX L1541
+	MmaHalf(r_PtxRegister493, r_PtxRegister494, r_MmaAHalf2WordAtPtx1160R372, r_MmaAHalf2WordAtPtx1160R373,
+			r_MmaAHalf2WordAtPtx1160R374, r_MmaAHalf2WordAtPtx1160R375, r_MmaBHalf2WordAtPtx114R1095,
+			r_MmaBHalf2WordAtPtx114R1096, r_MmaAccumulatorHalf2WordAtPtx1534R382,
+			r_MmaAccumulatorHalf2WordAtPtx1534R383); // PTX L1548
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1555R384, r_MmaAccumulatorHalf2WordAtPtx1555R385,
+			r_MmaAHalf2WordAtPtx1151R368, r_MmaAHalf2WordAtPtx1151R369, r_MmaAHalf2WordAtPtx1151R370,
+			r_MmaAHalf2WordAtPtx1151R371, r_MmaBHalf2WordAtPtx87R1081, r_MmaBHalf2WordAtPtx87R1082,
+			r_MmaAccumulatorHalf2WordAtPtx296R1015,
+			r_MmaAccumulatorHalf2WordAtPtx295R1014); // PTX L1555
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1562R386, r_MmaAccumulatorHalf2WordAtPtx1562R387,
+			r_MmaAHalf2WordAtPtx1151R368, r_MmaAHalf2WordAtPtx1151R369, r_MmaAHalf2WordAtPtx1151R370,
+			r_MmaAHalf2WordAtPtx1151R371, r_MmaBHalf2WordAtPtx87R1083, r_MmaBHalf2WordAtPtx87R1084,
+			r_MmaAccumulatorHalf2WordAtPtx294R1013,
+			r_MmaAccumulatorHalf2WordAtPtx293R1012); // PTX L1562
+	MmaHalf(r_PtxRegister599, r_PtxRegister600, r_MmaAHalf2WordAtPtx1160R372, r_MmaAHalf2WordAtPtx1160R373,
+			r_MmaAHalf2WordAtPtx1160R374, r_MmaAHalf2WordAtPtx1160R375, r_MmaBHalf2WordAtPtx123R1097,
+			r_MmaBHalf2WordAtPtx123R1098, r_MmaAccumulatorHalf2WordAtPtx1555R384,
+			r_MmaAccumulatorHalf2WordAtPtx1555R385); // PTX L1569
+	MmaHalf(r_PtxRegister601, r_PtxRegister602, r_MmaAHalf2WordAtPtx1160R372, r_MmaAHalf2WordAtPtx1160R373,
+			r_MmaAHalf2WordAtPtx1160R374, r_MmaAHalf2WordAtPtx1160R375, r_MmaBHalf2WordAtPtx123R1099,
+			r_MmaBHalf2WordAtPtx123R1100, r_MmaAccumulatorHalf2WordAtPtx1562R386,
+			r_MmaAccumulatorHalf2WordAtPtx1562R387); // PTX L1576
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1583R388, r_MmaAccumulatorHalf2WordAtPtx1583R389,
+			r_MmaAHalf2WordAtPtx1151R368, r_MmaAHalf2WordAtPtx1151R369, r_MmaAHalf2WordAtPtx1151R370,
+			r_MmaAHalf2WordAtPtx1151R371, r_MmaBHalf2WordAtPtx96R1085, r_MmaBHalf2WordAtPtx96R1086,
+			r_MmaAccumulatorHalf2WordAtPtx292R1011,
+			r_MmaAccumulatorHalf2WordAtPtx291R1010); // PTX L1583
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1590R390, r_MmaAccumulatorHalf2WordAtPtx1590R391,
+			r_MmaAHalf2WordAtPtx1151R368, r_MmaAHalf2WordAtPtx1151R369, r_MmaAHalf2WordAtPtx1151R370,
+			r_MmaAHalf2WordAtPtx1151R371, r_MmaBHalf2WordAtPtx96R1087, r_MmaBHalf2WordAtPtx96R1088,
+			r_MmaAccumulatorHalf2WordAtPtx290R1009,
+			r_MmaAccumulatorHalf2WordAtPtx289R1008); // PTX L1590
+	MmaHalf(r_PtxRegister607, r_PtxRegister608, r_MmaAHalf2WordAtPtx1160R372, r_MmaAHalf2WordAtPtx1160R373,
+			r_MmaAHalf2WordAtPtx1160R374, r_MmaAHalf2WordAtPtx1160R375, r_MmaBHalf2WordAtPtx132R1101,
+			r_MmaBHalf2WordAtPtx132R1102, r_MmaAccumulatorHalf2WordAtPtx1583R388,
+			r_MmaAccumulatorHalf2WordAtPtx1583R389); // PTX L1597
+	MmaHalf(r_PtxRegister609, r_PtxRegister610, r_MmaAHalf2WordAtPtx1160R372, r_MmaAHalf2WordAtPtx1160R373,
+			r_MmaAHalf2WordAtPtx1160R374, r_MmaAHalf2WordAtPtx1160R375, r_MmaBHalf2WordAtPtx132R1103,
+			r_MmaBHalf2WordAtPtx132R1104, r_MmaAccumulatorHalf2WordAtPtx1590R390,
+			r_MmaAccumulatorHalf2WordAtPtx1590R391);											  // PTX L1604
+	r_PtxRegister409 = ShiftLeft(uint32_t(r_CtaZ), uint32_t(2));								  // PTX L1610
+	r_PtxRegister410 = uint32_t(r_ThreadY) + uint32_t(r_PtxRegister409);						  // PTX L1611
+	r_PtxRegister411 = ShiftLeft(uint32_t(r_PtxRegister410), uint32_t(13));						  // PTX L1612
+	r_PtxRegister412 = ShiftLeft(uint32_t(r_PtxRegister410), uint32_t(6));						  // PTX L1613
+	r_PtxU64Register6 = uint64_t(int64_t(int32_t(r_PtxRegister411)) * int64_t(int32_t(4)));		  // PTX L1614
+	r_PtxU64Register75 = uint64_t(r_PtxU64Register6) + uint64_t(r_PtxU64Register175);			  // PTX L1615
+	r_PtxU64Register176 = uint64_t(r_PtxU64Register75) + uint64_t(790016);						  // PTX L1616
+	r_PtxU64Register7 = uint64_t(uint32_t(r_PtxRegister412)) * uint64_t(uint32_t(512));			  // PTX L1617
+	r_PtxRegister1169 = uint32_t(0);															  // PTX L1618
+	r_MmaAccumulatorHalf2WordAtPtx1619R1105 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1619
+	r_MmaAccumulatorHalf2WordAtPtx1620R1106 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1620
+	r_MmaAccumulatorHalf2WordAtPtx1621R1107 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1621
+	r_MmaAccumulatorHalf2WordAtPtx1622R1108 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1622
+	r_MmaAccumulatorHalf2WordAtPtx1623R1109 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1623
+	r_MmaAccumulatorHalf2WordAtPtx1624R1110 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1624
+	r_MmaAccumulatorHalf2WordAtPtx1625R1111 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1625
+	r_MmaAccumulatorHalf2WordAtPtx1626R1112 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1626
+	r_MmaAccumulatorHalf2WordAtPtx1627R1113 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1627
+	r_MmaAccumulatorHalf2WordAtPtx1628R1114 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1628
+	r_MmaAccumulatorHalf2WordAtPtx1629R1115 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1629
+	r_MmaAccumulatorHalf2WordAtPtx1630R1116 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1630
+	r_MmaAccumulatorHalf2WordAtPtx1631R1117 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1631
+	r_MmaAccumulatorHalf2WordAtPtx1632R1118 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1632
+	r_MmaAccumulatorHalf2WordAtPtx1633R1119 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1633
+	r_MmaAccumulatorHalf2WordAtPtx1634R1120 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1634
+	r_MmaAccumulatorHalf2WordAtPtx1635R1121 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1635
+	r_MmaAccumulatorHalf2WordAtPtx1636R1122 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1636
+	r_MmaAccumulatorHalf2WordAtPtx1637R1123 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1637
+	r_MmaAccumulatorHalf2WordAtPtx1638R1124 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1638
+	r_MmaAccumulatorHalf2WordAtPtx1639R1125 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1639
+	r_MmaAccumulatorHalf2WordAtPtx1640R1126 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1640
+	r_MmaAccumulatorHalf2WordAtPtx1641R1127 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1641
+	r_MmaAccumulatorHalf2WordAtPtx1642R1128 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1642
+	r_MmaAccumulatorHalf2WordAtPtx1643R1129 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1643
+	r_MmaAccumulatorHalf2WordAtPtx1644R1130 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1644
+	r_MmaAccumulatorHalf2WordAtPtx1645R1131 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1645
+	r_MmaAccumulatorHalf2WordAtPtx1646R1132 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1646
+	r_MmaAccumulatorHalf2WordAtPtx1647R1133 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1647
+	r_MmaAccumulatorHalf2WordAtPtx1648R1134 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1648
+	r_MmaAccumulatorHalf2WordAtPtx1649R1135 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1649
+	r_MmaAccumulatorHalf2WordAtPtx1650R1136 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1650
+	r_MmaAccumulatorHalf2WordAtPtx1651R1137 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1651
+	r_MmaAccumulatorHalf2WordAtPtx1652R1138 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1652
+	r_MmaAccumulatorHalf2WordAtPtx1653R1139 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1653
+	r_MmaAccumulatorHalf2WordAtPtx1654R1140 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1654
+	r_MmaAccumulatorHalf2WordAtPtx1655R1141 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1655
+	r_MmaAccumulatorHalf2WordAtPtx1656R1142 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1656
+	r_MmaAccumulatorHalf2WordAtPtx1657R1143 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1657
+	r_MmaAccumulatorHalf2WordAtPtx1658R1144 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1658
+	r_MmaAccumulatorHalf2WordAtPtx1659R1145 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1659
+	r_MmaAccumulatorHalf2WordAtPtx1660R1146 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1660
+	r_MmaAccumulatorHalf2WordAtPtx1661R1147 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1661
+	r_MmaAccumulatorHalf2WordAtPtx1662R1148 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1662
+	r_MmaAccumulatorHalf2WordAtPtx1663R1149 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1663
+	r_MmaAccumulatorHalf2WordAtPtx1664R1150 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1664
+	r_MmaAccumulatorHalf2WordAtPtx1665R1151 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1665
+	r_MmaAccumulatorHalf2WordAtPtx1666R1152 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1666
+	r_MmaAccumulatorHalf2WordAtPtx1667R1153 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1667
+	r_MmaAccumulatorHalf2WordAtPtx1668R1154 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1668
+	r_MmaAccumulatorHalf2WordAtPtx1669R1155 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1669
+	r_MmaAccumulatorHalf2WordAtPtx1670R1156 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1670
+	r_MmaAccumulatorHalf2WordAtPtx1671R1157 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1671
+	r_MmaAccumulatorHalf2WordAtPtx1672R1158 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1672
+	r_MmaAccumulatorHalf2WordAtPtx1673R1159 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1673
+	r_MmaAccumulatorHalf2WordAtPtx1674R1160 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1674
+	r_MmaAccumulatorHalf2WordAtPtx1675R1161 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1675
+	r_MmaAccumulatorHalf2WordAtPtx1676R1162 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1676
+	r_MmaAccumulatorHalf2WordAtPtx1677R1163 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1677
+	r_MmaAccumulatorHalf2WordAtPtx1678R1164 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1678
+	r_MmaAccumulatorHalf2WordAtPtx1679R1165 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1679
+	r_MmaAccumulatorHalf2WordAtPtx1680R1166 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1680
+	r_MmaAccumulatorHalf2WordAtPtx1681R1167 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1681
+	r_MmaAccumulatorHalf2WordAtPtx1682R1168 = uint32_t(r_PackedHalf2AtPtx50R92);				  // PTX L1682
+L__BB0_35:																						  // PTX L1683
+	r_LaneIndexAtPtx1685 = uint32_t((threadIdx.x & 31u));										  // PTX L1685
+	r_PtxU64Register92 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1685)) * int64_t(int32_t(16))); // PTX L1687
+	r_PtxU64Register93 = uint64_t(r_PtxU64Register175) + uint64_t(r_PtxU64Register6);			  // PTX L1688
+	r_PtxU64Register94 = uint64_t(r_PtxU64Register93) + uint64_t(r_PtxU64Register92);			  // PTX L1689
+	r_PtxU64Register76 = uint64_t(r_PtxU64Register94) + uint64_t(524288);						  // PTX L1690
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register76));
+		r_MmaBHalf2WordAtPtx1692R417 = r_Value.x;
+		r_MmaBHalf2WordAtPtx1692R418 = r_Value.y;
+		r_MmaBHalf2WordAtPtx1692R419 = r_Value.z;
+		r_MmaBHalf2WordAtPtx1692R420 = r_Value.w;
+	} // PTX L1692
+	r_LaneIndexAtPtx1695 = uint32_t((threadIdx.x & 31u));										  // PTX L1695
+	r_PtxU64Register95 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1695)) * int64_t(int32_t(16))); // PTX L1697
+	r_PtxU64Register96 = uint64_t(r_PtxU64Register93) + uint64_t(r_PtxU64Register95);			  // PTX L1698
+	r_PtxU64Register77 = uint64_t(r_PtxU64Register96) + uint64_t(524800);						  // PTX L1699
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register77));
+		r_MmaBHalf2WordAtPtx1701R429 = r_Value.x;
+		r_MmaBHalf2WordAtPtx1701R430 = r_Value.y;
+		r_MmaBHalf2WordAtPtx1701R435 = r_Value.z;
+		r_MmaBHalf2WordAtPtx1701R436 = r_Value.w;
+	} // PTX L1701
+	r_LaneIndexAtPtx1704 = uint32_t((threadIdx.x & 31u));										  // PTX L1704
+	r_PtxU64Register97 = uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1704)) * int64_t(int32_t(16))); // PTX L1706
+	r_PtxU64Register98 = uint64_t(r_PtxU64Register175) + uint64_t(r_PtxU64Register7);			  // PTX L1707
+	r_PtxU64Register99 = uint64_t(r_PtxU64Register98) + uint64_t(r_PtxU64Register97);			  // PTX L1708
+	r_PtxU64Register78 = uint64_t(r_PtxU64Register99) + uint64_t(532480);						  // PTX L1709
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register78));
+		r_MmaBHalf2WordAtPtx1711R421 = r_Value.x;
+		r_MmaBHalf2WordAtPtx1711R422 = r_Value.y;
+		r_MmaBHalf2WordAtPtx1711R425 = r_Value.z;
+		r_MmaBHalf2WordAtPtx1711R426 = r_Value.w;
+	} // PTX L1711
+	r_LaneIndexAtPtx1714 = uint32_t((threadIdx.x & 31u)); // PTX L1714
+	r_PtxU64Register100 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1714)) * int64_t(int32_t(16)));		// PTX L1716
+	r_PtxU64Register101 = uint64_t(r_PtxU64Register98) + uint64_t(r_PtxU64Register100); // PTX L1717
+	r_PtxU64Register79 = uint64_t(r_PtxU64Register101) + uint64_t(532992);				// PTX L1718
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register79));
+		r_MmaBHalf2WordAtPtx1720R437 = r_Value.x;
+		r_MmaBHalf2WordAtPtx1720R438 = r_Value.y;
+		r_MmaBHalf2WordAtPtx1720R445 = r_Value.z;
+		r_MmaBHalf2WordAtPtx1720R446 = r_Value.w;
+	} // PTX L1720
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1723R423, r_MmaAccumulatorHalf2WordAtPtx1723R424, r_PtxRegister431,
+			r_PtxRegister432, r_PtxRegister433, r_PtxRegister434, r_MmaBHalf2WordAtPtx1692R417,
+			r_MmaBHalf2WordAtPtx1692R418, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1723
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1730R427, r_MmaAccumulatorHalf2WordAtPtx1730R428, r_PtxRegister431,
+			r_PtxRegister432, r_PtxRegister433, r_PtxRegister434, r_MmaBHalf2WordAtPtx1692R419,
+			r_MmaBHalf2WordAtPtx1692R420, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1730
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1737R503, r_MmaAccumulatorHalf2WordAtPtx1737R504, r_PtxRegister441,
+			r_PtxRegister442, r_PtxRegister443, r_PtxRegister444, r_MmaBHalf2WordAtPtx1711R421,
+			r_MmaBHalf2WordAtPtx1711R422, r_MmaAccumulatorHalf2WordAtPtx1723R423,
+			r_MmaAccumulatorHalf2WordAtPtx1723R424); // PTX L1737
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1744R507, r_MmaAccumulatorHalf2WordAtPtx1744R508, r_PtxRegister441,
+			r_PtxRegister442, r_PtxRegister443, r_PtxRegister444, r_MmaBHalf2WordAtPtx1711R425,
+			r_MmaBHalf2WordAtPtx1711R426, r_MmaAccumulatorHalf2WordAtPtx1730R427,
+			r_MmaAccumulatorHalf2WordAtPtx1730R428); // PTX L1744
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1751R439, r_MmaAccumulatorHalf2WordAtPtx1751R440, r_PtxRegister431,
+			r_PtxRegister432, r_PtxRegister433, r_PtxRegister434, r_MmaBHalf2WordAtPtx1701R429,
+			r_MmaBHalf2WordAtPtx1701R430, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1751
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1758R447, r_MmaAccumulatorHalf2WordAtPtx1758R448, r_PtxRegister431,
+			r_PtxRegister432, r_PtxRegister433, r_PtxRegister434, r_MmaBHalf2WordAtPtx1701R435,
+			r_MmaBHalf2WordAtPtx1701R436, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1758
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1765R519, r_MmaAccumulatorHalf2WordAtPtx1765R520, r_PtxRegister441,
+			r_PtxRegister442, r_PtxRegister443, r_PtxRegister444, r_MmaBHalf2WordAtPtx1720R437,
+			r_MmaBHalf2WordAtPtx1720R438, r_MmaAccumulatorHalf2WordAtPtx1751R439,
+			r_MmaAccumulatorHalf2WordAtPtx1751R440); // PTX L1765
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1772R527, r_MmaAccumulatorHalf2WordAtPtx1772R528, r_PtxRegister441,
+			r_PtxRegister442, r_PtxRegister443, r_PtxRegister444, r_MmaBHalf2WordAtPtx1720R445,
+			r_MmaBHalf2WordAtPtx1720R446, r_MmaAccumulatorHalf2WordAtPtx1758R447,
+			r_MmaAccumulatorHalf2WordAtPtx1758R448); // PTX L1772
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1779R449, r_MmaAccumulatorHalf2WordAtPtx1779R450, r_PtxRegister453,
+			r_PtxRegister454, r_PtxRegister455, r_PtxRegister456, r_MmaBHalf2WordAtPtx1692R417,
+			r_MmaBHalf2WordAtPtx1692R418, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1779
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1786R451, r_MmaAccumulatorHalf2WordAtPtx1786R452, r_PtxRegister453,
+			r_PtxRegister454, r_PtxRegister455, r_PtxRegister456, r_MmaBHalf2WordAtPtx1692R419,
+			r_MmaBHalf2WordAtPtx1692R420, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1786
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1793R541, r_MmaAccumulatorHalf2WordAtPtx1793R542, r_PtxRegister459,
+			r_PtxRegister460, r_PtxRegister461, r_PtxRegister462, r_MmaBHalf2WordAtPtx1711R421,
+			r_MmaBHalf2WordAtPtx1711R422, r_MmaAccumulatorHalf2WordAtPtx1779R449,
+			r_MmaAccumulatorHalf2WordAtPtx1779R450); // PTX L1793
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1800R543, r_MmaAccumulatorHalf2WordAtPtx1800R544, r_PtxRegister459,
+			r_PtxRegister460, r_PtxRegister461, r_PtxRegister462, r_MmaBHalf2WordAtPtx1711R425,
+			r_MmaBHalf2WordAtPtx1711R426, r_MmaAccumulatorHalf2WordAtPtx1786R451,
+			r_MmaAccumulatorHalf2WordAtPtx1786R452); // PTX L1800
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1807R457, r_MmaAccumulatorHalf2WordAtPtx1807R458, r_PtxRegister453,
+			r_PtxRegister454, r_PtxRegister455, r_PtxRegister456, r_MmaBHalf2WordAtPtx1701R429,
+			r_MmaBHalf2WordAtPtx1701R430, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1807
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1814R463, r_MmaAccumulatorHalf2WordAtPtx1814R464, r_PtxRegister453,
+			r_PtxRegister454, r_PtxRegister455, r_PtxRegister456, r_MmaBHalf2WordAtPtx1701R435,
+			r_MmaBHalf2WordAtPtx1701R436, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1814
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1821R549, r_MmaAccumulatorHalf2WordAtPtx1821R550, r_PtxRegister459,
+			r_PtxRegister460, r_PtxRegister461, r_PtxRegister462, r_MmaBHalf2WordAtPtx1720R437,
+			r_MmaBHalf2WordAtPtx1720R438, r_MmaAccumulatorHalf2WordAtPtx1807R457,
+			r_MmaAccumulatorHalf2WordAtPtx1807R458); // PTX L1821
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1828R555, r_MmaAccumulatorHalf2WordAtPtx1828R556, r_PtxRegister459,
+			r_PtxRegister460, r_PtxRegister461, r_PtxRegister462, r_MmaBHalf2WordAtPtx1720R445,
+			r_MmaBHalf2WordAtPtx1720R446, r_MmaAccumulatorHalf2WordAtPtx1814R463,
+			r_MmaAccumulatorHalf2WordAtPtx1814R464); // PTX L1828
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1835R465, r_MmaAccumulatorHalf2WordAtPtx1835R466, r_PtxRegister469,
+			r_PtxRegister470, r_PtxRegister471, r_PtxRegister472, r_MmaBHalf2WordAtPtx1692R417,
+			r_MmaBHalf2WordAtPtx1692R418, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1835
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1842R467, r_MmaAccumulatorHalf2WordAtPtx1842R468, r_PtxRegister469,
+			r_PtxRegister470, r_PtxRegister471, r_PtxRegister472, r_MmaBHalf2WordAtPtx1692R419,
+			r_MmaBHalf2WordAtPtx1692R420, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1842
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1849R565, r_MmaAccumulatorHalf2WordAtPtx1849R566, r_PtxRegister475,
+			r_PtxRegister476, r_PtxRegister477, r_PtxRegister478, r_MmaBHalf2WordAtPtx1711R421,
+			r_MmaBHalf2WordAtPtx1711R422, r_MmaAccumulatorHalf2WordAtPtx1835R465,
+			r_MmaAccumulatorHalf2WordAtPtx1835R466); // PTX L1849
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1856R567, r_MmaAccumulatorHalf2WordAtPtx1856R568, r_PtxRegister475,
+			r_PtxRegister476, r_PtxRegister477, r_PtxRegister478, r_MmaBHalf2WordAtPtx1711R425,
+			r_MmaBHalf2WordAtPtx1711R426, r_MmaAccumulatorHalf2WordAtPtx1842R467,
+			r_MmaAccumulatorHalf2WordAtPtx1842R468); // PTX L1856
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1863R473, r_MmaAccumulatorHalf2WordAtPtx1863R474, r_PtxRegister469,
+			r_PtxRegister470, r_PtxRegister471, r_PtxRegister472, r_MmaBHalf2WordAtPtx1701R429,
+			r_MmaBHalf2WordAtPtx1701R430, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1863
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1870R479, r_MmaAccumulatorHalf2WordAtPtx1870R480, r_PtxRegister469,
+			r_PtxRegister470, r_PtxRegister471, r_PtxRegister472, r_MmaBHalf2WordAtPtx1701R435,
+			r_MmaBHalf2WordAtPtx1701R436, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1870
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1877R573, r_MmaAccumulatorHalf2WordAtPtx1877R574, r_PtxRegister475,
+			r_PtxRegister476, r_PtxRegister477, r_PtxRegister478, r_MmaBHalf2WordAtPtx1720R437,
+			r_MmaBHalf2WordAtPtx1720R438, r_MmaAccumulatorHalf2WordAtPtx1863R473,
+			r_MmaAccumulatorHalf2WordAtPtx1863R474); // PTX L1877
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1884R579, r_MmaAccumulatorHalf2WordAtPtx1884R580, r_PtxRegister475,
+			r_PtxRegister476, r_PtxRegister477, r_PtxRegister478, r_MmaBHalf2WordAtPtx1720R445,
+			r_MmaBHalf2WordAtPtx1720R446, r_MmaAccumulatorHalf2WordAtPtx1870R479,
+			r_MmaAccumulatorHalf2WordAtPtx1870R480); // PTX L1884
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1891R481, r_MmaAccumulatorHalf2WordAtPtx1891R482, r_PtxRegister485,
+			r_PtxRegister486, r_PtxRegister487, r_PtxRegister488, r_MmaBHalf2WordAtPtx1692R417,
+			r_MmaBHalf2WordAtPtx1692R418, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1891
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1898R483, r_MmaAccumulatorHalf2WordAtPtx1898R484, r_PtxRegister485,
+			r_PtxRegister486, r_PtxRegister487, r_PtxRegister488, r_MmaBHalf2WordAtPtx1692R419,
+			r_MmaBHalf2WordAtPtx1692R420, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1898
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1905R589, r_MmaAccumulatorHalf2WordAtPtx1905R590, r_PtxRegister491,
+			r_PtxRegister492, r_PtxRegister493, r_PtxRegister494, r_MmaBHalf2WordAtPtx1711R421,
+			r_MmaBHalf2WordAtPtx1711R422, r_MmaAccumulatorHalf2WordAtPtx1891R481,
+			r_MmaAccumulatorHalf2WordAtPtx1891R482); // PTX L1905
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1912R591, r_MmaAccumulatorHalf2WordAtPtx1912R592, r_PtxRegister491,
+			r_PtxRegister492, r_PtxRegister493, r_PtxRegister494, r_MmaBHalf2WordAtPtx1711R425,
+			r_MmaBHalf2WordAtPtx1711R426, r_MmaAccumulatorHalf2WordAtPtx1898R483,
+			r_MmaAccumulatorHalf2WordAtPtx1898R484); // PTX L1912
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1919R489, r_MmaAccumulatorHalf2WordAtPtx1919R490, r_PtxRegister485,
+			r_PtxRegister486, r_PtxRegister487, r_PtxRegister488, r_MmaBHalf2WordAtPtx1701R429,
+			r_MmaBHalf2WordAtPtx1701R430, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1919
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1926R495, r_MmaAccumulatorHalf2WordAtPtx1926R496, r_PtxRegister485,
+			r_PtxRegister486, r_PtxRegister487, r_PtxRegister488, r_MmaBHalf2WordAtPtx1701R435,
+			r_MmaBHalf2WordAtPtx1701R436, r_PackedHalf2AtPtx50R92, r_PackedHalf2AtPtx50R92); // PTX L1926
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1933R597, r_MmaAccumulatorHalf2WordAtPtx1933R598, r_PtxRegister491,
+			r_PtxRegister492, r_PtxRegister493, r_PtxRegister494, r_MmaBHalf2WordAtPtx1720R437,
+			r_MmaBHalf2WordAtPtx1720R438, r_MmaAccumulatorHalf2WordAtPtx1919R489,
+			r_MmaAccumulatorHalf2WordAtPtx1919R490); // PTX L1933
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1940R603, r_MmaAccumulatorHalf2WordAtPtx1940R604, r_PtxRegister491,
+			r_PtxRegister492, r_PtxRegister493, r_PtxRegister494, r_MmaBHalf2WordAtPtx1720R445,
+			r_MmaBHalf2WordAtPtx1720R446, r_MmaAccumulatorHalf2WordAtPtx1926R495,
+			r_MmaAccumulatorHalf2WordAtPtx1926R496);	  // PTX L1940
+	r_LaneIndexAtPtx1947 = uint32_t((threadIdx.x & 31u)); // PTX L1947
+	r_PtxU64Register102 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1947)) * int64_t(int32_t(16)));		// PTX L1949
+	r_PtxU64Register103 = uint64_t(r_PtxU64Register98) + uint64_t(r_PtxU64Register102); // PTX L1950
+	r_PtxU64Register80 = uint64_t(r_PtxU64Register103) + uint64_t(540672);				// PTX L1951
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register80));
+		r_MmaBHalf2WordAtPtx1953R501 = r_Value.x;
+		r_MmaBHalf2WordAtPtx1953R502 = r_Value.y;
+		r_MmaBHalf2WordAtPtx1953R505 = r_Value.z;
+		r_MmaBHalf2WordAtPtx1953R506 = r_Value.w;
+	} // PTX L1953
+	r_LaneIndexAtPtx1956 = uint32_t((threadIdx.x & 31u)); // PTX L1956
+	r_PtxU64Register104 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1956)) * int64_t(int32_t(16)));		// PTX L1958
+	r_PtxU64Register105 = uint64_t(r_PtxU64Register98) + uint64_t(r_PtxU64Register104); // PTX L1959
+	r_PtxU64Register81 = uint64_t(r_PtxU64Register105) + uint64_t(541184);				// PTX L1960
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register81));
+		r_MmaBHalf2WordAtPtx1962R517 = r_Value.x;
+		r_MmaBHalf2WordAtPtx1962R518 = r_Value.y;
+		r_MmaBHalf2WordAtPtx1962R525 = r_Value.z;
+		r_MmaBHalf2WordAtPtx1962R526 = r_Value.w;
+	} // PTX L1962
+	r_LaneIndexAtPtx1965 = uint32_t((threadIdx.x & 31u)); // PTX L1965
+	r_PtxU64Register106 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1965)) * int64_t(int32_t(16)));		// PTX L1967
+	r_PtxU64Register107 = uint64_t(r_PtxU64Register98) + uint64_t(r_PtxU64Register106); // PTX L1968
+	r_PtxU64Register82 = uint64_t(r_PtxU64Register107) + uint64_t(548864);				// PTX L1969
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register82));
+		r_MmaBHalf2WordAtPtx1971R509 = r_Value.x;
+		r_MmaBHalf2WordAtPtx1971R510 = r_Value.y;
+		r_MmaBHalf2WordAtPtx1971R513 = r_Value.z;
+		r_MmaBHalf2WordAtPtx1971R514 = r_Value.w;
+	} // PTX L1971
+	r_LaneIndexAtPtx1974 = uint32_t((threadIdx.x & 31u)); // PTX L1974
+	r_PtxU64Register108 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx1974)) * int64_t(int32_t(16)));		// PTX L1976
+	r_PtxU64Register109 = uint64_t(r_PtxU64Register98) + uint64_t(r_PtxU64Register108); // PTX L1977
+	r_PtxU64Register83 = uint64_t(r_PtxU64Register109) + uint64_t(549376);				// PTX L1978
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register83));
+		r_MmaBHalf2WordAtPtx1980R529 = r_Value.x;
+		r_MmaBHalf2WordAtPtx1980R530 = r_Value.y;
+		r_MmaBHalf2WordAtPtx1980R537 = r_Value.z;
+		r_MmaBHalf2WordAtPtx1980R538 = r_Value.w;
+	} // PTX L1980
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1983R511, r_MmaAccumulatorHalf2WordAtPtx1983R512, r_PtxRegister521,
+			r_PtxRegister522, r_PtxRegister523, r_PtxRegister524, r_MmaBHalf2WordAtPtx1953R501,
+			r_MmaBHalf2WordAtPtx1953R502, r_MmaAccumulatorHalf2WordAtPtx1737R503,
+			r_MmaAccumulatorHalf2WordAtPtx1737R504); // PTX L1983
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1990R515, r_MmaAccumulatorHalf2WordAtPtx1990R516, r_PtxRegister521,
+			r_PtxRegister522, r_PtxRegister523, r_PtxRegister524, r_MmaBHalf2WordAtPtx1953R505,
+			r_MmaBHalf2WordAtPtx1953R506, r_MmaAccumulatorHalf2WordAtPtx1744R507,
+			r_MmaAccumulatorHalf2WordAtPtx1744R508); // PTX L1990
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1997R619, r_MmaAccumulatorHalf2WordAtPtx1997R631, r_PtxRegister533,
+			r_PtxRegister534, r_PtxRegister535, r_PtxRegister536, r_MmaBHalf2WordAtPtx1971R509,
+			r_MmaBHalf2WordAtPtx1971R510, r_MmaAccumulatorHalf2WordAtPtx1983R511,
+			r_MmaAccumulatorHalf2WordAtPtx1983R512); // PTX L1997
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2004R638, r_MmaAccumulatorHalf2WordAtPtx2004R645, r_PtxRegister533,
+			r_PtxRegister534, r_PtxRegister535, r_PtxRegister536, r_MmaBHalf2WordAtPtx1971R513,
+			r_MmaBHalf2WordAtPtx1971R514, r_MmaAccumulatorHalf2WordAtPtx1990R515,
+			r_MmaAccumulatorHalf2WordAtPtx1990R516); // PTX L2004
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2011R531, r_MmaAccumulatorHalf2WordAtPtx2011R532, r_PtxRegister521,
+			r_PtxRegister522, r_PtxRegister523, r_PtxRegister524, r_MmaBHalf2WordAtPtx1962R517,
+			r_MmaBHalf2WordAtPtx1962R518, r_MmaAccumulatorHalf2WordAtPtx1765R519,
+			r_MmaAccumulatorHalf2WordAtPtx1765R520); // PTX L2011
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2018R539, r_MmaAccumulatorHalf2WordAtPtx2018R540, r_PtxRegister521,
+			r_PtxRegister522, r_PtxRegister523, r_PtxRegister524, r_MmaBHalf2WordAtPtx1962R525,
+			r_MmaBHalf2WordAtPtx1962R526, r_MmaAccumulatorHalf2WordAtPtx1772R527,
+			r_MmaAccumulatorHalf2WordAtPtx1772R528); // PTX L2018
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2025R652, r_MmaAccumulatorHalf2WordAtPtx2025R659, r_PtxRegister533,
+			r_PtxRegister534, r_PtxRegister535, r_PtxRegister536, r_MmaBHalf2WordAtPtx1980R529,
+			r_MmaBHalf2WordAtPtx1980R530, r_MmaAccumulatorHalf2WordAtPtx2011R531,
+			r_MmaAccumulatorHalf2WordAtPtx2011R532); // PTX L2025
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2032R666, r_MmaAccumulatorHalf2WordAtPtx2032R673, r_PtxRegister533,
+			r_PtxRegister534, r_PtxRegister535, r_PtxRegister536, r_MmaBHalf2WordAtPtx1980R537,
+			r_MmaBHalf2WordAtPtx1980R538, r_MmaAccumulatorHalf2WordAtPtx2018R539,
+			r_MmaAccumulatorHalf2WordAtPtx2018R540); // PTX L2032
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2039R545, r_MmaAccumulatorHalf2WordAtPtx2039R546, r_PtxRegister551,
+			r_PtxRegister552, r_PtxRegister553, r_PtxRegister554, r_MmaBHalf2WordAtPtx1953R501,
+			r_MmaBHalf2WordAtPtx1953R502, r_MmaAccumulatorHalf2WordAtPtx1793R541,
+			r_MmaAccumulatorHalf2WordAtPtx1793R542); // PTX L2039
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2046R547, r_MmaAccumulatorHalf2WordAtPtx2046R548, r_PtxRegister551,
+			r_PtxRegister552, r_PtxRegister553, r_PtxRegister554, r_MmaBHalf2WordAtPtx1953R505,
+			r_MmaBHalf2WordAtPtx1953R506, r_MmaAccumulatorHalf2WordAtPtx1800R543,
+			r_MmaAccumulatorHalf2WordAtPtx1800R544); // PTX L2046
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2053R680, r_MmaAccumulatorHalf2WordAtPtx2053R687, r_PtxRegister559,
+			r_PtxRegister560, r_PtxRegister561, r_PtxRegister562, r_MmaBHalf2WordAtPtx1971R509,
+			r_MmaBHalf2WordAtPtx1971R510, r_MmaAccumulatorHalf2WordAtPtx2039R545,
+			r_MmaAccumulatorHalf2WordAtPtx2039R546); // PTX L2053
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2060R694, r_MmaAccumulatorHalf2WordAtPtx2060R701, r_PtxRegister559,
+			r_PtxRegister560, r_PtxRegister561, r_PtxRegister562, r_MmaBHalf2WordAtPtx1971R513,
+			r_MmaBHalf2WordAtPtx1971R514, r_MmaAccumulatorHalf2WordAtPtx2046R547,
+			r_MmaAccumulatorHalf2WordAtPtx2046R548); // PTX L2060
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2067R557, r_MmaAccumulatorHalf2WordAtPtx2067R558, r_PtxRegister551,
+			r_PtxRegister552, r_PtxRegister553, r_PtxRegister554, r_MmaBHalf2WordAtPtx1962R517,
+			r_MmaBHalf2WordAtPtx1962R518, r_MmaAccumulatorHalf2WordAtPtx1821R549,
+			r_MmaAccumulatorHalf2WordAtPtx1821R550); // PTX L2067
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2074R563, r_MmaAccumulatorHalf2WordAtPtx2074R564, r_PtxRegister551,
+			r_PtxRegister552, r_PtxRegister553, r_PtxRegister554, r_MmaBHalf2WordAtPtx1962R525,
+			r_MmaBHalf2WordAtPtx1962R526, r_MmaAccumulatorHalf2WordAtPtx1828R555,
+			r_MmaAccumulatorHalf2WordAtPtx1828R556); // PTX L2074
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2081R708, r_MmaAccumulatorHalf2WordAtPtx2081R715, r_PtxRegister559,
+			r_PtxRegister560, r_PtxRegister561, r_PtxRegister562, r_MmaBHalf2WordAtPtx1980R529,
+			r_MmaBHalf2WordAtPtx1980R530, r_MmaAccumulatorHalf2WordAtPtx2067R557,
+			r_MmaAccumulatorHalf2WordAtPtx2067R558); // PTX L2081
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2088R722, r_MmaAccumulatorHalf2WordAtPtx2088R729, r_PtxRegister559,
+			r_PtxRegister560, r_PtxRegister561, r_PtxRegister562, r_MmaBHalf2WordAtPtx1980R537,
+			r_MmaBHalf2WordAtPtx1980R538, r_MmaAccumulatorHalf2WordAtPtx2074R563,
+			r_MmaAccumulatorHalf2WordAtPtx2074R564); // PTX L2088
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2095R569, r_MmaAccumulatorHalf2WordAtPtx2095R570, r_PtxRegister575,
+			r_PtxRegister576, r_PtxRegister577, r_PtxRegister578, r_MmaBHalf2WordAtPtx1953R501,
+			r_MmaBHalf2WordAtPtx1953R502, r_MmaAccumulatorHalf2WordAtPtx1849R565,
+			r_MmaAccumulatorHalf2WordAtPtx1849R566); // PTX L2095
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2102R571, r_MmaAccumulatorHalf2WordAtPtx2102R572, r_PtxRegister575,
+			r_PtxRegister576, r_PtxRegister577, r_PtxRegister578, r_MmaBHalf2WordAtPtx1953R505,
+			r_MmaBHalf2WordAtPtx1953R506, r_MmaAccumulatorHalf2WordAtPtx1856R567,
+			r_MmaAccumulatorHalf2WordAtPtx1856R568); // PTX L2102
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2109R736, r_MmaAccumulatorHalf2WordAtPtx2109R743, r_PtxRegister583,
+			r_PtxRegister584, r_PtxRegister585, r_PtxRegister586, r_MmaBHalf2WordAtPtx1971R509,
+			r_MmaBHalf2WordAtPtx1971R510, r_MmaAccumulatorHalf2WordAtPtx2095R569,
+			r_MmaAccumulatorHalf2WordAtPtx2095R570); // PTX L2109
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2116R750, r_MmaAccumulatorHalf2WordAtPtx2116R757, r_PtxRegister583,
+			r_PtxRegister584, r_PtxRegister585, r_PtxRegister586, r_MmaBHalf2WordAtPtx1971R513,
+			r_MmaBHalf2WordAtPtx1971R514, r_MmaAccumulatorHalf2WordAtPtx2102R571,
+			r_MmaAccumulatorHalf2WordAtPtx2102R572); // PTX L2116
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2123R581, r_MmaAccumulatorHalf2WordAtPtx2123R582, r_PtxRegister575,
+			r_PtxRegister576, r_PtxRegister577, r_PtxRegister578, r_MmaBHalf2WordAtPtx1962R517,
+			r_MmaBHalf2WordAtPtx1962R518, r_MmaAccumulatorHalf2WordAtPtx1877R573,
+			r_MmaAccumulatorHalf2WordAtPtx1877R574); // PTX L2123
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2130R587, r_MmaAccumulatorHalf2WordAtPtx2130R588, r_PtxRegister575,
+			r_PtxRegister576, r_PtxRegister577, r_PtxRegister578, r_MmaBHalf2WordAtPtx1962R525,
+			r_MmaBHalf2WordAtPtx1962R526, r_MmaAccumulatorHalf2WordAtPtx1884R579,
+			r_MmaAccumulatorHalf2WordAtPtx1884R580); // PTX L2130
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2137R764, r_MmaAccumulatorHalf2WordAtPtx2137R771, r_PtxRegister583,
+			r_PtxRegister584, r_PtxRegister585, r_PtxRegister586, r_MmaBHalf2WordAtPtx1980R529,
+			r_MmaBHalf2WordAtPtx1980R530, r_MmaAccumulatorHalf2WordAtPtx2123R581,
+			r_MmaAccumulatorHalf2WordAtPtx2123R582); // PTX L2137
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2144R778, r_MmaAccumulatorHalf2WordAtPtx2144R785, r_PtxRegister583,
+			r_PtxRegister584, r_PtxRegister585, r_PtxRegister586, r_MmaBHalf2WordAtPtx1980R537,
+			r_MmaBHalf2WordAtPtx1980R538, r_MmaAccumulatorHalf2WordAtPtx2130R587,
+			r_MmaAccumulatorHalf2WordAtPtx2130R588); // PTX L2144
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2151R593, r_MmaAccumulatorHalf2WordAtPtx2151R594, r_PtxRegister599,
+			r_PtxRegister600, r_PtxRegister601, r_PtxRegister602, r_MmaBHalf2WordAtPtx1953R501,
+			r_MmaBHalf2WordAtPtx1953R502, r_MmaAccumulatorHalf2WordAtPtx1905R589,
+			r_MmaAccumulatorHalf2WordAtPtx1905R590); // PTX L2151
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2158R595, r_MmaAccumulatorHalf2WordAtPtx2158R596, r_PtxRegister599,
+			r_PtxRegister600, r_PtxRegister601, r_PtxRegister602, r_MmaBHalf2WordAtPtx1953R505,
+			r_MmaBHalf2WordAtPtx1953R506, r_MmaAccumulatorHalf2WordAtPtx1912R591,
+			r_MmaAccumulatorHalf2WordAtPtx1912R592); // PTX L2158
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2165R792, r_MmaAccumulatorHalf2WordAtPtx2165R799, r_PtxRegister607,
+			r_PtxRegister608, r_PtxRegister609, r_PtxRegister610, r_MmaBHalf2WordAtPtx1971R509,
+			r_MmaBHalf2WordAtPtx1971R510, r_MmaAccumulatorHalf2WordAtPtx2151R593,
+			r_MmaAccumulatorHalf2WordAtPtx2151R594); // PTX L2165
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2172R806, r_MmaAccumulatorHalf2WordAtPtx2172R813, r_PtxRegister607,
+			r_PtxRegister608, r_PtxRegister609, r_PtxRegister610, r_MmaBHalf2WordAtPtx1971R513,
+			r_MmaBHalf2WordAtPtx1971R514, r_MmaAccumulatorHalf2WordAtPtx2158R595,
+			r_MmaAccumulatorHalf2WordAtPtx2158R596); // PTX L2172
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2179R605, r_MmaAccumulatorHalf2WordAtPtx2179R606, r_PtxRegister599,
+			r_PtxRegister600, r_PtxRegister601, r_PtxRegister602, r_MmaBHalf2WordAtPtx1962R517,
+			r_MmaBHalf2WordAtPtx1962R518, r_MmaAccumulatorHalf2WordAtPtx1933R597,
+			r_MmaAccumulatorHalf2WordAtPtx1933R598); // PTX L2179
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2186R611, r_MmaAccumulatorHalf2WordAtPtx2186R612, r_PtxRegister599,
+			r_PtxRegister600, r_PtxRegister601, r_PtxRegister602, r_MmaBHalf2WordAtPtx1962R525,
+			r_MmaBHalf2WordAtPtx1962R526, r_MmaAccumulatorHalf2WordAtPtx1940R603,
+			r_MmaAccumulatorHalf2WordAtPtx1940R604); // PTX L2186
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2193R820, r_MmaAccumulatorHalf2WordAtPtx2193R827, r_PtxRegister607,
+			r_PtxRegister608, r_PtxRegister609, r_PtxRegister610, r_MmaBHalf2WordAtPtx1980R529,
+			r_MmaBHalf2WordAtPtx1980R530, r_MmaAccumulatorHalf2WordAtPtx2179R605,
+			r_MmaAccumulatorHalf2WordAtPtx2179R606); // PTX L2193
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx2200R834, r_MmaAccumulatorHalf2WordAtPtx2200R841, r_PtxRegister607,
+			r_PtxRegister608, r_PtxRegister609, r_PtxRegister610, r_MmaBHalf2WordAtPtx1980R537,
+			r_MmaBHalf2WordAtPtx1980R538, r_MmaAccumulatorHalf2WordAtPtx2186R611,
+			r_MmaAccumulatorHalf2WordAtPtx2186R612);					   // PTX L2200
+	r_LaneIndexAtPtx2207 = uint32_t((threadIdx.x & 31u));				   // PTX L2207
+	r_Float32BitsAtPtx2209R614 = uint32_t(-1065353216);					   // PTX L2209
+	r_PackedHalf2AtPtx2211R622 = FloatToHalf2(r_Float32BitsAtPtx2209R614); // PTX L2211
+	r_Float32BitsAtPtx2216R615 = uint32_t(1082130432);					   // PTX L2216
+	r_PackedHalf2AtPtx2218R620 = FloatToHalf2(r_Float32BitsAtPtx2216R615); // PTX L2218
+	r_Float32BitsAtPtx2223R616 = uint32_t(1063583744);					   // PTX L2223
+	r_PackedHalf2AtPtx2225R628 = FloatToHalf2(r_Float32BitsAtPtx2223R616); // PTX L2225
+	r_Float32BitsAtPtx2230R617 = uint32_t(1055195136);					   // PTX L2230
+	r_PackedHalf2AtPtx2232R626 = FloatToHalf2(r_Float32BitsAtPtx2230R617); // PTX L2232
+	r_Float32BitsAtPtx2237R618 = uint32_t(-1117454336);					   // PTX L2237
+	r_PackedHalf2AtPtx2239R624 = FloatToHalf2(r_Float32BitsAtPtx2237R618); // PTX L2239
+	r_PackedHalf2AtPtx2245R621 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx1997R619, r_PackedHalf2AtPtx2218R620);			  // PTX L2245
+	r_PackedHalf2AtPtx2249R623 = HalfMax(r_PackedHalf2AtPtx2245R621, r_PackedHalf2AtPtx2211R622); // PTX L2249
+	r_PackedHalf2AtPtx2253R625 = HalfAbs(r_PackedHalf2AtPtx2249R623);							  // PTX L2253
+	r_PackedHalf2AtPtx2257R627 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2253R625,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2257
+	r_PackedHalf2AtPtx2261R629 = HalfFma(r_PackedHalf2AtPtx2249R623, r_PackedHalf2AtPtx2257R627,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2261
+	r_MmaAHalf2WordAtPtx2265R855 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx1997R619, r_PackedHalf2AtPtx2261R629); // PTX L2265
+	r_LaneIndexAtPtx2269 = uint32_t((threadIdx.x & 31u));							 // PTX L2269
+	r_PackedHalf2AtPtx2272R632 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx1997R631, r_PackedHalf2AtPtx2218R620);			  // PTX L2272
+	r_PackedHalf2AtPtx2276R633 = HalfMax(r_PackedHalf2AtPtx2272R632, r_PackedHalf2AtPtx2211R622); // PTX L2276
+	r_PackedHalf2AtPtx2280R634 = HalfAbs(r_PackedHalf2AtPtx2276R633);							  // PTX L2280
+	r_PackedHalf2AtPtx2284R635 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2280R634,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2284
+	r_PackedHalf2AtPtx2288R636 = HalfFma(r_PackedHalf2AtPtx2276R633, r_PackedHalf2AtPtx2284R635,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2288
+	r_MmaAHalf2WordAtPtx2292R856 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx1997R631, r_PackedHalf2AtPtx2288R636); // PTX L2292
+	r_LaneIndexAtPtx2296 = uint32_t((threadIdx.x & 31u));							 // PTX L2296
+	r_PackedHalf2AtPtx2299R639 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2004R638, r_PackedHalf2AtPtx2218R620);			  // PTX L2299
+	r_PackedHalf2AtPtx2303R640 = HalfMax(r_PackedHalf2AtPtx2299R639, r_PackedHalf2AtPtx2211R622); // PTX L2303
+	r_PackedHalf2AtPtx2307R641 = HalfAbs(r_PackedHalf2AtPtx2303R640);							  // PTX L2307
+	r_PackedHalf2AtPtx2311R642 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2307R641,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2311
+	r_PackedHalf2AtPtx2315R643 = HalfFma(r_PackedHalf2AtPtx2303R640, r_PackedHalf2AtPtx2311R642,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2315
+	r_MmaAHalf2WordAtPtx2319R857 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2004R638, r_PackedHalf2AtPtx2315R643); // PTX L2319
+	r_LaneIndexAtPtx2323 = uint32_t((threadIdx.x & 31u));							 // PTX L2323
+	r_PackedHalf2AtPtx2326R646 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2004R645, r_PackedHalf2AtPtx2218R620);			  // PTX L2326
+	r_PackedHalf2AtPtx2330R647 = HalfMax(r_PackedHalf2AtPtx2326R646, r_PackedHalf2AtPtx2211R622); // PTX L2330
+	r_PackedHalf2AtPtx2334R648 = HalfAbs(r_PackedHalf2AtPtx2330R647);							  // PTX L2334
+	r_PackedHalf2AtPtx2338R649 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2334R648,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2338
+	r_PackedHalf2AtPtx2342R650 = HalfFma(r_PackedHalf2AtPtx2330R647, r_PackedHalf2AtPtx2338R649,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2342
+	r_MmaAHalf2WordAtPtx2346R858 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2004R645, r_PackedHalf2AtPtx2342R650); // PTX L2346
+	r_LaneIndexAtPtx2350 = uint32_t((threadIdx.x & 31u));							 // PTX L2350
+	r_PackedHalf2AtPtx2353R653 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2025R652, r_PackedHalf2AtPtx2218R620);			  // PTX L2353
+	r_PackedHalf2AtPtx2357R654 = HalfMax(r_PackedHalf2AtPtx2353R653, r_PackedHalf2AtPtx2211R622); // PTX L2357
+	r_PackedHalf2AtPtx2361R655 = HalfAbs(r_PackedHalf2AtPtx2357R654);							  // PTX L2361
+	r_PackedHalf2AtPtx2365R656 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2361R655,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2365
+	r_PackedHalf2AtPtx2369R657 = HalfFma(r_PackedHalf2AtPtx2357R654, r_PackedHalf2AtPtx2365R656,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2369
+	r_MmaAHalf2WordAtPtx2373R863 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2025R652, r_PackedHalf2AtPtx2369R657); // PTX L2373
+	r_LaneIndexAtPtx2377 = uint32_t((threadIdx.x & 31u));							 // PTX L2377
+	r_PackedHalf2AtPtx2380R660 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2025R659, r_PackedHalf2AtPtx2218R620);			  // PTX L2380
+	r_PackedHalf2AtPtx2384R661 = HalfMax(r_PackedHalf2AtPtx2380R660, r_PackedHalf2AtPtx2211R622); // PTX L2384
+	r_PackedHalf2AtPtx2388R662 = HalfAbs(r_PackedHalf2AtPtx2384R661);							  // PTX L2388
+	r_PackedHalf2AtPtx2392R663 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2388R662,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2392
+	r_PackedHalf2AtPtx2396R664 = HalfFma(r_PackedHalf2AtPtx2384R661, r_PackedHalf2AtPtx2392R663,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2396
+	r_MmaAHalf2WordAtPtx2400R864 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2025R659, r_PackedHalf2AtPtx2396R664); // PTX L2400
+	r_LaneIndexAtPtx2404 = uint32_t((threadIdx.x & 31u));							 // PTX L2404
+	r_PackedHalf2AtPtx2407R667 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2032R666, r_PackedHalf2AtPtx2218R620);			  // PTX L2407
+	r_PackedHalf2AtPtx2411R668 = HalfMax(r_PackedHalf2AtPtx2407R667, r_PackedHalf2AtPtx2211R622); // PTX L2411
+	r_PackedHalf2AtPtx2415R669 = HalfAbs(r_PackedHalf2AtPtx2411R668);							  // PTX L2415
+	r_PackedHalf2AtPtx2419R670 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2415R669,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2419
+	r_PackedHalf2AtPtx2423R671 = HalfFma(r_PackedHalf2AtPtx2411R668, r_PackedHalf2AtPtx2419R670,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2423
+	r_MmaAHalf2WordAtPtx2427R865 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2032R666, r_PackedHalf2AtPtx2423R671); // PTX L2427
+	r_LaneIndexAtPtx2431 = uint32_t((threadIdx.x & 31u));							 // PTX L2431
+	r_PackedHalf2AtPtx2434R674 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2032R673, r_PackedHalf2AtPtx2218R620);			  // PTX L2434
+	r_PackedHalf2AtPtx2438R675 = HalfMax(r_PackedHalf2AtPtx2434R674, r_PackedHalf2AtPtx2211R622); // PTX L2438
+	r_PackedHalf2AtPtx2442R676 = HalfAbs(r_PackedHalf2AtPtx2438R675);							  // PTX L2442
+	r_PackedHalf2AtPtx2446R677 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2442R676,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2446
+	r_PackedHalf2AtPtx2450R678 = HalfFma(r_PackedHalf2AtPtx2438R675, r_PackedHalf2AtPtx2446R677,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2450
+	r_MmaAHalf2WordAtPtx2454R866 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2032R673, r_PackedHalf2AtPtx2450R678); // PTX L2454
+	r_LaneIndexAtPtx2458 = uint32_t((threadIdx.x & 31u));							 // PTX L2458
+	r_PackedHalf2AtPtx2461R681 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2053R680, r_PackedHalf2AtPtx2218R620);			  // PTX L2461
+	r_PackedHalf2AtPtx2465R682 = HalfMax(r_PackedHalf2AtPtx2461R681, r_PackedHalf2AtPtx2211R622); // PTX L2465
+	r_PackedHalf2AtPtx2469R683 = HalfAbs(r_PackedHalf2AtPtx2465R682);							  // PTX L2469
+	r_PackedHalf2AtPtx2473R684 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2469R683,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2473
+	r_PackedHalf2AtPtx2477R685 = HalfFma(r_PackedHalf2AtPtx2465R682, r_PackedHalf2AtPtx2473R684,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2477
+	r_MmaAHalf2WordAtPtx2481R911 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2053R680, r_PackedHalf2AtPtx2477R685); // PTX L2481
+	r_LaneIndexAtPtx2485 = uint32_t((threadIdx.x & 31u));							 // PTX L2485
+	r_PackedHalf2AtPtx2488R688 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2053R687, r_PackedHalf2AtPtx2218R620);			  // PTX L2488
+	r_PackedHalf2AtPtx2492R689 = HalfMax(r_PackedHalf2AtPtx2488R688, r_PackedHalf2AtPtx2211R622); // PTX L2492
+	r_PackedHalf2AtPtx2496R690 = HalfAbs(r_PackedHalf2AtPtx2492R689);							  // PTX L2496
+	r_PackedHalf2AtPtx2500R691 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2496R690,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2500
+	r_PackedHalf2AtPtx2504R692 = HalfFma(r_PackedHalf2AtPtx2492R689, r_PackedHalf2AtPtx2500R691,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2504
+	r_MmaAHalf2WordAtPtx2508R912 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2053R687, r_PackedHalf2AtPtx2504R692); // PTX L2508
+	r_LaneIndexAtPtx2512 = uint32_t((threadIdx.x & 31u));							 // PTX L2512
+	r_PackedHalf2AtPtx2515R695 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2060R694, r_PackedHalf2AtPtx2218R620);			  // PTX L2515
+	r_PackedHalf2AtPtx2519R696 = HalfMax(r_PackedHalf2AtPtx2515R695, r_PackedHalf2AtPtx2211R622); // PTX L2519
+	r_PackedHalf2AtPtx2523R697 = HalfAbs(r_PackedHalf2AtPtx2519R696);							  // PTX L2523
+	r_PackedHalf2AtPtx2527R698 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2523R697,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2527
+	r_PackedHalf2AtPtx2531R699 = HalfFma(r_PackedHalf2AtPtx2519R696, r_PackedHalf2AtPtx2527R698,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2531
+	r_MmaAHalf2WordAtPtx2535R913 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2060R694, r_PackedHalf2AtPtx2531R699); // PTX L2535
+	r_LaneIndexAtPtx2539 = uint32_t((threadIdx.x & 31u));							 // PTX L2539
+	r_PackedHalf2AtPtx2542R702 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2060R701, r_PackedHalf2AtPtx2218R620);			  // PTX L2542
+	r_PackedHalf2AtPtx2546R703 = HalfMax(r_PackedHalf2AtPtx2542R702, r_PackedHalf2AtPtx2211R622); // PTX L2546
+	r_PackedHalf2AtPtx2550R704 = HalfAbs(r_PackedHalf2AtPtx2546R703);							  // PTX L2550
+	r_PackedHalf2AtPtx2554R705 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2550R704,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2554
+	r_PackedHalf2AtPtx2558R706 = HalfFma(r_PackedHalf2AtPtx2546R703, r_PackedHalf2AtPtx2554R705,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2558
+	r_MmaAHalf2WordAtPtx2562R914 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2060R701, r_PackedHalf2AtPtx2558R706); // PTX L2562
+	r_LaneIndexAtPtx2566 = uint32_t((threadIdx.x & 31u));							 // PTX L2566
+	r_PackedHalf2AtPtx2569R709 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2081R708, r_PackedHalf2AtPtx2218R620);			  // PTX L2569
+	r_PackedHalf2AtPtx2573R710 = HalfMax(r_PackedHalf2AtPtx2569R709, r_PackedHalf2AtPtx2211R622); // PTX L2573
+	r_PackedHalf2AtPtx2577R711 = HalfAbs(r_PackedHalf2AtPtx2573R710);							  // PTX L2577
+	r_PackedHalf2AtPtx2581R712 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2577R711,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2581
+	r_PackedHalf2AtPtx2585R713 = HalfFma(r_PackedHalf2AtPtx2573R710, r_PackedHalf2AtPtx2581R712,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2585
+	r_MmaAHalf2WordAtPtx2589R915 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2081R708, r_PackedHalf2AtPtx2585R713); // PTX L2589
+	r_LaneIndexAtPtx2593 = uint32_t((threadIdx.x & 31u));							 // PTX L2593
+	r_PackedHalf2AtPtx2596R716 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2081R715, r_PackedHalf2AtPtx2218R620);			  // PTX L2596
+	r_PackedHalf2AtPtx2600R717 = HalfMax(r_PackedHalf2AtPtx2596R716, r_PackedHalf2AtPtx2211R622); // PTX L2600
+	r_PackedHalf2AtPtx2604R718 = HalfAbs(r_PackedHalf2AtPtx2600R717);							  // PTX L2604
+	r_PackedHalf2AtPtx2608R719 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2604R718,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2608
+	r_PackedHalf2AtPtx2612R720 = HalfFma(r_PackedHalf2AtPtx2600R717, r_PackedHalf2AtPtx2608R719,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2612
+	r_MmaAHalf2WordAtPtx2616R916 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2081R715, r_PackedHalf2AtPtx2612R720); // PTX L2616
+	r_LaneIndexAtPtx2620 = uint32_t((threadIdx.x & 31u));							 // PTX L2620
+	r_PackedHalf2AtPtx2623R723 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2088R722, r_PackedHalf2AtPtx2218R620);			  // PTX L2623
+	r_PackedHalf2AtPtx2627R724 = HalfMax(r_PackedHalf2AtPtx2623R723, r_PackedHalf2AtPtx2211R622); // PTX L2627
+	r_PackedHalf2AtPtx2631R725 = HalfAbs(r_PackedHalf2AtPtx2627R724);							  // PTX L2631
+	r_PackedHalf2AtPtx2635R726 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2631R725,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2635
+	r_PackedHalf2AtPtx2639R727 = HalfFma(r_PackedHalf2AtPtx2627R724, r_PackedHalf2AtPtx2635R726,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2639
+	r_MmaAHalf2WordAtPtx2643R917 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2088R722, r_PackedHalf2AtPtx2639R727); // PTX L2643
+	r_LaneIndexAtPtx2647 = uint32_t((threadIdx.x & 31u));							 // PTX L2647
+	r_PackedHalf2AtPtx2650R730 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2088R729, r_PackedHalf2AtPtx2218R620);			  // PTX L2650
+	r_PackedHalf2AtPtx2654R731 = HalfMax(r_PackedHalf2AtPtx2650R730, r_PackedHalf2AtPtx2211R622); // PTX L2654
+	r_PackedHalf2AtPtx2658R732 = HalfAbs(r_PackedHalf2AtPtx2654R731);							  // PTX L2658
+	r_PackedHalf2AtPtx2662R733 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2658R732,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2662
+	r_PackedHalf2AtPtx2666R734 = HalfFma(r_PackedHalf2AtPtx2654R731, r_PackedHalf2AtPtx2662R733,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2666
+	r_MmaAHalf2WordAtPtx2670R918 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2088R729, r_PackedHalf2AtPtx2666R734); // PTX L2670
+	r_LaneIndexAtPtx2674 = uint32_t((threadIdx.x & 31u));							 // PTX L2674
+	r_PackedHalf2AtPtx2677R737 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2109R736, r_PackedHalf2AtPtx2218R620);			  // PTX L2677
+	r_PackedHalf2AtPtx2681R738 = HalfMax(r_PackedHalf2AtPtx2677R737, r_PackedHalf2AtPtx2211R622); // PTX L2681
+	r_PackedHalf2AtPtx2685R739 = HalfAbs(r_PackedHalf2AtPtx2681R738);							  // PTX L2685
+	r_PackedHalf2AtPtx2689R740 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2685R739,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2689
+	r_PackedHalf2AtPtx2693R741 = HalfFma(r_PackedHalf2AtPtx2681R738, r_PackedHalf2AtPtx2689R740,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2693
+	r_MmaAHalf2WordAtPtx2697R935 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2109R736, r_PackedHalf2AtPtx2693R741); // PTX L2697
+	r_LaneIndexAtPtx2701 = uint32_t((threadIdx.x & 31u));							 // PTX L2701
+	r_PackedHalf2AtPtx2704R744 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2109R743, r_PackedHalf2AtPtx2218R620);			  // PTX L2704
+	r_PackedHalf2AtPtx2708R745 = HalfMax(r_PackedHalf2AtPtx2704R744, r_PackedHalf2AtPtx2211R622); // PTX L2708
+	r_PackedHalf2AtPtx2712R746 = HalfAbs(r_PackedHalf2AtPtx2708R745);							  // PTX L2712
+	r_PackedHalf2AtPtx2716R747 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2712R746,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2716
+	r_PackedHalf2AtPtx2720R748 = HalfFma(r_PackedHalf2AtPtx2708R745, r_PackedHalf2AtPtx2716R747,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2720
+	r_MmaAHalf2WordAtPtx2724R936 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2109R743, r_PackedHalf2AtPtx2720R748); // PTX L2724
+	r_LaneIndexAtPtx2728 = uint32_t((threadIdx.x & 31u));							 // PTX L2728
+	r_PackedHalf2AtPtx2731R751 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2116R750, r_PackedHalf2AtPtx2218R620);			  // PTX L2731
+	r_PackedHalf2AtPtx2735R752 = HalfMax(r_PackedHalf2AtPtx2731R751, r_PackedHalf2AtPtx2211R622); // PTX L2735
+	r_PackedHalf2AtPtx2739R753 = HalfAbs(r_PackedHalf2AtPtx2735R752);							  // PTX L2739
+	r_PackedHalf2AtPtx2743R754 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2739R753,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2743
+	r_PackedHalf2AtPtx2747R755 = HalfFma(r_PackedHalf2AtPtx2735R752, r_PackedHalf2AtPtx2743R754,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2747
+	r_MmaAHalf2WordAtPtx2751R937 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2116R750, r_PackedHalf2AtPtx2747R755); // PTX L2751
+	r_LaneIndexAtPtx2755 = uint32_t((threadIdx.x & 31u));							 // PTX L2755
+	r_PackedHalf2AtPtx2758R758 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2116R757, r_PackedHalf2AtPtx2218R620);			  // PTX L2758
+	r_PackedHalf2AtPtx2762R759 = HalfMax(r_PackedHalf2AtPtx2758R758, r_PackedHalf2AtPtx2211R622); // PTX L2762
+	r_PackedHalf2AtPtx2766R760 = HalfAbs(r_PackedHalf2AtPtx2762R759);							  // PTX L2766
+	r_PackedHalf2AtPtx2770R761 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2766R760,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2770
+	r_PackedHalf2AtPtx2774R762 = HalfFma(r_PackedHalf2AtPtx2762R759, r_PackedHalf2AtPtx2770R761,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2774
+	r_MmaAHalf2WordAtPtx2778R938 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2116R757, r_PackedHalf2AtPtx2774R762); // PTX L2778
+	r_LaneIndexAtPtx2782 = uint32_t((threadIdx.x & 31u));							 // PTX L2782
+	r_PackedHalf2AtPtx2785R765 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2137R764, r_PackedHalf2AtPtx2218R620);			  // PTX L2785
+	r_PackedHalf2AtPtx2789R766 = HalfMax(r_PackedHalf2AtPtx2785R765, r_PackedHalf2AtPtx2211R622); // PTX L2789
+	r_PackedHalf2AtPtx2793R767 = HalfAbs(r_PackedHalf2AtPtx2789R766);							  // PTX L2793
+	r_PackedHalf2AtPtx2797R768 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2793R767,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2797
+	r_PackedHalf2AtPtx2801R769 = HalfFma(r_PackedHalf2AtPtx2789R766, r_PackedHalf2AtPtx2797R768,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2801
+	r_MmaAHalf2WordAtPtx2805R939 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2137R764, r_PackedHalf2AtPtx2801R769); // PTX L2805
+	r_LaneIndexAtPtx2809 = uint32_t((threadIdx.x & 31u));							 // PTX L2809
+	r_PackedHalf2AtPtx2812R772 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2137R771, r_PackedHalf2AtPtx2218R620);			  // PTX L2812
+	r_PackedHalf2AtPtx2816R773 = HalfMax(r_PackedHalf2AtPtx2812R772, r_PackedHalf2AtPtx2211R622); // PTX L2816
+	r_PackedHalf2AtPtx2820R774 = HalfAbs(r_PackedHalf2AtPtx2816R773);							  // PTX L2820
+	r_PackedHalf2AtPtx2824R775 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2820R774,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2824
+	r_PackedHalf2AtPtx2828R776 = HalfFma(r_PackedHalf2AtPtx2816R773, r_PackedHalf2AtPtx2824R775,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2828
+	r_MmaAHalf2WordAtPtx2832R940 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2137R771, r_PackedHalf2AtPtx2828R776); // PTX L2832
+	r_LaneIndexAtPtx2836 = uint32_t((threadIdx.x & 31u));							 // PTX L2836
+	r_PackedHalf2AtPtx2839R779 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2144R778, r_PackedHalf2AtPtx2218R620);			  // PTX L2839
+	r_PackedHalf2AtPtx2843R780 = HalfMax(r_PackedHalf2AtPtx2839R779, r_PackedHalf2AtPtx2211R622); // PTX L2843
+	r_PackedHalf2AtPtx2847R781 = HalfAbs(r_PackedHalf2AtPtx2843R780);							  // PTX L2847
+	r_PackedHalf2AtPtx2851R782 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2847R781,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2851
+	r_PackedHalf2AtPtx2855R783 = HalfFma(r_PackedHalf2AtPtx2843R780, r_PackedHalf2AtPtx2851R782,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2855
+	r_MmaAHalf2WordAtPtx2859R941 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2144R778, r_PackedHalf2AtPtx2855R783); // PTX L2859
+	r_LaneIndexAtPtx2863 = uint32_t((threadIdx.x & 31u));							 // PTX L2863
+	r_PackedHalf2AtPtx2866R786 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2144R785, r_PackedHalf2AtPtx2218R620);			  // PTX L2866
+	r_PackedHalf2AtPtx2870R787 = HalfMax(r_PackedHalf2AtPtx2866R786, r_PackedHalf2AtPtx2211R622); // PTX L2870
+	r_PackedHalf2AtPtx2874R788 = HalfAbs(r_PackedHalf2AtPtx2870R787);							  // PTX L2874
+	r_PackedHalf2AtPtx2878R789 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2874R788,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2878
+	r_PackedHalf2AtPtx2882R790 = HalfFma(r_PackedHalf2AtPtx2870R787, r_PackedHalf2AtPtx2878R789,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2882
+	r_MmaAHalf2WordAtPtx2886R942 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2144R785, r_PackedHalf2AtPtx2882R790); // PTX L2886
+	r_LaneIndexAtPtx2890 = uint32_t((threadIdx.x & 31u));							 // PTX L2890
+	r_PackedHalf2AtPtx2893R793 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2165R792, r_PackedHalf2AtPtx2218R620);			  // PTX L2893
+	r_PackedHalf2AtPtx2897R794 = HalfMax(r_PackedHalf2AtPtx2893R793, r_PackedHalf2AtPtx2211R622); // PTX L2897
+	r_PackedHalf2AtPtx2901R795 = HalfAbs(r_PackedHalf2AtPtx2897R794);							  // PTX L2901
+	r_PackedHalf2AtPtx2905R796 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2901R795,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2905
+	r_PackedHalf2AtPtx2909R797 = HalfFma(r_PackedHalf2AtPtx2897R794, r_PackedHalf2AtPtx2905R796,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2909
+	r_MmaAHalf2WordAtPtx2913R959 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2165R792, r_PackedHalf2AtPtx2909R797); // PTX L2913
+	r_LaneIndexAtPtx2917 = uint32_t((threadIdx.x & 31u));							 // PTX L2917
+	r_PackedHalf2AtPtx2920R800 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2165R799, r_PackedHalf2AtPtx2218R620);			  // PTX L2920
+	r_PackedHalf2AtPtx2924R801 = HalfMax(r_PackedHalf2AtPtx2920R800, r_PackedHalf2AtPtx2211R622); // PTX L2924
+	r_PackedHalf2AtPtx2928R802 = HalfAbs(r_PackedHalf2AtPtx2924R801);							  // PTX L2928
+	r_PackedHalf2AtPtx2932R803 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2928R802,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2932
+	r_PackedHalf2AtPtx2936R804 = HalfFma(r_PackedHalf2AtPtx2924R801, r_PackedHalf2AtPtx2932R803,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2936
+	r_MmaAHalf2WordAtPtx2940R960 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2165R799, r_PackedHalf2AtPtx2936R804); // PTX L2940
+	r_LaneIndexAtPtx2944 = uint32_t((threadIdx.x & 31u));							 // PTX L2944
+	r_PackedHalf2AtPtx2947R807 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2172R806, r_PackedHalf2AtPtx2218R620);			  // PTX L2947
+	r_PackedHalf2AtPtx2951R808 = HalfMax(r_PackedHalf2AtPtx2947R807, r_PackedHalf2AtPtx2211R622); // PTX L2951
+	r_PackedHalf2AtPtx2955R809 = HalfAbs(r_PackedHalf2AtPtx2951R808);							  // PTX L2955
+	r_PackedHalf2AtPtx2959R810 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2955R809,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2959
+	r_PackedHalf2AtPtx2963R811 = HalfFma(r_PackedHalf2AtPtx2951R808, r_PackedHalf2AtPtx2959R810,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2963
+	r_MmaAHalf2WordAtPtx2967R961 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2172R806, r_PackedHalf2AtPtx2963R811); // PTX L2967
+	r_LaneIndexAtPtx2971 = uint32_t((threadIdx.x & 31u));							 // PTX L2971
+	r_PackedHalf2AtPtx2974R814 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2172R813, r_PackedHalf2AtPtx2218R620);			  // PTX L2974
+	r_PackedHalf2AtPtx2978R815 = HalfMax(r_PackedHalf2AtPtx2974R814, r_PackedHalf2AtPtx2211R622); // PTX L2978
+	r_PackedHalf2AtPtx2982R816 = HalfAbs(r_PackedHalf2AtPtx2978R815);							  // PTX L2982
+	r_PackedHalf2AtPtx2986R817 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx2982R816,
+										 r_PackedHalf2AtPtx2232R626); // PTX L2986
+	r_PackedHalf2AtPtx2990R818 = HalfFma(r_PackedHalf2AtPtx2978R815, r_PackedHalf2AtPtx2986R817,
+										 r_PackedHalf2AtPtx2225R628); // PTX L2990
+	r_MmaAHalf2WordAtPtx2994R962 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2172R813, r_PackedHalf2AtPtx2990R818); // PTX L2994
+	r_LaneIndexAtPtx2998 = uint32_t((threadIdx.x & 31u));							 // PTX L2998
+	r_PackedHalf2AtPtx3001R821 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2193R820, r_PackedHalf2AtPtx2218R620);			  // PTX L3001
+	r_PackedHalf2AtPtx3005R822 = HalfMax(r_PackedHalf2AtPtx3001R821, r_PackedHalf2AtPtx2211R622); // PTX L3005
+	r_PackedHalf2AtPtx3009R823 = HalfAbs(r_PackedHalf2AtPtx3005R822);							  // PTX L3009
+	r_PackedHalf2AtPtx3013R824 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx3009R823,
+										 r_PackedHalf2AtPtx2232R626); // PTX L3013
+	r_PackedHalf2AtPtx3017R825 = HalfFma(r_PackedHalf2AtPtx3005R822, r_PackedHalf2AtPtx3013R824,
+										 r_PackedHalf2AtPtx2225R628); // PTX L3017
+	r_MmaAHalf2WordAtPtx3021R963 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2193R820, r_PackedHalf2AtPtx3017R825); // PTX L3021
+	r_LaneIndexAtPtx3025 = uint32_t((threadIdx.x & 31u));							 // PTX L3025
+	r_PackedHalf2AtPtx3028R828 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2193R827, r_PackedHalf2AtPtx2218R620);			  // PTX L3028
+	r_PackedHalf2AtPtx3032R829 = HalfMax(r_PackedHalf2AtPtx3028R828, r_PackedHalf2AtPtx2211R622); // PTX L3032
+	r_PackedHalf2AtPtx3036R830 = HalfAbs(r_PackedHalf2AtPtx3032R829);							  // PTX L3036
+	r_PackedHalf2AtPtx3040R831 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx3036R830,
+										 r_PackedHalf2AtPtx2232R626); // PTX L3040
+	r_PackedHalf2AtPtx3044R832 = HalfFma(r_PackedHalf2AtPtx3032R829, r_PackedHalf2AtPtx3040R831,
+										 r_PackedHalf2AtPtx2225R628); // PTX L3044
+	r_MmaAHalf2WordAtPtx3048R964 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2193R827, r_PackedHalf2AtPtx3044R832); // PTX L3048
+	r_LaneIndexAtPtx3052 = uint32_t((threadIdx.x & 31u));							 // PTX L3052
+	r_PackedHalf2AtPtx3055R835 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2200R834, r_PackedHalf2AtPtx2218R620);			  // PTX L3055
+	r_PackedHalf2AtPtx3059R836 = HalfMax(r_PackedHalf2AtPtx3055R835, r_PackedHalf2AtPtx2211R622); // PTX L3059
+	r_PackedHalf2AtPtx3063R837 = HalfAbs(r_PackedHalf2AtPtx3059R836);							  // PTX L3063
+	r_PackedHalf2AtPtx3067R838 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx3063R837,
+										 r_PackedHalf2AtPtx2232R626); // PTX L3067
+	r_PackedHalf2AtPtx3071R839 = HalfFma(r_PackedHalf2AtPtx3059R836, r_PackedHalf2AtPtx3067R838,
+										 r_PackedHalf2AtPtx2225R628); // PTX L3071
+	r_MmaAHalf2WordAtPtx3075R965 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2200R834, r_PackedHalf2AtPtx3071R839); // PTX L3075
+	r_LaneIndexAtPtx3079 = uint32_t((threadIdx.x & 31u));							 // PTX L3079
+	r_PackedHalf2AtPtx3082R842 =
+		HalfMin(r_MmaAccumulatorHalf2WordAtPtx2200R841, r_PackedHalf2AtPtx2218R620);			  // PTX L3082
+	r_PackedHalf2AtPtx3086R843 = HalfMax(r_PackedHalf2AtPtx3082R842, r_PackedHalf2AtPtx2211R622); // PTX L3086
+	r_PackedHalf2AtPtx3090R844 = HalfAbs(r_PackedHalf2AtPtx3086R843);							  // PTX L3090
+	r_PackedHalf2AtPtx3094R845 = HalfFma(r_PackedHalf2AtPtx2239R624, r_PackedHalf2AtPtx3090R844,
+										 r_PackedHalf2AtPtx2232R626); // PTX L3094
+	r_PackedHalf2AtPtx3098R846 = HalfFma(r_PackedHalf2AtPtx3086R843, r_PackedHalf2AtPtx3094R845,
+										 r_PackedHalf2AtPtx2225R628); // PTX L3098
+	r_MmaAHalf2WordAtPtx3102R966 =
+		HalfMul(r_MmaAccumulatorHalf2WordAtPtx2200R841, r_PackedHalf2AtPtx3098R846); // PTX L3102
+	r_LaneIndexAtPtx3106 = uint32_t((threadIdx.x & 31u));							 // PTX L3106
+	r_PtxU64Register110 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3106)) * int64_t(int32_t(16)));		 // PTX L3108
+	r_PtxU64Register111 = uint64_t(r_PtxU64Register176) + uint64_t(r_PtxU64Register110); // PTX L3109
+	r_PtxU64Register84 = uint64_t(r_PtxU64Register111) + uint64_t(-3584);				 // PTX L3110
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register84));
+		r_MmaBHalf2WordAtPtx3112R859 = r_Value.x;
+		r_MmaBHalf2WordAtPtx3112R860 = r_Value.y;
+		r_MmaBHalf2WordAtPtx3112R861 = r_Value.z;
+		r_MmaBHalf2WordAtPtx3112R862 = r_Value.w;
+	} // PTX L3112
+	r_LaneIndexAtPtx3115 = uint32_t((threadIdx.x & 31u)); // PTX L3115
+	r_PtxU64Register112 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3115)) * int64_t(int32_t(16)));		 // PTX L3117
+	r_PtxU64Register113 = uint64_t(r_PtxU64Register176) + uint64_t(r_PtxU64Register112); // PTX L3118
+	r_PtxU64Register85 = uint64_t(r_PtxU64Register113) + uint64_t(-3072);				 // PTX L3119
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register85));
+		r_MmaBHalf2WordAtPtx3121R875 = r_Value.x;
+		r_MmaBHalf2WordAtPtx3121R876 = r_Value.y;
+		r_MmaBHalf2WordAtPtx3121R877 = r_Value.z;
+		r_MmaBHalf2WordAtPtx3121R878 = r_Value.w;
+	} // PTX L3121
+	r_LaneIndexAtPtx3124 = uint32_t((threadIdx.x & 31u)); // PTX L3124
+	r_PtxU64Register114 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3124)) * int64_t(int32_t(16)));		 // PTX L3126
+	r_PtxU64Register115 = uint64_t(r_PtxU64Register176) + uint64_t(r_PtxU64Register114); // PTX L3127
+	r_PtxU64Register86 = uint64_t(r_PtxU64Register115) + uint64_t(-2560);				 // PTX L3128
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register86));
+		r_MmaBHalf2WordAtPtx3130R887 = r_Value.x;
+		r_MmaBHalf2WordAtPtx3130R888 = r_Value.y;
+		r_MmaBHalf2WordAtPtx3130R889 = r_Value.z;
+		r_MmaBHalf2WordAtPtx3130R890 = r_Value.w;
+	} // PTX L3130
+	r_LaneIndexAtPtx3133 = uint32_t((threadIdx.x & 31u)); // PTX L3133
+	r_PtxU64Register116 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3133)) * int64_t(int32_t(16)));		 // PTX L3135
+	r_PtxU64Register117 = uint64_t(r_PtxU64Register176) + uint64_t(r_PtxU64Register116); // PTX L3136
+	r_PtxU64Register87 = uint64_t(r_PtxU64Register117) + uint64_t(-2048);				 // PTX L3137
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register87));
+		r_MmaBHalf2WordAtPtx3139R899 = r_Value.x;
+		r_MmaBHalf2WordAtPtx3139R900 = r_Value.y;
+		r_MmaBHalf2WordAtPtx3139R901 = r_Value.z;
+		r_MmaBHalf2WordAtPtx3139R902 = r_Value.w;
+	} // PTX L3139
+	r_LaneIndexAtPtx3142 = uint32_t((threadIdx.x & 31u)); // PTX L3142
+	r_PtxU64Register118 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3142)) * int64_t(int32_t(16)));		 // PTX L3144
+	r_PtxU64Register119 = uint64_t(r_PtxU64Register176) + uint64_t(r_PtxU64Register118); // PTX L3145
+	r_PtxU64Register88 = uint64_t(r_PtxU64Register119) + uint64_t(-1536);				 // PTX L3146
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register88));
+		r_MmaBHalf2WordAtPtx3148R867 = r_Value.x;
+		r_MmaBHalf2WordAtPtx3148R868 = r_Value.y;
+		r_MmaBHalf2WordAtPtx3148R871 = r_Value.z;
+		r_MmaBHalf2WordAtPtx3148R872 = r_Value.w;
+	} // PTX L3148
+	r_LaneIndexAtPtx3151 = uint32_t((threadIdx.x & 31u)); // PTX L3151
+	r_PtxU64Register120 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3151)) * int64_t(int32_t(16)));		 // PTX L3153
+	r_PtxU64Register121 = uint64_t(r_PtxU64Register176) + uint64_t(r_PtxU64Register120); // PTX L3154
+	r_PtxU64Register89 = uint64_t(r_PtxU64Register121) + uint64_t(-1024);				 // PTX L3155
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register89));
+		r_MmaBHalf2WordAtPtx3157R879 = r_Value.x;
+		r_MmaBHalf2WordAtPtx3157R880 = r_Value.y;
+		r_MmaBHalf2WordAtPtx3157R883 = r_Value.z;
+		r_MmaBHalf2WordAtPtx3157R884 = r_Value.w;
+	} // PTX L3157
+	r_LaneIndexAtPtx3160 = uint32_t((threadIdx.x & 31u)); // PTX L3160
+	r_PtxU64Register122 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3160)) * int64_t(int32_t(16)));		 // PTX L3162
+	r_PtxU64Register123 = uint64_t(r_PtxU64Register176) + uint64_t(r_PtxU64Register122); // PTX L3163
+	r_PtxU64Register90 = uint64_t(r_PtxU64Register123) + uint64_t(-512);				 // PTX L3164
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register90));
+		r_MmaBHalf2WordAtPtx3166R891 = r_Value.x;
+		r_MmaBHalf2WordAtPtx3166R892 = r_Value.y;
+		r_MmaBHalf2WordAtPtx3166R895 = r_Value.z;
+		r_MmaBHalf2WordAtPtx3166R896 = r_Value.w;
+	} // PTX L3166
+	r_LaneIndexAtPtx3169 = uint32_t((threadIdx.x & 31u)); // PTX L3169
+	r_PtxU64Register124 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3169)) * int64_t(int32_t(16)));		// PTX L3171
+	r_PtxU64Register91 = uint64_t(r_PtxU64Register176) + uint64_t(r_PtxU64Register124); // PTX L3172
+	{
+		const uint4 r_Value = __ldca(reinterpret_cast<const uint4*>(r_PtxU64Register91));
+		r_MmaBHalf2WordAtPtx3174R903 = r_Value.x;
+		r_MmaBHalf2WordAtPtx3174R904 = r_Value.y;
+		r_MmaBHalf2WordAtPtx3174R907 = r_Value.z;
+		r_MmaBHalf2WordAtPtx3174R908 = r_Value.w;
+	} // PTX L3174
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3177R869, r_MmaAccumulatorHalf2WordAtPtx3177R870,
+			r_MmaAHalf2WordAtPtx2265R855, r_MmaAHalf2WordAtPtx2292R856, r_MmaAHalf2WordAtPtx2319R857,
+			r_MmaAHalf2WordAtPtx2346R858, r_MmaBHalf2WordAtPtx3112R859, r_MmaBHalf2WordAtPtx3112R860,
+			r_MmaAccumulatorHalf2WordAtPtx1619R1105,
+			r_MmaAccumulatorHalf2WordAtPtx1620R1106); // PTX L3177
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3184R873, r_MmaAccumulatorHalf2WordAtPtx3184R874,
+			r_MmaAHalf2WordAtPtx2265R855, r_MmaAHalf2WordAtPtx2292R856, r_MmaAHalf2WordAtPtx2319R857,
+			r_MmaAHalf2WordAtPtx2346R858, r_MmaBHalf2WordAtPtx3112R861, r_MmaBHalf2WordAtPtx3112R862,
+			r_MmaAccumulatorHalf2WordAtPtx1621R1107,
+			r_MmaAccumulatorHalf2WordAtPtx1622R1108); // PTX L3184
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1619R1105, r_MmaAccumulatorHalf2WordAtPtx1620R1106,
+			r_MmaAHalf2WordAtPtx2373R863, r_MmaAHalf2WordAtPtx2400R864, r_MmaAHalf2WordAtPtx2427R865,
+			r_MmaAHalf2WordAtPtx2454R866, r_MmaBHalf2WordAtPtx3148R867, r_MmaBHalf2WordAtPtx3148R868,
+			r_MmaAccumulatorHalf2WordAtPtx3177R869,
+			r_MmaAccumulatorHalf2WordAtPtx3177R870); // PTX L3191
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1621R1107, r_MmaAccumulatorHalf2WordAtPtx1622R1108,
+			r_MmaAHalf2WordAtPtx2373R863, r_MmaAHalf2WordAtPtx2400R864, r_MmaAHalf2WordAtPtx2427R865,
+			r_MmaAHalf2WordAtPtx2454R866, r_MmaBHalf2WordAtPtx3148R871, r_MmaBHalf2WordAtPtx3148R872,
+			r_MmaAccumulatorHalf2WordAtPtx3184R873,
+			r_MmaAccumulatorHalf2WordAtPtx3184R874); // PTX L3198
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3205R881, r_MmaAccumulatorHalf2WordAtPtx3205R882,
+			r_MmaAHalf2WordAtPtx2265R855, r_MmaAHalf2WordAtPtx2292R856, r_MmaAHalf2WordAtPtx2319R857,
+			r_MmaAHalf2WordAtPtx2346R858, r_MmaBHalf2WordAtPtx3121R875, r_MmaBHalf2WordAtPtx3121R876,
+			r_MmaAccumulatorHalf2WordAtPtx1623R1109,
+			r_MmaAccumulatorHalf2WordAtPtx1624R1110); // PTX L3205
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3212R885, r_MmaAccumulatorHalf2WordAtPtx3212R886,
+			r_MmaAHalf2WordAtPtx2265R855, r_MmaAHalf2WordAtPtx2292R856, r_MmaAHalf2WordAtPtx2319R857,
+			r_MmaAHalf2WordAtPtx2346R858, r_MmaBHalf2WordAtPtx3121R877, r_MmaBHalf2WordAtPtx3121R878,
+			r_MmaAccumulatorHalf2WordAtPtx1625R1111,
+			r_MmaAccumulatorHalf2WordAtPtx1626R1112); // PTX L3212
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1623R1109, r_MmaAccumulatorHalf2WordAtPtx1624R1110,
+			r_MmaAHalf2WordAtPtx2373R863, r_MmaAHalf2WordAtPtx2400R864, r_MmaAHalf2WordAtPtx2427R865,
+			r_MmaAHalf2WordAtPtx2454R866, r_MmaBHalf2WordAtPtx3157R879, r_MmaBHalf2WordAtPtx3157R880,
+			r_MmaAccumulatorHalf2WordAtPtx3205R881,
+			r_MmaAccumulatorHalf2WordAtPtx3205R882); // PTX L3219
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1625R1111, r_MmaAccumulatorHalf2WordAtPtx1626R1112,
+			r_MmaAHalf2WordAtPtx2373R863, r_MmaAHalf2WordAtPtx2400R864, r_MmaAHalf2WordAtPtx2427R865,
+			r_MmaAHalf2WordAtPtx2454R866, r_MmaBHalf2WordAtPtx3157R883, r_MmaBHalf2WordAtPtx3157R884,
+			r_MmaAccumulatorHalf2WordAtPtx3212R885,
+			r_MmaAccumulatorHalf2WordAtPtx3212R886); // PTX L3226
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3233R893, r_MmaAccumulatorHalf2WordAtPtx3233R894,
+			r_MmaAHalf2WordAtPtx2265R855, r_MmaAHalf2WordAtPtx2292R856, r_MmaAHalf2WordAtPtx2319R857,
+			r_MmaAHalf2WordAtPtx2346R858, r_MmaBHalf2WordAtPtx3130R887, r_MmaBHalf2WordAtPtx3130R888,
+			r_MmaAccumulatorHalf2WordAtPtx1627R1113,
+			r_MmaAccumulatorHalf2WordAtPtx1628R1114); // PTX L3233
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3240R897, r_MmaAccumulatorHalf2WordAtPtx3240R898,
+			r_MmaAHalf2WordAtPtx2265R855, r_MmaAHalf2WordAtPtx2292R856, r_MmaAHalf2WordAtPtx2319R857,
+			r_MmaAHalf2WordAtPtx2346R858, r_MmaBHalf2WordAtPtx3130R889, r_MmaBHalf2WordAtPtx3130R890,
+			r_MmaAccumulatorHalf2WordAtPtx1629R1115,
+			r_MmaAccumulatorHalf2WordAtPtx1630R1116); // PTX L3240
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1627R1113, r_MmaAccumulatorHalf2WordAtPtx1628R1114,
+			r_MmaAHalf2WordAtPtx2373R863, r_MmaAHalf2WordAtPtx2400R864, r_MmaAHalf2WordAtPtx2427R865,
+			r_MmaAHalf2WordAtPtx2454R866, r_MmaBHalf2WordAtPtx3166R891, r_MmaBHalf2WordAtPtx3166R892,
+			r_MmaAccumulatorHalf2WordAtPtx3233R893,
+			r_MmaAccumulatorHalf2WordAtPtx3233R894); // PTX L3247
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1629R1115, r_MmaAccumulatorHalf2WordAtPtx1630R1116,
+			r_MmaAHalf2WordAtPtx2373R863, r_MmaAHalf2WordAtPtx2400R864, r_MmaAHalf2WordAtPtx2427R865,
+			r_MmaAHalf2WordAtPtx2454R866, r_MmaBHalf2WordAtPtx3166R895, r_MmaBHalf2WordAtPtx3166R896,
+			r_MmaAccumulatorHalf2WordAtPtx3240R897,
+			r_MmaAccumulatorHalf2WordAtPtx3240R898); // PTX L3254
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3261R905, r_MmaAccumulatorHalf2WordAtPtx3261R906,
+			r_MmaAHalf2WordAtPtx2265R855, r_MmaAHalf2WordAtPtx2292R856, r_MmaAHalf2WordAtPtx2319R857,
+			r_MmaAHalf2WordAtPtx2346R858, r_MmaBHalf2WordAtPtx3139R899, r_MmaBHalf2WordAtPtx3139R900,
+			r_MmaAccumulatorHalf2WordAtPtx1631R1117,
+			r_MmaAccumulatorHalf2WordAtPtx1632R1118); // PTX L3261
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3268R909, r_MmaAccumulatorHalf2WordAtPtx3268R910,
+			r_MmaAHalf2WordAtPtx2265R855, r_MmaAHalf2WordAtPtx2292R856, r_MmaAHalf2WordAtPtx2319R857,
+			r_MmaAHalf2WordAtPtx2346R858, r_MmaBHalf2WordAtPtx3139R901, r_MmaBHalf2WordAtPtx3139R902,
+			r_MmaAccumulatorHalf2WordAtPtx1633R1119,
+			r_MmaAccumulatorHalf2WordAtPtx1634R1120); // PTX L3268
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1631R1117, r_MmaAccumulatorHalf2WordAtPtx1632R1118,
+			r_MmaAHalf2WordAtPtx2373R863, r_MmaAHalf2WordAtPtx2400R864, r_MmaAHalf2WordAtPtx2427R865,
+			r_MmaAHalf2WordAtPtx2454R866, r_MmaBHalf2WordAtPtx3174R903, r_MmaBHalf2WordAtPtx3174R904,
+			r_MmaAccumulatorHalf2WordAtPtx3261R905,
+			r_MmaAccumulatorHalf2WordAtPtx3261R906); // PTX L3275
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1633R1119, r_MmaAccumulatorHalf2WordAtPtx1634R1120,
+			r_MmaAHalf2WordAtPtx2373R863, r_MmaAHalf2WordAtPtx2400R864, r_MmaAHalf2WordAtPtx2427R865,
+			r_MmaAHalf2WordAtPtx2454R866, r_MmaBHalf2WordAtPtx3174R907, r_MmaBHalf2WordAtPtx3174R908,
+			r_MmaAccumulatorHalf2WordAtPtx3268R909,
+			r_MmaAccumulatorHalf2WordAtPtx3268R910); // PTX L3282
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3289R919, r_MmaAccumulatorHalf2WordAtPtx3289R920,
+			r_MmaAHalf2WordAtPtx2481R911, r_MmaAHalf2WordAtPtx2508R912, r_MmaAHalf2WordAtPtx2535R913,
+			r_MmaAHalf2WordAtPtx2562R914, r_MmaBHalf2WordAtPtx3112R859, r_MmaBHalf2WordAtPtx3112R860,
+			r_MmaAccumulatorHalf2WordAtPtx1635R1121,
+			r_MmaAccumulatorHalf2WordAtPtx1636R1122); // PTX L3289
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3296R921, r_MmaAccumulatorHalf2WordAtPtx3296R922,
+			r_MmaAHalf2WordAtPtx2481R911, r_MmaAHalf2WordAtPtx2508R912, r_MmaAHalf2WordAtPtx2535R913,
+			r_MmaAHalf2WordAtPtx2562R914, r_MmaBHalf2WordAtPtx3112R861, r_MmaBHalf2WordAtPtx3112R862,
+			r_MmaAccumulatorHalf2WordAtPtx1637R1123,
+			r_MmaAccumulatorHalf2WordAtPtx1638R1124); // PTX L3296
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1635R1121, r_MmaAccumulatorHalf2WordAtPtx1636R1122,
+			r_MmaAHalf2WordAtPtx2589R915, r_MmaAHalf2WordAtPtx2616R916, r_MmaAHalf2WordAtPtx2643R917,
+			r_MmaAHalf2WordAtPtx2670R918, r_MmaBHalf2WordAtPtx3148R867, r_MmaBHalf2WordAtPtx3148R868,
+			r_MmaAccumulatorHalf2WordAtPtx3289R919,
+			r_MmaAccumulatorHalf2WordAtPtx3289R920); // PTX L3303
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1637R1123, r_MmaAccumulatorHalf2WordAtPtx1638R1124,
+			r_MmaAHalf2WordAtPtx2589R915, r_MmaAHalf2WordAtPtx2616R916, r_MmaAHalf2WordAtPtx2643R917,
+			r_MmaAHalf2WordAtPtx2670R918, r_MmaBHalf2WordAtPtx3148R871, r_MmaBHalf2WordAtPtx3148R872,
+			r_MmaAccumulatorHalf2WordAtPtx3296R921,
+			r_MmaAccumulatorHalf2WordAtPtx3296R922); // PTX L3310
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3317R923, r_MmaAccumulatorHalf2WordAtPtx3317R924,
+			r_MmaAHalf2WordAtPtx2481R911, r_MmaAHalf2WordAtPtx2508R912, r_MmaAHalf2WordAtPtx2535R913,
+			r_MmaAHalf2WordAtPtx2562R914, r_MmaBHalf2WordAtPtx3121R875, r_MmaBHalf2WordAtPtx3121R876,
+			r_MmaAccumulatorHalf2WordAtPtx1639R1125,
+			r_MmaAccumulatorHalf2WordAtPtx1640R1126); // PTX L3317
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3324R925, r_MmaAccumulatorHalf2WordAtPtx3324R926,
+			r_MmaAHalf2WordAtPtx2481R911, r_MmaAHalf2WordAtPtx2508R912, r_MmaAHalf2WordAtPtx2535R913,
+			r_MmaAHalf2WordAtPtx2562R914, r_MmaBHalf2WordAtPtx3121R877, r_MmaBHalf2WordAtPtx3121R878,
+			r_MmaAccumulatorHalf2WordAtPtx1641R1127,
+			r_MmaAccumulatorHalf2WordAtPtx1642R1128); // PTX L3324
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1639R1125, r_MmaAccumulatorHalf2WordAtPtx1640R1126,
+			r_MmaAHalf2WordAtPtx2589R915, r_MmaAHalf2WordAtPtx2616R916, r_MmaAHalf2WordAtPtx2643R917,
+			r_MmaAHalf2WordAtPtx2670R918, r_MmaBHalf2WordAtPtx3157R879, r_MmaBHalf2WordAtPtx3157R880,
+			r_MmaAccumulatorHalf2WordAtPtx3317R923,
+			r_MmaAccumulatorHalf2WordAtPtx3317R924); // PTX L3331
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1641R1127, r_MmaAccumulatorHalf2WordAtPtx1642R1128,
+			r_MmaAHalf2WordAtPtx2589R915, r_MmaAHalf2WordAtPtx2616R916, r_MmaAHalf2WordAtPtx2643R917,
+			r_MmaAHalf2WordAtPtx2670R918, r_MmaBHalf2WordAtPtx3157R883, r_MmaBHalf2WordAtPtx3157R884,
+			r_MmaAccumulatorHalf2WordAtPtx3324R925,
+			r_MmaAccumulatorHalf2WordAtPtx3324R926); // PTX L3338
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3345R927, r_MmaAccumulatorHalf2WordAtPtx3345R928,
+			r_MmaAHalf2WordAtPtx2481R911, r_MmaAHalf2WordAtPtx2508R912, r_MmaAHalf2WordAtPtx2535R913,
+			r_MmaAHalf2WordAtPtx2562R914, r_MmaBHalf2WordAtPtx3130R887, r_MmaBHalf2WordAtPtx3130R888,
+			r_MmaAccumulatorHalf2WordAtPtx1643R1129,
+			r_MmaAccumulatorHalf2WordAtPtx1644R1130); // PTX L3345
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3352R929, r_MmaAccumulatorHalf2WordAtPtx3352R930,
+			r_MmaAHalf2WordAtPtx2481R911, r_MmaAHalf2WordAtPtx2508R912, r_MmaAHalf2WordAtPtx2535R913,
+			r_MmaAHalf2WordAtPtx2562R914, r_MmaBHalf2WordAtPtx3130R889, r_MmaBHalf2WordAtPtx3130R890,
+			r_MmaAccumulatorHalf2WordAtPtx1645R1131,
+			r_MmaAccumulatorHalf2WordAtPtx1646R1132); // PTX L3352
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1643R1129, r_MmaAccumulatorHalf2WordAtPtx1644R1130,
+			r_MmaAHalf2WordAtPtx2589R915, r_MmaAHalf2WordAtPtx2616R916, r_MmaAHalf2WordAtPtx2643R917,
+			r_MmaAHalf2WordAtPtx2670R918, r_MmaBHalf2WordAtPtx3166R891, r_MmaBHalf2WordAtPtx3166R892,
+			r_MmaAccumulatorHalf2WordAtPtx3345R927,
+			r_MmaAccumulatorHalf2WordAtPtx3345R928); // PTX L3359
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1645R1131, r_MmaAccumulatorHalf2WordAtPtx1646R1132,
+			r_MmaAHalf2WordAtPtx2589R915, r_MmaAHalf2WordAtPtx2616R916, r_MmaAHalf2WordAtPtx2643R917,
+			r_MmaAHalf2WordAtPtx2670R918, r_MmaBHalf2WordAtPtx3166R895, r_MmaBHalf2WordAtPtx3166R896,
+			r_MmaAccumulatorHalf2WordAtPtx3352R929,
+			r_MmaAccumulatorHalf2WordAtPtx3352R930); // PTX L3366
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3373R931, r_MmaAccumulatorHalf2WordAtPtx3373R932,
+			r_MmaAHalf2WordAtPtx2481R911, r_MmaAHalf2WordAtPtx2508R912, r_MmaAHalf2WordAtPtx2535R913,
+			r_MmaAHalf2WordAtPtx2562R914, r_MmaBHalf2WordAtPtx3139R899, r_MmaBHalf2WordAtPtx3139R900,
+			r_MmaAccumulatorHalf2WordAtPtx1647R1133,
+			r_MmaAccumulatorHalf2WordAtPtx1648R1134); // PTX L3373
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3380R933, r_MmaAccumulatorHalf2WordAtPtx3380R934,
+			r_MmaAHalf2WordAtPtx2481R911, r_MmaAHalf2WordAtPtx2508R912, r_MmaAHalf2WordAtPtx2535R913,
+			r_MmaAHalf2WordAtPtx2562R914, r_MmaBHalf2WordAtPtx3139R901, r_MmaBHalf2WordAtPtx3139R902,
+			r_MmaAccumulatorHalf2WordAtPtx1649R1135,
+			r_MmaAccumulatorHalf2WordAtPtx1650R1136); // PTX L3380
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1647R1133, r_MmaAccumulatorHalf2WordAtPtx1648R1134,
+			r_MmaAHalf2WordAtPtx2589R915, r_MmaAHalf2WordAtPtx2616R916, r_MmaAHalf2WordAtPtx2643R917,
+			r_MmaAHalf2WordAtPtx2670R918, r_MmaBHalf2WordAtPtx3174R903, r_MmaBHalf2WordAtPtx3174R904,
+			r_MmaAccumulatorHalf2WordAtPtx3373R931,
+			r_MmaAccumulatorHalf2WordAtPtx3373R932); // PTX L3387
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1649R1135, r_MmaAccumulatorHalf2WordAtPtx1650R1136,
+			r_MmaAHalf2WordAtPtx2589R915, r_MmaAHalf2WordAtPtx2616R916, r_MmaAHalf2WordAtPtx2643R917,
+			r_MmaAHalf2WordAtPtx2670R918, r_MmaBHalf2WordAtPtx3174R907, r_MmaBHalf2WordAtPtx3174R908,
+			r_MmaAccumulatorHalf2WordAtPtx3380R933,
+			r_MmaAccumulatorHalf2WordAtPtx3380R934); // PTX L3394
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3401R943, r_MmaAccumulatorHalf2WordAtPtx3401R944,
+			r_MmaAHalf2WordAtPtx2697R935, r_MmaAHalf2WordAtPtx2724R936, r_MmaAHalf2WordAtPtx2751R937,
+			r_MmaAHalf2WordAtPtx2778R938, r_MmaBHalf2WordAtPtx3112R859, r_MmaBHalf2WordAtPtx3112R860,
+			r_MmaAccumulatorHalf2WordAtPtx1651R1137,
+			r_MmaAccumulatorHalf2WordAtPtx1652R1138); // PTX L3401
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3408R945, r_MmaAccumulatorHalf2WordAtPtx3408R946,
+			r_MmaAHalf2WordAtPtx2697R935, r_MmaAHalf2WordAtPtx2724R936, r_MmaAHalf2WordAtPtx2751R937,
+			r_MmaAHalf2WordAtPtx2778R938, r_MmaBHalf2WordAtPtx3112R861, r_MmaBHalf2WordAtPtx3112R862,
+			r_MmaAccumulatorHalf2WordAtPtx1653R1139,
+			r_MmaAccumulatorHalf2WordAtPtx1654R1140); // PTX L3408
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1651R1137, r_MmaAccumulatorHalf2WordAtPtx1652R1138,
+			r_MmaAHalf2WordAtPtx2805R939, r_MmaAHalf2WordAtPtx2832R940, r_MmaAHalf2WordAtPtx2859R941,
+			r_MmaAHalf2WordAtPtx2886R942, r_MmaBHalf2WordAtPtx3148R867, r_MmaBHalf2WordAtPtx3148R868,
+			r_MmaAccumulatorHalf2WordAtPtx3401R943,
+			r_MmaAccumulatorHalf2WordAtPtx3401R944); // PTX L3415
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1653R1139, r_MmaAccumulatorHalf2WordAtPtx1654R1140,
+			r_MmaAHalf2WordAtPtx2805R939, r_MmaAHalf2WordAtPtx2832R940, r_MmaAHalf2WordAtPtx2859R941,
+			r_MmaAHalf2WordAtPtx2886R942, r_MmaBHalf2WordAtPtx3148R871, r_MmaBHalf2WordAtPtx3148R872,
+			r_MmaAccumulatorHalf2WordAtPtx3408R945,
+			r_MmaAccumulatorHalf2WordAtPtx3408R946); // PTX L3422
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3429R947, r_MmaAccumulatorHalf2WordAtPtx3429R948,
+			r_MmaAHalf2WordAtPtx2697R935, r_MmaAHalf2WordAtPtx2724R936, r_MmaAHalf2WordAtPtx2751R937,
+			r_MmaAHalf2WordAtPtx2778R938, r_MmaBHalf2WordAtPtx3121R875, r_MmaBHalf2WordAtPtx3121R876,
+			r_MmaAccumulatorHalf2WordAtPtx1655R1141,
+			r_MmaAccumulatorHalf2WordAtPtx1656R1142); // PTX L3429
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3436R949, r_MmaAccumulatorHalf2WordAtPtx3436R950,
+			r_MmaAHalf2WordAtPtx2697R935, r_MmaAHalf2WordAtPtx2724R936, r_MmaAHalf2WordAtPtx2751R937,
+			r_MmaAHalf2WordAtPtx2778R938, r_MmaBHalf2WordAtPtx3121R877, r_MmaBHalf2WordAtPtx3121R878,
+			r_MmaAccumulatorHalf2WordAtPtx1657R1143,
+			r_MmaAccumulatorHalf2WordAtPtx1658R1144); // PTX L3436
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1655R1141, r_MmaAccumulatorHalf2WordAtPtx1656R1142,
+			r_MmaAHalf2WordAtPtx2805R939, r_MmaAHalf2WordAtPtx2832R940, r_MmaAHalf2WordAtPtx2859R941,
+			r_MmaAHalf2WordAtPtx2886R942, r_MmaBHalf2WordAtPtx3157R879, r_MmaBHalf2WordAtPtx3157R880,
+			r_MmaAccumulatorHalf2WordAtPtx3429R947,
+			r_MmaAccumulatorHalf2WordAtPtx3429R948); // PTX L3443
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1657R1143, r_MmaAccumulatorHalf2WordAtPtx1658R1144,
+			r_MmaAHalf2WordAtPtx2805R939, r_MmaAHalf2WordAtPtx2832R940, r_MmaAHalf2WordAtPtx2859R941,
+			r_MmaAHalf2WordAtPtx2886R942, r_MmaBHalf2WordAtPtx3157R883, r_MmaBHalf2WordAtPtx3157R884,
+			r_MmaAccumulatorHalf2WordAtPtx3436R949,
+			r_MmaAccumulatorHalf2WordAtPtx3436R950); // PTX L3450
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3457R951, r_MmaAccumulatorHalf2WordAtPtx3457R952,
+			r_MmaAHalf2WordAtPtx2697R935, r_MmaAHalf2WordAtPtx2724R936, r_MmaAHalf2WordAtPtx2751R937,
+			r_MmaAHalf2WordAtPtx2778R938, r_MmaBHalf2WordAtPtx3130R887, r_MmaBHalf2WordAtPtx3130R888,
+			r_MmaAccumulatorHalf2WordAtPtx1659R1145,
+			r_MmaAccumulatorHalf2WordAtPtx1660R1146); // PTX L3457
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3464R953, r_MmaAccumulatorHalf2WordAtPtx3464R954,
+			r_MmaAHalf2WordAtPtx2697R935, r_MmaAHalf2WordAtPtx2724R936, r_MmaAHalf2WordAtPtx2751R937,
+			r_MmaAHalf2WordAtPtx2778R938, r_MmaBHalf2WordAtPtx3130R889, r_MmaBHalf2WordAtPtx3130R890,
+			r_MmaAccumulatorHalf2WordAtPtx1661R1147,
+			r_MmaAccumulatorHalf2WordAtPtx1662R1148); // PTX L3464
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1659R1145, r_MmaAccumulatorHalf2WordAtPtx1660R1146,
+			r_MmaAHalf2WordAtPtx2805R939, r_MmaAHalf2WordAtPtx2832R940, r_MmaAHalf2WordAtPtx2859R941,
+			r_MmaAHalf2WordAtPtx2886R942, r_MmaBHalf2WordAtPtx3166R891, r_MmaBHalf2WordAtPtx3166R892,
+			r_MmaAccumulatorHalf2WordAtPtx3457R951,
+			r_MmaAccumulatorHalf2WordAtPtx3457R952); // PTX L3471
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1661R1147, r_MmaAccumulatorHalf2WordAtPtx1662R1148,
+			r_MmaAHalf2WordAtPtx2805R939, r_MmaAHalf2WordAtPtx2832R940, r_MmaAHalf2WordAtPtx2859R941,
+			r_MmaAHalf2WordAtPtx2886R942, r_MmaBHalf2WordAtPtx3166R895, r_MmaBHalf2WordAtPtx3166R896,
+			r_MmaAccumulatorHalf2WordAtPtx3464R953,
+			r_MmaAccumulatorHalf2WordAtPtx3464R954); // PTX L3478
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3485R955, r_MmaAccumulatorHalf2WordAtPtx3485R956,
+			r_MmaAHalf2WordAtPtx2697R935, r_MmaAHalf2WordAtPtx2724R936, r_MmaAHalf2WordAtPtx2751R937,
+			r_MmaAHalf2WordAtPtx2778R938, r_MmaBHalf2WordAtPtx3139R899, r_MmaBHalf2WordAtPtx3139R900,
+			r_MmaAccumulatorHalf2WordAtPtx1663R1149,
+			r_MmaAccumulatorHalf2WordAtPtx1664R1150); // PTX L3485
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3492R957, r_MmaAccumulatorHalf2WordAtPtx3492R958,
+			r_MmaAHalf2WordAtPtx2697R935, r_MmaAHalf2WordAtPtx2724R936, r_MmaAHalf2WordAtPtx2751R937,
+			r_MmaAHalf2WordAtPtx2778R938, r_MmaBHalf2WordAtPtx3139R901, r_MmaBHalf2WordAtPtx3139R902,
+			r_MmaAccumulatorHalf2WordAtPtx1665R1151,
+			r_MmaAccumulatorHalf2WordAtPtx1666R1152); // PTX L3492
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1663R1149, r_MmaAccumulatorHalf2WordAtPtx1664R1150,
+			r_MmaAHalf2WordAtPtx2805R939, r_MmaAHalf2WordAtPtx2832R940, r_MmaAHalf2WordAtPtx2859R941,
+			r_MmaAHalf2WordAtPtx2886R942, r_MmaBHalf2WordAtPtx3174R903, r_MmaBHalf2WordAtPtx3174R904,
+			r_MmaAccumulatorHalf2WordAtPtx3485R955,
+			r_MmaAccumulatorHalf2WordAtPtx3485R956); // PTX L3499
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1665R1151, r_MmaAccumulatorHalf2WordAtPtx1666R1152,
+			r_MmaAHalf2WordAtPtx2805R939, r_MmaAHalf2WordAtPtx2832R940, r_MmaAHalf2WordAtPtx2859R941,
+			r_MmaAHalf2WordAtPtx2886R942, r_MmaBHalf2WordAtPtx3174R907, r_MmaBHalf2WordAtPtx3174R908,
+			r_MmaAccumulatorHalf2WordAtPtx3492R957,
+			r_MmaAccumulatorHalf2WordAtPtx3492R958); // PTX L3506
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3513R967, r_MmaAccumulatorHalf2WordAtPtx3513R968,
+			r_MmaAHalf2WordAtPtx2913R959, r_MmaAHalf2WordAtPtx2940R960, r_MmaAHalf2WordAtPtx2967R961,
+			r_MmaAHalf2WordAtPtx2994R962, r_MmaBHalf2WordAtPtx3112R859, r_MmaBHalf2WordAtPtx3112R860,
+			r_MmaAccumulatorHalf2WordAtPtx1667R1153,
+			r_MmaAccumulatorHalf2WordAtPtx1668R1154); // PTX L3513
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3520R969, r_MmaAccumulatorHalf2WordAtPtx3520R970,
+			r_MmaAHalf2WordAtPtx2913R959, r_MmaAHalf2WordAtPtx2940R960, r_MmaAHalf2WordAtPtx2967R961,
+			r_MmaAHalf2WordAtPtx2994R962, r_MmaBHalf2WordAtPtx3112R861, r_MmaBHalf2WordAtPtx3112R862,
+			r_MmaAccumulatorHalf2WordAtPtx1669R1155,
+			r_MmaAccumulatorHalf2WordAtPtx1670R1156); // PTX L3520
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1667R1153, r_MmaAccumulatorHalf2WordAtPtx1668R1154,
+			r_MmaAHalf2WordAtPtx3021R963, r_MmaAHalf2WordAtPtx3048R964, r_MmaAHalf2WordAtPtx3075R965,
+			r_MmaAHalf2WordAtPtx3102R966, r_MmaBHalf2WordAtPtx3148R867, r_MmaBHalf2WordAtPtx3148R868,
+			r_MmaAccumulatorHalf2WordAtPtx3513R967,
+			r_MmaAccumulatorHalf2WordAtPtx3513R968); // PTX L3527
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1669R1155, r_MmaAccumulatorHalf2WordAtPtx1670R1156,
+			r_MmaAHalf2WordAtPtx3021R963, r_MmaAHalf2WordAtPtx3048R964, r_MmaAHalf2WordAtPtx3075R965,
+			r_MmaAHalf2WordAtPtx3102R966, r_MmaBHalf2WordAtPtx3148R871, r_MmaBHalf2WordAtPtx3148R872,
+			r_MmaAccumulatorHalf2WordAtPtx3520R969,
+			r_MmaAccumulatorHalf2WordAtPtx3520R970); // PTX L3534
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3541R971, r_MmaAccumulatorHalf2WordAtPtx3541R972,
+			r_MmaAHalf2WordAtPtx2913R959, r_MmaAHalf2WordAtPtx2940R960, r_MmaAHalf2WordAtPtx2967R961,
+			r_MmaAHalf2WordAtPtx2994R962, r_MmaBHalf2WordAtPtx3121R875, r_MmaBHalf2WordAtPtx3121R876,
+			r_MmaAccumulatorHalf2WordAtPtx1671R1157,
+			r_MmaAccumulatorHalf2WordAtPtx1672R1158); // PTX L3541
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3548R973, r_MmaAccumulatorHalf2WordAtPtx3548R974,
+			r_MmaAHalf2WordAtPtx2913R959, r_MmaAHalf2WordAtPtx2940R960, r_MmaAHalf2WordAtPtx2967R961,
+			r_MmaAHalf2WordAtPtx2994R962, r_MmaBHalf2WordAtPtx3121R877, r_MmaBHalf2WordAtPtx3121R878,
+			r_MmaAccumulatorHalf2WordAtPtx1673R1159,
+			r_MmaAccumulatorHalf2WordAtPtx1674R1160); // PTX L3548
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1671R1157, r_MmaAccumulatorHalf2WordAtPtx1672R1158,
+			r_MmaAHalf2WordAtPtx3021R963, r_MmaAHalf2WordAtPtx3048R964, r_MmaAHalf2WordAtPtx3075R965,
+			r_MmaAHalf2WordAtPtx3102R966, r_MmaBHalf2WordAtPtx3157R879, r_MmaBHalf2WordAtPtx3157R880,
+			r_MmaAccumulatorHalf2WordAtPtx3541R971,
+			r_MmaAccumulatorHalf2WordAtPtx3541R972); // PTX L3555
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1673R1159, r_MmaAccumulatorHalf2WordAtPtx1674R1160,
+			r_MmaAHalf2WordAtPtx3021R963, r_MmaAHalf2WordAtPtx3048R964, r_MmaAHalf2WordAtPtx3075R965,
+			r_MmaAHalf2WordAtPtx3102R966, r_MmaBHalf2WordAtPtx3157R883, r_MmaBHalf2WordAtPtx3157R884,
+			r_MmaAccumulatorHalf2WordAtPtx3548R973,
+			r_MmaAccumulatorHalf2WordAtPtx3548R974); // PTX L3562
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3569R975, r_MmaAccumulatorHalf2WordAtPtx3569R976,
+			r_MmaAHalf2WordAtPtx2913R959, r_MmaAHalf2WordAtPtx2940R960, r_MmaAHalf2WordAtPtx2967R961,
+			r_MmaAHalf2WordAtPtx2994R962, r_MmaBHalf2WordAtPtx3130R887, r_MmaBHalf2WordAtPtx3130R888,
+			r_MmaAccumulatorHalf2WordAtPtx1675R1161,
+			r_MmaAccumulatorHalf2WordAtPtx1676R1162); // PTX L3569
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3576R977, r_MmaAccumulatorHalf2WordAtPtx3576R978,
+			r_MmaAHalf2WordAtPtx2913R959, r_MmaAHalf2WordAtPtx2940R960, r_MmaAHalf2WordAtPtx2967R961,
+			r_MmaAHalf2WordAtPtx2994R962, r_MmaBHalf2WordAtPtx3130R889, r_MmaBHalf2WordAtPtx3130R890,
+			r_MmaAccumulatorHalf2WordAtPtx1677R1163,
+			r_MmaAccumulatorHalf2WordAtPtx1678R1164); // PTX L3576
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1675R1161, r_MmaAccumulatorHalf2WordAtPtx1676R1162,
+			r_MmaAHalf2WordAtPtx3021R963, r_MmaAHalf2WordAtPtx3048R964, r_MmaAHalf2WordAtPtx3075R965,
+			r_MmaAHalf2WordAtPtx3102R966, r_MmaBHalf2WordAtPtx3166R891, r_MmaBHalf2WordAtPtx3166R892,
+			r_MmaAccumulatorHalf2WordAtPtx3569R975,
+			r_MmaAccumulatorHalf2WordAtPtx3569R976); // PTX L3583
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1677R1163, r_MmaAccumulatorHalf2WordAtPtx1678R1164,
+			r_MmaAHalf2WordAtPtx3021R963, r_MmaAHalf2WordAtPtx3048R964, r_MmaAHalf2WordAtPtx3075R965,
+			r_MmaAHalf2WordAtPtx3102R966, r_MmaBHalf2WordAtPtx3166R895, r_MmaBHalf2WordAtPtx3166R896,
+			r_MmaAccumulatorHalf2WordAtPtx3576R977,
+			r_MmaAccumulatorHalf2WordAtPtx3576R978); // PTX L3590
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3597R979, r_MmaAccumulatorHalf2WordAtPtx3597R980,
+			r_MmaAHalf2WordAtPtx2913R959, r_MmaAHalf2WordAtPtx2940R960, r_MmaAHalf2WordAtPtx2967R961,
+			r_MmaAHalf2WordAtPtx2994R962, r_MmaBHalf2WordAtPtx3139R899, r_MmaBHalf2WordAtPtx3139R900,
+			r_MmaAccumulatorHalf2WordAtPtx1679R1165,
+			r_MmaAccumulatorHalf2WordAtPtx1680R1166); // PTX L3597
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx3604R981, r_MmaAccumulatorHalf2WordAtPtx3604R982,
+			r_MmaAHalf2WordAtPtx2913R959, r_MmaAHalf2WordAtPtx2940R960, r_MmaAHalf2WordAtPtx2967R961,
+			r_MmaAHalf2WordAtPtx2994R962, r_MmaBHalf2WordAtPtx3139R901, r_MmaBHalf2WordAtPtx3139R902,
+			r_MmaAccumulatorHalf2WordAtPtx1681R1167,
+			r_MmaAccumulatorHalf2WordAtPtx1682R1168); // PTX L3604
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1679R1165, r_MmaAccumulatorHalf2WordAtPtx1680R1166,
+			r_MmaAHalf2WordAtPtx3021R963, r_MmaAHalf2WordAtPtx3048R964, r_MmaAHalf2WordAtPtx3075R965,
+			r_MmaAHalf2WordAtPtx3102R966, r_MmaBHalf2WordAtPtx3174R903, r_MmaBHalf2WordAtPtx3174R904,
+			r_MmaAccumulatorHalf2WordAtPtx3597R979,
+			r_MmaAccumulatorHalf2WordAtPtx3597R980); // PTX L3611
+	MmaHalf(r_MmaAccumulatorHalf2WordAtPtx1681R1167, r_MmaAccumulatorHalf2WordAtPtx1682R1168,
+			r_MmaAHalf2WordAtPtx3021R963, r_MmaAHalf2WordAtPtx3048R964, r_MmaAHalf2WordAtPtx3075R965,
+			r_MmaAHalf2WordAtPtx3102R966, r_MmaBHalf2WordAtPtx3174R907, r_MmaBHalf2WordAtPtx3174R908,
+			r_MmaAccumulatorHalf2WordAtPtx3604R981,
+			r_MmaAccumulatorHalf2WordAtPtx3604R982);					  // PTX L3618
+	r_PtxRegister25 = uint32_t(r_PtxRegister1169) + uint32_t(32);		  // PTX L3624
+	r_PtxU64Register176 = uint64_t(r_PtxU64Register176) + uint64_t(4096); // PTX L3625
+	r_PtxU64Register175 = uint64_t(r_PtxU64Register175) + uint64_t(1024); // PTX L3626
+	r_bPtxPredicate43 = uint32_t(r_PtxRegister1169) < uint32_t(224);	  // PTX L3627
+	r_PtxRegister1169 = uint32_t(r_PtxRegister25);						  // PTX L3628
+	if (r_bPtxPredicate43)
+	{
+		goto L__BB0_35;
+	} // PTX L3629
+	r_bPtxPredicate44 = int32_t(r_PtxRegister4) >= int32_t(r_HeightDiv4Bits); // PTX L3630
+	r_bPtxPredicate45 = int32_t(r_PtxRegister5) >= int32_t(r_WidthDiv4Bits);  // PTX L3631
+	r_PtxRegister983 =
+		uint32_t(r_PtxRegister4) * uint32_t(r_WidthDiv4Bits) + uint32_t(r_PtxRegister5);		  // PTX L3632
+	r_PtxRegister984 = ShiftLeft(uint32_t(r_PtxRegister983), uint32_t(12));						  // PTX L3633
+	r_PtxRegister985 = uint32_t(r_PtxRegister984) + uint32_t(r_PtxRegister9);					  // PTX L3634
+	r_PtxU64Register125 = uint64_t(int64_t(int32_t(r_PtxRegister985)) * int64_t(int32_t(4)));	  // PTX L3635
+	g_OutputByteAddressAtPtx3636 = uint64_t(g_OutputBaseAddress) + uint64_t(r_PtxU64Register125); // PTX L3636
+	r_bPtxPredicate46 = r_bPtxPredicate44 | r_bPtxPredicate45;									  // PTX L3637
+	if (r_bPtxPredicate46)
+	{
+		goto L__BB0_38;
+	} // PTX L3638
+	r_LaneIndexAtPtx3640 = uint32_t((threadIdx.x & 31u)); // PTX L3640
+	r_PtxU64Register130 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3640)) * int64_t(int32_t(16))); // PTX L3642
+	g_OutputByteAddressAtPtx3643 =
+		uint64_t(g_OutputByteAddressAtPtx3636) + uint64_t(r_PtxU64Register130); // PTX L3643
+	// Phase: global_publication. Publish packed words through the original global-store path; edge predicates and physical output addressing remain in force.
+	StoreNoAllocate(g_OutputByteAddressAtPtx3643,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1619R1105,
+							   r_MmaAccumulatorHalf2WordAtPtx1620R1106,
+							   r_MmaAccumulatorHalf2WordAtPtx1621R1107,
+							   r_MmaAccumulatorHalf2WordAtPtx1622R1108)); // PTX L3645
+	r_LaneIndexAtPtx3648 = uint32_t((threadIdx.x & 31u));				  // PTX L3648
+	r_PtxU64Register131 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3648)) * int64_t(int32_t(16))); // PTX L3650
+	g_OutputByteAddressAtPtx3651 =
+		uint64_t(g_OutputByteAddressAtPtx3636) + uint64_t(r_PtxU64Register131);			   // PTX L3651
+	g_OutputByteAddressAtPtx3652 = uint64_t(g_OutputByteAddressAtPtx3651) + uint64_t(512); // PTX L3652
+	StoreNoAllocate(g_OutputByteAddressAtPtx3652,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1623R1109,
+							   r_MmaAccumulatorHalf2WordAtPtx1624R1110,
+							   r_MmaAccumulatorHalf2WordAtPtx1625R1111,
+							   r_MmaAccumulatorHalf2WordAtPtx1626R1112)); // PTX L3654
+	r_LaneIndexAtPtx3657 = uint32_t((threadIdx.x & 31u));				  // PTX L3657
+	r_PtxU64Register133 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3657)) * int64_t(int32_t(16))); // PTX L3659
+	g_OutputByteAddressAtPtx3660 =
+		uint64_t(g_OutputByteAddressAtPtx3636) + uint64_t(r_PtxU64Register133);				// PTX L3660
+	g_OutputByteAddressAtPtx3661 = uint64_t(g_OutputByteAddressAtPtx3660) + uint64_t(1024); // PTX L3661
+	StoreNoAllocate(g_OutputByteAddressAtPtx3661,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1627R1113,
+							   r_MmaAccumulatorHalf2WordAtPtx1628R1114,
+							   r_MmaAccumulatorHalf2WordAtPtx1629R1115,
+							   r_MmaAccumulatorHalf2WordAtPtx1630R1116)); // PTX L3663
+	r_LaneIndexAtPtx3666 = uint32_t((threadIdx.x & 31u));				  // PTX L3666
+	r_PtxU64Register135 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3666)) * int64_t(int32_t(16))); // PTX L3668
+	g_OutputByteAddressAtPtx3669 =
+		uint64_t(g_OutputByteAddressAtPtx3636) + uint64_t(r_PtxU64Register135);				// PTX L3669
+	g_OutputByteAddressAtPtx3670 = uint64_t(g_OutputByteAddressAtPtx3669) + uint64_t(1536); // PTX L3670
+	StoreNoAllocate(g_OutputByteAddressAtPtx3670,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1631R1117,
+							   r_MmaAccumulatorHalf2WordAtPtx1632R1118,
+							   r_MmaAccumulatorHalf2WordAtPtx1633R1119,
+							   r_MmaAccumulatorHalf2WordAtPtx1634R1120));	  // PTX L3672
+L__BB0_38:																	  // PTX L3674
+	r_PtxRegister26 = uint32_t(r_PtxRegister5) + uint32_t(1);				  // PTX L3675
+	r_bPtxPredicate47 = int32_t(r_PtxRegister26) >= int32_t(r_WidthDiv4Bits); // PTX L3676
+	r_bPtxPredicate48 = r_bPtxPredicate44 | r_bPtxPredicate47;				  // PTX L3677
+	if (r_bPtxPredicate48)
+	{
+		goto L__BB0_40;
+	} // PTX L3678
+	r_LaneIndexAtPtx3680 = uint32_t((threadIdx.x & 31u)); // PTX L3680
+	r_PtxU64Register141 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3680)) * int64_t(int32_t(16))); // PTX L3682
+	g_OutputByteAddressAtPtx3683 =
+		uint64_t(g_OutputByteAddressAtPtx3636) + uint64_t(r_PtxU64Register141);				 // PTX L3683
+	g_OutputByteAddressAtPtx3684 = uint64_t(g_OutputByteAddressAtPtx3683) + uint64_t(16384); // PTX L3684
+	StoreNoAllocate(g_OutputByteAddressAtPtx3684,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1635R1121,
+							   r_MmaAccumulatorHalf2WordAtPtx1636R1122,
+							   r_MmaAccumulatorHalf2WordAtPtx1637R1123,
+							   r_MmaAccumulatorHalf2WordAtPtx1638R1124)); // PTX L3686
+	r_LaneIndexAtPtx3689 = uint32_t((threadIdx.x & 31u));				  // PTX L3689
+	r_PtxU64Register143 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3689)) * int64_t(int32_t(16))); // PTX L3691
+	g_OutputByteAddressAtPtx3692 =
+		uint64_t(g_OutputByteAddressAtPtx3636) + uint64_t(r_PtxU64Register143);				 // PTX L3692
+	g_OutputByteAddressAtPtx3693 = uint64_t(g_OutputByteAddressAtPtx3692) + uint64_t(16896); // PTX L3693
+	StoreNoAllocate(g_OutputByteAddressAtPtx3693,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1639R1125,
+							   r_MmaAccumulatorHalf2WordAtPtx1640R1126,
+							   r_MmaAccumulatorHalf2WordAtPtx1641R1127,
+							   r_MmaAccumulatorHalf2WordAtPtx1642R1128)); // PTX L3695
+	r_LaneIndexAtPtx3698 = uint32_t((threadIdx.x & 31u));				  // PTX L3698
+	r_PtxU64Register145 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3698)) * int64_t(int32_t(16))); // PTX L3700
+	g_OutputByteAddressAtPtx3701 =
+		uint64_t(g_OutputByteAddressAtPtx3636) + uint64_t(r_PtxU64Register145);				 // PTX L3701
+	g_OutputByteAddressAtPtx3702 = uint64_t(g_OutputByteAddressAtPtx3701) + uint64_t(17408); // PTX L3702
+	StoreNoAllocate(g_OutputByteAddressAtPtx3702,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1643R1129,
+							   r_MmaAccumulatorHalf2WordAtPtx1644R1130,
+							   r_MmaAccumulatorHalf2WordAtPtx1645R1131,
+							   r_MmaAccumulatorHalf2WordAtPtx1646R1132)); // PTX L3704
+	r_LaneIndexAtPtx3707 = uint32_t((threadIdx.x & 31u));				  // PTX L3707
+	r_PtxU64Register147 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3707)) * int64_t(int32_t(16))); // PTX L3709
+	g_OutputByteAddressAtPtx3710 =
+		uint64_t(g_OutputByteAddressAtPtx3636) + uint64_t(r_PtxU64Register147);				 // PTX L3710
+	g_OutputByteAddressAtPtx3711 = uint64_t(g_OutputByteAddressAtPtx3710) + uint64_t(17920); // PTX L3711
+	StoreNoAllocate(g_OutputByteAddressAtPtx3711,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1647R1133,
+							   r_MmaAccumulatorHalf2WordAtPtx1648R1134,
+							   r_MmaAccumulatorHalf2WordAtPtx1649R1135,
+							   r_MmaAccumulatorHalf2WordAtPtx1650R1136));	   // PTX L3713
+L__BB0_40:																	   // PTX L3715
+	r_PtxRegister27 = uint32_t(r_PtxRegister4) + uint32_t(1);				   // PTX L3716
+	r_bPtxPredicate49 = int32_t(r_PtxRegister27) >= int32_t(r_HeightDiv4Bits); // PTX L3717
+	r_PtxRegister994 =
+		uint32_t(r_WidthDiv4Bits) * uint32_t(r_PtxRegister4) + uint32_t(r_WidthDiv4Bits);		  // PTX L3718
+	r_PtxRegister995 = uint32_t(r_PtxRegister994) + uint32_t(r_PtxRegister5);					  // PTX L3719
+	r_PtxRegister996 = ShiftLeft(uint32_t(r_PtxRegister995), uint32_t(12));						  // PTX L3720
+	r_PtxRegister997 = uint32_t(r_PtxRegister996) + uint32_t(r_PtxRegister9);					  // PTX L3721
+	r_PtxU64Register149 = uint64_t(int64_t(int32_t(r_PtxRegister997)) * int64_t(int32_t(4)));	  // PTX L3722
+	g_OutputByteAddressAtPtx3723 = uint64_t(g_OutputBaseAddress) + uint64_t(r_PtxU64Register149); // PTX L3723
+	r_bPtxPredicate50 = r_bPtxPredicate49 | r_bPtxPredicate45;									  // PTX L3724
+	if (r_bPtxPredicate50)
+	{
+		goto L__BB0_42;
+	} // PTX L3725
+	r_LaneIndexAtPtx3727 = uint32_t((threadIdx.x & 31u)); // PTX L3727
+	r_PtxU64Register154 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3727)) * int64_t(int32_t(16))); // PTX L3729
+	g_OutputByteAddressAtPtx3730 =
+		uint64_t(g_OutputByteAddressAtPtx3723) + uint64_t(r_PtxU64Register154); // PTX L3730
+	StoreNoAllocate(g_OutputByteAddressAtPtx3730,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1651R1137,
+							   r_MmaAccumulatorHalf2WordAtPtx1652R1138,
+							   r_MmaAccumulatorHalf2WordAtPtx1653R1139,
+							   r_MmaAccumulatorHalf2WordAtPtx1654R1140)); // PTX L3732
+	r_LaneIndexAtPtx3735 = uint32_t((threadIdx.x & 31u));				  // PTX L3735
+	r_PtxU64Register155 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3735)) * int64_t(int32_t(16))); // PTX L3737
+	g_OutputByteAddressAtPtx3738 =
+		uint64_t(g_OutputByteAddressAtPtx3723) + uint64_t(r_PtxU64Register155);			   // PTX L3738
+	g_OutputByteAddressAtPtx3739 = uint64_t(g_OutputByteAddressAtPtx3738) + uint64_t(512); // PTX L3739
+	StoreNoAllocate(g_OutputByteAddressAtPtx3739,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1655R1141,
+							   r_MmaAccumulatorHalf2WordAtPtx1656R1142,
+							   r_MmaAccumulatorHalf2WordAtPtx1657R1143,
+							   r_MmaAccumulatorHalf2WordAtPtx1658R1144)); // PTX L3741
+	r_LaneIndexAtPtx3744 = uint32_t((threadIdx.x & 31u));				  // PTX L3744
+	r_PtxU64Register157 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3744)) * int64_t(int32_t(16))); // PTX L3746
+	g_OutputByteAddressAtPtx3747 =
+		uint64_t(g_OutputByteAddressAtPtx3723) + uint64_t(r_PtxU64Register157);				// PTX L3747
+	g_OutputByteAddressAtPtx3748 = uint64_t(g_OutputByteAddressAtPtx3747) + uint64_t(1024); // PTX L3748
+	StoreNoAllocate(g_OutputByteAddressAtPtx3748,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1659R1145,
+							   r_MmaAccumulatorHalf2WordAtPtx1660R1146,
+							   r_MmaAccumulatorHalf2WordAtPtx1661R1147,
+							   r_MmaAccumulatorHalf2WordAtPtx1662R1148)); // PTX L3750
+	r_LaneIndexAtPtx3753 = uint32_t((threadIdx.x & 31u));				  // PTX L3753
+	r_PtxU64Register159 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3753)) * int64_t(int32_t(16))); // PTX L3755
+	g_OutputByteAddressAtPtx3756 =
+		uint64_t(g_OutputByteAddressAtPtx3723) + uint64_t(r_PtxU64Register159);				// PTX L3756
+	g_OutputByteAddressAtPtx3757 = uint64_t(g_OutputByteAddressAtPtx3756) + uint64_t(1536); // PTX L3757
+	StoreNoAllocate(g_OutputByteAddressAtPtx3757,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1663R1149,
+							   r_MmaAccumulatorHalf2WordAtPtx1664R1150,
+							   r_MmaAccumulatorHalf2WordAtPtx1665R1151,
+							   r_MmaAccumulatorHalf2WordAtPtx1666R1152)); // PTX L3759
+L__BB0_42:																  // PTX L3761
+	r_bPtxPredicate51 = r_bPtxPredicate49 | r_bPtxPredicate47;			  // PTX L3762
+	if (r_bPtxPredicate51)
+	{
+		goto L__BB0_44;
+	} // PTX L3763
+	r_LaneIndexAtPtx3765 = uint32_t((threadIdx.x & 31u)); // PTX L3765
+	r_PtxU64Register165 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3765)) * int64_t(int32_t(16))); // PTX L3767
+	g_OutputByteAddressAtPtx3768 =
+		uint64_t(g_OutputByteAddressAtPtx3723) + uint64_t(r_PtxU64Register165);				 // PTX L3768
+	g_OutputByteAddressAtPtx3769 = uint64_t(g_OutputByteAddressAtPtx3768) + uint64_t(16384); // PTX L3769
+	StoreNoAllocate(g_OutputByteAddressAtPtx3769,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1667R1153,
+							   r_MmaAccumulatorHalf2WordAtPtx1668R1154,
+							   r_MmaAccumulatorHalf2WordAtPtx1669R1155,
+							   r_MmaAccumulatorHalf2WordAtPtx1670R1156)); // PTX L3771
+	r_LaneIndexAtPtx3774 = uint32_t((threadIdx.x & 31u));				  // PTX L3774
+	r_PtxU64Register167 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3774)) * int64_t(int32_t(16))); // PTX L3776
+	g_OutputByteAddressAtPtx3777 =
+		uint64_t(g_OutputByteAddressAtPtx3723) + uint64_t(r_PtxU64Register167);				 // PTX L3777
+	g_OutputByteAddressAtPtx3778 = uint64_t(g_OutputByteAddressAtPtx3777) + uint64_t(16896); // PTX L3778
+	StoreNoAllocate(g_OutputByteAddressAtPtx3778,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1671R1157,
+							   r_MmaAccumulatorHalf2WordAtPtx1672R1158,
+							   r_MmaAccumulatorHalf2WordAtPtx1673R1159,
+							   r_MmaAccumulatorHalf2WordAtPtx1674R1160)); // PTX L3780
+	r_LaneIndexAtPtx3783 = uint32_t((threadIdx.x & 31u));				  // PTX L3783
+	r_PtxU64Register169 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3783)) * int64_t(int32_t(16))); // PTX L3785
+	g_OutputByteAddressAtPtx3786 =
+		uint64_t(g_OutputByteAddressAtPtx3723) + uint64_t(r_PtxU64Register169);				 // PTX L3786
+	g_OutputByteAddressAtPtx3787 = uint64_t(g_OutputByteAddressAtPtx3786) + uint64_t(17408); // PTX L3787
+	StoreNoAllocate(g_OutputByteAddressAtPtx3787,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1675R1161,
+							   r_MmaAccumulatorHalf2WordAtPtx1676R1162,
+							   r_MmaAccumulatorHalf2WordAtPtx1677R1163,
+							   r_MmaAccumulatorHalf2WordAtPtx1678R1164)); // PTX L3789
+	r_LaneIndexAtPtx3792 = uint32_t((threadIdx.x & 31u));				  // PTX L3792
+	r_PtxU64Register171 =
+		uint64_t(int64_t(int32_t(r_LaneIndexAtPtx3792)) * int64_t(int32_t(16))); // PTX L3794
+	g_OutputByteAddressAtPtx3795 =
+		uint64_t(g_OutputByteAddressAtPtx3723) + uint64_t(r_PtxU64Register171);				 // PTX L3795
+	g_OutputByteAddressAtPtx3796 = uint64_t(g_OutputByteAddressAtPtx3795) + uint64_t(17920); // PTX L3796
+	StoreNoAllocate(g_OutputByteAddressAtPtx3796,
+					make_uint4(r_MmaAccumulatorHalf2WordAtPtx1679R1165,
+							   r_MmaAccumulatorHalf2WordAtPtx1680R1166,
+							   r_MmaAccumulatorHalf2WordAtPtx1681R1167,
+							   r_MmaAccumulatorHalf2WordAtPtx1682R1168)); // PTX L3798
+L__BB0_44:																  // PTX L3800
+	return;																  // PTX L3801
+#endif
+}
+} // namespace dlssnr::reconstructed::window_ffn_c512_fp16

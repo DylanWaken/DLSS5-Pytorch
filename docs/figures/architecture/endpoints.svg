@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="960" viewBox="0 0 1440 960" role="img" aria-labelledby="title desc">
+<title id="title">Input adapter, output head and optional composition</title><desc id="desc">These full-resolution stages belong to the training graph. The measured CUDA deployment trunk begins after input-stage pooling.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="context-stroke"/></marker></defs>
+<rect width="1440" height="100%" fill="#ffffff"/>
+<text x="42" y="45" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="29" font-weight="650" text-anchor="start">Input adapter, output head and optional composition</text>
+<text x="42" y="77" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">These full-resolution stages belong to the training graph. The measured CUDA deployment trunk begins after input-stage pooling.</text>
+<text x="44" y="128" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Input stage · block 0</text>
+<rect x="44" y="147" width="320.0" height="125" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="59" y="176" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Caller features</text>
+<text x="59" y="201" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">[B, padded H, padded W, 16]</text>
+<text x="59" y="223" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">FP32 or BF16 floating input</text>
+<path d="M 364.0,209.5 L 388.0,209.5" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="388.0" y="147" width="320.0" height="125" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="403.0" y="176" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Adapter 16 → 32</text>
+<text x="403.0" y="201" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Learned per-pixel linear</text>
+<text x="403.0" y="223" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Raw adapter seeds residual</text>
+<path d="M 708.0,209.5 L 732.0,209.5" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="732.0" y="147" width="320.0" height="125" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="747.0" y="176" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">C32 window block</text>
+<text x="747.0" y="201" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">32 → 128 → 32 FFN</text>
+<text x="747.0" y="223" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">1 head, 8 × 8 attention</text>
+<path d="M 1052.0,209.5 L 1076.0,209.5" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1076.0" y="147" width="320.0" height="125" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
+<text x="1091.0" y="176" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Two outgoing paths</text>
+<text x="1091.0" y="201" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Published → block-70 skip</text>
+<text x="1091.0" y="223" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Raw → 2 × 2 mean pool</text>
+<text x="1091.0" y="245" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Pooled C32 → block 1</text>
+<text x="44" y="351" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Output stage · block 70</text>
+<rect x="44" y="370" width="320.0" height="125" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
+<text x="59" y="399" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Block-69 state</text>
+<text x="59" y="424" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">C32 at encoder level 0</text>
+<text x="59" y="446" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">2× upsample to full field</text>
+<path d="M 364.0,432.5 L 388.0,432.5" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="388.0" y="370" width="320.0" height="125" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
+<text x="403.0" y="399" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Full-field merge</text>
+<text x="403.0" y="424" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">input_scale × upsample</text>
+<text x="403.0" y="446" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">+ adapter_scale × block 0</text>
+<text x="403.0" y="468" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Raw merge seeds residual</text>
+<path d="M 708.0,432.5 L 732.0,432.5" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="732.0" y="370" width="320.0" height="125" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
+<text x="747.0" y="399" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">C32 window block</text>
+<text x="747.0" y="424" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">FFN then window attention</text>
+<text x="747.0" y="446" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Use raw attention output</text>
+<path d="M 1052.0,432.5 L 1076.0,432.5" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1076.0" y="370" width="320.0" height="125" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
+<text x="1091.0" y="399" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Head 32 → 4</text>
+<text x="1091.0" y="424" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Learned linear; FP32 result</text>
+<text x="1091.0" y="446" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Optional valid-size crop</text>
+<text x="1091.0" y="468" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">RGB correction + blend lane</text>
+<text x="44" y="574" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Optional compose() · caller supplies proxy and reprojected history</text>
+<rect x="44" y="625" width="470" height="150" rx="12" fill="#fff5e5" stroke="#b86910" stroke-width="1.5"/>
+<text x="59" y="654" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Neural RGB</text>
+<text x="59" y="679" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">N = clamp(proxy + head.rgb / 4)</text>
+<text x="59" y="701" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Clamp range: [0, 1]</text>
+<text x="59" y="723" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Proxy uses sRGB code space</text>
+<rect x="630" y="600" width="766" height="90" rx="12" fill="#fff5e5" stroke="#b86910" stroke-width="1.5"/>
+<text x="645" y="629" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Without history</text>
+<text x="645" y="654" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Return N directly</text>
+<text x="645" y="676" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Composition is outside forward_train</text>
+<rect x="630" y="710" width="766" height="100" rx="12" fill="#fff5e5" stroke="#b86910" stroke-width="1.5"/>
+<text x="645" y="739" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">With history H</text>
+<text x="645" y="764" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">a = clamp(sigmoid(head.a) × blend_scale, 0, 1)</text>
+<text x="645" y="786" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Return N + a × (H − N)</text>
+<path d="M 514,700 L 565,700 L 565,645 L 630,645" fill="none" stroke="#b86910" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M 565,700 L 565,760 L 630,760" fill="none" stroke="#b86910" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="44" y="842" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">The model does not generate renderer features, a proxy image, motion vectors or a reprojected history buffer.</text>
+<text x="44" y="870" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Training benchmarks stop at the four-channel head and use a diagnostic scalar; composition and temporal training are not measured.</text>
+<text x="44" y="909" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Source: _input_block, _input_stage, _post_head and compose in dlssnr/model.py.</text>
+<text x="44" y="940" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">DLSSNR-PyTorch · implemented logical graph · source and shape ledger: architecture/source-map.json</text>
+</svg>

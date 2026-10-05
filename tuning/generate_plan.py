@@ -1,0 +1,223 @@
+"""Generate the fixed, original-layout FP8 trunk schedule for the clean C++ API.
+
+This is offline code generation, not Python inference dispatch. Every repeated
+network instance references one shared reconstructed kernel host stub.
+"""
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+PREP = Path(__file__).resolve().parent
+OUT = ROOT / 'csrc' / 'kernel_launcher'
+
+def load(name):
+    return json.loads((PREP / name).read_text())
+
+def build_plan(schedule):
+    bottleneck_width, bottleneck_height = schedule['levels'][5]
+    decoder_width, decoder_height = schedule['levels'][4]
+    global_tokens = bottleneck_width * bottleneck_height
+    canonical = load('canonical_kernel_names.json')
+    if len(canonical) != 81 or len(set(canonical.values())) != 81:
+        raise ValueError('canonical entry map must contain 81 unique entries')
+    windows = {e['original_symbol']: e for e in load('reconstruction/windows.json')['entries']}
+    c512 = {e['original_symbol']: e for e in load('reconstruction/c512.json')['entries']}
+    glob = {e['original']['symbol']: e for e in load('reconstruction/global.json')['entries']}
+    conn = {e['original']['entry']: e for e in load('reconstruction/connectors.json')['entries']}
+    buffers = schedule['buffers']
+    names = list(buffers)
+    records = {}
+    calls = []
+    def ptr(name):
+        if name not in buffers:
+            raise ValueError('unknown schedule buffer ' + name)
+        return 'address(%d)' % names.index(name)
+    def add(symbol, fn, abi, grid, block, fields, all_resident=False):
+        calls.append(dict(symbol=symbol, fn=fn, abi=abi, grid=grid, block=block,
+                          fields=fields, all_resident=all_resident))
+    previous = None
+    for n in schedule['positions']:
+        b, symbol = n['block'], n['original_symbol']
+        if b != previous:
+            for reset in schedule['reset_protocol']:
+                if reset['before_block'] == b:
+                    name = f"b{b}.{reset['counter']}_counter"
+                    words = buffers[name]['storage_bytes'] // 4
+                    add('cc_cb_clear', canonical['cc_cb_clear'], 16,
+                        [(words+255)//256,1,1], [256,1,1],
+                        [(0,8,ptr(name)),(8,4,str(words))])
+        previous = b
+        ins, outs = n['input_buffers'], n['output_buffers']
+        fields = []
+        def p(offset, name): fields.append((offset,8,ptr(name)))
+        def scalar(offset, value): fields.append((offset,4,str(value)))
+        def record(offset, size):
+            name = f"block{b}.layer{n['record_layer']}.layer"
+            if name in records and records[name] != size:
+                raise ValueError('conflicting record extent')
+            records[name] = size
+            fields.append((offset,8,f'record_address({list(records).index(name)})'))
+        resident = False
+        if symbol in windows:
+            e = windows[symbol]; fn = canonical[symbol]; c = e['channels']; kind = e['kind']
+            h,w,_ = buffers[outs['high']]['shape_hwc']; phase = n['phase']
+            sx,sy = ((0,0),(4,4),(4,0),(0,4))[phase]
+            p(0,ins['state']);p(8,outs['high']);record(16,e['record_bytes'])
+            off = 24 if c == 32 else 32
+            for i,v in enumerate((h,w,-sx,-sy)): scalar(off+4*i,v)
+            if kind in ('inpview','outview'):
+                off = 72 if c == 32 else 80
+                scalar(off,h);scalar(off+4,w)
+            elif kind == 'ds':
+                off = 64 if c == 32 else 72
+                p(off,outs['down']);lh,lw,_=buffers[outs['down']]['shape_hwc']
+                scalar(off+8,lh);scalar(off+12,lw)
+            elif kind == 'upsample':
+                p(80 if c == 32 else 24,ins['skip'])
+                if c == 32: scalar(88,h);scalar(92,w)
+            elif kind != 'ordinary':raise ValueError(kind)
+        elif symbol in c512:
+            e = c512[symbol]; fn=canonical[symbol]
+            h,w,_=buffers[ins['state']]['shape_hwc']
+            role_map={**ins,**outs}
+            if 'residual' in ins: role_map['skip']=ins['residual']
+            for key,off in e['pointer_fields'].items():
+                if key=='record':record(off,e['record_bytes'])
+                else:p(off,role_map[key])
+            phase = n['phase'] or 0;sx,sy=((0,0),(4,4),(4,0),(0,4))[phase]
+            vals=dict(height=h,width=w,origin_x=-sx,origin_y=-sy)
+            if 'pool' in outs:
+                lh,lw,_=buffers[outs['pool']]['shape_hwc']
+                vals.update(low_height=lh,low_width=lw,pool_height=lh,pool_width=lw)
+            for key,off in e['scalar_fields'].items():scalar(off,vals[key])
+        elif symbol in glob:
+            e=glob[symbol];fn=canonical[symbol];stage=n['stage']
+            # Exact native by-value ABI, including ignored zero-initialized slots.
+            if stage in ('expand','contract','projection'):
+                p(0,ins['state'])
+                if 'residual' in ins:p(8,ins['residual'])
+                p(16,outs['high']);record(24,e['record']['bytes'])
+                if stage!='expand':p(32,outs['counter']);p(40,outs['scratch']);resident=True
+                scalar(64,1);scalar(68,global_tokens)
+            elif stage=='qkv':
+                for off,name in ((0,ins['state']),(8,outs['q']),(16,outs['k']),(24,outs['v'])):p(off,name)
+                record(32,e['record']['bytes']);p(40,outs['counter']);p(48,outs['scratch'])
+                scalar(72,1);scalar(76,global_tokens);resident=True
+            elif stage=='attention_chained':
+                for off,name in ((0,ins['q']),(8,ins['k']),(16,ins['v']),(24,outs['high']),
+                                 (40,ins['predecessor_counter']),(48,outs['completion_counter'])):p(off,name)
+                scalar(56,1);scalar(60,global_tokens)
+            else:raise ValueError(stage)
+        elif symbol in conn:
+            e=conn[symbol];fn=canonical[symbol]
+            if n['stage']=='repack':
+                p(0,ins['input']);p(8,outs['output']);scalar(16,bottleneck_height);scalar(20,bottleneck_width)
+            else:
+                for off,name in ((0,ins['low']),(8,ins['skip']),(16,outs['high']),
+                                 (32,outs['counter']),(48,outs['scratch'])):p(off,name)
+                record(56,e['record']['selected_bytes'])
+                for off,v in zip((64,68,72,76),(bottleneck_height,bottleneck_width,decoder_height,decoder_width)):scalar(off,v)
+                resident=True
+        else:raise ValueError(symbol)
+        add(symbol,fn,n['abi_bytes'],n['grid'],n['block_dim'],fields,resident)
+    if len(calls)!=185 or len({n['original_symbol'] for n in schedule['positions']})!=36:
+        raise ValueError('schedule census')
+    if len(records)!=142:raise ValueError('record census')
+    return dict(buffers=buffers, records=records, calls=calls)
+
+RESOLUTIONS = ((1280, 720), (1920, 1080), (2560, 1440), (3840, 2160))
+
+
+def generate():
+    from physical_schedule import make
+
+    schedules = [make(width, height) for width, height in RESOLUTIONS]
+    plans = [build_plan(schedule) for schedule in schedules]
+    reference = plans[-1]
+    names = list(reference['buffers'])
+    for plan in plans:
+        if list(plan['buffers']) != names or plan['records'] != reference['records']:
+            raise ValueError('shape changed buffer/record roles')
+        for actual, expected in zip(plan['calls'], reference['calls']):
+            if any(actual[key] != expected[key] for key in ('symbol', 'fn', 'abi', 'block', 'all_resident')):
+                raise ValueError('shape changed the shared kernel sequence')
+            if len(actual['fields']) != len(expected['fields']):
+                raise ValueError('shape changed the native parameter schema')
+            for actual_field, expected_field in zip(actual['fields'], expected['fields']):
+                if actual_field[:2] != expected_field[:2] or (actual_field[1] == 8 and actual_field != expected_field):
+                    raise ValueError('shape changed a pointer binding')
+
+    header = '''// Generated by tuning/generate_plan.py. Launch preparation only.
+#pragma once
+#include <cuda_runtime_api.h>
+#include <cstdint>
+namespace dlssnr::deployment {
+struct FGeometryPlanSpec {
+    int64_t ValidWidth;
+    int64_t ValidHeight;
+    const int64_t* BufferBytes;
+    const dim3* Grids;
+    const int32_t* ScalarValues;
+};
+} // namespace dlssnr::deployment
+'''
+    tables = ['// Generated geometry data; all shapes reuse one physical call sequence.']
+    descriptors = []
+    for (width, height), plan in zip(RESOLUTIONS, plans):
+        suffix = f'{width}_{height}'
+        tables.append(f'static const int64_t BufferBytes_{suffix}[] = {{')
+        tables.extend(f'    {buffer["storage_bytes"]}LL, // {name}' for name, buffer in plan['buffers'].items())
+        tables.append('};')
+        tables.append(f'static const dim3 Grids_{suffix}[] = {{')
+        tables.extend('    dim3(%s), // %s' % (', '.join(map(str, call['grid'])), call['symbol']) for call in plan['calls'])
+        tables.append('};')
+        scalars = [int(value) for call in plan['calls'] for offset, size, value in call['fields'] if size == 4]
+        tables.append(f'static const int32_t Scalars_{suffix}[] = {{')
+        for start in range(0, len(scalars), 12):
+            tables.append('    ' + ', '.join(map(str, scalars[start:start + 12])) + ',')
+        tables.append('};')
+        descriptors.append(f'    {{{width}, {height}, BufferBytes_{suffix}, Grids_{suffix}, Scalars_{suffix}}},')
+    tables += ['static const FGeometryPlanSpec GeometryPlans[] = {', *descriptors, '};',
+               'static const FGeometryPlanSpec& SelectGeometryPlan(int64_t Width, int64_t Height) {',
+               '    for (const auto& Geometry : GeometryPlans) {',
+               '        if (Geometry.ValidWidth == Width && Geometry.ValidHeight == Height)',
+               '            return Geometry;', '    }',
+               '    TORCH_CHECK(false, "FP8 trunk supports 1280x720, 1920x1080, 2560x1440, or 3840x2160");',
+               '}']
+
+    lines = ['// Generated shared native FP8 schedule. Every resolution uses the same 185 calls.',
+             '// Buffer names are shared; the geometry table supplies their actual byte extents.',
+             'static const char* BufferNameTable[] = {']
+    lines += [f'    "{name}",' for name in names]
+    lines += ['};', 'static const FBufferSpec RecordSpecs[] = {']
+    lines += [f'    {{"{name}", {size}LL}},' for name, size in reference['records'].items()]
+    lines += ['};', 'void FDeploymentPlan_fp8::BuildCalls() {', '    Calls.reserve(185);']
+    scalar_index = 0
+    for call_index, call in enumerate(reference['calls']):
+        block = ', '.join(map(str, call['block']))
+        lines += [f'    {{ // {call["symbol"]}',
+                  '        FKernelCall KernelCall{reinterpret_cast<const void*>(&%s), Geometry->Grids[%d], dim3(%s), %d, %s};'
+                  % (call['fn'], call_index, block, call['abi'], str(call['all_resident']).lower())]
+        for offset, size, value in call['fields']:
+            cpp_type = 'uint64_t' if size == 8 else 'int32_t'
+            if size == 4:
+                value = f'Geometry->ScalarValues[{scalar_index}]'
+                scalar_index += 1
+            if size == 8:
+                value = value.replace('record_address(', 'GetRecordAddress(').replace('address(', 'GetBufferAddress(')
+            lines.append(f'        KernelCall.Set<{cpp_type}>({offset}, {value});')
+        lines += ['        Calls.push_back(KernelCall);', '    }']
+    lines += ['}']
+    OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / 'plan_geometry.h').write_text(header, newline='\n')
+    (OUT / 'plan_geometry_generated.inl').write_text('\n'.join(tables) + '\n', newline='\n')
+    (OUT / 'plan_generated.inl').write_text('\n'.join(lines) + '\n', newline='\n')
+    for (width, height), plan, schedule in zip(RESOLUTIONS, plans, schedules):
+        (PREP / f'plan_{width}_{height}.json').write_text(json.dumps(plan, indent=2) + '\n')
+        (PREP / f'network_schedule_fp8_{width}_{height}.json').write_text(json.dumps(schedule, indent=2) + '\n')
+    print(json.dumps(dict(resolutions=RESOLUTIONS, calls=185, buffers=len(names),
+                          scalar_fields=scalar_index, kernel_sequence_shared=True)))
+
+
+if __name__ == '__main__':
+    generate()

@@ -1,0 +1,16 @@
+.venv/
+.cuda/
+assets/
+third_party/
+build/
+*.egg-info/
+__pycache__/
+.pytest_cache/
+*.pyd
+*.so
+*.obj
+*.lib
+*.exp
+profile/
+outputs/
+*.log

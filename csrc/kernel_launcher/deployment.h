@@ -1,0 +1,77 @@
+#pragma once
+#include <ATen/ATen.h>
+#include <torch/custom_class.h>
+#include <cuda_runtime_api.h>
+#include <array>
+#include <cstring>
+#include <mutex>
+#include <string>
+#include <vector>
+#include "plan_geometry.h"
+
+namespace dlssnr::deployment
+{
+struct FBufferSpec
+{
+	const char* Name;
+	int64_t Bytes;
+};
+
+struct FKernelCall
+{
+	const void* Function;
+	dim3 Grid, Block;
+	int AbiBytes;
+	bool bAllResident;
+	alignas(8) std::array<unsigned char, 96> ParameterBlock{};
+
+	template <class TValue> void Set(size_t Offset, TValue Value)
+	{
+		TORCH_CHECK(Offset + sizeof(TValue) <= size_t(AbiBytes), "parameter outside native ABI");
+		std::memcpy(ParameterBlock.data() + Offset, &Value, sizeof(Value));
+	}
+};
+
+// A plan owns its input, weights, intermediates and prepacked launch arguments.
+// Create outside capture; run can be captured. A plan is a mutable workspace:
+// its executions must be ordered on the caller's stream, like an out operator.
+class FDeploymentPlan_fp8 : public torch::CustomClassHolder
+{
+  public:
+	FDeploymentPlan_fp8(at::Tensor g_Input, std::vector<at::Tensor> g_InputRecords, int64_t Width = 3840,
+						int64_t Height = 2160);
+	at::Tensor Run_fp8();
+	std::vector<at::Tensor> GetBoundaries() const;
+	std::vector<std::string> GetBoundaryNames() const;
+	std::vector<std::string> GetBufferNames() const;
+	at::Tensor GetBuffer(const std::string& Name) const;
+	bool GuardsIntact() const;
+	void Poison(int64_t Value);
+
+	std::vector<int64_t> GetResources() const
+	{
+		return ResourceRows;
+	}
+
+  private:
+	uint64_t GetBufferAddress(size_t Index) const;
+	uint64_t GetRecordAddress(size_t Index) const;
+	void BuildCalls();
+	std::vector<at::Tensor> g_Buffers, g_Records, g_GuardedBackings;
+	std::vector<uint64_t> g_Addresses, g_RecordAddresses;
+	std::vector<FKernelCall> Calls;
+	std::vector<int64_t> ResourceRows;
+	int DeviceIndex;
+	const FGeometryPlanSpec* Geometry;
+	std::mutex LaunchMutex;
+};
+
+std::vector<std::string> RecordNames_fp8();
+std::vector<int64_t> RecordBytes_fp8();
+std::string CompiledPolicyVersion();
+std::vector<int64_t> ResolutionSelection(int64_t Width, int64_t Height, int64_t Sm, bool bFp16);
+c10::intrusive_ptr<FDeploymentPlan_fp8> CreatePlanForResolution_fp8(at::Tensor g_Input,
+																	std::vector<at::Tensor> g_Records,
+																	int64_t Width, int64_t Height);
+c10::intrusive_ptr<FDeploymentPlan_fp8> CreatePlan_fp8(at::Tensor g_Input, std::vector<at::Tensor> g_Records);
+} // namespace dlssnr::deployment

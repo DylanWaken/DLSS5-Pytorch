@@ -1,0 +1,11 @@
+// Grouped CUDA body emission only. Host dispatch lives in the shared C++ TU.
+#include "kernel_impl/global_attention_chained_c1024_fp8.cuh"
+#include "kernel_impl/global_attention_chained_c1024_fp16.cuh"
+#include "kernel_impl/global_ffn_contract_c1024_fp8.cuh"
+#include "kernel_impl/global_ffn_contract_c1024_fp16.cuh"
+#include "kernel_impl/global_ffn_expand_c1024_fp8.cuh"
+#include "kernel_impl/global_ffn_expand_c1024_fp16.cuh"
+#include "kernel_impl/global_projection_c1024_fp8.cuh"
+#include "kernel_impl/global_projection_c1024_fp16.cuh"
+#include "kernel_impl/global_qkv_c1024_fp8.cuh"
+#include "kernel_impl/global_qkv_c1024_fp16.cuh"
