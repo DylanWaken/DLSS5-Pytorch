@@ -14,7 +14,7 @@ Use CapitalCamelCase identifiers, an `F` prefix for internal structs, an `E` pre
 | `r_b` | Register-held boolean predicate | `r_bValid` |
 | `s_` | Physical shared allocation, address, byte offset or shared-storage quantity | `s_Storage`, `s_StageBytes`, `s_BarrierOffset` |
 | `sl_` | Logical shared coordinate before a documented swizzle/bank mapping | `sl_Row`, when that logical coordinate is actually present |
-| `g_` | Global pointer, byte address or global-layout index | `g_Record`, `g_TokenGroup`, `g_OutputChannel` |
+| `g_` | Global pointer, byte address or global-layout index | `g_PackedWeights`, `g_TokenGroup`, `g_OutputChannel` |
 
 The role takes precedence over where the compiler holds a value: a shared byte address gets `s_` even if the address itself is in a register. Do not add an invented logical-shared coordinate merely to use `sl_`; document the mapping where one exists.
 
@@ -49,6 +49,8 @@ Separate three kinds of statement:
 - **Unknown/inferred:** the original coefficient-fitting rationale, training objective or intended filter name when no source establishes it.
 
 Do not invent a rationale for a recovered constant. Keep ordinary loop bounds and obvious zero/one initializers readable; reserve detailed explanation for values whose meaning is otherwise hidden.
+
+The [semantic naming audit](NAMING_AUDIT.md) traces every ABI field to its actual consumer and covers the algorithm and launcher variables. Offset-only names such as `g_Pointer0`, `Scalar32` and `Aux80` are prohibited in active interfaces; byte offsets belong in assertions.
 
 ## ABI and dispatch boundaries
 
@@ -86,7 +88,7 @@ The [portable deployment measurements](figures/semantic_deployment_measurements.
 
 These are integrated graph ratios, not guarantees that every individual kernel is within 1% of native. The [portable optimization evidence](semantic_optimization_evidence.json) records the separate per-kernel NCU/SASS and timing comparisons that guided the source changes. Earlier staged and transcript-build receipts remain historical evidence, rather than the basis for this qualification.
 
-The current implementation has 81 exports in 17 entry headers, backed by shared semantic algorithms and ten CUDA emission units. Its 45 implementation headers total 7,755 physical source lines, including comments and blank lines; see [the source inventory breakdown](SOURCE_LAYOUT.md#current-source-inventory). Four tested plans establish neither continuous-resolution tuning nor support on another GPU architecture.
+The current implementation has 81 exports in 17 entry headers, backed by shared semantic algorithms and ten CUDA emission units. Its 45 implementation headers total 7,953 physical source lines, including comments and blank lines; see [the source inventory breakdown](SOURCE_LAYOUT.md#current-source-inventory). Four tested plans establish neither continuous-resolution tuning nor support on another GPU architecture.
 
 Training remains a separate PyTorch FP32/BF16 implementation. Deployment source proofs and speed measurements say nothing about task-specific DLSS5 transfer learning, loss design or a complete training procedure. Those remain topics for further investigation; see [training usage](training.md).
 
@@ -99,4 +101,6 @@ python run_tests.py cpu --optimized
 
 Inspect the exported inventory rather than counting implementation files. Preserve failed trials, source/native hashes, profiler captures and exact qualification scope. Keep historical optimization reports unchanged; link a new result to the source and binary it actually tested.
 
-The released build adds an assembler cache key after the timing run. All 81 GPU kernels, resource records and constants, host machine code and imports are byte-identical to the timed build. Installed 720p FP8/FP16 boundary and replay checks also pass. [Release identities and source hashes](semantic_release.json) and [compiled equivalence](semantic_build_equivalence.json) preserve this distinction; no new timing is attributed to the rebuilt file.
+The preceding release added an assembler cache key after the timing run. All 81 GPU kernels, resource records and constants, host machine code and imports are byte-identical to the timed build. Its installed 720p FP8/FP16 boundary and replay checks also pass. [Release identities and source hashes](semantic_release.json) and [compiled equivalence](semantic_build_equivalence.json) preserve this distinction; no new timing is attributed to the rebuilt file.
+
+The current naming-audit rebuild retains identical device instructions, constants and resource metadata, with separately validated typed host packing and all eight graph correctness cases. See [the naming audit and current build receipt](NAMING_AUDIT.md#validation).

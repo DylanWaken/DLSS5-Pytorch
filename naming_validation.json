@@ -1,0 +1,5829 @@
+{
+  "baseline_commit": "45e83a9faac2252516ab7aa5c6671f0d8bfb334b",
+  "binary_sha256": "b7251d732142f3e9287e115c04439e356b2070c27e92bb8eba87cbab84ba0390",
+  "compiled_comparison": {
+    "baseline_binary_sha256": "ee24994f7c72e323ffc512d4849ffdcb218e3f4df730057c18ab279ba7ffde22",
+    "candidate_binary_sha256": "b7251d732142f3e9287e115c04439e356b2070c27e92bb8eba87cbab84ba0390",
+    "source_commit_before_rename": "45e83a9faac2252516ab7aa5c6671f0d8bfb334b",
+    "entries": [
+      {
+        "symbol": "_ZN6dlssnr13reconstructed19window_qkv_c512_fp819window_qkv_c512_fp8ENS1_10ParametersE",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed20window_qkv_c512_fp1620window_qkv_c512_fp16ENS1_10ParametersE",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed48window_attention_projection_output_view_c512_fp848window_attention_projection_output_view_c512_fp8ENS1_10ParametersE",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed49window_attention_projection_output_view_c512_fp1649window_attention_projection_output_view_c512_fp16ENS1_10ParametersE",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed36window_attention_projection_c512_fp836window_attention_projection_c512_fp8ENS1_10ParametersE",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed37window_attention_projection_c512_fp1637window_attention_projection_c512_fp16ENS1_10ParametersE",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed20global_qkv_c1024_fp820global_qkv_c1024_fp8ENS1_10ParametersE",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed21global_qkv_c1024_fp1621global_qkv_c1024_fp16ENS1_10ParametersE",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed27global_projection_c1024_fp827global_projection_c1024_fp8ENS1_10ParametersE",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed28global_projection_c1024_fp1628global_projection_c1024_fp16ENS1_10ParametersE",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed34global_attention_chained_c1024_fp834global_attention_chained_c1024_fp8ENS1_10ParametersE",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed35global_attention_chained_c1024_fp1635global_attention_chained_c1024_fp16ENS1_10ParametersE",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed24completion_counter_clear24completion_counter_clearENS0_20global_repack_layout15ClearParametersE",
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed26repack_1d_to_2d_c1024_fp1626repack_1d_to_2d_c1024_fp16ENS0_20global_repack_layout10ParametersE",
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed26repack_2d_to_1d_c1024_fp1626repack_2d_to_1d_c1024_fp16ENS0_20global_repack_layout10ParametersE",
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed25repack_1d_to_2d_c1024_fp825repack_1d_to_2d_c1024_fp8ENS0_20global_repack_layout10ParametersE",
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed25repack_2d_to_1d_c1024_fp825repack_2d_to_1d_c1024_fp8ENS0_20global_repack_layout10ParametersE",
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed36channel_projection_c512_to_c1024_fp836channel_projection_c512_to_c1024_fp8ENS1_10ParametersE",
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed37channel_projection_c512_to_c1024_fp1637channel_projection_c512_to_c1024_fp16ENS1_10ParametersE",
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed32window_block_c64_downsample_fp1632window_block_c64_downsample_fp16ENS1_10ParametersE",
+        "module": "reconstructed_downsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed32window_block_c32_downsample_fp1632window_block_c32_downsample_fp16ENS1_10ParametersE",
+        "module": "reconstructed_downsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed33window_block_c256_downsample_fp1633window_block_c256_downsample_fp16ENS1_10ParametersE",
+        "module": "reconstructed_downsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed33window_block_c128_downsample_fp1633window_block_c128_downsample_fp16ENS1_10ParametersE",
+        "module": "reconstructed_downsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed42window_attention_projection_pool_c512_fp1642window_attention_projection_pool_c512_fp16ENS1_10ParametersE",
+        "module": "reconstructed_downsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed43input_preprocess_window_downsample_c32_fp1643input_preprocess_window_downsample_c32_fp16ENS1_10ParametersE",
+        "module": "reconstructed_downsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed31window_block_c64_downsample_fp831window_block_c64_downsample_fp8ENS1_10ParametersE",
+        "module": "reconstructed_downsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed31window_block_c32_downsample_fp831window_block_c32_downsample_fp8ENS1_10ParametersE",
+        "module": "reconstructed_downsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed32window_block_c256_downsample_fp832window_block_c256_downsample_fp8ENS1_10ParametersE",
+        "module": "reconstructed_downsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed32window_block_c128_downsample_fp832window_block_c128_downsample_fp8ENS1_10ParametersE",
+        "module": "reconstructed_downsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed41window_attention_projection_pool_c512_fp841window_attention_projection_pool_c512_fp8ENS1_10ParametersE",
+        "module": "reconstructed_downsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed42input_preprocess_window_downsample_c32_fp842input_preprocess_window_downsample_c32_fp8ENS1_10ParametersE",
+        "module": "reconstructed_downsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed41window_ffn_projection_input_view_c512_fp841window_ffn_projection_input_view_c512_fp8ENS1_10ParametersE",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed42window_ffn_projection_input_view_c512_fp1642window_ffn_projection_input_view_c512_fp16ENS1_10ParametersE",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed30window_ffn_projection_c512_fp830window_ffn_projection_c512_fp8ENS1_10ParametersE",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed31window_ffn_projection_c512_fp1631window_ffn_projection_c512_fp16ENS1_10ParametersE",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed30window_ffn_input_view_c512_fp830window_ffn_input_view_c512_fp8ENS1_10ParametersE",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed31window_ffn_input_view_c512_fp1631window_ffn_input_view_c512_fp16ENS1_10ParametersE",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed19window_ffn_c512_fp819window_ffn_c512_fp8ENS1_10ParametersE",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed20window_ffn_c512_fp1620window_ffn_c512_fp16ENS1_10ParametersE",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed27global_ffn_expand_c1024_fp827global_ffn_expand_c1024_fp8ENS1_10ParametersE",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed28global_ffn_expand_c1024_fp1628global_ffn_expand_c1024_fp16ENS1_10ParametersE",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed29global_ffn_contract_c1024_fp829global_ffn_contract_c1024_fp8ENS1_10ParametersE",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed30global_ffn_contract_c1024_fp1630global_ffn_contract_c1024_fp16ENS1_10ParametersE",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed33output_window_postprocess_c32_fp833output_window_postprocess_c32_fp8ENS1_10ParametersE",
+        "module": "reconstructed_frontend.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed34output_window_postprocess_c32_fp1634output_window_postprocess_c32_fp16ENS1_10ParametersE",
+        "module": "reconstructed_frontend.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed31input_preprocess_window_c32_fp831input_preprocess_window_c32_fp8ENS1_10ParametersE",
+        "module": "reconstructed_frontend.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed32input_preprocess_window_c32_fp1632input_preprocess_window_c32_fp16ENS1_10ParametersE",
+        "module": "reconstructed_frontend.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed30window_block_c64_upsample_fp1630window_block_c64_upsample_fp16ENS1_10ParametersE",
+        "module": "reconstructed_upsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed30window_block_c32_upsample_fp1630window_block_c32_upsample_fp16ENS1_10ParametersE",
+        "module": "reconstructed_upsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed31window_block_c256_upsample_fp1631window_block_c256_upsample_fp16ENS1_10ParametersE",
+        "module": "reconstructed_upsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed31window_block_c128_upsample_fp1631window_block_c128_upsample_fp16ENS1_10ParametersE",
+        "module": "reconstructed_upsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed35decoder_upsample_c1024_to_c512_fp1635decoder_upsample_c1024_to_c512_fp16ENS1_10ParametersE",
+        "module": "reconstructed_upsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed29window_block_c64_upsample_fp829window_block_c64_upsample_fp8ENS1_10ParametersE",
+        "module": "reconstructed_upsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed29window_block_c32_upsample_fp829window_block_c32_upsample_fp8ENS1_10ParametersE",
+        "module": "reconstructed_upsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed30window_block_c256_upsample_fp830window_block_c256_upsample_fp8ENS1_10ParametersE",
+        "module": "reconstructed_upsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed30window_block_c128_upsample_fp830window_block_c128_upsample_fp8ENS1_10ParametersE",
+        "module": "reconstructed_upsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed34decoder_upsample_c1024_to_c512_fp834decoder_upsample_c1024_to_c512_fp8ENS1_10ParametersE",
+        "module": "reconstructed_upsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed33window_block_c64_output_view_fp1633window_block_c64_output_view_fp16ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed32window_block_c64_input_view_fp1632window_block_c64_input_view_fp16ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed21window_block_c64_fp1621window_block_c64_fp16ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed33window_block_c32_output_view_fp1633window_block_c32_output_view_fp16ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed32window_block_c32_input_view_fp1632window_block_c32_input_view_fp16ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed21window_block_c32_fp1621window_block_c32_fp16ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed34window_block_c256_output_view_fp1634window_block_c256_output_view_fp16ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed33window_block_c256_input_view_fp1633window_block_c256_input_view_fp16ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed22window_block_c256_fp1622window_block_c256_fp16ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed34window_block_c128_output_view_fp1634window_block_c128_output_view_fp16ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed33window_block_c128_input_view_fp1633window_block_c128_input_view_fp16ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed22window_block_c128_fp1622window_block_c128_fp16ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed32window_block_c64_output_view_fp832window_block_c64_output_view_fp8ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed31window_block_c64_input_view_fp831window_block_c64_input_view_fp8ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed20window_block_c64_fp820window_block_c64_fp8ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed32window_block_c32_output_view_fp832window_block_c32_output_view_fp8ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed31window_block_c32_input_view_fp831window_block_c32_input_view_fp8ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed20window_block_c32_fp820window_block_c32_fp8ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed33window_block_c256_output_view_fp833window_block_c256_output_view_fp8ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed32window_block_c256_input_view_fp832window_block_c256_input_view_fp8ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed21window_block_c256_fp821window_block_c256_fp8ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed33window_block_c128_output_view_fp833window_block_c128_output_view_fp8ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed32window_block_c128_input_view_fp832window_block_c128_input_view_fp8ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      },
+      {
+        "symbol": "_ZN6dlssnr13reconstructed21window_block_c128_fp821window_block_c128_fp8ENS1_10ParametersE",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "metadata_exact": true
+      }
+    ],
+    "modules": [
+      {
+        "module": "reconstructed_attention.sm_120.cubin",
+        "baseline_sha256": "5ea5ef9d9a753b8ade79ae18f77e18c8bb302f8148131738e184cf8089897d0a",
+        "candidate_sha256": "a51e4822d2c2ae91a7ffd9d8a98fe04b3e46e20d0abc614f3608a3322d4c76a6",
+        "constant_sections_exact": true,
+        "resource_sections_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv_debug_ptx_txt",
+          ".rela.debug_line",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.nv_debug_ptx_txt",
+          ".nv.merc.rela.debug_line"
+        ]
+      },
+      {
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "baseline_sha256": "8a639be6d345c1bea9f459c8b51cc4de6160fe97dce22a71b14557dc50246047",
+        "candidate_sha256": "9c1047409d588aa3ba282a938c835c1ce2cab9d86f6a9a3cfa8c15127cbf873e",
+        "constant_sections_exact": true,
+        "resource_sections_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv_debug_ptx_txt",
+          ".rela.debug_line",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.nv_debug_ptx_txt",
+          ".nv.merc.rela.debug_line"
+        ]
+      },
+      {
+        "module": "reconstructed_downsample_fp16.sm_120.cubin",
+        "baseline_sha256": "e2d2de170072b4e191d7e6897374ee2e8f9ec8eea07b8cb56e4d3531d2b4748d",
+        "candidate_sha256": "3ff1c7faacf4a515d51ed19129b07bf2838ae620519c36ac2805b2996f7aacb0",
+        "constant_sections_exact": true,
+        "resource_sections_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv_debug_line_sass",
+          ".nv_debug_ptx_txt",
+          ".rela.debug_line",
+          ".rela.nv_debug_line_sass",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.nv_debug_line_sass",
+          ".nv.merc.nv_debug_ptx_txt",
+          ".nv.merc.rela.debug_line"
+        ]
+      },
+      {
+        "module": "reconstructed_downsample_fp8.sm_120.cubin",
+        "baseline_sha256": "4748b27169044891d06d84ebfac3e51e46c73a281ecb1eca5f9134afc59d7515",
+        "candidate_sha256": "8127e99ce86ec034a86e604758f194f7050d80a7ff4393935853fdef0cb9684a",
+        "constant_sections_exact": true,
+        "resource_sections_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv_debug_line_sass",
+          ".nv_debug_ptx_txt",
+          ".rela.debug_line",
+          ".rela.nv_debug_line_sass",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.nv_debug_line_sass",
+          ".nv.merc.nv_debug_ptx_txt",
+          ".nv.merc.rela.debug_line"
+        ]
+      },
+      {
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "baseline_sha256": "00030c2a53e170367477e441c95157ee537aaf22e0699032c71909eaf05c50ee",
+        "candidate_sha256": "142f738e6ba2f0a9652f5bdbd029a5c527dc1ea2cef1f891e21e3f1af443bfac",
+        "constant_sections_exact": true,
+        "resource_sections_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv_debug_ptx_txt",
+          ".rela.debug_line",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.nv_debug_ptx_txt",
+          ".nv.merc.rela.debug_line"
+        ]
+      },
+      {
+        "module": "reconstructed_frontend.sm_120.cubin",
+        "baseline_sha256": "6dc82a18108167c64c99d5bb26c44eba6f5d2e051e53da0e5cfd075fbd98093e",
+        "candidate_sha256": "901a4909cbb599a68c6f8e13dfd5f934cefd1990ea2f140b99228788a33d8b6e",
+        "constant_sections_exact": true,
+        "resource_sections_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv_debug_line_sass",
+          ".nv_debug_ptx_txt",
+          ".rela.debug_line",
+          ".rela.nv_debug_line_sass",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.nv_debug_line_sass",
+          ".nv.merc.nv_debug_ptx_txt",
+          ".nv.merc.rela.debug_line",
+          ".nv.merc.rela.nv_debug_line_sass"
+        ]
+      },
+      {
+        "module": "reconstructed_upsample_fp16.sm_120.cubin",
+        "baseline_sha256": "f2e0cfd9a46429499469662f70739a9815db41289fda4cf04217c03562f073d7",
+        "candidate_sha256": "117c6e9c023e0e404600949ed501d4c2f2872c5c0224c6e4966632c5db626d89",
+        "constant_sections_exact": true,
+        "resource_sections_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv_debug_ptx_txt",
+          ".rela.debug_line",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.nv_debug_ptx_txt",
+          ".nv.merc.rela.debug_line"
+        ]
+      },
+      {
+        "module": "reconstructed_upsample_fp8.sm_120.cubin",
+        "baseline_sha256": "5b34ad1be7a50a7206e478d08b216069b11529cc6fdc5b9f506c53c6ddbe8262",
+        "candidate_sha256": "8eba3518fb8507134434d290db9f50891bce452446d25238a647893c8293405d",
+        "constant_sections_exact": true,
+        "resource_sections_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv_debug_ptx_txt",
+          ".rela.debug_line",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.nv_debug_ptx_txt",
+          ".nv.merc.rela.debug_line"
+        ]
+      },
+      {
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "baseline_sha256": "f8d6853c531ae1314d5bc4c14557d1118e5b7e1068ac93c5da95fcdadb470dbe",
+        "candidate_sha256": "a823ccde2b5f7e7a5e1f5090b10c875ee49e0b829a39d9accdb7c8f8766a1bd2",
+        "constant_sections_exact": true,
+        "resource_sections_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv_debug_ptx_txt",
+          ".rela.debug_line",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.nv_debug_ptx_txt",
+          ".nv.merc.rela.debug_line"
+        ]
+      },
+      {
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "baseline_sha256": "793a4d037dfda4d67433a2c3e58a25abd29cab160ed93f4794e5679cac57217d",
+        "candidate_sha256": "a96ad01ad07d92eff1c3983c393784755ab51489adc9e602379fea27c6215d8d",
+        "constant_sections_exact": true,
+        "resource_sections_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv_debug_ptx_txt",
+          ".rela.debug_line",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.nv_debug_ptx_txt",
+          ".nv.merc.rela.debug_line"
+        ]
+      }
+    ],
+    "summary": {
+      "entry_count": 81,
+      "exact_gpu_text": 81,
+      "exact_gpu_text_metadata": 81,
+      "module_count": 10,
+      "exact_constant_modules": 10,
+      "exact_resource_modules": 10,
+      "host_text_exact": false
+    }
+  },
+  "host_contract_proof": {
+    "schema": 1,
+    "baseline": "45e83a9faac2252516ab7aa5c6671f0d8bfb334b",
+    "scope": "Static launch records, offsets, field widths, write order, geometry arrays, C512 role IDs and named packing",
+    "plans": [
+      {
+        "precision": "fp8",
+        "width": 1280,
+        "height": 720,
+        "calls": 185,
+        "field_writes": 1152,
+        "all_offsets_types_values_write_order_equal": true,
+        "buffer_sizes_grids_integer_arguments_equal": true,
+        "manifest_sha256": "2d9e26907bbd25b45649b45db9fed3d29815bdd72ad37fef72935911a5f4b9b3"
+      },
+      {
+        "precision": "fp8",
+        "width": 1920,
+        "height": 1080,
+        "calls": 185,
+        "field_writes": 1152,
+        "all_offsets_types_values_write_order_equal": true,
+        "buffer_sizes_grids_integer_arguments_equal": true,
+        "manifest_sha256": "a190ccd658e92a346767d3a3045066d864f0d25f8ca554e82c9ab80647eb6306"
+      },
+      {
+        "precision": "fp8",
+        "width": 2560,
+        "height": 1440,
+        "calls": 185,
+        "field_writes": 1152,
+        "all_offsets_types_values_write_order_equal": true,
+        "buffer_sizes_grids_integer_arguments_equal": true,
+        "manifest_sha256": "69fc3ea129ac8be4bfd3f60f28390954d8982aa29d722329147be780cace6131"
+      },
+      {
+        "precision": "fp8",
+        "width": 3840,
+        "height": 2160,
+        "calls": 185,
+        "field_writes": 1152,
+        "all_offsets_types_values_write_order_equal": true,
+        "buffer_sizes_grids_integer_arguments_equal": true,
+        "manifest_sha256": "cc09bb17494284c1439b2df1312c5d6349463b42fab391783cdac6839dcaf365"
+      },
+      {
+        "precision": "fp16",
+        "width": 1280,
+        "height": 720,
+        "calls": 185,
+        "field_writes": 1128,
+        "all_offsets_types_values_write_order_equal": true,
+        "buffer_sizes_grids_integer_arguments_equal": true,
+        "manifest_sha256": "bd7cb81cd4a234eab7eca56f8f381c138ebc303aeb240ac62f7b4966f25808a2"
+      },
+      {
+        "precision": "fp16",
+        "width": 1920,
+        "height": 1080,
+        "calls": 185,
+        "field_writes": 1128,
+        "all_offsets_types_values_write_order_equal": true,
+        "buffer_sizes_grids_integer_arguments_equal": true,
+        "manifest_sha256": "dd83d100cdb7182020598abce92dcecb9519fe1d2d7942316532d050ab04e3f9"
+      },
+      {
+        "precision": "fp16",
+        "width": 2560,
+        "height": 1440,
+        "calls": 185,
+        "field_writes": 1128,
+        "all_offsets_types_values_write_order_equal": true,
+        "buffer_sizes_grids_integer_arguments_equal": true,
+        "manifest_sha256": "8b570feba192abfcb2dfefc8486ed3689c0dd485bf87ac415ebbb8ebca80e8ae"
+      },
+      {
+        "precision": "fp16",
+        "width": 3840,
+        "height": 2160,
+        "calls": 185,
+        "field_writes": 1128,
+        "all_offsets_types_values_write_order_equal": true,
+        "buffer_sizes_grids_integer_arguments_equal": true,
+        "manifest_sha256": "0eb016f68926270706c0a9f1c95257f3dcd232ea4349fd439a350db5492dd872"
+      }
+    ],
+    "c512": {
+      "role_enum_names": [
+        "FfnExpansion",
+        "FfnExpansionInputView",
+        "FfnProjection",
+        "FfnProjectionInputView",
+        "QkvAttention",
+        "AttentionProjection",
+        "AttentionProjectionOutputView",
+        "AttentionProjectionPool",
+        "ChannelExpansion"
+      ],
+      "entry_descriptor_rows_equal": 18,
+      "parameter_byte_images_equal": 144,
+      "zero_initialized_reserved_bytes_preserved": true,
+      "note": "Compares parameter images from the old ABI-size arrays and the reviewed named assignment contract; compilation/runtime smoke is still required."
+    },
+    "passed": true
+  },
+  "cpu_tests": {
+    "normal": 59,
+    "optimized": 59,
+    "log_sha256": "4d9da0e7568284cf0117c91ee9ff8d24c532f31c202cd6336ebd15dc8070d7a0"
+  },
+  "graph_checks": [
+    {
+      "width": 1280,
+      "height": 720,
+      "extension_sha256": "b7251d732142f3e9287e115c04439e356b2070c27e92bb8eba87cbab84ba0390",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp8",
+      "schedule_sha256": "283a528eaa88e9b40fde4e198d9a28554459e63446053e493da6980f6a70d6fc",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "extension_sha256": "b7251d732142f3e9287e115c04439e356b2070c27e92bb8eba87cbab84ba0390",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp8",
+      "schedule_sha256": "5e5cf715040613aa5e3f0ebdba297a3a4cab7f8861f39834381f3384c2ae4eb0",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true
+    },
+    {
+      "width": 2560,
+      "height": 1440,
+      "extension_sha256": "b7251d732142f3e9287e115c04439e356b2070c27e92bb8eba87cbab84ba0390",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp8",
+      "schedule_sha256": "6279c65a890ab6a21bb960e1e9b0655667e267d9ed38d71b39e3c0b2e324e0c2",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true
+    },
+    {
+      "width": 3840,
+      "height": 2160,
+      "extension_sha256": "b7251d732142f3e9287e115c04439e356b2070c27e92bb8eba87cbab84ba0390",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp8",
+      "schedule_sha256": "747e759b74f49d5b4c9ea813fab5e3f2c5636509bd01cd8694e70dd10adffe4a",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "extension_sha256": "b7251d732142f3e9287e115c04439e356b2070c27e92bb8eba87cbab84ba0390",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp16",
+      "schedule_sha256": "598db814251009598d1f1caeeb92d5dd047d676182f5f54614b31267cd1cbd5d",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "extension_sha256": "b7251d732142f3e9287e115c04439e356b2070c27e92bb8eba87cbab84ba0390",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp16",
+      "schedule_sha256": "92110b7f9327d1c0af0b37269a09bbced8841898e8b2a2500f28b0d5b50d159a",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true
+    },
+    {
+      "width": 2560,
+      "height": 1440,
+      "extension_sha256": "b7251d732142f3e9287e115c04439e356b2070c27e92bb8eba87cbab84ba0390",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp16",
+      "schedule_sha256": "5bfeeefb3032b11e5bfca5ce0306d48c41a06ee245da376ee9a3de34f0ecfe08",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true
+    },
+    {
+      "width": 3840,
+      "height": 2160,
+      "extension_sha256": "b7251d732142f3e9287e115c04439e356b2070c27e92bb8eba87cbab84ba0390",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp16",
+      "schedule_sha256": "4e67b32095b53edf7e5ccc3fc7fbabf9fae6fd4ee22fedc43a585990bdabc8b7",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true
+    }
+  ],
+  "c512_public_dispatch": {
+    "scope": "C512 public host dispatcher versus identical compiled candidate Driver kernel",
+    "passed": true,
+    "cases": [
+      {
+        "entry": 0,
+        "kernel": "window_ffn_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block24.layer0.layer",
+        "cubin_sha256": "142f738e6ba2f0a9652f5bdbd029a5c527dc1ea2cef1f891e21e3f1af443bfac",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 1,
+        "kernel": "window_ffn_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block24.layer0.layer",
+        "cubin_sha256": "142f738e6ba2f0a9652f5bdbd029a5c527dc1ea2cef1f891e21e3f1af443bfac",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 2,
+        "kernel": "window_ffn_input_view_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block23.layer0.layer",
+        "cubin_sha256": "142f738e6ba2f0a9652f5bdbd029a5c527dc1ea2cef1f891e21e3f1af443bfac",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 3,
+        "kernel": "window_ffn_input_view_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block23.layer0.layer",
+        "cubin_sha256": "142f738e6ba2f0a9652f5bdbd029a5c527dc1ea2cef1f891e21e3f1af443bfac",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 4,
+        "kernel": "window_ffn_projection_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block24.layer1.layer",
+        "cubin_sha256": "142f738e6ba2f0a9652f5bdbd029a5c527dc1ea2cef1f891e21e3f1af443bfac",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 5,
+        "kernel": "window_ffn_projection_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block24.layer1.layer",
+        "cubin_sha256": "142f738e6ba2f0a9652f5bdbd029a5c527dc1ea2cef1f891e21e3f1af443bfac",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 6,
+        "kernel": "window_ffn_projection_input_view_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block23.layer1.layer",
+        "cubin_sha256": "142f738e6ba2f0a9652f5bdbd029a5c527dc1ea2cef1f891e21e3f1af443bfac",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 7,
+        "kernel": "window_ffn_projection_input_view_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block23.layer1.layer",
+        "cubin_sha256": "142f738e6ba2f0a9652f5bdbd029a5c527dc1ea2cef1f891e21e3f1af443bfac",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 8,
+        "kernel": "window_qkv_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "a51e4822d2c2ae91a7ffd9d8a98fe04b3e46e20d0abc614f3608a3322d4c76a6",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 8,
+        "kernel": "window_qkv_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 1,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "a51e4822d2c2ae91a7ffd9d8a98fe04b3e46e20d0abc614f3608a3322d4c76a6",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 8,
+        "kernel": "window_qkv_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 2,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "a51e4822d2c2ae91a7ffd9d8a98fe04b3e46e20d0abc614f3608a3322d4c76a6",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 8,
+        "kernel": "window_qkv_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 3,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "a51e4822d2c2ae91a7ffd9d8a98fe04b3e46e20d0abc614f3608a3322d4c76a6",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 9,
+        "kernel": "window_qkv_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "a51e4822d2c2ae91a7ffd9d8a98fe04b3e46e20d0abc614f3608a3322d4c76a6",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 9,
+        "kernel": "window_qkv_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 1,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "a51e4822d2c2ae91a7ffd9d8a98fe04b3e46e20d0abc614f3608a3322d4c76a6",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 9,
+        "kernel": "window_qkv_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 2,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "a51e4822d2c2ae91a7ffd9d8a98fe04b3e46e20d0abc614f3608a3322d4c76a6",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 9,
+        "kernel": "window_qkv_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 3,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "a51e4822d2c2ae91a7ffd9d8a98fe04b3e46e20d0abc614f3608a3322d4c76a6",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 10,
+        "kernel": "window_attention_projection_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block24.layer3.layer",
+        "cubin_sha256": "a51e4822d2c2ae91a7ffd9d8a98fe04b3e46e20d0abc614f3608a3322d4c76a6",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 11,
+        "kernel": "window_attention_projection_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block24.layer3.layer",
+        "cubin_sha256": "a51e4822d2c2ae91a7ffd9d8a98fe04b3e46e20d0abc614f3608a3322d4c76a6",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 12,
+        "kernel": "window_attention_projection_output_view_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block47.layer3.layer",
+        "cubin_sha256": "a51e4822d2c2ae91a7ffd9d8a98fe04b3e46e20d0abc614f3608a3322d4c76a6",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 13,
+        "kernel": "window_attention_projection_output_view_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block47.layer3.layer",
+        "cubin_sha256": "a51e4822d2c2ae91a7ffd9d8a98fe04b3e46e20d0abc614f3608a3322d4c76a6",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 14,
+        "kernel": "window_attention_projection_pool_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block30.layer3.layer",
+        "cubin_sha256": "8127e99ce86ec034a86e604758f194f7050d80a7ff4393935853fdef0cb9684a",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 15,
+        "kernel": "window_attention_projection_pool_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block30.layer3.layer",
+        "cubin_sha256": "3ff1c7faacf4a515d51ed19129b07bf2838ae620519c36ac2805b2996f7aacb0",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 16,
+        "kernel": "channel_projection_c512_to_c1024_fp8",
+        "precision": "fp8",
+        "height": 36,
+        "width": 60,
+        "phase": 0,
+        "record": "block30.layer4.layer",
+        "cubin_sha256": "9c1047409d588aa3ba282a938c835c1ce2cab9d86f6a9a3cfa8c15127cbf873e",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 17,
+        "kernel": "channel_projection_c512_to_c1024_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block30.layer4.layer",
+        "cubin_sha256": "9c1047409d588aa3ba282a938c835c1ce2cab9d86f6a9a3cfa8c15127cbf873e",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      }
+    ],
+    "extension_sha256": "b7251d732142f3e9287e115c04439e356b2070c27e92bb8eba87cbab84ba0390",
+    "entry_count": 18,
+    "case_count": 24
+  },
+  "c512_test_sha256": "9282a8aef0b2e05a2c9e6e011ec9453467b898e2b957655ca1dbf831b6fb3caa",
+  "source_sha256": {
+    "csrc/kernel_impl/attention_fp16.cuh": "e0642c299d4346f0a4cebbb236210fa510a3ca8b0c17f8260ea809754a6585c1",
+    "csrc/kernel_impl/attention_fp8.cuh": "2b342ecf19658bb171ad3fbcd405779b7fa5ea3cd41c71432d0c9a7eb31c04f3",
+    "csrc/kernel_impl/channel_projection.cuh": "c31b7333700d07508c07bed654422a814a6b51cc9c3fe8c090ac89e8d1c54e24",
+    "csrc/kernel_impl/completion_counter_clear.cuh": "a6233063343ea666d1ef17ea86f1282fbd1c72869ab5b3a45b78b230d570c796",
+    "csrc/kernel_impl/composite.cuh": "2aed97977205d318ca40e1afcc5e4117f50d590ad14959c21ee63cdfb2c05f93",
+    "csrc/kernel_impl/decoder.cuh": "e1ef37376d88d269a9b6c88d5b81005e1bd48a26f1945c329bfb1b9ef20b1071",
+    "csrc/kernel_impl/downsample_fp16.cuh": "fd4adb4e423f99e9e285ea05571f92a73a7cbe73a21bfa83a10bd12cce34ba2a",
+    "csrc/kernel_impl/downsample_fp8.cuh": "ae0341a6e19a0ed3af089c34b73fcd797628272178e5ddbbcc609e2a20d25859",
+    "csrc/kernel_impl/ffn_fp16.cuh": "479f95ec8e8ca55cb7e3cc77300cfe55e79c26e985de5939091ea0b79dbb2c45",
+    "csrc/kernel_impl/ffn_fp8.cuh": "8af788e0fa868410468a366010fe55c6c006e7847ea6f6866176e86594723d52",
+    "csrc/kernel_impl/frontend_fp16.cuh": "f6480ba52f8d5a5ca17721c2f0ed043b5df7e9612d18e0506b7223cb489f2a40",
+    "csrc/kernel_impl/frontend_fp8.cuh": "44eb63c00c9bccc9ea06977e1939c964c05aa866224cef5d4cf770281bbf381f",
+    "csrc/kernel_impl/frontend_math.cuh": "36a8b3ee2055582182e7b5fe616b7edc81b8b854885c7793fadc86329a9cf254",
+    "csrc/kernel_impl/global_attention.cuh": "1bf479c8603596b65a1332f9041d62091b016264a8dda2cbff665c8ccedcddff",
+    "csrc/kernel_impl/global_contract.cuh": "2d046aa6497e66e2ddeafa5bfcc1fc430a66932d834e683e03eb3ffbc570b009",
+    "csrc/kernel_impl/global_ffn_expand.cuh": "7d7317bc22991cdc7e7a2268932295ee9942afee4784a71fdb19f393323f0b3a",
+    "csrc/kernel_impl/global_qkv.cuh": "835f57b1da21f27d570e878eb455f3872a851be4fb0be7aeb3333a13c3b65c87",
+    "csrc/kernel_impl/global_repack_layout.cuh": "9ffd3f118754dae86113fc5f3047963df7ec95cba639db46169d7d2b21a6981a",
+    "csrc/kernel_impl/input_features.cuh": "4cdea4131747d2cd790f264874113bc260e0989d16cfdfaf8144b665990a9bab",
+    "csrc/kernel_impl/intrinsics.cuh": "215ce2acedcb793763acbf6f526eb2315bd0661ec3cd867f201981aef85a816c",
+    "csrc/kernel_impl/kernel_helpers.cuh": "845bd1dee53d20f665de254e34ce5c8d3ea2e7dc05049ce2350f093f727c7679",
+    "csrc/kernel_impl/memoryops.cuh": "a72f8e7fbd3a4bf05c848ef9f0c96fee179f43e1cbdbcb8c099688d93cb577c8",
+    "csrc/kernel_impl/mma.cuh": "06b7bc1e14781dbe15743ea208bb61ef33c41fda7a5d18ac2293fdabb77ee0a8",
+    "csrc/kernel_impl/numerical_constants.cuh": "ff591a618c07b166fcb57bdb95f6984004fb8dc6a4a0389125567c8af5531d04",
+    "csrc/kernel_impl/packed_math.cuh": "22fff43fcfa8b8add00a4e9297d3b2838ebe690c9140c538110d3aeb007b2c14",
+    "csrc/kernel_impl/postprocess.cuh": "0e5714e921af915e495aa312b408a5bd16501731fa5e472b08da9daaacde0b9f",
+    "csrc/kernel_impl/projection_fp16.cuh": "778f34f30d9a9c93a94746f443c89f1be9247f2be21f62c31ce2b9297dce3b44",
+    "csrc/kernel_impl/projection_fp8.cuh": "6ef327ab2ad61145ddf45da32028506a474d55a7adbd134a0f54c8ca3d3ec94c",
+    "csrc/kernel_impl/repack_fp16.cuh": "78a708910ae36ff7d0d4489917221303c627fac391f3c8aa2df5443ddbd7f4ea",
+    "csrc/kernel_impl/repack_fp8.cuh": "73050eeb0d7326012ca84c39e1e1ba0349a588a758f92a78ae625f978750a435",
+    "csrc/kernel_impl/spatial_projection.cuh": "a5dc5f9c21bd89a944e89747ce88943299d5a0ed690439d47c20854904f56ea9",
+    "csrc/kernel_impl/tiled_mma.cuh": "9f2ee64af8a156ab04751778b7b98ab4486a3b970289e99bc2ad0db68fe6c8a2",
+    "csrc/kernel_impl/upsample_fp16.cuh": "5a46505c3c688c76ff4430fe4c65d6011264a7592220305715429109ff8228b7",
+    "csrc/kernel_impl/upsample_fp8.cuh": "b8a62f3305a26d3dab81e7b8453b65994b16b9cd0be37506699a53b3ded35167",
+    "csrc/kernel_impl/warp_window32.cuh": "36990f9d8f28f7faf95991724a00b79eaf8af4442576c4de4a710a1db734e813",
+    "csrc/kernel_impl/warp_window_wide.cuh": "5010550cc3e471c4653b455b7715d5f67b92549b897b6ce2053c5eea39589d93",
+    "csrc/kernel_impl/window_block_fp16.cuh": "a69c1f1a52f693dd14218b48ab7eb56af274d6df8004f8dce2f48f1033c8a2a4",
+    "csrc/kernel_impl/window_block_fp8.cuh": "e4a6c9468485767c363e091a8dfdf25ce23c5a996183564886d12bfc1aa8804a",
+    "csrc/kernel_impl/window_downsample.cuh": "7cc6c84a99aba587ce83a33f9d7be5f525f2e02fce6736b0f607f8306a1bea33",
+    "csrc/kernel_impl/window_ffn.cuh": "286dc49c5d24389a37b5199865353f34da730b60fc1437b481010671f0512299",
+    "csrc/kernel_impl/window_pool.cuh": "a353fafc5e9e69ebba1f6548b85c6ac98abad62c9f95645df803495098f5b3f3",
+    "csrc/kernel_impl/window_preprocess.cuh": "02fb90e42b3ff6209fa9d903de94d722993f7972dcfe06c77b23fd5032f06c3d",
+    "csrc/kernel_impl/window_qkv.cuh": "4a74f129a56f5982e7ee66f32ae8f3e5b18880d29cc3a81e580e6f996bbd2fbc",
+    "csrc/kernel_impl/window_upsample.cuh": "553f174d1d78484d41efa6810994e7c71e18417ed255f1cdf931fca6f18fac47",
+    "csrc/kernel_impl/window_view_io.cuh": "dd6941a6bd58d807ec790f894006fcda391e7424eff519b4f76711ae02cc50de",
+    "csrc/kernel_launcher/c512_dispatch.h": "7189ccfcd242b3288d1024532d98ecde3159d7be14231f254aa361e27ba38afe",
+    "csrc/kernel_launcher/c512_dispatch.inl": "75e6166dcd5ba375096e08329aa1caa993496a471f6e87851695560e6a789512",
+    "csrc/kernel_launcher/compiled_resolution_policy.h": "4e9cbfdfa947a7c1871ba96764f12a3eea63a1263e7235d3e0466315fab9af97",
+    "csrc/kernel_launcher/deployment.cpp": "c9a20e0e08cb99471a88241cd50c00dae1f326177438c098d64b4a8aa5b5a4c3",
+    "csrc/kernel_launcher/deployment.h": "c2da77794a0939b4abf97625aeccafa27b6d04f563a361284568f24296a006fb",
+    "csrc/kernel_launcher/kernel_abi.h": "5b3da4af3923e5df3dab504f7d958d84759bcec91f19a7c1f9582b3dd1d1d14d",
+    "csrc/kernel_launcher/plan_fp16_generated.inl": "a86eabfff152d299599ee0fdd68dc283feaa07150ceecdedbbb712ea5f0e30b7",
+    "csrc/kernel_launcher/plan_generated.inl": "a41a20981694ddadf5a9e4fdc2eae3c2043365c8b014d6c2e5b2c3cfb098d737",
+    "csrc/kernel_launcher/plan_geometry.h": "866f3af8f7a1f9d39768534a2a6b8500af6ace680a391de5f0b5f3e1f2e6974d",
+    "csrc/kernel_launcher/plan_geometry_fp16_generated.inl": "dd4510029dab7ff36253231eb6b605f1bf885f8cf3e03a51cbc989a61760c336",
+    "csrc/kernel_launcher/plan_geometry_generated.inl": "cbde4cc6c6a5a7e144deac2e68f896478fc3296400d2b79702ae37a655777faf",
+    "csrc/kernel_launcher/reconstructed_attention.cu": "a3b3cddea6bbca066ca84027482162341bcf75ae4af48c59328ac78148607639",
+    "csrc/kernel_launcher/reconstructed_connectors.cu": "eb7d91c686cf3a5b343070bca4cfa10f825e30c22b49de5ddb21bd78c2e31865",
+    "csrc/kernel_launcher/reconstructed_downsample_fp16.cu": "8ced274b5b3942ac23d01fae89b59bdb317e0fb8d32d0582674ab5bbe69bdba9",
+    "csrc/kernel_launcher/reconstructed_downsample_fp8.cu": "de029c779e4cd9255f97ec27804f1aa0a9fe0890c0c8c2bcc6e9cc8b9d2e6383",
+    "csrc/kernel_launcher/reconstructed_ffn.cu": "3cf0e437fc6e3ccb1f849c64e6119dd6cab1b6bd8563d0b620e2eac604830d12",
+    "csrc/kernel_launcher/reconstructed_frontend.cu": "ee557b94030b5f76100c380ece0d049a90450583c3499078dbf2d99f47613ab6",
+    "csrc/kernel_launcher/reconstructed_upsample_fp16.cu": "acd4693d9025f6df92101819b197e78497f2b129fca5cf93385824e22ae13ae3",
+    "csrc/kernel_launcher/reconstructed_upsample_fp8.cu": "c9435b690c4d916c23c7d3736acdb56933f77b43b02701173cdf29e3338f9f33",
+    "csrc/kernel_launcher/reconstructed_window_block_fp16.cu": "0e22b7728df446257436d2267a65a7def619a7045953842ddb85742fc64558ea",
+    "csrc/kernel_launcher/reconstructed_window_block_fp8.cu": "b922214550b2da36178b766ec480a567f080a09636b7f47a378c66d95458d1f8",
+    "csrc/kernel_launcher/windows_dispatch.h": "da82f18010d9e63af19e5f0596ac77098420f76a9592f7b87e82d2ec38b8f171",
+    "csrc/kernel_launcher/windows_dispatch.inl": "75b9ec5674f5b54641923fc2ea9a6a6e31ebc9e83edbba0353f5e89ef7d60360",
+    "csrc/kernel_launcher/windows_entries.inl": "2d3d4c31aa8e650e0a50266704aa79490d98012d595ab997a43b3f2d040412ef",
+    "csrc/torch_api/extension.cpp": "730eb17923755987ead58cc1fb7cab7140a2b9d6b8980247cc19d9fdd2771b0a",
+    "setup.py": "7ff425edabc20335d91e3a6370beaa26e9215f8de43417724e211216d17b34b6",
+    "tuning/generate_plan.py": "40aa6f130bab85cad8b68cd536ad2dd2659451843d2d3020a9e6af809a60847f",
+    "tuning/resolution_policy.py": "08fd864d7bfd93f6a37dc10fe546c5bca6a73f272b1dac3251ace9910059478a",
+    "tuning/cuda_toolchain.py": "da800f2ae743d95a2fe4b0c249c893ec040ffdf5d9d4a92cc07686b752e03974",
+    "tests/test_kernel_sources_cpu.py": "dd7808549fd98e546676eb34e8d91830cd45eae5489692d63be5bbba425acddd",
+    "tests/test_c512_dispatch.py": "9282a8aef0b2e05a2c9e6e011ec9453467b898e2b957655ca1dbf831b6fb3caa"
+  },
+  "build_regenerated_source": [
+    {
+      "path": "csrc/kernel_launcher/compiled_resolution_policy.h",
+      "built_sha256": "028639f8ba1b8a56f46c067849b13ba2c63220eb5d25caec9be486103d02e3a9",
+      "workspace_sha256": "4e9cbfdfa947a7c1871ba96764f12a3eea63a1263e7235d3e0466315fab9af97",
+      "difference": "Build regenerated the same policy with whitespace-only line wrapping differences."
+    }
+  ],
+  "timing_scope": "No new timing samples; device text/constants/resources and generated launch contracts match preceding qualified release. Runtime checks revalidate changed host packing.",
+  "installation": {
+    "installed_sha256": "b7251d732142f3e9287e115c04439e356b2070c27e92bb8eba87cbab84ba0390",
+    "previous_sha256": "ee24994f7c72e323ffc512d4849ffdcb218e3f4df730057c18ab279ba7ffde22"
+  }
+}
