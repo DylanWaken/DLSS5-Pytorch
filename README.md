@@ -22,7 +22,9 @@ Explore the [architecture guide](docs/ARCHITECTURE.md) for expanded SVGs of ever
 
 ## Getting started
 
-Use PyTorch with CUDA and a compatible C++ compiler. The validated build uses Windows, PyTorch 2.8.0+cu128 and CUDA 12.8. An extracted checkpoint in `assets/nr` is required; see [checkpoint format and provenance](docs/assets.md).
+Use PyTorch with CUDA and a compatible C++ compiler. The validated build uses Windows, PyTorch 2.8.0+cu128 and CUDA 12.8.
+
+Portable FP8 and FP16 [PyTorch checkpoints](ckpts/README.md) are provided through Git LFS. Run `git lfs pull` after cloning. Both load directly for training; the FP8 file also supplies the complete deployment record set. FP16 weights are losslessly widened from the original mixed-precision resource.
 
 ```powershell
 python setup.py build_ext --inplace
@@ -33,11 +35,10 @@ For training research, keep FP32 master parameters and enable checkpointing to r
 
 ```python
 import torch
-from dlssnr import DLSSNR, Geometry
+from dlssnr import load_checkpoint, Geometry
 
-model = DLSSNR.from_directory(
-    "assets/nr", device="cuda", dtype=torch.float32,
-    precision="bf16", trainable=True, checkpoint_blocks=True,
+model = load_checkpoint("ckpts/dlss5_nr_fp16.pt").training_model(
+    device="cuda", precision="bf16", checkpoint_blocks=True,
 )
 geometry = Geometry.from_valid(1280, 720)
 features = torch.randn(1, geometry.full_height, geometry.full_width, 16,

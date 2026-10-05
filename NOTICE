@@ -7,5 +7,7 @@ Pinned revision: 9d08f4184bbcb9d858e2fb7a7834ec0837a9d2f1
 NVIDIA KDA workflow and skills are separate development tools under third_party/.
 Their licenses remain in their individual pinned repositories.
 
-NVIDIA software and model artifacts are downloaded separately into ignored local
-assets; the source tree does not redistribute those binaries or grant rights to them.
+The original NVIDIA runtime DLL and packed extraction artifacts remain in ignored
+local assets. ckpts/ contains a derived PyTorch export of the fetched DLSS-NR model
+weights, with provenance in the adjacent manifest. The OpenDLSS-NR source license
+does not grant rights to NVIDIA software or model weights.
