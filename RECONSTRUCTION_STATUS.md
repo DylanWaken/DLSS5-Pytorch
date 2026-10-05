@@ -12,6 +12,8 @@ The register-by-register transcriptions, per-entry implementation/ABI files and 
 
 The current tree also removes all project C++ namespaces. Helpers are called directly, global ABI/profile types carry descriptive `F` names, and all 81 kernels export bare `extern "C"` symbols. External library namespaces and the public Torch `dlssnr` registration domain remain unchanged. The [flat-symbol migration report](FLAT_SYMBOLS.md) records its separate compiled and runtime checks, including all eight graph cases and the C512 dispatcher. Existing speed charts retain the measured semantic build and are not fresh latency samples from this migration.
 
+The [storage-prefix audit](STORAGE_PREFIX_AUDIT.md) removes misleading prefixes from launch records, host handles/containers and control metadata, while retaining actual storage and fragment roles. Its rebuild preserves all GPU instruction payloads, decoded resources and constants, and passes all eight graph checks and the public dispatcher checks.
+
 The normal PyTorch extension builds every entry from CUDA/C++ source. The measured compiler setup keeps CUDA 12.8's frontend/runtime and explicitly selects CUDA 13.4's assembler. No precompiled native kernel is injected into the extension. [The controlled compiler experiment](COMPILER_SCHEDULING.md) explains the scheduling benefit.
 
 ## Training and checkpoints

@@ -40,17 +40,17 @@ All 76 mathematical/frontend exports now use the semantic implementations in thi
 
 ## Current source inventory
 
-The final source tree contains **45 headers and 7,714 physical lines** in `kernel_impl`, including comments and blank lines:
+The final source tree contains **45 headers and 7,681 physical lines** in `kernel_impl`, including comments and blank lines:
 
 | Source role | Headers | Lines |
 | --- | ---: | ---: |
-| Operation/precision entry wrappers | 16 | 1,456 |
-| Shared operation and physical-layout algorithms | 21 | 5,414 |
+| Operation/precision entry wrappers | 16 | 1,452 |
+| Shared operation and physical-layout algorithms | 21 | 5,385 |
 | Common device utilities listed below | 7 | 832 |
 | Precision-independent counter clear | 1 | 12 |
-| Total | 45 | 7,714 |
+| Total | 45 | 7,681 |
 
-The 21 algorithm headers serve multiple configurations; the largest has 572 lines. The structural inventory resolves all local includes and finds **81 exports in 17 entry headers, each owned by exactly one of ten CUDA emission units**. These counts describe the current production dependencies, not archived proposals or a count of network positions.
+The 21 algorithm headers serve multiple configurations; the largest has 570 lines. The structural inventory resolves all local includes and finds **81 exports in 17 entry headers, each owned by exactly one of ten CUDA emission units**. These counts describe the current production dependencies, not archived proposals or a count of network positions.
 
 ## Profiles represent real schedule differences
 
@@ -103,3 +103,5 @@ See [code conventions and current validation scope](CODE_READABILITY.md). The ea
 The [semantic naming audit](NAMING_AUDIT.md) covers the current typed ABI, named generated-plan fields and manual variable-role review. Its rebuild preserves all 81 GPU instruction payloads and separately revalidates the changed host packing.
 
 The subsequent [flat-symbol migration](FLAT_SYMBOLS.md) removes every project namespace and changes CUDA linkage to bare C exports. It has its own rebuild, compiled comparison and runtime qualification. The timing receipts above continue to identify the earlier measured semantic build.
+
+The [storage-prefix audit](STORAGE_PREFIX_AUDIT.md) removes prefixes from descriptors, host bookkeeping and control metadata while keeping genuine storage and fragment roles. Its rebuild and validation are recorded separately.

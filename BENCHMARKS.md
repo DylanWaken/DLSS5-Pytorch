@@ -59,3 +59,5 @@ The preceding release added an assembler cache key after the timing run. All 81 
 The subsequent [semantic naming audit](NAMING_AUDIT.md#validation) retains all 81 device instruction payloads, constants and resources. Its changed host packing passes separate full-graph and public-dispatch validation. The charts keep the original timing samples; no fresh latency measurements are claimed for the naming rebuild.
 
 The current [flat-symbol migration](FLAT_SYMBOLS.md) removes project namespaces, uses descriptive global ABI/profile types and exports all kernels through bare `extern "C"` symbols. Its normal rebuild, eight full-graph checks and public C512 dispatcher validation are separate from the timing runs shown here. External library qualifications and the public Torch registration domain are unchanged. No new latency samples are attributed to this migration.
+
+The subsequent [storage-prefix cleanup](STORAGE_PREFIX_AUDIT.md) also preserves all 81 GPU instruction payloads, decoded resources, constants and launch contracts. Its fresh correctness checks pass; these charts continue to show the original timed build rather than new measurements of the naming cleanup.
