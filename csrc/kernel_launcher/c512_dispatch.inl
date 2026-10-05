@@ -16,7 +16,7 @@
 #include <type_traits>
 #include <vector>
 
-#include "kernel_impl/kernel_abi.h"
+#include "kernel_impl/common/kernel_abi.h"
 
 constexpr int C512EntryCount = 18;
 

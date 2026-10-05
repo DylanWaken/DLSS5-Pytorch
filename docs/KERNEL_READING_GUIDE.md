@@ -1,13 +1,13 @@
 # Reading a deployment kernel
 
-Open `csrc/kernel_impl/<export_name>.cu`. Each of the **81 exported kernels**
+Open `csrc/kernel_impl/<fp8|fp16|common>/<export_name>.cu`. Each of the **81 exported kernels**
 has its own source file, and its `extern "C" __global__` function contains the
 actual storage, stage order, loops, synchronization and writebacks. There is no
 separate `Run*` implementation behind a one-line exported wrapper.
 
-For example, [window_block_c64_fp8.cu](../csrc/kernel_impl/window_block_c64_fp8.cu)
+For example, [window_block_c64_fp8.cu](../csrc/kernel_impl/fp8/window_block_c64_fp8.cu)
 contains `window_block_c64_fp8(...)` itself. Its FP16 counterpart is
-[window_block_c64_fp16.cu](../csrc/kernel_impl/window_block_c64_fp16.cu). The local
+[window_block_c64_fp16.cu](../csrc/kernel_impl/fp16/window_block_c64_fp16.cu). The local
 precision/channel constants select the recovered native profile; they do not
 hide the operation in another function.
 
@@ -18,23 +18,23 @@ variants follow the same exact-export filename convention.
 
 | Operation | Example entry file |
 | --- | --- |
-| Warp-local C32 window | [window_block_c32_fp8.cu](../csrc/kernel_impl/window_block_c32_fp8.cu) |
-| Wider window with shared exchange | [window_block_c128_fp16.cu](../csrc/kernel_impl/window_block_c128_fp16.cu) |
-| Physical input view | [window_block_c64_input_view_fp8.cu](../csrc/kernel_impl/window_block_c64_input_view_fp8.cu) |
-| Fused window downsample | [window_block_c256_downsample_fp8.cu](../csrc/kernel_impl/window_block_c256_downsample_fp8.cu) |
-| Fused window upsample | [window_block_c64_upsample_fp16.cu](../csrc/kernel_impl/window_block_c64_upsample_fp16.cu) |
-| C512 FFN | [window_ffn_c512_fp8.cu](../csrc/kernel_impl/window_ffn_c512_fp8.cu) |
-| C512 QKV/attention | [window_qkv_c512_fp16.cu](../csrc/kernel_impl/window_qkv_c512_fp16.cu) |
-| C512 projection and pooling | [window_attention_projection_pool_c512_fp8.cu](../csrc/kernel_impl/window_attention_projection_pool_c512_fp8.cu) |
-| C512 to C1024 projection | [channel_projection_c512_to_c1024_fp16.cu](../csrc/kernel_impl/channel_projection_c512_to_c1024_fp16.cu) |
-| Global FFN expansion/contraction | [global_ffn_expand_c1024_fp8.cu](../csrc/kernel_impl/global_ffn_expand_c1024_fp8.cu), [global_ffn_contract_c1024_fp8.cu](../csrc/kernel_impl/global_ffn_contract_c1024_fp8.cu) |
-| Global QKV and attention | [global_qkv_c1024_fp16.cu](../csrc/kernel_impl/global_qkv_c1024_fp16.cu), [global_attention_chained_c1024_fp16.cu](../csrc/kernel_impl/global_attention_chained_c1024_fp16.cu) |
-| Global output projection | [global_projection_c1024_fp8.cu](../csrc/kernel_impl/global_projection_c1024_fp8.cu) |
-| C1024 to C512 decoder | [decoder_upsample_c1024_to_c512_fp16.cu](../csrc/kernel_impl/decoder_upsample_c1024_to_c512_fp16.cu) |
-| Input feature preparation and window | [input_preprocess_window_c32_fp8.cu](../csrc/kernel_impl/input_preprocess_window_c32_fp8.cu) |
-| Output head and compositing | [output_window_postprocess_c32_fp16.cu](../csrc/kernel_impl/output_window_postprocess_c32_fp16.cu) |
-| Global layout copy | [repack_2d_to_1d_c1024_fp8.cu](../csrc/kernel_impl/repack_2d_to_1d_c1024_fp8.cu) |
-| Counter reset | [completion_counter_clear.cu](../csrc/kernel_impl/completion_counter_clear.cu) |
+| Warp-local C32 window | [window_block_c32_fp8.cu](../csrc/kernel_impl/fp8/window_block_c32_fp8.cu) |
+| Wider window with shared exchange | [window_block_c128_fp16.cu](../csrc/kernel_impl/fp16/window_block_c128_fp16.cu) |
+| Physical input view | [window_block_c64_input_view_fp8.cu](../csrc/kernel_impl/fp8/window_block_c64_input_view_fp8.cu) |
+| Fused window downsample | [window_block_c256_downsample_fp8.cu](../csrc/kernel_impl/fp8/window_block_c256_downsample_fp8.cu) |
+| Fused window upsample | [window_block_c64_upsample_fp16.cu](../csrc/kernel_impl/fp16/window_block_c64_upsample_fp16.cu) |
+| C512 FFN | [window_ffn_c512_fp8.cu](../csrc/kernel_impl/fp8/window_ffn_c512_fp8.cu) |
+| C512 QKV/attention | [window_qkv_c512_fp16.cu](../csrc/kernel_impl/fp16/window_qkv_c512_fp16.cu) |
+| C512 projection and pooling | [window_attention_projection_pool_c512_fp8.cu](../csrc/kernel_impl/fp8/window_attention_projection_pool_c512_fp8.cu) |
+| C512 to C1024 projection | [channel_projection_c512_to_c1024_fp16.cu](../csrc/kernel_impl/fp16/channel_projection_c512_to_c1024_fp16.cu) |
+| Global FFN expansion/contraction | [global_ffn_expand_c1024_fp8.cu](../csrc/kernel_impl/fp8/global_ffn_expand_c1024_fp8.cu), [global_ffn_contract_c1024_fp8.cu](../csrc/kernel_impl/fp8/global_ffn_contract_c1024_fp8.cu) |
+| Global QKV and attention | [global_qkv_c1024_fp16.cu](../csrc/kernel_impl/fp16/global_qkv_c1024_fp16.cu), [global_attention_chained_c1024_fp16.cu](../csrc/kernel_impl/fp16/global_attention_chained_c1024_fp16.cu) |
+| Global output projection | [global_projection_c1024_fp8.cu](../csrc/kernel_impl/fp8/global_projection_c1024_fp8.cu) |
+| C1024 to C512 decoder | [decoder_upsample_c1024_to_c512_fp16.cu](../csrc/kernel_impl/fp16/decoder_upsample_c1024_to_c512_fp16.cu) |
+| Input feature preparation and window | [input_preprocess_window_c32_fp8.cu](../csrc/kernel_impl/fp8/input_preprocess_window_c32_fp8.cu) |
+| Output head and compositing | [output_window_postprocess_c32_fp16.cu](../csrc/kernel_impl/fp16/output_window_postprocess_c32_fp16.cu) |
+| Global layout copy | [repack_2d_to_1d_c1024_fp8.cu](../csrc/kernel_impl/fp8/repack_2d_to_1d_c1024_fp8.cu) |
+| Counter reset | [completion_counter_clear.cu](../csrc/kernel_impl/common/completion_counter_clear.cu) |
 
 ## Follow the data through the entry
 
@@ -52,7 +52,7 @@ loop. A local lambda is useful for repeated pipeline steps; it must not become
 an anonymous wrapper around the whole kernel.
 
 Parameter records and checked byte offsets are in
-[kernel_abi.h](../csrc/kernel_impl/kernel_abi.h). Host launch geometry, plan
+[kernel_abi.h](../csrc/kernel_impl/common/kernel_abi.h). Host launch geometry, plan
 admission and C++ selection live in `kernel_launcher`; that directory contains
 host code, not the device implementations.
 
@@ -64,9 +64,9 @@ maps, real storage/profile types and intrinsics. Examples include
 and fragment publication. FP8/FP16 profile pairs may share their record types
 and constants without sharing a hidden whole-kernel owner.
 
-The fragment interface is `MMA(...)` in [mma.cuh](../csrc/kernel_impl/mma.cuh).
+The fragment interface is `MMA(...)` in [mma.cuh](../csrc/kernel_impl/common/mma.cuh).
 Instruction-level assembly remains in
-[intrinsics.cuh](../csrc/kernel_impl/intrinsics.cuh). Shared helpers must have
+[intrinsics.cuh](../csrc/kernel_impl/common/intrinsics.cuh). Shared helpers must have
 actual repeated users and preserve operand order, rounding, packing, cache and
 synchronization contracts. A stage used only by one entry belongs in that
 entry's file, normally in its global body.

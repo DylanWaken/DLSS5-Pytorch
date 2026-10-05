@@ -20,7 +20,7 @@ def load_abi_fields():
     Generation fails when a written offset has no checked field. Neither the
     generated plans nor a second schema can silently redefine the native ABI.
     """
-    source = (ROOT / 'csrc' / 'kernel_impl' / 'kernel_abi.h').read_text(encoding='utf-8')
+    source = (ROOT / 'csrc' / 'kernel_impl' / 'common' / 'kernel_abi.h').read_text(encoding='utf-8')
     fields_by_type = {}
     for parameter_type, field, offset in re.findall(
             r'offsetof\((\w+),\s*(\w+)\)\s*==\s*(\d+)', source):

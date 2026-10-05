@@ -59,7 +59,7 @@ def main():
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     changed = []
-    for path in sorted((ROOT / "csrc/kernel_impl").iterdir()):
+    for path in sorted((ROOT / "csrc/kernel_impl").rglob("*")):
         if path.suffix not in (".cu", ".cuh"):
             continue
         raw = path.read_bytes()

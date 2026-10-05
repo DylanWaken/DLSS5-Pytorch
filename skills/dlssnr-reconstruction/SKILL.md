@@ -9,7 +9,7 @@ description: Reconstruct, integrate, qualify and document this repository's DLSS
 
 The latest user requirement supersedes the older canonical-body/ABI-adapter
 layout described in historical notes below. Every exported kernel has a named
-`csrc/kernel_impl/<exact_export_name>.cu` file, with the actual `extern "C"
+`csrc/kernel_impl/<fp8|fp16|common>/<exact_export_name>.cu` file, with the actual `extern "C"
 __global__` function owning storage, staging, loops, synchronization and
 writebacks. Do not restore a one-line export that forwards the whole operation
 to `Run*`, a macro, an include fragment or a whole-body lambda.
@@ -18,7 +18,7 @@ Keep a helper used only by one entry in that entry's file. Shared headers are
 for substantial repeated arithmetic/layout logic, real profile/storage types
 and intrinsics. Local lambdas may share small repeated pipeline steps while
 remaining visible inside the global body. The typed ABI is now
-`kernel_impl/kernel_abi.h`; `kernel_launcher` is host-only. The fragment
+`kernel_impl/common/kernel_abi.h`; `kernel_launcher` is host-only. The fragment
 interface is `MMA(...)`, renamed from `MultiplyAccumulate`.
 
 Indent each `#pragma unroll` with its loop and separate major stages with short

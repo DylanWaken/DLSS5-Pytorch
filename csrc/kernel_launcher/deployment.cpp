@@ -1,7 +1,7 @@
 #include "deployment.h"
 #include "windows_dispatch.inl"
 #include "c512_dispatch.inl"
-#include "kernel_impl/kernel_abi.h"
+#include "kernel_impl/common/kernel_abi.h"
 #include "compiled_resolution_policy.h"
 #include <c10/cuda/CUDAGuard.h>
 #include <c10/cuda/CUDAStream.h>

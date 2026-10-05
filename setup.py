@@ -51,7 +51,7 @@ class RegistrationOnlyBuildExtension(BuildExtension):
         # setuptools otherwise synthesizes /EXPORT:PyInit__C on Windows.
         return []
 
-cuda=sorted((ROOT/'csrc/kernel_impl').glob('*.cu'))
+cuda=sorted((ROOT/'csrc/kernel_impl').rglob('*.cu'))
 host=sorted((ROOT/'csrc/kernel_launcher').glob('*.cpp')) + sorted((ROOT/'csrc/torch_api').glob('*.cpp'))
 if len(cuda)!=81 or not host or list((ROOT/'csrc/kernel_launcher').glob('*.cu')):
     raise RuntimeError('Expected 81 named kernel implementation TUs and host-only launchers.')

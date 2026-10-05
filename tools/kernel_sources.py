@@ -77,7 +77,7 @@ def collect(csrc, *, allow_legacy_namespaces=False):
             name = kernel[1]
             if name in entries:
                 raise ValueError(f"duplicate CUDA entry {name}: {entries[name]['header']} and {relative}")
-            if path.parent != csrc / "kernel_impl":
+            if not path.is_relative_to(csrc / "kernel_impl"):
                 raise ValueError(f"CUDA entry {name} is outside kernel_impl: {relative}")
             namespace = next((match[1] for match in reversed(namespaces) if match.start() < kernel.start()), "")
             c_linkage = re.search(r'\bextern\s*"C"\s*$', source[:kernel.start()]) is not None
@@ -144,7 +144,8 @@ def check_entry_layout(inventory, csrc):
     """Require readable device entries in kernel_impl and host-only launchers."""
     csrc = Path(csrc)
     for name, entry in inventory["entries"].items():
-        expected = f"kernel_impl/{name}.cu"
+        precision = "fp8" if name.endswith("_fp8") else "fp16" if name.endswith("_fp16") else "common"
+        expected = f"kernel_impl/{precision}/{name}.cu"
         if entry["header"] != expected or entry["emission_unit"] != expected:
             raise ValueError(f"{name}: expected its own named CUDA file {expected}")
         if name != "completion_counter_clear" and entry["body_lines"] < 20:
@@ -155,7 +156,9 @@ def check_entry_layout(inventory, csrc):
         code = _without_comments_and_strings(path.read_text(encoding="utf8"))
         if path.suffix == ".cu" or re.search(r"\b(?:__device__|__global__|__shared__)\b", code):
             raise ValueError(f"{path.name}: kernel_launcher must contain only host code")
-    for path in (csrc / "kernel_impl").glob("*.cuh"):
+    for path in (csrc / "kernel_impl").rglob("*.cuh"):
+        if path.parent != csrc / "kernel_impl/common":
+            raise ValueError(f"{path.name}: shared headers belong in kernel_impl/common")
         code = _without_comments_and_strings(path.read_text(encoding="utf8"))
         if re.search(r"\bRun(?:Window|Global|Spatial|Channel|Decoder|Preprocess|Postprocess)\w*\s*\(", code):
             raise ValueError(f"{path.name}: kernel orchestration belongs in the global entry")

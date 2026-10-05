@@ -1,7 +1,7 @@
 # CUDA source layout
 
 Each exported deployment kernel is implemented in
-`csrc/kernel_impl/<exact_export_name>.cu`. The file contains one
+`csrc/kernel_impl/<fp8|fp16|common>/<exact_export_name>.cu`. The file contains one
 `extern "C" __global__` definition whose body shows its storage, pipeline,
 computation loops, synchronization and writebacks. Open the named `.cu` file
 to read the algorithm; there is no separate canonical `Run*` body behind an
@@ -13,16 +13,21 @@ entries and one completion-counter clear**. The first 80 form 40 FP8/FP16 pairs.
 These are exported configurations, not 81 unrelated algorithms or 81 network
 positions. Repeated graph positions can launch the same entry.
 
+The [directory-migration audit](precision_layout_audit.json) records the move of
+107 files into `fp8`, `fp16` and `common`. The reorganized build preserves all
+81 GPU instruction payloads, constants and decoded resource rows from the
+measured build. Existing benchmark samples retain their original binary identity.
+
 ## Directory responsibilities
 
 ```text
 csrc/
   kernel_impl/
-    window_block_c64_fp8.cu    One named entry with its complete global body
-    window_block_c64_fp16.cu   Its explicit native FP16 schedule
-    ...                       One .cu file for each of the 81 exports
-    kernel_abi.h              Typed launch records, offsets and declarations
-    *.cuh                     Reused tensor math, profiles, storage and intrinsics
+    fp8/                      40 named FP8 kernel entries
+    fp16/                     40 named FP16 kernel entries
+    common/                   Shared math, profiles, storage and intrinsics
+      kernel_abi.h            Typed launch records, offsets and declarations
+      completion_counter_clear.cu   Precision-independent counter reset
   kernel_launcher/            Host launchers, geometry, plans and C++ selection
   torch_api/                  PyTorch bindings and tensor-facing contracts
 tests/                        CPU, CUDA, graph and training checks
@@ -34,7 +39,7 @@ run_tuning.py                 Offline tuning entry point
 
 `kernel_launcher` is host-only. Kernel bodies, device helpers and the authoritative
 parameter ABI reside in `kernel_impl`. A parameter record is declared once in
-[kernel_abi.h](../csrc/kernel_impl/kernel_abi.h), with size, alignment and offset
+[kernel_abi.h](../csrc/kernel_impl/common/kernel_abi.h), with size, alignment and offset
 assertions; host and device code consume the same record. Python does not choose
 a different arithmetic implementation on each call.
 
@@ -66,10 +71,10 @@ sharing a profile does not require sharing the whole global function.
 | `global_repack_layout.cuh` | Pure physical-layout maps used by both repack directions and precisions |
 
 Examples of local flow are the asynchronous copy/wait/reduction sequence in
-[global_qkv_c1024_fp8.cu](../csrc/kernel_impl/global_qkv_c1024_fp8.cu), the grouped
-MLP in [window_ffn_c512_fp8.cu](../csrc/kernel_impl/window_ffn_c512_fp8.cu), and
+[global_qkv_c1024_fp8.cu](../csrc/kernel_impl/fp8/global_qkv_c1024_fp8.cu), the grouped
+MLP in [window_ffn_c512_fp8.cu](../csrc/kernel_impl/fp8/window_ffn_c512_fp8.cu), and
 the sampling plus full window schedule in
-[window_block_c64_upsample_fp16.cu](../csrc/kernel_impl/window_block_c64_upsample_fp16.cu).
+[window_block_c64_upsample_fp16.cu](../csrc/kernel_impl/fp16/window_block_c64_upsample_fp16.cu).
 The old operation/precision wrapper headers and `Run*` owners are superseded.
 
 ## Device primitives

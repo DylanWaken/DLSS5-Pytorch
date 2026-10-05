@@ -28,7 +28,7 @@ class KernelSourcesCPUTest(unittest.TestCase):
         check_entry_layout(inventory, ROOT / "csrc")
 
     def test_algorithm_headers_do_not_reintroduce_register_transcripts(self):
-        for path in (ROOT / "csrc/kernel_impl").glob("*"):
+        for path in (ROOT / "csrc/kernel_impl").rglob("*"):
             if path.suffix not in {".cu", ".cuh"}:
                 continue
             with self.subTest(header=path.name):
@@ -43,7 +43,7 @@ class KernelSourcesCPUTest(unittest.TestCase):
                     self.assertLessEqual(len(source.splitlines()), 600)
 
     def test_numerical_bit_patterns_are_named_before_conversion(self):
-        for path in (ROOT / "csrc/kernel_impl").glob("*"):
+        for path in (ROOT / "csrc/kernel_impl").rglob("*"):
             if path.suffix not in {".cu", ".cuh"}:
                 continue
             with self.subTest(header=path.name):
