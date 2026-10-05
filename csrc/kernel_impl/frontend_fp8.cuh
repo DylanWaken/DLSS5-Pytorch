@@ -19,9 +19,8 @@ extern "C" __global__
 	__maxnreg__(168) void input_preprocess_window_c32_fp8(FInputPreprocessWindowC32Fp8Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	__shared__ FSharedFeatures s_Features;
 	const FPreprocessParameters& InputParameters = Parameters;
-	RunPreprocess<true, false>(InputParameters, s_Features);
+	RunPreprocess<true, false>(InputParameters);
 #endif
 }
 

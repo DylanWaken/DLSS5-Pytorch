@@ -160,13 +160,112 @@ __device__ __forceinline__ void ComputeWindowExpert(const FInputSource& InputSou
 
 template <int Channels, bool bFp8> struct FTiledWindowIO;
 
-template <int Channels, bool bFp8, class FIO = FTiledWindowIO<Channels, bFp8>, class FParameters>
-__device__ __forceinline__ void ComputeWindowFeedForward(const FParameters& Parameters,
-														 FSharedWindow<Channels, bFp8>& s_Window)
+template <bool bFp8>
+__device__ __forceinline__ FWindowActivationTile<bFp8>
+AttendWithBias(int r_Tile, const unsigned char* g_HeadBias, const FWindowActivationTile<bFp8> (&r_Query)[4],
+			   const FWindowActivationTile<bFp8> (&r_Key)[4], const FWindowValueTile<bFp8> (&r_Value)[4])
+{
+	FWindowAccumulatorTile<64> r_Probabilities;
+#pragma unroll
+	for (int r_ColumnTile = 0; r_ColumnTile < 4; ++r_ColumnTile)
+	{
+		const int g_BiasOffset = 2048 * r_Tile + 512 * r_ColumnTile + 16 * threadIdx.x;
+		const uint4 r_Bias = __ldca(reinterpret_cast<const uint4*>(g_HeadBias + g_BiasOffset));
+		r_Probabilities.r_Pair[2 * r_ColumnTile][0] = r_Bias.x;
+		r_Probabilities.r_Pair[2 * r_ColumnTile][1] = r_Bias.y;
+		r_Probabilities.r_Pair[2 * r_ColumnTile + 1][0] = r_Bias.z;
+		r_Probabilities.r_Pair[2 * r_ColumnTile + 1][1] = r_Bias.w;
+	}
+#pragma unroll
+	for (int r_Column = 0; r_Column < 8; ++r_Column)
+#pragma unroll
+		for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
+		{
+			const auto& r_Fragment = r_Key[r_Column / 2].r_Reduction[r_Chunk];
+			const uint32_t r_KeyFragment[2] = {r_Fragment.r_Word[r_Column & 1],
+											   r_Fragment.r_Word[2 + (r_Column & 1)]};
+			MmaWindowFragment<bFp8>(r_Query[r_Tile].r_Reduction[r_Chunk], r_KeyFragment,
+									r_Probabilities.r_Pair[r_Column]);
+		}
+	SoftmaxWindow(r_Probabilities);
+	FWindowAccumulatorTile<32> r_Attended{};
+#pragma unroll
+	for (int r_Chunk = 0; r_Chunk < 64 / FWindow32Profile<bFp8>::Reduction; ++r_Chunk)
+	{
+		const auto r_Probability = PublishWindowChunk<bFp8>(r_Probabilities, r_Chunk);
+#pragma unroll
+		for (int r_Column = 0; r_Column < 4; ++r_Column)
+		{
+			uint32_t r_ValueFragment[2];
+			if constexpr (bFp8)
+			{
+				r_ValueFragment[0] = r_Value[2 * r_Chunk].r_Column[r_Column][0];
+				r_ValueFragment[1] = r_Value[2 * r_Chunk + 1].r_Column[r_Column][0];
+			}
+			else
+			{
+				r_ValueFragment[0] = r_Value[r_Chunk].r_Column[r_Column][0];
+				r_ValueFragment[1] = r_Value[r_Chunk].r_Column[r_Column][1];
+			}
+			MmaWindowFragment<bFp8>(r_Probability, r_ValueFragment, r_Attended.r_Pair[r_Column]);
+		}
+	}
+	return PublishWindow32<bFp8>(r_Attended);
+}
+
+template <int Channels, bool bFp8, class FParameters>
+__device__ __forceinline__ void WriteWindowTile(const FParameters& Parameters, int g_TileIndex,
+												const FWindowAccumulatorTile<32>& r_Output)
+{
+	using FConfig = FWideWindowProfile<Channels, bFp8>;
+	const int g_TileColumns = Parameters.Width / 4, g_TileRows = Parameters.Height / 4;
+	const int g_TileX = (int(blockIdx.x) * 8 + Parameters.OriginX) / 4 + (g_TileIndex & 1);
+	const int g_TileY = (int(blockIdx.y) * 8 + Parameters.OriginY) / 4 + (g_TileIndex >> 1);
+	if (g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows)
+#pragma unroll
+		for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
+		{
+			const auto r_Published = PublishWindowChunk<bFp8>(r_Output, r_Chunk);
+			const uint64_t g_OutputFragmentAddress =
+				Parameters.g_Output + uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
+				threadIdx.y * FConfig::PanelBytes + r_Chunk * 512 + threadIdx.x * 16;
+			StoreNoAllocate(g_OutputFragmentAddress,
+							make_uint4(r_Published.r_Word[0], r_Published.r_Word[1], r_Published.r_Word[2],
+									   r_Published.r_Word[3]));
+		}
+}
+
+template <int Channels, bool bFp8> struct FTiledWindowIO
+{
+	using FRecordProfile = FWideWindowProfile<Channels, bFp8>;
+
+	template <class FParameters>
+	__device__ __forceinline__ static FWindowActivationTile<bFp8> Read(const FParameters& Parameters,
+																	   int g_TileIndex, int g_PanelIndex)
+	{
+		return ReadWindowTile<Channels, bFp8>(Parameters, g_TileIndex, g_PanelIndex);
+	}
+
+	template <class FParameters>
+	__device__ __forceinline__ static void Write(const FParameters& Parameters, int g_TileIndex,
+												 const FWindowAccumulatorTile<32>& r_Output)
+	{
+		WriteWindowTile<Channels, bFp8>(Parameters, g_TileIndex, r_Output);
+	}
+};
+
+// Fusion callers reuse s_Window before/after this block for up/downsample stages.
+// Keep that single shared allocation explicit while all block stages live here.
+template <int Channels, bool bFp8, class FIO = FTiledWindowIO<Channels, bFp8>, bool bCaptureRaw = false,
+		  class FParameters>
+__device__ __forceinline__ void RunWindowWide(const FParameters& Parameters,
+											  FSharedWindow<Channels, bFp8>& s_Window,
+											  FWindowAccumulatorTile<32>* r_RawTiles = nullptr)
 {
 	using FConfig = typename FIO::FRecordProfile;
-	const int Warp = threadIdx.y;
 	const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights);
+	// FFN: private C64 tiles, or cross-warp expert panels for C128/C256.
+	const int Warp = threadIdx.y;
 	if constexpr (Channels == 64)
 	{
 		// C64 uses token parallelism in the FFN: one warp owns left/right tiles
@@ -240,14 +339,9 @@ __device__ __forceinline__ void ComputeWindowFeedForward(const FParameters& Para
 			s_Window.Store(r_Tile, Warp, PublishWindow32<bFp8>(r_Output[r_Tile]));
 		__syncthreads();
 	}
-}
-
-template <int Channels, bool bFp8, class FConfig = FWideWindowProfile<Channels, bFp8>>
-__device__ __forceinline__ void
-ProjectWindowQkv(const FSharedWindow<Channels, bFp8>& s_Window, const unsigned char* g_PackedWeights,
-				 FWindowActivationTile<bFp8> (&r_Query)[4], FWindowActivationTile<bFp8> (&r_Key)[4],
-				 FWindowValueTile<bFp8> (&r_Value)[4])
-{
+	FWindowActivationTile<bFp8> r_Query[4], r_Key[4];
+	FWindowValueTile<bFp8> r_Value[4];
+	// Q/K/V projection and normalization keep the native shared-panel ownership.
 	FWindowAccumulatorTile<32> r_Projected[3][4]{};
 #pragma unroll 1
 	for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
@@ -288,135 +382,6 @@ ProjectWindowQkv(const FSharedWindow<Channels, bFp8>& s_Window, const unsigned c
 			}
 		}
 	}
-}
-
-template <bool bFp8>
-__device__ __forceinline__ FWindowActivationTile<bFp8>
-AttendWithBias(int r_Tile, const unsigned char* g_HeadBias, const FWindowActivationTile<bFp8> (&r_Query)[4],
-			   const FWindowActivationTile<bFp8> (&r_Key)[4], const FWindowValueTile<bFp8> (&r_Value)[4])
-{
-	FWindowAccumulatorTile<64> r_Probabilities;
-#pragma unroll
-	for (int r_ColumnTile = 0; r_ColumnTile < 4; ++r_ColumnTile)
-	{
-		const int g_BiasOffset = 2048 * r_Tile + 512 * r_ColumnTile + 16 * threadIdx.x;
-		const uint4 r_Bias = __ldca(reinterpret_cast<const uint4*>(g_HeadBias + g_BiasOffset));
-		r_Probabilities.r_Pair[2 * r_ColumnTile][0] = r_Bias.x;
-		r_Probabilities.r_Pair[2 * r_ColumnTile][1] = r_Bias.y;
-		r_Probabilities.r_Pair[2 * r_ColumnTile + 1][0] = r_Bias.z;
-		r_Probabilities.r_Pair[2 * r_ColumnTile + 1][1] = r_Bias.w;
-	}
-#pragma unroll
-	for (int r_Column = 0; r_Column < 8; ++r_Column)
-#pragma unroll
-		for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
-		{
-			const auto& r_Fragment = r_Key[r_Column / 2].r_Reduction[r_Chunk];
-			const uint32_t r_KeyFragment[2] = {r_Fragment.r_Word[r_Column & 1],
-											   r_Fragment.r_Word[2 + (r_Column & 1)]};
-			MmaWindowFragment<bFp8>(r_Query[r_Tile].r_Reduction[r_Chunk], r_KeyFragment,
-									r_Probabilities.r_Pair[r_Column]);
-		}
-	SoftmaxWindow(r_Probabilities);
-	FWindowAccumulatorTile<32> r_Attended{};
-#pragma unroll
-	for (int r_Chunk = 0; r_Chunk < 64 / FWindow32Profile<bFp8>::Reduction; ++r_Chunk)
-	{
-		const auto r_Probability = PublishWindowChunk<bFp8>(r_Probabilities, r_Chunk);
-#pragma unroll
-		for (int r_Column = 0; r_Column < 4; ++r_Column)
-		{
-			uint32_t r_ValueFragment[2];
-			if constexpr (bFp8)
-			{
-				r_ValueFragment[0] = r_Value[2 * r_Chunk].r_Column[r_Column][0];
-				r_ValueFragment[1] = r_Value[2 * r_Chunk + 1].r_Column[r_Column][0];
-			}
-			else
-			{
-				r_ValueFragment[0] = r_Value[r_Chunk].r_Column[r_Column][0];
-				r_ValueFragment[1] = r_Value[r_Chunk].r_Column[r_Column][1];
-			}
-			MmaWindowFragment<bFp8>(r_Probability, r_ValueFragment, r_Attended.r_Pair[r_Column]);
-		}
-	}
-	return PublishWindow32<bFp8>(r_Attended);
-}
-
-template <bool bFp8>
-__device__ __forceinline__ void AttendPairWithBias(int r_FirstTile, const unsigned char* g_HeadBias,
-												   const FWindowActivationTile<bFp8> (&r_Query)[4],
-												   const FWindowActivationTile<bFp8> (&r_Key)[4],
-												   const FWindowValueTile<bFp8> (&r_Value)[4],
-												   FWindowActivationTile<bFp8> (&r_Attended)[2])
-{
-	// Two adjacent query tiles share one warp transpose for their four
-	// row-half denominator vectors, matching the recovered native schedule.
-	FWindowAccumulatorTile<64> r_Probabilities[2];
-#pragma unroll
-	for (int r_LocalTile = 0; r_LocalTile < 2; ++r_LocalTile)
-		r_Probabilities[r_LocalTile] =
-			QueryKeyScores<bFp8>(r_FirstTile + r_LocalTile, g_HeadBias, r_Query, r_Key);
-	SoftmaxWindowPair(r_Probabilities);
-#pragma unroll
-	for (int r_LocalTile = 0; r_LocalTile < 2; ++r_LocalTile)
-		r_Attended[r_LocalTile] =
-			PublishWindow32<bFp8>(ProbabilityValues<bFp8>(r_Probabilities[r_LocalTile], r_Value));
-}
-
-template <int Channels, bool bFp8, class FParameters>
-__device__ __forceinline__ void WriteWindowTile(const FParameters& Parameters, int g_TileIndex,
-												const FWindowAccumulatorTile<32>& r_Output)
-{
-	using FConfig = FWideWindowProfile<Channels, bFp8>;
-	const int g_TileColumns = Parameters.Width / 4, g_TileRows = Parameters.Height / 4;
-	const int g_TileX = (int(blockIdx.x) * 8 + Parameters.OriginX) / 4 + (g_TileIndex & 1);
-	const int g_TileY = (int(blockIdx.y) * 8 + Parameters.OriginY) / 4 + (g_TileIndex >> 1);
-	if (g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows)
-#pragma unroll
-		for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
-		{
-			const auto r_Published = PublishWindowChunk<bFp8>(r_Output, r_Chunk);
-			const uint64_t g_OutputFragmentAddress =
-				Parameters.g_Output + uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
-				threadIdx.y * FConfig::PanelBytes + r_Chunk * 512 + threadIdx.x * 16;
-			StoreNoAllocate(g_OutputFragmentAddress,
-							make_uint4(r_Published.r_Word[0], r_Published.r_Word[1], r_Published.r_Word[2],
-									   r_Published.r_Word[3]));
-		}
-}
-
-template <int Channels, bool bFp8> struct FTiledWindowIO
-{
-	using FRecordProfile = FWideWindowProfile<Channels, bFp8>;
-
-	template <class FParameters>
-	__device__ __forceinline__ static FWindowActivationTile<bFp8> Read(const FParameters& Parameters,
-																	   int g_TileIndex, int g_PanelIndex)
-	{
-		return ReadWindowTile<Channels, bFp8>(Parameters, g_TileIndex, g_PanelIndex);
-	}
-
-	template <class FParameters>
-	__device__ __forceinline__ static void Write(const FParameters& Parameters, int g_TileIndex,
-												 const FWindowAccumulatorTile<32>& r_Output)
-	{
-		WriteWindowTile<Channels, bFp8>(Parameters, g_TileIndex, r_Output);
-	}
-};
-
-template <int Channels, bool bFp8, class FIO = FTiledWindowIO<Channels, bFp8>, bool bCaptureRaw = false,
-		  class FParameters>
-__device__ __forceinline__ void RunWindowWide(const FParameters& Parameters,
-											  FSharedWindow<Channels, bFp8>& s_Window,
-											  FWindowAccumulatorTile<32>* r_RawTiles = nullptr)
-{
-	using FConfig = typename FIO::FRecordProfile;
-	const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights);
-	ComputeWindowFeedForward<Channels, bFp8, FIO>(Parameters, s_Window);
-	FWindowActivationTile<bFp8> r_Query[4], r_Key[4];
-	FWindowValueTile<bFp8> r_Value[4];
-	ProjectWindowQkv<Channels, bFp8, FConfig>(s_Window, g_PackedWeights, r_Query, r_Key, r_Value);
 	__syncthreads();
 #pragma unroll
 	for (int r_FirstTile = 0; r_FirstTile < 4; r_FirstTile += FConfig::AttentionBatch)

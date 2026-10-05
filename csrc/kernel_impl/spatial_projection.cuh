@@ -65,82 +65,96 @@ ResolveSpatialProjectionInputTile(int& g_Y, int& g_X,
 	return g_Y < TileCoordinates.g_TilesHigh && g_X < TileCoordinates.g_TilesWide;
 }
 
-template <bool bFp8>
-__device__ __forceinline__ void
-LoadSpatialProjectionWeights(uint4 (&r_Weights)[2][4], uint64_t g_PackedWeights, int ReductionTile,
-							 const FSpatialProjectionTileCoordinates& TileCoordinates)
+template <bool bFp8, int SpatialTiles, bool bInputPlane = false, bool bOutputPlane = false,
+		  int StageCount = 3, bool bPool = false, typename TParameters>
+__device__ __forceinline__ void RunSpatialProjection(const TParameters& Parameters)
 {
 	using Profile = FSpatialProjectionProfile<bFp8>;
-	const uint64_t g_ReductionBase =
-		g_PackedWeights +
-		uint64_t(blockIdx.z * 512 + ReductionTile * Profile::ReductionStep) * 512 * Profile::ElementBytes +
-		TileCoordinates.g_OutputChannel * 32 + TileCoordinates.Lane * 16;
-
-	// The native matrix stores one warp's N16 fragment as a 512-byte vector stripe.
-	// Both precisions consume two instruction-K subtiles, separated by16KiB.
-#pragma unroll
-	for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
-#pragma unroll
-		for (int r_ChannelGroup = 0; r_ChannelGroup < 4; ++r_ChannelGroup)
-			r_Weights[r_KSubtile][r_ChannelGroup] = __ldca(
-				reinterpret_cast<const uint4*>(g_ReductionBase + r_KSubtile * 16384 + r_ChannelGroup * 512));
-}
-
-template <bool bFp8, int SpatialTiles, int StageCount>
-__device__ __forceinline__ void
-IssueSpatialProjectionInputStage(unsigned char* s_Storage, uint64_t g_Input, int ReductionTile,
-								 const FSpatialProjectionTileCoordinates& TileCoordinates)
-{
-	using Profile = FSpatialProjectionProfile<bFp8>;
-	const int s_StageOffset = (ReductionTile % StageCount) * 4096;
-	const int s_BarrierOffset = StageCount * 4096 + (ReductionTile % StageCount) * 8;
-	const int KSubtileIndex = TileCoordinates.Warp & 1;
-	const int g_LocalX = (TileCoordinates.Warp >> 1) & 1;
-
-	// Every stage transfers eight 512-byte stripes across four spatial tiles.
-	// The three-stage ring overlaps input transfers with the register-resident GEMM.
-#pragma unroll
-	for (int g_LocalY = TileCoordinates.Warp / 4; g_LocalY < TileCoordinates.Warp / 4 + SpatialTiles / 2;
-		 ++g_LocalY)
+	__shared__ __align__(512) unsigned char s_Storage[StageCount * (4096 + 8)];
+	const int g_Columns = (Parameters.Width + 7) / 8;
+	const FSpatialProjectionTileCoordinates TileCoordinates{Parameters.Height / 4,
+															Parameters.Width / 4,
+															int(blockIdx.y) * 2,
+															int(blockIdx.x) % g_Columns * 2,
+															int(blockIdx.x) / g_Columns * 256 +
+																(int(threadIdx.y) % 4) * 64,
+															int(threadIdx.x),
+															int(threadIdx.y)};
+	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 	{
-		int g_Y = TileCoordinates.g_TileY + g_LocalY;
-		int g_X = TileCoordinates.g_TileX + g_LocalX;
-		const bool bValid = ResolveSpatialProjectionInputTile(g_Y, g_X, TileCoordinates);
-		const int s_CopyOffset = s_StageOffset + g_LocalY * 2048 + g_LocalX * 1024 + KSubtileIndex * 512;
-		if (bValid)
+#pragma unroll
+		for (int s_Stage = 0; s_Stage < StageCount; ++s_Stage)
+			BarrierInit(s_Storage, StageCount * 4096 + s_Stage * 8, blockDim.x * blockDim.y);
+	}
+	__syncthreads();
+
+	uint4 r_Weights[2][4];
+	// Reuse the native prefill/refill addressing without hiding the pipeline loop.
+	const auto LoadWeights = [&](int ReductionTile)
+	{
+		const uint64_t g_ReductionBase = Parameters.g_PackedWeights +
+										 uint64_t(blockIdx.z * 512 + ReductionTile * Profile::ReductionStep) *
+											 512 * Profile::ElementBytes +
+										 TileCoordinates.g_OutputChannel * 32 + TileCoordinates.Lane * 16;
+
+		// The native matrix stores one warp's N16 fragment as a 512-byte vector stripe.
+		// Both precisions consume two instruction-K subtiles, separated by16KiB.
+#pragma unroll
+		for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
+#pragma unroll
+			for (int r_ChannelGroup = 0; r_ChannelGroup < 4; ++r_ChannelGroup)
+				r_Weights[r_KSubtile][r_ChannelGroup] = __ldca(reinterpret_cast<const uint4*>(
+					g_ReductionBase + r_KSubtile * 16384 + r_ChannelGroup * 512));
+	};
+	const auto IssueInput = [&](int ReductionTile)
+	{
+		const int s_StageOffset = (ReductionTile % StageCount) * 4096;
+		const int s_BarrierOffset = StageCount * 4096 + (ReductionTile % StageCount) * 8;
+		const int KSubtileIndex = TileCoordinates.Warp & 1;
+		const int g_LocalX = (TileCoordinates.Warp >> 1) & 1;
+
+		// Every stage transfers eight 512-byte stripes across four spatial tiles.
+		// The three-stage ring overlaps input transfers with the register-resident GEMM.
+#pragma unroll
+		for (int g_LocalY = TileCoordinates.Warp / 4; g_LocalY < TileCoordinates.Warp / 4 + SpatialTiles / 2;
+			 ++g_LocalY)
 		{
-			const uint64_t g_Source =
-				g_Input +
-				uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X + blockIdx.z) * Profile::SpatialTileBytes +
-				(ReductionTile * 2 + KSubtileIndex) * 512;
-			if (Elected(0xffffffffu))
+			int g_Y = TileCoordinates.g_TileY + g_LocalY;
+			int g_X = TileCoordinates.g_TileX + g_LocalX;
+			const bool bValid = ResolveSpatialProjectionInputTile(g_Y, g_X, TileCoordinates);
+			const int s_CopyOffset = s_StageOffset + g_LocalY * 2048 + g_LocalX * 1024 + KSubtileIndex * 512;
+			if (bValid)
 			{
-				CopyBulk(s_Storage, s_CopyOffset, g_Source, 512, s_BarrierOffset);
-				BarrierExpect(s_Storage, s_BarrierOffset, 512);
+				const uint64_t g_Source = Parameters.g_Input +
+										  uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X + blockIdx.z) *
+											  Profile::SpatialTileBytes +
+										  (ReductionTile * 2 + KSubtileIndex) * 512;
+				if (Elected(0xffffffffu))
+				{
+					CopyBulk(s_Storage, s_CopyOffset, g_Source, 512, s_BarrierOffset);
+					BarrierExpect(s_Storage, s_BarrierOffset, 512);
+				}
+			}
+			else
+			{
+				*reinterpret_cast<uint4*>(s_Storage + s_CopyOffset + TileCoordinates.Lane * 16) =
+					make_uint4(0, 0, 0, 0);
 			}
 		}
-		else
-		{
-			*reinterpret_cast<uint4*>(s_Storage + s_CopyOffset + TileCoordinates.Lane * 16) =
-				make_uint4(0, 0, 0, 0);
-		}
-	}
-}
+	};
+	const auto WaitInput = [&](int ReductionTile)
+	{
+		const int s_BarrierOffset = StageCount * 4096 + (ReductionTile % StageCount) * 8;
+		ArriveAndWait(s_Storage, s_BarrierOffset);
+	};
 
-template <int StageCount>
-__device__ __forceinline__ void WaitSpatialProjectionInputStage(unsigned char* s_Storage, int ReductionTile)
-{
-	const int s_BarrierOffset = StageCount * 4096 + (ReductionTile % StageCount) * 8;
-	ArriveAndWait(s_Storage, s_BarrierOffset);
-}
-
-template <bool bFp8, int SpatialTiles, bool bInputPlane, typename TParameters>
-__device__ __forceinline__ void
-InitializeSpatialProjectionResidual(FSpatialProjectionAccumulator<SpatialTiles>& r_Accumulator,
-									const TParameters& Parameters,
-									const FSpatialProjectionTileCoordinates& TileCoordinates)
-{
-	using Profile = FSpatialProjectionProfile<bFp8>;
+	LoadWeights(0);
+#pragma unroll
+	for (int StageIndex = 0; StageIndex < StageCount; ++StageIndex)
+		IssueInput(StageIndex);
+	WaitInput(0);
+	FSpatialProjectionAccumulator<SpatialTiles> r_Accumulator;
+	// Seed the GEMM with the scaled residual in accumulator order.
 	uint32_t r_ResidualScales[4][2];
 #pragma unroll
 	for (int r_ChannelGroup = 0; r_ChannelGroup < 4; ++r_ChannelGroup)
@@ -245,14 +259,31 @@ InitializeSpatialProjectionResidual(FSpatialProjectionAccumulator<SpatialTiles>&
 			}
 		}
 	}
-}
 
-template <bool bFp8, int SpatialTiles, bool bOutputPlane>
-__device__ __forceinline__ void
-PublishSpatialProjection(const FSpatialProjectionAccumulator<SpatialTiles>& r_Accumulator, uint64_t g_Output,
-						 const FSpatialProjectionTileCoordinates& TileCoordinates)
-{
-	using Profile = FSpatialProjectionProfile<bFp8>;
+	// Keep K sequential to retain Half accumulation order and the native ring
+	// lifecycle. Prefetch next weights before waiting, then recycle the old stage.
+#pragma unroll 1
+	for (int ReductionTile = 0; ReductionTile < Profile::ReductionTiles; ++ReductionTile)
+	{
+		uint4 r_Input[SpatialTiles][2];
+#pragma unroll
+		for (int r_Spatial = 0; r_Spatial < SpatialTiles; ++r_Spatial)
+#pragma unroll
+			for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
+				r_Input[r_Spatial][r_KSubtile] =
+					*reinterpret_cast<const uint4*>(s_Storage + (ReductionTile % StageCount) * 4096 +
+													(r_Spatial + TileCoordinates.Warp / 4 * 2) * 1024 +
+													r_KSubtile * 512 + TileCoordinates.Lane * 16);
+		AccumulateTile<Profile::Precision>(r_Accumulator, r_Input, r_Weights);
+		if (ReductionTile + 1 < Profile::ReductionTiles)
+		{
+			LoadWeights(ReductionTile + 1);
+			WaitInput(ReductionTile + 1);
+		}
+		if (ReductionTile + StageCount < Profile::ReductionTiles)
+			IssueInput(ReductionTile + StageCount);
+	}
+	// Write each projected tile in its selected physical output layout.
 #pragma unroll
 	for (int r_Spatial = 0; r_Spatial < SpatialTiles; ++r_Spatial)
 	{
@@ -282,14 +313,16 @@ PublishSpatialProjection(const FSpatialProjectionAccumulator<SpatialTiles>& r_Ac
 																			r_AccumulatorWords[2 + r_RowHalf])
 														  : r_AccumulatorWords[r_PanelHalf * 2 + r_RowHalf];
 						*reinterpret_cast<uint32_t*>(SpatialProjectionPlaneWordAddress<bFp8>(
-							g_Output, g_Panel, g_PixelY, g_PixelX, TileCoordinates)) = r_OutputWord;
+							Parameters.g_Output, g_Panel, g_PixelY, g_PixelX, TileCoordinates)) =
+							r_OutputWord;
 					}
 				}
 		}
 		else
 		{
 			const uint64_t g_OutputTileBase =
-				g_Output + uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X) * Profile::SpatialTileBytes +
+				Parameters.g_Output +
+				uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X) * Profile::SpatialTileBytes +
 				TileCoordinates.g_OutputChannel * 16 * Profile::ElementBytes + TileCoordinates.Lane * 16;
 			if constexpr (bFp8)
 			{
@@ -322,102 +355,74 @@ PublishSpatialProjection(const FSpatialProjectionAccumulator<SpatialTiles>& r_Ac
 			}
 		}
 	}
-}
-
-// Pool the unquantized projection accumulators. Four warp shuffles gather the
-// 2x2 pixel neighborhood; the native rounded pair sums precede multiplication
-// by 1/4. Quantization occurs only after this reduction.
-template <bool bFp8, typename TParameters>
-__device__ __forceinline__ void
-PublishPooledSpatialProjection(const FSpatialProjectionAccumulator<4>& r_Accumulator,
-							   const TParameters& Parameters,
-							   const FSpatialProjectionTileCoordinates& TileCoordinates)
-{
-	FSpatialProjectionAccumulator<1> r_Pooled;
-#pragma unroll
-	for (int r_ChannelGroup = 0; r_ChannelGroup < 4; ++r_ChannelGroup)
-#pragma unroll
-		for (int r_N8 = 0; r_N8 < 2; ++r_N8)
-#pragma unroll
-			for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
-			{
-				const auto& r_LeftTileWords = r_Accumulator.r_AccumulatorWords[r_RowHalf * 2][r_ChannelGroup];
-				const auto& r_RightTileWords =
-					r_Accumulator.r_AccumulatorWords[r_RowHalf * 2 + 1][r_ChannelGroup];
-				r_Pooled.r_AccumulatorWords[0][r_ChannelGroup][r_N8 * 2 + r_RowHalf] =
-					PoolHorizontalWords(r_LeftTileWords[r_N8 * 2], r_LeftTileWords[r_N8 * 2 + 1],
-										r_RightTileWords[r_N8 * 2], r_RightTileWords[r_N8 * 2 + 1]);
-			}
-	FSpatialProjectionTileCoordinates DownsampledCoordinates = TileCoordinates;
-	DownsampledCoordinates.g_TilesHigh = Parameters.DownsampledHeight / 4;
-	DownsampledCoordinates.g_TilesWide = Parameters.DownsampledWidth / 4;
-	DownsampledCoordinates.g_TileY /= 2;
-	DownsampledCoordinates.g_TileX /= 2;
-	PublishSpatialProjection<bFp8, 1, false>(r_Pooled, Parameters.g_DownsampledOutput,
-											 DownsampledCoordinates);
-}
-
-template <bool bFp8, int SpatialTiles, bool bInputPlane = false, bool bOutputPlane = false,
-		  int StageCount = 3, bool bPool = false, typename TParameters>
-__device__ __forceinline__ void RunSpatialProjection(const TParameters& Parameters, unsigned char* s_Storage)
-{
-	using Profile = FSpatialProjectionProfile<bFp8>;
-	const int g_Columns = (Parameters.Width + 7) / 8;
-	const FSpatialProjectionTileCoordinates TileCoordinates{Parameters.Height / 4,
-															Parameters.Width / 4,
-															int(blockIdx.y) * 2,
-															int(blockIdx.x) % g_Columns * 2,
-															int(blockIdx.x) / g_Columns * 256 +
-																(int(threadIdx.y) % 4) * 64,
-															int(threadIdx.x),
-															int(threadIdx.y)};
-	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
-	{
-#pragma unroll
-		for (int s_Stage = 0; s_Stage < StageCount; ++s_Stage)
-			BarrierInit(s_Storage, StageCount * 4096 + s_Stage * 8, blockDim.x * blockDim.y);
-	}
-	__syncthreads();
-
-	uint4 r_Weights[2][4];
-	LoadSpatialProjectionWeights<bFp8>(r_Weights, Parameters.g_PackedWeights, 0, TileCoordinates);
-#pragma unroll
-	for (int StageIndex = 0; StageIndex < StageCount; ++StageIndex)
-		IssueSpatialProjectionInputStage<bFp8, SpatialTiles, StageCount>(s_Storage, Parameters.g_Input,
-																		 StageIndex, TileCoordinates);
-	WaitSpatialProjectionInputStage<StageCount>(s_Storage, 0);
-	FSpatialProjectionAccumulator<SpatialTiles> r_Accumulator;
-	InitializeSpatialProjectionResidual<bFp8, SpatialTiles, bInputPlane>(r_Accumulator, Parameters,
-																		 TileCoordinates);
-
-	// Keep K sequential to retain Half accumulation order and the native ring
-	// lifecycle. Prefetch next weights before waiting, then recycle the old stage.
-#pragma unroll 1
-	for (int ReductionTile = 0; ReductionTile < Profile::ReductionTiles; ++ReductionTile)
-	{
-		uint4 r_Input[SpatialTiles][2];
-#pragma unroll
-		for (int r_Spatial = 0; r_Spatial < SpatialTiles; ++r_Spatial)
-#pragma unroll
-			for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
-				r_Input[r_Spatial][r_KSubtile] =
-					*reinterpret_cast<const uint4*>(s_Storage + (ReductionTile % StageCount) * 4096 +
-													(r_Spatial + TileCoordinates.Warp / 4 * 2) * 1024 +
-													r_KSubtile * 512 + TileCoordinates.Lane * 16);
-		AccumulateTile<Profile::Precision>(r_Accumulator, r_Input, r_Weights);
-		if (ReductionTile + 1 < Profile::ReductionTiles)
-		{
-			LoadSpatialProjectionWeights<bFp8>(r_Weights, Parameters.g_PackedWeights, ReductionTile + 1,
-											   TileCoordinates);
-			WaitSpatialProjectionInputStage<StageCount>(s_Storage, ReductionTile + 1);
-		}
-		if (ReductionTile + StageCount < Profile::ReductionTiles)
-			IssueSpatialProjectionInputStage<bFp8, SpatialTiles, StageCount>(
-				s_Storage, Parameters.g_Input, ReductionTile + StageCount, TileCoordinates);
-	}
-	PublishSpatialProjection<bFp8, SpatialTiles, bOutputPlane>(r_Accumulator, Parameters.g_Output,
-															   TileCoordinates);
 	if constexpr (bPool)
-		PublishPooledSpatialProjection<bFp8>(r_Accumulator, Parameters, TileCoordinates);
+	{
+		// Pool the unquantized accumulators, then publish the single downsampled tile.
+		FSpatialProjectionAccumulator<1> r_Pooled;
+#pragma unroll
+		for (int r_ChannelGroup = 0; r_ChannelGroup < 4; ++r_ChannelGroup)
+#pragma unroll
+			for (int r_N8 = 0; r_N8 < 2; ++r_N8)
+#pragma unroll
+				for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
+				{
+					const auto& r_LeftTileWords =
+						r_Accumulator.r_AccumulatorWords[r_RowHalf * 2][r_ChannelGroup];
+					const auto& r_RightTileWords =
+						r_Accumulator.r_AccumulatorWords[r_RowHalf * 2 + 1][r_ChannelGroup];
+					r_Pooled.r_AccumulatorWords[0][r_ChannelGroup][r_N8 * 2 + r_RowHalf] =
+						PoolHorizontalWords(r_LeftTileWords[r_N8 * 2], r_LeftTileWords[r_N8 * 2 + 1],
+											r_RightTileWords[r_N8 * 2], r_RightTileWords[r_N8 * 2 + 1]);
+				}
+		FSpatialProjectionTileCoordinates DownsampledCoordinates = TileCoordinates;
+		DownsampledCoordinates.g_TilesHigh = Parameters.DownsampledHeight / 4;
+		DownsampledCoordinates.g_TilesWide = Parameters.DownsampledWidth / 4;
+		DownsampledCoordinates.g_TileY /= 2;
+		DownsampledCoordinates.g_TileX /= 2;
+#pragma unroll
+		for (int r_Spatial = 0; r_Spatial < 1; ++r_Spatial)
+		{
+			const int g_Y = DownsampledCoordinates.g_TileY + DownsampledCoordinates.Warp / 4 + r_Spatial / 2;
+			const int g_X = DownsampledCoordinates.g_TileX + r_Spatial % 2;
+			if (g_Y >= DownsampledCoordinates.g_TilesHigh || g_X >= DownsampledCoordinates.g_TilesWide)
+				continue;
+			{
+				const uint64_t g_OutputTileBase =
+					Parameters.g_DownsampledOutput +
+					uint64_t(g_Y * DownsampledCoordinates.g_TilesWide + g_X) * Profile::SpatialTileBytes +
+					DownsampledCoordinates.g_OutputChannel * 16 * Profile::ElementBytes +
+					DownsampledCoordinates.Lane * 16;
+				if constexpr (bFp8)
+				{
+#pragma unroll
+					for (int r_ChannelPair = 0; r_ChannelPair < 2; ++r_ChannelPair)
+					{
+						const auto& r_LowerChannelWords =
+							r_Pooled.r_AccumulatorWords[r_Spatial][2 * r_ChannelPair];
+						const auto& r_UpperChannelWords =
+							r_Pooled.r_AccumulatorWords[r_Spatial][2 * r_ChannelPair + 1];
+						const uint4 r_OutputVector =
+							make_uint4(PackHalfPairsE4(r_LowerChannelWords[0], r_LowerChannelWords[2]),
+									   PackHalfPairsE4(r_LowerChannelWords[1], r_LowerChannelWords[3]),
+									   PackHalfPairsE4(r_UpperChannelWords[0], r_UpperChannelWords[2]),
+									   PackHalfPairsE4(r_UpperChannelWords[1], r_UpperChannelWords[3]));
+						StoreNoAllocate(g_OutputTileBase + r_ChannelPair * 512, r_OutputVector);
+					}
+				}
+				else
+				{
+#pragma unroll
+					for (int r_ChannelGroup = 0; r_ChannelGroup < 4; ++r_ChannelGroup)
+					{
+						const auto& r_AccumulatorWords =
+							r_Pooled.r_AccumulatorWords[r_Spatial][r_ChannelGroup];
+						StoreNoAllocate(g_OutputTileBase + r_ChannelGroup * 512,
+										make_uint4(r_AccumulatorWords[0], r_AccumulatorWords[1],
+												   r_AccumulatorWords[2], r_AccumulatorWords[3]));
+					}
+				}
+			}
+		}
+	}
 }
 #endif

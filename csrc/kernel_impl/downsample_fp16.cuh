@@ -24,9 +24,8 @@ extern "C" __global__ __maxnreg__(168) void input_preprocess_window_downsample_c
 	FInputPreprocessWindowDownsampleC32Fp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	__shared__ FSharedFeatures s_Features;
 	const FPreprocessParameters& InputParameters = Parameters;
-	RunPreprocess<false, true>(InputParameters, s_Features);
+	RunPreprocess<false, true>(InputParameters);
 #endif
 }
 
@@ -39,10 +38,7 @@ extern "C" __global__
 	__maxnreg__(168) void window_block_c32_downsample_fp16(FWindowBlockC32DownsampleFp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	const FWindowDownsampleArguments Arguments = MakeWindowDownsampleArguments<32, false>(Parameters);
-	FWindowAccumulatorTile<32> r_WindowOutput[4];
-	RunWindow32<false, FWindowDownsampleArguments, FOrdinaryWindowIO, true>(Arguments, r_WindowOutput);
-	ProjectWindowDownsample32<false>(Arguments, PublishWindow32<false>(PoolWindow(r_WindowOutput)));
+	RunWindowDownsample<32, false>(Parameters);
 #endif
 }
 
@@ -55,12 +51,7 @@ extern "C" __global__
 	__maxnreg__(168) void window_block_c64_downsample_fp16(FWindowBlockC64DownsampleFp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	const FWindowDownsampleArguments Arguments = MakeWindowDownsampleArguments<64, false>(Parameters);
-	FWindowAccumulatorTile<32> r_WindowOutput[4];
-	__shared__ FSharedWindow<64, false> s_Window;
-	RunWindowWide<64, false, FTiledWindowIO<64, false>, true>(Arguments, s_Window, r_WindowOutput);
-	ProjectWindowDownsample<64, false>(Arguments, PublishWindow32<false>(PoolWindow(r_WindowOutput)),
-									   s_Window);
+	RunWindowDownsample<64, false>(Parameters);
 #endif
 }
 
@@ -73,12 +64,7 @@ extern "C" __global__ __maxnreg__(168) void window_block_c128_downsample_fp16(
 	FWindowBlockC128DownsampleFp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	const FWindowDownsampleArguments Arguments = MakeWindowDownsampleArguments<128, false>(Parameters);
-	FWindowAccumulatorTile<32> r_WindowOutput[4];
-	__shared__ FSharedWindow<128, false> s_Window;
-	RunWindowWide<128, false, FTiledWindowIO<128, false>, true>(Arguments, s_Window, r_WindowOutput);
-	ProjectWindowDownsample<128, false>(Arguments, PublishWindow32<false>(PoolWindow(r_WindowOutput)),
-										s_Window);
+	RunWindowDownsample<128, false>(Parameters);
 #endif
 }
 
@@ -91,12 +77,7 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 	FWindowBlockC256DownsampleFp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	const FWindowDownsampleArguments Arguments = MakeWindowDownsampleArguments<256, false>(Parameters);
-	FWindowAccumulatorTile<32> r_WindowOutput[4];
-	__shared__ FSharedWindow<256, false> s_Window;
-	RunWindowWide<256, false, FTiledWindowIO<256, false>, true>(Arguments, s_Window, r_WindowOutput);
-	ProjectWindowDownsample<256, false>(Arguments, PublishWindow32<false>(PoolWindow(r_WindowOutput)),
-										s_Window);
+	RunWindowDownsample<256, false>(Parameters);
 #endif
 }
 
@@ -109,7 +90,6 @@ extern "C" __global__ __maxnreg__(168) void window_attention_projection_pool_c51
 	FWindowAttentionProjectionPoolC512Fp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	__shared__ __align__(512) unsigned char s_Storage[8208];
 	const FSpatialProjectionArguments Arguments{Parameters.g_Input,
 												Parameters.g_Residual,
 												Parameters.g_Output,
@@ -119,6 +99,6 @@ extern "C" __global__ __maxnreg__(168) void window_attention_projection_pool_c51
 												Parameters.g_DownsampledOutput,
 												int(Parameters.DownsampledHeight),
 												int(Parameters.DownsampledWidth)};
-	RunSpatialProjection<false, 4, false, false, 2, true>(Arguments, s_Storage);
+	RunSpatialProjection<false, 4, false, false, 2, true>(Arguments);
 #endif
 }

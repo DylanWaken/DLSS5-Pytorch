@@ -38,6 +38,7 @@ __device__ __forceinline__ uint32_t PermuteNoise(uint32_t r_HashState)
 	return (r_ShiftedHash ^ r_HashState) * CONST_NOISE_PERMUTE_MULTIPLIER;
 }
 
+// Independent per-pixel noise transform; kept separate from feature staging to expose its hash/Gaussian math.
 __device__ __forceinline__ float3 PixelNoise(uint32_t NoiseSeed, int PixelX, int PixelY)
 {
 	// Local constexpr tables let the unrolled stream index become an immediate
@@ -77,51 +78,12 @@ __device__ __forceinline__ float3 PixelNoise(uint32_t NoiseSeed, int PixelX, int
 							__uint_as_float(NativeCosApproxFtzF32(__float_as_uint(r_Angle[1])))));
 }
 
+// Reused for current/depth/motion/conditioning texture samples in the preprocessing loop.
 __device__ __forceinline__ float4 SampleTransformed(uint64_t Texture, const FTextureTransform& Transform,
 													float2 Uv)
 {
 	const float2 Coordinates = TransformTextureCoordinates(Transform, Uv.x, Uv.y);
 	return SampleTexture(Texture, Coordinates.x, Coordinates.y);
-}
-
-__device__ __forceinline__ float2 SelectMotionOffset(const FPreprocessParameters& Parameters, float2 Uv)
-{
-	float2 SelectedMotionOffset = make_float2(CONST_ZERO, CONST_ZERO);
-	if (!Parameters.DepthTexture)
-		return SelectedMotionOffset;
-	const float DepthTexelWidth = NativeFloatReciprocal(Parameters.DepthTransform.ScaleX);
-	const float DepthTexelHeight = NativeFloatReciprocal(Parameters.DepthTransform.ScaleY);
-	float r_BestDepth = SampleTransformed(Parameters.DepthTexture, Parameters.DepthTransform, Uv).x;
-// The four diagonal candidates are visited TL, TR, BL, BR. Ties and NaNs
-// retain the prior sample, exactly as the native unordered comparisons do.
-#pragma unroll
-	for (int Corner = 0; Corner < 4; ++Corner)
-	{
-		const float OffsetX = (Corner & 1) ? DepthTexelWidth : -DepthTexelWidth;
-		const float OffsetY = (Corner & 2) ? DepthTexelHeight : -DepthTexelHeight;
-		const float2 CandidateUv = make_float2((Corner & 1) ? NativeFloatAdd(Uv.x, DepthTexelWidth)
-															: NativeFloatSubtract(Uv.x, DepthTexelWidth),
-											   (Corner & 2) ? NativeFloatAdd(Uv.y, DepthTexelHeight)
-															: NativeFloatSubtract(Uv.y, DepthTexelHeight));
-		const float r_CandidateDepth =
-			SampleTransformed(Parameters.DepthTexture, Parameters.DepthTransform, CandidateUv).x;
-		const bool bKeepPreviousDepth =
-			Parameters.bPreferGreaterDepth
-				? NativeSetpLeuFtzF32(__float_as_uint(r_CandidateDepth), __float_as_uint(r_BestDepth))
-				: NativeSetpGeuFtzF32(__float_as_uint(r_CandidateDepth), __float_as_uint(r_BestDepth));
-		if (!bKeepPreviousDepth)
-		{
-			SelectedMotionOffset = make_float2(OffsetX, OffsetY);
-			r_BestDepth = r_CandidateDepth;
-		}
-	}
-	SelectedMotionOffset.x =
-		NativeFloatMultiply(SelectedMotionOffset.x, NativeFloatDivide(Parameters.DepthTransform.ScaleX,
-																	  Parameters.MotionTransform.ScaleX));
-	SelectedMotionOffset.y =
-		NativeFloatMultiply(SelectedMotionOffset.y, NativeFloatDivide(Parameters.DepthTransform.ScaleY,
-																	  Parameters.MotionTransform.ScaleY));
-	return SelectedMotionOffset;
 }
 
 __device__ __forceinline__ uint16_t ConvertFeatureToHalf(float r_InputValue)
@@ -143,93 +105,4 @@ __device__ __forceinline__ uint16_t ConditionColor(float r_ColorSample, uint16_t
 		r_ColorScaleHalf);
 }
 
-__device__ __forceinline__ void FillFeatures(const FPreprocessParameters& Parameters,
-											 FSharedFeatures& s_Features)
-{
-	const float Width = __int2float_rn(Parameters.ValidWidth);
-	const float Height = __int2float_rn(Parameters.ValidHeight);
-	const uint16_t r_ColorScale =
-		ConvertFeatureToHalf(NativeFloatAdd(Parameters.ColorScale, Parameters.ColorScale));
-	for (int s_Pixel = 32 * threadIdx.y + threadIdx.x; s_Pixel < 64; s_Pixel += 32 * blockDim.y)
-	{
-		const int g_X = 8 * blockIdx.x + (s_Pixel & 7), g_Y = 8 * blockIdx.y + s_Pixel / 8;
-		// Image lookup reflects one border extension; noise still uses original
-		// coordinates. This distinction matters in the padded network field.
-		const int g_ReflectedX = g_X < Parameters.ValidWidth ? g_X : 2 * Parameters.ValidWidth - g_X - 2;
-		const int g_ReflectedY = g_Y < Parameters.ValidHeight ? g_Y : 2 * Parameters.ValidHeight - g_Y - 2;
-		const float2 Uv = make_float2(
-			NativeFloatDivide(NativeFloatAdd(__int2float_rn(g_ReflectedX), CONST_PIXEL_CENTER), Width),
-			NativeFloatDivide(NativeFloatAdd(__int2float_rn(g_ReflectedY), CONST_PIXEL_CENTER), Height));
-		const float3 r_Noise = PixelNoise(Parameters.NoiseSeed, g_X, g_Y);
-		const float4 r_Current =
-			SampleTransformed(Parameters.CurrentTexture, Parameters.CurrentTransform, Uv);
-		uint16_t r_CurrentHalf[3], r_HistoryHalf[3];
-#pragma unroll
-		for (int r_Channel = 0; r_Channel < 3; ++r_Channel)
-			r_HistoryHalf[r_Channel] = r_CurrentHalf[r_Channel] =
-				ConditionColor((&r_Current.x)[r_Channel], r_ColorScale);
-		if (Parameters.HistoryTexture && Parameters.MotionTexture)
-		{
-			const float2 MotionSampleOffset = SelectMotionOffset(Parameters, Uv);
-			const float4 r_Motion =
-				SampleTransformed(Parameters.MotionTexture, Parameters.MotionTransform,
-								  make_float2(NativeFloatAdd(Uv.x, MotionSampleOffset.x),
-											  NativeFloatAdd(Uv.y, MotionSampleOffset.y)));
-			const float2 PreviousUv = make_float2(NativeFloatFma(r_Motion.x, Parameters.MotionScaleX, Uv.x),
-												  NativeFloatFma(r_Motion.y, Parameters.MotionScaleY, Uv.y));
-			const float3 r_History = ReconstructHistory(
-				Parameters.HistoryTexture, Parameters.HistoryTransform, PreviousUv, Width, Height);
-#pragma unroll
-			for (int r_Channel = 0; r_Channel < 3; ++r_Channel)
-				r_HistoryHalf[r_Channel] = ConditionColor((&r_History.x)[r_Channel], r_ColorScale);
-		}
-
-		float r_ConditioningGreen = Parameters.ConditioningGreen,
-			  r_ConditioningBlue = Parameters.ConditioningBlue;
-		float r_ConditioningOverrideGreen = Parameters.bConditioningOverride ? -CONST_UNIT : CONST_ZERO;
-		float r_ConditioningOverrideBlue = r_ConditioningOverrideGreen;
-		if (Parameters.bConditioningOverride && !Parameters.ConditioningTexture)
-		{
-			const bool bExplicitConditioningOverride =
-				NativeSetpGeFtzF32(__float_as_uint(NativeFloatMaximum(Parameters.ConditioningOverrideGreen,
-																	  Parameters.ConditioningOverrideBlue)),
-								   __float_as_uint(CONST_ZERO));
-			if (bExplicitConditioningOverride)
-			{
-				r_ConditioningBlue = CONST_UNIT;
-				r_ConditioningOverrideGreen =
-					NativeSetpLtuFtzF32(__float_as_uint(Parameters.ConditioningOverrideGreen),
-										__float_as_uint(CONST_ZERO))
-						? Parameters.ConditioningBlue
-						: Parameters.ConditioningOverrideGreen;
-				r_ConditioningOverrideBlue =
-					NativeSetpLtuFtzF32(__float_as_uint(Parameters.ConditioningOverrideBlue),
-										__float_as_uint(CONST_ZERO))
-						? Parameters.ConditioningBlue
-						: Parameters.ConditioningOverrideBlue;
-			}
-		}
-		else if (Parameters.ConditioningTexture)
-		{
-			const float4 r_Conditioning =
-				SampleTransformed(Parameters.ConditioningTexture, Parameters.ConditioningTransform, Uv);
-			r_ConditioningGreen = NativeFloatMultiply(r_Conditioning.y, r_ConditioningGreen);
-			r_ConditioningBlue = NativeFloatMultiply(r_Conditioning.z, r_ConditioningBlue);
-		}
-		s_Features.s_Plane[0][s_Pixel] = make_uint4(
-			PackFeatureHalfWords(ConvertFeatureToHalf(r_Noise.x), ConvertFeatureToHalf(r_Noise.y)),
-			PackFeatureHalfWords(ConvertFeatureToHalf(r_Noise.z), ConvertFeatureToHalf(CONST_UNIT)),
-			PackFeatureHalfWords(r_CurrentHalf[0], r_CurrentHalf[1]),
-			PackFeatureHalfWords(r_CurrentHalf[2], r_HistoryHalf[0]));
-		s_Features.s_Plane[1][s_Pixel] =
-			make_uint4(PackFeatureHalfWords(r_HistoryHalf[1], r_HistoryHalf[2]),
-					   PackFeatureHalfWords(ConvertFeatureToHalf(Parameters.ConstantConditioning),
-											ConvertFeatureToHalf(r_ConditioningGreen)),
-					   PackFeatureHalfWords(ConvertFeatureToHalf(r_ConditioningBlue),
-											ConvertFeatureToHalf(r_ConditioningOverrideGreen)),
-					   PackFeatureHalfWords(ConvertFeatureToHalf(r_ConditioningOverrideBlue),
-											ConvertFeatureToHalf(CONST_ZERO)));
-	}
-	__syncthreads();
-}
 #endif

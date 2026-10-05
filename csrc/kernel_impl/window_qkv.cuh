@@ -28,74 +28,79 @@ struct FWindowQkvCoordinates
 	int Lane, Warp;
 };
 
-template <bool bFp8>
-__device__ __forceinline__ void
-LoadWindowQkvWeights(uint4 (&r_Weights)[FWindowQkvProfile<bFp8>::KSubtiles][6], uint64_t g_PackedWeights,
-					 int ReductionTile, const FWindowQkvCoordinates& TileCoordinates)
+template <bool bFp8, typename TParameters>
+__device__ __forceinline__ void RunWindowQkv(const TParameters& Parameters)
 {
 	using Profile = FWindowQkvProfile<bFp8>;
-	const uint64_t g_WeightTileBase =
-		g_PackedWeights + uint64_t(ReductionTile * Profile::ReductionStep) * 1536 * Profile::ElementBytes +
-		TileCoordinates.g_Head * 3072 + TileCoordinates.Lane * 16;
-#pragma unroll
-	for (int r_KSubtile = 0; r_KSubtile < Profile::KSubtiles; ++r_KSubtile)
-#pragma unroll
-		for (int r_NTile = 0; r_NTile < 6; ++r_NTile)
-			r_Weights[r_KSubtile][r_NTile] =
-				__ldca(reinterpret_cast<const uint4*>(g_WeightTileBase + r_KSubtile * 49152 + r_NTile * 512));
-}
-
-template <bool bFp8>
-__device__ __forceinline__ void IssueWindowQkvStage(unsigned char* s_Storage, uint64_t g_Input,
-													int ReductionTile,
-													const FWindowQkvCoordinates& TileCoordinates)
-{
-	using Profile = FWindowQkvProfile<bFp8>;
-	const int s_Barrier = Profile::s_BarrierBase + (ReductionTile % 2) * 8;
-#pragma unroll
-	for (int CopyIndex = 0; CopyIndex < (bFp8 ? 2 : 1); ++CopyIndex)
+	__shared__ __align__(512) unsigned char s_Storage[Profile::s_BarrierBase + 16];
+	const FWindowQkvCoordinates TileCoordinates{Parameters.Height / 4,
+												Parameters.Width / 4,
+												(int(blockIdx.y) * 8 + Parameters.OriginY) / 4,
+												(int(blockIdx.x) * 8 + Parameters.OriginX) / 4,
+												int(blockIdx.z) * 4 + int(threadIdx.y),
+												int(threadIdx.x),
+												int(threadIdx.y)};
+	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 	{
-		const int g_LocalY = bFp8 ? CopyIndex : TileCoordinates.Warp / 2;
-		const int g_LocalX = bFp8 ? TileCoordinates.Warp / 2 : TileCoordinates.Warp % 2;
-		const int KSubtileIndex = bFp8 ? TileCoordinates.Warp % 2 : 0;
-		const int g_Y = TileCoordinates.g_TilesHigh == 1 ? 0 : TileCoordinates.g_TileY + g_LocalY;
-		const int g_X = TileCoordinates.g_TilesWide == 1 ? 0 : TileCoordinates.g_TileX + g_LocalX;
-		const int s_Destination = (ReductionTile % 2) * Profile::s_StageBytes +
-								  ((g_LocalY * 2 + g_LocalX) * Profile::KSubtiles + KSubtileIndex) * 512;
-		if (g_Y >= 0 && g_Y < TileCoordinates.g_TilesHigh && g_X >= 0 && g_X < TileCoordinates.g_TilesWide)
-		{
-			const uint64_t g_Source =
-				g_Input + uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X) * 8192 * Profile::ElementBytes +
-				(ReductionTile * Profile::KSubtiles + KSubtileIndex) * 512;
-			if (Elected(0xffffffffu))
-			{
-				CopyBulk(s_Storage, s_Destination, g_Source, 512, s_Barrier);
-				BarrierExpect(s_Storage, s_Barrier, 512);
-			}
-		}
-		else
-			*reinterpret_cast<uint4*>(s_Storage + s_Destination + TileCoordinates.Lane * 16) =
-				make_uint4(0, 0, 0, 0);
+		BarrierInit(s_Storage, Profile::s_BarrierBase, 128);
+		BarrierInit(s_Storage, Profile::s_BarrierBase + 8, 128);
 	}
-}
-
-template <bool bFp8>
-__device__ __forceinline__ void WaitWindowQkvStage(unsigned char* s_Storage, int ReductionTile)
-{
-	const int s_Barrier = FWindowQkvProfile<bFp8>::s_BarrierBase + (ReductionTile % 2) * 8;
-	ArriveAndWait(s_Storage, s_Barrier);
-}
-
-template <bool bFp8>
-__device__ __forceinline__ void
-ProjectWindowQkvDense(FWindowQkvDenseTile& r_Projected, unsigned char* s_Storage, uint64_t g_Input,
-					  uint64_t g_PackedWeights, const FWindowQkvCoordinates& TileCoordinates)
-{
-	using Profile = FWindowQkvProfile<bFp8>;
+	__syncthreads();
+	FWindowQkvDenseTile r_Projected{};
 	uint4 r_Weights[Profile::KSubtiles][6];
-	LoadWindowQkvWeights<bFp8>(r_Weights, g_PackedWeights, 0, TileCoordinates);
-	IssueWindowQkvStage<bFp8>(s_Storage, g_Input, 0, TileCoordinates);
-	WaitWindowQkvStage<bFp8>(s_Storage, 0);
+	const auto LoadWeights = [&](int ReductionTile)
+	{
+		const uint64_t g_WeightTileBase =
+			Parameters.g_PackedWeights +
+			uint64_t(ReductionTile * Profile::ReductionStep) * 1536 * Profile::ElementBytes +
+			TileCoordinates.g_Head * 3072 + TileCoordinates.Lane * 16;
+#pragma unroll
+		for (int r_KSubtile = 0; r_KSubtile < Profile::KSubtiles; ++r_KSubtile)
+#pragma unroll
+			for (int r_NTile = 0; r_NTile < 6; ++r_NTile)
+				r_Weights[r_KSubtile][r_NTile] = __ldca(
+					reinterpret_cast<const uint4*>(g_WeightTileBase + r_KSubtile * 49152 + r_NTile * 512));
+	};
+	const auto IssueInput = [&](int ReductionTile)
+	{
+		const int s_Barrier = Profile::s_BarrierBase + (ReductionTile % 2) * 8;
+#pragma unroll
+		for (int CopyIndex = 0; CopyIndex < (bFp8 ? 2 : 1); ++CopyIndex)
+		{
+			const int g_LocalY = bFp8 ? CopyIndex : TileCoordinates.Warp / 2;
+			const int g_LocalX = bFp8 ? TileCoordinates.Warp / 2 : TileCoordinates.Warp % 2;
+			const int KSubtileIndex = bFp8 ? TileCoordinates.Warp % 2 : 0;
+			const int g_Y = TileCoordinates.g_TilesHigh == 1 ? 0 : TileCoordinates.g_TileY + g_LocalY;
+			const int g_X = TileCoordinates.g_TilesWide == 1 ? 0 : TileCoordinates.g_TileX + g_LocalX;
+			const int s_Destination = (ReductionTile % 2) * Profile::s_StageBytes +
+									  ((g_LocalY * 2 + g_LocalX) * Profile::KSubtiles + KSubtileIndex) * 512;
+			if (g_Y >= 0 && g_Y < TileCoordinates.g_TilesHigh && g_X >= 0 &&
+				g_X < TileCoordinates.g_TilesWide)
+			{
+				const uint64_t g_Source =
+					Parameters.g_Input +
+					uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X) * 8192 * Profile::ElementBytes +
+					(ReductionTile * Profile::KSubtiles + KSubtileIndex) * 512;
+				if (Elected(0xffffffffu))
+				{
+					CopyBulk(s_Storage, s_Destination, g_Source, 512, s_Barrier);
+					BarrierExpect(s_Storage, s_Barrier, 512);
+				}
+			}
+			else
+				*reinterpret_cast<uint4*>(s_Storage + s_Destination + TileCoordinates.Lane * 16) =
+					make_uint4(0, 0, 0, 0);
+		}
+	};
+	const auto WaitInput = [&](int ReductionTile)
+	{
+		const int s_Barrier = FWindowQkvProfile<bFp8>::s_BarrierBase + (ReductionTile % 2) * 8;
+		ArriveAndWait(s_Storage, s_Barrier);
+	};
+
+	LoadWeights(0);
+	IssueInput(0);
+	WaitInput(0);
 
 	// Native Half uses K16 and a 2 KiB stage. FP8 uses two K32 instructions
 	// and a 4 KiB stage. Both schedules ping-pong between two input stages.
@@ -103,7 +108,7 @@ ProjectWindowQkvDense(FWindowQkvDenseTile& r_Projected, unsigned char* s_Storage
 	for (int ReductionTile = 0; ReductionTile < Profile::ReductionTiles; ++ReductionTile)
 	{
 		if (ReductionTile + 1 < Profile::ReductionTiles)
-			IssueWindowQkvStage<bFp8>(s_Storage, g_Input, ReductionTile + 1, TileCoordinates);
+			IssueInput(ReductionTile + 1);
 		uint4 r_Input[4][Profile::KSubtiles];
 #pragma unroll
 		for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
@@ -138,32 +143,10 @@ ProjectWindowQkvDense(FWindowQkvDenseTile& r_Projected, unsigned char* s_Storage
 		}
 		if (ReductionTile + 1 < Profile::ReductionTiles)
 		{
-			LoadWindowQkvWeights<bFp8>(r_Weights, g_PackedWeights, ReductionTile + 1, TileCoordinates);
-			WaitWindowQkvStage<bFp8>(s_Storage, ReductionTile + 1);
+			LoadWeights(ReductionTile + 1);
+			WaitInput(ReductionTile + 1);
 		}
 	}
-}
-
-template <bool bFp8, typename TParameters>
-__device__ __forceinline__ void RunWindowQkv(const TParameters& Parameters, unsigned char* s_Storage)
-{
-	using Profile = FWindowQkvProfile<bFp8>;
-	const FWindowQkvCoordinates TileCoordinates{Parameters.Height / 4,
-												Parameters.Width / 4,
-												(int(blockIdx.y) * 8 + Parameters.OriginY) / 4,
-												(int(blockIdx.x) * 8 + Parameters.OriginX) / 4,
-												int(blockIdx.z) * 4 + int(threadIdx.y),
-												int(threadIdx.x),
-												int(threadIdx.y)};
-	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
-	{
-		BarrierInit(s_Storage, Profile::s_BarrierBase, 128);
-		BarrierInit(s_Storage, Profile::s_BarrierBase + 8, 128);
-	}
-	__syncthreads();
-	FWindowQkvDenseTile r_Projected{};
-	ProjectWindowQkvDense<bFp8>(r_Projected, s_Storage, Parameters.g_Input, Parameters.g_PackedWeights,
-								TileCoordinates);
 
 	FWindowActivationTile<bFp8> r_Query[4], r_Key[4];
 	FWindowValueTile<bFp8> r_Value[4];
@@ -214,7 +197,18 @@ __device__ __forceinline__ void RunWindowQkv(const TParameters& Parameters, unsi
 		for (int r_FirstTile = 0; r_FirstTile < 4; r_FirstTile += 2)
 		{
 			FWindowActivationTile<true> r_Attended[2];
-			AttendPairWithBias<true>(r_FirstTile, g_HeadBias, r_Query, r_Key, r_Value, r_Attended);
+			// Two adjacent query tiles share one warp transpose for their four
+			// row-half denominator vectors, matching the recovered native schedule.
+			FWindowAccumulatorTile<64> r_Probabilities[2];
+#pragma unroll
+			for (int r_LocalTile = 0; r_LocalTile < 2; ++r_LocalTile)
+				r_Probabilities[r_LocalTile] =
+					QueryKeyScores<true>(r_FirstTile + r_LocalTile, g_HeadBias, r_Query, r_Key);
+			SoftmaxWindowPair(r_Probabilities);
+#pragma unroll
+			for (int r_LocalTile = 0; r_LocalTile < 2; ++r_LocalTile)
+				r_Attended[r_LocalTile] =
+					PublishWindow32<true>(ProbabilityValues<true>(r_Probabilities[r_LocalTile], r_Value));
 #pragma unroll
 			for (int r_LocalTile = 0; r_LocalTile < 2; ++r_LocalTile)
 			{

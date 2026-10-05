@@ -9,32 +9,32 @@
 <rect x="295" y="99" width="16" height="16" fill="#127e89"/><text x="320" y="113" font-size="14">CUDA/C++ reconstruction</text>
 <text x="42" y="171" font-size="19" font-weight="600">720p</text>
 <text x="42" y="192" font-size="12" class="muted">1280 × 720</text>
-<rect x="188" y="155" width="214.48" height="21" rx="4" fill="#7893b5"/>
-<text x="412.48" y="171" font-size="14">3.710 ms</text>
-<rect x="188" y="182" width="211.55" height="21" rx="4" fill="#127e89"/>
-<text x="409.55" y="198" font-size="14">3.659 ms</text>
-<text x="1015" y="184" text-anchor="middle" font-size="18" font-weight="600">-1.46%</text>
+<rect x="188" y="155" width="212.34" height="21" rx="4" fill="#7893b5"/>
+<text x="410.34" y="171" font-size="14">3.714 ms</text>
+<rect x="188" y="182" width="208.28" height="21" rx="4" fill="#127e89"/>
+<text x="406.28" y="198" font-size="14">3.643 ms</text>
+<text x="1015" y="184" text-anchor="middle" font-size="18" font-weight="600">-1.99%</text>
 <text x="42" y="256" font-size="19" font-weight="600">1080p</text>
 <text x="42" y="277" font-size="12" class="muted">1920 × 1080</text>
-<rect x="188" y="240" width="256.66" height="21" rx="4" fill="#7893b5"/>
-<text x="454.66" y="256" font-size="14">4.440 ms</text>
-<rect x="188" y="267" width="251.78" height="21" rx="4" fill="#127e89"/>
-<text x="449.78" y="283" font-size="14">4.355 ms</text>
-<text x="1015" y="269" text-anchor="middle" font-size="18" font-weight="600">-1.81%</text>
-<text x="42" y="341" font-size="19" font-weight="600">2K / 1440p</text>
+<rect x="188" y="240" width="254.91" height="21" rx="4" fill="#7893b5"/>
+<text x="452.91" y="256" font-size="14">4.459 ms</text>
+<rect x="188" y="267" width="250.25" height="21" rx="4" fill="#127e89"/>
+<text x="448.25" y="283" font-size="14">4.378 ms</text>
+<text x="1015" y="269" text-anchor="middle" font-size="18" font-weight="600">-1.83%</text>
+<text x="42" y="341" font-size="19" font-weight="600">2K</text>
 <text x="42" y="362" font-size="12" class="muted">2560 × 1440</text>
-<rect x="188" y="325" width="349.13" height="21" rx="4" fill="#7893b5"/>
-<text x="547.13" y="341" font-size="14">6.039 ms</text>
-<rect x="188" y="352" width="343.22" height="21" rx="4" fill="#127e89"/>
-<text x="541.22" y="368" font-size="14">5.937 ms</text>
+<rect x="188" y="325" width="349.64" height="21" rx="4" fill="#7893b5"/>
+<text x="547.64" y="341" font-size="14">6.116 ms</text>
+<rect x="188" y="352" width="343.86" height="21" rx="4" fill="#127e89"/>
+<text x="541.86" y="368" font-size="14">6.015 ms</text>
 <text x="1015" y="354" text-anchor="middle" font-size="18" font-weight="600">-1.62%</text>
 <text x="42" y="426" font-size="19" font-weight="600">4K</text>
 <text x="42" y="447" font-size="12" class="muted">3840 × 2160</text>
 <rect x="188" y="410" width="670.00" height="21" rx="4" fill="#7893b5"/>
-<text x="868.00" y="426" font-size="14">11.590 ms</text>
-<rect x="188" y="437" width="655.33" height="21" rx="4" fill="#127e89"/>
-<text x="853.33" y="453" font-size="14">11.336 ms</text>
-<text x="1015" y="439" text-anchor="middle" font-size="18" font-weight="600">-2.29%</text>
+<text x="868.00" y="426" font-size="14">11.720 ms</text>
+<rect x="188" y="437" width="655.26" height="21" rx="4" fill="#127e89"/>
+<text x="853.26" y="453" font-size="14">11.462 ms</text>
+<text x="1015" y="439" text-anchor="middle" font-size="18" font-weight="600">-2.22%</text>
 <text x="42" y="512" font-size="14" class="muted">64 alternating pairs; paired-ratio medians. Both execution orders pass the 1% gate at every size.</text>
-<text x="42" y="537" font-size="13" class="muted">Excludes input/output stages and DLL host work. Data: semantic_deployment_measurements.json.</text>
+<text x="42" y="537" font-size="13" class="muted">Excludes input/output stages and DLL host work. Data: kernel_locality_deployment_measurements.json.</text>
 </svg>

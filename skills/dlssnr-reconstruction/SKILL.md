@@ -286,3 +286,25 @@ its explicit `.reg` names during a C++ naming-only pass.
 Record scope-specific rename maps: the same spelling can denote a host tensor in
 one function and a real global pointer in another. Compare tokens and ABI fields,
 rebuild and inspect compiled code before carrying forward performance evidence.
+
+## Keep the kernel schedule in one readable body
+
+Use `docs/KERNEL_READING_GUIDE.md` to locate the canonical implementation before
+editing an exported ABI adapter. Each main function must expose its ownership,
+storage, pipeline prefill, main loops, synchronization/recycling and writebacks.
+Move one-use stage/epilogue helpers into that body. Local lambdas may share
+repeated prefill/refill or publication logic; their definitions must be visible
+inside the same function. Avoid a new layer of forwarding wrappers.
+
+Keep external helpers only for intrinsics or substantial reused computation.
+Common MMA/normalization and fused window blocks are valid examples. Record
+their actual users and the storage/arithmetic contract they preserve. Shared
+slabs reused by fused stages remain explicitly caller-owned; do not allocate
+duplicate slabs solely to make a helper self-contained.
+
+Source localization can change lifetime, FMA contraction, predicate scope or
+compiler scheduling. Preserve native operation order and every rounding and
+synchronization point. Rebuild and compare all exported GPU instructions,
+constants and resources, then run the affected numerical/graph checks. If
+compiled code changes, qualify its latency and inspect SASS/profiler evidence
+before claiming the previous speed result still applies.

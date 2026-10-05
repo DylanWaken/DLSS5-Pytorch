@@ -12,22 +12,8 @@ struct FWindowDownsampleArguments
 	int Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth;
 };
 
-template <int Channels, bool bFp8, class FParameters>
-__device__ __forceinline__ FWindowDownsampleArguments
-MakeWindowDownsampleArguments(const FParameters& SourceParameters)
-{
-	return {SourceParameters.g_Input,
-			SourceParameters.g_Output,
-			SourceParameters.g_PackedWeights,
-			SourceParameters.g_DownsampledOutput,
-			SourceParameters.Height,
-			SourceParameters.Width,
-			SourceParameters.OriginX,
-			SourceParameters.OriginY,
-			SourceParameters.DownsampledHeight,
-			SourceParameters.DownsampledWidth};
-}
-
+// Shared by fused window downsampling and the frontend downsample adapter.
+// Both publish the same physical channel planes and clear the same padded cells.
 template <int Channels, bool bFp8>
 __device__ __forceinline__ void PublishWindowDownsample(const FWindowDownsampleArguments& Parameters,
 														int OutputPanel,
@@ -126,47 +112,63 @@ __device__ __forceinline__ void ClearDownsamplePadding(const FWindowDownsampleAr
 	}
 }
 
-template <int Channels, bool bFp8>
-__device__ __forceinline__ void ProjectWindowDownsample(const FWindowDownsampleArguments& Parameters,
-														const FWindowActivationTile<bFp8>& r_Pooled,
-														FSharedWindow<Channels, bFp8>& s_Window)
+template <int Channels, bool bFp8, typename TParameters>
+__device__ __forceinline__ void RunWindowDownsample(const TParameters& Parameters)
 {
-	using FConfig = FWideWindowProfile<Channels, bFp8>;
-	s_Window.Store(0, threadIdx.y, r_Pooled);
-	__syncthreads();
-	const auto* g_Weights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights) +
-							FConfig::AttentionScaleOffset + 2 * Channels;
-#pragma unroll 1
-	for (int OutputHalf = 0; OutputHalf < 2; ++OutputHalf)
+	const FWindowDownsampleArguments Arguments{Parameters.g_Input,
+											   Parameters.g_Output,
+											   Parameters.g_PackedWeights,
+											   Parameters.g_DownsampledOutput,
+											   Parameters.Height,
+											   Parameters.Width,
+											   Parameters.OriginX,
+											   Parameters.OriginY,
+											   Parameters.DownsampledHeight,
+											   Parameters.DownsampledWidth};
+	FWindowAccumulatorTile<32> r_WindowOutput[4];
+	if constexpr (Channels == 32)
 	{
-		FWindowAccumulatorTile<32> r_Output{};
+		RunWindow32<bFp8, FWindowDownsampleArguments, FOrdinaryWindowIO, true>(Arguments, r_WindowOutput);
+		const auto r_Pooled = PublishWindow32<bFp8>(PoolWindow(r_WindowOutput));
+		const auto* g_Weights = reinterpret_cast<const unsigned char*>(Arguments.g_PackedWeights) +
+								FWindow32Profile<bFp8>::AttentionScaleOffset + 64;
 #pragma unroll
-		for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
+		for (int OutputPanel = 0; OutputPanel < 2; ++OutputPanel)
 		{
-			const auto r_Weights = LoadWindowWeights<bFp8>(
-				g_Weights, 32 * threadIdx.y + OutputHalf * Channels, 32 * PanelIndex, 2 * Channels);
-			LinearWindow32(s_Window.Load(0, PanelIndex), r_Weights, r_Output);
+			FWindowAccumulatorTile<32> r_Output{};
+			LinearWindow32(r_Pooled, LoadWindowWeights<bFp8>(g_Weights, 32 * OutputPanel, 0, 64), r_Output);
+			PublishWindowDownsample<32, bFp8>(Arguments, OutputPanel, r_Output);
 		}
-		PublishWindowDownsample<Channels, bFp8>(Parameters, threadIdx.y + OutputHalf * FConfig::Heads,
-												r_Output);
+		ClearDownsamplePadding<32>(Arguments);
 	}
-	__syncthreads();
-	ClearDownsamplePadding<Channels>(Parameters);
-}
-
-template <bool bFp8>
-__device__ __forceinline__ void ProjectWindowDownsample32(const FWindowDownsampleArguments& Parameters,
-														  const FWindowActivationTile<bFp8>& r_Pooled)
-{
-	const auto* g_Weights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights) +
-							FWindow32Profile<bFp8>::AttentionScaleOffset + 64;
-#pragma unroll
-	for (int OutputPanel = 0; OutputPanel < 2; ++OutputPanel)
+	else
 	{
-		FWindowAccumulatorTile<32> r_Output{};
-		LinearWindow32(r_Pooled, LoadWindowWeights<bFp8>(g_Weights, 32 * OutputPanel, 0, 64), r_Output);
-		PublishWindowDownsample<32, bFp8>(Parameters, OutputPanel, r_Output);
+		// The block output and downsample projection reuse the same shared slab.
+		__shared__ FSharedWindow<Channels, bFp8> s_Window;
+		RunWindowWide<Channels, bFp8, FTiledWindowIO<Channels, bFp8>, true>(Arguments, s_Window,
+																			r_WindowOutput);
+		const auto r_Pooled = PublishWindow32<bFp8>(PoolWindow(r_WindowOutput));
+		using FConfig = FWideWindowProfile<Channels, bFp8>;
+		s_Window.Store(0, threadIdx.y, r_Pooled);
+		__syncthreads();
+		const auto* g_Weights = reinterpret_cast<const unsigned char*>(Arguments.g_PackedWeights) +
+								FConfig::AttentionScaleOffset + 2 * Channels;
+#pragma unroll 1
+		for (int OutputHalf = 0; OutputHalf < 2; ++OutputHalf)
+		{
+			FWindowAccumulatorTile<32> r_Output{};
+#pragma unroll
+			for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
+			{
+				const auto r_Weights = LoadWindowWeights<bFp8>(
+					g_Weights, 32 * threadIdx.y + OutputHalf * Channels, 32 * PanelIndex, 2 * Channels);
+				LinearWindow32(s_Window.Load(0, PanelIndex), r_Weights, r_Output);
+			}
+			PublishWindowDownsample<Channels, bFp8>(Arguments, threadIdx.y + OutputHalf * FConfig::Heads,
+													r_Output);
+		}
+		__syncthreads();
+		ClearDownsamplePadding<Channels>(Arguments);
 	}
-	ClearDownsamplePadding<32>(Parameters);
 }
 #endif

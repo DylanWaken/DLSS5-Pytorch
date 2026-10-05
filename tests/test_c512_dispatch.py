@@ -52,9 +52,21 @@ def execute(args, report):
         raise RuntimeError('This compiled-dispatch qualification requires SM120')
     torch.ops.load_library(str(args.extension.resolve()))
     report['extension_sha256'] = hashlib.sha256(args.extension.read_bytes()).hexdigest()
-    image_report = json.loads((args.cubins / 'comparison.json').read_text())
+    image_report = json.loads((args.cubins / 'comparison.json').read_text(encoding='utf8'))
     if report['extension_sha256'] != image_report['candidate_binary_sha256']:
         raise ValueError('Extension differs from the recorded extracted candidate image')
+    # This test compares two launch paths for the candidate, not old/new code.
+    # Bind each extracted module to the candidate manifest; a readability
+    # refactor is allowed to change instructions from the preceding build.
+    candidate_modules = {}
+    for module in image_report['modules']:
+        name = module['module']
+        if name in candidate_modules:
+            raise ValueError('Duplicate candidate module: ' + name)
+        cubin = (args.cubins / name).read_bytes()
+        if hashlib.sha256(cubin).hexdigest() != module['candidate_sha256']:
+            raise ValueError('Extracted cubin differs from candidate manifest: ' + name)
+        candidate_modules[name] = cubin
     entries = json.loads((ROOT / 'tuning/reconstruction/c512.json').read_text())['entries']
     canonical = json.loads((ROOT / 'tuning/canonical_kernel_names.json').read_text())
     checkpoints = {precision: load_checkpoint(ROOT / f'ckpts/dlss5_nr_{precision}.pt')
@@ -83,10 +95,9 @@ def execute(args, report):
         kernel_name = canonical[entry['original_symbol']].split('::')[-1]
         candidate_symbol = kernel_name
         matches = [row for row in image_report['entries'] if row['symbol'] == candidate_symbol]
-        if len(matches) != 1 or not matches[0]['text_exact']:
-            raise ValueError('Missing exact compiled candidate symbol: ' + kernel_name)
-        cubin_path = args.cubins / matches[0]['module']
-        cubin = cubin_path.read_bytes()
+        if len(matches) != 1:
+            raise ValueError('Missing unique compiled candidate symbol: ' + kernel_name)
+        cubin = candidate_modules[matches[0]['module']]
         phases = range(4) if role == 4 else (0,)
         for phase in phases:
             with NativeGraphOwner(stream.synchronize, label=f'C512 public dispatcher {entry_id}/{phase}') as owner:

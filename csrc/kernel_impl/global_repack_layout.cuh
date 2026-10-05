@@ -10,6 +10,8 @@
 // dword offsets on the launcher-checked aligned geometry domain.
 // The independently recovered FP8/Half layouts differ only in the 16-token
 // group stride: 256/512 dwords per token. Keep the shared swizzle in one template.
+// Shared by both repack directions and both storage precisions; these two
+// pure layout maps contain no allocations, synchronization or memory operations.
 template <uint32_t WordsPerToken>
 __device__ __forceinline__ uint32_t GlobalRepackPhysicalWord(uint32_t g_TokenIndex, uint32_t g_ChannelWord)
 {

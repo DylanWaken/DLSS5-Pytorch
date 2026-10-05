@@ -20,6 +20,7 @@ constexpr uint32_t CONST_NEGATIVE_LOG2_E_BITS =
 	0xbfb8aa3bu; // -1.4426950216293335, sigmoid's exp2 conversion.
 constexpr uint32_t CONST_FP32_INFINITY_BITS = 0x7f800000u;
 
+// Shared by feature preparation and the output compositor, including the same temporal reconstruction.
 // Explicit native operations keep FTZ, approximate reciprocal/division and
 // individual rounding points. These wrappers carry values, not PTX register IDs.
 __device__ __forceinline__ float NativeFloatAdd(float r_LeftOperand, float r_RightOperand)
@@ -97,6 +98,7 @@ struct FCubicAxis
 	float r_Position[3];
 };
 
+// Both horizontal and vertical axes in ReconstructHistory share this rounded polynomial.
 __device__ __forceinline__ FCubicAxis ComputeCubicAxis(float PixelPosition, float Extent)
 {
 	const float r_Center = NativeFloatAdd(
@@ -134,6 +136,7 @@ __device__ __forceinline__ FCubicAxis ComputeCubicAxis(float PixelPosition, floa
 	return r_Filter;
 }
 
+// Called by both RunPreprocess and RunPostprocess; keep one implementation of the temporal filter.
 // Five filtered samples form a cross: left/top/center/bottom/right. The original
 // omits four corner products and renormalizes the retained weights. The cubic
 // coefficients match Catmull-Rom algebra; naming its intended filter is inferred.

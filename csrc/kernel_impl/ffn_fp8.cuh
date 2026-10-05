@@ -25,8 +25,7 @@
 extern "C" __global__ __maxnreg__(128) void window_ffn_c512_fp8(FWindowFfnC512Fp8Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	__shared__ __align__(512) unsigned char s_Storage[8208];
-	RunWindowFfn<true>(Parameters, s_Storage);
+	RunWindowFfn<true>(Parameters);
 #endif
 }
 
@@ -39,8 +38,7 @@ extern "C" __global__
 	__maxnreg__(168) void window_ffn_input_view_c512_fp8(FWindowFfnInputViewC512Fp8Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	__shared__ __align__(512) unsigned char s_Storage[8208];
-	RunWindowFfn<true, true>(Parameters, s_Storage);
+	RunWindowFfn<true, true>(Parameters);
 #endif
 }
 
@@ -53,8 +51,7 @@ extern "C" __global__
 	__maxnreg__(128) void window_ffn_projection_c512_fp8(FWindowFfnProjectionC512Fp8Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	__shared__ __align__(512) unsigned char s_Storage[12312];
-	RunSpatialProjection<true, 4>(Parameters, s_Storage);
+	RunSpatialProjection<true, 4>(Parameters);
 #endif
 }
 
@@ -67,8 +64,7 @@ extern "C" __global__ __maxnreg__(128) void window_ffn_projection_input_view_c51
 	FWindowFfnProjectionInputViewC512Fp8Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	__shared__ __align__(512) unsigned char s_Storage[12312];
-	RunSpatialProjection<true, 4, true, false>(Parameters, s_Storage);
+	RunSpatialProjection<true, 4, true, false>(Parameters);
 #endif
 }
 
@@ -81,8 +77,7 @@ extern "C" __global__
 	__maxnreg__(168) void global_ffn_contract_c1024_fp8(FGlobalFfnContractC1024Fp8Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	__shared__ __align__(512) unsigned char s_Storage[16400];
-	RunGlobalContract<true>(Parameters, s_Storage);
+	RunGlobalContract<true>(Parameters);
 #endif
 }
 

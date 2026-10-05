@@ -26,8 +26,7 @@ extern "C" __global__ __maxnreg__(168) void window_attention_projection_c512_fp1
 	FWindowAttentionProjectionC512Fp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	__shared__ __align__(512) unsigned char s_Storage[12312];
-	RunSpatialProjection<false, 2>(Parameters, s_Storage);
+	RunSpatialProjection<false, 2>(Parameters);
 #endif
 }
 
@@ -40,11 +39,10 @@ extern "C" __global__ __maxnreg__(128) void window_attention_projection_output_v
 	FWindowAttentionProjectionOutputViewC512Fp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	__shared__ __align__(512) unsigned char s_Storage[12312];
 	const FSpatialProjectionArguments Arguments{Parameters.g_Input,		Parameters.g_Residual,
 												Parameters.g_Output,	Parameters.g_PackedWeights,
 												int(Parameters.Height), int(Parameters.Width)};
-	RunSpatialProjection<false, 4, false, true>(Arguments, s_Storage);
+	RunSpatialProjection<false, 4, false, true>(Arguments);
 #endif
 }
 
@@ -56,8 +54,7 @@ extern "C" __global__ __maxnreg__(128) void window_attention_projection_output_v
 extern "C" __global__ __maxnreg__(168) void window_qkv_c512_fp16(FWindowQkvC512Fp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	__shared__ __align__(512) unsigned char s_Storage[4112];
-	RunWindowQkv<false>(Parameters, s_Storage);
+	RunWindowQkv<false>(Parameters);
 #endif
 }
 
@@ -71,8 +68,7 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 	FGlobalAttentionChainedC1024Fp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	__shared__ __align__(512) unsigned char s_Storage[16400];
-	RunGlobalAttention<false>(Parameters, s_Storage);
+	RunGlobalAttention<false>(Parameters);
 #endif
 }
 
@@ -86,9 +82,8 @@ extern "C" __global__
 	__maxnreg__(168) void global_projection_c1024_fp16(FGlobalProjectionC1024Fp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	__shared__ __align__(512) unsigned char s_Storage[16400];
 	using FProjectionProfile = FGlobalContractProfile<false, true>;
-	RunGlobalContract<false, FGlobalProjectionC1024Fp16Parameters, FProjectionProfile>(Parameters, s_Storage);
+	RunGlobalContract<false, FGlobalProjectionC1024Fp16Parameters, FProjectionProfile>(Parameters);
 #endif
 }
 
@@ -101,7 +96,6 @@ extern "C" __global__
 extern "C" __global__ __maxnreg__(255) void global_qkv_c1024_fp16(FGlobalQkvC1024Fp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	__shared__ __align__(512) unsigned char s_Storage[16400];
-	RunGlobalQkv<false>(Parameters, s_Storage);
+	RunGlobalQkv<false>(Parameters);
 #endif
 }

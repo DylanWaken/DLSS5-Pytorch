@@ -26,6 +26,25 @@ Name axes explicitly: M/spatial fragments, N/channel groups, K/reduction subtile
 
 ## Write the recovered algorithm
 
+The canonical kernel function must be readable from its setup through its final
+stores. Keep tile ownership, register/shared storage declarations, pipeline
+prefill, reduction loops, waits/recycling and writebacks in that function. A
+reader should not have to follow separate one-use stage functions to recover
+the schedule. Explicit caller-owned shared references are appropriate when a
+fused operation reuses the same slab across its stages.
+
+Inline one-use staging or epilogue code at its use. A short local lambda can
+share a repeated prefill/refill or publication sequence while keeping its body
+visible inside the owning kernel. External helpers are for intrinsics or
+substantial logic genuinely reused by multiple operations, such as MMA tile
+accumulation, normalization and the common fused window computation. Explain
+those helpers' contracts and actual users. Do not build a chain of forwarding
+functions or duplicate the whole algorithm to make an ABI wrapper longer.
+
+Precision-specific C exports remain small ABI/profile adapters. The
+[kernel reading guide](KERNEL_READING_GUIDE.md) identifies each family's canonical
+body and the deliberate shared-computation exceptions.
+
 Use short force-inlined helpers, compile-time profiles and loops over named axes. Keep distinct native schedules explicit when their warp ownership, fusion, tensor-core K dimension or synchronization differs. Share the body where only dimensions or data-access/publication policies differ.
 
 A shared helper must preserve the contract that matters:
@@ -79,7 +98,7 @@ Use this evidence sequence for each change:
 
 CPU symbolic traces do not establish tensor-core numerical execution or GPU speed. Compiling without spills does not establish performance parity. Only measurements of the tested compiled snapshot establish the 1% acceptance criterion. The final graph qualification below establishes that latency result for its stated scope; it does not establish a hardware-roofline percentage.
 
-## Final semantic qualification
+## Original semantic qualification
 
 The integrated semantic extension passes the graph acceptance gate in both FP8 and FP16 at 720p, 1080p, 2K/1440p and 4K on the RTX PRO 6000 Blackwell (SM120). The [portable qualification receipt](semantic_graph_qualification.json) pins the extension, harness, native cubins and schedule hashes for all eight precision/resolution combinations.
 
@@ -96,7 +115,7 @@ The [portable deployment measurements](figures/semantic_deployment_measurements.
 
 These are integrated graph ratios, not guarantees that every individual kernel is within 1% of native. The [portable optimization evidence](semantic_optimization_evidence.json) records the separate per-kernel NCU/SASS and timing comparisons that guided the source changes. Earlier staged and transcript-build receipts remain historical evidence, rather than the basis for this qualification.
 
-The current implementation has 81 exports in 17 entry headers, backed by shared semantic algorithms and ten CUDA emission units. Its 45 implementation headers total 7,681 physical source lines, including comments and blank lines; see [the source inventory breakdown](SOURCE_LAYOUT.md#current-source-inventory). Four tested plans establish neither continuous-resolution tuning nor support on another GPU architecture.
+The current implementation has 81 exports in 17 entry headers, backed by shared semantic algorithms and ten CUDA emission units. Its 44 implementation headers total 7,406 physical source lines, including comments and blank lines; see [the source inventory breakdown](SOURCE_LAYOUT.md#current-source-inventory). Four tested plans establish neither continuous-resolution tuning nor support on another GPU architecture.
 
 Training remains a separate PyTorch FP32/BF16 implementation. Deployment source proofs and speed measurements say nothing about task-specific DLSS5 transfer learning, loss design or a complete training procedure. Those remain topics for further investigation; see [training usage](training.md).
 
@@ -115,4 +134,21 @@ The preceding naming-audit rebuild retains identical device instructions, consta
 
 The preceding flat-symbol rebuild is a separate migration of C++ names and CUDA linkage. Its source/ABI, compiled comparison and runtime evidence are documented in [FLAT_SYMBOLS.md](FLAT_SYMBOLS.md). The semantic timing table above retains its original measured build identity.
 
-The current [storage-prefix audit](STORAGE_PREFIX_AUDIT.md) applies the narrower storage-role convention above. It retains identical GPU instructions, decoded resources, constants and launch contracts, with fresh graph and public-dispatch validation.
+The preceding [storage-prefix audit](STORAGE_PREFIX_AUDIT.md) applies the narrower storage-role convention above. It retains identical GPU instructions, decoded resources, constants and launch contracts, with fresh graph and public-dispatch validation.
+
+## Current kernel-body qualification
+
+The [kernel reading guide](KERNEL_READING_GUIDE.md) maps each export family to
+the canonical body that owns its storage, pipeline, loops and writebacks. It
+also documents the shared computation and fusion callbacks that remain useful.
+The [source audit](kernel_locality_audit.json) records the stage moves and
+retained-helper users.
+
+This refactor changes 38 of 81 device instruction payloads, so it has fresh
+timings and native comparisons. All eight FP8/FP16 graph cases again pass every
+boundary and both execution-order medians pass the 1% gate. The 24 C512 host
+dispatch cases, 48 frontend postprocessing cases and 62 CPU checks in each
+Python mode pass. [The current receipt](kernel_locality_validation.json) binds
+these results to the installed binary and source hashes;
+[BENCHMARKS.md](BENCHMARKS.md) shows its refreshed latency measurements. The
+original semantic table above remains a historical measurement.

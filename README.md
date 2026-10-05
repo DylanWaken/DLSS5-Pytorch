@@ -57,15 +57,15 @@ See the [training guide](docs/training.md) for input contracts and benchmarking,
 
 ## Speed overview
 
-**FP8 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **6.557 ms reconstructed / 6.698 ms original**.
+**FP8 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **6.584 ms reconstructed / 6.698 ms original**.
 
 ![FP8 deployment latency at 720p, 1080p, 2K and 4K](docs/figures/deployment_fp8_resolutions.svg)
 
-**FP16 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **11.336 ms reconstructed / 11.590 ms original**.
+**FP16 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **11.462 ms reconstructed / 11.720 ms original**.
 
 ![FP16 deployment latency at 720p, 1080p, 2K and 4K](docs/figures/deployment_fp16_resolutions.svg)
 
-Inference charts exclude input/output stages and DLL host processing.
+These are fresh measurements after the kernel-body cleanup. Inference charts exclude input/output stages and DLL host processing.
 
 **Training:** full-network FP32/BF16 forward and backward, with checkpointing, batch one and no optimizer. At 4K, peak allocated memory is **52.4 / 43.3 GiB**, respectively.
 
@@ -87,5 +87,5 @@ See [benchmark scope and detailed results](docs/BENCHMARKS.md) for methodology, 
 `csrc/kernel_impl` groups kernels by operation and FP8/FP16 precision, with shared math and memory helpers. `kernel_launcher` owns the ABI, launches and selection; `torch_api` exposes PyTorch operators. `dlssnr` contains the Python entry points and training model. `tests` and `tuning` hold validation and offline policy tools.
 
 - [Architecture atlas](docs/ARCHITECTURE.md) · [Current coverage and limitations](docs/RECONSTRUCTION_STATUS.md)
-- [Source layout and shared helpers](docs/SOURCE_LAYOUT.md) · [Code conventions](docs/CODE_READABILITY.md) · [Naming audit](docs/NAMING_AUDIT.md) · [Readable CUDA reconstruction](docs/SEMANTIC_RECONSTRUCTION.md) · [Historical optimization log](docs/optimization_log_2026-10-05.md)
+- [Kernel reading guide](docs/KERNEL_READING_GUIDE.md) · [Source layout and shared helpers](docs/SOURCE_LAYOUT.md) · [Code conventions](docs/CODE_READABILITY.md) · [Naming audit](docs/NAMING_AUDIT.md) · [Readable CUDA reconstruction](docs/SEMANTIC_RECONSTRUCTION.md) · [Historical optimization log](docs/optimization_log_2026-10-05.md)
 - [Training memory diagnosis](docs/TRAINING_MEMORY.md) · [Kernel reconstruction workflow](skills/dlssnr-reconstruction/SKILL.md)
