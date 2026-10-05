@@ -27,16 +27,16 @@ __device__ __forceinline__ uint32_t GlobalRepackSpatialToken(uint32_t g_TokenInd
 }
 
 template <bool bFp8, bool bToTokenLayout>
-__device__ __forceinline__ void CopyGlobalRepackWords(FGlobalRepackParameters r_Parameters)
+__device__ __forceinline__ void CopyGlobalRepackWords(FGlobalRepackParameters Parameters)
 {
 	constexpr uint32_t CONST_WORDS_PER_TOKEN = bFp8 ? 256u : 512u;
 	constexpr uint32_t CONST_TOKEN_ALIGNMENT = bFp8 ? 32u : 16u;
-	const uint32_t g_TokenCount = uint32_t(r_Parameters.Height) * uint32_t(r_Parameters.Width);
+	const uint32_t g_TokenCount = uint32_t(Parameters.Height) * uint32_t(Parameters.Width);
 	const uint32_t g_PaddedTokenCount =
 		(g_TokenCount + CONST_TOKEN_ALIGNMENT - 1u) / CONST_TOKEN_ALIGNMENT * CONST_TOKEN_ALIGNMENT;
 	const uint32_t g_WordCount = (bToTokenLayout ? g_PaddedTokenCount : g_TokenCount) * CONST_WORDS_PER_TOKEN;
-	const auto* g_Input = reinterpret_cast<const uint32_t*>(r_Parameters.g_Input);
-	auto* g_Output = reinterpret_cast<uint32_t*>(r_Parameters.g_Output);
+	const auto* g_Input = reinterpret_cast<const uint32_t*>(Parameters.g_Input);
+	auto* g_Output = reinterpret_cast<uint32_t*>(Parameters.g_Output);
 	const uint32_t g_WordStride = gridDim.x * blockDim.x;
 	for (uint32_t g_WordIndex = blockIdx.x * blockDim.x + threadIdx.x; g_WordIndex < g_WordCount;
 		 g_WordIndex += g_WordStride)
@@ -52,7 +52,7 @@ __device__ __forceinline__ void CopyGlobalRepackWords(FGlobalRepackParameters r_
 			if (g_TokenIndex < g_TokenCount)
 			{
 				const uint32_t g_SpatialToken =
-					GlobalRepackSpatialToken(g_TokenIndex, uint32_t(r_Parameters.Width));
+					GlobalRepackSpatialToken(g_TokenIndex, uint32_t(Parameters.Width));
 				r_CopiedWord =
 					g_Input[GlobalRepackPhysicalWord<CONST_WORDS_PER_TOKEN>(g_SpatialToken, g_ChannelWord)];
 			}
@@ -62,7 +62,7 @@ __device__ __forceinline__ void CopyGlobalRepackWords(FGlobalRepackParameters r_
 		{
 			// Inverse launched tail threads perform neither load nor store.
 			const uint32_t g_SpatialToken =
-				GlobalRepackSpatialToken(g_TokenIndex, uint32_t(r_Parameters.Width));
+				GlobalRepackSpatialToken(g_TokenIndex, uint32_t(Parameters.Width));
 			g_Output[GlobalRepackPhysicalWord<CONST_WORDS_PER_TOKEN>(g_SpatialToken, g_ChannelWord)] =
 				g_Input[g_TokenWord];
 		}

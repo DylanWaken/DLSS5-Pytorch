@@ -76,20 +76,17 @@ __device__ __forceinline__ float ClampUnit(float r_InputValue)
 
 // The two affine transforms are applied before the texture descriptor's own
 // filtering/address modes. Their order matches the native parameter contract.
-__device__ __forceinline__ float2 TransformTextureCoordinates(const FTextureTransform& r_Transform,
-															  float r_InputX, float r_InputY)
+__device__ __forceinline__ float2 TransformTextureCoordinates(const FTextureTransform& Transform,
+															  float InputX, float InputY)
 {
 	return make_float2(
-		NativeFloatMultiply(r_Transform.r_NormalizeX,
-							NativeFloatFma(r_Transform.r_ScaleX, r_InputX, r_Transform.r_BiasX)),
-		NativeFloatMultiply(r_Transform.r_NormalizeY,
-							NativeFloatFma(r_Transform.r_ScaleY, r_InputY, r_Transform.r_BiasY)));
+		NativeFloatMultiply(Transform.NormalizeX, NativeFloatFma(Transform.ScaleX, InputX, Transform.BiasX)),
+		NativeFloatMultiply(Transform.NormalizeY, NativeFloatFma(Transform.ScaleY, InputY, Transform.BiasY)));
 }
 
-__device__ __forceinline__ float4 SampleTexture(uint64_t g_Texture, float r_TextureX, float r_TextureY)
+__device__ __forceinline__ float4 SampleTexture(uint64_t Texture, float TextureX, float TextureY)
 {
-	const uint4 r_SampleBits =
-		NativeTexture2d(g_Texture, __float_as_uint(r_TextureX), __float_as_uint(r_TextureY));
+	const uint4 r_SampleBits = NativeTexture2d(Texture, __float_as_uint(TextureX), __float_as_uint(TextureY));
 	return make_float4(__uint_as_float(r_SampleBits.x), __uint_as_float(r_SampleBits.y),
 					   __uint_as_float(r_SampleBits.z), __uint_as_float(r_SampleBits.w));
 }
@@ -100,12 +97,12 @@ struct FCubicAxis
 	float r_Position[3];
 };
 
-__device__ __forceinline__ FCubicAxis ComputeCubicAxis(float r_PixelPosition, float r_Extent)
+__device__ __forceinline__ FCubicAxis ComputeCubicAxis(float PixelPosition, float Extent)
 {
 	const float r_Center = NativeFloatAdd(
-		NativeFloatFloor(NativeFloatAdd(r_PixelPosition, -CONST_PIXEL_CENTER)), CONST_PIXEL_CENTER);
+		NativeFloatFloor(NativeFloatAdd(PixelPosition, -CONST_PIXEL_CENTER)), CONST_PIXEL_CENTER);
 	const float r_Fraction = NativeFloatMinimum(
-		NativeFloatMaximum(NativeFloatSubtract(r_PixelPosition, r_Center), CONST_ZERO), CONST_UNIT);
+		NativeFloatMaximum(NativeFloatSubtract(PixelPosition, r_Center), CONST_ZERO), CONST_UNIT);
 	const float r_Square = NativeFloatMultiply(r_Fraction, r_Fraction);
 	const float r_Cube = NativeFloatMultiply(r_Fraction, r_Square);
 	const float r_LeftWeight =
@@ -120,7 +117,7 @@ __device__ __forceinline__ FCubicAxis ComputeCubicAxis(float r_PixelPosition, fl
 		NativeFloatSubtract(NativeFloatSubtract(CONST_UNIT, r_LeftWeight), r_MiddleLeftWeight),
 		r_RightWeight);
 	const float r_MiddleWeight = NativeFloatAdd(r_MiddleLeftWeight, r_MiddleRightWeight);
-	const float r_LastCenter = NativeFloatAdd(r_Extent, -CONST_PIXEL_CENTER);
+	const float r_LastCenter = NativeFloatAdd(Extent, -CONST_PIXEL_CENTER);
 	FCubicAxis r_Filter;
 	r_Filter.r_Weight[0] = r_LeftWeight;
 	r_Filter.r_Weight[1] = r_MiddleWeight;
@@ -140,32 +137,33 @@ __device__ __forceinline__ FCubicAxis ComputeCubicAxis(float r_PixelPosition, fl
 // Five filtered samples form a cross: left/top/center/bottom/right. The original
 // omits four corner products and renormalizes the retained weights. The cubic
 // coefficients match Catmull-Rom algebra; naming its intended filter is inferred.
-__device__ __forceinline__ float3 ReconstructHistory(uint64_t g_History, const FTextureTransform& r_Transform,
-													 float2 r_Uv, float r_Width, float r_Height)
+__device__ __forceinline__ float3 ReconstructHistory(uint64_t HistoryTexture,
+													 const FTextureTransform& Transform, float2 Uv,
+													 float Width, float Height)
 {
-	const FCubicAxis r_HorizontalFilter = ComputeCubicAxis(NativeFloatMultiply(r_Uv.x, r_Width), r_Width);
-	const FCubicAxis r_VerticalFilter = ComputeCubicAxis(NativeFloatMultiply(r_Uv.y, r_Height), r_Height);
-	const float r_InvWidth = NativeFloatReciprocal(r_Width), r_InvHeight = NativeFloatReciprocal(r_Height);
+	const FCubicAxis r_HorizontalFilter = ComputeCubicAxis(NativeFloatMultiply(Uv.x, Width), Width);
+	const FCubicAxis r_VerticalFilter = ComputeCubicAxis(NativeFloatMultiply(Uv.y, Height), Height);
+	const float InvWidth = NativeFloatReciprocal(Width), InvHeight = NativeFloatReciprocal(Height);
 	float r_SampleX[3], r_SampleY[3];
 #pragma unroll
 	for (int r_Tap = 0; r_Tap < 3; ++r_Tap)
 	{
 		r_SampleX[r_Tap] = NativeFloatMultiply(
-			r_Transform.r_NormalizeX,
-			NativeFloatFma(r_Transform.r_ScaleX,
-						   NativeFloatMultiply(r_InvWidth, r_HorizontalFilter.r_Position[r_Tap]),
-						   r_Transform.r_BiasX));
+			Transform.NormalizeX,
+			NativeFloatFma(Transform.ScaleX,
+						   NativeFloatMultiply(InvWidth, r_HorizontalFilter.r_Position[r_Tap]),
+						   Transform.BiasX));
 		r_SampleY[r_Tap] = NativeFloatMultiply(
-			r_Transform.r_NormalizeY,
-			NativeFloatFma(r_Transform.r_ScaleY,
-						   NativeFloatMultiply(r_InvHeight, r_VerticalFilter.r_Position[r_Tap]),
-						   r_Transform.r_BiasY));
+			Transform.NormalizeY,
+			NativeFloatFma(Transform.ScaleY,
+						   NativeFloatMultiply(InvHeight, r_VerticalFilter.r_Position[r_Tap]),
+						   Transform.BiasY));
 	}
-	const float4 r_Left = SampleTexture(g_History, r_SampleX[0], r_SampleY[1]);
-	const float4 r_Top = SampleTexture(g_History, r_SampleX[1], r_SampleY[0]);
-	const float4 r_Center = SampleTexture(g_History, r_SampleX[1], r_SampleY[1]);
-	const float4 r_Bottom = SampleTexture(g_History, r_SampleX[1], r_SampleY[2]);
-	const float4 r_Right = SampleTexture(g_History, r_SampleX[2], r_SampleY[1]);
+	const float4 r_Left = SampleTexture(HistoryTexture, r_SampleX[0], r_SampleY[1]);
+	const float4 r_Top = SampleTexture(HistoryTexture, r_SampleX[1], r_SampleY[0]);
+	const float4 r_Center = SampleTexture(HistoryTexture, r_SampleX[1], r_SampleY[1]);
+	const float4 r_Bottom = SampleTexture(HistoryTexture, r_SampleX[1], r_SampleY[2]);
+	const float4 r_Right = SampleTexture(HistoryTexture, r_SampleX[2], r_SampleY[1]);
 	const float r_Weights[5] = {
 		NativeFloatMultiply(r_HorizontalFilter.r_Weight[0], r_VerticalFilter.r_Weight[1]),
 		NativeFloatMultiply(r_VerticalFilter.r_Weight[0], r_HorizontalFilter.r_Weight[1]),

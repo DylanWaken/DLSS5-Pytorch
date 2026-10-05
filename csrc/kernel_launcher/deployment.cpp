@@ -43,20 +43,20 @@ template <> struct FPlanData<true>
 constexpr int64_t CONST_GUARD_BYTES = 256;
 constexpr uint8_t CONST_GUARD_PATTERN = 0xA5;
 
-static uint64_t GetDeploymentTensorAddress(const at::Tensor& g_Tensor)
+static uint64_t GetDeploymentTensorAddress(const at::Tensor& Tensor)
 {
-	return reinterpret_cast<uint64_t>(g_Tensor.data_ptr());
+	return reinterpret_cast<uint64_t>(Tensor.data_ptr());
 }
 
-static void ValidateDeploymentPhysicalBuffer(const at::Tensor& g_Tensor, int64_t Bytes, int DeviceIndex,
+static void ValidateDeploymentPhysicalBuffer(const at::Tensor& Tensor, int64_t Bytes, int DeviceIndex,
 											 const char* Role)
 {
-	TORCH_CHECK(g_Tensor.defined() && g_Tensor.is_cuda() && g_Tensor.get_device() == DeviceIndex &&
-					g_Tensor.scalar_type() == at::kByte,
+	TORCH_CHECK(Tensor.defined() && Tensor.is_cuda() && Tensor.get_device() == DeviceIndex &&
+					Tensor.scalar_type() == at::kByte,
 				Role, " must be raw uint8 on the plan's CUDA device");
-	TORCH_CHECK(g_Tensor.dim() == 1 && g_Tensor.is_contiguous() && g_Tensor.numel() == Bytes, Role,
+	TORCH_CHECK(Tensor.dim() == 1 && Tensor.is_contiguous() && Tensor.numel() == Bytes, Role,
 				" physical extent must be exactly ", Bytes, " bytes");
-	TORCH_CHECK(GetDeploymentTensorAddress(g_Tensor) % 16 == 0,
+	TORCH_CHECK(GetDeploymentTensorAddress(Tensor) % 16 == 0,
 				"physical tensor must be 16-byte aligned: ", Role);
 }
 
@@ -68,26 +68,25 @@ static void RequireDeploymentOutsideCapture(cudaStream_t Stream)
 				"create deployment plan outside CUDA graph capture");
 }
 
-template <bool bFp16> uint64_t FDeploymentPlan<bFp16>::GetBufferAddress(size_t g_BufferIndex) const
+template <bool bFp16> uint64_t FDeploymentPlan<bFp16>::GetBufferAddress(size_t BufferIndex) const
 {
-	return GetDeploymentTensorAddress(g_Buffers.at(g_BufferIndex));
+	return GetDeploymentTensorAddress(Buffers.at(BufferIndex));
 }
 
-template <bool bFp16> uint64_t FDeploymentPlan<bFp16>::GetRecordAddress(size_t g_RecordIndex) const
+template <bool bFp16> uint64_t FDeploymentPlan<bFp16>::GetRecordAddress(size_t RecordIndex) const
 {
-	return GetDeploymentTensorAddress(g_PackedWeightRecords.at(g_RecordIndex));
+	return GetDeploymentTensorAddress(PackedWeightRecords.at(RecordIndex));
 }
 
 template <bool bFp16>
-FDeploymentPlan<bFp16>::FDeploymentPlan(at::Tensor g_Input,
-										std::vector<at::Tensor> g_InputPackedWeightRecords, int64_t Width,
-										int64_t Height)
-	: g_PackedWeightRecords(std::move(g_InputPackedWeightRecords)),
-	  DeviceIndex(g_Input.is_cuda() ? g_Input.get_device() : -1)
+FDeploymentPlan<bFp16>::FDeploymentPlan(at::Tensor Input, std::vector<at::Tensor> InputPackedWeightRecords,
+										int64_t Width, int64_t Height)
+	: PackedWeightRecords(std::move(InputPackedWeightRecords)),
+	  DeviceIndex(Input.is_cuda() ? Input.get_device() : -1)
 {
 	TORCH_CHECK(DeviceIndex >= 0, "deployment input must be CUDA physical storage");
 	Geometry = &FPlanData<bFp16>::SelectGeometryPlan(Width, Height);
-	c10::cuda::CUDAGuard DeviceGuard(g_Input.device());
+	c10::cuda::CUDAGuard DeviceGuard(Input.device());
 	const auto Stream = c10::cuda::getCurrentCUDAStream(DeviceIndex);
 	RequireDeploymentOutsideCapture(Stream.stream());
 	cudaDeviceProp DeviceProperties{};
@@ -98,41 +97,39 @@ FDeploymentPlan<bFp16>::FDeploymentPlan(at::Tensor g_Input,
 		int(Width), int(Height), 120, bFp16 ? EResolutionPrecision::Fp16 : EResolutionPrecision::Fp8);
 	TORCH_CHECK(Selection.ConfigId == -1 || Selection.ConfigId == 0,
 				"policy selects a configuration absent from this compiled reconstruction");
-	ValidateDeploymentPhysicalBuffer(g_Input, Geometry->BufferBytes[0], DeviceIndex,
+	ValidateDeploymentPhysicalBuffer(Input, Geometry->BufferBytes[0], DeviceIndex,
 									 bFp16 ? "FP16 trunk input" : "FP8 trunk input");
-	TORCH_CHECK(g_PackedWeightRecords.size() == std::size(FPlanData<bFp16>::RecordSpecs), "expected ",
+	TORCH_CHECK(PackedWeightRecords.size() == std::size(FPlanData<bFp16>::RecordSpecs), "expected ",
 				std::size(FPlanData<bFp16>::RecordSpecs), " native packed records");
-	std::vector<std::pair<uint64_t, uint64_t>> g_StorageRanges;
-	g_StorageRanges.emplace_back(GetDeploymentTensorAddress(g_Input),
-								 GetDeploymentTensorAddress(g_Input) + g_Input.numel());
-	for (size_t g_RecordIndex = 0; g_RecordIndex < g_PackedWeightRecords.size(); ++g_RecordIndex)
+	std::vector<std::pair<uint64_t, uint64_t>> StorageRanges;
+	StorageRanges.emplace_back(GetDeploymentTensorAddress(Input),
+							   GetDeploymentTensorAddress(Input) + Input.numel());
+	for (size_t RecordIndex = 0; RecordIndex < PackedWeightRecords.size(); ++RecordIndex)
 	{
-		ValidateDeploymentPhysicalBuffer(g_PackedWeightRecords[g_RecordIndex],
-										 FPlanData<bFp16>::RecordSpecs[g_RecordIndex].Bytes, DeviceIndex,
-										 FPlanData<bFp16>::RecordSpecs[g_RecordIndex].Name);
-		const auto g_RecordAddress = GetDeploymentTensorAddress(g_PackedWeightRecords[g_RecordIndex]);
-		g_StorageRanges.emplace_back(g_RecordAddress,
-									 g_RecordAddress + g_PackedWeightRecords[g_RecordIndex].numel());
-		g_PackedWeightAddresses.push_back(g_RecordAddress);
+		ValidateDeploymentPhysicalBuffer(PackedWeightRecords[RecordIndex],
+										 FPlanData<bFp16>::RecordSpecs[RecordIndex].Bytes, DeviceIndex,
+										 FPlanData<bFp16>::RecordSpecs[RecordIndex].Name);
+		const auto g_RecordAddress = GetDeploymentTensorAddress(PackedWeightRecords[RecordIndex]);
+		StorageRanges.emplace_back(g_RecordAddress,
+								   g_RecordAddress + PackedWeightRecords[RecordIndex].numel());
+		PackedWeightAddresses.push_back(g_RecordAddress);
 	}
-	std::sort(g_StorageRanges.begin(), g_StorageRanges.end());
-	for (size_t g_StorageRangeIndex = 1; g_StorageRangeIndex < g_StorageRanges.size(); ++g_StorageRangeIndex)
-		TORCH_CHECK(g_StorageRanges[g_StorageRangeIndex - 1].second <=
-						g_StorageRanges[g_StorageRangeIndex].first,
+	std::sort(StorageRanges.begin(), StorageRanges.end());
+	for (size_t StorageRangeIndex = 1; StorageRangeIndex < StorageRanges.size(); ++StorageRangeIndex)
+		TORCH_CHECK(StorageRanges[StorageRangeIndex - 1].second <= StorageRanges[StorageRangeIndex].first,
 					"input and packed record ranges must be disjoint");
 	// Guard each workspace so replay validation detects writes outside its physical extent.
-	g_Buffers.reserve(std::size(FPlanData<bFp16>::BufferNameTable));
-	g_Buffers.push_back(std::move(g_Input));
-	for (size_t g_BufferIndex = 1; g_BufferIndex < std::size(FPlanData<bFp16>::BufferNameTable);
-		 ++g_BufferIndex)
+	Buffers.reserve(std::size(FPlanData<bFp16>::BufferNameTable));
+	Buffers.push_back(std::move(Input));
+	for (size_t BufferIndex = 1; BufferIndex < std::size(FPlanData<bFp16>::BufferNameTable); ++BufferIndex)
 	{
-		auto g_Backing = at::full({Geometry->BufferBytes[g_BufferIndex] + 2 * CONST_GUARD_BYTES},
-								  CONST_GUARD_PATTERN, g_Buffers[0].options());
-		g_Buffers.push_back(g_Backing.narrow(0, CONST_GUARD_BYTES, Geometry->BufferBytes[g_BufferIndex]));
-		g_GuardedBackings.push_back(std::move(g_Backing));
+		auto Backing = at::full({Geometry->BufferBytes[BufferIndex] + 2 * CONST_GUARD_BYTES},
+								CONST_GUARD_PATTERN, Buffers[0].options());
+		Buffers.push_back(Backing.narrow(0, CONST_GUARD_BYTES, Geometry->BufferBytes[BufferIndex]));
+		GuardedBackings.push_back(std::move(Backing));
 	}
-	for (const auto& g_Tensor : g_Buffers)
-		g_BufferAddresses.push_back(GetDeploymentTensorAddress(g_Tensor));
+	for (const auto& Tensor : Buffers)
+		BufferAddresses.push_back(GetDeploymentTensorAddress(Tensor));
 	BuildCalls();
 	TORCH_CHECK(Calls.size() == 185, "reconstructed trunk schedule census");
 	// FP8 retains its all-resident admission. Native Half uses ordered Z waves;
@@ -179,26 +176,26 @@ FDeploymentPlan<bFp16>::FDeploymentPlan(at::Tensor g_Input,
 template <bool bFp16> at::Tensor FDeploymentPlan<bFp16>::Run()
 {
 	std::lock_guard<std::mutex> Lock(LaunchMutex);
-	c10::cuda::CUDAGuard DeviceGuard(g_Buffers[0].device());
+	c10::cuda::CUDAGuard DeviceGuard(Buffers[0].device());
 	const auto Stream = c10::cuda::getCurrentCUDAStream(DeviceIndex);
-	for (size_t g_BufferIndex = 0; g_BufferIndex < g_Buffers.size(); ++g_BufferIndex)
+	for (size_t BufferIndex = 0; BufferIndex < Buffers.size(); ++BufferIndex)
 	{
-		ValidateDeploymentPhysicalBuffer(g_Buffers[g_BufferIndex], Geometry->BufferBytes[g_BufferIndex],
-										 DeviceIndex, FPlanData<bFp16>::BufferNameTable[g_BufferIndex]);
-		TORCH_CHECK(GetDeploymentTensorAddress(g_Buffers[g_BufferIndex]) == g_BufferAddresses[g_BufferIndex],
+		ValidateDeploymentPhysicalBuffer(Buffers[BufferIndex], Geometry->BufferBytes[BufferIndex],
+										 DeviceIndex, FPlanData<bFp16>::BufferNameTable[BufferIndex]);
+		TORCH_CHECK(GetDeploymentTensorAddress(Buffers[BufferIndex]) == BufferAddresses[BufferIndex],
 					"plan buffer storage was replaced");
-		c10::cuda::CUDACachingAllocator::recordStream(g_Buffers[g_BufferIndex].storage().data_ptr(), Stream);
+		c10::cuda::CUDACachingAllocator::recordStream(Buffers[BufferIndex].storage().data_ptr(), Stream);
 	}
-	for (size_t g_RecordIndex = 0; g_RecordIndex < g_PackedWeightRecords.size(); ++g_RecordIndex)
+	for (size_t RecordIndex = 0; RecordIndex < PackedWeightRecords.size(); ++RecordIndex)
 	{
-		ValidateDeploymentPhysicalBuffer(g_PackedWeightRecords[g_RecordIndex],
-										 FPlanData<bFp16>::RecordSpecs[g_RecordIndex].Bytes, DeviceIndex,
-										 FPlanData<bFp16>::RecordSpecs[g_RecordIndex].Name);
-		TORCH_CHECK(GetDeploymentTensorAddress(g_PackedWeightRecords[g_RecordIndex]) ==
-						g_PackedWeightAddresses[g_RecordIndex],
+		ValidateDeploymentPhysicalBuffer(PackedWeightRecords[RecordIndex],
+										 FPlanData<bFp16>::RecordSpecs[RecordIndex].Bytes, DeviceIndex,
+										 FPlanData<bFp16>::RecordSpecs[RecordIndex].Name);
+		TORCH_CHECK(GetDeploymentTensorAddress(PackedWeightRecords[RecordIndex]) ==
+						PackedWeightAddresses[RecordIndex],
 					"plan record storage was replaced");
-		c10::cuda::CUDACachingAllocator::recordStream(
-			g_PackedWeightRecords[g_RecordIndex].storage().data_ptr(), Stream);
+		c10::cuda::CUDACachingAllocator::recordStream(PackedWeightRecords[RecordIndex].storage().data_ptr(),
+													  Stream);
 	}
 	// Parameters and storage are prepared once; capture records these same kernel launches.
 	for (auto& KernelCall : Calls)
@@ -208,7 +205,7 @@ template <bool bFp16> at::Tensor FDeploymentPlan<bFp16>::Run()
 										KernelArguments, 0, Stream.stream()));
 	}
 	C10_CUDA_KERNEL_LAUNCH_CHECK();
-	return g_Buffers.back();
+	return Buffers.back();
 }
 
 template <bool bFp16> std::vector<std::string> FDeploymentPlan<bFp16>::GetBufferNames() const
@@ -221,11 +218,11 @@ template <bool bFp16> std::vector<std::string> FDeploymentPlan<bFp16>::GetBuffer
 
 template <bool bFp16> bool FDeploymentPlan<bFp16>::GuardsIntact() const
 {
-	c10::cuda::CUDAGuard DeviceGuard(g_Buffers[0].device());
+	c10::cuda::CUDAGuard DeviceGuard(Buffers[0].device());
 	RequireDeploymentOutsideCapture(c10::cuda::getCurrentCUDAStream(DeviceIndex).stream());
-	for (const auto& g_Backing : g_GuardedBackings)
-		if (!g_Backing.narrow(0, 0, CONST_GUARD_BYTES).eq(CONST_GUARD_PATTERN).all().item<bool>() ||
-			!g_Backing.narrow(0, g_Backing.numel() - CONST_GUARD_BYTES, CONST_GUARD_BYTES)
+	for (const auto& Backing : GuardedBackings)
+		if (!Backing.narrow(0, 0, CONST_GUARD_BYTES).eq(CONST_GUARD_PATTERN).all().item<bool>() ||
+			!Backing.narrow(0, Backing.numel() - CONST_GUARD_BYTES, CONST_GUARD_BYTES)
 				 .eq(CONST_GUARD_PATTERN)
 				 .all()
 				 .item<bool>())
@@ -236,18 +233,17 @@ template <bool bFp16> bool FDeploymentPlan<bFp16>::GuardsIntact() const
 template <bool bFp16> void FDeploymentPlan<bFp16>::Poison(int64_t PoisonByte)
 {
 	TORCH_CHECK(PoisonByte >= 0 && PoisonByte <= 255, "poison requires byte value");
-	c10::cuda::CUDAGuard DeviceGuard(g_Buffers[0].device());
+	c10::cuda::CUDAGuard DeviceGuard(Buffers[0].device());
 	RequireDeploymentOutsideCapture(c10::cuda::getCurrentCUDAStream(DeviceIndex).stream());
-	for (size_t g_BufferIndex = 1; g_BufferIndex < g_Buffers.size(); ++g_BufferIndex)
-		g_Buffers[g_BufferIndex].fill_(PoisonByte);
+	for (size_t BufferIndex = 1; BufferIndex < Buffers.size(); ++BufferIndex)
+		Buffers[BufferIndex].fill_(PoisonByte);
 }
 
 template <bool bFp16> at::Tensor FDeploymentPlan<bFp16>::GetBuffer(const std::string& Name) const
 {
-	for (size_t g_BufferIndex = 0; g_BufferIndex < std::size(FPlanData<bFp16>::BufferNameTable);
-		 ++g_BufferIndex)
-		if (Name == FPlanData<bFp16>::BufferNameTable[g_BufferIndex])
-			return g_Buffers[g_BufferIndex];
+	for (size_t BufferIndex = 0; BufferIndex < std::size(FPlanData<bFp16>::BufferNameTable); ++BufferIndex)
+		if (Name == FPlanData<bFp16>::BufferNameTable[BufferIndex])
+			return Buffers[BufferIndex];
 	TORCH_CHECK(false, "unknown deployment buffer: ", Name);
 }
 
@@ -265,10 +261,10 @@ template <bool bFp16> std::vector<std::string> FDeploymentPlan<bFp16>::GetBounda
 
 template <bool bFp16> std::vector<at::Tensor> FDeploymentPlan<bFp16>::GetBoundaries() const
 {
-	std::vector<at::Tensor> g_BoundaryOutputs;
+	std::vector<at::Tensor> BoundaryOutputs;
 	for (const auto& Name : GetBoundaryNames())
-		g_BoundaryOutputs.push_back(GetBuffer(Name));
-	return g_BoundaryOutputs;
+		BoundaryOutputs.push_back(GetBuffer(Name));
+	return BoundaryOutputs;
 }
 
 std::vector<std::string> RecordNames_fp8()
@@ -328,31 +324,31 @@ std::vector<int64_t> ResolutionSelection(int64_t Width, int64_t Height, int64_t 
 }
 
 c10::intrusive_ptr<FDeploymentPlan_fp8>
-CreatePlanForResolution_fp8(at::Tensor g_Input, std::vector<at::Tensor> g_PackedWeightRecords, int64_t Width,
+CreatePlanForResolution_fp8(at::Tensor Input, std::vector<at::Tensor> PackedWeightRecords, int64_t Width,
 							int64_t Height)
 {
-	return c10::make_intrusive<FDeploymentPlan_fp8>(std::move(g_Input), std::move(g_PackedWeightRecords),
-													Width, Height);
+	return c10::make_intrusive<FDeploymentPlan_fp8>(std::move(Input), std::move(PackedWeightRecords), Width,
+													Height);
 }
 
-c10::intrusive_ptr<FDeploymentPlan_fp8> CreatePlan_fp8(at::Tensor g_Input,
-													   std::vector<at::Tensor> g_PackedWeightRecords)
+c10::intrusive_ptr<FDeploymentPlan_fp8> CreatePlan_fp8(at::Tensor Input,
+													   std::vector<at::Tensor> PackedWeightRecords)
 {
-	return c10::make_intrusive<FDeploymentPlan_fp8>(std::move(g_Input), std::move(g_PackedWeightRecords));
+	return c10::make_intrusive<FDeploymentPlan_fp8>(std::move(Input), std::move(PackedWeightRecords));
 }
 
 c10::intrusive_ptr<FDeploymentPlan_fp16>
-CreatePlanForResolution_fp16(at::Tensor g_Input, std::vector<at::Tensor> g_PackedWeightRecords, int64_t Width,
+CreatePlanForResolution_fp16(at::Tensor Input, std::vector<at::Tensor> PackedWeightRecords, int64_t Width,
 							 int64_t Height)
 {
-	return c10::make_intrusive<FDeploymentPlan_fp16>(std::move(g_Input), std::move(g_PackedWeightRecords),
-													 Width, Height);
+	return c10::make_intrusive<FDeploymentPlan_fp16>(std::move(Input), std::move(PackedWeightRecords), Width,
+													 Height);
 }
 
-c10::intrusive_ptr<FDeploymentPlan_fp16> CreatePlan_fp16(at::Tensor g_Input,
-														 std::vector<at::Tensor> g_PackedWeightRecords)
+c10::intrusive_ptr<FDeploymentPlan_fp16> CreatePlan_fp16(at::Tensor Input,
+														 std::vector<at::Tensor> PackedWeightRecords)
 {
-	return c10::make_intrusive<FDeploymentPlan_fp16>(std::move(g_Input), std::move(g_PackedWeightRecords));
+	return c10::make_intrusive<FDeploymentPlan_fp16>(std::move(Input), std::move(PackedWeightRecords));
 }
 template class FDeploymentPlan<false>;
 template class FDeploymentPlan<true>;

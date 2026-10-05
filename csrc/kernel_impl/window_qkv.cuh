@@ -25,18 +25,18 @@ template <bool bFp8> struct FWindowQkvProfile
 struct FWindowQkvCoordinates
 {
 	int g_TilesHigh, g_TilesWide, g_TileY, g_TileX, g_Head;
-	int r_Lane, r_Warp;
+	int Lane, Warp;
 };
 
 template <bool bFp8>
 __device__ __forceinline__ void
 LoadWindowQkvWeights(uint4 (&r_Weights)[FWindowQkvProfile<bFp8>::KSubtiles][6], uint64_t g_PackedWeights,
-					 int r_ReductionTile, const FWindowQkvCoordinates& r_TileCoordinates)
+					 int ReductionTile, const FWindowQkvCoordinates& TileCoordinates)
 {
 	using Profile = FWindowQkvProfile<bFp8>;
 	const uint64_t g_WeightTileBase =
-		g_PackedWeights + uint64_t(r_ReductionTile * Profile::ReductionStep) * 1536 * Profile::ElementBytes +
-		r_TileCoordinates.g_Head * 3072 + r_TileCoordinates.r_Lane * 16;
+		g_PackedWeights + uint64_t(ReductionTile * Profile::ReductionStep) * 1536 * Profile::ElementBytes +
+		TileCoordinates.g_Head * 3072 + TileCoordinates.Lane * 16;
 #pragma unroll
 	for (int r_KSubtile = 0; r_KSubtile < Profile::KSubtiles; ++r_KSubtile)
 #pragma unroll
@@ -47,27 +47,26 @@ LoadWindowQkvWeights(uint4 (&r_Weights)[FWindowQkvProfile<bFp8>::KSubtiles][6], 
 
 template <bool bFp8>
 __device__ __forceinline__ void IssueWindowQkvStage(unsigned char* s_Storage, uint64_t g_Input,
-													int r_ReductionTile,
-													const FWindowQkvCoordinates& r_TileCoordinates)
+													int ReductionTile,
+													const FWindowQkvCoordinates& TileCoordinates)
 {
 	using Profile = FWindowQkvProfile<bFp8>;
-	const int s_Barrier = Profile::s_BarrierBase + (r_ReductionTile % 2) * 8;
+	const int s_Barrier = Profile::s_BarrierBase + (ReductionTile % 2) * 8;
 #pragma unroll
-	for (int r_Copy = 0; r_Copy < (bFp8 ? 2 : 1); ++r_Copy)
+	for (int CopyIndex = 0; CopyIndex < (bFp8 ? 2 : 1); ++CopyIndex)
 	{
-		const int g_LocalY = bFp8 ? r_Copy : r_TileCoordinates.r_Warp / 2;
-		const int g_LocalX = bFp8 ? r_TileCoordinates.r_Warp / 2 : r_TileCoordinates.r_Warp % 2;
-		const int r_KSubtile = bFp8 ? r_TileCoordinates.r_Warp % 2 : 0;
-		const int g_Y = r_TileCoordinates.g_TilesHigh == 1 ? 0 : r_TileCoordinates.g_TileY + g_LocalY;
-		const int g_X = r_TileCoordinates.g_TilesWide == 1 ? 0 : r_TileCoordinates.g_TileX + g_LocalX;
-		const int s_Destination = (r_ReductionTile % 2) * Profile::s_StageBytes +
-								  ((g_LocalY * 2 + g_LocalX) * Profile::KSubtiles + r_KSubtile) * 512;
-		if (g_Y >= 0 && g_Y < r_TileCoordinates.g_TilesHigh && g_X >= 0 &&
-			g_X < r_TileCoordinates.g_TilesWide)
+		const int g_LocalY = bFp8 ? CopyIndex : TileCoordinates.Warp / 2;
+		const int g_LocalX = bFp8 ? TileCoordinates.Warp / 2 : TileCoordinates.Warp % 2;
+		const int KSubtileIndex = bFp8 ? TileCoordinates.Warp % 2 : 0;
+		const int g_Y = TileCoordinates.g_TilesHigh == 1 ? 0 : TileCoordinates.g_TileY + g_LocalY;
+		const int g_X = TileCoordinates.g_TilesWide == 1 ? 0 : TileCoordinates.g_TileX + g_LocalX;
+		const int s_Destination = (ReductionTile % 2) * Profile::s_StageBytes +
+								  ((g_LocalY * 2 + g_LocalX) * Profile::KSubtiles + KSubtileIndex) * 512;
+		if (g_Y >= 0 && g_Y < TileCoordinates.g_TilesHigh && g_X >= 0 && g_X < TileCoordinates.g_TilesWide)
 		{
 			const uint64_t g_Source =
-				g_Input + uint64_t(g_Y * r_TileCoordinates.g_TilesWide + g_X) * 8192 * Profile::ElementBytes +
-				(r_ReductionTile * Profile::KSubtiles + r_KSubtile) * 512;
+				g_Input + uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X) * 8192 * Profile::ElementBytes +
+				(ReductionTile * Profile::KSubtiles + KSubtileIndex) * 512;
 			if (Elected(0xffffffffu))
 			{
 				CopyBulk(s_Storage, s_Destination, g_Source, 512, s_Barrier);
@@ -75,44 +74,44 @@ __device__ __forceinline__ void IssueWindowQkvStage(unsigned char* s_Storage, ui
 			}
 		}
 		else
-			*reinterpret_cast<uint4*>(s_Storage + s_Destination + r_TileCoordinates.r_Lane * 16) =
+			*reinterpret_cast<uint4*>(s_Storage + s_Destination + TileCoordinates.Lane * 16) =
 				make_uint4(0, 0, 0, 0);
 	}
 }
 
 template <bool bFp8>
-__device__ __forceinline__ void WaitWindowQkvStage(unsigned char* s_Storage, int r_ReductionTile)
+__device__ __forceinline__ void WaitWindowQkvStage(unsigned char* s_Storage, int ReductionTile)
 {
-	const int s_Barrier = FWindowQkvProfile<bFp8>::s_BarrierBase + (r_ReductionTile % 2) * 8;
+	const int s_Barrier = FWindowQkvProfile<bFp8>::s_BarrierBase + (ReductionTile % 2) * 8;
 	ArriveAndWait(s_Storage, s_Barrier);
 }
 
 template <bool bFp8>
 __device__ __forceinline__ void
 ProjectWindowQkvDense(FWindowQkvDenseTile& r_Projected, unsigned char* s_Storage, uint64_t g_Input,
-					  uint64_t g_PackedWeights, const FWindowQkvCoordinates& r_TileCoordinates)
+					  uint64_t g_PackedWeights, const FWindowQkvCoordinates& TileCoordinates)
 {
 	using Profile = FWindowQkvProfile<bFp8>;
 	uint4 r_Weights[Profile::KSubtiles][6];
-	LoadWindowQkvWeights<bFp8>(r_Weights, g_PackedWeights, 0, r_TileCoordinates);
-	IssueWindowQkvStage<bFp8>(s_Storage, g_Input, 0, r_TileCoordinates);
+	LoadWindowQkvWeights<bFp8>(r_Weights, g_PackedWeights, 0, TileCoordinates);
+	IssueWindowQkvStage<bFp8>(s_Storage, g_Input, 0, TileCoordinates);
 	WaitWindowQkvStage<bFp8>(s_Storage, 0);
 
 	// Native Half uses K16 and a 2 KiB stage. FP8 uses two K32 instructions
 	// and a 4 KiB stage. Both schedules ping-pong between two input stages.
 #pragma unroll 1
-	for (int r_ReductionTile = 0; r_ReductionTile < Profile::ReductionTiles; ++r_ReductionTile)
+	for (int ReductionTile = 0; ReductionTile < Profile::ReductionTiles; ++ReductionTile)
 	{
-		if (r_ReductionTile + 1 < Profile::ReductionTiles)
-			IssueWindowQkvStage<bFp8>(s_Storage, g_Input, r_ReductionTile + 1, r_TileCoordinates);
+		if (ReductionTile + 1 < Profile::ReductionTiles)
+			IssueWindowQkvStage<bFp8>(s_Storage, g_Input, ReductionTile + 1, TileCoordinates);
 		uint4 r_Input[4][Profile::KSubtiles];
 #pragma unroll
 		for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
 #pragma unroll
 			for (int r_KSubtile = 0; r_KSubtile < Profile::KSubtiles; ++r_KSubtile)
 				r_Input[r_Spatial][r_KSubtile] = *reinterpret_cast<const uint4*>(
-					s_Storage + (r_ReductionTile % 2) * Profile::s_StageBytes +
-					(r_Spatial * Profile::KSubtiles + r_KSubtile) * 512 + r_TileCoordinates.r_Lane * 16);
+					s_Storage + (ReductionTile % 2) * Profile::s_StageBytes +
+					(r_Spatial * Profile::KSubtiles + r_KSubtile) * 512 + TileCoordinates.Lane * 16);
 		if constexpr (bFp8)
 			AccumulateTile<Profile::Precision>(r_Projected, r_Input, r_Weights);
 		else
@@ -137,39 +136,39 @@ ProjectWindowQkvDense(FWindowQkvDenseTile& r_Projected, unsigned char* s_Storage
 						{r_AccumulatorWords[2], r_AccumulatorWords[3]});
 				}
 		}
-		if (r_ReductionTile + 1 < Profile::ReductionTiles)
+		if (ReductionTile + 1 < Profile::ReductionTiles)
 		{
-			LoadWindowQkvWeights<bFp8>(r_Weights, g_PackedWeights, r_ReductionTile + 1, r_TileCoordinates);
-			WaitWindowQkvStage<bFp8>(s_Storage, r_ReductionTile + 1);
+			LoadWindowQkvWeights<bFp8>(r_Weights, g_PackedWeights, ReductionTile + 1, TileCoordinates);
+			WaitWindowQkvStage<bFp8>(s_Storage, ReductionTile + 1);
 		}
 	}
 }
 
 template <bool bFp8, typename TParameters>
-__device__ __forceinline__ void RunWindowQkv(const TParameters& r_Parameters, unsigned char* s_Storage)
+__device__ __forceinline__ void RunWindowQkv(const TParameters& Parameters, unsigned char* s_Storage)
 {
 	using Profile = FWindowQkvProfile<bFp8>;
-	const FWindowQkvCoordinates r_TileCoordinates{r_Parameters.Height / 4,
-												  r_Parameters.Width / 4,
-												  (int(blockIdx.y) * 8 + r_Parameters.OriginY) / 4,
-												  (int(blockIdx.x) * 8 + r_Parameters.OriginX) / 4,
-												  int(blockIdx.z) * 4 + int(threadIdx.y),
-												  int(threadIdx.x),
-												  int(threadIdx.y)};
-	if (r_TileCoordinates.r_Lane == 0 && r_TileCoordinates.r_Warp == 0)
+	const FWindowQkvCoordinates TileCoordinates{Parameters.Height / 4,
+												Parameters.Width / 4,
+												(int(blockIdx.y) * 8 + Parameters.OriginY) / 4,
+												(int(blockIdx.x) * 8 + Parameters.OriginX) / 4,
+												int(blockIdx.z) * 4 + int(threadIdx.y),
+												int(threadIdx.x),
+												int(threadIdx.y)};
+	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 	{
 		BarrierInit(s_Storage, Profile::s_BarrierBase, 128);
 		BarrierInit(s_Storage, Profile::s_BarrierBase + 8, 128);
 	}
 	__syncthreads();
 	FWindowQkvDenseTile r_Projected{};
-	ProjectWindowQkvDense<bFp8>(r_Projected, s_Storage, r_Parameters.g_Input, r_Parameters.g_PackedWeights,
-								r_TileCoordinates);
+	ProjectWindowQkvDense<bFp8>(r_Projected, s_Storage, Parameters.g_Input, Parameters.g_PackedWeights,
+								TileCoordinates);
 
 	FWindowActivationTile<bFp8> r_Query[4], r_Key[4];
 	FWindowValueTile<bFp8> r_Value[4];
 	const uint32_t r_HeadScale = FloatToHalf2(*reinterpret_cast<const uint32_t*>(
-		r_Parameters.g_PackedWeights + Profile::HeadScaleOffset + r_TileCoordinates.g_Head * 4));
+		Parameters.g_PackedWeights + Profile::HeadScaleOffset + TileCoordinates.g_Head * 4));
 #pragma unroll
 	for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
 	{
@@ -206,7 +205,7 @@ __device__ __forceinline__ void RunWindowQkv(const TParameters& r_Parameters, un
 	// Q/K normalization and the affine-exponent softmax use the same exact
 	// packed-Half operations as the smaller window blocks. Attention stays in registers.
 	const auto* g_HeadBias = reinterpret_cast<const unsigned char*>(
-		r_Parameters.g_PackedWeights + Profile::BiasOffset + r_TileCoordinates.g_Head * 8192);
+		Parameters.g_PackedWeights + Profile::BiasOffset + TileCoordinates.g_Head * 8192);
 	if constexpr (bFp8)
 	{
 		// The native softmax transposes two adjacent query tiles together:
@@ -220,15 +219,15 @@ __device__ __forceinline__ void RunWindowQkv(const TParameters& r_Parameters, un
 			for (int r_LocalTile = 0; r_LocalTile < 2; ++r_LocalTile)
 			{
 				const int r_Spatial = r_FirstTile + r_LocalTile;
-				const int g_Y = r_TileCoordinates.g_TileY + r_Spatial / 2,
-						  g_X = r_TileCoordinates.g_TileX + r_Spatial % 2;
-				if (g_Y < 0 || g_Y >= r_TileCoordinates.g_TilesHigh || g_X < 0 ||
-					g_X >= r_TileCoordinates.g_TilesWide)
+				const int g_Y = TileCoordinates.g_TileY + r_Spatial / 2,
+						  g_X = TileCoordinates.g_TileX + r_Spatial % 2;
+				if (g_Y < 0 || g_Y >= TileCoordinates.g_TilesHigh || g_X < 0 ||
+					g_X >= TileCoordinates.g_TilesWide)
 					continue;
 				const auto& r_AttendedFragment = r_Attended[r_LocalTile].r_Reduction[0];
 				const uint64_t g_OutputFragmentAddress =
-					r_Parameters.g_Output + uint64_t(g_Y * r_TileCoordinates.g_TilesWide + g_X) * 8192 +
-					r_TileCoordinates.g_Head * 512 + r_TileCoordinates.r_Lane * 16;
+					Parameters.g_Output + uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X) * 8192 +
+					TileCoordinates.g_Head * 512 + TileCoordinates.Lane * 16;
 				StoreNoAllocate(g_OutputFragmentAddress,
 								make_uint4(r_AttendedFragment.r_Word[0], r_AttendedFragment.r_Word[1],
 										   r_AttendedFragment.r_Word[2], r_AttendedFragment.r_Word[3]));
@@ -241,20 +240,20 @@ __device__ __forceinline__ void RunWindowQkv(const TParameters& r_Parameters, un
 		for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
 		{
 			const auto r_AttendedTile = AttendWithBias<bFp8>(r_Spatial, g_HeadBias, r_Query, r_Key, r_Value);
-			const int g_Y = r_TileCoordinates.g_TileY + r_Spatial / 2,
-					  g_X = r_TileCoordinates.g_TileX + r_Spatial % 2;
-			if (g_Y < 0 || g_Y >= r_TileCoordinates.g_TilesHigh || g_X < 0 ||
-				g_X >= r_TileCoordinates.g_TilesWide)
+			const int g_Y = TileCoordinates.g_TileY + r_Spatial / 2,
+					  g_X = TileCoordinates.g_TileX + r_Spatial % 2;
+			if (g_Y < 0 || g_Y >= TileCoordinates.g_TilesHigh || g_X < 0 ||
+				g_X >= TileCoordinates.g_TilesWide)
 				continue;
 #pragma unroll
 			for (int r_Chunk = 0; r_Chunk < (bFp8 ? 1 : 2); ++r_Chunk)
 			{
 				const auto& r_AttendedFragment = r_AttendedTile.r_Reduction[r_Chunk];
 				const uint64_t g_OutputFragmentAddress =
-					r_Parameters.g_Output +
-					uint64_t(g_Y * r_TileCoordinates.g_TilesWide + g_X) * 8192 * Profile::ElementBytes +
-					r_TileCoordinates.g_Head * 512 * Profile::ElementBytes + r_Chunk * 512 +
-					r_TileCoordinates.r_Lane * 16;
+					Parameters.g_Output +
+					uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X) * 8192 * Profile::ElementBytes +
+					TileCoordinates.g_Head * 512 * Profile::ElementBytes + r_Chunk * 512 +
+					TileCoordinates.Lane * 16;
 				StoreNoAllocate(g_OutputFragmentAddress,
 								make_uint4(r_AttendedFragment.r_Word[0], r_AttendedFragment.r_Word[1],
 										   r_AttendedFragment.r_Word[2], r_AttendedFragment.r_Word[3]));

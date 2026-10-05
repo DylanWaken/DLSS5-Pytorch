@@ -18,8 +18,8 @@ class KernelSourcesCPUTest(unittest.TestCase):
 
     def write_kernel(self, path, name="example_fp8"):
         path.write_text(
-            f'extern "C" __global__ __maxnreg__(192) void {name}(FExampleParameters r_Parameters) {{\n'
-            "    SharedBody<64, false>(r_Parameters);\n}\n", encoding="utf-8"
+            f'extern "C" __global__ __maxnreg__(192) void {name}(FExampleParameters Parameters) {{\n'
+            "    SharedBody<64, false>(Parameters);\n}\n", encoding="utf-8"
         )
 
     def test_active_sources_have_complete_paired_exports_and_one_owner(self):
@@ -54,7 +54,7 @@ class KernelSourcesCPUTest(unittest.TestCase):
             with self.subTest(source=str(path.relative_to(ROOT))):
                 code = _without_comments_and_strings(path.read_text(encoding="utf-8"))
                 self.assertNotRegex(code, r"\b(?:g_)?(?:Pointer|Scalar|Aux|Parameter|Param|Temp|Tmp)[0-9]+\b")
-                self.assertNotRegex(code, r"\bParameterU64\b|\br_Parameters\s*\.\s*Words\b")
+                self.assertNotRegex(code, r"\bParameterU64\b|\b(?:r_)?Parameters\s*\.\s*Words\b")
 
     def test_grouped_header_maps_names_not_filenames(self):
         with tempfile.TemporaryDirectory() as directory:

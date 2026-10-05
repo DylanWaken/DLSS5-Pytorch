@@ -34,24 +34,24 @@ template <bool bFp8> struct FPreprocessWindowIO : FOrdinaryWindowIO
 	template <bool bPrecision> using FRecordProfile = FPreprocessWindowProfile<bPrecision>;
 
 	__device__ __forceinline__ static FWindowActivationTile<bFp8>
-	Read(const FPreprocessWindowParameters& r_Parameters, int r_Tile)
+	Read(const FPreprocessWindowParameters& Parameters, int r_Tile)
 	{
-		return PublishWindow32<bFp8>(r_Parameters.r_Adapter[r_Tile]);
+		return PublishWindow32<bFp8>(Parameters.r_Adapter[r_Tile]);
 	}
 
-	__device__ __forceinline__ static uint32_t Residual(const FPreprocessWindowParameters& r_Parameters,
+	__device__ __forceinline__ static uint32_t Residual(const FPreprocessWindowParameters& Parameters,
 														int r_Tile, int r_Column, int r_RowHalf)
 	{
-		return r_Parameters.r_Adapter[r_Tile].r_Pair[r_Column][r_RowHalf];
+		return Parameters.r_Adapter[r_Tile].r_Pair[r_Column][r_RowHalf];
 	}
 };
 
 template <bool bFp8>
-__device__ __forceinline__ void ProjectInputAdapter(const FPreprocessParameters& r_Parameters,
+__device__ __forceinline__ void ProjectInputAdapter(const FPreprocessParameters& Parameters,
 													const FSharedFeatures& s_Features,
 													FWindowAccumulatorTile<32> (&r_Output)[4])
 {
-	const auto* g_Weights = reinterpret_cast<const unsigned char*>(r_Parameters.g_PackedWeights) +
+	const auto* g_Weights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights) +
 							FPreprocessWindowProfile<bFp8>::AdapterOffset;
 	uint32_t r_WeightFragments[4][2];
 #pragma unroll
@@ -89,41 +89,42 @@ __device__ __forceinline__ void ProjectInputAdapter(const FPreprocessParameters&
 }
 
 template <bool bFp8, bool bDownsample>
-__device__ __forceinline__ void RunPreprocess(const FPreprocessParameters& r_Parameters,
+__device__ __forceinline__ void RunPreprocess(const FPreprocessParameters& Parameters,
 											  FSharedFeatures& s_Features)
 {
-	FillFeatures(r_Parameters, s_Features);
+	FillFeatures(Parameters, s_Features);
 	FWindowAccumulatorTile<32> r_Adapter[4];
-	ProjectInputAdapter<bFp8>(r_Parameters, s_Features, r_Adapter);
-	FPreprocessWindowParameters r_Window{0,
-										 r_Parameters.g_Output,
-										 r_Parameters.g_PackedWeights,
-										 r_Parameters.FullHeight,
-										 r_Parameters.FullWidth,
-										 0,
-										 0,
-										 r_Adapter};
+	ProjectInputAdapter<bFp8>(Parameters, s_Features, r_Adapter);
+	FPreprocessWindowParameters WindowParameters{0,
+												 Parameters.g_Output,
+												 Parameters.g_PackedWeights,
+												 Parameters.FullHeight,
+												 Parameters.FullWidth,
+												 0,
+												 0,
+												 r_Adapter};
 	if constexpr (bDownsample)
 	{
 		FWindowAccumulatorTile<32> r_Output[4];
-		RunWindow32<bFp8, FPreprocessWindowParameters, FPreprocessWindowIO<bFp8>, true>(r_Window, r_Output);
+		RunWindow32<bFp8, FPreprocessWindowParameters, FPreprocessWindowIO<bFp8>, true>(WindowParameters,
+																						r_Output);
 		const auto r_Pooled = PoolWindow(r_Output);
-		const FWindowDownsampleArguments r_DownsampledParameters{0,
-																 r_Parameters.g_Output,
-																 r_Parameters.g_PackedWeights,
-																 r_Parameters.g_PooledOutput,
-																 r_Parameters.FullHeight,
-																 r_Parameters.FullWidth,
-																 0,
-																 0,
-																 r_Parameters.PooledHeight,
-																 r_Parameters.PooledWidth};
+		const FWindowDownsampleArguments DownsampledParameters{0,
+															   Parameters.g_Output,
+															   Parameters.g_PackedWeights,
+															   Parameters.g_PooledOutput,
+															   Parameters.FullHeight,
+															   Parameters.FullWidth,
+															   0,
+															   0,
+															   Parameters.PooledHeight,
+															   Parameters.PooledWidth};
 		// The input stage pools C32 directly. Later encoder stages additionally
 		// project C -> 2C, which would be an incorrect extra operation here.
-		PublishWindowDownsample<32, bFp8>(r_DownsampledParameters, 0, r_Pooled);
-		ClearDownsamplePadding<32, 4>(r_DownsampledParameters);
+		PublishWindowDownsample<32, bFp8>(DownsampledParameters, 0, r_Pooled);
+		ClearDownsamplePadding<32, 4>(DownsampledParameters);
 	}
 	else
-		RunWindow32<bFp8, FPreprocessWindowParameters, FPreprocessWindowIO<bFp8>>(r_Window);
+		RunWindow32<bFp8, FPreprocessWindowParameters, FPreprocessWindowIO<bFp8>>(WindowParameters);
 }
 #endif

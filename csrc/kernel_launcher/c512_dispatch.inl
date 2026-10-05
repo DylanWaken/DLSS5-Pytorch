@@ -106,25 +106,25 @@ FC512PreparedEntries& C512GetPreparationState()
 	return PreparationState;
 }
 
-void C512ValidatePhysicalTensor(const at::Tensor& g_Tensor, int64_t Bytes, const at::Device& TensorDevice,
+void C512ValidatePhysicalTensor(const at::Tensor& Tensor, int64_t Bytes, const at::Device& TensorDevice,
 								const char* Role)
 {
-	TORCH_CHECK(g_Tensor.defined() && g_Tensor.is_cuda() && g_Tensor.device() == TensorDevice &&
-					g_Tensor.scalar_type() == at::kByte,
+	TORCH_CHECK(Tensor.defined() && Tensor.is_cuda() && Tensor.device() == TensorDevice &&
+					Tensor.scalar_type() == at::kByte,
 				Role, " requires a physical uint8 tensor on the selected CUDA device");
-	TORCH_CHECK(g_Tensor.dim() == 1 && g_Tensor.is_contiguous() && g_Tensor.numel() == Bytes, Role,
+	TORCH_CHECK(Tensor.dim() == 1 && Tensor.is_contiguous() && Tensor.numel() == Bytes, Role,
 				" requires exact contiguous physical extent ", Bytes);
-	TORCH_CHECK(!g_Tensor.requires_grad(), "reconstructed C512 execution is inference only");
-	TORCH_CHECK(reinterpret_cast<uintptr_t>(g_Tensor.data_ptr()) % 16 == 0, Role,
+	TORCH_CHECK(!Tensor.requires_grad(), "reconstructed C512 execution is inference only");
+	TORCH_CHECK(reinterpret_cast<uintptr_t>(Tensor.data_ptr()) % 16 == 0, Role,
 				" requires 16-byte alignment");
 }
 
-void C512ValidateDisjoint(const at::Tensor& g_FirstTensor, const at::Tensor& g_SecondTensor)
+void C512ValidateDisjoint(const at::Tensor& FirstTensor, const at::Tensor& SecondTensor)
 {
-	const uintptr_t g_FirstAddress = reinterpret_cast<uintptr_t>(g_FirstTensor.data_ptr()),
-					g_SecondAddress = reinterpret_cast<uintptr_t>(g_SecondTensor.data_ptr());
-	const uintptr_t FirstByteCount = uintptr_t(g_FirstTensor.numel()),
-					SecondByteCount = uintptr_t(g_SecondTensor.numel());
+	const uintptr_t g_FirstAddress = reinterpret_cast<uintptr_t>(FirstTensor.data_ptr()),
+					g_SecondAddress = reinterpret_cast<uintptr_t>(SecondTensor.data_ptr());
+	const uintptr_t FirstByteCount = uintptr_t(FirstTensor.numel()),
+					SecondByteCount = uintptr_t(SecondTensor.numel());
 	TORCH_CHECK(g_FirstAddress <= std::numeric_limits<uintptr_t>::max() - FirstByteCount &&
 					g_SecondAddress <= std::numeric_limits<uintptr_t>::max() - SecondByteCount,
 				"C512 physical range overflow");
@@ -133,17 +133,16 @@ void C512ValidateDisjoint(const at::Tensor& g_FirstTensor, const at::Tensor& g_S
 				"C512 supplied physical buffers must be pairwise disjoint");
 }
 
-void C512ValidateAllDisjoint(const std::vector<const at::Tensor*>& g_Buffers)
+void C512ValidateAllDisjoint(const std::vector<const at::Tensor*>& Buffers)
 {
-	for (size_t g_BufferIndex = 0; g_BufferIndex < g_Buffers.size(); ++g_BufferIndex)
-		for (size_t g_OtherBufferIndex = g_BufferIndex + 1; g_OtherBufferIndex < g_Buffers.size();
-			 ++g_OtherBufferIndex)
-			C512ValidateDisjoint(*g_Buffers[g_BufferIndex], *g_Buffers[g_OtherBufferIndex]);
+	for (size_t BufferIndex = 0; BufferIndex < Buffers.size(); ++BufferIndex)
+		for (size_t OtherBufferIndex = BufferIndex + 1; OtherBufferIndex < Buffers.size(); ++OtherBufferIndex)
+			C512ValidateDisjoint(*Buffers[BufferIndex], *Buffers[OtherBufferIndex]);
 }
 
-int C512GetDeviceIndex(const at::Tensor& g_Tensor)
+int C512GetDeviceIndex(const at::Tensor& Tensor)
 {
-	const int DeviceIndex = g_Tensor.get_device();
+	const int DeviceIndex = Tensor.get_device();
 	TORCH_CHECK(DeviceIndex >= 0 && DeviceIndex < 64, "C512 device outside preparation table");
 	cudaDeviceProp DeviceProperties{};
 	C10_CUDA_CHECK(cudaGetDeviceProperties(&DeviceProperties, DeviceIndex));
@@ -209,11 +208,11 @@ void C512LaunchWithParameters(const void* Function, dim3 Grid, dim3 Block, cudaS
 
 // Returns 18 rows of [entry,device,SM,registers,shared,local,maxThreads].
 // Explicit loading/admission is outside capture even when already prepared.
-std::vector<int64_t> C512PrepareEntries(const at::Tensor& g_DeviceAnchor)
+std::vector<int64_t> C512PrepareEntries(const at::Tensor& DeviceAnchor)
 {
-	TORCH_CHECK(g_DeviceAnchor.is_cuda(), "C512 preparation requires CUDA");
-	c10::cuda::CUDAGuard DeviceGuard(g_DeviceAnchor.device());
-	const int DeviceIndex = C512GetDeviceIndex(g_DeviceAnchor);
+	TORCH_CHECK(DeviceAnchor.is_cuda(), "C512 preparation requires CUDA");
+	c10::cuda::CUDAGuard DeviceGuard(DeviceAnchor.device());
+	const int DeviceIndex = C512GetDeviceIndex(DeviceAnchor);
 	const auto Stream = c10::cuda::getCurrentCUDAStream(DeviceIndex);
 	cudaStreamCaptureStatus CaptureStatus = cudaStreamCaptureStatusNone;
 	C10_CUDA_CHECK(cudaStreamIsCapturing(Stream.stream(), &CaptureStatus));
@@ -248,8 +247,8 @@ std::vector<int64_t> C512PrepareEntries(const at::Tensor& g_DeviceAnchor)
 // Inputs use public order state,record[,skip]; outputs high[,pool].
 // All memory is caller-owned. No preparation, allocation, conversion, native
 // module lookup, legacy computation, or fallback is performed by this route.
-std::vector<at::Tensor> C512LaunchEntry(int64_t EntryIndex, std::vector<at::Tensor> g_Inputs,
-										std::vector<at::Tensor> g_Outputs, int64_t Height, int64_t Width,
+std::vector<at::Tensor> C512LaunchEntry(int64_t EntryIndex, std::vector<at::Tensor> Inputs,
+										std::vector<at::Tensor> Outputs, int64_t Height, int64_t Width,
 										int64_t WindowPhase)
 {
 	TORCH_CHECK(EntryIndex >= 0 && EntryIndex < 18, "C512 entry 0..17");
@@ -261,11 +260,11 @@ std::vector<at::Tensor> C512LaunchEntry(int64_t EntryIndex, std::vector<at::Tens
 								EntrySpec.Role == EC512KernelRole::AttentionProjection ||
 								EntrySpec.Role == EC512KernelRole::AttentionProjectionOutputView ||
 								bPooledOutput;
-	TORCH_CHECK(g_Inputs.size() == size_t(bResidualInput ? 3 : 2) &&
-					g_Outputs.size() == size_t(bPooledOutput ? 2 : 1),
+	TORCH_CHECK(Inputs.size() == size_t(bResidualInput ? 3 : 2) &&
+					Outputs.size() == size_t(bPooledOutput ? 2 : 1),
 				"C512 exact input/output roles");
-	const auto& g_Input = g_Inputs[0];
-	TORCH_CHECK(g_Input.is_cuda(), "C512 requires CUDA state");
+	const auto& Input = Inputs[0];
+	TORCH_CHECK(Input.is_cuda(), "C512 requires CUDA state");
 	const bool bQualified4KField =
 		Height == (bChannelExpansion ? 36 : 68) && Width == (bChannelExpansion ? 60 : 120);
 	const bool bBoundedFp16 = EntrySpec.ElementBytes == 2 && Height == 16 && Width == 24;
@@ -276,23 +275,23 @@ std::vector<at::Tensor> C512LaunchEntry(int64_t EntryIndex, std::vector<at::Tens
 				"phase belongs only to fused QKV/attention");
 	const int64_t ImageBytes = Height * Width * 512 * EntrySpec.ElementBytes,
 				  PoolHeight = ((Height + 7) / 8) * 4, PoolWidth = ((Width + 7) / 8) * 4;
-	C512ValidatePhysicalTensor(g_Input, ImageBytes, g_Input.device(), "state");
-	C512ValidatePhysicalTensor(g_Inputs[1], EntrySpec.RecordBytes, g_Input.device(), "record");
+	C512ValidatePhysicalTensor(Input, ImageBytes, Input.device(), "state");
+	C512ValidatePhysicalTensor(Inputs[1], EntrySpec.RecordBytes, Input.device(), "record");
 	if (bResidualInput)
-		C512ValidatePhysicalTensor(g_Inputs[2], ImageBytes, g_Input.device(), "skip");
-	C512ValidatePhysicalTensor(g_Outputs[0], bChannelExpansion ? 2 * ImageBytes : ImageBytes,
-							   g_Input.device(), "high");
+		C512ValidatePhysicalTensor(Inputs[2], ImageBytes, Input.device(), "skip");
+	C512ValidatePhysicalTensor(Outputs[0], bChannelExpansion ? 2 * ImageBytes : ImageBytes, Input.device(),
+							   "high");
 	if (bPooledOutput)
-		C512ValidatePhysicalTensor(g_Outputs[1], PoolHeight * PoolWidth * 512 * EntrySpec.ElementBytes,
-								   g_Input.device(), "pool");
-	std::vector<const at::Tensor*> g_Buffers;
-	for (const auto& g_Tensor : g_Inputs)
-		g_Buffers.push_back(&g_Tensor);
-	for (const auto& g_Tensor : g_Outputs)
-		g_Buffers.push_back(&g_Tensor);
-	C512ValidateAllDisjoint(g_Buffers);
-	c10::cuda::CUDAGuard DeviceGuard(g_Input.device());
-	const int DeviceIndex = g_Input.get_device();
+		C512ValidatePhysicalTensor(Outputs[1], PoolHeight * PoolWidth * 512 * EntrySpec.ElementBytes,
+								   Input.device(), "pool");
+	std::vector<const at::Tensor*> Buffers;
+	for (const auto& Tensor : Inputs)
+		Buffers.push_back(&Tensor);
+	for (const auto& Tensor : Outputs)
+		Buffers.push_back(&Tensor);
+	C512ValidateAllDisjoint(Buffers);
+	c10::cuda::CUDAGuard DeviceGuard(Input.device());
+	const int DeviceIndex = Input.get_device();
 	TORCH_CHECK(DeviceIndex >= 0 && DeviceIndex < 64, "C512 device outside preparation table");
 	{
 		auto& Preparation = C512GetPreparationState();
@@ -301,18 +300,18 @@ std::vector<at::Tensor> C512LaunchEntry(int64_t EntryIndex, std::vector<at::Tens
 					"prepare all reconstructed C512 entries outside capture first");
 	}
 	const auto Stream = c10::cuda::getCurrentCUDAStream(DeviceIndex);
-	for (const auto* g_Tensor : g_Buffers)
-		c10::cuda::CUDACachingAllocator::recordStream(g_Tensor->storage().data_ptr(), Stream);
-	const auto GetTensorAddress = [](const at::Tensor& g_Tensor)
-	{ return uint64_t(reinterpret_cast<uintptr_t>(g_Tensor.data_ptr())); };
+	for (const auto* Tensor : Buffers)
+		c10::cuda::CUDACachingAllocator::recordStream(Tensor->storage().data_ptr(), Stream);
+	const auto GetTensorAddress = [](const at::Tensor& Tensor)
+	{ return uint64_t(reinterpret_cast<uintptr_t>(Tensor.data_ptr())); };
 	const int ShiftX = (WindowPhase == 1 || WindowPhase == 2) ? 4 : 0;
 	const int ShiftY = (WindowPhase == 1 || WindowPhase == 3) ? 4 : 0;
 	const bool bQkvAttention = EntrySpec.Role == EC512KernelRole::QkvAttention;
-	const FC512LaunchArguments Bindings{GetTensorAddress(g_Input),
-										bResidualInput ? GetTensorAddress(g_Inputs[2]) : 0,
-										GetTensorAddress(g_Outputs[0]),
-										bPooledOutput ? GetTensorAddress(g_Outputs[1]) : 0,
-										GetTensorAddress(g_Inputs[1]),
+	const FC512LaunchArguments Bindings{GetTensorAddress(Input),
+										bResidualInput ? GetTensorAddress(Inputs[2]) : 0,
+										GetTensorAddress(Outputs[0]),
+										bPooledOutput ? GetTensorAddress(Outputs[1]) : 0,
+										GetTensorAddress(Inputs[1]),
 										int32_t(Height),
 										int32_t(Width),
 										bQkvAttention ? -ShiftX : 0,
@@ -424,111 +423,104 @@ std::vector<at::Tensor> C512LaunchEntry(int64_t EntryIndex, std::vector<at::Tens
 		TORCH_CHECK(false, "unreachable C512 entry");
 	}
 	C10_CUDA_KERNEL_LAUNCH_CHECK();
-	return g_Outputs;
+	return Outputs;
 }
 
 // All 16 real C512 blocks, including the input/pooled/output boundaries.
 // Records are layer0..3 (plus4 at block30). Workspaces are branches,FFN,
 // attended,high (plus pool,down at block30); all are retained and returned.
-std::vector<at::Tensor> C512BlockOutEntry(int64_t BlockIndex, bool bFp16, const at::Tensor& g_Input,
-										  std::vector<at::Tensor> g_Records,
-										  std::vector<at::Tensor> g_Workspaces)
+std::vector<at::Tensor> C512BlockOutEntry(int64_t BlockIndex, bool bFp16, const at::Tensor& Input,
+										  std::vector<at::Tensor> Records, std::vector<at::Tensor> Workspaces)
 {
 	TORCH_CHECK((BlockIndex >= 23 && BlockIndex <= 30) || (BlockIndex >= 40 && BlockIndex <= 47),
 				"C512 actual blocks23..30/40..47 only");
 	const bool bInputView = BlockIndex == 23, bDownsample = BlockIndex == 30, bOutputView = BlockIndex == 47;
 	const int PrecisionOffset = bFp16 ? 1 : 0;
-	TORCH_CHECK(g_Records.size() == size_t(bDownsample ? 5 : 4) &&
-					g_Workspaces.size() == size_t(bDownsample ? 6 : 4),
+	TORCH_CHECK(Records.size() == size_t(bDownsample ? 5 : 4) &&
+					Workspaces.size() == size_t(bDownsample ? 6 : 4),
 				"C512 block complete retained roles");
-	TORCH_CHECK(g_Input.is_cuda(), "C512 block state CUDA");
+	TORCH_CHECK(Input.is_cuda(), "C512 block state CUDA");
 	const int64_t ImageBytes = 68 * 120 * 512 * (bFp16 ? 2 : 1);
-	C512ValidatePhysicalTensor(g_Input, ImageBytes, g_Input.device(), "block state");
+	C512ValidatePhysicalTensor(Input, ImageBytes, Input.device(), "block state");
 	const std::array<int64_t, 5> RecordByteExtents{{bFp16 ? 1048576 : 524288, bFp16 ? 525312 : 263168,
 													bFp16 ? 1704000 : 917568, bFp16 ? 525312 : 263168,
 													bFp16 ? 1048592 : 524304}};
-	std::vector<const at::Tensor*> g_Buffers{&g_Input};
-	for (size_t g_RecordIndex = 0; g_RecordIndex < g_Records.size(); ++g_RecordIndex)
+	std::vector<const at::Tensor*> Buffers{&Input};
+	for (size_t RecordIndex = 0; RecordIndex < Records.size(); ++RecordIndex)
 	{
-		C512ValidatePhysicalTensor(g_Records[g_RecordIndex], RecordByteExtents[g_RecordIndex],
-								   g_Input.device(), "block record");
-		g_Buffers.push_back(&g_Records[g_RecordIndex]);
+		C512ValidatePhysicalTensor(Records[RecordIndex], RecordByteExtents[RecordIndex], Input.device(),
+								   "block record");
+		Buffers.push_back(&Records[RecordIndex]);
 	}
-	for (size_t g_WorkspaceIndex = 0; g_WorkspaceIndex < g_Workspaces.size(); ++g_WorkspaceIndex)
+	for (size_t WorkspaceIndex = 0; WorkspaceIndex < Workspaces.size(); ++WorkspaceIndex)
 	{
-		const int64_t Bytes = g_WorkspaceIndex < 4
-								  ? ImageBytes
-								  : 36 * 60 * 512 * (bFp16 ? 2 : 1) * (g_WorkspaceIndex == 5 ? 2 : 1);
-		C512ValidatePhysicalTensor(g_Workspaces[g_WorkspaceIndex], Bytes, g_Input.device(),
-								   "block workspace");
-		g_Buffers.push_back(&g_Workspaces[g_WorkspaceIndex]);
+		const int64_t Bytes =
+			WorkspaceIndex < 4 ? ImageBytes : 36 * 60 * 512 * (bFp16 ? 2 : 1) * (WorkspaceIndex == 5 ? 2 : 1);
+		C512ValidatePhysicalTensor(Workspaces[WorkspaceIndex], Bytes, Input.device(), "block workspace");
+		Buffers.push_back(&Workspaces[WorkspaceIndex]);
 	}
-	C512ValidateAllDisjoint(g_Buffers);
-	C512LaunchEntry((bInputView ? 2 : 0) + PrecisionOffset, {g_Input, g_Records[0]}, {g_Workspaces[0]}, 68,
-					120, 0);
-	C512LaunchEntry((bInputView ? 6 : 4) + PrecisionOffset, {g_Workspaces[0], g_Records[1], g_Input},
-					{g_Workspaces[1]}, 68, 120, 0);
+	C512ValidateAllDisjoint(Buffers);
+	C512LaunchEntry((bInputView ? 2 : 0) + PrecisionOffset, {Input, Records[0]}, {Workspaces[0]}, 68, 120, 0);
+	C512LaunchEntry((bInputView ? 6 : 4) + PrecisionOffset, {Workspaces[0], Records[1], Input},
+					{Workspaces[1]}, 68, 120, 0);
 	const int WindowPhase = int(BlockIndex < 31 ? (BlockIndex - 23) % 4 : (BlockIndex - 40) % 4);
-	C512LaunchEntry(8 + PrecisionOffset, {g_Workspaces[1], g_Records[2]}, {g_Workspaces[2]}, 68, 120,
-					WindowPhase);
+	C512LaunchEntry(8 + PrecisionOffset, {Workspaces[1], Records[2]}, {Workspaces[2]}, 68, 120, WindowPhase);
 	if (bDownsample)
 	{
-		C512LaunchEntry(14 + PrecisionOffset, {g_Workspaces[2], g_Records[3], g_Workspaces[1]},
-						{g_Workspaces[3], g_Workspaces[4]}, 68, 120, 0);
-		C512LaunchEntry(16 + PrecisionOffset, {g_Workspaces[4], g_Records[4]}, {g_Workspaces[5]}, 36, 60, 0);
+		C512LaunchEntry(14 + PrecisionOffset, {Workspaces[2], Records[3], Workspaces[1]},
+						{Workspaces[3], Workspaces[4]}, 68, 120, 0);
+		C512LaunchEntry(16 + PrecisionOffset, {Workspaces[4], Records[4]}, {Workspaces[5]}, 36, 60, 0);
 	}
 	else
-		C512LaunchEntry((bOutputView ? 12 : 10) + PrecisionOffset,
-						{g_Workspaces[2], g_Records[3], g_Workspaces[1]}, {g_Workspaces[3]}, 68, 120, 0);
-	return g_Workspaces;
+		C512LaunchEntry((bOutputView ? 12 : 10) + PrecisionOffset, {Workspaces[2], Records[3], Workspaces[1]},
+						{Workspaces[3]}, 68, 120, 0);
+	return Workspaces;
 }
 
-std::vector<int64_t> PrepareC512_fp8(const at::Tensor& g_DeviceAnchor, int64_t EntryIndex)
+std::vector<int64_t> PrepareC512_fp8(const at::Tensor& DeviceAnchor, int64_t EntryIndex)
 {
 	TORCH_CHECK(EntryIndex >= 0 && EntryIndex < 18, "C512 entry outside catalog");
 	TORCH_CHECK(C512GetEntryTable()[EntryIndex].ElementBytes == 1,
 				"C512 precision does not match _fp8 binding");
-	return C512PrepareEntries(g_DeviceAnchor);
+	return C512PrepareEntries(DeviceAnchor);
 }
 
-std::vector<at::Tensor> LaunchC512_fp8(int64_t EntryIndex, std::vector<at::Tensor> g_Inputs,
-									   std::vector<at::Tensor> g_Outputs, int64_t Height, int64_t Width,
+std::vector<at::Tensor> LaunchC512_fp8(int64_t EntryIndex, std::vector<at::Tensor> Inputs,
+									   std::vector<at::Tensor> Outputs, int64_t Height, int64_t Width,
 									   int64_t WindowPhase)
 {
 	TORCH_CHECK(EntryIndex >= 0 && EntryIndex < 18, "C512 entry outside catalog");
 	TORCH_CHECK(C512GetEntryTable()[EntryIndex].ElementBytes == 1,
 				"C512 precision does not match _fp8 binding");
-	return C512LaunchEntry(EntryIndex, std::move(g_Inputs), std::move(g_Outputs), Height, Width, WindowPhase);
+	return C512LaunchEntry(EntryIndex, std::move(Inputs), std::move(Outputs), Height, Width, WindowPhase);
 }
 
-std::vector<at::Tensor> C512BlockOut_fp8(int64_t BlockIndex, const at::Tensor& g_Input,
-										 std::vector<at::Tensor> g_Records,
-										 std::vector<at::Tensor> g_Workspaces)
+std::vector<at::Tensor> C512BlockOut_fp8(int64_t BlockIndex, const at::Tensor& Input,
+										 std::vector<at::Tensor> Records, std::vector<at::Tensor> Workspaces)
 {
-	return C512BlockOutEntry(BlockIndex, false, g_Input, std::move(g_Records), std::move(g_Workspaces));
+	return C512BlockOutEntry(BlockIndex, false, Input, std::move(Records), std::move(Workspaces));
 }
 
-std::vector<int64_t> PrepareC512_fp16(const at::Tensor& g_DeviceAnchor, int64_t EntryIndex)
+std::vector<int64_t> PrepareC512_fp16(const at::Tensor& DeviceAnchor, int64_t EntryIndex)
 {
 	TORCH_CHECK(EntryIndex >= 0 && EntryIndex < 18, "C512 entry outside catalog");
 	TORCH_CHECK(C512GetEntryTable()[EntryIndex].ElementBytes == 2,
 				"C512 precision does not match _fp16 binding");
-	return C512PrepareEntries(g_DeviceAnchor);
+	return C512PrepareEntries(DeviceAnchor);
 }
 
-std::vector<at::Tensor> LaunchC512_fp16(int64_t EntryIndex, std::vector<at::Tensor> g_Inputs,
-										std::vector<at::Tensor> g_Outputs, int64_t Height, int64_t Width,
+std::vector<at::Tensor> LaunchC512_fp16(int64_t EntryIndex, std::vector<at::Tensor> Inputs,
+										std::vector<at::Tensor> Outputs, int64_t Height, int64_t Width,
 										int64_t WindowPhase)
 {
 	TORCH_CHECK(EntryIndex >= 0 && EntryIndex < 18, "C512 entry outside catalog");
 	TORCH_CHECK(C512GetEntryTable()[EntryIndex].ElementBytes == 2,
 				"C512 precision does not match _fp16 binding");
-	return C512LaunchEntry(EntryIndex, std::move(g_Inputs), std::move(g_Outputs), Height, Width, WindowPhase);
+	return C512LaunchEntry(EntryIndex, std::move(Inputs), std::move(Outputs), Height, Width, WindowPhase);
 }
 
-std::vector<at::Tensor> C512BlockOut_fp16(int64_t BlockIndex, const at::Tensor& g_Input,
-										  std::vector<at::Tensor> g_Records,
-										  std::vector<at::Tensor> g_Workspaces)
+std::vector<at::Tensor> C512BlockOut_fp16(int64_t BlockIndex, const at::Tensor& Input,
+										  std::vector<at::Tensor> Records, std::vector<at::Tensor> Workspaces)
 {
-	return C512BlockOutEntry(BlockIndex, true, g_Input, std::move(g_Records), std::move(g_Workspaces));
+	return C512BlockOutEntry(BlockIndex, true, Input, std::move(Records), std::move(Workspaces));
 }

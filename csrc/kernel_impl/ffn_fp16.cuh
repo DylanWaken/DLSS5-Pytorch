@@ -22,11 +22,11 @@
 // Equivalent CUDA C++ reconstruction of the original C512 FFN half entry.
 // Original scalar/control spelling retained; this is not the historical C++ source.
 
-extern "C" __global__ __maxnreg__(255) void window_ffn_c512_fp16(FWindowFfnC512Fp16Parameters r_Parameters)
+extern "C" __global__ __maxnreg__(255) void window_ffn_c512_fp16(FWindowFfnC512Fp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ __align__(512) unsigned char s_Storage[8208];
-	RunWindowFfn<false>(r_Parameters, s_Storage);
+	RunWindowFfn<false>(Parameters, s_Storage);
 #endif
 }
 
@@ -36,11 +36,11 @@ extern "C" __global__ __maxnreg__(255) void window_ffn_c512_fp16(FWindowFfnC512F
 // Readable equivalent of cc_split_swin_16h_ffwd_inpview_512; not historical source.
 
 extern "C" __global__
-	__maxnreg__(255) void window_ffn_input_view_c512_fp16(FWindowFfnInputViewC512Fp16Parameters r_Parameters)
+	__maxnreg__(255) void window_ffn_input_view_c512_fp16(FWindowFfnInputViewC512Fp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ __align__(512) unsigned char s_Storage[8208];
-	RunWindowFfn<false, true>(r_Parameters, s_Storage);
+	RunWindowFfn<false, true>(Parameters, s_Storage);
 #endif
 }
 
@@ -50,11 +50,11 @@ extern "C" __global__
 // Readable equivalent of cc_split_swin_16h_ffwd_proj_512; not historical source.
 
 extern "C" __global__
-	__maxnreg__(128) void window_ffn_projection_c512_fp16(FWindowFfnProjectionC512Fp16Parameters r_Parameters)
+	__maxnreg__(128) void window_ffn_projection_c512_fp16(FWindowFfnProjectionC512Fp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ __align__(512) unsigned char s_Storage[12312];
-	RunSpatialProjection<false, 4>(r_Parameters, s_Storage);
+	RunSpatialProjection<false, 4>(Parameters, s_Storage);
 #endif
 }
 
@@ -64,11 +64,11 @@ extern "C" __global__
 // Readable equivalent of cc_split_swin_16h_ffwd_proj_inpview_512; not historical source.
 
 extern "C" __global__ __maxnreg__(128) void window_ffn_projection_input_view_c512_fp16(
-	FWindowFfnProjectionInputViewC512Fp16Parameters r_Parameters)
+	FWindowFfnProjectionInputViewC512Fp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ __align__(512) unsigned char s_Storage[12312];
-	RunSpatialProjection<false, 4, true, false>(r_Parameters, s_Storage);
+	RunSpatialProjection<false, 4, true, false>(Parameters, s_Storage);
 #endif
 }
 
@@ -78,11 +78,11 @@ extern "C" __global__ __maxnreg__(128) void window_ffn_projection_input_view_c51
 // Readable equivalent of cc_vit_1d_ffn_contract; not the historical C++ file.
 
 extern "C" __global__
-	__maxnreg__(168) void global_ffn_contract_c1024_fp16(FGlobalFfnContractC1024Fp16Parameters r_Parameters)
+	__maxnreg__(168) void global_ffn_contract_c1024_fp16(FGlobalFfnContractC1024Fp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ __align__(512) unsigned char s_Storage[24600];
-	RunGlobalContract<false>(r_Parameters, s_Storage);
+	RunGlobalContract<false>(Parameters, s_Storage);
 #endif
 }
 
@@ -92,9 +92,9 @@ extern "C" __global__
 // Readable equivalent of cc_vit_1d_ffn_expand; not the historical C++ file.
 
 extern "C" __global__
-	__maxnreg__(168) void global_ffn_expand_c1024_fp16(FGlobalFfnExpandC1024Fp16Parameters r_Parameters)
+	__maxnreg__(168) void global_ffn_expand_c1024_fp16(FGlobalFfnExpandC1024Fp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	RunGlobalFfnExpand<false>(r_Parameters);
+	RunGlobalFfnExpand<false>(Parameters);
 #endif
 }

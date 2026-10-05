@@ -36,8 +36,8 @@ struct FKernelCall
 template <bool bFp16> class FDeploymentPlan : public torch::CustomClassHolder
 {
   public:
-	FDeploymentPlan(at::Tensor g_Input, std::vector<at::Tensor> g_InputPackedWeightRecords,
-					int64_t Width = 3840, int64_t Height = 2160);
+	FDeploymentPlan(at::Tensor Input, std::vector<at::Tensor> InputPackedWeightRecords, int64_t Width = 3840,
+					int64_t Height = 2160);
 	at::Tensor Run();
 
 	at::Tensor Run_fp8()
@@ -63,11 +63,11 @@ template <bool bFp16> class FDeploymentPlan : public torch::CustomClassHolder
 	}
 
   private:
-	uint64_t GetBufferAddress(size_t g_BufferIndex) const;
-	uint64_t GetRecordAddress(size_t g_RecordIndex) const;
+	uint64_t GetBufferAddress(size_t BufferIndex) const;
+	uint64_t GetRecordAddress(size_t RecordIndex) const;
 	void BuildCalls();
-	std::vector<at::Tensor> g_Buffers, g_PackedWeightRecords, g_GuardedBackings;
-	std::vector<uint64_t> g_BufferAddresses, g_PackedWeightAddresses;
+	std::vector<at::Tensor> Buffers, PackedWeightRecords, GuardedBackings;
+	std::vector<uint64_t> BufferAddresses, PackedWeightAddresses;
 	std::vector<FKernelCall> Calls;
 	std::vector<int64_t> ResourceRows;
 	int DeviceIndex;
@@ -85,12 +85,12 @@ std::vector<int64_t> RecordBytes_fp8();
 std::string CompiledPolicyVersion();
 std::vector<int64_t> ResolutionSelection(int64_t Width, int64_t Height, int64_t Sm, bool bFp16);
 c10::intrusive_ptr<FDeploymentPlan_fp8>
-CreatePlanForResolution_fp8(at::Tensor g_Input, std::vector<at::Tensor> g_PackedWeightRecords, int64_t Width,
+CreatePlanForResolution_fp8(at::Tensor Input, std::vector<at::Tensor> PackedWeightRecords, int64_t Width,
 							int64_t Height);
-c10::intrusive_ptr<FDeploymentPlan_fp8> CreatePlan_fp8(at::Tensor g_Input,
-													   std::vector<at::Tensor> g_PackedWeightRecords);
+c10::intrusive_ptr<FDeploymentPlan_fp8> CreatePlan_fp8(at::Tensor Input,
+													   std::vector<at::Tensor> PackedWeightRecords);
 c10::intrusive_ptr<FDeploymentPlan_fp16>
-CreatePlanForResolution_fp16(at::Tensor g_Input, std::vector<at::Tensor> g_PackedWeightRecords, int64_t Width,
+CreatePlanForResolution_fp16(at::Tensor Input, std::vector<at::Tensor> PackedWeightRecords, int64_t Width,
 							 int64_t Height);
-c10::intrusive_ptr<FDeploymentPlan_fp16> CreatePlan_fp16(at::Tensor g_Input,
-														 std::vector<at::Tensor> g_PackedWeightRecords);
+c10::intrusive_ptr<FDeploymentPlan_fp16> CreatePlan_fp16(at::Tensor Input,
+														 std::vector<at::Tensor> PackedWeightRecords);

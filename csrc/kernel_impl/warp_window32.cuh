@@ -105,7 +105,7 @@ PublishWindow32(const FWindowAccumulatorTile<32>& r_Accumulator)
 
 template <bool bFp8>
 __device__ __forceinline__ FWindowWeightTile<bFp8>
-LoadWindowWeights(const unsigned char* g_Matrix, int g_OutputBase, int g_ReductionBase, int r_OutputChannels)
+LoadWindowWeights(const unsigned char* g_Matrix, int g_OutputBase, int g_ReductionBase, int OutputChannels)
 {
 	FWindowWeightTile<bFp8> r_Weights;
 #pragma unroll
@@ -115,7 +115,7 @@ LoadWindowWeights(const unsigned char* g_Matrix, int g_OutputBase, int g_Reducti
 		{
 			// Both K32 E4 and K16 Half panels contain 32 bytes per output column.
 			const int g_WeightByteOffset =
-				(g_ReductionBase / FWindow32Profile<bFp8>::Reduction + r_Chunk) * r_OutputChannels * 32 +
+				(g_ReductionBase / FWindow32Profile<bFp8>::Reduction + r_Chunk) * OutputChannels * 32 +
 				(g_OutputBase / 16 + r_ColumnTile) * 512 + int(threadIdx.x) * 16;
 			const uint4 r_WeightVector =
 				__ldca(reinterpret_cast<const uint4*>(g_Matrix + g_WeightByteOffset));
@@ -221,9 +221,9 @@ __device__ __forceinline__ void SoftmaxWindow(FWindowAccumulatorTile<64>& r_Scor
 		const uint32_t r_GroupBase = threadIdx.x & ~3u;
 		uint32_t r_ProbabilitySum = ShuffleIdx(r_LocalProbabilitySum, r_GroupBase, 31, 0xffffffffu);
 #pragma unroll
-		for (int r_Lane = 1; r_Lane < 4; ++r_Lane)
+		for (int Lane = 1; Lane < 4; ++Lane)
 			r_ProbabilitySum = HalfAdd(
-				r_ProbabilitySum, ShuffleIdx(r_LocalProbabilitySum, r_GroupBase + r_Lane, 31, 0xffffffffu));
+				r_ProbabilitySum, ShuffleIdx(r_LocalProbabilitySum, r_GroupBase + Lane, 31, 0xffffffffu));
 		r_ProbabilitySum = HalfAdd(r_ProbabilitySum, (r_ProbabilitySum << 16) | (r_ProbabilitySum >> 16));
 		const uint32_t r_InverseDenominator =
 			InvertReplicatedHalf<false>(HalfMax(r_ProbabilitySum, CONST_NORMALIZATION_EPSILON_HALF2));
@@ -234,7 +234,7 @@ __device__ __forceinline__ void SoftmaxWindow(FWindowAccumulatorTile<64>& r_Scor
 	}
 }
 
-__device__ __forceinline__ void PermuteRowSums(uint32_t (&r_Sums)[4], int r_Permutation)
+__device__ __forceinline__ void PermuteRowSums(uint32_t (&r_Sums)[4], int Permutation)
 {
 // XOR permutation in two swap levels: retain fixed array indices so all
 // four partial sums stay in registers during the lane-ownership transpose.
@@ -242,15 +242,15 @@ __device__ __forceinline__ void PermuteRowSums(uint32_t (&r_Sums)[4], int r_Perm
 	for (int r_Pair = 0; r_Pair < 2; ++r_Pair)
 	{
 		const uint32_t r_EvenRowSum = r_Sums[2 * r_Pair], r_OddRowSum = r_Sums[2 * r_Pair + 1];
-		r_Sums[2 * r_Pair] = (r_Permutation & 1) ? r_OddRowSum : r_EvenRowSum;
-		r_Sums[2 * r_Pair + 1] = (r_Permutation & 1) ? r_EvenRowSum : r_OddRowSum;
+		r_Sums[2 * r_Pair] = (Permutation & 1) ? r_OddRowSum : r_EvenRowSum;
+		r_Sums[2 * r_Pair + 1] = (Permutation & 1) ? r_EvenRowSum : r_OddRowSum;
 	}
 #pragma unroll
 	for (int r_Pair = 0; r_Pair < 2; ++r_Pair)
 	{
 		const uint32_t r_EvenRowSum = r_Sums[r_Pair], r_OddRowSum = r_Sums[r_Pair + 2];
-		r_Sums[r_Pair] = (r_Permutation & 2) ? r_OddRowSum : r_EvenRowSum;
-		r_Sums[r_Pair + 2] = (r_Permutation & 2) ? r_EvenRowSum : r_OddRowSum;
+		r_Sums[r_Pair] = (Permutation & 2) ? r_OddRowSum : r_EvenRowSum;
+		r_Sums[r_Pair + 2] = (Permutation & 2) ? r_EvenRowSum : r_OddRowSum;
 	}
 }
 
@@ -259,7 +259,7 @@ __device__ __forceinline__ void SoftmaxWindowPair(FWindowAccumulatorTile<64> (&r
 	// Native window32.ptx lines 10665..10855 reduce two adjacent query tiles
 	// together. Four row halves fill all 32 lanes with one complete row sum
 	// each; independent tiles would repeat the same denominator in four lanes.
-	const int r_Lane = threadIdx.x;
+	const int Lane = threadIdx.x;
 	uint32_t r_LocalProbabilitySums[4];
 #pragma unroll
 	for (int r_Row = 0; r_Row < 4; ++r_Row)
@@ -279,14 +279,14 @@ __device__ __forceinline__ void SoftmaxWindowPair(FWindowAccumulatorTile<64> (&r
 	// Lane L owns row L: its original MMA row group is L%8 and its row-half
 	// index is L/8. Transpose with four shuffles, then restore source lanes
 	// 0,1,2,3 before adding so the native Half rounding order is unchanged.
-	PermuteRowSums(r_LocalProbabilitySums, r_Lane & 3);
-	const int r_SourceLane = ((r_Lane & 7) << 2) | (r_Lane >> 3);
+	PermuteRowSums(r_LocalProbabilitySums, Lane & 3);
+	const int r_SourceLane = ((Lane & 7) << 2) | (Lane >> 3);
 	uint32_t r_GatheredProbabilitySums[4];
 #pragma unroll
 	for (int r_Row = 0; r_Row < 4; ++r_Row)
 		r_GatheredProbabilitySums[r_Row] =
 			ShuffleIdx(r_LocalProbabilitySums[r_Row], r_SourceLane ^ r_Row, 31, 0xffffffffu);
-	PermuteRowSums(r_GatheredProbabilitySums, r_Lane >> 3);
+	PermuteRowSums(r_GatheredProbabilitySums, Lane >> 3);
 	uint32_t r_ProbabilitySum = HalfAdd(r_GatheredProbabilitySums[0], r_GatheredProbabilitySums[1]);
 	r_ProbabilitySum = HalfAdd(r_ProbabilitySum, r_GatheredProbabilitySums[2]);
 	r_ProbabilitySum = HalfAdd(r_ProbabilitySum, r_GatheredProbabilitySums[3]);
@@ -298,8 +298,7 @@ __device__ __forceinline__ void SoftmaxWindowPair(FWindowAccumulatorTile<64> (&r
 	for (int r_Row = 0; r_Row < 4; ++r_Row)
 	{
 		// One inverse per query row returns to all four MMA column lanes.
-		const uint32_t r_RowInverse =
-			ShuffleIdx(r_InverseDenominator, r_Row * 8 + r_Lane / 4, 31, 0xffffffffu);
+		const uint32_t r_RowInverse = ShuffleIdx(r_InverseDenominator, r_Row * 8 + Lane / 4, 31, 0xffffffffu);
 #pragma unroll
 		for (int r_Column = 0; r_Column < 8; ++r_Column)
 			r_Scores[r_Row / 2].r_Pair[r_Column][r_Row & 1] =
@@ -376,12 +375,11 @@ struct FOrdinaryWindowIO
 };
 
 template <bool bFp8, class FParameters, class FIO = FOrdinaryWindowIO, bool bCaptureRaw = false>
-__device__ __forceinline__ void RunWindow32(const FParameters& r_Parameters,
+__device__ __forceinline__ void RunWindow32(const FParameters& Parameters,
 											FWindowAccumulatorTile<32>* r_RawTiles = nullptr)
 {
 	using FConfig = typename FIO::template FRecordProfile<bFp8>;
-	const unsigned char* g_PackedWeights =
-		reinterpret_cast<const unsigned char*>(r_Parameters.g_PackedWeights);
+	const unsigned char* g_PackedWeights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights);
 	FWindowActivationTile<bFp8> r_Input[4];
 	FWindowAccumulatorTile<32> r_Ffn[4];
 	uint32_t r_FfnScale[4], r_AttentionScale[4];
@@ -401,16 +399,16 @@ __device__ __forceinline__ void RunWindow32(const FParameters& r_Parameters,
 	for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 	{
 		if constexpr (FIO::bCustomInput)
-			r_Input[r_Tile] = FIO::Read(r_Parameters, r_Tile);
+			r_Input[r_Tile] = FIO::Read(Parameters, r_Tile);
 		else
 		{
-			const unsigned char* g_Input = reinterpret_cast<const unsigned char*>(r_Parameters.g_Input);
-			const int g_TileColumns = r_Parameters.Width / 4, g_TileRows = r_Parameters.Height / 4;
-			const int g_OriginTileX = (int(blockIdx.x) * 8 + r_Parameters.OriginX) / 4;
-			const int g_OriginTileY = (int(blockIdx.y) * 8 + r_Parameters.OriginY) / 4;
+			const unsigned char* g_Input = reinterpret_cast<const unsigned char*>(Parameters.g_Input);
+			const int g_TileColumns = Parameters.Width / 4, g_TileRows = Parameters.Height / 4;
+			const int g_OriginTileX = (int(blockIdx.x) * 8 + Parameters.OriginX) / 4;
+			const int g_OriginTileY = (int(blockIdx.y) * 8 + Parameters.OriginY) / 4;
 			const int g_TileX = g_TileColumns == 1 ? 0 : g_OriginTileX + (r_Tile & 1);
 			const int g_TileY = g_TileRows == 1 ? 0 : g_OriginTileY + (r_Tile >> 1);
-			const bool r_bValid =
+			const bool bValid =
 				g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows;
 #pragma unroll
 			for (int r_Chunk = 0; r_Chunk < FConfig::InputChunks; ++r_Chunk)
@@ -418,8 +416,8 @@ __device__ __forceinline__ void RunWindow32(const FParameters& r_Parameters,
 				const int64_t g_Offset = int64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
 										 r_Chunk * 512 + int(threadIdx.x) * 16;
 				r_Input[r_Tile].r_Reduction[r_Chunk] =
-					MakeWindowFragment(r_bValid ? __ldcg(reinterpret_cast<const uint4*>(g_Input + g_Offset))
-												: make_uint4(0, 0, 0, 0));
+					MakeWindowFragment(bValid ? __ldcg(reinterpret_cast<const uint4*>(g_Input + g_Offset))
+											  : make_uint4(0, 0, 0, 0));
 			}
 		}
 #pragma unroll
@@ -429,7 +427,7 @@ __device__ __forceinline__ void RunWindow32(const FParameters& r_Parameters,
 			{
 				uint32_t r_ResidualPair;
 				if constexpr (FIO::bRawResidual)
-					r_ResidualPair = FIO::Residual(r_Parameters, r_Tile, r_Column, r_RowHalf);
+					r_ResidualPair = FIO::Residual(Parameters, r_Tile, r_Column, r_RowHalf);
 				else if constexpr (bFp8)
 					r_ResidualPair = DecodeE4(
 						uint16_t(r_Input[r_Tile].r_Reduction[0].r_Word[2 * (r_Column / 2) + r_RowHalf] >>
@@ -444,12 +442,12 @@ __device__ __forceinline__ void RunWindow32(const FParameters& r_Parameters,
 // Stream four 32-channel hidden panels through 32→128→32; the contraction
 // seed is the scaled input, and its reduction chunks stay in native order.
 #pragma unroll
-	for (int r_Hidden = 0; r_Hidden < 4; ++r_Hidden)
+	for (int HiddenPanel = 0; HiddenPanel < 4; ++HiddenPanel)
 	{
 		const FWindowWeightTile<bFp8> r_Expand =
-			LoadWindowWeights<bFp8>(g_PackedWeights, 32 * r_Hidden, 0, 128);
+			LoadWindowWeights<bFp8>(g_PackedWeights, 32 * HiddenPanel, 0, 128);
 		const FWindowWeightTile<bFp8> r_Contract =
-			LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::ContractOffset, 0, 32 * r_Hidden, 32);
+			LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::ContractOffset, 0, 32 * HiddenPanel, 32);
 #pragma unroll
 		for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 		{
@@ -473,22 +471,22 @@ __device__ __forceinline__ void RunWindow32(const FParameters& r_Parameters,
 	const uint32_t r_HeadScale =
 		FloatToHalf2(*reinterpret_cast<const uint32_t*>(g_PackedWeights + FConfig::HeadScaleOffset));
 #pragma unroll
-	for (int r_Projection = 0; r_Projection < 3; ++r_Projection)
+	for (int ProjectionComponent = 0; ProjectionComponent < 3; ++ProjectionComponent)
 	{
 		const FWindowWeightTile<bFp8> r_Weights =
-			LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::QkvOffset, 32 * r_Projection, 0, 96);
+			LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::QkvOffset, 32 * ProjectionComponent, 0, 96);
 #pragma unroll
 		for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 		{
 			FWindowAccumulatorTile<32> r_Projected{};
 			LinearWindow32(r_Input[r_Tile], r_Weights, r_Projected);
-			if (r_Projection < 2)
+			if (ProjectionComponent < 2)
 			{
-				if (r_Projection == 0)
+				if (ProjectionComponent == 0)
 					NormalizeWindow<true>(r_Projected, r_HeadScale);
 				else
 					NormalizeWindow<false>(r_Projected, CONST_HALF2_ONE);
-				if (r_Projection == 0)
+				if (ProjectionComponent == 0)
 					r_Query[r_Tile] = PublishWindow32<bFp8>(r_Projected);
 				else
 					r_Key[r_Tile] = PublishWindow32<bFp8>(r_Projected);
@@ -544,12 +542,12 @@ __device__ __forceinline__ void RunWindow32(const FParameters& r_Parameters,
 				r_RawTiles[r_Tile] = r_Ffn[r_Tile];
 
 			if constexpr (FIO::bCustomOutput)
-				FIO::Write(r_Parameters, r_Tile, r_Ffn[r_Tile]);
+				FIO::Write(Parameters, r_Tile, r_Ffn[r_Tile]);
 			else
 			{
-				const int g_TileColumns = r_Parameters.Width / 4, g_TileRows = r_Parameters.Height / 4;
-				const int g_OriginTileX = (int(blockIdx.x) * 8 + r_Parameters.OriginX) / 4;
-				const int g_OriginTileY = (int(blockIdx.y) * 8 + r_Parameters.OriginY) / 4;
+				const int g_TileColumns = Parameters.Width / 4, g_TileRows = Parameters.Height / 4;
+				const int g_OriginTileX = (int(blockIdx.x) * 8 + Parameters.OriginX) / 4;
+				const int g_OriginTileY = (int(blockIdx.y) * 8 + Parameters.OriginY) / 4;
 				const int g_TileX = g_OriginTileX + (r_Tile & 1), g_TileY = g_OriginTileY + (r_Tile >> 1);
 				if (g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows)
 				{
@@ -558,7 +556,7 @@ __device__ __forceinline__ void RunWindow32(const FParameters& r_Parameters,
 					{
 						const FWindowAFragment r_Output = PublishWindowChunk<bFp8>(r_Ffn[r_Tile], r_Chunk);
 						const uint64_t g_OutputAddress =
-							r_Parameters.g_Output +
+							Parameters.g_Output +
 							uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes + r_Chunk * 512 +
 							int(threadIdx.x) * 16;
 						StoreNoAllocate(g_OutputAddress, make_uint4(r_Output.r_Word[0], r_Output.r_Word[1],

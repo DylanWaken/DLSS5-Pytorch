@@ -14,10 +14,10 @@
 // Readable equivalent of cc_split_swin_16h_final_head_512; not historical source.
 
 extern "C" __global__ __maxnreg__(168) void channel_projection_c512_to_c1024_fp16(
-	FChannelProjectionC512ToC1024Fp16Parameters r_Parameters)
+	FChannelProjectionC512ToC1024Fp16Parameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ __align__(512) unsigned char s_Storage[12312];
-	RunChannelProjection<false>(r_Parameters, s_Storage);
+	RunChannelProjection<false>(Parameters, s_Storage);
 #endif
 }

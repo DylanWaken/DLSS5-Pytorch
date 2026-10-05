@@ -12,8 +12,8 @@
 // not add a CTA barrier, sleep, or another memory-ordering operation.
 __device__ __forceinline__ void ArriveAndWait(unsigned char* s_Storage, uint32_t s_BarrierByteOffset)
 {
-	const uint64_t r_ArrivalPhaseToken = BarrierArrive(s_Storage, s_BarrierByteOffset, 1);
-	while (!BarrierReady(s_Storage, s_BarrierByteOffset, r_ArrivalPhaseToken))
+	const uint64_t ArrivalPhaseToken = BarrierArrive(s_Storage, s_BarrierByteOffset, 1);
+	while (!BarrierReady(s_Storage, s_BarrierByteOffset, ArrivalPhaseToken))
 	{
 	}
 }

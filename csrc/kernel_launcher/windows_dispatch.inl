@@ -50,34 +50,33 @@ FWindowPreparedEntries& WindowGetPreparationState()
 	return PreparationState;
 }
 
-int WindowGetCudaDeviceIndex(const at::Tensor& g_DeviceAnchor)
+int WindowGetCudaDeviceIndex(const at::Tensor& DeviceAnchor)
 {
-	TORCH_CHECK(g_DeviceAnchor.is_cuda(), "reconstructed windows require CUDA tensors");
-	const int DeviceIndex = g_DeviceAnchor.get_device();
+	TORCH_CHECK(DeviceAnchor.is_cuda(), "reconstructed windows require CUDA tensors");
+	const int DeviceIndex = DeviceAnchor.get_device();
 	TORCH_CHECK(DeviceIndex >= 0 && DeviceIndex < 64,
 				"reconstructed windows device index outside preparation table");
 	return DeviceIndex;
 }
 
-void WindowValidatePhysicalTensor(const at::Tensor& g_Tensor, int64_t Bytes, const at::Device& TensorDevice,
+void WindowValidatePhysicalTensor(const at::Tensor& Tensor, int64_t Bytes, const at::Device& TensorDevice,
 								  const char* Name)
 {
-	TORCH_CHECK(g_Tensor.is_cuda() && g_Tensor.device() == TensorDevice &&
-					g_Tensor.scalar_type() == at::kByte,
+	TORCH_CHECK(Tensor.is_cuda() && Tensor.device() == TensorDevice && Tensor.scalar_type() == at::kByte,
 				Name, " requires uint8 physical storage on the selected CUDA device");
-	TORCH_CHECK(g_Tensor.dim() == 1 && g_Tensor.is_contiguous() && g_Tensor.numel() == Bytes, Name,
+	TORCH_CHECK(Tensor.dim() == 1 && Tensor.is_contiguous() && Tensor.numel() == Bytes, Name,
 				" requires exact contiguous physical extent ", Bytes);
-	TORCH_CHECK(reinterpret_cast<uintptr_t>(g_Tensor.data_ptr()) % 16 == 0, Name,
+	TORCH_CHECK(reinterpret_cast<uintptr_t>(Tensor.data_ptr()) % 16 == 0, Name,
 				" requires 16-byte alignment");
-	TORCH_CHECK(!g_Tensor.requires_grad(), "reconstructed windows are inference only");
+	TORCH_CHECK(!Tensor.requires_grad(), "reconstructed windows are inference only");
 }
 
-void WindowValidateDisjoint(const at::Tensor& g_FirstTensor, const at::Tensor& g_SecondTensor)
+void WindowValidateDisjoint(const at::Tensor& FirstTensor, const at::Tensor& SecondTensor)
 {
-	const auto g_FirstAddress = reinterpret_cast<uintptr_t>(g_FirstTensor.data_ptr()),
-			   g_SecondAddress = reinterpret_cast<uintptr_t>(g_SecondTensor.data_ptr());
-	const auto FirstByteCount = uintptr_t(g_FirstTensor.numel()),
-			   SecondByteCount = uintptr_t(g_SecondTensor.numel());
+	const auto g_FirstAddress = reinterpret_cast<uintptr_t>(FirstTensor.data_ptr()),
+			   g_SecondAddress = reinterpret_cast<uintptr_t>(SecondTensor.data_ptr());
+	const auto FirstByteCount = uintptr_t(FirstTensor.numel()),
+			   SecondByteCount = uintptr_t(SecondTensor.numel());
 	TORCH_CHECK(g_FirstAddress <= std::numeric_limits<uintptr_t>::max() - FirstByteCount &&
 					g_SecondAddress <= std::numeric_limits<uintptr_t>::max() - SecondByteCount,
 				"reconstructed window physical range overflow");
@@ -201,11 +200,11 @@ FWindowBufferRequirements WindowGetBufferRequirements(int EntryIndex, int64_t He
 			{32, unsigned(EntrySpec.Channels / 32), 1}};
 }
 
-std::vector<int64_t> WindowPrepareEntry(const at::Tensor& g_DeviceAnchor, int EntryIndex)
+std::vector<int64_t> WindowPrepareEntry(const at::Tensor& DeviceAnchor, int EntryIndex)
 {
 	const auto& EntrySpec = WindowGetEntrySpec(EntryIndex);
-	const int DeviceIndex = WindowGetCudaDeviceIndex(g_DeviceAnchor);
-	c10::cuda::CUDAGuard DeviceGuard(g_DeviceAnchor.device());
+	const int DeviceIndex = WindowGetCudaDeviceIndex(DeviceAnchor);
+	c10::cuda::CUDAGuard DeviceGuard(DeviceAnchor.device());
 	const auto Stream = c10::cuda::getCurrentCUDAStream(DeviceIndex);
 	cudaStreamCaptureStatus CaptureStatus = cudaStreamCaptureStatusNone;
 	C10_CUDA_CHECK(cudaStreamIsCapturing(Stream.stream(), &CaptureStatus));
@@ -237,39 +236,38 @@ std::vector<int64_t> WindowPrepareEntry(const at::Tensor& g_DeviceAnchor, int En
 			FunctionAttributes.maxThreadsPerBlock};
 }
 
-std::vector<at::Tensor> WindowLaunchEntry(int EntryIndex, const at::Tensor& g_Input,
-										  const at::Tensor& g_PackedWeights, at::Tensor g_Output,
-										  const c10::optional<at::Tensor>& g_DownsampledOutput,
-										  const c10::optional<at::Tensor>& g_Residual, int64_t Height,
+std::vector<at::Tensor> WindowLaunchEntry(int EntryIndex, const at::Tensor& Input,
+										  const at::Tensor& PackedWeights, at::Tensor Output,
+										  const c10::optional<at::Tensor>& DownsampledOutput,
+										  const c10::optional<at::Tensor>& Residual, int64_t Height,
 										  int64_t Width, int64_t WindowPhase)
 {
 	const auto& EntrySpec = WindowGetEntrySpec(EntryIndex);
 	const auto BufferRequirements = WindowGetBufferRequirements(EntryIndex, Height, Width, WindowPhase);
-	const int DeviceIndex = WindowGetCudaDeviceIndex(g_Input);
-	TORCH_CHECK(g_DownsampledOutput.has_value() == (EntrySpec.KindValue == EWindowKind::Down),
+	const int DeviceIndex = WindowGetCudaDeviceIndex(Input);
+	TORCH_CHECK(DownsampledOutput.has_value() == (EntrySpec.KindValue == EWindowKind::Down),
 				"down output role does not match reconstructed entry");
-	TORCH_CHECK(g_Residual.has_value() == (EntrySpec.KindValue == EWindowKind::Up),
+	TORCH_CHECK(Residual.has_value() == (EntrySpec.KindValue == EWindowKind::Up),
 				"skip input role does not match reconstructed entry");
-	WindowValidatePhysicalTensor(g_Input, BufferRequirements.InputBytes, g_Input.device(), "state");
-	WindowValidatePhysicalTensor(g_PackedWeights, BufferRequirements.RecordBytes, g_Input.device(), "record");
-	WindowValidatePhysicalTensor(g_Output, BufferRequirements.OutputBytes, g_Input.device(), "high");
-	std::vector<const at::Tensor*> g_Buffers{&g_Input, &g_PackedWeights, &g_Output};
-	if (g_DownsampledOutput)
+	WindowValidatePhysicalTensor(Input, BufferRequirements.InputBytes, Input.device(), "state");
+	WindowValidatePhysicalTensor(PackedWeights, BufferRequirements.RecordBytes, Input.device(), "record");
+	WindowValidatePhysicalTensor(Output, BufferRequirements.OutputBytes, Input.device(), "high");
+	std::vector<const at::Tensor*> Buffers{&Input, &PackedWeights, &Output};
+	if (DownsampledOutput)
 	{
-		WindowValidatePhysicalTensor(*g_DownsampledOutput, BufferRequirements.DownsampledOutputBytes,
-									 g_Input.device(), "down");
-		g_Buffers.push_back(&*g_DownsampledOutput);
+		WindowValidatePhysicalTensor(*DownsampledOutput, BufferRequirements.DownsampledOutputBytes,
+									 Input.device(), "down");
+		Buffers.push_back(&*DownsampledOutput);
 	}
-	if (g_Residual)
+	if (Residual)
 	{
-		WindowValidatePhysicalTensor(*g_Residual, BufferRequirements.ResidualBytes, g_Input.device(), "skip");
-		g_Buffers.push_back(&*g_Residual);
+		WindowValidatePhysicalTensor(*Residual, BufferRequirements.ResidualBytes, Input.device(), "skip");
+		Buffers.push_back(&*Residual);
 	}
-	for (size_t g_BufferIndex = 0; g_BufferIndex < g_Buffers.size(); ++g_BufferIndex)
-		for (size_t g_OtherBufferIndex = g_BufferIndex + 1; g_OtherBufferIndex < g_Buffers.size();
-			 ++g_OtherBufferIndex)
-			WindowValidateDisjoint(*g_Buffers[g_BufferIndex], *g_Buffers[g_OtherBufferIndex]);
-	c10::cuda::CUDAGuard DeviceGuard(g_Input.device());
+	for (size_t BufferIndex = 0; BufferIndex < Buffers.size(); ++BufferIndex)
+		for (size_t OtherBufferIndex = BufferIndex + 1; OtherBufferIndex < Buffers.size(); ++OtherBufferIndex)
+			WindowValidateDisjoint(*Buffers[BufferIndex], *Buffers[OtherBufferIndex]);
+	c10::cuda::CUDAGuard DeviceGuard(Input.device());
 	{
 		auto& Preparation = WindowGetPreparationState();
 		std::lock_guard<std::mutex> Lock(Preparation.Mutex);
@@ -281,14 +279,13 @@ std::vector<at::Tensor> WindowLaunchEntry(int EntryIndex, const at::Tensor& g_In
 						"reconstructed window grid exceeds selected device axis");
 	}
 	const auto Stream = c10::cuda::getCurrentCUDAStream(DeviceIndex);
-	for (const auto* g_Tensor : g_Buffers)
-		c10::cuda::CUDACachingAllocator::recordStream(g_Tensor->storage().data_ptr(), Stream);
+	for (const auto* Tensor : Buffers)
+		c10::cuda::CUDACachingAllocator::recordStream(Tensor->storage().data_ptr(), Stream);
 	alignas(8) auto ParameterBlock = WindowBuildParameterBlock(
-		EntrySpec, BufferRequirements, reinterpret_cast<uintptr_t>(g_Input.data_ptr()),
-		reinterpret_cast<uintptr_t>(g_PackedWeights.data_ptr()),
-		reinterpret_cast<uintptr_t>(g_Output.data_ptr()),
-		g_DownsampledOutput ? reinterpret_cast<uintptr_t>(g_DownsampledOutput->data_ptr()) : 0,
-		g_Residual ? reinterpret_cast<uintptr_t>(g_Residual->data_ptr()) : 0, int32_t(Height), int32_t(Width),
+		EntrySpec, BufferRequirements, reinterpret_cast<uintptr_t>(Input.data_ptr()),
+		reinterpret_cast<uintptr_t>(PackedWeights.data_ptr()), reinterpret_cast<uintptr_t>(Output.data_ptr()),
+		DownsampledOutput ? reinterpret_cast<uintptr_t>(DownsampledOutput->data_ptr()) : 0,
+		Residual ? reinterpret_cast<uintptr_t>(Residual->data_ptr()) : 0, int32_t(Height), int32_t(Width),
 		int(WindowPhase));
 	void* KernelArguments[] = {ParameterBlock.data()};
 	C10_CUDA_CHECK(cudaLaunchKernel(
@@ -297,49 +294,49 @@ std::vector<at::Tensor> WindowLaunchEntry(int EntryIndex, const at::Tensor& g_In
 		dim3(BufferRequirements.Block[0], BufferRequirements.Block[1], BufferRequirements.Block[2]),
 		KernelArguments, 0, Stream.stream()));
 	C10_CUDA_KERNEL_LAUNCH_CHECK();
-	if (g_DownsampledOutput)
-		return {g_Output, *g_DownsampledOutput};
-	return {g_Output};
+	if (DownsampledOutput)
+		return {Output, *DownsampledOutput};
+	return {Output};
 }
 
-std::vector<int64_t> PrepareWindow_fp8(const at::Tensor& g_DeviceAnchor, int64_t EntryIndex)
+std::vector<int64_t> PrepareWindow_fp8(const at::Tensor& DeviceAnchor, int64_t EntryIndex)
 {
 	TORCH_CHECK(EntryIndex >= 0 && EntryIndex < 38, "window entry outside catalog");
 	TORCH_CHECK(WindowGetEntrySpec(int(EntryIndex)).PrecisionValue == EWindowPrecision::Fp8,
 				"window precision does not match _fp8 binding");
-	return WindowPrepareEntry(g_DeviceAnchor, int(EntryIndex));
+	return WindowPrepareEntry(DeviceAnchor, int(EntryIndex));
 }
 
-std::vector<at::Tensor> LaunchWindow_fp8(int64_t EntryIndex, const at::Tensor& g_Input,
-										 const at::Tensor& g_PackedWeights, at::Tensor g_Output,
-										 const c10::optional<at::Tensor>& g_DownsampledOutput,
-										 const c10::optional<at::Tensor>& g_Residual, int64_t Height,
+std::vector<at::Tensor> LaunchWindow_fp8(int64_t EntryIndex, const at::Tensor& Input,
+										 const at::Tensor& PackedWeights, at::Tensor Output,
+										 const c10::optional<at::Tensor>& DownsampledOutput,
+										 const c10::optional<at::Tensor>& Residual, int64_t Height,
 										 int64_t Width, int64_t WindowPhase)
 {
 	TORCH_CHECK(EntryIndex >= 0 && EntryIndex < 38, "window entry outside catalog");
 	TORCH_CHECK(WindowGetEntrySpec(int(EntryIndex)).PrecisionValue == EWindowPrecision::Fp8,
 				"window precision does not match _fp8 binding");
-	return WindowLaunchEntry(int(EntryIndex), g_Input, g_PackedWeights, g_Output, g_DownsampledOutput,
-							 g_Residual, Height, Width, WindowPhase);
+	return WindowLaunchEntry(int(EntryIndex), Input, PackedWeights, Output, DownsampledOutput, Residual,
+							 Height, Width, WindowPhase);
 }
 
-std::vector<int64_t> PrepareWindow_fp16(const at::Tensor& g_DeviceAnchor, int64_t EntryIndex)
+std::vector<int64_t> PrepareWindow_fp16(const at::Tensor& DeviceAnchor, int64_t EntryIndex)
 {
 	TORCH_CHECK(EntryIndex >= 0 && EntryIndex < 38, "window entry outside catalog");
 	TORCH_CHECK(WindowGetEntrySpec(int(EntryIndex)).PrecisionValue == EWindowPrecision::Fp16,
 				"window precision does not match _fp16 binding");
-	return WindowPrepareEntry(g_DeviceAnchor, int(EntryIndex));
+	return WindowPrepareEntry(DeviceAnchor, int(EntryIndex));
 }
 
-std::vector<at::Tensor> LaunchWindow_fp16(int64_t EntryIndex, const at::Tensor& g_Input,
-										  const at::Tensor& g_PackedWeights, at::Tensor g_Output,
-										  const c10::optional<at::Tensor>& g_DownsampledOutput,
-										  const c10::optional<at::Tensor>& g_Residual, int64_t Height,
+std::vector<at::Tensor> LaunchWindow_fp16(int64_t EntryIndex, const at::Tensor& Input,
+										  const at::Tensor& PackedWeights, at::Tensor Output,
+										  const c10::optional<at::Tensor>& DownsampledOutput,
+										  const c10::optional<at::Tensor>& Residual, int64_t Height,
 										  int64_t Width, int64_t WindowPhase)
 {
 	TORCH_CHECK(EntryIndex >= 0 && EntryIndex < 38, "window entry outside catalog");
 	TORCH_CHECK(WindowGetEntrySpec(int(EntryIndex)).PrecisionValue == EWindowPrecision::Fp16,
 				"window precision does not match _fp16 binding");
-	return WindowLaunchEntry(int(EntryIndex), g_Input, g_PackedWeights, g_Output, g_DownsampledOutput,
-							 g_Residual, Height, Width, WindowPhase);
+	return WindowLaunchEntry(int(EntryIndex), Input, PackedWeights, Output, DownsampledOutput, Residual,
+							 Height, Width, WindowPhase);
 }

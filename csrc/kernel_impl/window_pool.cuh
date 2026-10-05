@@ -10,8 +10,8 @@ __device__ __forceinline__ uint32_t PoolHorizontalWords(uint32_t r_LeftLow, uint
 	// Route tile-X and source-row-half into the lanes used by four gathers.
 	// Swapping lane bits 2 and 3 changes the token grid from 4-wide to 2-wide;
 	// XOR 4/16 then selects the horizontal/vertical neighbors of each 2x2 cell.
-	const int r_Lane = threadIdx.x;
-	if (r_Lane & 4)
+	const int Lane = threadIdx.x;
+	if (Lane & 4)
 	{
 		const uint32_t r_SavedLeftLowerRows = r_LeftLow, r_SavedLeftUpperRows = r_LeftHigh;
 		r_LeftLow = r_RightLow;
@@ -19,7 +19,7 @@ __device__ __forceinline__ uint32_t PoolHorizontalWords(uint32_t r_LeftLow, uint
 		r_LeftHigh = r_RightHigh;
 		r_RightHigh = r_SavedLeftUpperRows;
 	}
-	if (r_Lane & 16)
+	if (Lane & 16)
 	{
 		const uint32_t r_SavedLeftWord = r_LeftLow, r_SavedRightWord = r_RightLow;
 		r_LeftLow = r_LeftHigh;
@@ -27,7 +27,7 @@ __device__ __forceinline__ uint32_t PoolHorizontalWords(uint32_t r_LeftLow, uint
 		r_LeftHigh = r_SavedLeftWord;
 		r_RightHigh = r_SavedRightWord;
 	}
-	const int r_SourceLane = (r_Lane & 19) | ((r_Lane << 1) & 8) | ((r_Lane >> 1) & 4);
+	const int r_SourceLane = (Lane & 19) | ((Lane << 1) & 8) | ((Lane >> 1) & 4);
 	const uint32_t r_TopLeft = ShuffleIdx(r_LeftLow, r_SourceLane, 31, 0xffffffffu);
 	const uint32_t r_TopRight = ShuffleIdx(r_RightLow, r_SourceLane ^ 4, 31, 0xffffffffu);
 	const uint32_t r_BottomLeft = ShuffleIdx(r_LeftHigh, r_SourceLane ^ 16, 31, 0xffffffffu);

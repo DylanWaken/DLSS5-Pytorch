@@ -42,43 +42,44 @@ struct FWindowUpsampleArguments
 };
 
 template <int Channels, class FParameters>
-__device__ __forceinline__ FWindowUpsampleArguments MakeWindowUpsampleArguments(const FParameters& r_Source)
+__device__ __forceinline__ FWindowUpsampleArguments
+MakeWindowUpsampleArguments(const FParameters& SourceParameters)
 {
-	FWindowUpsampleArguments r_Arguments{r_Source.g_Input,
-										 r_Source.g_Output,
-										 r_Source.g_PackedWeights,
-										 0,
-										 r_Source.Height,
-										 r_Source.Width,
-										 r_Source.OriginX,
-										 r_Source.OriginY,
-										 r_Source.Height,
-										 r_Source.Width,
-										 nullptr,
-										 nullptr};
+	FWindowUpsampleArguments Arguments{SourceParameters.g_Input,
+									   SourceParameters.g_Output,
+									   SourceParameters.g_PackedWeights,
+									   0,
+									   SourceParameters.Height,
+									   SourceParameters.Width,
+									   SourceParameters.OriginX,
+									   SourceParameters.OriginY,
+									   SourceParameters.Height,
+									   SourceParameters.Width,
+									   nullptr,
+									   nullptr};
 	if constexpr (Channels == 32)
 	{
-		r_Arguments.g_Residual = r_Source.g_Residual;
-		if (r_Source.ResidualHeight > 0)
-			r_Arguments.ResidualHeight = r_Source.ResidualHeight;
-		if (r_Source.ResidualWidth > 0)
-			r_Arguments.ResidualWidth = r_Source.ResidualWidth;
+		Arguments.g_Residual = SourceParameters.g_Residual;
+		if (SourceParameters.ResidualHeight > 0)
+			Arguments.ResidualHeight = SourceParameters.ResidualHeight;
+		if (SourceParameters.ResidualWidth > 0)
+			Arguments.ResidualWidth = SourceParameters.ResidualWidth;
 	}
 	else
-		r_Arguments.g_Residual = r_Source.g_Residual;
-	return r_Arguments;
+		Arguments.g_Residual = SourceParameters.g_Residual;
+	return Arguments;
 }
 
 template <int Channels, bool bFp8>
 __device__ __forceinline__ FWindowActivationTile<bFp8>
-ReadUpsampleLowInput(const FWindowUpsampleArguments& r_Parameters, int r_Panel)
+ReadUpsampleLowInput(const FWindowUpsampleArguments& Parameters, int g_PanelIndex)
 {
 	// Decoder input is the encoder's channel-plane publication. Read one 4x4
 	// low-resolution region; upsampling its projection yields the 8x8 window.
-	const int g_Height = Channels == 32 ? r_Parameters.Height / 2 : ((r_Parameters.Height + 1) / 2 + 3) & ~3;
-	const int g_Width = Channels == 32 ? r_Parameters.Width / 2 : ((r_Parameters.Width + 1) / 2 + 3) & ~3;
-	const int g_OriginX = (int(blockIdx.x) * 8 + r_Parameters.OriginX) / 2;
-	const int g_OriginY = (int(blockIdx.y) * 8 + r_Parameters.OriginY) / 2;
+	const int g_Height = Channels == 32 ? Parameters.Height / 2 : ((Parameters.Height + 1) / 2 + 3) & ~3;
+	const int g_Width = Channels == 32 ? Parameters.Width / 2 : ((Parameters.Width + 1) / 2 + 3) & ~3;
+	const int g_OriginX = (int(blockIdx.x) * 8 + Parameters.OriginX) / 2;
+	const int g_OriginY = (int(blockIdx.y) * 8 + Parameters.OriginY) / 2;
 	FWindowActivationTile<bFp8> r_LowResolutionInput;
 #pragma unroll
 	for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
@@ -87,8 +88,9 @@ ReadUpsampleLowInput(const FWindowUpsampleArguments& r_Parameters, int r_Panel)
 		{
 			const int g_X = g_Width == 1 ? 0 : g_OriginX + ((threadIdx.x / 4) & 3);
 			const int g_Y = g_Height == 1 ? 0 : g_OriginY + threadIdx.x / 16 + 2 * (r_Word & 1);
-			const int g_Plane = r_Panel * 2 * FWindow32Profile<bFp8>::InputChunks + 2 * r_Chunk + r_Word / 2;
-			const uint64_t g_InputWordAddress = r_Parameters.g_Input +
+			const int g_Plane =
+				g_PanelIndex * 2 * FWindow32Profile<bFp8>::InputChunks + 2 * r_Chunk + r_Word / 2;
+			const uint64_t g_InputWordAddress = Parameters.g_Input +
 												((uint64_t(g_Plane * g_Height + g_Y) * g_Width + g_X) * 16) +
 												4 * (threadIdx.x & 3);
 			r_LowResolutionInput.r_Reduction[r_Chunk].r_Word[r_Word] =
@@ -101,46 +103,46 @@ ReadUpsampleLowInput(const FWindowUpsampleArguments& r_Parameters, int r_Panel)
 
 template <int Channels, bool bFp8>
 __device__ __forceinline__ FWindowActivationTile<bFp8>
-ReadUpsampleSkip(const FWindowUpsampleArguments& r_Parameters, int r_Tile)
+ReadUpsampleSkip(const FWindowUpsampleArguments& Parameters, int g_TileIndex)
 {
-	const int g_Columns = r_Parameters.ResidualWidth / 4, g_Rows = r_Parameters.ResidualHeight / 4;
-	const int g_X = g_Columns == 1 ? 0 : (int(blockIdx.x) * 8 + r_Parameters.OriginX) / 4 + (r_Tile & 1);
-	const int g_Y = g_Rows == 1 ? 0 : (int(blockIdx.y) * 8 + r_Parameters.OriginY) / 4 + (r_Tile >> 1);
-	const bool r_bValid = g_X >= 0 && g_X < g_Columns && g_Y >= 0 && g_Y < g_Rows;
+	const int g_Columns = Parameters.ResidualWidth / 4, g_Rows = Parameters.ResidualHeight / 4;
+	const int g_X = g_Columns == 1 ? 0 : (int(blockIdx.x) * 8 + Parameters.OriginX) / 4 + (g_TileIndex & 1);
+	const int g_Y = g_Rows == 1 ? 0 : (int(blockIdx.y) * 8 + Parameters.OriginY) / 4 + (g_TileIndex >> 1);
+	const bool bValid = g_X >= 0 && g_X < g_Columns && g_Y >= 0 && g_Y < g_Rows;
 	FWindowActivationTile<bFp8> r_ResidualInput;
 #pragma unroll
 	for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
 	{
 		const uint64_t g_ResidualFragmentAddress =
-			r_Parameters.g_Residual + uint64_t(g_Y * g_Columns + g_X) * Channels * 16 * (bFp8 ? 1 : 2) +
+			Parameters.g_Residual + uint64_t(g_Y * g_Columns + g_X) * Channels * 16 * (bFp8 ? 1 : 2) +
 			threadIdx.y * FWindow32Profile<bFp8>::TileBytes + r_Chunk * 512 + threadIdx.x * 16;
 		r_ResidualInput.r_Reduction[r_Chunk] =
-			MakeWindowFragment(r_bValid ? __ldcg(reinterpret_cast<const uint4*>(g_ResidualFragmentAddress))
-										: make_uint4(0, 0, 0, 0));
+			MakeWindowFragment(bValid ? __ldcg(reinterpret_cast<const uint4*>(g_ResidualFragmentAddress))
+									  : make_uint4(0, 0, 0, 0));
 	}
 	return r_ResidualInput;
 }
 
 template <int Channels, bool bFp8>
-__device__ __forceinline__ void ProjectAndMergeUpsample(const FWindowUpsampleArguments& r_Parameters,
+__device__ __forceinline__ void ProjectAndMergeUpsample(const FWindowUpsampleArguments& Parameters,
 														FWindowAccumulatorTile<32> (&r_Merged)[4])
 {
 	using FConfig = FWindowUpsampleProfile<Channels, bFp8>;
-	const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(r_Parameters.g_PackedWeights);
+	const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights);
 	FWindowAccumulatorTile<32> r_LowProjection{};
 #pragma unroll 1
-	for (int r_Panel = 0; r_Panel < 2 * FConfig::Heads; ++r_Panel)
+	for (int PanelIndex = 0; PanelIndex < 2 * FConfig::Heads; ++PanelIndex)
 	{
 		const auto r_Weights = LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::UpProjectionOffset,
-													   32 * threadIdx.y, 32 * r_Panel, Channels);
-		LinearWindow32(ReadUpsampleLowInput<Channels, bFp8>(r_Parameters, r_Panel), r_Weights,
+													   32 * threadIdx.y, 32 * PanelIndex, Channels);
+		LinearWindow32(ReadUpsampleLowInput<Channels, bFp8>(Parameters, PanelIndex), r_Weights,
 					   r_LowProjection);
 	}
 #pragma unroll
 	for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 	{
 		r_Merged[r_Tile] =
-			ScaledWindowResidual(ReadUpsampleSkip<Channels, bFp8>(r_Parameters, r_Tile),
+			ScaledWindowResidual(ReadUpsampleSkip<Channels, bFp8>(Parameters, r_Tile),
 								 g_PackedWeights + FConfig::TransitionScaleOffset, 32 * threadIdx.y);
 #pragma unroll
 		for (int r_Column = 0; r_Column < 4; ++r_Column)
@@ -154,15 +156,14 @@ __device__ __forceinline__ void ProjectAndMergeUpsample(const FWindowUpsampleArg
 				const uint32_t r_Repeated =
 					ShuffleIdx(r_LowProjection.r_Pair[r_Column][r_Tile >> 1], r_SourceLane, 31, 0xffffffffu);
 				const int g_X =
-					int(blockIdx.x) * 8 + r_Parameters.OriginX + 4 * (r_Tile & 1) + ((threadIdx.x / 4) & 3);
-				const int g_Y = int(blockIdx.y) * 8 + r_Parameters.OriginY + 4 * (r_Tile >> 1) +
+					int(blockIdx.x) * 8 + Parameters.OriginX + 4 * (r_Tile & 1) + ((threadIdx.x / 4) & 3);
+				const int g_Y = int(blockIdx.y) * 8 + Parameters.OriginY + 4 * (r_Tile >> 1) +
 								threadIdx.x / 16 + 2 * r_RowHalf;
 				// Native merge rounds the skip multiplication before adding the
 				// projection, then clears spatial padding before the FFN consumes it.
 				const uint32_t r_Sum = HalfAdd(r_Repeated, r_Merged[r_Tile].r_Pair[r_Column][r_RowHalf]);
 				r_Merged[r_Tile].r_Pair[r_Column][r_RowHalf] =
-					g_X >= 0 && g_X < r_Parameters.Width && g_Y >= 0 && g_Y < r_Parameters.Height ? r_Sum
-																								  : 0u;
+					g_X >= 0 && g_X < Parameters.Width && g_Y >= 0 && g_Y < Parameters.Height ? r_Sum : 0u;
 			}
 	}
 }
@@ -172,9 +173,10 @@ template <int Channels, bool bFp8> struct FWindowUpsampleIO : FTiledWindowIO<Cha
 	using FRecordProfile = FWindowUpsampleProfile<Channels, bFp8>;
 
 	__device__ __forceinline__ static FWindowActivationTile<bFp8>
-	Read(const FWindowUpsampleArguments& r_Parameters, int r_Tile, int r_Panel)
+	Read(const FWindowUpsampleArguments& Parameters, int s_TileIndex, int s_PanelIndex)
 	{
-		return reinterpret_cast<FSharedWindow<Channels, bFp8>*>(r_Parameters.s_Window)->Load(r_Tile, r_Panel);
+		return reinterpret_cast<FSharedWindow<Channels, bFp8>*>(Parameters.s_Window)
+			->Load(s_TileIndex, s_PanelIndex);
 	}
 };
 
@@ -185,15 +187,15 @@ template <bool bFp8> struct FSmallWindowUpsampleIO : FOrdinaryWindowIO
 	template <bool bPrecision> using FRecordProfile = FWindowUpsampleProfile<32, bPrecision>;
 
 	__device__ __forceinline__ static FWindowActivationTile<bFp8>
-	Read(const FWindowUpsampleArguments& r_Parameters, int r_Tile)
+	Read(const FWindowUpsampleArguments& Parameters, int r_Tile)
 	{
-		return PublishWindow32<bFp8>(r_Parameters.r_Merged[r_Tile]);
+		return PublishWindow32<bFp8>(Parameters.r_Merged[r_Tile]);
 	}
 
-	__device__ __forceinline__ static uint32_t Residual(const FWindowUpsampleArguments& r_Parameters,
+	__device__ __forceinline__ static uint32_t Residual(const FWindowUpsampleArguments& Parameters,
 														int r_Tile, int r_Column, int r_RowHalf)
 	{
-		return r_Parameters.r_Merged[r_Tile].r_Pair[r_Column][r_RowHalf];
+		return Parameters.r_Merged[r_Tile].r_Pair[r_Column][r_RowHalf];
 	}
 };
 #endif

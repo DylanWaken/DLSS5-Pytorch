@@ -25,23 +25,23 @@ template <bool bFp8> struct FGlobalFfnExpandProfile
 template <bool bFp8>
 __device__ __forceinline__ void StageGlobalFfnInput(unsigned char* s_Storage, uint64_t g_Input,
 													uint32_t g_FirstTokenGroup, uint32_t g_GroupCount,
-													uint32_t r_ReductionTile, uint32_t s_StageIndex,
-													bool r_bBroadcastSmallHalf)
+													uint32_t ReductionTile, uint32_t s_StageIndex,
+													bool bBroadcastSmallHalf)
 {
 	using FProfile = FGlobalFfnExpandProfile<bFp8>;
-	const uint32_t r_Warp = threadIdx.y;
-	const uint32_t r_Lane = threadIdx.x;
+	const uint32_t Warp = threadIdx.y;
+	const uint32_t Lane = threadIdx.x;
 	const uint32_t s_Barrier = FProfile::s_BarrierBase + s_StageIndex * 8;
 #pragma unroll
-	for (int r_Group = 0; r_Group < 2; ++r_Group)
+	for (int CopyGroup = 0; CopyGroup < 2; ++CopyGroup)
 	{
-		const uint32_t g_TokenGroup = g_FirstTokenGroup + r_Warp + r_Group * 4;
-		const uint32_t s_Destination = s_StageIndex * FProfile::s_StageBytes + r_Warp * 1024 + r_Group * 4096;
-		if (g_TokenGroup < g_GroupCount || r_bBroadcastSmallHalf)
+		const uint32_t g_TokenGroup = g_FirstTokenGroup + Warp + CopyGroup * 4;
+		const uint32_t s_Destination = s_StageIndex * FProfile::s_StageBytes + Warp * 1024 + CopyGroup * 4096;
+		if (g_TokenGroup < g_GroupCount || bBroadcastSmallHalf)
 		{
-			const uint32_t g_InputGroup = r_bBroadcastSmallHalf ? 0 : g_TokenGroup;
+			const uint32_t g_InputGroup = bBroadcastSmallHalf ? 0 : g_TokenGroup;
 			const uint64_t g_Source =
-				g_Input + uint64_t(g_InputGroup) * 16384 * FProfile::ElementBytes + r_ReductionTile * 1024;
+				g_Input + uint64_t(g_InputGroup) * 16384 * FProfile::ElementBytes + ReductionTile * 1024;
 			// The original warp election publishes one bulk-copy transaction.
 			if (Elected(0xffffffffu))
 			{
@@ -51,8 +51,8 @@ __device__ __forceinline__ void StageGlobalFfnInput(unsigned char* s_Storage, ui
 		}
 		else
 		{
-			*reinterpret_cast<uint4*>(s_Storage + s_Destination + r_Lane * 16) = make_uint4(0, 0, 0, 0);
-			*reinterpret_cast<uint4*>(s_Storage + s_Destination + 512 + r_Lane * 16) = make_uint4(0, 0, 0, 0);
+			*reinterpret_cast<uint4*>(s_Storage + s_Destination + Lane * 16) = make_uint4(0, 0, 0, 0);
+			*reinterpret_cast<uint4*>(s_Storage + s_Destination + 512 + Lane * 16) = make_uint4(0, 0, 0, 0);
 		}
 	}
 }
@@ -68,7 +68,7 @@ __device__ __forceinline__ void WaitGlobalFfnInput(unsigned char* s_Storage, uin
 // Each uint4 supplies two adjacent N8 B fragments. The two K subtiles use the
 // original 128-KiB record stride in both storage precisions.
 __device__ __forceinline__ void LoadGlobalFfnExpandWeights(uint4 (&r_Weight)[2][4], uint64_t g_PackedWeights,
-														   uint32_t g_OutputBlock, uint32_t r_ReductionTile)
+														   uint32_t g_OutputBlock, uint32_t ReductionTile)
 {
 	const uint64_t g_WeightTileBase =
 		g_PackedWeights + g_OutputBlock * 4096 + (threadIdx.y & 1) * 2048 + threadIdx.x * 16;
@@ -77,27 +77,27 @@ __device__ __forceinline__ void LoadGlobalFfnExpandWeights(uint4 (&r_Weight)[2][
 #pragma unroll
 		for (int r_NTile = 0; r_NTile < 4; ++r_NTile)
 			r_Weight[r_KTile][r_NTile] = __ldca(reinterpret_cast<const uint4*>(
-				g_WeightTileBase + uint64_t(r_ReductionTile * 2 + r_KTile) * 131072 + r_NTile * 512));
+				g_WeightTileBase + uint64_t(ReductionTile * 2 + r_KTile) * 131072 + r_NTile * 512));
 }
 
 template <bool bFp8, typename TParameters>
-__device__ __forceinline__ void RunGlobalFfnExpand(const TParameters& r_Parameters)
+__device__ __forceinline__ void RunGlobalFfnExpand(const TParameters& Parameters)
 {
 	using FProfile = FGlobalFfnExpandProfile<bFp8>;
 	__shared__ __align__(512) unsigned char s_Storage[FProfile::s_BarrierBase + 24];
-	const uint32_t r_Lane = threadIdx.x;
-	const uint32_t r_Warp = threadIdx.y;
-	const uint32_t g_TokenCount = r_Parameters.BatchCount * r_Parameters.TokensPerBatch;
+	const uint32_t Lane = threadIdx.x;
+	const uint32_t Warp = threadIdx.y;
+	const uint32_t g_TokenCount = Parameters.BatchCount * Parameters.TokensPerBatch;
 	const uint32_t g_TokenTileCount = (g_TokenCount + 127) / 128;
 	const uint32_t g_OutputBlock = blockIdx.x / g_TokenTileCount;
 	const uint32_t g_FirstTokenGroup = (blockIdx.x % g_TokenTileCount) * 8;
 	const uint32_t g_GroupCount = ((g_TokenCount + FProfile::TokenAlignment - 1) / FProfile::TokenAlignment) *
 								  (FProfile::TokenAlignment / 16);
-	const bool r_bBroadcastSmallHalf = !bFp8 && g_TokenCount <= 16;
-	const uint64_t g_Input = r_Parameters.g_Input + uint64_t(blockIdx.z) * 16384 * FProfile::ElementBytes;
+	const bool bBroadcastSmallHalf = !bFp8 && g_TokenCount <= 16;
+	const uint64_t g_Input = Parameters.g_Input + uint64_t(blockIdx.z) * 16384 * FProfile::ElementBytes;
 	const uint64_t g_PackedWeights =
-		r_Parameters.g_PackedWeights + uint64_t(blockIdx.z) * (1024 * 4096) * FProfile::ElementBytes;
-	if ((r_Lane | r_Warp) == 0)
+		Parameters.g_PackedWeights + uint64_t(blockIdx.z) * (1024 * 4096) * FProfile::ElementBytes;
+	if ((Lane | Warp) == 0)
 	{
 #pragma unroll
 		for (int s_StageIndex = 0; s_StageIndex < FProfile::s_StageCount; ++s_StageIndex)
@@ -110,18 +110,17 @@ __device__ __forceinline__ void RunGlobalFfnExpand(const TParameters& r_Paramete
 #pragma unroll
 	for (int s_StageIndex = 0; s_StageIndex < FProfile::s_StageCount; ++s_StageIndex)
 		StageGlobalFfnInput<bFp8>(s_Storage, g_Input, g_FirstTokenGroup, g_GroupCount, s_StageIndex,
-								  s_StageIndex, r_bBroadcastSmallHalf);
+								  s_StageIndex, bBroadcastSmallHalf);
 	WaitGlobalFfnInput(s_Storage, 0);
 
 	// One warp accumulates 64 tokens x 64 output channels in Half. Input values
 	// are already stored in the native MMA A layout, so no transpose is needed.
 	FMmaAccumulatorTile<4, 4> r_Accumulator{};
 #pragma unroll 1
-	for (uint32_t r_ReductionTile = 0; r_ReductionTile < FProfile::ReductionSteps; ++r_ReductionTile)
+	for (uint32_t ReductionTile = 0; ReductionTile < FProfile::ReductionSteps; ++ReductionTile)
 	{
-		const uint32_t s_StageIndex = r_ReductionTile % FProfile::s_StageCount;
-		const uint32_t s_WarpInput =
-			s_StageIndex * FProfile::s_StageBytes + (r_Warp / 2) * 4096 + r_Lane * 16;
+		const uint32_t s_StageIndex = ReductionTile % FProfile::s_StageCount;
+		const uint32_t s_WarpInput = s_StageIndex * FProfile::s_StageBytes + (Warp / 2) * 4096 + Lane * 16;
 		uint4 r_Input[4][2];
 #pragma unroll
 		for (int r_MTile = 0; r_MTile < 4; ++r_MTile)
@@ -133,15 +132,15 @@ __device__ __forceinline__ void RunGlobalFfnExpand(const TParameters& r_Paramete
 
 		// Match the native software pipeline: preload B, wait for the next A
 		// stage, then recycle the consumed stage for the tile three steps ahead.
-		if (r_ReductionTile + 1 < FProfile::ReductionSteps)
+		if (ReductionTile + 1 < FProfile::ReductionSteps)
 		{
-			LoadGlobalFfnExpandWeights(r_Weight, g_PackedWeights, g_OutputBlock, r_ReductionTile + 1);
-			WaitGlobalFfnInput(s_Storage, (r_ReductionTile + 1) % FProfile::s_StageCount);
+			LoadGlobalFfnExpandWeights(r_Weight, g_PackedWeights, g_OutputBlock, ReductionTile + 1);
+			WaitGlobalFfnInput(s_Storage, (ReductionTile + 1) % FProfile::s_StageCount);
 		}
-		if (r_ReductionTile + FProfile::s_StageCount < FProfile::ReductionSteps)
+		if (ReductionTile + FProfile::s_StageCount < FProfile::ReductionSteps)
 			StageGlobalFfnInput<bFp8>(s_Storage, g_Input, g_FirstTokenGroup, g_GroupCount,
-									  r_ReductionTile + FProfile::s_StageCount, s_StageIndex,
-									  r_bBroadcastSmallHalf);
+									  ReductionTile + FProfile::s_StageCount, s_StageIndex,
+									  bBroadcastSmallHalf);
 	}
 
 	// Preserve the native clamped Half polynomial and all its rounding points.
@@ -159,13 +158,13 @@ __device__ __forceinline__ void RunGlobalFfnExpand(const TParameters& r_Paramete
 #pragma unroll
 	for (int r_MTile = 0; r_MTile < 4; ++r_MTile)
 	{
-		const uint32_t g_TokenGroup = g_FirstTokenGroup + (r_Warp / 2) * 4 + r_MTile;
+		const uint32_t g_TokenGroup = g_FirstTokenGroup + (Warp / 2) * 4 + r_MTile;
 		if (g_TokenGroup >= g_GroupCount)
 			continue;
-		const uint64_t g_Output = r_Parameters.g_Output +
+		const uint64_t g_Output = Parameters.g_Output +
 								  uint64_t(g_TokenGroup) * 65536 * FProfile::ElementBytes +
 								  g_OutputBlock * 2048 * FProfile::ElementBytes +
-								  (r_Warp & 1) * 1024 * FProfile::ElementBytes + r_Lane * 16;
+								  (Warp & 1) * 1024 * FProfile::ElementBytes + Lane * 16;
 #pragma unroll
 		for (int r_NTile = 0; r_NTile < (bFp8 ? 2 : 4); ++r_NTile)
 		{

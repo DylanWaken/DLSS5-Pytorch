@@ -36,24 +36,24 @@ template <int Channels, bool bFp8> struct FSharedWindow
 	// bank swizzle occurs in the FP8 ordinary block's exchange layout.
 	uint4 s_Tile[4][FConfig::Heads][FConfig::Chunks][32];
 
-	__device__ __forceinline__ FWindowActivationTile<bFp8> Load(int r_Tile, int r_Panel) const
+	__device__ __forceinline__ FWindowActivationTile<bFp8> Load(int s_TileIndex, int s_PanelIndex) const
 	{
 		FWindowActivationTile<bFp8> r_ActivationTile;
 #pragma unroll
 		for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
 			r_ActivationTile.r_Reduction[r_Chunk] =
-				MakeWindowFragment(s_Tile[r_Tile][r_Panel][r_Chunk][threadIdx.x]);
+				MakeWindowFragment(s_Tile[s_TileIndex][s_PanelIndex][r_Chunk][threadIdx.x]);
 		return r_ActivationTile;
 	}
 
-	__device__ __forceinline__ void Store(int r_Tile, int r_Panel,
+	__device__ __forceinline__ void Store(int s_TileIndex, int s_PanelIndex,
 										  const FWindowActivationTile<bFp8>& r_Activation)
 	{
 #pragma unroll
 		for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
 		{
 			const auto& r_Fragment = r_Activation.r_Reduction[r_Chunk];
-			s_Tile[r_Tile][r_Panel][r_Chunk][threadIdx.x] = make_uint4(
+			s_Tile[s_TileIndex][s_PanelIndex][r_Chunk][threadIdx.x] = make_uint4(
 				r_Fragment.r_Word[0], r_Fragment.r_Word[1], r_Fragment.r_Word[2], r_Fragment.r_Word[3]);
 		}
 	}
@@ -96,54 +96,54 @@ ScaledWindowResidual(const FWindowActivationTile<bFp8>& r_Input, const unsigned 
 }
 
 template <int Channels, bool bFp8, class FParameters>
-__device__ __forceinline__ FWindowActivationTile<bFp8> ReadWindowTile(const FParameters& r_Parameters,
-																	  int r_Tile, int r_Panel)
+__device__ __forceinline__ FWindowActivationTile<bFp8> ReadWindowTile(const FParameters& Parameters,
+																	  int g_TileIndex, int g_PanelIndex)
 {
 	using FConfig = FWideWindowProfile<Channels, bFp8>;
-	const int g_TileColumns = r_Parameters.Width / 4, g_TileRows = r_Parameters.Height / 4;
+	const int g_TileColumns = Parameters.Width / 4, g_TileRows = Parameters.Height / 4;
 	const int g_TileX =
-		g_TileColumns == 1 ? 0 : (int(blockIdx.x) * 8 + r_Parameters.OriginX) / 4 + (r_Tile & 1);
+		g_TileColumns == 1 ? 0 : (int(blockIdx.x) * 8 + Parameters.OriginX) / 4 + (g_TileIndex & 1);
 	const int g_TileY =
-		g_TileRows == 1 ? 0 : (int(blockIdx.y) * 8 + r_Parameters.OriginY) / 4 + (r_Tile >> 1);
-	const bool r_bValid = g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows;
+		g_TileRows == 1 ? 0 : (int(blockIdx.y) * 8 + Parameters.OriginY) / 4 + (g_TileIndex >> 1);
+	const bool bValid = g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows;
 	FWindowActivationTile<bFp8> r_InputTile;
 #pragma unroll
 	for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
 	{
 		const uint64_t g_InputFragmentAddress =
-			r_Parameters.g_Input + uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
-			r_Panel * FConfig::PanelBytes + r_Chunk * 512 + int(threadIdx.x) * 16;
-		r_InputTile.r_Reduction[r_Chunk] =
-			MakeWindowFragment(r_bValid ? __ldcg(reinterpret_cast<const uint4*>(g_InputFragmentAddress))
-										: make_uint4(0, 0, 0, 0));
+			Parameters.g_Input + uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
+			g_PanelIndex * FConfig::PanelBytes + r_Chunk * 512 + int(threadIdx.x) * 16;
+		r_InputTile.r_Reduction[r_Chunk] = MakeWindowFragment(
+			bValid ? __ldcg(reinterpret_cast<const uint4*>(g_InputFragmentAddress)) : make_uint4(0, 0, 0, 0));
 	}
 	return r_InputTile;
 }
 
 template <int Channels, bool bFp8, int Tiles, class FInputSource>
-__device__ __forceinline__ void ComputeWindowExpert(const FInputSource& r_Input,
-													const unsigned char* g_PackedWeights, int r_Expert,
+__device__ __forceinline__ void ComputeWindowExpert(const FInputSource& InputSource,
+													const unsigned char* g_PackedWeights, int ExpertIndex,
 													FWindowAccumulatorTile<32> (&r_Contracted)[Tiles])
 {
 	using FConfig = FWideWindowProfile<Channels, bFp8>;
-	const unsigned char* g_Expansion = g_PackedWeights + r_Expert * FConfig::ExpertExpandBytes;
+	const unsigned char* g_Expansion = g_PackedWeights + ExpertIndex * FConfig::ExpertExpandBytes;
 	const unsigned char* g_Contraction =
-		g_PackedWeights + FConfig::ContractOffset + r_Expert * FConfig::ExpertContractBytes;
+		g_PackedWeights + FConfig::ContractOffset + ExpertIndex * FConfig::ExpertContractBytes;
 // Each expert is C→128→32. Stream one hidden C32 panel and preserve all
 // Half MMA rounding points; the four contractions accumulate in K order.
 #pragma unroll 1
-	for (int r_Hidden = 0; r_Hidden < 4; ++r_Hidden)
+	for (int HiddenPanel = 0; HiddenPanel < 4; ++HiddenPanel)
 	{
 		FWindowAccumulatorTile<32> r_Expanded[Tiles]{};
 #pragma unroll
-		for (int r_Panel = 0; r_Panel < FConfig::Heads; ++r_Panel)
+		for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
 		{
-			const auto r_Weights = LoadWindowWeights<bFp8>(g_Expansion, r_Hidden * 32, r_Panel * 32, 128);
+			const auto r_Weights =
+				LoadWindowWeights<bFp8>(g_Expansion, HiddenPanel * 32, PanelIndex * 32, 128);
 #pragma unroll
 			for (int r_Tile = 0; r_Tile < Tiles; ++r_Tile)
-				LinearWindow32(r_Input.Load(r_Tile, r_Panel), r_Weights, r_Expanded[r_Tile]);
+				LinearWindow32(InputSource.Load(r_Tile, PanelIndex), r_Weights, r_Expanded[r_Tile]);
 		}
-		const auto r_Weights = LoadWindowWeights<bFp8>(g_Contraction, 0, r_Hidden * 32, 32);
+		const auto r_Weights = LoadWindowWeights<bFp8>(g_Contraction, 0, HiddenPanel * 32, 32);
 #pragma unroll
 		for (int r_Tile = 0; r_Tile < Tiles; ++r_Tile)
 		{
@@ -161,12 +161,12 @@ __device__ __forceinline__ void ComputeWindowExpert(const FInputSource& r_Input,
 template <int Channels, bool bFp8> struct FTiledWindowIO;
 
 template <int Channels, bool bFp8, class FIO = FTiledWindowIO<Channels, bFp8>, class FParameters>
-__device__ __forceinline__ void ComputeWindowFeedForward(const FParameters& r_Parameters,
+__device__ __forceinline__ void ComputeWindowFeedForward(const FParameters& Parameters,
 														 FSharedWindow<Channels, bFp8>& s_Window)
 {
 	using FConfig = typename FIO::FRecordProfile;
-	const int r_Warp = threadIdx.y;
-	const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(r_Parameters.g_PackedWeights);
+	const int Warp = threadIdx.y;
+	const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights);
 	if constexpr (Channels == 64)
 	{
 		// C64 uses token parallelism in the FFN: one warp owns left/right tiles
@@ -178,20 +178,20 @@ __device__ __forceinline__ void ComputeWindowFeedForward(const FParameters& r_Pa
 #pragma unroll
 			for (int r_Panel = 0; r_Panel < 2; ++r_Panel)
 			{
-				r_Input.r_Tile[r_Tile][r_Panel] = FIO::Read(r_Parameters, 2 * r_Warp + r_Tile, r_Panel);
+				r_Input.r_Tile[r_Tile][r_Panel] = FIO::Read(Parameters, 2 * Warp + r_Tile, r_Panel);
 				r_Output[r_Tile][r_Panel] = ScaledWindowResidual(
 					r_Input.r_Tile[r_Tile][r_Panel], g_PackedWeights + FConfig::FfnScaleOffset, 32 * r_Panel);
 			}
 #pragma unroll 1
-		for (int r_Expert = 0; r_Expert < 2; ++r_Expert)
+		for (int ExpertIndex = 0; ExpertIndex < 2; ++ExpertIndex)
 		{
 			FWindowAccumulatorTile<32> r_Contracted[2]{};
-			ComputeWindowExpert<Channels, bFp8>(r_Input, g_PackedWeights, r_Expert, r_Contracted);
+			ComputeWindowExpert<Channels, bFp8>(r_Input, g_PackedWeights, ExpertIndex, r_Contracted);
 #pragma unroll
 			for (int r_Panel = 0; r_Panel < 2; ++r_Panel)
 			{
 				const auto r_Weights = LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::MixOffset,
-															   r_Panel * 32, r_Expert * 32, Channels);
+															   r_Panel * 32, ExpertIndex * 32, Channels);
 #pragma unroll
 				for (int r_Tile = 0; r_Tile < 2; ++r_Tile)
 					LinearWindow32(PublishWindow32<bFp8>(r_Contracted[r_Tile]), r_Weights,
@@ -202,43 +202,42 @@ __device__ __forceinline__ void ComputeWindowFeedForward(const FParameters& r_Pa
 		for (int r_Tile = 0; r_Tile < 2; ++r_Tile)
 #pragma unroll
 			for (int r_Panel = 0; r_Panel < 2; ++r_Panel)
-				s_Window.Store(2 * r_Warp + r_Tile, r_Panel,
-							   PublishWindow32<bFp8>(r_Output[r_Tile][r_Panel]));
+				s_Window.Store(2 * Warp + r_Tile, r_Panel, PublishWindow32<bFp8>(r_Output[r_Tile][r_Panel]));
 		__syncthreads();
 	}
 	else
 	{
 #pragma unroll
-		for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
-			s_Window.Store(r_Tile, r_Warp, FIO::Read(r_Parameters, r_Tile, r_Warp));
+		for (int TileIndex = 0; TileIndex < 4; ++TileIndex)
+			s_Window.Store(TileIndex, Warp, FIO::Read(Parameters, TileIndex, Warp));
 		__syncthreads();
 		FWindowAccumulatorTile<32> r_Contracted[4]{};
-		ComputeWindowExpert<Channels, bFp8>(s_Window, g_PackedWeights, r_Warp, r_Contracted);
+		ComputeWindowExpert<Channels, bFp8>(s_Window, g_PackedWeights, Warp, r_Contracted);
 		FWindowAccumulatorTile<32> r_Output[4];
 #pragma unroll
 		for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
-			r_Output[r_Tile] = ScaledWindowResidual(s_Window.Load(r_Tile, r_Warp),
-													g_PackedWeights + FConfig::FfnScaleOffset, 32 * r_Warp);
+			r_Output[r_Tile] = ScaledWindowResidual(s_Window.Load(r_Tile, Warp),
+													g_PackedWeights + FConfig::FfnScaleOffset, 32 * Warp);
 		// All experts must finish reading X before their published outputs reuse
 		// the same slab. This is a tensor lifetime barrier, not a warp shuffle.
 		__syncthreads();
 #pragma unroll
 		for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
-			s_Window.Store(r_Tile, r_Warp, PublishWindow32<bFp8>(r_Contracted[r_Tile]));
+			s_Window.Store(r_Tile, Warp, PublishWindow32<bFp8>(r_Contracted[r_Tile]));
 		__syncthreads();
 #pragma unroll 1
-		for (int r_Panel = 0; r_Panel < FConfig::Heads; ++r_Panel)
+		for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
 		{
-			const auto r_Weights = LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::MixOffset, 32 * r_Warp,
-														   32 * r_Panel, Channels);
+			const auto r_Weights = LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::MixOffset, 32 * Warp,
+														   32 * PanelIndex, Channels);
 #pragma unroll
 			for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
-				LinearWindow32(s_Window.Load(r_Tile, r_Panel), r_Weights, r_Output[r_Tile]);
+				LinearWindow32(s_Window.Load(r_Tile, PanelIndex), r_Weights, r_Output[r_Tile]);
 		}
 		__syncthreads();
 #pragma unroll
 		for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
-			s_Window.Store(r_Tile, r_Warp, PublishWindow32<bFp8>(r_Output[r_Tile]));
+			s_Window.Store(r_Tile, Warp, PublishWindow32<bFp8>(r_Output[r_Tile]));
 		__syncthreads();
 	}
 }
@@ -251,17 +250,17 @@ ProjectWindowQkv(const FSharedWindow<Channels, bFp8>& s_Window, const unsigned c
 {
 	FWindowAccumulatorTile<32> r_Projected[3][4]{};
 #pragma unroll 1
-	for (int r_Panel = 0; r_Panel < FConfig::Heads; ++r_Panel)
+	for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
 #pragma unroll
 		for (int r_QkvComponent = 0; r_QkvComponent < 3; ++r_QkvComponent)
 		{
 			// The record interleaves Q/K/V within each head: [Head][Q,K,V][32].
 			const auto r_Weights = LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::QkvOffset,
 														   96 * int(threadIdx.y) + 32 * r_QkvComponent,
-														   32 * r_Panel, 3 * Channels);
+														   32 * PanelIndex, 3 * Channels);
 #pragma unroll
 			for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
-				LinearWindow32(s_Window.Load(r_Tile, r_Panel), r_Weights,
+				LinearWindow32(s_Window.Load(r_Tile, PanelIndex), r_Weights,
 							   r_Projected[r_QkvComponent][r_Tile]);
 		}
 	const uint32_t r_HeadScale = FloatToHalf2(
@@ -366,20 +365,20 @@ __device__ __forceinline__ void AttendPairWithBias(int r_FirstTile, const unsign
 }
 
 template <int Channels, bool bFp8, class FParameters>
-__device__ __forceinline__ void WriteWindowTile(const FParameters& r_Parameters, int r_Tile,
+__device__ __forceinline__ void WriteWindowTile(const FParameters& Parameters, int g_TileIndex,
 												const FWindowAccumulatorTile<32>& r_Output)
 {
 	using FConfig = FWideWindowProfile<Channels, bFp8>;
-	const int g_TileColumns = r_Parameters.Width / 4, g_TileRows = r_Parameters.Height / 4;
-	const int g_TileX = (int(blockIdx.x) * 8 + r_Parameters.OriginX) / 4 + (r_Tile & 1);
-	const int g_TileY = (int(blockIdx.y) * 8 + r_Parameters.OriginY) / 4 + (r_Tile >> 1);
+	const int g_TileColumns = Parameters.Width / 4, g_TileRows = Parameters.Height / 4;
+	const int g_TileX = (int(blockIdx.x) * 8 + Parameters.OriginX) / 4 + (g_TileIndex & 1);
+	const int g_TileY = (int(blockIdx.y) * 8 + Parameters.OriginY) / 4 + (g_TileIndex >> 1);
 	if (g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows)
 #pragma unroll
 		for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
 		{
 			const auto r_Published = PublishWindowChunk<bFp8>(r_Output, r_Chunk);
 			const uint64_t g_OutputFragmentAddress =
-				r_Parameters.g_Output + uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
+				Parameters.g_Output + uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
 				threadIdx.y * FConfig::PanelBytes + r_Chunk * 512 + threadIdx.x * 16;
 			StoreNoAllocate(g_OutputFragmentAddress,
 							make_uint4(r_Published.r_Word[0], r_Published.r_Word[1], r_Published.r_Word[2],
@@ -392,29 +391,29 @@ template <int Channels, bool bFp8> struct FTiledWindowIO
 	using FRecordProfile = FWideWindowProfile<Channels, bFp8>;
 
 	template <class FParameters>
-	__device__ __forceinline__ static FWindowActivationTile<bFp8> Read(const FParameters& r_Parameters,
-																	   int r_Tile, int r_Panel)
+	__device__ __forceinline__ static FWindowActivationTile<bFp8> Read(const FParameters& Parameters,
+																	   int g_TileIndex, int g_PanelIndex)
 	{
-		return ReadWindowTile<Channels, bFp8>(r_Parameters, r_Tile, r_Panel);
+		return ReadWindowTile<Channels, bFp8>(Parameters, g_TileIndex, g_PanelIndex);
 	}
 
 	template <class FParameters>
-	__device__ __forceinline__ static void Write(const FParameters& r_Parameters, int r_Tile,
+	__device__ __forceinline__ static void Write(const FParameters& Parameters, int g_TileIndex,
 												 const FWindowAccumulatorTile<32>& r_Output)
 	{
-		WriteWindowTile<Channels, bFp8>(r_Parameters, r_Tile, r_Output);
+		WriteWindowTile<Channels, bFp8>(Parameters, g_TileIndex, r_Output);
 	}
 };
 
 template <int Channels, bool bFp8, class FIO = FTiledWindowIO<Channels, bFp8>, bool bCaptureRaw = false,
 		  class FParameters>
-__device__ __forceinline__ void RunWindowWide(const FParameters& r_Parameters,
+__device__ __forceinline__ void RunWindowWide(const FParameters& Parameters,
 											  FSharedWindow<Channels, bFp8>& s_Window,
 											  FWindowAccumulatorTile<32>* r_RawTiles = nullptr)
 {
 	using FConfig = typename FIO::FRecordProfile;
-	const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(r_Parameters.g_PackedWeights);
-	ComputeWindowFeedForward<Channels, bFp8, FIO>(r_Parameters, s_Window);
+	const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights);
+	ComputeWindowFeedForward<Channels, bFp8, FIO>(Parameters, s_Window);
 	FWindowActivationTile<bFp8> r_Query[4], r_Key[4];
 	FWindowValueTile<bFp8> r_Value[4];
 	ProjectWindowQkv<Channels, bFp8, FConfig>(s_Window, g_PackedWeights, r_Query, r_Key, r_Value);
@@ -441,13 +440,13 @@ __device__ __forceinline__ void RunWindowWide(const FParameters& r_Parameters,
 			s_Window.Store(r_FirstTile + r_LocalTile, threadIdx.y, r_Attended[r_LocalTile]);
 		__syncthreads();
 #pragma unroll 1
-		for (int r_Panel = 0; r_Panel < FConfig::Heads; ++r_Panel)
+		for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
 		{
 			const auto r_Weights = LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::ProjectionOffset,
-														   32 * threadIdx.y, 32 * r_Panel, Channels);
+														   32 * threadIdx.y, 32 * PanelIndex, Channels);
 #pragma unroll
 			for (int r_LocalTile = 0; r_LocalTile < FConfig::AttentionBatch; ++r_LocalTile)
-				LinearWindow32(s_Window.Load(r_FirstTile + r_LocalTile, r_Panel), r_Weights,
+				LinearWindow32(s_Window.Load(r_FirstTile + r_LocalTile, PanelIndex), r_Weights,
 							   r_Output[r_LocalTile]);
 		}
 #pragma unroll
@@ -455,7 +454,7 @@ __device__ __forceinline__ void RunWindowWide(const FParameters& r_Parameters,
 		{
 			if constexpr (bCaptureRaw)
 				r_RawTiles[r_FirstTile + r_LocalTile] = r_Output[r_LocalTile];
-			FIO::Write(r_Parameters, r_FirstTile + r_LocalTile, r_Output[r_LocalTile]);
+			FIO::Write(Parameters, r_FirstTile + r_LocalTile, r_Output[r_LocalTile]);
 		}
 		__syncthreads();
 	}

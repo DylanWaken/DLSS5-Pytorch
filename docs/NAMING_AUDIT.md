@@ -9,13 +9,13 @@ This report and its JSON receipts preserve the preceding semantic naming pass. T
 The quoted attention projection now receives:
 
 ```cpp
-const FSpatialProjectionArguments r_Arguments{
-    r_Parameters.g_Input,
-    r_Parameters.g_Residual,
-    r_Parameters.g_Output,
-    r_Parameters.g_PackedWeights,
-    int(r_Parameters.Height),
-    int(r_Parameters.Width)};
+const FSpatialProjectionArguments Arguments{
+    Parameters.g_Input,
+    Parameters.g_Residual,
+    Parameters.g_Output,
+    Parameters.g_PackedWeights,
+    int(Parameters.Height),
+    int(Parameters.Width)};
 ```
 
 The ABI header documents dimensions in physical pixels and distinguishes ordinary geometry, channel-plane views, downsampled outputs and split-reduction scratch. Both precisions use the same names for the same roles.
@@ -41,7 +41,7 @@ Preprocessing and postprocessing share typed launch records. The naming pass pre
 
 The naming pass reviewed all 70 files then under `csrc`, including 45 kernel headers, launchers, generated plans, emission units and the Torch registration layer. Its historical ABI review covered 76 parameter namespaces and 884 fields, plus the shared repack/counter records. The [machine-readable audit](naming_audit.json) records per-file reviews, field mappings and source hashes.
 
-Storage prefixes remain `g_` for global-memory roles, `s_` for physical shared-memory roles, `sl_` for a proven logical pre-swizzle coordinate and `r_` for register/local values. Names explain the operation: input feature, residual, weight fragment, attention denominator, partial sum, publication destination or counter phase.
+The historical pass used broad storage prefixes. The subsequent [storage-prefix audit](STORAGE_PREFIX_AUDIT.md) narrows them to actual data/address roles: generic descriptors, host objects and control metadata use plain names, while register payloads/fragments and proven shared/global addresses and indices retain their prefixes. The example above reflects that current convention.
 
 Standard tensor coordinates such as X/Y, texture UV, and N8/N16 fragment widths remain when their local layout explains them. Query/Key/Value retains its attention meaning. Numbered words at the low-level MMA boundary denote the instruction's packed operand order, with explicit A/B/C/D role comments; they are not anonymous parameter slots. CUDA built-ins, vector members and existing public Torch schema keywords retain their external spelling.
 

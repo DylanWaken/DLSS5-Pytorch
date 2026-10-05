@@ -20,21 +20,21 @@ template <bool bFp8> struct FDecoderProfile
 struct FDecoderCoordinates
 {
 	int g_LowTilesHigh, g_LowTilesWide, g_HighTilesHigh, g_HighTilesWide;
-	int g_TileY, g_TileX, g_OutputChannel, g_GridColumns;
-	int r_Split, r_Lane, r_Warp;
+	int g_TileY, g_TileX, g_OutputChannel, GridColumns;
+	int Split, Lane, Warp;
 };
 
 template <bool bFp8>
 __device__ __forceinline__ void LoadDecoderWeights(uint4 (&r_Weights)[2][8], uint64_t g_PackedWeights,
-												   int r_ReductionTile,
-												   const FDecoderCoordinates& r_TileCoordinates)
+												   int ReductionTile,
+												   const FDecoderCoordinates& TileCoordinates)
 {
 	using Profile = FDecoderProfile<bFp8>;
 	const uint64_t g_WeightTileBase =
 		g_PackedWeights +
-		uint64_t(r_TileCoordinates.r_Split * 256 + r_ReductionTile * Profile::ReductionStep) * 512 *
+		uint64_t(TileCoordinates.Split * 256 + ReductionTile * Profile::ReductionStep) * 512 *
 			Profile::ElementBytes +
-		r_TileCoordinates.g_OutputChannel * 32 + r_TileCoordinates.r_Lane * 16;
+		TileCoordinates.g_OutputChannel * 32 + TileCoordinates.Lane * 16;
 #pragma unroll
 	for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
 #pragma unroll
@@ -45,20 +45,20 @@ __device__ __forceinline__ void LoadDecoderWeights(uint4 (&r_Weights)[2][8], uin
 
 template <bool bFp8>
 __device__ __forceinline__ void IssueDecoderStage(unsigned char* s_Storage, uint64_t g_Input,
-												  int r_ReductionTile,
-												  const FDecoderCoordinates& r_TileCoordinates)
+												  int ReductionTile,
+												  const FDecoderCoordinates& TileCoordinates)
 {
 	using Profile = FDecoderProfile<bFp8>;
-	const int g_Y = r_TileCoordinates.g_LowTilesHigh == 1 ? 0 : r_TileCoordinates.g_TileY;
-	const int g_X = r_TileCoordinates.g_LowTilesWide == 1 ? 0 : r_TileCoordinates.g_TileX;
-	const int s_Destination = (r_ReductionTile % 2) * 1024 + r_TileCoordinates.r_Warp * 512;
-	const int s_Barrier = 2048 + (r_ReductionTile % 2) * 8;
-	if (g_Y < r_TileCoordinates.g_LowTilesHigh && g_X < r_TileCoordinates.g_LowTilesWide)
+	const int g_Y = TileCoordinates.g_LowTilesHigh == 1 ? 0 : TileCoordinates.g_TileY;
+	const int g_X = TileCoordinates.g_LowTilesWide == 1 ? 0 : TileCoordinates.g_TileX;
+	const int s_Destination = (ReductionTile % 2) * 1024 + TileCoordinates.Warp * 512;
+	const int s_Barrier = 2048 + (ReductionTile % 2) * 8;
+	if (g_Y < TileCoordinates.g_LowTilesHigh && g_X < TileCoordinates.g_LowTilesWide)
 	{
 		const uint64_t g_Source =
-			g_Input + uint64_t(g_Y * r_TileCoordinates.g_LowTilesWide + g_X) * 16384 * Profile::ElementBytes +
-			r_TileCoordinates.r_Split * 4096 * Profile::ElementBytes +
-			(r_ReductionTile * 2 + r_TileCoordinates.r_Warp) * 512;
+			g_Input + uint64_t(g_Y * TileCoordinates.g_LowTilesWide + g_X) * 16384 * Profile::ElementBytes +
+			TileCoordinates.Split * 4096 * Profile::ElementBytes +
+			(ReductionTile * 2 + TileCoordinates.Warp) * 512;
 		if (Elected(0xffffffffu))
 		{
 			CopyBulk(s_Storage, s_Destination, g_Source, 512, s_Barrier);
@@ -66,41 +66,41 @@ __device__ __forceinline__ void IssueDecoderStage(unsigned char* s_Storage, uint
 		}
 	}
 	else
-		*reinterpret_cast<uint4*>(s_Storage + s_Destination + r_TileCoordinates.r_Lane * 16) =
+		*reinterpret_cast<uint4*>(s_Storage + s_Destination + TileCoordinates.Lane * 16) =
 			make_uint4(0, 0, 0, 0);
 }
 
-__device__ __forceinline__ void WaitDecoderStage(unsigned char* s_Storage, int r_ReductionTile)
+__device__ __forceinline__ void WaitDecoderStage(unsigned char* s_Storage, int ReductionTile)
 {
-	const int s_Barrier = 2048 + (r_ReductionTile % 2) * 8;
+	const int s_Barrier = 2048 + (ReductionTile % 2) * 8;
 	ArriveAndWait(s_Storage, s_Barrier);
 }
 
 template <bool bFp8>
 __device__ __forceinline__ void ProjectDecoder(FDecoderAccumulator& r_Accumulator, unsigned char* s_Storage,
 											   uint64_t g_Input, uint64_t g_PackedWeights,
-											   const FDecoderCoordinates& r_TileCoordinates)
+											   const FDecoderCoordinates& TileCoordinates)
 {
 	using Profile = FDecoderProfile<bFp8>;
 	uint4 r_Weights[2][8];
-	LoadDecoderWeights<bFp8>(r_Weights, g_PackedWeights, 0, r_TileCoordinates);
-	IssueDecoderStage<bFp8>(s_Storage, g_Input, 0, r_TileCoordinates);
+	LoadDecoderWeights<bFp8>(r_Weights, g_PackedWeights, 0, TileCoordinates);
+	IssueDecoderStage<bFp8>(s_Storage, g_Input, 0, TileCoordinates);
 	WaitDecoderStage(s_Storage, 0);
 #pragma unroll 1
-	for (int r_ReductionTile = 0; r_ReductionTile < Profile::ReductionTiles; ++r_ReductionTile)
+	for (int ReductionTile = 0; ReductionTile < Profile::ReductionTiles; ++ReductionTile)
 	{
-		if (r_ReductionTile + 1 < Profile::ReductionTiles)
-			IssueDecoderStage<bFp8>(s_Storage, g_Input, r_ReductionTile + 1, r_TileCoordinates);
+		if (ReductionTile + 1 < Profile::ReductionTiles)
+			IssueDecoderStage<bFp8>(s_Storage, g_Input, ReductionTile + 1, TileCoordinates);
 		uint4 r_Input[1][2];
 #pragma unroll
 		for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
 			r_Input[0][r_KSubtile] = *reinterpret_cast<const uint4*>(
-				s_Storage + (r_ReductionTile % 2) * 1024 + r_KSubtile * 512 + r_TileCoordinates.r_Lane * 16);
+				s_Storage + (ReductionTile % 2) * 1024 + r_KSubtile * 512 + TileCoordinates.Lane * 16);
 		AccumulateTile<Profile::Precision>(r_Accumulator, r_Input, r_Weights);
-		if (r_ReductionTile + 1 < Profile::ReductionTiles)
+		if (ReductionTile + 1 < Profile::ReductionTiles)
 		{
-			LoadDecoderWeights<bFp8>(r_Weights, g_PackedWeights, r_ReductionTile + 1, r_TileCoordinates);
-			WaitDecoderStage(s_Storage, r_ReductionTile + 1);
+			LoadDecoderWeights<bFp8>(r_Weights, g_PackedWeights, ReductionTile + 1, TileCoordinates);
+			WaitDecoderStage(s_Storage, ReductionTile + 1);
 		}
 	}
 }
@@ -109,26 +109,25 @@ __device__ __forceinline__ void ProjectDecoder(FDecoderAccumulator& r_Accumulato
 // split 3 adds the prior sum in registers. Scratch never receives split 3.
 __device__ __forceinline__ void ReduceDecoderSplit(FDecoderAccumulator& r_Accumulator,
 												   uint64_t g_SplitAccumulator,
-												   const FDecoderCoordinates& r_TileCoordinates)
+												   const FDecoderCoordinates& TileCoordinates)
 {
-	if (r_TileCoordinates.r_Split < 3)
+	if (TileCoordinates.Split < 3)
 	{
-		if (r_TileCoordinates.g_TileY >= r_TileCoordinates.g_LowTilesHigh ||
-			r_TileCoordinates.g_TileX >= r_TileCoordinates.g_LowTilesWide)
+		if (TileCoordinates.g_TileY >= TileCoordinates.g_LowTilesHigh ||
+			TileCoordinates.g_TileX >= TileCoordinates.g_LowTilesWide)
 			return;
 		const uint64_t g_SplitAccumulatorTile =
 			g_SplitAccumulator +
-			uint64_t(r_TileCoordinates.g_TileY * r_TileCoordinates.g_LowTilesWide +
-					 r_TileCoordinates.g_TileX) *
+			uint64_t(TileCoordinates.g_TileY * TileCoordinates.g_LowTilesWide + TileCoordinates.g_TileX) *
 				16384 +
-			r_TileCoordinates.g_OutputChannel * 32 + r_TileCoordinates.r_Lane * 16;
+			TileCoordinates.g_OutputChannel * 32 + TileCoordinates.Lane * 16;
 #pragma unroll
 		for (int r_NTile = 0; r_NTile < 8; ++r_NTile)
 		{
 			const auto& r_OutputWords = r_Accumulator.r_AccumulatorWords[0][r_NTile];
 			const uint4 r_SplitAccumulatorVector =
 				make_uint4(r_OutputWords[0], r_OutputWords[1], r_OutputWords[2], r_OutputWords[3]);
-			if (r_TileCoordinates.r_Split == 0)
+			if (TileCoordinates.Split == 0)
 				StoreNoAllocate(g_SplitAccumulatorTile + r_NTile * 512, r_SplitAccumulatorVector);
 			else
 				ReduceHalf4(g_SplitAccumulatorTile + r_NTile * 512, r_SplitAccumulatorVector);
@@ -136,19 +135,18 @@ __device__ __forceinline__ void ReduceDecoderSplit(FDecoderAccumulator& r_Accumu
 	}
 	else
 	{
-		const int g_Y = r_TileCoordinates.g_LowTilesHigh == 1 ? 0 : r_TileCoordinates.g_TileY;
-		const int g_X = r_TileCoordinates.g_LowTilesWide == 1 ? 0 : r_TileCoordinates.g_TileX;
-		const bool r_bValid =
-			g_Y < r_TileCoordinates.g_LowTilesHigh && g_X < r_TileCoordinates.g_LowTilesWide;
+		const int g_Y = TileCoordinates.g_LowTilesHigh == 1 ? 0 : TileCoordinates.g_TileY;
+		const int g_X = TileCoordinates.g_LowTilesWide == 1 ? 0 : TileCoordinates.g_TileX;
+		const bool bValid = g_Y < TileCoordinates.g_LowTilesHigh && g_X < TileCoordinates.g_LowTilesWide;
 		const uint64_t g_SplitAccumulatorTile =
-			g_SplitAccumulator + uint64_t(g_Y * r_TileCoordinates.g_LowTilesWide + g_X) * 16384 +
-			r_TileCoordinates.g_OutputChannel * 32 + r_TileCoordinates.r_Lane * 16;
+			g_SplitAccumulator + uint64_t(g_Y * TileCoordinates.g_LowTilesWide + g_X) * 16384 +
+			TileCoordinates.g_OutputChannel * 32 + TileCoordinates.Lane * 16;
 #pragma unroll
 		for (int r_NTile = 0; r_NTile < 8; ++r_NTile)
 		{
 			const uint4 r_PreviousSplitWords =
-				r_bValid ? __ldca(reinterpret_cast<const uint4*>(g_SplitAccumulatorTile + r_NTile * 512))
-						 : make_uint4(0, 0, 0, 0);
+				bValid ? __ldca(reinterpret_cast<const uint4*>(g_SplitAccumulatorTile + r_NTile * 512))
+					   : make_uint4(0, 0, 0, 0);
 			auto& r_OutputWords = r_Accumulator.r_AccumulatorWords[0][r_NTile];
 			r_OutputWords[0] = HalfAdd(r_PreviousSplitWords.x, r_OutputWords[0]);
 			r_OutputWords[1] = HalfAdd(r_PreviousSplitWords.y, r_OutputWords[1]);
@@ -161,7 +159,7 @@ __device__ __forceinline__ void ReduceDecoderSplit(FDecoderAccumulator& r_Accumu
 template <bool bFp8>
 __device__ __forceinline__ void
 UpsampleAndMergeDecoder(const FDecoderAccumulator& r_Projected, uint64_t g_Residual, uint64_t g_Output,
-						uint64_t g_PackedWeights, const FDecoderCoordinates& r_TileCoordinates)
+						uint64_t g_PackedWeights, const FDecoderCoordinates& TileCoordinates)
 {
 	using Profile = FDecoderProfile<bFp8>;
 	uint32_t r_ResidualScales[8][2];
@@ -169,28 +167,27 @@ UpsampleAndMergeDecoder(const FDecoderAccumulator& r_Projected, uint64_t g_Resid
 	for (int r_NTile = 0; r_NTile < 8; ++r_NTile)
 #pragma unroll
 		for (int r_N8 = 0; r_N8 < 2; ++r_N8)
-			r_ResidualScales[r_NTile][r_N8] =
-				*reinterpret_cast<const uint32_t*>(g_PackedWeights + Profile::MatrixBytes +
-												   (r_TileCoordinates.g_OutputChannel + r_NTile * 16 +
-													r_N8 * 8 + (r_TileCoordinates.r_Lane & 3) * 2) *
-													   2);
+			r_ResidualScales[r_NTile][r_N8] = *reinterpret_cast<const uint32_t*>(
+				g_PackedWeights + Profile::MatrixBytes +
+				(TileCoordinates.g_OutputChannel + r_NTile * 16 + r_N8 * 8 + (TileCoordinates.Lane & 3) * 2) *
+					2);
 
 	// A low 4x4 tile expands into four high 4x4 tiles. Indexed lane shuffles
 	// duplicate each low pixel in X/Y while preserving packed channel ownership.
 #pragma unroll
-	for (int r_Quadrant = 0; r_Quadrant < 4; ++r_Quadrant)
+	for (int QuadrantIndex = 0; QuadrantIndex < 4; ++QuadrantIndex)
 	{
-		const int g_OffsetY = r_Quadrant / 2, g_OffsetX = r_Quadrant % 2;
-		const int g_OutputY = r_TileCoordinates.g_TileY * 2 + g_OffsetY,
-				  g_OutputX = r_TileCoordinates.g_TileX * 2 + g_OffsetX;
-		const int g_SkipY = r_TileCoordinates.g_HighTilesHigh == 1 ? 0 : g_OutputY;
-		const int g_SkipX = r_TileCoordinates.g_HighTilesWide == 1 ? 0 : g_OutputX;
-		const bool r_bValidSkip =
-			g_SkipY < r_TileCoordinates.g_HighTilesHigh && g_SkipX < r_TileCoordinates.g_HighTilesWide;
+		const int g_OffsetY = QuadrantIndex / 2, g_OffsetX = QuadrantIndex % 2;
+		const int g_OutputY = TileCoordinates.g_TileY * 2 + g_OffsetY,
+				  g_OutputX = TileCoordinates.g_TileX * 2 + g_OffsetX;
+		const int g_SkipY = TileCoordinates.g_HighTilesHigh == 1 ? 0 : g_OutputY;
+		const int g_SkipX = TileCoordinates.g_HighTilesWide == 1 ? 0 : g_OutputX;
+		const bool bValidSkip =
+			g_SkipY < TileCoordinates.g_HighTilesHigh && g_SkipX < TileCoordinates.g_HighTilesWide;
 		const uint64_t g_SkipBase =
 			g_Residual +
-			uint64_t(g_SkipY * r_TileCoordinates.g_HighTilesWide + g_SkipX) * 8192 * Profile::ElementBytes +
-			r_TileCoordinates.g_OutputChannel * 16 * Profile::ElementBytes + r_TileCoordinates.r_Lane * 16;
+			uint64_t(g_SkipY * TileCoordinates.g_HighTilesWide + g_SkipX) * 8192 * Profile::ElementBytes +
+			TileCoordinates.g_OutputChannel * 16 * Profile::ElementBytes + TileCoordinates.Lane * 16;
 		uint32_t r_Output[8][4];
 #pragma unroll
 		for (int r_NTile = 0; r_NTile < 8; ++r_NTile)
@@ -199,8 +196,8 @@ UpsampleAndMergeDecoder(const FDecoderAccumulator& r_Projected, uint64_t g_Resid
 			if constexpr (bFp8)
 			{
 				const uint4 r_PackedResidual =
-					r_bValidSkip ? __ldca(reinterpret_cast<const uint4*>(g_SkipBase + (r_NTile / 2) * 512))
-								 : make_uint4(0, 0, 0, 0);
+					bValidSkip ? __ldca(reinterpret_cast<const uint4*>(g_SkipBase + (r_NTile / 2) * 512))
+							   : make_uint4(0, 0, 0, 0);
 				const uint32_t r_PackedResidualWords[4] = {r_PackedResidual.x, r_PackedResidual.y,
 														   r_PackedResidual.z, r_PackedResidual.w};
 				const uint32_t r_LowerWords = r_PackedResidualWords[(r_NTile % 2) * 2],
@@ -213,8 +210,8 @@ UpsampleAndMergeDecoder(const FDecoderAccumulator& r_Projected, uint64_t g_Resid
 			else
 			{
 				const uint4 r_PackedResidual =
-					r_bValidSkip ? __ldca(reinterpret_cast<const uint4*>(g_SkipBase + r_NTile * 512))
-								 : make_uint4(0, 0, 0, 0);
+					bValidSkip ? __ldca(reinterpret_cast<const uint4*>(g_SkipBase + r_NTile * 512))
+							   : make_uint4(0, 0, 0, 0);
 				r_ResidualPairs[0] = r_PackedResidual.x;
 				r_ResidualPairs[1] = r_PackedResidual.y;
 				r_ResidualPairs[2] = r_PackedResidual.z;
@@ -225,9 +222,8 @@ UpsampleAndMergeDecoder(const FDecoderAccumulator& r_Projected, uint64_t g_Resid
 #pragma unroll
 				for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 				{
-					const int r_SourceLane = (r_TileCoordinates.r_Lane & 3) |
-											 ((r_TileCoordinates.r_Lane >> 1) & 4) | (g_OffsetX * 8) |
-											 (r_RowHalf * 16);
+					const int r_SourceLane = (TileCoordinates.Lane & 3) | ((TileCoordinates.Lane >> 1) & 4) |
+											 (g_OffsetX * 8) | (r_RowHalf * 16);
 					const uint32_t r_Nearest =
 						ShuffleIdx(r_Projected.r_AccumulatorWords[0][r_NTile][r_N8 * 2 + g_OffsetY],
 								   r_SourceLane, 31, 0xffffffffu);
@@ -236,13 +232,12 @@ UpsampleAndMergeDecoder(const FDecoderAccumulator& r_Projected, uint64_t g_Resid
 												   r_ResidualScales[r_NTile][r_N8]));
 				}
 		}
-		if (g_OutputY >= r_TileCoordinates.g_HighTilesHigh || g_OutputX >= r_TileCoordinates.g_HighTilesWide)
+		if (g_OutputY >= TileCoordinates.g_HighTilesHigh || g_OutputX >= TileCoordinates.g_HighTilesWide)
 			continue;
-		const uint64_t g_OutputBase = g_Output +
-									  uint64_t(g_OutputY * r_TileCoordinates.g_HighTilesWide + g_OutputX) *
-										  8192 * Profile::ElementBytes +
-									  r_TileCoordinates.g_OutputChannel * 16 * Profile::ElementBytes +
-									  r_TileCoordinates.r_Lane * 16;
+		const uint64_t g_OutputBase =
+			g_Output +
+			uint64_t(g_OutputY * TileCoordinates.g_HighTilesWide + g_OutputX) * 8192 * Profile::ElementBytes +
+			TileCoordinates.g_OutputChannel * 16 * Profile::ElementBytes + TileCoordinates.Lane * 16;
 #pragma unroll
 		for (int r_Panel = 0; r_Panel < (bFp8 ? 4 : 8); ++r_Panel)
 		{
@@ -268,45 +263,45 @@ UpsampleAndMergeDecoder(const FDecoderAccumulator& r_Projected, uint64_t g_Resid
 }
 
 template <bool bFp8, typename TParameters>
-__device__ __forceinline__ void RunDecoder(const TParameters& r_Parameters, unsigned char* s_Storage)
+__device__ __forceinline__ void RunDecoder(const TParameters& Parameters, unsigned char* s_Storage)
 {
-	const int g_Columns = (r_Parameters.InputWidth + 3) / 4;
-	const FDecoderCoordinates r_TileCoordinates{r_Parameters.InputHeight / 4,
-												r_Parameters.InputWidth / 4,
-												r_Parameters.OutputHeight / 4,
-												r_Parameters.OutputWidth / 4,
-												int(blockIdx.y),
-												int(blockIdx.x) % g_Columns,
-												(int(blockIdx.x) / g_Columns) * 256 + int(threadIdx.y) * 128,
-												g_Columns,
-												int(blockIdx.z),
-												int(threadIdx.x),
-												int(threadIdx.y)};
-	const uint64_t g_SplitAccumulator = r_Parameters.g_SplitAccumulator;
+	const int g_Columns = (Parameters.InputWidth + 3) / 4;
+	const FDecoderCoordinates TileCoordinates{Parameters.InputHeight / 4,
+											  Parameters.InputWidth / 4,
+											  Parameters.OutputHeight / 4,
+											  Parameters.OutputWidth / 4,
+											  int(blockIdx.y),
+											  int(blockIdx.x) % g_Columns,
+											  (int(blockIdx.x) / g_Columns) * 256 + int(threadIdx.y) * 128,
+											  g_Columns,
+											  int(blockIdx.z),
+											  int(threadIdx.x),
+											  int(threadIdx.y)};
+	const uint64_t g_SplitAccumulator = Parameters.g_SplitAccumulator;
 	const uint64_t g_SplitCounters =
-		r_Parameters.g_CompletionCounters + (r_TileCoordinates.g_TileY * 2 * g_Columns + blockIdx.x) * 4;
-	if (r_TileCoordinates.r_Lane == 0 && r_TileCoordinates.r_Warp == 0)
+		Parameters.g_CompletionCounters + (TileCoordinates.g_TileY * 2 * g_Columns + blockIdx.x) * 4;
+	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 	{
 		BarrierInit(s_Storage, 2048, 64);
 		BarrierInit(s_Storage, 2056, 64);
 	}
 	__syncthreads();
 	FDecoderAccumulator r_Accumulator{};
-	ProjectDecoder<bFp8>(r_Accumulator, s_Storage, r_Parameters.g_Input, r_Parameters.g_PackedWeights,
-						 r_TileCoordinates);
-	if (r_TileCoordinates.r_Split > 0)
+	ProjectDecoder<bFp8>(r_Accumulator, s_Storage, Parameters.g_Input, Parameters.g_PackedWeights,
+						 TileCoordinates);
+	if (TileCoordinates.Split > 0)
 	{
-		if (r_TileCoordinates.r_Lane == 0 && r_TileCoordinates.r_Warp == 0)
-			while (int32_t(CounterLoadRelaxed(g_SplitCounters)) < r_TileCoordinates.r_Split - 1)
+		if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
+			while (int32_t(CounterLoadRelaxed(g_SplitCounters)) < TileCoordinates.Split - 1)
 				PollSleep(64);
 		__syncthreads();
 	}
-	ReduceDecoderSplit(r_Accumulator, g_SplitAccumulator, r_TileCoordinates);
-	if (r_TileCoordinates.r_Split == 3)
-		UpsampleAndMergeDecoder<bFp8>(r_Accumulator, r_Parameters.g_Residual, r_Parameters.g_Output,
-									  r_Parameters.g_PackedWeights, r_TileCoordinates);
+	ReduceDecoderSplit(r_Accumulator, g_SplitAccumulator, TileCoordinates);
+	if (TileCoordinates.Split == 3)
+		UpsampleAndMergeDecoder<bFp8>(r_Accumulator, Parameters.g_Residual, Parameters.g_Output,
+									  Parameters.g_PackedWeights, TileCoordinates);
 	__syncthreads();
-	if (r_TileCoordinates.r_Lane == 0 && r_TileCoordinates.r_Warp == 0)
-		CounterStoreRelease(g_SplitCounters, r_TileCoordinates.r_Split);
+	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
+		CounterStoreRelease(g_SplitCounters, TileCoordinates.Split);
 }
 #endif

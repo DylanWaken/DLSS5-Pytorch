@@ -36,7 +36,7 @@ def load_abi_fields():
             raise ValueError(f'unresolved ABI aliases: {aliases}')
         for alias in resolved:
             fields_by_type[alias] = fields_by_type[aliases.pop(alias)]
-    declarations = dict(re.findall(r'extern "C" void (\w+)\((\w+) r_Parameters\);', source))
+    declarations = dict(re.findall(r'extern\s+"C"\s+void\s+(\w+)\s*\(\s*(\w+)\s+Parameters\s*\);', source))
     fields_by_entry = {}
     parameter_types = {}
     for entry in load('canonical_kernel_names.json').values():

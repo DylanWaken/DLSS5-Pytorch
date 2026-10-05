@@ -34,7 +34,7 @@ struct FSpatialProjectionTileCoordinates
 	int g_TilesHigh, g_TilesWide;
 	int g_TileY, g_TileX;
 	int g_OutputChannel;
-	int r_Lane, r_Warp;
+	int Lane, Warp;
 };
 
 // Channel-plane views store 16 bytes per pixel: N16 for FP8, N8 for Half.
@@ -42,39 +42,39 @@ struct FSpatialProjectionTileCoordinates
 template <bool bFp8>
 __device__ __forceinline__ uint64_t
 SpatialProjectionPlaneWordAddress(uint64_t g_Base, int g_ChannelPanel, int g_Y, int g_X,
-								  const FSpatialProjectionTileCoordinates& r_TileCoordinates)
+								  const FSpatialProjectionTileCoordinates& TileCoordinates)
 {
 	return g_Base +
-		   ((uint64_t(g_ChannelPanel) * r_TileCoordinates.g_TilesHigh * 4 + g_Y) *
-				r_TileCoordinates.g_TilesWide * 4 +
+		   ((uint64_t(g_ChannelPanel) * TileCoordinates.g_TilesHigh * 4 + g_Y) * TileCoordinates.g_TilesWide *
+				4 +
 			g_X) *
 			   16 +
-		   (r_TileCoordinates.r_Lane & 3) * 4;
+		   (TileCoordinates.Lane & 3) * 4;
 }
 
 // Native OOB policy broadcasts a singleton 4x4 spatial dimension. Other
 // incomplete 8x8 CTA edges read zeros; publication always clips to real tiles.
 __device__ __forceinline__ bool
 ResolveSpatialProjectionInputTile(int& g_Y, int& g_X,
-								  const FSpatialProjectionTileCoordinates& r_TileCoordinates)
+								  const FSpatialProjectionTileCoordinates& TileCoordinates)
 {
-	if (r_TileCoordinates.g_TilesHigh == 1)
+	if (TileCoordinates.g_TilesHigh == 1)
 		g_Y = 0;
-	if (r_TileCoordinates.g_TilesWide == 1)
+	if (TileCoordinates.g_TilesWide == 1)
 		g_X = 0;
-	return g_Y < r_TileCoordinates.g_TilesHigh && g_X < r_TileCoordinates.g_TilesWide;
+	return g_Y < TileCoordinates.g_TilesHigh && g_X < TileCoordinates.g_TilesWide;
 }
 
 template <bool bFp8>
 __device__ __forceinline__ void
-LoadSpatialProjectionWeights(uint4 (&r_Weights)[2][4], uint64_t g_PackedWeights, int r_ReductionTile,
-							 const FSpatialProjectionTileCoordinates& r_TileCoordinates)
+LoadSpatialProjectionWeights(uint4 (&r_Weights)[2][4], uint64_t g_PackedWeights, int ReductionTile,
+							 const FSpatialProjectionTileCoordinates& TileCoordinates)
 {
 	using Profile = FSpatialProjectionProfile<bFp8>;
 	const uint64_t g_ReductionBase =
 		g_PackedWeights +
-		uint64_t(blockIdx.z * 512 + r_ReductionTile * Profile::ReductionStep) * 512 * Profile::ElementBytes +
-		r_TileCoordinates.g_OutputChannel * 32 + r_TileCoordinates.r_Lane * 16;
+		uint64_t(blockIdx.z * 512 + ReductionTile * Profile::ReductionStep) * 512 * Profile::ElementBytes +
+		TileCoordinates.g_OutputChannel * 32 + TileCoordinates.Lane * 16;
 
 	// The native matrix stores one warp's N16 fragment as a 512-byte vector stripe.
 	// Both precisions consume two instruction-K subtiles, separated by16KiB.
@@ -88,31 +88,31 @@ LoadSpatialProjectionWeights(uint4 (&r_Weights)[2][4], uint64_t g_PackedWeights,
 
 template <bool bFp8, int SpatialTiles, int StageCount>
 __device__ __forceinline__ void
-IssueSpatialProjectionInputStage(unsigned char* s_Storage, uint64_t g_Input, int r_ReductionTile,
-								 const FSpatialProjectionTileCoordinates& r_TileCoordinates)
+IssueSpatialProjectionInputStage(unsigned char* s_Storage, uint64_t g_Input, int ReductionTile,
+								 const FSpatialProjectionTileCoordinates& TileCoordinates)
 {
 	using Profile = FSpatialProjectionProfile<bFp8>;
-	const int s_StageOffset = (r_ReductionTile % StageCount) * 4096;
-	const int s_BarrierOffset = StageCount * 4096 + (r_ReductionTile % StageCount) * 8;
-	const int r_KSubtile = r_TileCoordinates.r_Warp & 1;
-	const int g_LocalX = (r_TileCoordinates.r_Warp >> 1) & 1;
+	const int s_StageOffset = (ReductionTile % StageCount) * 4096;
+	const int s_BarrierOffset = StageCount * 4096 + (ReductionTile % StageCount) * 8;
+	const int KSubtileIndex = TileCoordinates.Warp & 1;
+	const int g_LocalX = (TileCoordinates.Warp >> 1) & 1;
 
 	// Every stage transfers eight 512-byte stripes across four spatial tiles.
 	// The three-stage ring overlaps input transfers with the register-resident GEMM.
 #pragma unroll
-	for (int g_LocalY = r_TileCoordinates.r_Warp / 4;
-		 g_LocalY < r_TileCoordinates.r_Warp / 4 + SpatialTiles / 2; ++g_LocalY)
+	for (int g_LocalY = TileCoordinates.Warp / 4; g_LocalY < TileCoordinates.Warp / 4 + SpatialTiles / 2;
+		 ++g_LocalY)
 	{
-		int g_Y = r_TileCoordinates.g_TileY + g_LocalY;
-		int g_X = r_TileCoordinates.g_TileX + g_LocalX;
-		const bool r_bValid = ResolveSpatialProjectionInputTile(g_Y, g_X, r_TileCoordinates);
-		const int s_CopyOffset = s_StageOffset + g_LocalY * 2048 + g_LocalX * 1024 + r_KSubtile * 512;
-		if (r_bValid)
+		int g_Y = TileCoordinates.g_TileY + g_LocalY;
+		int g_X = TileCoordinates.g_TileX + g_LocalX;
+		const bool bValid = ResolveSpatialProjectionInputTile(g_Y, g_X, TileCoordinates);
+		const int s_CopyOffset = s_StageOffset + g_LocalY * 2048 + g_LocalX * 1024 + KSubtileIndex * 512;
+		if (bValid)
 		{
 			const uint64_t g_Source =
 				g_Input +
-				uint64_t(g_Y * r_TileCoordinates.g_TilesWide + g_X + blockIdx.z) * Profile::SpatialTileBytes +
-				(r_ReductionTile * 2 + r_KSubtile) * 512;
+				uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X + blockIdx.z) * Profile::SpatialTileBytes +
+				(ReductionTile * 2 + KSubtileIndex) * 512;
 			if (Elected(0xffffffffu))
 			{
 				CopyBulk(s_Storage, s_CopyOffset, g_Source, 512, s_BarrierOffset);
@@ -121,24 +121,24 @@ IssueSpatialProjectionInputStage(unsigned char* s_Storage, uint64_t g_Input, int
 		}
 		else
 		{
-			*reinterpret_cast<uint4*>(s_Storage + s_CopyOffset + r_TileCoordinates.r_Lane * 16) =
+			*reinterpret_cast<uint4*>(s_Storage + s_CopyOffset + TileCoordinates.Lane * 16) =
 				make_uint4(0, 0, 0, 0);
 		}
 	}
 }
 
 template <int StageCount>
-__device__ __forceinline__ void WaitSpatialProjectionInputStage(unsigned char* s_Storage, int r_ReductionTile)
+__device__ __forceinline__ void WaitSpatialProjectionInputStage(unsigned char* s_Storage, int ReductionTile)
 {
-	const int s_BarrierOffset = StageCount * 4096 + (r_ReductionTile % StageCount) * 8;
+	const int s_BarrierOffset = StageCount * 4096 + (ReductionTile % StageCount) * 8;
 	ArriveAndWait(s_Storage, s_BarrierOffset);
 }
 
 template <bool bFp8, int SpatialTiles, bool bInputPlane, typename TParameters>
 __device__ __forceinline__ void
 InitializeSpatialProjectionResidual(FSpatialProjectionAccumulator<SpatialTiles>& r_Accumulator,
-									const TParameters& r_Parameters,
-									const FSpatialProjectionTileCoordinates& r_TileCoordinates)
+									const TParameters& Parameters,
+									const FSpatialProjectionTileCoordinates& TileCoordinates)
 {
 	using Profile = FSpatialProjectionProfile<bFp8>;
 	uint32_t r_ResidualScales[4][2];
@@ -147,9 +147,9 @@ InitializeSpatialProjectionResidual(FSpatialProjectionAccumulator<SpatialTiles>&
 #pragma unroll
 		for (int r_N8 = 0; r_N8 < 2; ++r_N8)
 			r_ResidualScales[r_ChannelGroup][r_N8] =
-				*reinterpret_cast<const uint32_t*>(r_Parameters.g_PackedWeights + Profile::MatrixBytes +
-												   (r_TileCoordinates.g_OutputChannel + r_ChannelGroup * 16 +
-													r_N8 * 8 + (r_TileCoordinates.r_Lane & 3) * 2) *
+				*reinterpret_cast<const uint32_t*>(Parameters.g_PackedWeights + Profile::MatrixBytes +
+												   (TileCoordinates.g_OutputChannel + r_ChannelGroup * 16 +
+													r_N8 * 8 + (TileCoordinates.Lane & 3) * 2) *
 													   2);
 
 #pragma unroll
@@ -162,23 +162,23 @@ InitializeSpatialProjectionResidual(FSpatialProjectionAccumulator<SpatialTiles>&
 #pragma unroll
 				for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 				{
-					const int g_PixelY = (r_TileCoordinates.g_TileY + r_Spatial / 2) * 4 +
-										 r_TileCoordinates.r_Lane / 16 + r_RowHalf * 2;
+					const int g_PixelY = (TileCoordinates.g_TileY + r_Spatial / 2) * 4 +
+										 TileCoordinates.Lane / 16 + r_RowHalf * 2;
 					const int g_PixelX =
-						(r_TileCoordinates.g_TileX + r_Spatial % 2) * 4 + (r_TileCoordinates.r_Lane / 4) % 4;
-					const bool r_bPixelValid = g_PixelY < r_TileCoordinates.g_TilesHigh * 4 &&
-											   g_PixelX < r_TileCoordinates.g_TilesWide * 4;
+						(TileCoordinates.g_TileX + r_Spatial % 2) * 4 + (TileCoordinates.Lane / 4) % 4;
+					const bool bPixelValid = g_PixelY < TileCoordinates.g_TilesHigh * 4 &&
+											 g_PixelX < TileCoordinates.g_TilesWide * 4;
 #pragma unroll
 					for (int r_N8 = 0; r_N8 < 2; ++r_N8)
 					{
 						const int g_Panel =
-							(r_TileCoordinates.g_OutputChannel + r_ChannelGroup * 16 + r_N8 * 8) /
+							(TileCoordinates.g_OutputChannel + r_ChannelGroup * 16 + r_N8 * 8) /
 							(bFp8 ? 16 : 8);
 						const uint64_t g_ResidualWordAddress = SpatialProjectionPlaneWordAddress<bFp8>(
-							r_Parameters.g_Residual, g_Panel, g_PixelY, g_PixelX, r_TileCoordinates);
+							Parameters.g_Residual, g_Panel, g_PixelY, g_PixelX, TileCoordinates);
 						uint32_t r_ResidualPair =
-							r_bPixelValid ? __ldcg(reinterpret_cast<const uint32_t*>(g_ResidualWordAddress))
-										  : 0;
+							bPixelValid ? __ldcg(reinterpret_cast<const uint32_t*>(g_ResidualWordAddress))
+										: 0;
 						if constexpr (bFp8)
 							r_ResidualPair = DecodeE4(uint16_t(r_ResidualPair >> (r_N8 * 16)));
 						r_Accumulator.r_AccumulatorWords[r_Spatial][r_ChannelGroup][r_N8 * 2 + r_RowHalf] =
@@ -188,21 +188,20 @@ InitializeSpatialProjectionResidual(FSpatialProjectionAccumulator<SpatialTiles>&
 		}
 		else
 		{
-			int g_Y = r_TileCoordinates.g_TileY + r_TileCoordinates.r_Warp / 4 + r_Spatial / 2;
-			int g_X = r_TileCoordinates.g_TileX + r_Spatial % 2;
-			const bool r_bValid = ResolveSpatialProjectionInputTile(g_Y, g_X, r_TileCoordinates);
+			int g_Y = TileCoordinates.g_TileY + TileCoordinates.Warp / 4 + r_Spatial / 2;
+			int g_X = TileCoordinates.g_TileX + r_Spatial % 2;
+			const bool bValid = ResolveSpatialProjectionInputTile(g_Y, g_X, TileCoordinates);
 			const uint64_t g_ResidualTileBase =
-				r_Parameters.g_Residual +
-				uint64_t(g_Y * r_TileCoordinates.g_TilesWide + g_X) * Profile::SpatialTileBytes +
-				r_TileCoordinates.g_OutputChannel * 16 * Profile::ElementBytes +
-				r_TileCoordinates.r_Lane * 16;
+				Parameters.g_Residual +
+				uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X) * Profile::SpatialTileBytes +
+				TileCoordinates.g_OutputChannel * 16 * Profile::ElementBytes + TileCoordinates.Lane * 16;
 			if constexpr (bFp8)
 			{
 #pragma unroll
 				for (int r_ChannelPair = 0; r_ChannelPair < 2; ++r_ChannelPair)
 				{
 					const uint4 r_PackedResidual =
-						r_bValid
+						bValid
 							? __ldcg(reinterpret_cast<const uint4*>(g_ResidualTileBase + r_ChannelPair * 512))
 							: make_uint4(0, 0, 0, 0);
 					const uint32_t r_PackedResidualWords[4] = {r_PackedResidual.x, r_PackedResidual.y,
@@ -234,9 +233,9 @@ InitializeSpatialProjectionResidual(FSpatialProjectionAccumulator<SpatialTiles>&
 #pragma unroll
 				for (int r_ChannelGroup = 0; r_ChannelGroup < 4; ++r_ChannelGroup)
 				{
-					const uint4 r_Residual = r_bValid ? __ldcg(reinterpret_cast<const uint4*>(
-															g_ResidualTileBase + r_ChannelGroup * 512))
-													  : make_uint4(0, 0, 0, 0);
+					const uint4 r_Residual = bValid ? __ldcg(reinterpret_cast<const uint4*>(
+														  g_ResidualTileBase + r_ChannelGroup * 512))
+													: make_uint4(0, 0, 0, 0);
 					auto& r_AccumulatorWords = r_Accumulator.r_AccumulatorWords[r_Spatial][r_ChannelGroup];
 					r_AccumulatorWords[0] = HalfMul(r_Residual.x, r_ResidualScales[r_ChannelGroup][0]);
 					r_AccumulatorWords[1] = HalfMul(r_Residual.y, r_ResidualScales[r_ChannelGroup][0]);
@@ -251,15 +250,15 @@ InitializeSpatialProjectionResidual(FSpatialProjectionAccumulator<SpatialTiles>&
 template <bool bFp8, int SpatialTiles, bool bOutputPlane>
 __device__ __forceinline__ void
 PublishSpatialProjection(const FSpatialProjectionAccumulator<SpatialTiles>& r_Accumulator, uint64_t g_Output,
-						 const FSpatialProjectionTileCoordinates& r_TileCoordinates)
+						 const FSpatialProjectionTileCoordinates& TileCoordinates)
 {
 	using Profile = FSpatialProjectionProfile<bFp8>;
 #pragma unroll
 	for (int r_Spatial = 0; r_Spatial < SpatialTiles; ++r_Spatial)
 	{
-		const int g_Y = r_TileCoordinates.g_TileY + r_TileCoordinates.r_Warp / 4 + r_Spatial / 2;
-		const int g_X = r_TileCoordinates.g_TileX + r_Spatial % 2;
-		if (g_Y >= r_TileCoordinates.g_TilesHigh || g_X >= r_TileCoordinates.g_TilesWide)
+		const int g_Y = TileCoordinates.g_TileY + TileCoordinates.Warp / 4 + r_Spatial / 2;
+		const int g_X = TileCoordinates.g_TileX + r_Spatial % 2;
+		if (g_Y >= TileCoordinates.g_TilesHigh || g_X >= TileCoordinates.g_TilesWide)
 			continue;
 		if constexpr (bOutputPlane)
 		{
@@ -268,31 +267,30 @@ PublishSpatialProjection(const FSpatialProjectionAccumulator<SpatialTiles>& r_Ac
 #pragma unroll
 				for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 				{
-					const int g_PixelY = g_Y * 4 + r_TileCoordinates.r_Lane / 16 + r_RowHalf * 2;
-					const int g_PixelX = g_X * 4 + (r_TileCoordinates.r_Lane / 4) % 4;
+					const int g_PixelY = g_Y * 4 + TileCoordinates.Lane / 16 + r_RowHalf * 2;
+					const int g_PixelX = g_X * 4 + (TileCoordinates.Lane / 4) % 4;
 					const auto& r_AccumulatorWords =
 						r_Accumulator.r_AccumulatorWords[r_Spatial][r_ChannelGroup];
 #pragma unroll
 					for (int r_PanelHalf = 0; r_PanelHalf < (bFp8 ? 1 : 2); ++r_PanelHalf)
 					{
 						const int g_Panel =
-							(r_TileCoordinates.g_OutputChannel + r_ChannelGroup * 16) / (bFp8 ? 16 : 8) +
+							(TileCoordinates.g_OutputChannel + r_ChannelGroup * 16) / (bFp8 ? 16 : 8) +
 							r_PanelHalf;
 						const uint32_t r_OutputWord = bFp8
 														  ? PackHalfPairsE4(r_AccumulatorWords[r_RowHalf],
 																			r_AccumulatorWords[2 + r_RowHalf])
 														  : r_AccumulatorWords[r_PanelHalf * 2 + r_RowHalf];
 						*reinterpret_cast<uint32_t*>(SpatialProjectionPlaneWordAddress<bFp8>(
-							g_Output, g_Panel, g_PixelY, g_PixelX, r_TileCoordinates)) = r_OutputWord;
+							g_Output, g_Panel, g_PixelY, g_PixelX, TileCoordinates)) = r_OutputWord;
 					}
 				}
 		}
 		else
 		{
 			const uint64_t g_OutputTileBase =
-				g_Output + uint64_t(g_Y * r_TileCoordinates.g_TilesWide + g_X) * Profile::SpatialTileBytes +
-				r_TileCoordinates.g_OutputChannel * 16 * Profile::ElementBytes +
-				r_TileCoordinates.r_Lane * 16;
+				g_Output + uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X) * Profile::SpatialTileBytes +
+				TileCoordinates.g_OutputChannel * 16 * Profile::ElementBytes + TileCoordinates.Lane * 16;
 			if constexpr (bFp8)
 			{
 #pragma unroll
@@ -332,8 +330,8 @@ PublishSpatialProjection(const FSpatialProjectionAccumulator<SpatialTiles>& r_Ac
 template <bool bFp8, typename TParameters>
 __device__ __forceinline__ void
 PublishPooledSpatialProjection(const FSpatialProjectionAccumulator<4>& r_Accumulator,
-							   const TParameters& r_Parameters,
-							   const FSpatialProjectionTileCoordinates& r_TileCoordinates)
+							   const TParameters& Parameters,
+							   const FSpatialProjectionTileCoordinates& TileCoordinates)
 {
 	FSpatialProjectionAccumulator<1> r_Pooled;
 #pragma unroll
@@ -350,31 +348,30 @@ PublishPooledSpatialProjection(const FSpatialProjectionAccumulator<4>& r_Accumul
 					PoolHorizontalWords(r_LeftTileWords[r_N8 * 2], r_LeftTileWords[r_N8 * 2 + 1],
 										r_RightTileWords[r_N8 * 2], r_RightTileWords[r_N8 * 2 + 1]);
 			}
-	FSpatialProjectionTileCoordinates r_DownsampledCoordinates = r_TileCoordinates;
-	r_DownsampledCoordinates.g_TilesHigh = r_Parameters.DownsampledHeight / 4;
-	r_DownsampledCoordinates.g_TilesWide = r_Parameters.DownsampledWidth / 4;
-	r_DownsampledCoordinates.g_TileY /= 2;
-	r_DownsampledCoordinates.g_TileX /= 2;
-	PublishSpatialProjection<bFp8, 1, false>(r_Pooled, r_Parameters.g_DownsampledOutput,
-											 r_DownsampledCoordinates);
+	FSpatialProjectionTileCoordinates DownsampledCoordinates = TileCoordinates;
+	DownsampledCoordinates.g_TilesHigh = Parameters.DownsampledHeight / 4;
+	DownsampledCoordinates.g_TilesWide = Parameters.DownsampledWidth / 4;
+	DownsampledCoordinates.g_TileY /= 2;
+	DownsampledCoordinates.g_TileX /= 2;
+	PublishSpatialProjection<bFp8, 1, false>(r_Pooled, Parameters.g_DownsampledOutput,
+											 DownsampledCoordinates);
 }
 
 template <bool bFp8, int SpatialTiles, bool bInputPlane = false, bool bOutputPlane = false,
 		  int StageCount = 3, bool bPool = false, typename TParameters>
-__device__ __forceinline__ void RunSpatialProjection(const TParameters& r_Parameters,
-													 unsigned char* s_Storage)
+__device__ __forceinline__ void RunSpatialProjection(const TParameters& Parameters, unsigned char* s_Storage)
 {
 	using Profile = FSpatialProjectionProfile<bFp8>;
-	const int g_Columns = (r_Parameters.Width + 7) / 8;
-	const FSpatialProjectionTileCoordinates r_TileCoordinates{r_Parameters.Height / 4,
-															  r_Parameters.Width / 4,
-															  int(blockIdx.y) * 2,
-															  int(blockIdx.x) % g_Columns * 2,
-															  int(blockIdx.x) / g_Columns * 256 +
-																  (int(threadIdx.y) % 4) * 64,
-															  int(threadIdx.x),
-															  int(threadIdx.y)};
-	if (r_TileCoordinates.r_Lane == 0 && r_TileCoordinates.r_Warp == 0)
+	const int g_Columns = (Parameters.Width + 7) / 8;
+	const FSpatialProjectionTileCoordinates TileCoordinates{Parameters.Height / 4,
+															Parameters.Width / 4,
+															int(blockIdx.y) * 2,
+															int(blockIdx.x) % g_Columns * 2,
+															int(blockIdx.x) / g_Columns * 256 +
+																(int(threadIdx.y) % 4) * 64,
+															int(threadIdx.x),
+															int(threadIdx.y)};
+	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 	{
 #pragma unroll
 		for (int s_Stage = 0; s_Stage < StageCount; ++s_Stage)
@@ -383,20 +380,20 @@ __device__ __forceinline__ void RunSpatialProjection(const TParameters& r_Parame
 	__syncthreads();
 
 	uint4 r_Weights[2][4];
-	LoadSpatialProjectionWeights<bFp8>(r_Weights, r_Parameters.g_PackedWeights, 0, r_TileCoordinates);
+	LoadSpatialProjectionWeights<bFp8>(r_Weights, Parameters.g_PackedWeights, 0, TileCoordinates);
 #pragma unroll
-	for (int s_StageIndex = 0; s_StageIndex < StageCount; ++s_StageIndex)
-		IssueSpatialProjectionInputStage<bFp8, SpatialTiles, StageCount>(s_Storage, r_Parameters.g_Input,
-																		 s_StageIndex, r_TileCoordinates);
+	for (int StageIndex = 0; StageIndex < StageCount; ++StageIndex)
+		IssueSpatialProjectionInputStage<bFp8, SpatialTiles, StageCount>(s_Storage, Parameters.g_Input,
+																		 StageIndex, TileCoordinates);
 	WaitSpatialProjectionInputStage<StageCount>(s_Storage, 0);
 	FSpatialProjectionAccumulator<SpatialTiles> r_Accumulator;
-	InitializeSpatialProjectionResidual<bFp8, SpatialTiles, bInputPlane>(r_Accumulator, r_Parameters,
-																		 r_TileCoordinates);
+	InitializeSpatialProjectionResidual<bFp8, SpatialTiles, bInputPlane>(r_Accumulator, Parameters,
+																		 TileCoordinates);
 
 	// Keep K sequential to retain Half accumulation order and the native ring
 	// lifecycle. Prefetch next weights before waiting, then recycle the old stage.
 #pragma unroll 1
-	for (int r_ReductionTile = 0; r_ReductionTile < Profile::ReductionTiles; ++r_ReductionTile)
+	for (int ReductionTile = 0; ReductionTile < Profile::ReductionTiles; ++ReductionTile)
 	{
 		uint4 r_Input[SpatialTiles][2];
 #pragma unroll
@@ -404,23 +401,23 @@ __device__ __forceinline__ void RunSpatialProjection(const TParameters& r_Parame
 #pragma unroll
 			for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
 				r_Input[r_Spatial][r_KSubtile] =
-					*reinterpret_cast<const uint4*>(s_Storage + (r_ReductionTile % StageCount) * 4096 +
-													(r_Spatial + r_TileCoordinates.r_Warp / 4 * 2) * 1024 +
-													r_KSubtile * 512 + r_TileCoordinates.r_Lane * 16);
+					*reinterpret_cast<const uint4*>(s_Storage + (ReductionTile % StageCount) * 4096 +
+													(r_Spatial + TileCoordinates.Warp / 4 * 2) * 1024 +
+													r_KSubtile * 512 + TileCoordinates.Lane * 16);
 		AccumulateTile<Profile::Precision>(r_Accumulator, r_Input, r_Weights);
-		if (r_ReductionTile + 1 < Profile::ReductionTiles)
+		if (ReductionTile + 1 < Profile::ReductionTiles)
 		{
-			LoadSpatialProjectionWeights<bFp8>(r_Weights, r_Parameters.g_PackedWeights, r_ReductionTile + 1,
-											   r_TileCoordinates);
-			WaitSpatialProjectionInputStage<StageCount>(s_Storage, r_ReductionTile + 1);
+			LoadSpatialProjectionWeights<bFp8>(r_Weights, Parameters.g_PackedWeights, ReductionTile + 1,
+											   TileCoordinates);
+			WaitSpatialProjectionInputStage<StageCount>(s_Storage, ReductionTile + 1);
 		}
-		if (r_ReductionTile + StageCount < Profile::ReductionTiles)
+		if (ReductionTile + StageCount < Profile::ReductionTiles)
 			IssueSpatialProjectionInputStage<bFp8, SpatialTiles, StageCount>(
-				s_Storage, r_Parameters.g_Input, r_ReductionTile + StageCount, r_TileCoordinates);
+				s_Storage, Parameters.g_Input, ReductionTile + StageCount, TileCoordinates);
 	}
-	PublishSpatialProjection<bFp8, SpatialTiles, bOutputPlane>(r_Accumulator, r_Parameters.g_Output,
-															   r_TileCoordinates);
+	PublishSpatialProjection<bFp8, SpatialTiles, bOutputPlane>(r_Accumulator, Parameters.g_Output,
+															   TileCoordinates);
 	if constexpr (bPool)
-		PublishPooledSpatialProjection<bFp8>(r_Accumulator, r_Parameters, r_TileCoordinates);
+		PublishPooledSpatialProjection<bFp8>(r_Accumulator, Parameters, TileCoordinates);
 }
 #endif

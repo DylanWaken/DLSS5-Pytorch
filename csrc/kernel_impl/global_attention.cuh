@@ -20,18 +20,18 @@ template <bool bFp8> struct FGlobalAttentionProfile
 struct FGlobalAttentionCoordinates
 {
 	int g_Tokens, g_PaddedTokens, g_Groups16, g_KeyTiles, g_QueryBlocks128;
-	int g_Head, g_QueryBlock256, r_Lane, r_Warp;
+	int g_Head, g_QueryBlock256, Lane, Warp;
 };
 
 __device__ __forceinline__ void
 WaitGlobalAttentionPredecessor(uint64_t g_Counters, int g_FirstGroup, int g_Count,
-							   const FGlobalAttentionCoordinates& r_TileCoordinates)
+							   const FGlobalAttentionCoordinates& TileCoordinates)
 {
-	if (r_TileCoordinates.r_Lane == 0 && r_TileCoordinates.r_Warp == 0)
+	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 		for (int g_Group = g_FirstGroup;
-			 g_Group < g_FirstGroup + g_Count && g_Group < r_TileCoordinates.g_QueryBlocks128; ++g_Group)
-			while (int32_t(CounterLoadRelaxed(g_Counters +
-											  (g_Group * 16 + r_TileCoordinates.g_Head / 2) * 4)) < 0)
+			 g_Group < g_FirstGroup + g_Count && g_Group < TileCoordinates.g_QueryBlocks128; ++g_Group)
+			while (int32_t(CounterLoadRelaxed(g_Counters + (g_Group * 16 + TileCoordinates.g_Head / 2) * 4)) <
+				   0)
 				PollSleep(64);
 	__syncthreads();
 }
@@ -39,25 +39,24 @@ WaitGlobalAttentionPredecessor(uint64_t g_Counters, int g_FirstGroup, int g_Coun
 template <bool bFp8>
 __device__ __forceinline__ void StageGlobalKeyValue(unsigned char* s_Storage, uint64_t g_Key,
 													uint64_t g_Value, int g_KeyTile,
-													const FGlobalAttentionCoordinates& r_TileCoordinates)
+													const FGlobalAttentionCoordinates& TileCoordinates)
 {
 	using Profile = FGlobalAttentionProfile<bFp8>;
 	const int s_Stage = (g_KeyTile & 1) * Profile::s_StageBytes;
 	const int s_Barrier = Profile::s_BarrierOffset + (g_KeyTile & 1) * 8;
 #pragma unroll
-	for (int r_Copy = 0; r_Copy < Profile::QueryChunks; ++r_Copy)
+	for (int Copy = 0; Copy < Profile::QueryChunks; ++Copy)
 	{
-		const int r_Slot = r_TileCoordinates.r_Warp + r_Copy * 4;
-		int g_KeyGroup = g_KeyTile * 4 + r_Slot / Profile::QueryChunks;
+		const int CopySlot = TileCoordinates.Warp + Copy * 4;
+		int g_KeyGroup = g_KeyTile * 4 + CopySlot / Profile::QueryChunks;
 		if constexpr (!bFp8)
-			if (uint32_t(r_TileCoordinates.g_Tokens + 14) < 31)
+			if (uint32_t(TileCoordinates.g_Tokens + 14) < 31)
 				g_KeyGroup = 0;
-		const int g_KeyChunk = r_Slot % Profile::QueryChunks;
+		const int g_KeyChunk = CopySlot % Profile::QueryChunks;
 		const uint64_t g_KeyAddress = g_Key + uint64_t(g_KeyGroup) * 16384 * Profile::ElementBytes +
-									  r_TileCoordinates.g_Head * 512 * Profile::ElementBytes +
-									  g_KeyChunk * 512;
-		const int s_Copy = s_Stage + r_Slot * 512;
-		if (g_KeyGroup < r_TileCoordinates.g_Groups16)
+									  TileCoordinates.g_Head * 512 * Profile::ElementBytes + g_KeyChunk * 512;
+		const int s_Copy = s_Stage + CopySlot * 512;
+		if (g_KeyGroup < TileCoordinates.g_Groups16)
 		{
 			if (Elected(0xffffffffu))
 			{
@@ -66,27 +65,27 @@ __device__ __forceinline__ void StageGlobalKeyValue(unsigned char* s_Storage, ui
 			}
 		}
 		else
-			*reinterpret_cast<uint4*>(s_Storage + s_Copy + r_TileCoordinates.r_Lane * 16) =
+			*reinterpret_cast<uint4*>(s_Storage + s_Copy + TileCoordinates.Lane * 16) =
 				make_uint4(0, 0, 0, 0);
 	}
 #pragma unroll
-	for (int r_Copy = 0; r_Copy < Profile::QueryChunks; ++r_Copy)
+	for (int Copy = 0; Copy < Profile::QueryChunks; ++Copy)
 	{
-		const int r_Slot = r_TileCoordinates.r_Warp + r_Copy * 4;
-		int g_KeyGroup = g_KeyTile * 4 + r_Slot / Profile::QueryChunks;
+		const int CopySlot = TileCoordinates.Warp + Copy * 4;
+		int g_KeyGroup = g_KeyTile * 4 + CopySlot / Profile::QueryChunks;
 		if constexpr (!bFp8)
-			if (uint32_t(r_TileCoordinates.g_Tokens + 14) < 31)
+			if (uint32_t(TileCoordinates.g_Tokens + 14) < 31)
 				g_KeyGroup = 0;
-		const int s_Copy = s_Stage + r_Slot * 512;
+		const int s_Copy = s_Stage + CopySlot * 512;
 		// V has transposed fragments. FP8 stores two neighboring M16 tiles
 		// in one M32 group; Half stores one M16 group with two N16 panels.
-		int g_ValueGroup = bFp8 ? g_KeyTile * 2 + r_Slot / 2 : g_KeyGroup;
-		const int g_ValueGroups = bFp8 ? r_TileCoordinates.g_Groups16 / 2 : r_TileCoordinates.g_Groups16;
+		int g_ValueGroup = bFp8 ? g_KeyTile * 2 + CopySlot / 2 : g_KeyGroup;
+		const int g_ValueGroups = bFp8 ? TileCoordinates.g_Groups16 / 2 : TileCoordinates.g_Groups16;
 		if constexpr (bFp8)
 			if (g_ValueGroups == 1)
 				g_ValueGroup = 0;
 		const uint64_t g_ValueAddress =
-			g_Value + uint64_t(g_ValueGroup) * 32768 + r_TileCoordinates.g_Head * 1024 + (r_Slot & 1) * 512;
+			g_Value + uint64_t(g_ValueGroup) * 32768 + TileCoordinates.g_Head * 1024 + (CopySlot & 1) * 512;
 		const int s_ValueCopy = Profile::s_ValueOffset + s_Copy;
 		if (g_ValueGroup < g_ValueGroups)
 		{
@@ -97,7 +96,7 @@ __device__ __forceinline__ void StageGlobalKeyValue(unsigned char* s_Storage, ui
 			}
 		}
 		else
-			*reinterpret_cast<uint4*>(s_Storage + s_ValueCopy + r_TileCoordinates.r_Lane * 16) =
+			*reinterpret_cast<uint4*>(s_Storage + s_ValueCopy + TileCoordinates.Lane * 16) =
 				make_uint4(0, 0, 0, 0);
 	}
 }
@@ -141,7 +140,7 @@ __device__ __forceinline__ void PermuteGlobalAttentionQuad(uint32_t (&r_Probabil
 }
 
 __device__ __forceinline__ uint32_t
-SumGlobalAttentionProbabilities(const FWindowAccumulatorTile<64> (&r_Probability)[4], int r_Lane)
+SumGlobalAttentionProbabilities(const FWindowAccumulatorTile<64> (&r_Probability)[4], int Lane)
 {
 	uint32_t r_QuerySums[2];
 #pragma unroll
@@ -161,13 +160,13 @@ SumGlobalAttentionProbabilities(const FWindowAccumulatorTile<64> (&r_Probability
 		}
 		// This warp transpose turns the MMA fragment's channel ownership
 		// into one full query sum per lane, without changing Half add order.
-		const int r_SourceLane = ((r_Lane & 7) << 2) + (r_Lane >> 3);
-		PermuteGlobalAttentionQuad(r_LocalProbabilitySums, r_Lane & 3);
+		const int SourceLane = ((Lane & 7) << 2) + (Lane >> 3);
+		PermuteGlobalAttentionQuad(r_LocalProbabilitySums, Lane & 3);
 #pragma unroll
 		for (int r_Row = 0; r_Row < 4; ++r_Row)
 			r_GatheredProbabilitySums[r_Row] =
-				ShuffleIdx(r_LocalProbabilitySums[r_Row], r_SourceLane ^ r_Row, 31, 0xffffffffu);
-		PermuteGlobalAttentionQuad(r_GatheredProbabilitySums, r_Lane >> 3);
+				ShuffleIdx(r_LocalProbabilitySums[r_Row], SourceLane ^ r_Row, 31, 0xffffffffu);
+		PermuteGlobalAttentionQuad(r_GatheredProbabilitySums, Lane >> 3);
 		uint32_t r_Sum = HalfAdd(r_GatheredProbabilitySums[0], r_GatheredProbabilitySums[1]);
 		r_Sum = HalfAdd(r_Sum, r_GatheredProbabilitySums[2]);
 		r_Sum = HalfAdd(r_Sum, r_GatheredProbabilitySums[3]);
@@ -177,10 +176,9 @@ SumGlobalAttentionProbabilities(const FWindowAccumulatorTile<64> (&r_Probability
 	return JoinHalfwords(uint16_t(r_QuerySums[0]), uint16_t(r_QuerySums[1]));
 }
 
-__device__ __forceinline__ uint32_t CorrectGlobalAttentionDenominator(uint32_t r_Denominator,
-																	  int g_PaddingKeys)
+__device__ __forceinline__ uint32_t CorrectGlobalAttentionDenominator(uint32_t r_Denominator, int PaddingKeys)
 {
-	if (g_PaddingKeys > 0)
+	if (PaddingKeys > 0)
 	{
 		// Padded keys produce the surrogate's nonzero value at score zero.
 		// Remove that mass in FP32 before one Half-rounded subtraction.
@@ -191,29 +189,29 @@ __device__ __forceinline__ uint32_t CorrectGlobalAttentionDenominator(uint32_t r
 		const uint16_t r_ZeroScore = uint16_t((uint16_t(r_ClampedZero) << CONST_GLOBAL_EXP_ENCODING_SHIFT) +
 											  CONST_GLOBAL_EXP_SCALAR_OFFSET);
 		const uint32_t r_Correction =
-			FloatToHalf2(FloatMulFtzBits(HalfToFloatBits(r_ZeroScore), UintToFloatRnBits(g_PaddingKeys)));
+			FloatToHalf2(FloatMulFtzBits(HalfToFloatBits(r_ZeroScore), UintToFloatRnBits(PaddingKeys)));
 		r_Denominator = HalfSub(r_Denominator, r_Correction);
 	}
 	return RcpHalf2(HalfMax(r_Denominator, CONST_NORMALIZATION_EPSILON_HALF2));
 }
 
 template <bool bFp8, typename TParameters>
-__device__ __forceinline__ void RunGlobalAttention(TParameters r_Parameters, unsigned char* s_Storage)
+__device__ __forceinline__ void RunGlobalAttention(TParameters Parameters, unsigned char* s_Storage)
 {
 	using Profile = FGlobalAttentionProfile<bFp8>;
-	const int g_Tokens = r_Parameters.BatchCount * r_Parameters.TokensPerBatch;
+	const int g_Tokens = Parameters.BatchCount * Parameters.TokensPerBatch;
 	const int g_Alignment = bFp8 ? 32 : 16;
 	const int g_PaddedTokens = ((g_Tokens + g_Alignment - 1) / g_Alignment) * g_Alignment;
-	const FGlobalAttentionCoordinates r_TileCoordinates{
+	const FGlobalAttentionCoordinates TileCoordinates{
 		g_Tokens,		 g_PaddedTokens,  g_PaddedTokens / 16, (g_Tokens + 63) / 64, (g_Tokens + 127) / 128,
 		int(blockIdx.x), int(blockIdx.y), int(threadIdx.x),	   int(threadIdx.y)};
-	if (r_TileCoordinates.r_Lane == 0 && r_TileCoordinates.r_Warp == 0)
+	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 #pragma unroll
 		for (int s_Stage = 0; s_Stage < 2; ++s_Stage)
 			BarrierInit(s_Storage, Profile::s_BarrierOffset + s_Stage * 8, blockDim.x * blockDim.y);
 	__syncthreads();
-	WaitGlobalAttentionPredecessor(r_Parameters.g_PredecessorCounters, r_TileCoordinates.g_QueryBlock256 * 2,
-								   2, r_TileCoordinates);
+	WaitGlobalAttentionPredecessor(Parameters.g_PredecessorCounters, TileCoordinates.g_QueryBlock256 * 2, 2,
+								   TileCoordinates);
 
 	FWindowAFragment r_Query[4][Profile::QueryChunks];
 #pragma unroll
@@ -221,37 +219,37 @@ __device__ __forceinline__ void RunGlobalAttention(TParameters r_Parameters, uns
 #pragma unroll
 		for (int r_ReductionChunk = 0; r_ReductionChunk < Profile::QueryChunks; ++r_ReductionChunk)
 		{
-			int g_Group = r_TileCoordinates.g_QueryBlock256 * 16 + r_TileCoordinates.r_Warp * 4 + r_QueryTile;
+			int g_Group = TileCoordinates.g_QueryBlock256 * 16 + TileCoordinates.Warp * 4 + r_QueryTile;
 			if constexpr (!bFp8)
 				if (uint32_t(g_Tokens + 14) < 31)
 					g_Group = 0;
-			const uint64_t g_QueryFragmentAddress = r_Parameters.g_Query +
+			const uint64_t g_QueryFragmentAddress = Parameters.g_Query +
 													uint64_t(g_Group) * 16384 * Profile::ElementBytes +
-													r_TileCoordinates.g_Head * 512 * Profile::ElementBytes +
-													r_ReductionChunk * 512 + r_TileCoordinates.r_Lane * 16;
+													TileCoordinates.g_Head * 512 * Profile::ElementBytes +
+													r_ReductionChunk * 512 + TileCoordinates.Lane * 16;
 			r_Query[r_QueryTile][r_ReductionChunk] =
-				MakeWindowFragment(g_Group < r_TileCoordinates.g_Groups16
+				MakeWindowFragment(g_Group < TileCoordinates.g_Groups16
 									   ? __ldca(reinterpret_cast<const uint4*>(g_QueryFragmentAddress))
 									   : make_uint4(0, 0, 0, 0));
 		}
 #pragma unroll
 	for (int g_KeyTile = 0; g_KeyTile < 2; ++g_KeyTile)
-		if (g_KeyTile < r_TileCoordinates.g_KeyTiles)
+		if (g_KeyTile < TileCoordinates.g_KeyTiles)
 		{
-			WaitGlobalAttentionPredecessor(r_Parameters.g_PredecessorCounters, g_KeyTile / 2, 1,
-										   r_TileCoordinates);
-			StageGlobalKeyValue<bFp8>(s_Storage, r_Parameters.g_Key, r_Parameters.g_Value, g_KeyTile,
-									  r_TileCoordinates);
+			WaitGlobalAttentionPredecessor(Parameters.g_PredecessorCounters, g_KeyTile / 2, 1,
+										   TileCoordinates);
+			StageGlobalKeyValue<bFp8>(s_Storage, Parameters.g_Key, Parameters.g_Value, g_KeyTile,
+									  TileCoordinates);
 		}
-	if (r_TileCoordinates.g_KeyTiles > 0)
+	if (TileCoordinates.g_KeyTiles > 0)
 		WaitGlobalKeyValue<bFp8>(s_Storage, 0);
 	FWindowAccumulatorTile<32> r_Output[4]{};
 	uint32_t r_Denominator = 0;
 
 #pragma unroll 1
-	for (int g_KeyTile = 0; g_KeyTile < r_TileCoordinates.g_KeyTiles; ++g_KeyTile)
+	for (int g_KeyTile = 0; g_KeyTile < TileCoordinates.g_KeyTiles; ++g_KeyTile)
 	{
-		const int s_Base = (g_KeyTile & 1) * Profile::s_StageBytes + r_TileCoordinates.r_Lane * 16;
+		const int s_Base = (g_KeyTile & 1) * Profile::s_StageBytes + TileCoordinates.Lane * 16;
 		uint4 r_Key[4][Profile::QueryChunks];
 #pragma unroll
 		for (int r_ColumnTile = 0; r_ColumnTile < 4; ++r_ColumnTile)
@@ -280,7 +278,7 @@ __device__ __forceinline__ void RunGlobalAttention(TParameters r_Parameters, uns
 						GlobalAttentionExponential(r_Probability[r_QueryTile].r_Pair[r_ColumnTile][r_Half]);
 			}
 		r_Denominator =
-			HalfAdd(r_Denominator, SumGlobalAttentionProbabilities(r_Probability, r_TileCoordinates.r_Lane));
+			HalfAdd(r_Denominator, SumGlobalAttentionProbabilities(r_Probability, TileCoordinates.Lane));
 
 		uint4 r_Value[Profile::ProbabilityChunks][2];
 #pragma unroll
@@ -308,30 +306,30 @@ __device__ __forceinline__ void RunGlobalAttention(TParameters r_Parameters, uns
 					MmaWindowFragment<bFp8>(r_ProbabilityFragment, r_UpperValueFragment,
 											r_Output[r_QueryTile].r_Pair[r_ColumnTile * 2 + 1]);
 				}
-		if (g_KeyTile + 2 < r_TileCoordinates.g_KeyTiles)
+		if (g_KeyTile + 2 < TileCoordinates.g_KeyTiles)
 		{
-			WaitGlobalAttentionPredecessor(r_Parameters.g_PredecessorCounters, (g_KeyTile + 2) / 2, 1,
-										   r_TileCoordinates);
-			StageGlobalKeyValue<bFp8>(s_Storage, r_Parameters.g_Key, r_Parameters.g_Value, g_KeyTile + 2,
-									  r_TileCoordinates);
+			WaitGlobalAttentionPredecessor(Parameters.g_PredecessorCounters, (g_KeyTile + 2) / 2, 1,
+										   TileCoordinates);
+			StageGlobalKeyValue<bFp8>(s_Storage, Parameters.g_Key, Parameters.g_Value, g_KeyTile + 2,
+									  TileCoordinates);
 		}
-		if (g_KeyTile + 1 < r_TileCoordinates.g_KeyTiles)
+		if (g_KeyTile + 1 < TileCoordinates.g_KeyTiles)
 			WaitGlobalKeyValue<bFp8>(s_Storage, g_KeyTile + 1);
 	}
 
 	const uint32_t r_InverseDenominator =
-		CorrectGlobalAttentionDenominator(r_Denominator, r_TileCoordinates.g_KeyTiles * 64 - g_Tokens);
+		CorrectGlobalAttentionDenominator(r_Denominator, TileCoordinates.g_KeyTiles * 64 - g_Tokens);
 #pragma unroll
 	for (int r_QueryTile = 0; r_QueryTile < 4; ++r_QueryTile)
 	{
 #pragma unroll
 		for (int r_Half = 0; r_Half < 2; ++r_Half)
 		{
-			const int r_QueryRow = r_QueryTile * 16 + r_TileCoordinates.r_Lane / 4 + r_Half * 8;
+			const int QueryRow = r_QueryTile * 16 + TileCoordinates.Lane / 4 + r_Half * 8;
 			const uint32_t r_InverseDenominatorPair =
-				ShuffleIdx(r_InverseDenominator, r_QueryRow % 32, 31, 0xffffffffu);
+				ShuffleIdx(r_InverseDenominator, QueryRow % 32, 31, 0xffffffffu);
 			const uint16_t r_InverseDenominatorHalf =
-				uint16_t(r_InverseDenominatorPair >> ((r_QueryRow / 32) * 16));
+				uint16_t(r_InverseDenominatorPair >> ((QueryRow / 32) * 16));
 			const uint32_t r_QueryNormalization =
 				JoinHalfwords(r_InverseDenominatorHalf, r_InverseDenominatorHalf);
 #pragma unroll
@@ -339,16 +337,15 @@ __device__ __forceinline__ void RunGlobalAttention(TParameters r_Parameters, uns
 				r_Output[r_QueryTile].r_Pair[r_ColumnTile][r_Half] =
 					HalfMul(r_Output[r_QueryTile].r_Pair[r_ColumnTile][r_Half], r_QueryNormalization);
 		}
-		const int g_Group =
-			r_TileCoordinates.g_QueryBlock256 * 16 + r_TileCoordinates.r_Warp * 4 + r_QueryTile;
-		if (g_Group < r_TileCoordinates.g_Groups16)
+		const int g_Group = TileCoordinates.g_QueryBlock256 * 16 + TileCoordinates.Warp * 4 + r_QueryTile;
+		if (g_Group < TileCoordinates.g_Groups16)
 #pragma unroll
 			for (int r_Chunk = 0; r_Chunk < Profile::QueryChunks; ++r_Chunk)
 			{
 				const auto r_OutputFragment = PublishWindowChunk<bFp8>(r_Output[r_QueryTile], r_Chunk);
-				StoreNoAllocate(r_Parameters.g_Output + uint64_t(g_Group) * 16384 * Profile::ElementBytes +
-									r_TileCoordinates.g_Head * 512 * Profile::ElementBytes + r_Chunk * 512 +
-									r_TileCoordinates.r_Lane * 16,
+				StoreNoAllocate(Parameters.g_Output + uint64_t(g_Group) * 16384 * Profile::ElementBytes +
+									TileCoordinates.g_Head * 512 * Profile::ElementBytes + r_Chunk * 512 +
+									TileCoordinates.Lane * 16,
 								make_uint4(r_OutputFragment.r_Word[0], r_OutputFragment.r_Word[1],
 										   r_OutputFragment.r_Word[2], r_OutputFragment.r_Word[3]));
 			}
@@ -364,28 +361,28 @@ __device__ __forceinline__ void RunGlobalAttention(TParameters r_Parameters, uns
 			for (int r_Half = 0; r_Half < 2; ++r_Half)
 			{
 				const int g_Group =
-					r_TileCoordinates.g_QueryBlock256 * 16 + r_TileCoordinates.r_Warp * 4 + r_QueryTile;
-				const int g_Row = g_Group * 16 + r_TileCoordinates.r_Lane / 4 + r_Half * 8;
+					TileCoordinates.g_QueryBlock256 * 16 + TileCoordinates.Warp * 4 + r_QueryTile;
+				const int g_Row = g_Group * 16 + TileCoordinates.Lane / 4 + r_Half * 8;
 				if (g_Row >= g_Tokens && g_Row < g_PaddedTokens)
 #pragma unroll
 					for (int r_Chunk = 0; r_Chunk < Profile::QueryChunks; ++r_Chunk)
 #pragma unroll
 						for (int r_ColumnTile = 0; r_ColumnTile < 2; ++r_ColumnTile)
 							*reinterpret_cast<uint32_t*>(
-								r_Parameters.g_Output + uint64_t(g_Group) * 16384 * Profile::ElementBytes +
-								r_TileCoordinates.g_Head * 512 * Profile::ElementBytes + r_Chunk * 512 +
-								r_TileCoordinates.r_Lane * 16 + (r_ColumnTile * 2 + r_Half) * 4) = 0;
+								Parameters.g_Output + uint64_t(g_Group) * 16384 * Profile::ElementBytes +
+								TileCoordinates.g_Head * 512 * Profile::ElementBytes + r_Chunk * 512 +
+								TileCoordinates.Lane * 16 + (r_ColumnTile * 2 + r_Half) * 4) = 0;
 			}
 	}
 	__syncthreads();
-	if (r_Parameters.g_CompletionCounters && r_TileCoordinates.r_Lane == 0 && r_TileCoordinates.r_Warp == 0)
+	if (Parameters.g_CompletionCounters && TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 #pragma unroll
 		for (int g_LocalGroup = 0; g_LocalGroup < 2; ++g_LocalGroup)
 		{
-			const int g_Group = r_TileCoordinates.g_QueryBlock256 * 2 + g_LocalGroup;
-			if (g_Group < r_TileCoordinates.g_QueryBlocks128)
+			const int g_Group = TileCoordinates.g_QueryBlock256 * 2 + g_LocalGroup;
+			if (g_Group < TileCoordinates.g_QueryBlocks128)
 				CounterStoreRelease(
-					r_Parameters.g_CompletionCounters + (g_Group * 32 + r_TileCoordinates.g_Head) * 4, 0);
+					Parameters.g_CompletionCounters + (g_Group * 32 + TileCoordinates.g_Head) * 4, 0);
 		}
 }
 #endif

@@ -15,14 +15,14 @@ __device__ __forceinline__ uint32_t SharedAddress(unsigned char* s_SharedStorage
 }
 
 // Elect one lane from the member mask and return its predicate as a 0/1 word.
-__device__ __forceinline__ uint32_t Elected(uint32_t r_MemberMask)
+__device__ __forceinline__ uint32_t Elected(uint32_t MemberMask)
 {
-	uint32_t r_ElectedWord;
+	uint32_t ElectedWord;
 	asm volatile(
 		"{ .reg .pred r_bElectedLane; elect.sync _|r_bElectedLane,%1; selp.b32 %0,1,0,r_bElectedLane; }"
-		: "=r"(r_ElectedWord)
-		: "r"(r_MemberMask));
-	return r_ElectedWord;
+		: "=r"(ElectedWord)
+		: "r"(MemberMask));
+	return ElectedWord;
 }
 
 // Load a GPU-scope relaxed completion counter without allocating an L1 line.
@@ -56,9 +56,9 @@ __device__ __forceinline__ void ReduceHalf4(uint64_t g_GlobalAddress, uint4 r_Pa
 }
 
 // Pause a polling lane for the requested nanoseconds.
-__device__ __forceinline__ void PollSleep(uint32_t r_Nanoseconds)
+__device__ __forceinline__ void PollSleep(uint32_t Nanoseconds)
 {
-	asm volatile("nanosleep.u32 %0;" : : "r"(r_Nanoseconds) : "memory");
+	asm volatile("nanosleep.u32 %0;" : : "r"(Nanoseconds) : "memory");
 }
 
 // Multiply raw FP32 bit patterns with subnormal flushing and return the result bits.
@@ -119,23 +119,23 @@ __device__ __forceinline__ float ApproxRcp(float r_Input)
 
 // Exchange a word with the XOR-selected lane under the supplied clamp and member masks.
 __device__ __forceinline__ uint32_t ShuffleBfly(uint32_t r_InputBits, uint32_t r_LaneXorMask,
-												uint32_t r_ClampBits, uint32_t r_MemberMask)
+												uint32_t ClampBits, uint32_t MemberMask)
 {
 	uint32_t r_ResultBits;
 	asm volatile("shfl.sync.bfly.b32 %0,%1,%2,%3,%4;"
 				 : "=r"(r_ResultBits)
-				 : "r"(r_InputBits), "r"(r_LaneXorMask), "r"(r_ClampBits), "r"(r_MemberMask));
+				 : "r"(r_InputBits), "r"(r_LaneXorMask), "r"(ClampBits), "r"(MemberMask));
 	return r_ResultBits;
 }
 
 // Read a word from the indexed lane under the supplied clamp and member masks.
 __device__ __forceinline__ uint32_t ShuffleIdx(uint32_t r_InputBits, uint32_t r_SourceLane,
-											   uint32_t r_ClampBits, uint32_t r_MemberMask)
+											   uint32_t ClampBits, uint32_t MemberMask)
 {
 	uint32_t r_ResultBits;
 	asm volatile("shfl.sync.idx.b32 %0,%1,%2,%3,%4;"
 				 : "=r"(r_ResultBits)
-				 : "r"(r_InputBits), "r"(r_SourceLane), "r"(r_ClampBits), "r"(r_MemberMask));
+				 : "r"(r_InputBits), "r"(r_SourceLane), "r"(ClampBits), "r"(MemberMask));
 	return r_ResultBits;
 }
 
@@ -286,32 +286,32 @@ __device__ __forceinline__ uint32_t NativeSubFtzF32(uint32_t r_LhsBits, uint32_t
 // Compare FP32 bits for equality or unordered operands, with FTZ; NaN yields true.
 __device__ __forceinline__ bool NativeSetpEquFtzF32(uint32_t r_LhsBits, uint32_t r_RhsBits)
 {
-	uint32_t r_PredicateWord;
+	uint32_t PredicateWord;
 	asm("{ .reg .pred r_bEqualOrUnordered; setp.equ.ftz.f32 r_bEqualOrUnordered,%1,%2; selp.u32 %0,1,0,r_bEqualOrUnordered; }"
-		: "=r"(r_PredicateWord)
+		: "=r"(PredicateWord)
 		: "r"(r_LhsBits), "r"(r_RhsBits));
-	return r_PredicateWord != 0;
+	return PredicateWord != 0;
 }
 
 // Sample four FP32 channels from a 2D texture using the handle's coordinate/filter policy.
-__device__ __forceinline__ uint4 NativeTexture2d(uint64_t r_TextureHandle, uint32_t r_CoordinateXBits,
-												 uint32_t r_CoordinateYBits)
+__device__ __forceinline__ uint4 NativeTexture2d(uint64_t TextureHandle, uint32_t CoordinateXBits,
+												 uint32_t CoordinateYBits)
 {
 	uint4 r_ResultLanes;
 	asm volatile("tex.2d.v4.f32.f32 {%0,%1,%2,%3}, [%4,{%5,%6}];"
 				 : "=r"(r_ResultLanes.x), "=r"(r_ResultLanes.y), "=r"(r_ResultLanes.z), "=r"(r_ResultLanes.w)
-				 : "l"(r_TextureHandle), "r"(r_CoordinateXBits), "r"(r_CoordinateYBits)
+				 : "l"(TextureHandle), "r"(CoordinateXBits), "r"(CoordinateYBits)
 				 : "memory");
 	return r_ResultLanes;
 }
 
 // Write four words to a 2D surface; X is a byte offset and out-of-range writes are dropped.
-__device__ __forceinline__ void NativeSurface2d(uint64_t r_SurfaceHandle, uint32_t r_ByteCoordinateX,
-												uint32_t r_CoordinateY, uint4 r_ValueLanes)
+__device__ __forceinline__ void NativeSurface2d(uint64_t SurfaceHandle, uint32_t ByteCoordinateX,
+												uint32_t CoordinateY, uint4 r_ValueLanes)
 {
 	asm volatile("sust.p.2d.v4.b32.zero [%0,{%1,%2}],{%3,%4,%5,%6};"
 				 :
-				 : "l"(r_SurfaceHandle), "r"(r_ByteCoordinateX), "r"(r_CoordinateY), "r"(r_ValueLanes.x),
+				 : "l"(SurfaceHandle), "r"(ByteCoordinateX), "r"(CoordinateY), "r"(r_ValueLanes.x),
 				   "r"(r_ValueLanes.y), "r"(r_ValueLanes.z), "r"(r_ValueLanes.w)
 				 : "memory");
 }
@@ -367,41 +367,41 @@ __device__ __forceinline__ uint16_t NativeSubF16(uint16_t r_LhsBits, uint16_t r_
 // Compare FP32 bits for ordered greater-or-equal, with FTZ; NaN yields false.
 __device__ __forceinline__ bool NativeSetpGeFtzF32(uint32_t r_LhsBits, uint32_t r_RhsBits)
 {
-	uint32_t r_PredicateWord;
+	uint32_t PredicateWord;
 	asm("{ .reg .pred r_bGreaterEqual; setp.ge.ftz.f32 r_bGreaterEqual,%1,%2; selp.u32 %0,1,0,r_bGreaterEqual; }"
-		: "=r"(r_PredicateWord)
+		: "=r"(PredicateWord)
 		: "r"(r_LhsBits), "r"(r_RhsBits));
-	return r_PredicateWord != 0;
+	return PredicateWord != 0;
 }
 
 // Compare FP32 bits for greater-or-equal or unordered operands, with FTZ; NaN yields true.
 __device__ __forceinline__ bool NativeSetpGeuFtzF32(uint32_t r_LhsBits, uint32_t r_RhsBits)
 {
-	uint32_t r_PredicateWord;
+	uint32_t PredicateWord;
 	asm("{ .reg .pred r_bGreaterEqualOrUnordered; setp.geu.ftz.f32 r_bGreaterEqualOrUnordered,%1,%2; selp.u32 %0,1,0,r_bGreaterEqualOrUnordered; }"
-		: "=r"(r_PredicateWord)
+		: "=r"(PredicateWord)
 		: "r"(r_LhsBits), "r"(r_RhsBits));
-	return r_PredicateWord != 0;
+	return PredicateWord != 0;
 }
 
 // Compare FP32 bits for less-or-equal or unordered operands, with FTZ; NaN yields true.
 __device__ __forceinline__ bool NativeSetpLeuFtzF32(uint32_t r_LhsBits, uint32_t r_RhsBits)
 {
-	uint32_t r_PredicateWord;
+	uint32_t PredicateWord;
 	asm("{ .reg .pred r_bLessEqualOrUnordered; setp.leu.ftz.f32 r_bLessEqualOrUnordered,%1,%2; selp.u32 %0,1,0,r_bLessEqualOrUnordered; }"
-		: "=r"(r_PredicateWord)
+		: "=r"(PredicateWord)
 		: "r"(r_LhsBits), "r"(r_RhsBits));
-	return r_PredicateWord != 0;
+	return PredicateWord != 0;
 }
 
 // Compare FP32 bits for less-than or unordered operands, with FTZ; NaN yields true.
 __device__ __forceinline__ bool NativeSetpLtuFtzF32(uint32_t r_LhsBits, uint32_t r_RhsBits)
 {
-	uint32_t r_PredicateWord;
+	uint32_t PredicateWord;
 	asm("{ .reg .pred r_bLessOrUnordered; setp.ltu.ftz.f32 r_bLessOrUnordered,%1,%2; selp.u32 %0,1,0,r_bLessOrUnordered; }"
-		: "=r"(r_PredicateWord)
+		: "=r"(PredicateWord)
 		: "r"(r_LhsBits), "r"(r_RhsBits));
-	return r_PredicateWord != 0;
+	return PredicateWord != 0;
 }
 
 // Commit this thread's outstanding cp.async transfers as one group.
@@ -418,59 +418,59 @@ __device__ __forceinline__ void CopyWait0()
 
 // Initialize a CTA-shared mbarrier with the expected arrival count.
 __device__ __forceinline__ void BarrierInit(unsigned char* s_SharedStorage, uint32_t s_BarrierOffset,
-											uint32_t r_ArrivalCount)
+											uint32_t ArrivalCount)
 {
 	asm volatile("mbarrier.init.shared.b64 [%0],%1;"
 				 :
-				 : "r"(SharedAddress(s_SharedStorage, s_BarrierOffset)), "r"(r_ArrivalCount)
+				 : "r"(SharedAddress(s_SharedStorage, s_BarrierOffset)), "r"(ArrivalCount)
 				 : "memory");
 }
 
 // Copy global bytes into CTA shared memory and complete bytes against the supplied mbarrier.
 __device__ __forceinline__ void CopyBulk(unsigned char* s_SharedStorage, uint32_t s_DestinationOffset,
-										 uint64_t g_GlobalSource, uint32_t r_ByteCount,
+										 uint64_t g_GlobalSource, uint32_t ByteCount,
 										 uint32_t s_BarrierOffset)
 {
 	asm volatile("cp.async.bulk.shared::cta.global.mbarrier::complete_tx::bytes [%0],[%1],%2,[%3];"
 				 :
 				 : "r"(SharedAddress(s_SharedStorage, s_DestinationOffset)), "l"(g_GlobalSource),
-				   "r"(r_ByteCount), "r"(SharedAddress(s_SharedStorage, s_BarrierOffset))
+				   "r"(ByteCount), "r"(SharedAddress(s_SharedStorage, s_BarrierOffset))
 				 : "memory");
 }
 
 // Add expected transaction bytes to the CTA-shared mbarrier with relaxed ordering.
 __device__ __forceinline__ void BarrierExpect(unsigned char* s_SharedStorage, uint32_t s_BarrierOffset,
-											  uint32_t r_ExpectedBytes)
+											  uint32_t ExpectedBytes)
 {
 	asm volatile("mbarrier.expect_tx.relaxed.cta.shared::cta.b64 [%0],%1;"
 				 :
-				 : "r"(SharedAddress(s_SharedStorage, s_BarrierOffset)), "r"(r_ExpectedBytes)
+				 : "r"(SharedAddress(s_SharedStorage, s_BarrierOffset)), "r"(ExpectedBytes)
 				 : "memory");
 }
 
 // Arrive at the mbarrier with the supplied count and return its opaque phase token.
 __device__ __forceinline__ uint64_t BarrierArrive(unsigned char* s_SharedStorage, uint32_t s_BarrierOffset,
-												  uint32_t r_ArrivalCount)
+												  uint32_t ArrivalCount)
 {
-	uint64_t r_PhaseToken;
+	uint64_t PhaseToken;
 	asm volatile("mbarrier.arrive.shared::cta.b64 %0,[%1],%2;"
-				 : "=l"(r_PhaseToken)
-				 : "r"(SharedAddress(s_SharedStorage, s_BarrierOffset)), "r"(r_ArrivalCount)
+				 : "=l"(PhaseToken)
+				 : "r"(SharedAddress(s_SharedStorage, s_BarrierOffset)), "r"(ArrivalCount)
 				 : "memory");
-	return r_PhaseToken;
+	return PhaseToken;
 }
 
 // Test mbarrier phase completion using the arrival token; return a 0/1 readiness word.
 __device__ __forceinline__ uint32_t BarrierReady(unsigned char* s_SharedStorage, uint32_t s_BarrierOffset,
-												 uint64_t r_PhaseToken)
+												 uint64_t PhaseToken)
 {
-	uint32_t r_ReadyWord;
+	uint32_t ReadyWord;
 	asm volatile(
 		"{ .reg .pred r_bPhaseComplete; mbarrier.try_wait.shared::cta.b64 r_bPhaseComplete,[%1],%2; selp.b32 %0,1,0,r_bPhaseComplete; }"
-		: "=r"(r_ReadyWord)
-		: "r"(SharedAddress(s_SharedStorage, s_BarrierOffset)), "l"(r_PhaseToken)
+		: "=r"(ReadyWord)
+		: "r"(SharedAddress(s_SharedStorage, s_BarrierOffset)), "l"(PhaseToken)
 		: "memory");
-	return r_ReadyWord;
+	return ReadyWord;
 }
 
 // Issue a cache-all four-byte global-to-shared copy; the caller owns predicates and zero fill.
@@ -485,13 +485,13 @@ __device__ __forceinline__ void CopyAsync4(unsigned char* s_SharedStorage, uint3
 
 // Read an aligned cache-all 16-byte vector only when valid; otherwise retain four zeros.
 // The predicate suppresses the memory access, and +r constraints preserve the zero initialization.
-__device__ __forceinline__ uint4 LoadGlobalCaOrZero(uint64_t g_Address, bool r_bValid)
+__device__ __forceinline__ uint4 LoadGlobalCaOrZero(uint64_t g_Address, bool bValid)
 {
 	uint4 r_Result = make_uint4(0, 0, 0, 0);
 	asm volatile("{ .reg .pred r_bLoadEnabled; setp.ne.u32 r_bLoadEnabled, %5, 0; "
 				 "@r_bLoadEnabled ld.global.ca.v4.u32 {%0,%1,%2,%3}, [%4]; }"
 				 : "+r"(r_Result.x), "+r"(r_Result.y), "+r"(r_Result.z), "+r"(r_Result.w)
-				 : "l"(g_Address), "r"(uint32_t(r_bValid))
+				 : "l"(g_Address), "r"(uint32_t(bValid))
 				 : "memory");
 	return r_Result;
 }

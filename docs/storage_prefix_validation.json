@@ -1,0 +1,6326 @@
+{
+  "baseline_commit": "c67d2f11934edee8da4ff458441363dc3731cf8e",
+  "binary_sha256": "458abb67d0c2b4dbd0098f9193edb40637d22c1dfe8caed4270eb70bc35e12c7",
+  "build": {
+    "exit_code": 0,
+    "seconds": 24.78130292892456,
+    "binary": "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\extension-prefix-v1\\workspace\\dlssnr\\_C.cp311-win_amd64.pyd",
+    "sha256": "458abb67d0c2b4dbd0098f9193edb40637d22c1dfe8caed4270eb70bc35e12c7"
+  },
+  "compiled_comparison": {
+    "baseline_commit": "c67d2f11934edee8da4ff458441363dc3731cf8e",
+    "baseline_binary_sha256": "4e0b09c831b29f295916838df4567c6e534cf3a7d8b0fd353b8dc713b5ee2626",
+    "candidate_binary_sha256": "458abb67d0c2b4dbd0098f9193edb40637d22c1dfe8caed4270eb70bc35e12c7",
+    "entries": [
+      {
+        "symbol": "global_attention_chained_c1024_fp16",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "cbb51ee8ed81cffe147eafbabb58d1749e06399cd93d4a4145e0c371dbe6c02a",
+        "resource_exact": true,
+        "baseline_resource": "REG:158 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:960 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:158 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:960 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "global_attention_chained_c1024_fp8",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "b6b43cda15e4b6876f05917f7a2e58705f173b96603012d094bc2a6147e982a8",
+        "resource_exact": true,
+        "baseline_resource": "REG:162 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:960 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:162 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:960 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "global_projection_c1024_fp16",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "1526f2488623e46000623db9d3ec5343b6809d4d9b1b0c457ad1d2e5087d3a7b",
+        "resource_exact": true,
+        "baseline_resource": "REG:152 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:152 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "global_projection_c1024_fp8",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "9d23cc3559395456afcb5296d6d1558b619998e1a3bd78962b40ea5bad5f0c32",
+        "resource_exact": true,
+        "baseline_resource": "REG:116 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:116 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "global_qkv_c1024_fp16",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "89d3a5f493f7763e852a669de3e3abc03b269f3e6d813c4d922335d602ae1c58",
+        "resource_exact": true,
+        "baseline_resource": "REG:200 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:200 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "global_qkv_c1024_fp8",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "3e5e3971187740cf56d7c71d5648b39c3272e530618425aa76caf255882a85dd",
+        "resource_exact": true,
+        "baseline_resource": "REG:158 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:158 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_attention_projection_c512_fp16",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "51c3c81b7f4a9f208a52454dfa0171b757924ff1095d26eda3aee35baab42cce",
+        "resource_exact": true,
+        "baseline_resource": "REG:100 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:100 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_attention_projection_c512_fp8",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "bf63122185edf3ab5cee55a4cdc636cbe8ea405153a607867fe28c6d05bd4379",
+        "resource_exact": true,
+        "baseline_resource": "REG:98 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:98 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_attention_projection_output_view_c512_fp16",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "93602f46a4dcafb10b6e85f82768af190d90c65355847cdbf6965e3ef9a572de",
+        "resource_exact": true,
+        "baseline_resource": "REG:128 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:128 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_attention_projection_output_view_c512_fp8",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "70b844285080d2a695097c6f1ff629397fbec8baaeaa8f7809934c63c984d04b",
+        "resource_exact": true,
+        "baseline_resource": "REG:121 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:121 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_qkv_c512_fp16",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "066c204cc8d7fc0fbff1ee57fac93483cdaf467697aeb31748549e8ccbc0f791",
+        "resource_exact": true,
+        "baseline_resource": "REG:153 STACK:0 SHARED:5136 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:153 STACK:0 SHARED:5136 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_qkv_c512_fp8",
+        "module": "reconstructed_attention.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "88c197de9bc9c1bb25bf4a4007f7dae693642419f86b717e85430085df23224a",
+        "resource_exact": true,
+        "baseline_resource": "REG:161 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:161 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "channel_projection_c512_to_c1024_fp16",
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "0ba1089c1bef65f9556b9599ee5f1d34226cfcda5b2bbe0eccf9d61d58d1a460",
+        "resource_exact": true,
+        "baseline_resource": "REG:96 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:936 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:96 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:936 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "channel_projection_c512_to_c1024_fp8",
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "ca363b5c82f2b54182490c645a2c7fb9370a0658735ab8d847834bc175045c21",
+        "resource_exact": true,
+        "baseline_resource": "REG:98 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:936 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:98 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:936 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "completion_counter_clear",
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "93225fea0be69b4677746bf6f493a45578b38f04b4a12a276b04b9e34734f0ce",
+        "resource_exact": true,
+        "baseline_resource": "REG:10 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:912 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:10 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:912 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "repack_1d_to_2d_c1024_fp16",
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "761f3991a36ced6024dbed5e9f4a203d8cfd36b9c1e167033b9ebbf1c7636ced",
+        "resource_exact": true,
+        "baseline_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "repack_1d_to_2d_c1024_fp8",
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "119b1a76c0b1185368fc751583daabf233d0f11110a654bc7316ca8ccdad10d1",
+        "resource_exact": true,
+        "baseline_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "repack_2d_to_1d_c1024_fp16",
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "8c07960df3f1a7ea15cf5626b301a8c50528c78c39bd77090d168286588e7e92",
+        "resource_exact": true,
+        "baseline_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "repack_2d_to_1d_c1024_fp8",
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "8af08462c6fd2e78c35ab133f7d524f1117df4c1eecc6218858baa9f6d291333",
+        "resource_exact": true,
+        "baseline_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "input_preprocess_window_downsample_c32_fp16",
+        "module": "reconstructed_downsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "2b8cc1735e30847f6a7861475ddeeadb3f6e36154462e93671e11c67228f8a4d",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_attention_projection_pool_c512_fp16",
+        "module": "reconstructed_downsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "0812116794cf1b1c9359d56f6c6935fca338e1c58d267a57aa10d99b71e28018",
+        "resource_exact": true,
+        "baseline_resource": "REG:142 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:142 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c128_downsample_fp16",
+        "module": "reconstructed_downsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "d40a4e1d4519111b656d8a21fff722259802cb6853fe8f5883f04281559936f8",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c256_downsample_fp16",
+        "module": "reconstructed_downsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "ef8146255e4f57689334008940e4f85db4db20c8b9b647c455df5c6586416709",
+        "resource_exact": true,
+        "baseline_resource": "REG:186 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:186 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c32_downsample_fp16",
+        "module": "reconstructed_downsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "763a5e011c38ae5c4aa9b9d7adba14681ecbee89c8d7bcf1346a2eb6f67ff93b",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c64_downsample_fp16",
+        "module": "reconstructed_downsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "ad3887c0664ce7c42bb6bd25087570ab5c928ec63ec1af5b3ef59a583d3422cd",
+        "resource_exact": true,
+        "baseline_resource": "REG:167 STACK:8 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:167 STACK:8 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "input_preprocess_window_downsample_c32_fp8",
+        "module": "reconstructed_downsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "6265b62ad7d305f5127693c311d2efde969056b17f14d6d064598b2f6ae9c756",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_attention_projection_pool_c512_fp8",
+        "module": "reconstructed_downsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "8f26b435ea3810590905ee2bbb2365e35b1c33dabadcae115cd74a0b1eb0d3ef",
+        "resource_exact": true,
+        "baseline_resource": "REG:140 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:140 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c128_downsample_fp8",
+        "module": "reconstructed_downsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "031b5d77775dda93a83ab0b9f2275ffe1a1e4e7310acd9735b7355d5bd03aa1d",
+        "resource_exact": true,
+        "baseline_resource": "REG:167 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:167 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c256_downsample_fp8",
+        "module": "reconstructed_downsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "a3afb44e8b18fbcc016b1908329fb0dae4942ce339b31f556083bbd202392eda",
+        "resource_exact": true,
+        "baseline_resource": "REG:167 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:167 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c32_downsample_fp8",
+        "module": "reconstructed_downsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "323f3642ea94e37dbddd7e8330e4bc33370e889d2397d15d334fd35512774ebb",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c64_downsample_fp8",
+        "module": "reconstructed_downsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "e2a00dc86c1243aac6135ce87c84e689d3c9352255f0a3355640e4d7a676e773",
+        "resource_exact": true,
+        "baseline_resource": "REG:161 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:161 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "global_ffn_contract_c1024_fp16",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "7aa1d3b283d972c1216255b900a3c666c016a15c61303af3b6de46bc59c7507b",
+        "resource_exact": true,
+        "baseline_resource": "REG:140 STACK:0 SHARED:25624 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:140 STACK:0 SHARED:25624 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "global_ffn_contract_c1024_fp8",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "50d6f13f7b572357f732f02040e2e6c6f4452fec6eaea1547bbe42df7f99d08d",
+        "resource_exact": true,
+        "baseline_resource": "REG:149 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:149 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "global_ffn_expand_c1024_fp16",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "1594cc85ad844f41496e3eca9523e0e40e79d99e747f928f2ba785f3372982a6",
+        "resource_exact": true,
+        "baseline_resource": "REG:139 STACK:0 SHARED:25624 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:139 STACK:0 SHARED:25624 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "global_ffn_expand_c1024_fp8",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "09de84d1345e9cfad967867cbdc1eb51be258251b54ab70b50b908a9ee84934c",
+        "resource_exact": true,
+        "baseline_resource": "REG:139 STACK:0 SHARED:25624 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:139 STACK:0 SHARED:25624 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_ffn_c512_fp16",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "04371c87b539babe5fba3608b4233a297d3f8ae677796920cb4353cd43296b2d",
+        "resource_exact": true,
+        "baseline_resource": "REG:217 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:217 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_ffn_c512_fp8",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "ac132c6c0ed0c9fcc41af310b2ffd765cd10624a60a43a66bf3a1da76d14b6f6",
+        "resource_exact": true,
+        "baseline_resource": "REG:108 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:108 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_ffn_input_view_c512_fp16",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "e5af2e9789ecfc3190f996b0c5efac7b710abaa702694f23a5751f37f63c388f",
+        "resource_exact": true,
+        "baseline_resource": "REG:215 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:215 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_ffn_input_view_c512_fp8",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "3b38d9621d3ed69108bc53181e2eec0ec7073b3a8bec6671e78ac144cde072c4",
+        "resource_exact": true,
+        "baseline_resource": "REG:161 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:161 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_ffn_projection_c512_fp16",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "2c5dc038b2048cf20396366081d0425becc720419c37c8ea7bd28c1332134ca3",
+        "resource_exact": true,
+        "baseline_resource": "REG:122 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:122 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_ffn_projection_c512_fp8",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "511fd5efea044dd1481b98dc276ec2b4900350174934d7015b633ca34079e632",
+        "resource_exact": true,
+        "baseline_resource": "REG:122 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:122 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_ffn_projection_input_view_c512_fp16",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "1bccd433c23fb8b997da32406614b3c06e1785c4d80613fdcb03e9c8eb1265f2",
+        "resource_exact": true,
+        "baseline_resource": "REG:128 STACK:8 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:128 STACK:8 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_ffn_projection_input_view_c512_fp8",
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "e056ad4ebae83cef7296e1942031acdc0d77325b4cbfda872add7959fe821bd0",
+        "resource_exact": true,
+        "baseline_resource": "REG:128 STACK:24 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:128 STACK:24 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "input_preprocess_window_c32_fp16",
+        "module": "reconstructed_frontend.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "130cc8e76e25f8d2169b85f349dfa3910ae4933c809b66b7faeef5e5ea8a7cf9",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "input_preprocess_window_c32_fp8",
+        "module": "reconstructed_frontend.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "b1e6eefe19c0d7388a683f5fb07c5700954a44e78a9da62d615569eb696bc0a8",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "output_window_postprocess_c32_fp16",
+        "module": "reconstructed_frontend.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "fbbfde3a571deb5fa6b6ad155e093aebb76fe485499a2eb9bf75185709fee755",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:64 SHARED:0 LOCAL:0 CONSTANT[0]:1080 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:64 SHARED:0 LOCAL:0 CONSTANT[0]:1080 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "output_window_postprocess_c32_fp8",
+        "module": "reconstructed_frontend.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "9788cb2c1583d2b4ab98d13f07c9889997aedd39f30144ff3f9ef2d92db1891f",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:48 SHARED:0 LOCAL:0 CONSTANT[0]:1080 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:48 SHARED:0 LOCAL:0 CONSTANT[0]:1080 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "decoder_upsample_c1024_to_c512_fp16",
+        "module": "reconstructed_upsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "27f1b2bafb5f4736b467b9aed9dbc1aa1348806bb58be793faaa399383bf5b14",
+        "resource_exact": true,
+        "baseline_resource": "REG:124 STACK:0 SHARED:3088 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:124 STACK:0 SHARED:3088 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c128_upsample_fp16",
+        "module": "reconstructed_upsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "3fae75a281415c6bcc674818fb9976168b803a9f5384b6b2452aceab67e33304",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:8 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:8 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c256_upsample_fp16",
+        "module": "reconstructed_upsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "798b366f2bf242b60c3e40c1d44bbd860f62503770fcdb210f7c6cf849769460",
+        "resource_exact": true,
+        "baseline_resource": "REG:184 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:184 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c32_upsample_fp16",
+        "module": "reconstructed_upsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "20aa5489c89f576805c7c0811d8182cfd31967e759ee3e1cf65952269503edfa",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c64_upsample_fp16",
+        "module": "reconstructed_upsample_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "5ca58d496c8bf1a5e267ea1a9a597e82ebd17788bd6468473f81c1d201c0b589",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:8 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:8 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "decoder_upsample_c1024_to_c512_fp8",
+        "module": "reconstructed_upsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "438246e9b7f7f93316e20d1825639d8d1f6757a46d1524d754118c02bb43f26b",
+        "resource_exact": true,
+        "baseline_resource": "REG:124 STACK:0 SHARED:3088 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:124 STACK:0 SHARED:3088 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c128_upsample_fp8",
+        "module": "reconstructed_upsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "eb977e2ff91c685d29389981ec53c61e481173fe85cd39f6b4bdb80ea510f764",
+        "resource_exact": true,
+        "baseline_resource": "REG:162 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:162 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c256_upsample_fp8",
+        "module": "reconstructed_upsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "87c82c4f8a5dcebf123385ac6eeeb22ead3265cfab764116cb4ea207d03b8184",
+        "resource_exact": true,
+        "baseline_resource": "REG:161 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:161 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c32_upsample_fp8",
+        "module": "reconstructed_upsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "0fba87253de7c4138f2e1cf2e1a0f6f7941148710d68c8ca3c1d07bc87471b68",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c64_upsample_fp8",
+        "module": "reconstructed_upsample_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "1358f1a1a785efa1e361b73df5418272dc61aa95a017548b54ace9bbf45c7f4f",
+        "resource_exact": true,
+        "baseline_resource": "REG:161 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:161 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c128_fp16",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "10bfc2725d210585376658fe16caaacd9c41fc897ecb93c88af1eae825c28325",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:8 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:8 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c128_input_view_fp16",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "65c077074e8e5d959b20f30043ac8b50fa1d8b4e65c4a1592d698ec78b3acf43",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c128_output_view_fp16",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "c1ffe1c8c2da85da2fc06eb5da940d5b976fa3f9614509efdbf98c70a188dbc0",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c256_fp16",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "925ecc00b006c7591875b4b8189aea5ec805f9ce78527567c44d788598709332",
+        "resource_exact": true,
+        "baseline_resource": "REG:180 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:180 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c256_input_view_fp16",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "ba5aa5922dc0cd46a7d74495888c1b9c62621c46698f6201cf18b96c3ba60554",
+        "resource_exact": true,
+        "baseline_resource": "REG:184 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:184 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c256_output_view_fp16",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "0000abd14c0da342b81a2e295b34ff6a039bdc1ded89d07e7619728bf55d97bd",
+        "resource_exact": true,
+        "baseline_resource": "REG:180 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:180 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c32_fp16",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "c6c16cb67306be403e2dda6cd476ef0f510fde8492262a05aff50552f8507eee",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c32_input_view_fp16",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "1730b40c5d42171ff84bd81f3515c52843968749740183b09793139e3bee693b",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c32_output_view_fp16",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "9efdfe0edb1c238c739ed69d55a9b401f3fa5a68a84c544caf6b085fe709fc50",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:24 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:24 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c64_fp16",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "06e61b43fd83d036263b8bfa4f88d781a52b039285df4fd7902e957502419bfa",
+        "resource_exact": true,
+        "baseline_resource": "REG:166 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:166 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c64_input_view_fp16",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "c40f4ed44c29783880b3664d47fa74f2db02f73420c45881ad16e0db55861142",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:16 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:16 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c64_output_view_fp16",
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "cedf0361047c12b43e20d542690b9ca5060453c955fbe7ed24023da73c78c3cf",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:16 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:16 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c128_fp8",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "88a0f9db160396c172d8b07c8cb6de7e7739b64c9100cb322b79520b48b26818",
+        "resource_exact": true,
+        "baseline_resource": "REG:163 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:163 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c128_input_view_fp8",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "82c88e7a8895f0b04b1a6c25213d9fd6e377151b0630bacc895e7dac170d3cf5",
+        "resource_exact": true,
+        "baseline_resource": "REG:160 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:160 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c128_output_view_fp8",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "cea4d3e8bc4d36624db55297bba02d9c492e12e25650335534cedc77de7b0dd1",
+        "resource_exact": true,
+        "baseline_resource": "REG:161 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:161 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c256_fp8",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "12b2b198f3a60fad1a22f0250124cb774fc382a6ee11e442fdf43e833b0f8dfc",
+        "resource_exact": true,
+        "baseline_resource": "REG:163 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:163 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c256_input_view_fp8",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "e7c414012bc2765613e6b2562173d2fdef7cd453d5f29921f68f894ac1107870",
+        "resource_exact": true,
+        "baseline_resource": "REG:164 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:164 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c256_output_view_fp8",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "dea6d2085ede03f298fcfb0f433e1f18171a24bc9b2d7fd16d4215c80b984cd0",
+        "resource_exact": true,
+        "baseline_resource": "REG:161 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:161 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c32_fp8",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "ec7bf31dc2d8949b083c08c90022a6739fc49524a9a68dae2122b3eb6ea18cfb",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c32_input_view_fp8",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "7081e6e9403478ae528f042ab279aea1ab1b3549e56a47f4e42d602e1c67eea2",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c32_output_view_fp8",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "1a178051ff7be56f8bc36e74b7735ef82f6676065fd301f0d9e7fa9d84a4bfe0",
+        "resource_exact": true,
+        "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c64_fp8",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "46242e8c78c48ccad058a0434ffa07d79b2f8a845150d6ace339c0d07de3830c",
+        "resource_exact": true,
+        "baseline_resource": "REG:159 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:159 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c64_input_view_fp8",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "52226d5a17e784262a993f9aa1721cf7bb657b25848a376685b18e2db92cb2cf",
+        "resource_exact": true,
+        "baseline_resource": "REG:154 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:154 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      },
+      {
+        "symbol": "window_block_c64_output_view_fp8",
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "text_exact": true,
+        "text_sha256": "fffe521bcca0bb96e0c95136753daae8c22f04e5d745f954a6ee6f07768a3977",
+        "resource_exact": true,
+        "baseline_resource": "REG:159 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+        "candidate_resource": "REG:159 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+      }
+    ],
+    "modules": [
+      {
+        "module": "reconstructed_attention.sm_120.cubin",
+        "baseline_sha256": "1da494e93c79ab7f8a71ae2d69a44d250afc19f909db6937f804b88fab136fb7",
+        "candidate_sha256": "93f1b17e921e44eb97757b2a6e9635342450433d1fafb7d9ccd292d05e848517",
+        "constant_sections_exact": true,
+        "constant_payloads_and_extents_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.rela.debug_line",
+          ".rela.debug_line"
+        ]
+      },
+      {
+        "module": "reconstructed_connectors.sm_120.cubin",
+        "baseline_sha256": "251a30edafab561e5cdb05ce12b7b726bda65f38d3f98de2fb3ed17993c5cbea",
+        "candidate_sha256": "dc9def641ba15a38499995199f15c7438122cafd25f2870d56ab04dfbcae84fa",
+        "constant_sections_exact": true,
+        "constant_payloads_and_extents_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.rela.debug_line",
+          ".rela.debug_line"
+        ]
+      },
+      {
+        "module": "reconstructed_downsample_fp16.sm_120.cubin",
+        "baseline_sha256": "dfa1049d121f1962311cf82c3abfc2f77b700fa039e6a4d1db679cb05eb1c522",
+        "candidate_sha256": "4c2bc9c214b8ffeb2d9059a9c8a73ab2ceda2453ca9d11025362521dab92e9fd",
+        "constant_sections_exact": true,
+        "constant_payloads_and_extents_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.nv_debug_line_sass",
+          ".nv.merc.nv_debug_ptx_txt",
+          ".nv.merc.rela.debug_line",
+          ".nv_debug_line_sass",
+          ".nv_debug_ptx_txt",
+          ".rela.debug_line",
+          ".rela.nv_debug_line_sass"
+        ]
+      },
+      {
+        "module": "reconstructed_downsample_fp8.sm_120.cubin",
+        "baseline_sha256": "df09c88afa46d98a63712aeb4b0ccb075118aa345c127f3ad6719466b6a00ddc",
+        "candidate_sha256": "f8ddfd0ebb66828c4f2eee8c16aa6ae8a004d3f600912a9a641ed9a3cf4acb56",
+        "constant_sections_exact": true,
+        "constant_payloads_and_extents_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.nv_debug_line_sass",
+          ".nv.merc.nv_debug_ptx_txt",
+          ".nv.merc.rela.debug_line",
+          ".nv_debug_line_sass",
+          ".nv_debug_ptx_txt",
+          ".rela.debug_line",
+          ".rela.nv_debug_line_sass"
+        ]
+      },
+      {
+        "module": "reconstructed_ffn.sm_120.cubin",
+        "baseline_sha256": "dc5b8c07613b44c8f6755bb8f74bda8e95a2fb2acf084084ebf3268a96e83776",
+        "candidate_sha256": "38b5f19d84a83a5278e81f34e8437db99203dbeb9316b36e2466753f785a6983",
+        "constant_sections_exact": true,
+        "constant_payloads_and_extents_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.rela.debug_line",
+          ".rela.debug_line"
+        ]
+      },
+      {
+        "module": "reconstructed_frontend.sm_120.cubin",
+        "baseline_sha256": "8cf5bc3a969a429483b081c8e18fe612e5aab660bdaecedef78a63bcff71a2a9",
+        "candidate_sha256": "987d86e383ecce14b7467ae51097bb0b073b197f3597f6c1a0e96fce102ba530",
+        "constant_sections_exact": true,
+        "constant_payloads_and_extents_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.rela.debug_line",
+          ".rela.debug_line"
+        ]
+      },
+      {
+        "module": "reconstructed_upsample_fp16.sm_120.cubin",
+        "baseline_sha256": "eb045a4152a71b9eb4055b188710bd24b3986ee2ca2af7a1373ecbdc2e735cf2",
+        "candidate_sha256": "3372012ba7f60aef56dd4a59110ad7738c1a8e8e2cfc745ebeee203777726ec3",
+        "constant_sections_exact": true,
+        "constant_payloads_and_extents_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.rela.debug_line",
+          ".rela.debug_line"
+        ]
+      },
+      {
+        "module": "reconstructed_upsample_fp8.sm_120.cubin",
+        "baseline_sha256": "83f68df5d0b71696d27bcb6c335bf15fb9985290f9495176e72729554c317d4f",
+        "candidate_sha256": "96ea45ba9a75c98e191768c21bffcb92a0aef117b4707ad165e3d311cf31436a",
+        "constant_sections_exact": true,
+        "constant_payloads_and_extents_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.rela.debug_line",
+          ".rela.debug_line"
+        ]
+      },
+      {
+        "module": "reconstructed_window_block_fp16.sm_120.cubin",
+        "baseline_sha256": "321f2add20c0b63ef52e4c09b266fbc2b098c36fdba9a2c78942a5f408cd27c5",
+        "candidate_sha256": "13e109728035948a07ac99fc580511148080365d255bc1840a26b9be48d19ff8",
+        "constant_sections_exact": true,
+        "constant_payloads_and_extents_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.rela.debug_line",
+          ".rela.debug_line"
+        ]
+      },
+      {
+        "module": "reconstructed_window_block_fp8.sm_120.cubin",
+        "baseline_sha256": "0206917b52562892070fc9a7be005ede85e070b778ec99da4ddbc2c7dacf11c6",
+        "candidate_sha256": "d2a972dd88e2bdb32389b2c79c97440da7db941c2071a5c64a00e710242e2637",
+        "constant_sections_exact": true,
+        "constant_payloads_and_extents_exact": true,
+        "different_sections": [
+          ".debug_line",
+          ".debug_str",
+          ".nv.merc.debug_line",
+          ".nv.merc.debug_str",
+          ".nv.merc.rela.debug_line",
+          ".rela.debug_line"
+        ]
+      }
+    ],
+    "summary": {
+      "entry_count": 81,
+      "exact_gpu_text": 81,
+      "exact_resources": 81,
+      "module_count": 10,
+      "exact_constant_modules": 10,
+      "exact_constant_payload_modules": 10
+    },
+    "limits": "CUDA C symbols are unchanged. Literal ELF device instruction and constant payloads are compared without normalization. Debug and other ELF sections are reported separately; no host machine-code identity is claimed."
+  },
+  "source_summary": {
+    "reviewed_cpp_cuda_files": 70,
+    "files_with_identifier_changes": 47,
+    "per_file_identifier_pairs": 326,
+    "renamed_identifier_occurrences": 2654,
+    "unchanged_numeric_string_operator_type_tokens": true,
+    "old_abi_assertions": 1044,
+    "new_abi_assertions": 1044
+  },
+  "plans": [
+    {
+      "path": "tuning/plan_1280_720.json",
+      "sha256": "b003f88079fbd87601aa5e9e7407d853e6ad2d43ab9208b0385af47a2e03a1a3",
+      "exact_json_values": true
+    },
+    {
+      "path": "tuning/plan_1920_1080.json",
+      "sha256": "6ad271a8ba674de6b1bccee8a284ae32922d5f3d4b1064429113172a4caa9a65",
+      "exact_json_values": true
+    },
+    {
+      "path": "tuning/plan_2560_1440.json",
+      "sha256": "7437de96344eac8026f1880ddb87a50a39db0a89c22fb83a284a4c486a9e8ccc",
+      "exact_json_values": true
+    },
+    {
+      "path": "tuning/plan_3840_2160.json",
+      "sha256": "6b61f6ea77a649931e85cea766b8269598e6679ad12649ff462bdb8f4238b6ef",
+      "exact_json_values": true
+    },
+    {
+      "path": "tuning/plan_fp16_1280_720.json",
+      "sha256": "505d2e0f55415af9c31735d8c4f3fec9cf1b8648701693b09d4c9f07e796fd70",
+      "exact_json_values": true
+    },
+    {
+      "path": "tuning/plan_fp16_1920_1080.json",
+      "sha256": "caf41ef16f88b6e7663995e7686af8a20d2dda4a41e05046ccf35683053251fd",
+      "exact_json_values": true
+    },
+    {
+      "path": "tuning/plan_fp16_2560_1440.json",
+      "sha256": "ca6bebed596636367727d965bc240327bec21c61e61d09921343d98dea02499b",
+      "exact_json_values": true
+    },
+    {
+      "path": "tuning/plan_fp16_3840_2160.json",
+      "sha256": "5ffca69f5c8763f13f85ca012f9c7d095d33f12046a358f4c9e996d701526d85",
+      "exact_json_values": true
+    }
+  ],
+  "cpu_tests": {
+    "normal": 62,
+    "optimized": 62,
+    "log_sha256": "8bb18c599fd4d2f370b85d264d94add7b1d1fb5fa673d933a28798e03f9116a5"
+  },
+  "graph_checks": [
+    {
+      "width": 1280,
+      "height": 720,
+      "extension_sha256": "458abb67d0c2b4dbd0098f9193edb40637d22c1dfe8caed4270eb70bc35e12c7",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 294912,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 540672,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 1032192,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp8",
+      "schedule_sha256": "b003f88079fbd87601aa5e9e7407d853e6ad2d43ab9208b0385af47a2e03a1a3",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true,
+      "worker": {
+        "command": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "-B",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\benchmark_fp16.py",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\prefix-v1-720-fp8\\result.json",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\extension-prefix-v1\\workspace\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "--precision",
+          "fp8",
+          "--width",
+          "1280",
+          "--height",
+          "720"
+        ],
+        "timeout_seconds": 180,
+        "timed_out": false,
+        "cleanup_confirmed": true,
+        "accept_worker_result": true,
+        "job_assigned": true,
+        "primary_thread_resumed": true,
+        "cleanup_scope": "zero job accounting active processes, signaled root and every observed member handle",
+        "descendant_observation": "job PID snapshots before each wait and termination; short-lived unsampled members are not individually handle-verified",
+        "pid": 47172,
+        "exit_code": 0,
+        "job_active_processes_after": 0,
+        "observed_member_handles_signaled": true,
+        "observed_member_pids": [
+          31808,
+          47172,
+          54836
+        ],
+        "elapsed_wall_seconds": 2.4380000000237487
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "extension_sha256": "458abb67d0c2b4dbd0098f9193edb40637d22c1dfe8caed4270eb70bc35e12c7",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 655360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 1105920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp8",
+      "schedule_sha256": "6ad271a8ba674de6b1bccee8a284ae32922d5f3d4b1064429113172a4caa9a65",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true,
+      "worker": {
+        "command": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "-B",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\benchmark_fp16.py",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\prefix-v1-1080-fp8\\result.json",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\extension-prefix-v1\\workspace\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "--precision",
+          "fp8",
+          "--width",
+          "1920",
+          "--height",
+          "1080"
+        ],
+        "timeout_seconds": 180,
+        "timed_out": false,
+        "cleanup_confirmed": true,
+        "accept_worker_result": true,
+        "job_assigned": true,
+        "primary_thread_resumed": true,
+        "cleanup_scope": "zero job accounting active processes, signaled root and every observed member handle",
+        "descendant_observation": "job PID snapshots before each wait and termination; short-lived unsampled members are not individually handle-verified",
+        "pid": 62416,
+        "exit_code": 0,
+        "job_active_processes_after": 0,
+        "observed_member_handles_signaled": true,
+        "observed_member_pids": [
+          30784,
+          62184,
+          62416
+        ],
+        "elapsed_wall_seconds": 2.297000000020489
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1440,
+      "extension_sha256": "458abb67d0c2b4dbd0098f9193edb40637d22c1dfe8caed4270eb70bc35e12c7",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 983040,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 3768320,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp8",
+      "schedule_sha256": "7437de96344eac8026f1880ddb87a50a39db0a89c22fb83a284a4c486a9e8ccc",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true,
+      "worker": {
+        "command": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "-B",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\benchmark_fp16.py",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\prefix-v1-1440-fp8\\result.json",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\extension-prefix-v1\\workspace\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "--precision",
+          "fp8",
+          "--width",
+          "2560",
+          "--height",
+          "1440"
+        ],
+        "timeout_seconds": 180,
+        "timed_out": false,
+        "cleanup_confirmed": true,
+        "accept_worker_result": true,
+        "job_assigned": true,
+        "primary_thread_resumed": true,
+        "cleanup_scope": "zero job accounting active processes, signaled root and every observed member handle",
+        "descendant_observation": "job PID snapshots before each wait and termination; short-lived unsampled members are not individually handle-verified",
+        "pid": 50636,
+        "exit_code": 0,
+        "job_active_processes_after": 0,
+        "observed_member_handles_signaled": true,
+        "observed_member_pids": [
+          50636,
+          53016,
+          62180,
+          62320
+        ],
+        "elapsed_wall_seconds": 2.375
+      }
+    },
+    {
+      "width": 3840,
+      "height": 2160,
+      "extension_sha256": "458abb67d0c2b4dbd0098f9193edb40637d22c1dfe8caed4270eb70bc35e12c7",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 2228224,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 4177920,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp8",
+      "schedule_sha256": "6b61f6ea77a649931e85cea766b8269598e6679ad12649ff462bdb8f4238b6ef",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true,
+      "worker": {
+        "command": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "-B",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\benchmark_fp16.py",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\prefix-v1-2160-fp8\\result.json",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\extension-prefix-v1\\workspace\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "--precision",
+          "fp8",
+          "--width",
+          "3840",
+          "--height",
+          "2160"
+        ],
+        "timeout_seconds": 180,
+        "timed_out": false,
+        "cleanup_confirmed": true,
+        "accept_worker_result": true,
+        "job_assigned": true,
+        "primary_thread_resumed": true,
+        "cleanup_scope": "zero job accounting active processes, signaled root and every observed member handle",
+        "descendant_observation": "job PID snapshots before each wait and termination; short-lived unsampled members are not individually handle-verified",
+        "pid": 56484,
+        "exit_code": 0,
+        "job_active_processes_after": 0,
+        "observed_member_handles_signaled": true,
+        "observed_member_pids": [
+          40796,
+          56484,
+          61492
+        ],
+        "elapsed_wall_seconds": 2.5160000000032596
+      }
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "extension_sha256": "458abb67d0c2b4dbd0098f9193edb40637d22c1dfe8caed4270eb70bc35e12c7",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 589824,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 1081344,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 2064384,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 4128768,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 8257536,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 16515072,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp16",
+      "schedule_sha256": "505d2e0f55415af9c31735d8c4f3fec9cf1b8648701693b09d4c9f07e796fd70",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true,
+      "worker": {
+        "command": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "-B",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\benchmark_fp16.py",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\prefix-v1-720-fp16\\result.json",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\extension-prefix-v1\\workspace\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "--precision",
+          "fp16",
+          "--width",
+          "1280",
+          "--height",
+          "720"
+        ],
+        "timeout_seconds": 180,
+        "timed_out": false,
+        "cleanup_confirmed": true,
+        "accept_worker_result": true,
+        "job_assigned": true,
+        "primary_thread_resumed": true,
+        "cleanup_scope": "zero job accounting active processes, signaled root and every observed member handle",
+        "descendant_observation": "job PID snapshots before each wait and termination; short-lived unsampled members are not individually handle-verified",
+        "pid": 30004,
+        "exit_code": 0,
+        "job_active_processes_after": 0,
+        "observed_member_handles_signaled": true,
+        "observed_member_pids": [
+          30004,
+          36468,
+          61976
+        ],
+        "elapsed_wall_seconds": 5.1560000000172295
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "extension_sha256": "458abb67d0c2b4dbd0098f9193edb40637d22c1dfe8caed4270eb70bc35e12c7",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 1310720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 2211840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 8847360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 17694720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 35389440,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp16",
+      "schedule_sha256": "caf41ef16f88b6e7663995e7686af8a20d2dda4a41e05046ccf35683053251fd",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true,
+      "worker": {
+        "command": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "-B",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\benchmark_fp16.py",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\prefix-v1-1080-fp16\\result.json",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\extension-prefix-v1\\workspace\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "--precision",
+          "fp16",
+          "--width",
+          "1920",
+          "--height",
+          "1080"
+        ],
+        "timeout_seconds": 180,
+        "timed_out": false,
+        "cleanup_confirmed": true,
+        "accept_worker_result": true,
+        "job_assigned": true,
+        "primary_thread_resumed": true,
+        "cleanup_scope": "zero job accounting active processes, signaled root and every observed member handle",
+        "descendant_observation": "job PID snapshots before each wait and termination; short-lived unsampled members are not individually handle-verified",
+        "pid": 55540,
+        "exit_code": 0,
+        "job_active_processes_after": 0,
+        "observed_member_handles_signaled": true,
+        "observed_member_pids": [
+          21916,
+          55540,
+          62032
+        ],
+        "elapsed_wall_seconds": 5.125
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1440,
+      "extension_sha256": "458abb67d0c2b4dbd0098f9193edb40637d22c1dfe8caed4270eb70bc35e12c7",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 1966080,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 3932160,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 7536640,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 15073280,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 30146560,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 60293120,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp16",
+      "schedule_sha256": "ca6bebed596636367727d965bc240327bec21c61e61d09921343d98dea02499b",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true,
+      "worker": {
+        "command": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "-B",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\benchmark_fp16.py",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\prefix-v1-1440-fp16\\result.json",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\extension-prefix-v1\\workspace\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "--precision",
+          "fp16",
+          "--width",
+          "2560",
+          "--height",
+          "1440"
+        ],
+        "timeout_seconds": 180,
+        "timed_out": false,
+        "cleanup_confirmed": true,
+        "accept_worker_result": true,
+        "job_assigned": true,
+        "primary_thread_resumed": true,
+        "cleanup_scope": "zero job accounting active processes, signaled root and every observed member handle",
+        "descendant_observation": "job PID snapshots before each wait and termination; short-lived unsampled members are not individually handle-verified",
+        "pid": 62420,
+        "exit_code": 0,
+        "job_active_processes_after": 0,
+        "observed_member_handles_signaled": true,
+        "observed_member_pids": [
+          46604,
+          62332,
+          62420
+        ],
+        "elapsed_wall_seconds": 5.2189999999827705
+      }
+    },
+    {
+      "width": 3840,
+      "height": 2160,
+      "extension_sha256": "458abb67d0c2b4dbd0098f9193edb40637d22c1dfe8caed4270eb70bc35e12c7",
+      "boundaries": [
+        {
+          "name": "b1.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b2.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b3.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b4.down",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b5.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b6.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b7.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b8.down",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b9.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b10.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b11.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b12.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b13.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b14.down",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b15.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b16.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b17.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b18.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b19.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b20.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b21.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b22.down",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b23.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b24.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b25.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b26.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b27.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b28.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b29.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b30.down",
+          "bytes": 4423680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b31.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b32.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b33.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b34.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b35.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b36.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b37.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b38.output",
+          "bytes": 4456448,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b39.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b40.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b41.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b42.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b43.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b44.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b45.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b46.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b47.output",
+          "bytes": 8355840,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b48.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b49.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b50.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b51.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b52.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b53.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b54.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b55.output",
+          "bytes": 16711680,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b56.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b57.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b58.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b59.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b60.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b61.output",
+          "bytes": 33423360,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b62.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b63.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b64.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b65.output",
+          "bytes": 66846720,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b66.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b67.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b68.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        },
+        {
+          "name": "b69.output",
+          "bytes": 133693440,
+          "equal": true,
+          "finite": true
+        }
+      ],
+      "failures": [],
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "torch_version": "2.8.0+cu128",
+      "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+      "native_cubin_sha256": {
+        "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+        "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+        "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+        "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+        "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+        "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+        "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+      },
+      "precision": "fp16",
+      "schedule_sha256": "5ffca69f5c8763f13f85ca012f9c7d095d33f12046a358f4c9e996d701526d85",
+      "poisoned_replays_pass": true,
+      "changed_input_replay_pass": true,
+      "worker": {
+        "command": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "-B",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\benchmark_fp16.py",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\prefix-v1-2160-fp16\\result.json",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\extension-prefix-v1\\workspace\\dlssnr\\_C.cp311-win_amd64.pyd",
+          "--precision",
+          "fp16",
+          "--width",
+          "3840",
+          "--height",
+          "2160"
+        ],
+        "timeout_seconds": 180,
+        "timed_out": false,
+        "cleanup_confirmed": true,
+        "accept_worker_result": true,
+        "job_assigned": true,
+        "primary_thread_resumed": true,
+        "cleanup_scope": "zero job accounting active processes, signaled root and every observed member handle",
+        "descendant_observation": "job PID snapshots before each wait and termination; short-lived unsampled members are not individually handle-verified",
+        "pid": 45128,
+        "exit_code": 0,
+        "job_active_processes_after": 0,
+        "observed_member_handles_signaled": true,
+        "observed_member_pids": [
+          45128,
+          53016,
+          55488,
+          62204
+        ],
+        "elapsed_wall_seconds": 5.375
+      }
+    }
+  ],
+  "c512_public_dispatch": {
+    "scope": "C512 public host dispatcher versus identical compiled candidate Driver kernel",
+    "passed": true,
+    "cases": [
+      {
+        "entry": 0,
+        "kernel": "window_ffn_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block24.layer0.layer",
+        "cubin_sha256": "38b5f19d84a83a5278e81f34e8437db99203dbeb9316b36e2466753f785a6983",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 1,
+        "kernel": "window_ffn_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block24.layer0.layer",
+        "cubin_sha256": "38b5f19d84a83a5278e81f34e8437db99203dbeb9316b36e2466753f785a6983",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 2,
+        "kernel": "window_ffn_input_view_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block23.layer0.layer",
+        "cubin_sha256": "38b5f19d84a83a5278e81f34e8437db99203dbeb9316b36e2466753f785a6983",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 3,
+        "kernel": "window_ffn_input_view_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block23.layer0.layer",
+        "cubin_sha256": "38b5f19d84a83a5278e81f34e8437db99203dbeb9316b36e2466753f785a6983",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 4,
+        "kernel": "window_ffn_projection_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block24.layer1.layer",
+        "cubin_sha256": "38b5f19d84a83a5278e81f34e8437db99203dbeb9316b36e2466753f785a6983",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 5,
+        "kernel": "window_ffn_projection_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block24.layer1.layer",
+        "cubin_sha256": "38b5f19d84a83a5278e81f34e8437db99203dbeb9316b36e2466753f785a6983",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 6,
+        "kernel": "window_ffn_projection_input_view_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block23.layer1.layer",
+        "cubin_sha256": "38b5f19d84a83a5278e81f34e8437db99203dbeb9316b36e2466753f785a6983",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 7,
+        "kernel": "window_ffn_projection_input_view_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block23.layer1.layer",
+        "cubin_sha256": "38b5f19d84a83a5278e81f34e8437db99203dbeb9316b36e2466753f785a6983",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 8,
+        "kernel": "window_qkv_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "93f1b17e921e44eb97757b2a6e9635342450433d1fafb7d9ccd292d05e848517",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 8,
+        "kernel": "window_qkv_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 1,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "93f1b17e921e44eb97757b2a6e9635342450433d1fafb7d9ccd292d05e848517",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 8,
+        "kernel": "window_qkv_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 2,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "93f1b17e921e44eb97757b2a6e9635342450433d1fafb7d9ccd292d05e848517",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 8,
+        "kernel": "window_qkv_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 3,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "93f1b17e921e44eb97757b2a6e9635342450433d1fafb7d9ccd292d05e848517",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 9,
+        "kernel": "window_qkv_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "93f1b17e921e44eb97757b2a6e9635342450433d1fafb7d9ccd292d05e848517",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 9,
+        "kernel": "window_qkv_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 1,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "93f1b17e921e44eb97757b2a6e9635342450433d1fafb7d9ccd292d05e848517",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 9,
+        "kernel": "window_qkv_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 2,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "93f1b17e921e44eb97757b2a6e9635342450433d1fafb7d9ccd292d05e848517",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 9,
+        "kernel": "window_qkv_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 3,
+        "record": "block24.layer2.layer",
+        "cubin_sha256": "93f1b17e921e44eb97757b2a6e9635342450433d1fafb7d9ccd292d05e848517",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 10,
+        "kernel": "window_attention_projection_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block24.layer3.layer",
+        "cubin_sha256": "93f1b17e921e44eb97757b2a6e9635342450433d1fafb7d9ccd292d05e848517",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 11,
+        "kernel": "window_attention_projection_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block24.layer3.layer",
+        "cubin_sha256": "93f1b17e921e44eb97757b2a6e9635342450433d1fafb7d9ccd292d05e848517",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 12,
+        "kernel": "window_attention_projection_output_view_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block47.layer3.layer",
+        "cubin_sha256": "93f1b17e921e44eb97757b2a6e9635342450433d1fafb7d9ccd292d05e848517",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 13,
+        "kernel": "window_attention_projection_output_view_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block47.layer3.layer",
+        "cubin_sha256": "93f1b17e921e44eb97757b2a6e9635342450433d1fafb7d9ccd292d05e848517",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 14,
+        "kernel": "window_attention_projection_pool_c512_fp8",
+        "precision": "fp8",
+        "height": 68,
+        "width": 120,
+        "phase": 0,
+        "record": "block30.layer3.layer",
+        "cubin_sha256": "f8ddfd0ebb66828c4f2eee8c16aa6ae8a004d3f600912a9a641ed9a3cf4acb56",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 15,
+        "kernel": "window_attention_projection_pool_c512_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block30.layer3.layer",
+        "cubin_sha256": "4c2bc9c214b8ffeb2d9059a9c8a73ab2ceda2453ca9d11025362521dab92e9fd",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0,
+              "pool": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 16,
+        "kernel": "channel_projection_c512_to_c1024_fp8",
+        "precision": "fp8",
+        "height": 36,
+        "width": 60,
+        "phase": 0,
+        "record": "block30.layer4.layer",
+        "cubin_sha256": "dc9def641ba15a38499995199f15c7438122cafd25f2870d56ab04dfbcae84fa",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      },
+      {
+        "entry": 17,
+        "kernel": "channel_projection_c512_to_c1024_fp16",
+        "precision": "fp16",
+        "height": 16,
+        "width": 24,
+        "phase": 0,
+        "record": "block30.layer4.layer",
+        "cubin_sha256": "dc9def641ba15a38499995199f15c7438122cafd25f2870d56ab04dfbcae84fa",
+        "checks": [
+          {
+            "stage": "eager",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_0",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "poisoned_replay_1",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          },
+          {
+            "stage": "changed_input_replay",
+            "different_bytes": {
+              "high": 0
+            },
+            "guards_intact": true,
+            "inputs_and_weights_immutable": true,
+            "passed": true
+          }
+        ],
+        "passed": true
+      }
+    ],
+    "extension_sha256": "458abb67d0c2b4dbd0098f9193edb40637d22c1dfe8caed4270eb70bc35e12c7",
+    "entry_count": 18,
+    "case_count": 24,
+    "worker": {
+      "command": [
+        "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+        "-B",
+        "D:\\Research\\DLSSNR-PyTorch\\tests\\test_c512_dispatch.py",
+        "--output",
+        "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\prefix-c512-dispatch\\result.json",
+        "--extension",
+        "D:\\Research\\DLSSNR-PyTorch\\outputs\\semantic-rewrite\\extension-prefix-v1\\workspace\\dlssnr\\_C.cp311-win_amd64.pyd",
+        "--cubins",
+        "outputs/storage-prefix-audit/compiled-v1"
+      ],
+      "timeout_seconds": 180,
+      "timed_out": false,
+      "cleanup_confirmed": true,
+      "accept_worker_result": true,
+      "job_assigned": true,
+      "primary_thread_resumed": true,
+      "cleanup_scope": "zero job accounting active processes, signaled root and every observed member handle",
+      "descendant_observation": "job PID snapshots before each wait and termination; short-lived unsampled members are not individually handle-verified",
+      "pid": 41056,
+      "exit_code": 0,
+      "job_active_processes_after": 0,
+      "observed_member_handles_signaled": true,
+      "observed_member_pids": [
+        41056,
+        60624,
+        61168,
+        62116
+      ],
+      "elapsed_wall_seconds": 3.655999999959022
+    }
+  },
+  "source_sha256": {
+    "csrc/kernel_impl/attention_fp16.cuh": "0d74c3b289bfaa7468951a44e501c036f7620fed2f40c9e860eaf5a5ca8a9c41",
+    "csrc/kernel_impl/attention_fp8.cuh": "accd4d33a5202de079e2c6b7909a8dfe8b4afd5dc88912de6347fb8dc94a5701",
+    "csrc/kernel_impl/channel_projection.cuh": "f3a7af748cfa06a28777493f7e2affc556c480cc710cdca8c03e81306b2f6d60",
+    "csrc/kernel_impl/completion_counter_clear.cuh": "d32e02aeec8ccad871d75acc659ceb282e21efdd9d1da722676829ad1094f4fe",
+    "csrc/kernel_impl/composite.cuh": "83206ef93b5875440186631d8619f6d6b1e33db341f1dbfeedc067a0574ea67a",
+    "csrc/kernel_impl/decoder.cuh": "eb64c727934e366218bf32d5f81844b79e63e89b9f620d891054aed9420743b8",
+    "csrc/kernel_impl/downsample_fp16.cuh": "28b7dc949823f82d784fe81a204a46d83d6f5091d39bee479d27ac92b2dfb948",
+    "csrc/kernel_impl/downsample_fp8.cuh": "de16772107bac1b90e23757b3e5de6f81443bb5d6543ec0ddae231edd2de9608",
+    "csrc/kernel_impl/ffn_fp16.cuh": "b504961ff5e87d6eb66eced51adb6529a2582a67bc66ec1551b9eaa12034f339",
+    "csrc/kernel_impl/ffn_fp8.cuh": "62cfc92911d86981b743a3be596af2acddf7f263a27861717fe42fbf1d2a6ebd",
+    "csrc/kernel_impl/frontend_fp16.cuh": "bf9a6b751ca514d18bbbd030e4744dd8a536f7ab4bd42c8a46f24e185916ce26",
+    "csrc/kernel_impl/frontend_fp8.cuh": "2ff13787efc3171deca35ff9d764b6781a7182f13707a6e367dc5096c832b909",
+    "csrc/kernel_impl/frontend_math.cuh": "1107f2e2bf65476eb2b691a738895043ac7d4fe5b592ef24c09860689ef759f9",
+    "csrc/kernel_impl/global_attention.cuh": "180792ded3db985dbc785cb19c0d76e68455e6930aaa087273ac5b0dd75b094f",
+    "csrc/kernel_impl/global_contract.cuh": "76b4551dc08c0e979190faf8c4506f45ba7d1ced9bf82fbebfcf49d76641b83d",
+    "csrc/kernel_impl/global_ffn_expand.cuh": "32c58b4803008999a7bbe95ff8e4ff10f2142d4f2b64ded21b93512b042c8734",
+    "csrc/kernel_impl/global_qkv.cuh": "713c81b97881bbd51d14e94435a33f65e4cc5a4aaebd345cc30c0fc47be6115d",
+    "csrc/kernel_impl/global_repack_layout.cuh": "a8e17c1ef0d0bb478c413d04fb23a39b5a7df1f28c11ed685977c1c20175dc77",
+    "csrc/kernel_impl/input_features.cuh": "fc4e3f4b4cbed4674657cc92346cc3478a57fd583fd8f2c2d20ad3c4df5293b1",
+    "csrc/kernel_impl/intrinsics.cuh": "e6380d67635de25fdb9303163c569312e38228b5b7f97cf2162dbcc86fa3b89e",
+    "csrc/kernel_impl/kernel_helpers.cuh": "9db5dd6bd96ba9b1b2ea19a7c9ab631c88d1efbf5ff5757ffc286ee91f0dd8d5",
+    "csrc/kernel_impl/memoryops.cuh": "a710d94cf48570e918c403f90770d71685bcc3f05ac9e02323ceec65ad03d1c4",
+    "csrc/kernel_impl/mma.cuh": "7bd4464513921ef71b9b2b052a5ac6efcc545eba45eff81a04ec18f8b3744e7c",
+    "csrc/kernel_impl/numerical_constants.cuh": "12806e2d8befb97545ee0d92feb886435d9009e6bc9a64657629064298c9ce25",
+    "csrc/kernel_impl/packed_math.cuh": "29deb1ad49a093c2999ebe261f1577d81215d8b8c1af4ec75b793771b108eec6",
+    "csrc/kernel_impl/postprocess.cuh": "4fac28b8086d313d45bdb103e8c8b3a787d03dd8111ef194a0ba6dade68529b5",
+    "csrc/kernel_impl/projection_fp16.cuh": "4d69cba45d798d4ba22338d9d64a6a1703d6874021b07781a0b5acbad20fba35",
+    "csrc/kernel_impl/projection_fp8.cuh": "90db51f3b08666554b9a3093dad7f7777f78da7808822914c3ee9a8c08e8ced1",
+    "csrc/kernel_impl/repack_fp16.cuh": "f41182dbb611a2032f041f563ba084317c49683eb31bc6ce95eaebf97f789260",
+    "csrc/kernel_impl/repack_fp8.cuh": "783bb5ab92ab9d7a39af58f13cfaf2ffe72e745e819275c4a871e28037c112e0",
+    "csrc/kernel_impl/spatial_projection.cuh": "0dabdf2f65d91385becdc69129581c4aa3a3e735300c9c112b160a6564702674",
+    "csrc/kernel_impl/tiled_mma.cuh": "69853a02881f307f3bfb26021e62da113e4c00f9698aab5138d84744e013cf79",
+    "csrc/kernel_impl/upsample_fp16.cuh": "b6075bb83b2d91e9e81ba16cb8640fc44b12b11e4b22cc6aeb911a3d6921cfb6",
+    "csrc/kernel_impl/upsample_fp8.cuh": "ec179b69eda9e9beeae9551043bc5d19377f1e1b2907db332474f81a550e909c",
+    "csrc/kernel_impl/warp_window32.cuh": "8def2ca68e30113402ffaff6af4000099593cdd503d0a885e686d291ec9251a3",
+    "csrc/kernel_impl/warp_window_wide.cuh": "cd40cc2246231c16b4779941dd5e288d10b6a9658f0b0f49b14fadfb9d4265bc",
+    "csrc/kernel_impl/window_block_fp16.cuh": "8e38abb2732fc5e09a14e41e99f59ce36fc708d01b3eb79c3d643124b26d6b7d",
+    "csrc/kernel_impl/window_block_fp8.cuh": "06c091be91c6a0a0a20309912ae6b7e00d311fe06b6d1393cbbd25153b9ff12f",
+    "csrc/kernel_impl/window_downsample.cuh": "65aefc1234d79056d0e8b28e662dd90bbe2ead89d91b0eddc5581b44f6688815",
+    "csrc/kernel_impl/window_ffn.cuh": "ace61aa38bac2e5801cdec15c50cb48b30366793e065809b00c5ab31378cd737",
+    "csrc/kernel_impl/window_pool.cuh": "bead69dca3f88097a5314e461f6d14e7c96c4b333d5fff710b121591eb980b3f",
+    "csrc/kernel_impl/window_preprocess.cuh": "72eb6edd13ea73669f1753dce4402bbf058f3885b24039c4a47ae01c30aab576",
+    "csrc/kernel_impl/window_qkv.cuh": "fa88ba39bf8b800c9f9a8d0cf8ddc713d220389a0ffebd6f3a253bec66bf5d7d",
+    "csrc/kernel_impl/window_upsample.cuh": "e3403fc616ad63f6480a151694b45b5a30ec8f2141899144a9fe2dd6863195b3",
+    "csrc/kernel_impl/window_view_io.cuh": "d280e53abdc1afe8959248a5b0759e676d851399855cba6a6bce844076bbbbc4",
+    "csrc/kernel_launcher/c512_dispatch.h": "342fcbd574ee20f236f2f908cede9265fda6ba1e2cbee25ba5316423f33dd14d",
+    "csrc/kernel_launcher/c512_dispatch.inl": "badb3604278b0572093dce74d36788857b6c6c1cbe7fc1ab39b01db033af164f",
+    "csrc/kernel_launcher/compiled_resolution_policy.h": "182b3ca9492117c318fb60449976417607643f04fe3085c347ec9105c176973d",
+    "csrc/kernel_launcher/deployment.cpp": "db45114d156364c11cb32f98de4a64262428b8c0e316e4130a9351d7c7fb8c96",
+    "csrc/kernel_launcher/deployment.h": "d6ede64e7aeef47a49cb1a671bf0d8e09e1f26213c0d69ee0de1096cca0901dc",
+    "csrc/kernel_launcher/kernel_abi.h": "9188c13244507196cd528908aa7c6e41d06eb8f2003371599b63f9a0f7692b48",
+    "csrc/kernel_launcher/plan_fp16_generated.inl": "438529bc9a838b8996f8696c47a91eea3ab6aa045abddb9aa6e8349265bdbde0",
+    "csrc/kernel_launcher/plan_generated.inl": "b653e260166261392167d31032072fafd88d4969a083289ae386af30d5971bbb",
+    "csrc/kernel_launcher/plan_geometry.h": "d348153eda265247755d9ef2babdf0bb3c9f62e9fe3241e2f7ca9cb99e990a44",
+    "csrc/kernel_launcher/plan_geometry_fp16_generated.inl": "c41553fbc81e8e194e65d819ba4587b8a531b51485b91b22c90fe161c2442c02",
+    "csrc/kernel_launcher/plan_geometry_generated.inl": "3b3f74e300312ce23739899bf49cc74da850c2f564635a8cab923f3f7aa2fc1b",
+    "csrc/kernel_launcher/reconstructed_attention.cu": "a3b3cddea6bbca066ca84027482162341bcf75ae4af48c59328ac78148607639",
+    "csrc/kernel_launcher/reconstructed_connectors.cu": "eb7d91c686cf3a5b343070bca4cfa10f825e30c22b49de5ddb21bd78c2e31865",
+    "csrc/kernel_launcher/reconstructed_downsample_fp16.cu": "8ced274b5b3942ac23d01fae89b59bdb317e0fb8d32d0582674ab5bbe69bdba9",
+    "csrc/kernel_launcher/reconstructed_downsample_fp8.cu": "de029c779e4cd9255f97ec27804f1aa0a9fe0890c0c8c2bcc6e9cc8b9d2e6383",
+    "csrc/kernel_launcher/reconstructed_ffn.cu": "3cf0e437fc6e3ccb1f849c64e6119dd6cab1b6bd8563d0b620e2eac604830d12",
+    "csrc/kernel_launcher/reconstructed_frontend.cu": "ee557b94030b5f76100c380ece0d049a90450583c3499078dbf2d99f47613ab6",
+    "csrc/kernel_launcher/reconstructed_upsample_fp16.cu": "acd4693d9025f6df92101819b197e78497f2b129fca5cf93385824e22ae13ae3",
+    "csrc/kernel_launcher/reconstructed_upsample_fp8.cu": "c9435b690c4d916c23c7d3736acdb56933f77b43b02701173cdf29e3338f9f33",
+    "csrc/kernel_launcher/reconstructed_window_block_fp16.cu": "0e22b7728df446257436d2267a65a7def619a7045953842ddb85742fc64558ea",
+    "csrc/kernel_launcher/reconstructed_window_block_fp8.cu": "b922214550b2da36178b766ec480a567f080a09636b7f47a378c66d95458d1f8",
+    "csrc/kernel_launcher/windows_dispatch.h": "84aec8cb19a29e52caba3597517841b626e362a6e9c746effe0c22c0a282bfb0",
+    "csrc/kernel_launcher/windows_dispatch.inl": "a6248f24e328bbc86b22cc5304da79e7d983f6c99739cb24a0a8a5fd2c0ff734",
+    "csrc/kernel_launcher/windows_entries.inl": "0ecd925e5b77af047de741c30becb521df7de8fe51948b5ed2b04dc5ec7a8073",
+    "csrc/torch_api/extension.cpp": "e177dc58114fac177cb24111b7cc905866992e4bfd81d6b0e37ca252bc216268",
+    "setup.py": "7ff425edabc20335d91e3a6370beaa26e9215f8de43417724e211216d17b34b6",
+    "tuning/generate_plan.py": "3d0870507b1b50a168c4761d4fa1192906d0f283c3edb7ba14cee739d3ecf055",
+    "tuning/resolution_policy.py": "4312631e1b35bc6811306232ed8215440e3e003d36774fc09f723fdd6700202f",
+    "tuning/cuda_toolchain.py": "da800f2ae743d95a2fe4b0c249c893ec040ffdf5d9d4a92cc07686b752e03974",
+    "tools/kernel_sources.py": "6c532ea2de52770aaee9e2e803bd15f7cb390c1155080ae3c9c71468d8eb844a",
+    "tools/benchmark_fp16.py": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+    "tests/test_kernel_sources_cpu.py": "390c29f4ea3380be5b75146af364604e61b0847326885e60a70c18ef5bba294d",
+    "tests/test_c512_dispatch.py": "9bf441f702d4dd60fbcb171e4ced89ba94cd2f7215c3a19145581c2a334a3456"
+  },
+  "build_regenerated_source": [
+    {
+      "path": "csrc/kernel_launcher/compiled_resolution_policy.h",
+      "built_sha256": "2a4461b35eb938e788f603c9876c768a5769e9ab39fc7a824bc8d41ffa3f6dc4",
+      "workspace_sha256": "182b3ca9492117c318fb60449976417607643f04fe3085c347ec9105c176973d",
+      "difference": "Generated policy line wrapping only."
+    }
+  ],
+  "timing_scope": "No new latency/profiler samples. Device instructions, decoded resource rows, constant sections and generated launch plans exactly match the preceding flat-symbol build. Fresh graph/public-host-dispatch checks qualify this naming cleanup. Host machine-code identity and whole-binary identity are not claimed.",
+  "installation": {
+    "previous_sha256": "4e0b09c831b29f295916838df4567c6e534cf3a7d8b0fd353b8dc713b5ee2626",
+    "installed_sha256": "458abb67d0c2b4dbd0098f9193edb40637d22c1dfe8caed4270eb70bc35e12c7",
+    "public_loader_smoke": {
+      "passed": true,
+      "loader": "dlssnr.deployment.load_extension",
+      "fp8_record_count": 142,
+      "fp16_record_count": 142,
+      "compiled_policy_version": "212c80bfd9243b45f4798b01a27754afb51933745f827946694a2feb38086612"
+    }
+  }
+}

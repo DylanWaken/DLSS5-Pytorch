@@ -14,33 +14,33 @@ struct FWindowDownsampleArguments
 
 template <int Channels, bool bFp8, class FParameters>
 __device__ __forceinline__ FWindowDownsampleArguments
-MakeWindowDownsampleArguments(const FParameters& r_Source)
+MakeWindowDownsampleArguments(const FParameters& SourceParameters)
 {
-	return {r_Source.g_Input,
-			r_Source.g_Output,
-			r_Source.g_PackedWeights,
-			r_Source.g_DownsampledOutput,
-			r_Source.Height,
-			r_Source.Width,
-			r_Source.OriginX,
-			r_Source.OriginY,
-			r_Source.DownsampledHeight,
-			r_Source.DownsampledWidth};
+	return {SourceParameters.g_Input,
+			SourceParameters.g_Output,
+			SourceParameters.g_PackedWeights,
+			SourceParameters.g_DownsampledOutput,
+			SourceParameters.Height,
+			SourceParameters.Width,
+			SourceParameters.OriginX,
+			SourceParameters.OriginY,
+			SourceParameters.DownsampledHeight,
+			SourceParameters.DownsampledWidth};
 }
 
 template <int Channels, bool bFp8>
-__device__ __forceinline__ void PublishWindowDownsample(const FWindowDownsampleArguments& r_Parameters,
-														int r_OutputPanel,
+__device__ __forceinline__ void PublishWindowDownsample(const FWindowDownsampleArguments& Parameters,
+														int OutputPanel,
 														const FWindowAccumulatorTile<32>& r_Output)
 {
 	// C32 writes compact half extents. Wider native entries align those extents
 	// to four. The separate clear operation uses the auxiliary target extents.
-	const int g_ValidHeight = (r_Parameters.Height + 1) / 2;
-	const int g_ValidWidth = (r_Parameters.Width + 1) / 2;
-	const int g_Height = Channels == 32 ? r_Parameters.Height / 2 : (g_ValidHeight + 3) & ~3;
-	const int g_Width = Channels == 32 ? r_Parameters.Width / 2 : (g_ValidWidth + 3) & ~3;
-	const int g_OriginX = (int(blockIdx.x) * 8 + r_Parameters.OriginX) / 2;
-	const int g_OriginY = (int(blockIdx.y) * 8 + r_Parameters.OriginY) / 2;
+	const int g_ValidHeight = (Parameters.Height + 1) / 2;
+	const int g_ValidWidth = (Parameters.Width + 1) / 2;
+	const int g_Height = Channels == 32 ? Parameters.Height / 2 : (g_ValidHeight + 3) & ~3;
+	const int g_Width = Channels == 32 ? Parameters.Width / 2 : (g_ValidWidth + 3) & ~3;
+	const int g_OriginX = (int(blockIdx.x) * 8 + Parameters.OriginX) / 2;
+	const int g_OriginY = (int(blockIdx.y) * 8 + Parameters.OriginY) / 2;
 #pragma unroll
 	for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
 	{
@@ -53,9 +53,9 @@ __device__ __forceinline__ void PublishWindowDownsample(const FWindowDownsampleA
 			if (g_X >= 0 && g_X < g_Width && g_Y >= 0 && g_Y < g_Height)
 			{
 				const int g_Plane =
-					r_OutputPanel * 2 * FWindow32Profile<bFp8>::InputChunks + 2 * r_Chunk + r_Word / 2;
+					OutputPanel * 2 * FWindow32Profile<bFp8>::InputChunks + 2 * r_Chunk + r_Word / 2;
 				const uint64_t g_OutputWordAddress =
-					r_Parameters.g_DownsampledOutput +
+					Parameters.g_DownsampledOutput +
 					((uint64_t(g_Plane * g_Height + g_Y) * g_Width + g_X) * 16) + 4 * (threadIdx.x & 3);
 				// The native padding clear follows these projection stores. Emit
 				// its zero immediately for our own padded cells to avoid a race.
@@ -67,29 +67,29 @@ __device__ __forceinline__ void PublishWindowDownsample(const FWindowDownsampleA
 }
 
 template <int Channels, int ClearPlanes = Channels / 4>
-__device__ __forceinline__ void ClearDownsamplePadding(const FWindowDownsampleArguments& r_Parameters)
+__device__ __forceinline__ void ClearDownsamplePadding(const FWindowDownsampleArguments& Parameters)
 {
-	const int g_ValidHeight = (r_Parameters.Height + 1) / 2;
-	const int g_ValidWidth = (r_Parameters.Width + 1) / 2;
-	if (r_Parameters.g_DownsampledOutput == 0 ||
-		(r_Parameters.DownsampledHeight <= g_ValidHeight && r_Parameters.DownsampledWidth <= g_ValidWidth))
+	const int g_ValidHeight = (Parameters.Height + 1) / 2;
+	const int g_ValidWidth = (Parameters.Width + 1) / 2;
+	if (Parameters.g_DownsampledOutput == 0 ||
+		(Parameters.DownsampledHeight <= g_ValidHeight && Parameters.DownsampledWidth <= g_ValidWidth))
 		return;
-	const int g_OriginX = (int(blockIdx.x) * 8 + r_Parameters.OriginX) / 2;
-	const int g_OriginY = (int(blockIdx.y) * 8 + r_Parameters.OriginY) / 2;
-	const int r_Thread = threadIdx.y * 32 + threadIdx.x;
+	const int g_OriginX = (int(blockIdx.x) * 8 + Parameters.OriginX) / 2;
+	const int g_OriginY = (int(blockIdx.y) * 8 + Parameters.OriginY) / 2;
+	const int ThreadIndex = threadIdx.y * 32 + threadIdx.x;
 	// The native clear footprint is a Half-sized C→2C allocation even for
 	// FP8. Preserve that documented workspace contract, but only clear padding.
-	for (int g_Index = r_Thread; g_Index < 16 * ClearPlanes; g_Index += Channels)
+	for (int g_Index = ThreadIndex; g_Index < 16 * ClearPlanes; g_Index += Channels)
 	{
 		const int g_Plane = g_Index % ClearPlanes;
 		const int g_X = g_OriginX + (g_Index / ClearPlanes) % 4;
 		const int g_Y = g_OriginY + g_Index / (4 * ClearPlanes);
-		if (g_X >= 0 && g_X < r_Parameters.DownsampledWidth && g_Y >= 0 &&
-			g_Y < r_Parameters.DownsampledHeight && (g_X >= g_ValidWidth || g_Y >= g_ValidHeight))
+		if (g_X >= 0 && g_X < Parameters.DownsampledWidth && g_Y >= 0 && g_Y < Parameters.DownsampledHeight &&
+			(g_X >= g_ValidWidth || g_Y >= g_ValidHeight))
 		{
 			const uint64_t g_PaddingVectorAddress =
-				r_Parameters.g_DownsampledOutput +
-				((uint64_t(g_Plane * r_Parameters.DownsampledHeight + g_Y) * r_Parameters.DownsampledWidth +
+				Parameters.g_DownsampledOutput +
+				((uint64_t(g_Plane * Parameters.DownsampledHeight + g_Y) * Parameters.DownsampledWidth +
 				  g_X) *
 				 16);
 			*reinterpret_cast<uint4*>(g_PaddingVectorAddress) = make_uint4(0, 0, 0, 0);
@@ -99,26 +99,26 @@ __device__ __forceinline__ void ClearDownsamplePadding(const FWindowDownsampleAr
 	// CTA zero handles that uncovered border, as the native clear path does.
 	if (blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0)
 	{
-		const int g_CoveredHeight = max(g_ValidHeight, min(r_Parameters.DownsampledHeight,
-														   (int(gridDim.y) * 8 + r_Parameters.OriginY) / 2));
-		const int g_CoveredWidth = max(g_ValidWidth, min(r_Parameters.DownsampledWidth,
-														 (int(gridDim.x) * 8 + r_Parameters.OriginX) / 2));
+		const int g_CoveredHeight = max(
+			g_ValidHeight, min(Parameters.DownsampledHeight, (int(gridDim.y) * 8 + Parameters.OriginY) / 2));
+		const int g_CoveredWidth = max(
+			g_ValidWidth, min(Parameters.DownsampledWidth, (int(gridDim.x) * 8 + Parameters.OriginX) / 2));
 		const int g_BottomPixels =
-			(r_Parameters.DownsampledHeight - g_CoveredHeight) * r_Parameters.DownsampledWidth;
-		const int g_RightPixels = g_CoveredHeight * (r_Parameters.DownsampledWidth - g_CoveredWidth);
-		for (int g_Index = r_Thread; g_Index < (g_BottomPixels + g_RightPixels) * ClearPlanes;
+			(Parameters.DownsampledHeight - g_CoveredHeight) * Parameters.DownsampledWidth;
+		const int g_RightPixels = g_CoveredHeight * (Parameters.DownsampledWidth - g_CoveredWidth);
+		for (int g_Index = ThreadIndex; g_Index < (g_BottomPixels + g_RightPixels) * ClearPlanes;
 			 g_Index += Channels)
 		{
 			const int g_Plane = g_Index % ClearPlanes, g_Pixel = g_Index / ClearPlanes;
-			const bool r_bBottom = g_Pixel < g_BottomPixels;
-			const int g_RightWidth = r_Parameters.DownsampledWidth - g_CoveredWidth;
-			const int g_Y = r_bBottom ? g_CoveredHeight + g_Pixel / r_Parameters.DownsampledWidth
-									  : (g_Pixel - g_BottomPixels) / g_RightWidth;
-			const int g_X = r_bBottom ? g_Pixel % r_Parameters.DownsampledWidth
-									  : g_CoveredWidth + (g_Pixel - g_BottomPixels) % g_RightWidth;
+			const bool bBottom = g_Pixel < g_BottomPixels;
+			const int g_RightWidth = Parameters.DownsampledWidth - g_CoveredWidth;
+			const int g_Y = bBottom ? g_CoveredHeight + g_Pixel / Parameters.DownsampledWidth
+									: (g_Pixel - g_BottomPixels) / g_RightWidth;
+			const int g_X = bBottom ? g_Pixel % Parameters.DownsampledWidth
+									: g_CoveredWidth + (g_Pixel - g_BottomPixels) % g_RightWidth;
 			const uint64_t g_PaddingVectorAddress =
-				r_Parameters.g_DownsampledOutput +
-				((uint64_t(g_Plane * r_Parameters.DownsampledHeight + g_Y) * r_Parameters.DownsampledWidth +
+				Parameters.g_DownsampledOutput +
+				((uint64_t(g_Plane * Parameters.DownsampledHeight + g_Y) * Parameters.DownsampledWidth +
 				  g_X) *
 				 16);
 			*reinterpret_cast<uint4*>(g_PaddingVectorAddress) = make_uint4(0, 0, 0, 0);
@@ -127,46 +127,46 @@ __device__ __forceinline__ void ClearDownsamplePadding(const FWindowDownsampleAr
 }
 
 template <int Channels, bool bFp8>
-__device__ __forceinline__ void ProjectWindowDownsample(const FWindowDownsampleArguments& r_Parameters,
+__device__ __forceinline__ void ProjectWindowDownsample(const FWindowDownsampleArguments& Parameters,
 														const FWindowActivationTile<bFp8>& r_Pooled,
 														FSharedWindow<Channels, bFp8>& s_Window)
 {
 	using FConfig = FWideWindowProfile<Channels, bFp8>;
 	s_Window.Store(0, threadIdx.y, r_Pooled);
 	__syncthreads();
-	const auto* g_Weights = reinterpret_cast<const unsigned char*>(r_Parameters.g_PackedWeights) +
+	const auto* g_Weights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights) +
 							FConfig::AttentionScaleOffset + 2 * Channels;
 #pragma unroll 1
-	for (int r_OutputHalf = 0; r_OutputHalf < 2; ++r_OutputHalf)
+	for (int OutputHalf = 0; OutputHalf < 2; ++OutputHalf)
 	{
 		FWindowAccumulatorTile<32> r_Output{};
 #pragma unroll
-		for (int r_Panel = 0; r_Panel < FConfig::Heads; ++r_Panel)
+		for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
 		{
 			const auto r_Weights = LoadWindowWeights<bFp8>(
-				g_Weights, 32 * threadIdx.y + r_OutputHalf * Channels, 32 * r_Panel, 2 * Channels);
-			LinearWindow32(s_Window.Load(0, r_Panel), r_Weights, r_Output);
+				g_Weights, 32 * threadIdx.y + OutputHalf * Channels, 32 * PanelIndex, 2 * Channels);
+			LinearWindow32(s_Window.Load(0, PanelIndex), r_Weights, r_Output);
 		}
-		PublishWindowDownsample<Channels, bFp8>(r_Parameters, threadIdx.y + r_OutputHalf * FConfig::Heads,
+		PublishWindowDownsample<Channels, bFp8>(Parameters, threadIdx.y + OutputHalf * FConfig::Heads,
 												r_Output);
 	}
 	__syncthreads();
-	ClearDownsamplePadding<Channels>(r_Parameters);
+	ClearDownsamplePadding<Channels>(Parameters);
 }
 
 template <bool bFp8>
-__device__ __forceinline__ void ProjectWindowDownsample32(const FWindowDownsampleArguments& r_Parameters,
+__device__ __forceinline__ void ProjectWindowDownsample32(const FWindowDownsampleArguments& Parameters,
 														  const FWindowActivationTile<bFp8>& r_Pooled)
 {
-	const auto* g_Weights = reinterpret_cast<const unsigned char*>(r_Parameters.g_PackedWeights) +
+	const auto* g_Weights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights) +
 							FWindow32Profile<bFp8>::AttentionScaleOffset + 64;
 #pragma unroll
-	for (int r_OutputPanel = 0; r_OutputPanel < 2; ++r_OutputPanel)
+	for (int OutputPanel = 0; OutputPanel < 2; ++OutputPanel)
 	{
 		FWindowAccumulatorTile<32> r_Output{};
-		LinearWindow32(r_Pooled, LoadWindowWeights<bFp8>(g_Weights, 32 * r_OutputPanel, 0, 64), r_Output);
-		PublishWindowDownsample<32, bFp8>(r_Parameters, r_OutputPanel, r_Output);
+		LinearWindow32(r_Pooled, LoadWindowWeights<bFp8>(g_Weights, 32 * OutputPanel, 0, 64), r_Output);
+		PublishWindowDownsample<32, bFp8>(Parameters, OutputPanel, r_Output);
 	}
-	ClearDownsamplePadding<32>(r_Parameters);
+	ClearDownsamplePadding<32>(Parameters);
 }
 #endif

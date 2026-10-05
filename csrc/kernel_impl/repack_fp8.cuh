@@ -13,9 +13,9 @@
 // -----------------------------------------------------------------------------
 // Exact original kernel definition; shared physical-layout algebra lives in the included header.
 
-extern "C" __global__ void repack_1d_to_2d_c1024_fp8(FGlobalRepackParameters r_Parameters)
+extern "C" __global__ void repack_1d_to_2d_c1024_fp8(FGlobalRepackParameters Parameters)
 {
-	CopyGlobalRepackWords<true, false>(r_Parameters);
+	CopyGlobalRepackWords<true, false>(Parameters);
 }
 
 // -----------------------------------------------------------------------------
@@ -23,7 +23,7 @@ extern "C" __global__ void repack_1d_to_2d_c1024_fp8(FGlobalRepackParameters r_P
 // -----------------------------------------------------------------------------
 // Exact original kernel definition; shared physical-layout algebra lives in the included header.
 
-extern "C" __global__ void repack_2d_to_1d_c1024_fp8(FGlobalRepackParameters r_Parameters)
+extern "C" __global__ void repack_2d_to_1d_c1024_fp8(FGlobalRepackParameters Parameters)
 {
-	CopyGlobalRepackWords<true, true>(r_Parameters);
+	CopyGlobalRepackWords<true, true>(Parameters);
 }

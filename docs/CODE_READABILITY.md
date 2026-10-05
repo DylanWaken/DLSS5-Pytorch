@@ -10,13 +10,17 @@ Use CapitalCamelCase identifiers, an `F` prefix for internal structs, an `E` pre
 
 | Prefix | Role | Examples |
 | --- | --- | --- |
-| `r_` | Register value, fragment, local array or local arithmetic index | `r_Accumulator`, `r_Weights`, `r_KSubtile`, `r_SourceLane` |
-| `r_b` | Register-held boolean predicate | `r_bValid` |
+| `r_` | Tensor/arithmetic register payload, fragment, or index selecting that register data | `r_Accumulator`, `r_Weights`, `r_KSubtile`, `r_SourceLane` |
 | `s_` | Physical shared allocation, address, byte offset or shared-storage quantity | `s_Storage`, `s_StageBytes`, `s_BarrierOffset` |
 | `sl_` | Logical shared coordinate before a documented swizzle/bank mapping | `sl_Row`, when that logical coordinate is actually present |
 | `g_` | Global pointer, byte address or global-layout index | `g_PackedWeights`, `g_TokenGroup`, `g_OutputChannel` |
+| No storage prefix | Launch/configuration records, execution coordinates, control flags, opaque handles and host bookkeeping | `Parameters`, `TileCoordinates`, `Lane`, `Warp`, `bValid`, `TextureHandle`, `Tensor`, `BufferIndex` |
 
 The role takes precedence over where the compiler holds a value: a shared byte address gets `s_` even if the address itself is in a register. Do not add an invented logical-shared coordinate merely to use `sl_`; document the mapping where one exists.
+
+Do not give every device local an `r_` prefix because the compiler might allocate it in a register. Keep the prefix for the actual computation payload and its fragment selectors. Mixed coordinate/parameter structs are descriptors; prefix their storage-specific members, not the whole object. General predicates use `b` without a storage prefix. Explicit `.reg` operands inside an intrinsic's PTX retain their register names.
+
+A host `at::Tensor`, a `std::vector` of tensors or addresses, and an index selecting a host table are host objects, even when they describe CUDA storage. They have plain names. A scalar containing a CUDA device address still uses `g_`. Texture/surface objects and barrier phase tokens are opaque handles/tokens, not pointers into the prefixed address spaces. The [storage-prefix audit](STORAGE_PREFIX_AUDIT.md) records the reviewed roles and cleanup.
 
 Name axes explicitly: M/spatial fragments, N/channel groups, K/reduction subtiles, row halves and physical word positions. For example, `r_Input[SpatialFragments][ReductionSubtiles]` and `r_Weights[ReductionSubtiles][ChannelGroups]` show how a tensor-core tile is consumed. Comments should explain the layout or scheduling reason, not paraphrase each assignment.
 
@@ -92,7 +96,7 @@ The [portable deployment measurements](figures/semantic_deployment_measurements.
 
 These are integrated graph ratios, not guarantees that every individual kernel is within 1% of native. The [portable optimization evidence](semantic_optimization_evidence.json) records the separate per-kernel NCU/SASS and timing comparisons that guided the source changes. Earlier staged and transcript-build receipts remain historical evidence, rather than the basis for this qualification.
 
-The current implementation has 81 exports in 17 entry headers, backed by shared semantic algorithms and ten CUDA emission units. Its 45 implementation headers total 7,714 physical source lines, including comments and blank lines; see [the source inventory breakdown](SOURCE_LAYOUT.md#current-source-inventory). Four tested plans establish neither continuous-resolution tuning nor support on another GPU architecture.
+The current implementation has 81 exports in 17 entry headers, backed by shared semantic algorithms and ten CUDA emission units. Its 45 implementation headers total 7,681 physical source lines, including comments and blank lines; see [the source inventory breakdown](SOURCE_LAYOUT.md#current-source-inventory). Four tested plans establish neither continuous-resolution tuning nor support on another GPU architecture.
 
 Training remains a separate PyTorch FP32/BF16 implementation. Deployment source proofs and speed measurements say nothing about task-specific DLSS5 transfer learning, loss design or a complete training procedure. Those remain topics for further investigation; see [training usage](training.md).
 
@@ -109,4 +113,6 @@ The preceding release added an assembler cache key after the timing run. All 81 
 
 The preceding naming-audit rebuild retains identical device instructions, constants and resource metadata, with separately validated typed host packing and all eight graph correctness cases. See [the naming audit and its build receipt](NAMING_AUDIT.md#validation).
 
-The current flat-symbol rebuild is a separate migration of C++ names and CUDA linkage. Its source/ABI, compiled comparison and runtime evidence are documented in [FLAT_SYMBOLS.md](FLAT_SYMBOLS.md). The semantic timing table above retains its original measured build identity.
+The preceding flat-symbol rebuild is a separate migration of C++ names and CUDA linkage. Its source/ABI, compiled comparison and runtime evidence are documented in [FLAT_SYMBOLS.md](FLAT_SYMBOLS.md). The semantic timing table above retains its original measured build identity.
+
+The current [storage-prefix audit](STORAGE_PREFIX_AUDIT.md) applies the narrower storage-role convention above. It retains identical GPU instructions, decoded resources, constants and launch contracts, with fresh graph and public-dispatch validation.

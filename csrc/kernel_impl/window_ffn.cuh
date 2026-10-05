@@ -21,18 +21,18 @@ template <bool bFp8, bool bInputView = false> struct FWindowFfnProfile
 struct FWindowFfnTileCoordinates
 {
 	int g_TilesHigh, g_TilesWide, g_TileY, g_TileX, g_ExpertGroup;
-	int r_Lane, r_Warp;
+	int Lane, Warp;
 };
 
 template <bool bFp8>
 __device__ __forceinline__ void LoadWindowFfnDenseWeights(uint4 (&r_Weights)[2][4], uint64_t g_PackedWeights,
-														  int r_ReductionTile,
-														  const FWindowFfnTileCoordinates& r_TileCoordinates)
+														  int ReductionTile,
+														  const FWindowFfnTileCoordinates& TileCoordinates)
 {
 	using Profile = FWindowFfnProfile<bFp8>;
 	const uint64_t g_WeightTileBase =
-		g_PackedWeights + uint64_t(r_ReductionTile * Profile::ReductionStep) * 512 * Profile::ElementBytes +
-		r_TileCoordinates.g_ExpertGroup * 2048 + r_TileCoordinates.r_Lane * 16;
+		g_PackedWeights + uint64_t(ReductionTile * Profile::ReductionStep) * 512 * Profile::ElementBytes +
+		TileCoordinates.g_ExpertGroup * 2048 + TileCoordinates.Lane * 16;
 #pragma unroll
 	for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
 #pragma unroll
@@ -43,29 +43,29 @@ __device__ __forceinline__ void LoadWindowFfnDenseWeights(uint4 (&r_Weights)[2][
 
 template <bool bFp8>
 __device__ __forceinline__ void IssueWindowFfnInputStage(unsigned char* s_Storage, uint64_t g_Input,
-														 int r_ReductionTile,
-														 const FWindowFfnTileCoordinates& r_TileCoordinates)
+														 int ReductionTile,
+														 const FWindowFfnTileCoordinates& TileCoordinates)
 {
 	using Profile = FWindowFfnProfile<bFp8>;
-	const int s_StageOffset = (r_ReductionTile % 2) * 4096;
-	const int s_BarrierOffset = 8192 + (r_ReductionTile % 2) * 8;
-	const int r_KSubtile = r_TileCoordinates.r_Warp & 1;
-	const int g_LocalX = (r_TileCoordinates.r_Warp / 2) % 2;
+	const int s_StageOffset = (ReductionTile % 2) * 4096;
+	const int s_BarrierOffset = 8192 + (ReductionTile % 2) * 8;
+	const int KSubtileIndex = TileCoordinates.Warp & 1;
+	const int g_LocalX = (TileCoordinates.Warp / 2) % 2;
 
 	// Eight FP8 warps each transfer 512 bytes; four Half warps each transfer
 	// two rows. Singleton dimensions broadcast, other incomplete edges zero-fill.
 #pragma unroll
-	for (int r_Copy = 0; r_Copy < (bFp8 ? 1 : 2); ++r_Copy)
+	for (int CopyIndex = 0; CopyIndex < (bFp8 ? 1 : 2); ++CopyIndex)
 	{
-		const int g_LocalY = bFp8 ? r_TileCoordinates.r_Warp / 4 : r_Copy;
-		const int g_Y = r_TileCoordinates.g_TilesHigh == 1 ? 0 : r_TileCoordinates.g_TileY + g_LocalY;
-		const int g_X = r_TileCoordinates.g_TilesWide == 1 ? 0 : r_TileCoordinates.g_TileX + g_LocalX;
-		const int s_CopyOffset = s_StageOffset + g_LocalY * 2048 + g_LocalX * 1024 + r_KSubtile * 512;
-		if (g_Y < r_TileCoordinates.g_TilesHigh && g_X < r_TileCoordinates.g_TilesWide)
+		const int g_LocalY = bFp8 ? TileCoordinates.Warp / 4 : CopyIndex;
+		const int g_Y = TileCoordinates.g_TilesHigh == 1 ? 0 : TileCoordinates.g_TileY + g_LocalY;
+		const int g_X = TileCoordinates.g_TilesWide == 1 ? 0 : TileCoordinates.g_TileX + g_LocalX;
+		const int s_CopyOffset = s_StageOffset + g_LocalY * 2048 + g_LocalX * 1024 + KSubtileIndex * 512;
+		if (g_Y < TileCoordinates.g_TilesHigh && g_X < TileCoordinates.g_TilesWide)
 		{
 			const uint64_t g_Source =
-				g_Input + uint64_t(g_Y * r_TileCoordinates.g_TilesWide + g_X) * Profile::SpatialTileBytes +
-				(r_ReductionTile * 2 + r_KSubtile) * 512;
+				g_Input + uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X) * Profile::SpatialTileBytes +
+				(ReductionTile * 2 + KSubtileIndex) * 512;
 			if (Elected(0xffffffffu))
 			{
 				CopyBulk(s_Storage, s_CopyOffset, g_Source, 512, s_BarrierOffset);
@@ -73,7 +73,7 @@ __device__ __forceinline__ void IssueWindowFfnInputStage(unsigned char* s_Storag
 			}
 		}
 		else
-			*reinterpret_cast<uint4*>(s_Storage + s_CopyOffset + r_TileCoordinates.r_Lane * 16) =
+			*reinterpret_cast<uint4*>(s_Storage + s_CopyOffset + TileCoordinates.Lane * 16) =
 				make_uint4(0, 0, 0, 0);
 	}
 }
@@ -82,26 +82,26 @@ __device__ __forceinline__ void IssueWindowFfnInputStage(unsigned char* s_Storag
 // Logical shared words encode the 4x4 spatial tile, K subtile, lane and word.
 // Eight words per thread cover the complete 4 KiB stage without a transpose pass.
 template <typename TParameters>
-__device__ __forceinline__ void
-IssueWindowFfnInputViewStage(unsigned char* s_Storage, const TParameters& r_Parameters, int r_ReductionTile,
-							 const FWindowFfnTileCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void IssueWindowFfnInputViewStage(unsigned char* s_Storage,
+															 const TParameters& Parameters, int ReductionTile,
+															 const FWindowFfnTileCoordinates& TileCoordinates)
 {
 #pragma unroll
-	for (int r_Copy = 0; r_Copy < 8; ++r_Copy)
+	for (int CopyIndex = 0; CopyIndex < 8; ++CopyIndex)
 	{
-		const int sl_Word = r_TileCoordinates.r_Warp * 32 + r_TileCoordinates.r_Lane + r_Copy * 128;
+		const int sl_Word = TileCoordinates.Warp * 32 + TileCoordinates.Lane + CopyIndex * 128;
 		const int g_LocalY = (sl_Word / 512) * 4 + (sl_Word / 64) % 2 + (sl_Word % 2) * 2;
 		const int g_LocalX = ((sl_Word / 256) % 2) * 4 + (sl_Word / 16) % 4;
-		const int g_Y = r_Parameters.Height == 1 ? 0 : r_TileCoordinates.g_TileY * 4 + g_LocalY;
-		const int g_X = r_Parameters.Width == 1 ? 0 : r_TileCoordinates.g_TileX * 4 + g_LocalX;
-		const int g_ChannelPack = r_ReductionTile * 4 + ((sl_Word / 128) % 2) * 2 + (sl_Word / 2) % 2;
+		const int g_Y = Parameters.Height == 1 ? 0 : TileCoordinates.g_TileY * 4 + g_LocalY;
+		const int g_X = Parameters.Width == 1 ? 0 : TileCoordinates.g_TileX * 4 + g_LocalX;
+		const int g_ChannelPack = ReductionTile * 4 + ((sl_Word / 128) % 2) * 2 + (sl_Word / 2) % 2;
 		const int g_Component = (sl_Word / 4) % 4;
-		const int s_Destination = (r_ReductionTile % 2) * 4096 + sl_Word * 4;
-		if (g_Y < r_Parameters.Height && g_X < r_Parameters.Width)
+		const int s_Destination = (ReductionTile % 2) * 4096 + sl_Word * 4;
+		if (g_Y < Parameters.Height && g_X < Parameters.Width)
 		{
 			const uint64_t g_Source =
-				r_Parameters.g_Input +
-				uint64_t((g_ChannelPack * r_Parameters.Height + g_Y) * r_Parameters.Width + g_X) * 16 +
+				Parameters.g_Input +
+				uint64_t((g_ChannelPack * Parameters.Height + g_Y) * Parameters.Width + g_X) * 16 +
 				g_Component * 4;
 			CopyAsync4(s_Storage, s_Destination, g_Source);
 		}
@@ -112,9 +112,9 @@ IssueWindowFfnInputViewStage(unsigned char* s_Storage, const TParameters& r_Para
 }
 
 template <bool bInputView = false>
-__device__ __forceinline__ void WaitWindowFfnInputStage(unsigned char* s_Storage, int r_ReductionTile)
+__device__ __forceinline__ void WaitWindowFfnInputStage(unsigned char* s_Storage, int ReductionTile)
 {
-	const int s_BarrierOffset = 8192 + (r_ReductionTile % 2) * 8;
+	const int s_BarrierOffset = 8192 + (ReductionTile % 2) * 8;
 	if constexpr (bInputView)
 		CopyWait0();
 	ArriveAndWait(s_Storage, s_BarrierOffset);
@@ -187,20 +187,20 @@ template <bool bFp8, int SpatialFragments>
 __device__ __forceinline__ void
 ComputeGroupedWindowMlp(FMmaAccumulatorTile<SpatialFragments, 4>& r_Output,
 						const FMmaAccumulatorTile<SpatialFragments, 4>& r_Projected, uint64_t g_PackedWeights,
-						const FWindowFfnTileCoordinates& r_TileCoordinates)
+						const FWindowFfnTileCoordinates& TileCoordinates)
 {
 	using Profile = FWindowFfnProfile<bFp8>;
 	const uint64_t g_Expand = g_PackedWeights +
-							  (262144 + r_TileCoordinates.g_ExpertGroup * 16384) * Profile::ElementBytes +
-							  r_TileCoordinates.r_Lane * 16;
+							  (262144 + TileCoordinates.g_ExpertGroup * 16384) * Profile::ElementBytes +
+							  TileCoordinates.Lane * 16;
 	const uint64_t g_Contract = g_PackedWeights +
-								(393216 + r_TileCoordinates.g_ExpertGroup * 16384) * Profile::ElementBytes +
-								r_TileCoordinates.r_Lane * 16;
+								(393216 + TileCoordinates.g_ExpertGroup * 16384) * Profile::ElementBytes +
+								TileCoordinates.Lane * 16;
 
 	// Hidden activations stay in registers. Processing 32 hidden channels at a
 	// time avoids materializing the 256-channel intermediate in shared/global memory.
 #pragma unroll 1
-	for (int r_HiddenTile = 0; r_HiddenTile < 8; ++r_HiddenTile)
+	for (int HiddenTileIndex = 0; HiddenTileIndex < 8; ++HiddenTileIndex)
 	{
 		FMmaAccumulatorTile<SpatialFragments, 2> r_Hidden{};
 #pragma unroll
@@ -215,7 +215,7 @@ ComputeGroupedWindowMlp(FMmaAccumulatorTile<SpatialFragments, 4>& r_Output,
 #pragma unroll
 				for (int r_NTile = 0; r_NTile < 2; ++r_NTile)
 					r_Weights[r_NTile] = __ldca(reinterpret_cast<const uint4*>(
-						g_Expand + r_HiddenTile * 1024 + r_KPair * 8192 + r_NTile * 512));
+						g_Expand + HiddenTileIndex * 1024 + r_KPair * 8192 + r_NTile * 512));
 				AccumulateWindowFfnSingleFp8(r_Hidden, r_Input, r_Weights);
 			}
 			else
@@ -231,7 +231,7 @@ ComputeGroupedWindowMlp(FMmaAccumulatorTile<SpatialFragments, 4>& r_Output,
 #pragma unroll
 					for (int r_NTile = 0; r_NTile < 2; ++r_NTile)
 						r_Weights[r_KSubtile][r_NTile] = __ldca(reinterpret_cast<const uint4*>(
-							g_Expand + r_HiddenTile * 1024 + (r_KPair * 2 + r_KSubtile) * 8192 +
+							g_Expand + HiddenTileIndex * 1024 + (r_KPair * 2 + r_KSubtile) * 8192 +
 							r_NTile * 512));
 				}
 				AccumulateTile<Profile::Precision>(r_Hidden, r_Input, r_Weights);
@@ -247,8 +247,8 @@ ComputeGroupedWindowMlp(FMmaAccumulatorTile<SpatialFragments, 4>& r_Output,
 				r_Input[r_Spatial] = LoadWindowFfnInputFragment<true>(r_Hidden, r_Spatial, 0);
 #pragma unroll
 			for (int r_NTile = 0; r_NTile < 4; ++r_NTile)
-				r_Weights[r_NTile] =
-					__ldca(reinterpret_cast<const uint4*>(g_Contract + r_HiddenTile * 2048 + r_NTile * 512));
+				r_Weights[r_NTile] = __ldca(
+					reinterpret_cast<const uint4*>(g_Contract + HiddenTileIndex * 2048 + r_NTile * 512));
 			AccumulateWindowFfnSingleFp8(r_Output, r_Input, r_Weights);
 		}
 		else
@@ -264,7 +264,7 @@ ComputeGroupedWindowMlp(FMmaAccumulatorTile<SpatialFragments, 4>& r_Output,
 #pragma unroll
 				for (int r_NTile = 0; r_NTile < 4; ++r_NTile)
 					r_Weights[r_KSubtile][r_NTile] = __ldca(reinterpret_cast<const uint4*>(
-						g_Contract + r_HiddenTile * 4096 + r_KSubtile * 2048 + r_NTile * 512));
+						g_Contract + HiddenTileIndex * 4096 + r_KSubtile * 2048 + r_NTile * 512));
 			}
 			AccumulateTile<Profile::Precision>(r_Output, r_Input, r_Weights);
 		}
@@ -272,17 +272,17 @@ ComputeGroupedWindowMlp(FMmaAccumulatorTile<SpatialFragments, 4>& r_Output,
 }
 
 template <bool bFp8, bool bInputView = false, typename TParameters>
-__device__ __forceinline__ void RunWindowFfn(const TParameters& r_Parameters, unsigned char* s_Storage)
+__device__ __forceinline__ void RunWindowFfn(const TParameters& Parameters, unsigned char* s_Storage)
 {
 	using Profile = FWindowFfnProfile<bFp8, bInputView>;
-	const FWindowFfnTileCoordinates r_TileCoordinates{r_Parameters.Height / 4,
-													  r_Parameters.Width / 4,
-													  int(blockIdx.y) * 2,
-													  int(blockIdx.x) * 2,
-													  (int(threadIdx.y) % 4) + int(blockIdx.z) * 4,
-													  int(threadIdx.x),
-													  int(threadIdx.y)};
-	if (r_TileCoordinates.r_Lane == 0 && r_TileCoordinates.r_Warp == 0)
+	const FWindowFfnTileCoordinates TileCoordinates{Parameters.Height / 4,
+													Parameters.Width / 4,
+													int(blockIdx.y) * 2,
+													int(blockIdx.x) * 2,
+													(int(threadIdx.y) % 4) + int(blockIdx.z) * 4,
+													int(threadIdx.x),
+													int(threadIdx.y)};
+	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 	{
 		BarrierInit(s_Storage, 8192, Profile::Warps * 32);
 		BarrierInit(s_Storage, 8200, Profile::Warps * 32);
@@ -290,26 +290,26 @@ __device__ __forceinline__ void RunWindowFfn(const TParameters& r_Parameters, un
 	__syncthreads();
 
 	uint4 r_Weights[2][4];
-	LoadWindowFfnDenseWeights<bFp8>(r_Weights, r_Parameters.g_PackedWeights, 0, r_TileCoordinates);
+	LoadWindowFfnDenseWeights<bFp8>(r_Weights, Parameters.g_PackedWeights, 0, TileCoordinates);
 	if constexpr (bInputView)
-		IssueWindowFfnInputViewStage(s_Storage, r_Parameters, 0, r_TileCoordinates);
+		IssueWindowFfnInputViewStage(s_Storage, Parameters, 0, TileCoordinates);
 	else
-		IssueWindowFfnInputStage<bFp8>(s_Storage, r_Parameters.g_Input, 0, r_TileCoordinates);
+		IssueWindowFfnInputStage<bFp8>(s_Storage, Parameters.g_Input, 0, TileCoordinates);
 	WaitWindowFfnInputStage<bInputView>(s_Storage, 0);
 	FMmaAccumulatorTile<Profile::SpatialFragments, 4> r_Projected{};
 
 	// Two-stage pipeline: issue the next input before current MMA work, then
 	// fetch its weights and wait. The final iteration neither refills nor waits.
 #pragma unroll 1
-	for (int r_ReductionTile = 0; r_ReductionTile < Profile::ReductionTiles; ++r_ReductionTile)
+	for (int ReductionTile = 0; ReductionTile < Profile::ReductionTiles; ++ReductionTile)
 	{
-		if (r_ReductionTile + 1 < Profile::ReductionTiles)
+		if (ReductionTile + 1 < Profile::ReductionTiles)
 		{
 			if constexpr (bInputView)
-				IssueWindowFfnInputViewStage(s_Storage, r_Parameters, r_ReductionTile + 1, r_TileCoordinates);
+				IssueWindowFfnInputViewStage(s_Storage, Parameters, ReductionTile + 1, TileCoordinates);
 			else
-				IssueWindowFfnInputStage<bFp8>(s_Storage, r_Parameters.g_Input, r_ReductionTile + 1,
-											   r_TileCoordinates);
+				IssueWindowFfnInputStage<bFp8>(s_Storage, Parameters.g_Input, ReductionTile + 1,
+											   TileCoordinates);
 		}
 		uint4 r_Input[Profile::SpatialFragments][2];
 #pragma unroll
@@ -317,32 +317,32 @@ __device__ __forceinline__ void RunWindowFfn(const TParameters& r_Parameters, un
 #pragma unroll
 			for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
 				r_Input[r_Spatial][r_KSubtile] = *reinterpret_cast<const uint4*>(
-					s_Storage + (r_ReductionTile % 2) * 4096 +
-					(bFp8 && !bInputView ? (r_TileCoordinates.r_Warp / 4) * 2048 : 0) + r_Spatial * 1024 +
-					r_KSubtile * 512 + r_TileCoordinates.r_Lane * 16);
+					s_Storage + (ReductionTile % 2) * 4096 +
+					(bFp8 && !bInputView ? (TileCoordinates.Warp / 4) * 2048 : 0) + r_Spatial * 1024 +
+					r_KSubtile * 512 + TileCoordinates.Lane * 16);
 		AccumulateTile<Profile::Precision>(r_Projected, r_Input, r_Weights);
-		if (r_ReductionTile + 1 < Profile::ReductionTiles)
+		if (ReductionTile + 1 < Profile::ReductionTiles)
 		{
-			LoadWindowFfnDenseWeights<bFp8>(r_Weights, r_Parameters.g_PackedWeights, r_ReductionTile + 1,
-											r_TileCoordinates);
-			WaitWindowFfnInputStage<bInputView>(s_Storage, r_ReductionTile + 1);
+			LoadWindowFfnDenseWeights<bFp8>(r_Weights, Parameters.g_PackedWeights, ReductionTile + 1,
+											TileCoordinates);
+			WaitWindowFfnInputStage<bInputView>(s_Storage, ReductionTile + 1);
 		}
 	}
 
 	FMmaAccumulatorTile<Profile::SpatialFragments, 4> r_Output{};
-	ComputeGroupedWindowMlp<bFp8>(r_Output, r_Projected, r_Parameters.g_PackedWeights, r_TileCoordinates);
+	ComputeGroupedWindowMlp<bFp8>(r_Output, r_Projected, Parameters.g_PackedWeights, TileCoordinates);
 #pragma unroll
 	for (int r_Spatial = 0; r_Spatial < Profile::SpatialFragments; ++r_Spatial)
 	{
 		const int g_Y =
-			r_TileCoordinates.g_TileY + (bFp8 && !bInputView ? r_TileCoordinates.r_Warp / 4 : r_Spatial / 2);
-		const int g_X = r_TileCoordinates.g_TileX + (bFp8 && !bInputView ? r_Spatial : r_Spatial % 2);
-		if (g_Y >= r_TileCoordinates.g_TilesHigh || g_X >= r_TileCoordinates.g_TilesWide)
+			TileCoordinates.g_TileY + (bFp8 && !bInputView ? TileCoordinates.Warp / 4 : r_Spatial / 2);
+		const int g_X = TileCoordinates.g_TileX + (bFp8 && !bInputView ? r_Spatial : r_Spatial % 2);
+		if (g_Y >= TileCoordinates.g_TilesHigh || g_X >= TileCoordinates.g_TilesWide)
 			continue;
 		const uint64_t g_OutputTileBase =
-			r_Parameters.g_Output +
-			uint64_t(g_Y * r_TileCoordinates.g_TilesWide + g_X) * Profile::SpatialTileBytes +
-			r_TileCoordinates.g_ExpertGroup * 1024 * Profile::ElementBytes + r_TileCoordinates.r_Lane * 16;
+			Parameters.g_Output +
+			uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X) * Profile::SpatialTileBytes +
+			TileCoordinates.g_ExpertGroup * 1024 * Profile::ElementBytes + TileCoordinates.Lane * 16;
 #pragma unroll
 		for (int r_NTile = 0; r_NTile < (bFp8 ? 2 : 4); ++r_NTile)
 			StoreNoAllocate(g_OutputTileBase + r_NTile * 512,

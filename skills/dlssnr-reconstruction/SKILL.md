@@ -119,7 +119,7 @@ The postmortem should explain observed fusion/layout work, representation overhe
 
 ## Internal readability and stable interfaces
 
-Follow the final UE-style naming specification in `outputs/all-reconstructed-deployment-prep/readability-ue-v2/CODE_READABILITY.md`. Use meaningful CapitalCamelCase internals, `r_` register values/fragments, `r_b` proven booleans, `s_` physical shared-memory roles and `g_` proven global pointers/indices. Reserve `sl_` for logical pre-swizzle coordinates with actual def-use evidence; no such coverage is claimed merely by adding a prefix. Keep unresolved roles explicit rather than inventing tensor semantics. Preserve original PTX anchors and exact identifier inverses.
+The historical UE naming specification is preserved in `outputs/all-reconstructed-deployment-prep/readability-ue-v2/CODE_READABILITY.md`. Current code follows `docs/CODE_READABILITY.md` and `docs/STORAGE_PREFIX_AUDIT.md`: meaningful CapitalCamelCase internals, `r_` for tensor/arithmetic register payload and fragment selectors, `s_` for physical shared-memory roles, and `g_` for proven global pointers/indices. Ordinary control flags use plain `b` names. Reserve `sl_` for logical pre-swizzle coordinates with actual def-use evidence; no such coverage is claimed merely by adding a prefix. Keep unresolved roles explicit rather than inventing tensor semantics. Preserve original PTX anchors and exact identifier inverses.
 
 The historical UE naming pass kept CUDA namespaces and `Parameters`/`ClearParameters` type identities because they participated in C++ symbol mangling. That restriction applies when reproducing its archived binaries, not to the current source: the later complete flat-symbol migration uses bare `extern "C"` exports and descriptive global `F` types. Keep pointer-field/member/offsetof spellings aligned while retaining field order, sizes, alignment and reserved slots. Public Python/Torch names remain stable. Shared intrinsics retain literal ISA, operand constraints and clobbers; source rename equivalence does not imply instruction identity after compilation.
 
@@ -265,3 +265,24 @@ entry roster, instruction payloads and launch records after rebuilding; exercise
 full graphs and separately exposed host dispatch. See [the migration validation](../../docs/FLAT_SYMBOLS.md).
 Preserve original source/binary identities in existing optimization receipts and
 charts. A symbol migration with fresh correctness tests is not a fresh timing run.
+
+## Prefix the storage role, not every variable
+
+Trace each declaration to its consumers before retaining a storage prefix. A
+parameter or coordinate descriptor is not a register fragment merely because it
+is used in device code. Use plain `Parameters`, `Arguments`, `TileCoordinates`,
+`Lane`, `Warp` and control predicates such as `bValid`. Keep `r_` on packed
+arithmetic values, MMA fragments and their array/shuffle selectors. Keep `s_`,
+`sl_` and `g_` on proven addresses, layouts and storage-specific quantities;
+correct a mismatched prefix instead of discarding the storage information.
+
+Host tensor handles, vectors of tensors/addresses and CPU table indices are plain
+host objects. Actual scalar device addresses retain `g_`. Texture/surface handles,
+transform descriptors, sampling configuration and opaque barrier tokens are plain
+names. The fact that an intrinsic accepts a register constraint does not turn
+ordinary configuration into a tensor payload. Preserve literal inline PTX and
+its explicit `.reg` names during a C++ naming-only pass.
+
+Record scope-specific rename maps: the same spelling can denote a host tensor in
+one function and a real global pointer in another. Compare tokens and ABI fields,
+rebuild and inspect compiled code before carrying forward performance evidence.
