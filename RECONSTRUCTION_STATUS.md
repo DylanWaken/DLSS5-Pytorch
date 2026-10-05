@@ -1,6 +1,10 @@
 # Reconstruction status
 
-Snapshot: 2026-10-05. The final UEv2 build passes the SM120, batch-one FP8 prepared-feature trunk at **720p, 1080p, 2K and 4K**, with every run meeting the accepted **no more than 1% slower than original** criterion in both execution orders. At 4K it measures 6.496523 ms versus 6.452048 ms original, a 0.689% pooled gap. Further optimization is stopped under that criterion; full DLL parity and a complete FP16 route are not claimed.
+Current update, 2026-10-06: **FP16 blocks 1-69 are implemented in the C++ plan and pass native-byte and <=1% timing gates at all four resolutions.** At 4K: 11.409460 ms candidate versus 11.301165 ms original (0.958% slower; both order ratios below 1.01). Checkpoints and standalone loaders are committed. See [the integration/profiling report](FP16_DEPLOYMENT.md) and [portable measurement data](figures/fp16_deployment_measurements.json). The installed build is recorded by `outputs/fp16-fullgraph/install.json`.
+
+## Preserved FP8 qualification
+
+Historical FP8 qualification snapshot: 2026-10-05. The final UEv2 build passes the SM120, batch-one FP8 prepared-feature trunk at **720p, 1080p, 2K and 4K**, with every run meeting the accepted **no more than 1% slower than original** criterion in both execution orders. At 4K it measures 6.496523 ms versus 6.452048 ms original, a 0.689% pooled gap. Further optimization is stopped under that criterion; full DLL host parity was not claimed. FP16 was completed subsequently, as summarized above.
 
 The qualified binary is `88b7a94ab57c3da0291ef48797ed5f8f4e85c1ce6cb7692657c16906e65bd1a5`, recorded by the [normal source build](../outputs/all-reconstructed-deployment-prep/readability-ue-v2/build-run-v1/build.json). The [installation receipt](../outputs/all-reconstructed-deployment-prep/readability-ue-v2/install-receipt.json) records the installed active source and binary separately from qualification.
 
@@ -37,7 +41,7 @@ Every run checks all **74 published physical boundaries**, same-input complement
 
 The [final matched-kernel suite](../outputs/all-reconstructed-deployment-prep/fp16-kernel-benchmark/run-ue-v2/receipt.json) passes numerical/guard checks in all **48 cases**: C32/C64/C128/C256 ordinary windows, C512 FFN and C512 QKV, each in FP8/FP16 at four resolution-derived physical shapes. Each uses finite-positive, finite-negative, signed-zero and restored fixtures, then 32 alternating timing pairs with one call per graph.
 
-**36/48 cases reverse speed ranking by execution order; three FP8 and eight FP16 cases are slower in both orders.** Pooled medians must not be read as a universal individual-kernel ≤1% qualification. See [both-order results](../outputs/all-reconstructed-deployment-prep/fp16-kernel-benchmark/RESULTS.md) and the [kernel chart](figures/deployment_kernel_precision_comparison.svg). FP16 records use independently calibrated K16 packing, not recovered DLL Half-host conversion. There is no complete FP16 trunk API or deployment measurement.
+**36/48 cases reverse speed ranking by execution order; three FP8 and eight FP16 cases are slower in both orders.** Pooled medians must not be read as a universal individual-kernel ≤1% qualification. See [both-order results](../outputs/all-reconstructed-deployment-prep/fp16-kernel-benchmark/RESULTS.md) and the [kernel chart](figures/deployment_kernel_precision_comparison.svg). FP16 records use independently calibrated K16 packing, not recovered DLL Half-host conversion. The subsequent FP16 whole-trunk API and measurements are in [FP16 deployment](FP16_DEPLOYMENT.md).
 
 ## Full-model training
 
@@ -52,7 +56,7 @@ A bounded valid 33 × 33 full-model test verifies head, 77 training boundaries a
 | Area | State |
 |---|---|
 | FP8 whole trunk | Four exact valid resolutions, batch one, SM120; ≤1% slowdown criterion met |
-| FP16 whole trunk | Not implemented/qualified as a complete route; kernel fixtures remain a separate scope |
+| FP16 whole trunk | Implemented and qualified at all four fields on SM120; see the subsequent FP16 report |
 | Continuous resolutions / other GPU architectures | Not qualified by the four discrete fields |
 | Frontend/output extras and renderer/DLL host | Source coverage does not imply integrated runtime qualification |
 | Changed-input whole-graph / exhaustive exceptions / broad full-route sanitizers | Not established by these final four runs |
