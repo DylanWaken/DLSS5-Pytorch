@@ -27,7 +27,7 @@ Name axes explicitly: M/spatial fragments, N/channel groups, K/reduction subtile
 ## Write the recovered algorithm
 
 The actual `extern "C" __global__` entry must be readable from setup through
-final stores. Each export has its own `kernel_impl/<exact_export_name>.cu`
+final stores. Each export has its own `kernel_impl/<fp8|fp16|common>/<exact_export_name>.cu`
 file. Keep tile ownership, register/shared declarations, pipeline prefill,
 reduction loops, waits/recycling and writebacks in that global function.
 Fused down/up sampling and frontend stages belong in the same global body as
@@ -58,11 +58,11 @@ A shared helper must preserve the contract that matters:
 
 Do not replace a native exponential surrogate with `exp()`, widen an intermediate for convenience, or substitute a generic GEMM layout without new correctness evidence. Equivalent real-number formulas need not produce the same Half/FP8 results.
 
-All inline PTX belongs in [intrinsics.cuh](../csrc/kernel_impl/intrinsics.cuh). Each wrapper should state what the instruction does and any rounding, FTZ, synchronization or address-space behavior it preserves. Operation files should call those primitives through meaningful arithmetic/memory helpers, not reproduce assembly blocks or register-number instruction streams. Unused transcript-era helpers have been removed; keep the shared utility layer limited to primitives used by the current algorithms.
+All inline PTX belongs in [intrinsics.cuh](../csrc/kernel_impl/common/intrinsics.cuh). Each wrapper should state what the instruction does and any rounding, FTZ, synchronization or address-space behavior it preserves. Operation files should call those primitives through meaningful arithmetic/memory helpers, not reproduce assembly blocks or register-number instruction streams. Unused transcript-era helpers have been removed; keep the shared utility layer limited to primitives used by the current algorithms.
 
 ## Numerical constants and known versus inferred meaning
 
-Name nontrivial numerical constants `CONST_*` and make them `constexpr`. Shared activation, normalization and attention constants live in [numerical_constants.cuh](../csrc/kernel_impl/numerical_constants.cuh). Frontend hash and color/filter constants stay in their common frontend helpers when their scope is specific to those operations.
+Name nontrivial numerical constants `CONST_*` and make them `constexpr`. Shared activation, normalization and attention constants live in [numerical_constants.cuh](../csrc/kernel_impl/common/numerical_constants.cuh). Frontend hash and color/filter constants stay in their common frontend helpers when their scope is specific to those operations.
 
 For encoded floating values, document the exact bits, decoded value and observed arithmetic role. Record a formula where it explains a stride or coefficient relationship. For example, normalization epsilon is a packed Half bit pattern, not the integer value of that pattern; a matrix stride should show its channel product or a named profile constant.
 
@@ -80,7 +80,7 @@ The [semantic naming audit](NAMING_AUDIT.md) traces every ABI field to its actua
 
 Project CUDA/C++ source has no namespaces or `using namespace` directives. Call helpers directly, for example `LinearWindow32(...)` or `MMA(...)`. Give shared types and helpers operation-specific names so unrelated algorithms remain distinct in global scope: `FWindow32Profile`, `FSpatialProjectionArguments` and `FResolutionSelection` describe their roles without a namespace hierarchy.
 
-All 81 exported kernels use bare `extern "C"` names. Precision-specific exports retain `_fp8` and `_fp16`; their C symbols no longer depend on C++ type mangling. Launch records use descriptive global `F` names, such as `FWindowBlockC32Fp8Parameters`, with a shared type where the layout and meaning are identical. Preserve field order, widths, alignment, byte offsets and matching host/device declarations in `kernel_impl/kernel_abi.h`.
+All 81 exported kernels use bare `extern "C"` names. Precision-specific exports retain `_fp8` and `_fp16`; their C symbols no longer depend on C++ type mangling. Launch records use descriptive global `F` names, such as `FWindowBlockC32Fp8Parameters`, with a shared type where the layout and meaning are identical. Preserve field order, widths, alignment, byte offsets and matching host/device declarations in `kernel_impl/common/kernel_abi.h`.
 
 External library qualification such as `std::`, `at::` and `c10::` remains necessary. `TORCH_LIBRARY(dlssnr, ...)` keeps the public Torch registration domain; it does not declare a project C++ namespace. [The flat-symbol migration](FLAT_SYMBOLS.md) records the separate rebuild and validation.
 
@@ -157,7 +157,7 @@ The preceding [storage-prefix audit](STORAGE_PREFIX_AUDIT.md) applies the narrow
 
 The [kernel reading guide](KERNEL_READING_GUIDE.md) now maps directly to each
 export's `.cu` file. Those global bodies own storage, staging, loops and
-writebacks. `kernel_impl/kernel_abi.h` is the authoritative host/device ABI;
+writebacks. `kernel_impl/common/kernel_abi.h` is the authoritative host/device ABI;
 `kernel_launcher` contains host code. The shared fragment operation is named
 `MMA`, replacing `MultiplyAccumulate`.
 

@@ -229,7 +229,7 @@ The model is minimally trainable. **DLSS5 transfer-learning methodology, actual 
 Current exported CUDA functions live in individually named `.cu` files under `kernel_impl`.
 Each function shows its storage, loops, pipeline and writeback; genuinely repeated tensor
 math, layouts and low-level intrinsics remain shared headers. Parameter contracts live in
-`kernel_impl/kernel_abi.h`. `kernel_launcher` contains host launchers and generated schedules,
+`kernel_impl/common/kernel_abi.h`. `kernel_launcher` contains host launchers and generated schedules,
 and `torch_api` contains schemas, custom classes and dispatcher registration. Project symbols
 are global; CUDA entries use bare `extern "C"` exports. External `std`, `at` and `c10`
 qualifications and the public Torch `dlssnr` registration domain are unchanged. The census is

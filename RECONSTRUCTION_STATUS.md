@@ -6,9 +6,14 @@ See [current timings and scope](BENCHMARKS.md), [raw measurement data](figures/g
 
 ## Source coverage
 
+Kernel entries are grouped into `kernel_impl/fp8` and `kernel_impl/fp16`.
+Shared functions, ABI declarations and counter reset live in `kernel_impl/common`.
+The [directory-migration receipt](precision_layout_audit.json) verifies the rebuilt
+extension against the measured build; all 81 device implementations remain identical.
+
 Production source contains 81 exports: 40 FP8/FP16 pairs plus a counter clear. The trunk reuses 36 entries per precision across 152 compute/repack positions and 33 clears. It binds 142 weight records and exposes 74 published boundaries. Separate fixtures test preprocessing, postprocessing and the extra output-view entries.
 
-Each exported `__global__` function now lives in its exact-name `.cu` file and contains its storage, pipeline, loops and writeback. The old forwarding headers and launcher CUDA files are removed. Twenty-five shared headers hold repeated math, profiles and memory operations; the ABI is in `kernel_impl/kernel_abi.h`. `kernel_launcher` contains host dispatch only. Inline PTX stays in `intrinsics.cuh`, and the shared matrix operation is named `MMA`. [Source layout](SOURCE_LAYOUT.md), [readability details](CODE_READABILITY.md) and the [source audit](global_entry_audit.json) describe the current tree.
+Each exported `__global__` function now lives in its exact-name `.cu` file and contains its storage, pipeline, loops and writeback. The old forwarding headers and launcher CUDA files are removed. Twenty-five shared headers hold repeated math, profiles and memory operations; the ABI is in `kernel_impl/common/kernel_abi.h`. `kernel_launcher` contains host dispatch only. Inline PTX stays in `intrinsics.cuh`, and the shared matrix operation is named `MMA`. [Source layout](SOURCE_LAYOUT.md), [readability details](CODE_READABILITY.md) and the [source audit](global_entry_audit.json) describe the current tree.
 
 The current tree also removes all project C++ namespaces. Helpers are called directly, global ABI/profile types carry descriptive `F` names, and all 81 kernels export bare `extern "C"` symbols. External library namespaces and the public Torch `dlssnr` registration domain remain unchanged. The [flat-symbol migration report](FLAT_SYMBOLS.md) records its separate compiled and runtime checks, including all eight graph cases and the C512 dispatcher.
 

@@ -14,7 +14,7 @@ Reproducing a real-number equation was insufficient. The reference publishes pac
 - Swizzles, row ownership, padding, residual scales and view mappings.
 - Async-copy stage ownership, barrier arrival counts and ordered global split publication.
 
-The constants are documented in [numerical_constants.cuh](../csrc/kernel_impl/numerical_constants.cuh). For example, the FFN gate uses a clamped quadratic expression with exact Half coefficients. Their decoded values and algebraic relationships explain what the code computes. The original coefficient-fitting procedure is unknown; a plausible approximation name is not evidence of how NVIDIA selected the coefficients.
+The constants are documented in [numerical_constants.cuh](../csrc/kernel_impl/common/numerical_constants.cuh). For example, the FFN gate uses a clamped quadratic expression with exact Half coefficients. Their decoded values and algebraic relationships explain what the code computes. The original coefficient-fitting procedure is unknown; a plausible approximation name is not evidence of how NVIDIA selected the coefficients.
 
 ## Validation before optimization
 
