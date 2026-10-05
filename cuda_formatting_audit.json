@@ -1,0 +1,661 @@
+{
+  "baseline_commit": "f6650fb09fdaf1e976564556711c5179d90c9fd1",
+  "changed_cuda_source_files": 93,
+  "aligned_unroll_directives": 1564,
+  "source_tokens_and_directives_unchanged": true,
+  "formatter_idempotent": true,
+  "source_files": [
+    {
+      "path": "csrc/kernel_impl/channel_projection_c512_to_c1024_fp16.cu",
+      "baseline_git_blob_sha256": "60f8b7e059c2db84318a6176ff6982341e0a0d85fbdffc423b1496c28b98c01e",
+      "current_worktree_sha256": "85d6bd0b9d823807465df1b05dc85011fb514a994cc44ef5e149c86911e8892c",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/channel_projection_c512_to_c1024_fp8.cu",
+      "baseline_git_blob_sha256": "f9bbc41c6b1b1b133724d1d4fb750c4c10a8fdd30f21ea354ccf2181809edc8c",
+      "current_worktree_sha256": "72ddacf73fa4c250933c016866a9a64cf14ac8e54e331ec186d7919d4feb7e5b",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/completion_counter_clear.cu",
+      "baseline_git_blob_sha256": "e4ac65283367b7c04de473644fdce34de2f8023acce9d2c4e76d6780f45b2f82",
+      "current_worktree_sha256": "568b631b778d81430dd04e2c3f483c8109daa810801c15cfa84f57ad926667be",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/decoder_upsample_c1024_to_c512_fp16.cu",
+      "baseline_git_blob_sha256": "1a93a0b02f2e6222faceee4d418926cfab630ec1c68145469d333eb98c507555",
+      "current_worktree_sha256": "d7c2ff744339c7579049415d337fb46af253c309c11f3405f22ae3bc35517c4f",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/decoder_upsample_c1024_to_c512_fp8.cu",
+      "baseline_git_blob_sha256": "d464c98b0765affa52db1f9be6afad5c82b52146943b553325e697d350201867",
+      "current_worktree_sha256": "aaf1855e824adb15ba5698ec3aec816dcc5988a8eddff3cb8def53c35c3d2c47",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/frontend_math.cuh",
+      "baseline_git_blob_sha256": "21e100dc921edd4fa189b920296c6a74258e86e5b7a76462751b37b74a834c87",
+      "current_worktree_sha256": "ab6ea81ba7d34eb411a81d2989659c1a6d554d68f1ea5e56e271aa5364707e1b",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/frontend_profiles.cuh",
+      "baseline_git_blob_sha256": "db565f51f4c60747653544fee843559b919a63514bf049902654fda12b7a90d2",
+      "current_worktree_sha256": "1884e13d01d0a4503a774899662829082fbe79ff6aa5d7b52ecf25a846062150",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/global_attention.cuh",
+      "baseline_git_blob_sha256": "24487eb397106bbec282faa69b1462b0b9208977ae4008884c28e150ca06a7d4",
+      "current_worktree_sha256": "185f5f303aea20cb3d43f63e7da93e79eabdce1017969d2757e45e47140a3c20",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/global_attention_chained_c1024_fp16.cu",
+      "baseline_git_blob_sha256": "2aa031752f0ebedea462a371d9d65d0b3909e08a8dc4e5ead01075b060bf6273",
+      "current_worktree_sha256": "dfce9267d2e287c3173cc465c59477affba2dda811ef4d1a32a91c975fe695e2",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/global_attention_chained_c1024_fp8.cu",
+      "baseline_git_blob_sha256": "f1783886ccd48695dbee4000da09eb12b16e1cdafb3b4e5b97c7393aed15b8d4",
+      "current_worktree_sha256": "e9d4122041c3fe75b691931933f773e1b38a461799c08a0930db38e25f6667f2",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/global_contract.cuh",
+      "baseline_git_blob_sha256": "3006aa491394f67c14c39e719ace3a63cef993483192835850b57a6a33d52bad",
+      "current_worktree_sha256": "6c696a4fcc22bd4926e73f2b072767287ec97b9423d2c931b6b60ca8bfd02aa7",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/global_ffn_contract_c1024_fp16.cu",
+      "baseline_git_blob_sha256": "84535603090f0c7b5de148066ac0583637aa0e4a9c9628cd07920bccf9320d23",
+      "current_worktree_sha256": "97f209340531ed0c1d5ce286847636e00aed4927312b53f683d52f902ec7d46d",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/global_ffn_contract_c1024_fp8.cu",
+      "baseline_git_blob_sha256": "e1cf7f3ad8e0cb1ca4f4714eb317b023f21dbad3c920bf6aef2721aa1f631aca",
+      "current_worktree_sha256": "c3e835377e4d27cb2242c592bf67a871a25cfa89c4d252fe432b985eb9788195",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/global_ffn_expand_c1024_fp16.cu",
+      "baseline_git_blob_sha256": "51d39ce2cd88034e01a22994ce400296fceed12d3edd70b09c1fec6ff86133b6",
+      "current_worktree_sha256": "c0ae67766c14b9aef347636ab13dd8b40d4ee78eb3d87cf36fc28030e1b3e811",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/global_ffn_expand_c1024_fp8.cu",
+      "baseline_git_blob_sha256": "b45ed173068ea9fb27d331410127c1629c5af31bf7597bfdf482d7e517c74161",
+      "current_worktree_sha256": "d97b1e7bb0b2f5d00bad24789fd8dc11a533c17aa6de1f13287e897967e96368",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/global_projection_c1024_fp16.cu",
+      "baseline_git_blob_sha256": "c60a75a2b060348bb55ec80ef32e262eb5c581b01cd8a5b476816dde41deb331",
+      "current_worktree_sha256": "2268e9f9b48a2e801cf1c2c89636c40a8a445619e925f1e9feb8f1b991fdd5e5",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/global_projection_c1024_fp8.cu",
+      "baseline_git_blob_sha256": "e64df343e193d93ae9c24089ed8e5fd919f441c0fe7a28766f2bd744966d8c3c",
+      "current_worktree_sha256": "c55c4b7749ee660e6d9a51576d39f49d2902b0866f2e750bf24435a5f83375f0",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/global_qkv.cuh",
+      "baseline_git_blob_sha256": "7ab2b828cb0fa32fb6d7e8aa8acc86fbf3f5ba3e415ae59b5c37b996454aa564",
+      "current_worktree_sha256": "b50e8bd879cd93a82f78ced89c2904905c96f8116608a3ee427d3c07dc27f3fb",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/global_qkv_c1024_fp16.cu",
+      "baseline_git_blob_sha256": "d8ea9aeca135246b1e93f7b2ef321aa4b7163e8bc556434d6eabcf2a39c5d358",
+      "current_worktree_sha256": "06b39ab33e4d95eb629e30a6ea257d28b13945850ee64c3fddf8672e7c563f53",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/global_qkv_c1024_fp8.cu",
+      "baseline_git_blob_sha256": "fcf138e3e251fa0a40e38cfd9b43a97c340f098573e16b84647eebd4dcb2a13c",
+      "current_worktree_sha256": "24f4ef539b10863dbd3a1420d7e3ef4246803de02328996944100fe025e393e4",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/input_features.cuh",
+      "baseline_git_blob_sha256": "b6e00f416b998587bd77d564bc62a897b56f9d7db098b6ea85f25e6235820549",
+      "current_worktree_sha256": "c5cebd0bda0b5679f92802186aa627e581100f7e1ba0ff943a627e3fa697f252",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/input_preprocess_window_c32_fp16.cu",
+      "baseline_git_blob_sha256": "7b2ae71e4a71ff0514b40b535a6f7a1e5140d0a013999effa6ab8f9f7e1939a3",
+      "current_worktree_sha256": "a92928db0b31e351b4da061b254db48a849d3fce51cf9275c3d77b99d53ceb40",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/input_preprocess_window_c32_fp8.cu",
+      "baseline_git_blob_sha256": "05e9570bec791ec7dc6cb2231a5496b81002c72b690a1696d131bf611319decb",
+      "current_worktree_sha256": "b7202a37f909f68c51d4382a996e8acd1b9272a38dfcee0b76602696ead7dd22",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/input_preprocess_window_downsample_c32_fp16.cu",
+      "baseline_git_blob_sha256": "0b4101c19c9c3a5a3a7986aa5b8a47cc0d4119b191de962fd9f2876f927b109d",
+      "current_worktree_sha256": "6a485f633c96f26c484c1c6f6e86e5d7a6ec0eb57e3d472a711aba8cbf32e449",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/input_preprocess_window_downsample_c32_fp8.cu",
+      "baseline_git_blob_sha256": "8e0d512f910e39b4c6e56d9e91b327f5234c32a0d134b766c4efd474f935fdeb",
+      "current_worktree_sha256": "042755f43439bfa8dc454d7a8267edd18a7cf26bbec79b6316fc73ffdbf7c3fb",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/output_window_postprocess_c32_fp16.cu",
+      "baseline_git_blob_sha256": "1005d2d82820c4e0d6348a659ca2b72808bc3f97767a2cd78fd9b5adf46032ef",
+      "current_worktree_sha256": "427011d02e3e32212cf9556fc4e894279697f5f00dd37f0c52ecd0e4df559b5a",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/output_window_postprocess_c32_fp8.cu",
+      "baseline_git_blob_sha256": "8004477e9b6ecc0d653d10a8cae3718f6ac327f8f0fe05b5b5c2468ec2472341",
+      "current_worktree_sha256": "d7c6774a49c5691bb0fc0fa84fc9dd508706b79775271f55168577bfd660c368",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/repack_1d_to_2d_c1024_fp16.cu",
+      "baseline_git_blob_sha256": "4172e43623b0faf2bf61ec8f47f094d235b0488eeaa132fd5a383077dfdace9e",
+      "current_worktree_sha256": "3f60a2f5b079b3b74b493881c97c19433b78ae7076f3e3297413a8930b0b40ca",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/repack_1d_to_2d_c1024_fp8.cu",
+      "baseline_git_blob_sha256": "c5771be19ac2423cde3bd50be9e9c0c2762a986965007cc5dc1de33f40c01038",
+      "current_worktree_sha256": "7aaf0c426d4b5424454f763fcda0c8871337f1d61a7cbfeeb76bf768c015c29d",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/repack_2d_to_1d_c1024_fp16.cu",
+      "baseline_git_blob_sha256": "34143edb017e7adc0197506273e79467857396f048fe5ef47143251bae65555e",
+      "current_worktree_sha256": "ffbe0afe59733c7f49d06d442ece084dcc67bbd0bc49a83cf5298976512808d4",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/repack_2d_to_1d_c1024_fp8.cu",
+      "baseline_git_blob_sha256": "55853f2d2f09d0ccee3393cafb305e6bedc76377584a71a50c29eab24ce7415f",
+      "current_worktree_sha256": "49fb0c360ec46d3fdb2d91d776682da55b44dd64fd5a2687c21cb6ce256425ae",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/tiled_mma.cuh",
+      "baseline_git_blob_sha256": "0cdfd7489dc02fddc60a21fb1799ec924c2c93eb23fe3892bb22c639e4c4c2e0",
+      "current_worktree_sha256": "027741371a04fff494c93279af6d8522fd1b0f6680171a094752738dd5731878",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/warp_window32.cuh",
+      "baseline_git_blob_sha256": "4b127642ac586aeb1b25ea4bfb978c394787404473a49a72c0bf288dd630042b",
+      "current_worktree_sha256": "146a6cf08a41e650ef1299808316eb6b06de481c285d1c63019ebf4c55b4af90",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/warp_window_wide.cuh",
+      "baseline_git_blob_sha256": "0890175267ca2c45014995a199637704a25c722177925141461175b6e2069e5e",
+      "current_worktree_sha256": "bb5531058a2fbc6651a352c3069ea2c806906c50d0eebe0c94465a9147a51725",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_attention_projection_c512_fp16.cu",
+      "baseline_git_blob_sha256": "f1f49823742908fc9a688b76fe129ec64755d5e55db84b1a84fac4a730ff9cb6",
+      "current_worktree_sha256": "dfecaf9931325025cfa58023018275839e6d6971b5df5bc58929ad92dfc5752c",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_attention_projection_c512_fp8.cu",
+      "baseline_git_blob_sha256": "882ae116cbf5f3b0b9918fe9dd0ab2bef9f09e038f12f841a2f863440edf9bbd",
+      "current_worktree_sha256": "5257477e6d5e41ecc86dae0ec36fb2b2e189c5441cea8dc0c6bb08c2733796bf",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_attention_projection_output_view_c512_fp16.cu",
+      "baseline_git_blob_sha256": "101323096d32571d6a903b0c0b07d20ce92cc82e2cac0c6d27286da4d8edc91e",
+      "current_worktree_sha256": "0b98f5cea4a2d24dcf1397c200aa9c2253a4cfc8b30f76bcc78f4d745ab3842a",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_attention_projection_output_view_c512_fp8.cu",
+      "baseline_git_blob_sha256": "68820b5666248f6d3c98f02585ed4512b4e6f2680f7d9321c4a7a13e01b146fd",
+      "current_worktree_sha256": "6c39db66449c1cf7406cbfcc440220e3176b79bf1ed5f77ac90ca2cd4eafa079",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_attention_projection_pool_c512_fp16.cu",
+      "baseline_git_blob_sha256": "48bf7cb69a21e335eb47945e72d160f35943eb78106ea94c45a747e64bfbd8fb",
+      "current_worktree_sha256": "105124e84c36276fc8d28d8d1508ef580e2cadd6d1ef5d11915c3874d7396e66",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_attention_projection_pool_c512_fp8.cu",
+      "baseline_git_blob_sha256": "ffdb7ea5aaafe7f84fe4f5b822abbe19b03ad72bdd3b3ecbb8e2a5b501bbffab",
+      "current_worktree_sha256": "b75f5eb4c3cd5877f42e9e4388e02ccf7eaacff3655171ee1c3e7a966c428a85",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c128_downsample_fp16.cu",
+      "baseline_git_blob_sha256": "2a1a59ded2558a27d9215955ac14baeeac470b8d7e467d21a184eccbd020e026",
+      "current_worktree_sha256": "12f99496ed0e682327738a22ba806d9306a5116fc6e8346b3542602b9f1ebe76",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c128_downsample_fp8.cu",
+      "baseline_git_blob_sha256": "0a66d4347b744d062b29ff792f08f94cab968ea92d40f90f31390ad4399dba46",
+      "current_worktree_sha256": "b151189483c859964b2d81562d89e340fe5e2b5a5c05f466b48c10c3b321e284",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c128_fp16.cu",
+      "baseline_git_blob_sha256": "7381de6b3d10c07b62cbd94ad99ad9b11350db2e00fde56a4ffc9cf0f715014f",
+      "current_worktree_sha256": "9ea0c2fdd32a2369fb16553d45309594c3150810509d43aa769fd17e7ae8ca64",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c128_fp8.cu",
+      "baseline_git_blob_sha256": "87f0ce954029cf8b5417e09cf6b760dadd5bc72c7c55d3c50f4a9dc8a726bcf2",
+      "current_worktree_sha256": "b7779b9327193cdb7626e3f1590107c534777eed405494be95c0a9fa1893186d",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c128_input_view_fp16.cu",
+      "baseline_git_blob_sha256": "b9bec73e5dfdb87f8c1ad93981e6392fe4bfdfc94cdb57d07aa3e09945a5a4af",
+      "current_worktree_sha256": "cb8cb12619ef1ee48b4276bbe07e5b1526fc736eaffc73ee1fcffa49e3e5ad52",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c128_input_view_fp8.cu",
+      "baseline_git_blob_sha256": "772efbf5272d6a05af86b72e2a882b0307727c6734bd070535b37116dbe78996",
+      "current_worktree_sha256": "d6362da3cced02f04ff3edee3418c89af53ab8fbc2ff01c6bdd22c5f5aa636a3",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c128_output_view_fp16.cu",
+      "baseline_git_blob_sha256": "05f2686b88a1f1c57285ec3e63380b9a4d50f7be27bd23b1696cd2e0a7037cb6",
+      "current_worktree_sha256": "2493486a37f0e702c510cf68cb1daba4364c4f93f6ee45c9307288a79dd94075",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c128_output_view_fp8.cu",
+      "baseline_git_blob_sha256": "cca5645b4e0f2d0f57daa2ba3b6467c54e5e670edc30b3cf738e1acccec5fc6c",
+      "current_worktree_sha256": "83d6d38164c2cc240bb1c7cda44813619df78a3eb6b43afdae6b9dc68c173e44",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c128_upsample_fp16.cu",
+      "baseline_git_blob_sha256": "b4035308e3800490a9253ca76e145cf21b33249fee49c75a71109b8278478da7",
+      "current_worktree_sha256": "d44c92909af63c2405c2ae6210ec3b9f15c49ac679b9c6b6a509b1d15cf28ad4",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c128_upsample_fp8.cu",
+      "baseline_git_blob_sha256": "ea5f6e49e516ca87a2d5f09ade9b67591e75a9b2be6a1e23d01ea84b13f3844c",
+      "current_worktree_sha256": "c25da2361486334c9b601c48909bada9f068416f458e67e9271ef922454c9d94",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c256_downsample_fp16.cu",
+      "baseline_git_blob_sha256": "504c5b002d17b8fa5fc1999453b1a1a6f0d90729a2b89919f8017dcae35ff9db",
+      "current_worktree_sha256": "5b49aadcdb76490d818496dbf5c679eeed3bc767d00c012dce331fa2cbbdd1be",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c256_downsample_fp8.cu",
+      "baseline_git_blob_sha256": "85aa8700468c18f1326a97449535a48dfdaa413fdfbfc5f190aecce017c01a42",
+      "current_worktree_sha256": "a24f7baf8bae9a2908cd80caa299e2ba9353098108474f193f9d91db367ba24c",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c256_fp16.cu",
+      "baseline_git_blob_sha256": "d85e1731a5ba4daf1f1225f5bd175da45fe4f91537c0242a6d6a71c121ac69ef",
+      "current_worktree_sha256": "2d6f067f5c28dea40871bfd42d2c2d61c23efaeb7fbfd63fba36d1901090d1a5",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c256_fp8.cu",
+      "baseline_git_blob_sha256": "1f618457929536ed499eab98d1e079c44026c43dac2d8e440c0f583cfc561cf7",
+      "current_worktree_sha256": "721d7bab50bdd40712ee93ad51d671170e6a328c0cd5340fa9d2e80647379d68",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c256_input_view_fp16.cu",
+      "baseline_git_blob_sha256": "dbb4ee5ec4e572bc734f68a0c0ba8f463252e51089cc13c4e68780530e260775",
+      "current_worktree_sha256": "c09ddedb67fdd01149d366146e1e6c6108959f4705b236e57aaf0522d856fe18",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c256_input_view_fp8.cu",
+      "baseline_git_blob_sha256": "893f3d0001bb9bb3903be0dda65f8330cc8ac775ff7fa6f3f32e2ba83f7de723",
+      "current_worktree_sha256": "1347a819fda5e51c2f9f0cc66d5e6763ce690140e5ff1e75daf8a6781dbd2e37",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c256_output_view_fp16.cu",
+      "baseline_git_blob_sha256": "ea465e3875ec8509a0aa5f153f61143baa7bde6f31527c4a65f2c1de203d2919",
+      "current_worktree_sha256": "ef13f1d38643c2d7a45c20d229f65b9ec752efadb0da9f0bcd651709949e8c66",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c256_output_view_fp8.cu",
+      "baseline_git_blob_sha256": "6319bff1174e11821048a51075feff48580c6bf912404a893473c16c72bb35c2",
+      "current_worktree_sha256": "5dafd404792806f10a91efed58adb381f3e900122e73e925eab3f348b83555ca",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c256_upsample_fp16.cu",
+      "baseline_git_blob_sha256": "bcb6b6d7756d8da85f7c3c9b895befd17bf7a625ac6b27e5607bccdf3234b0b7",
+      "current_worktree_sha256": "13cba6292c954eb11b7560aeabda93ac9e91cd6f5da3c3b5ae14bbe7f565c76d",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c256_upsample_fp8.cu",
+      "baseline_git_blob_sha256": "15e1c0fd721ffdb4d09f6165889394e8cfaf62e44be67708d94bf644b54516cf",
+      "current_worktree_sha256": "891ac8d0ab397e40beef5fa08f72865e60a2c6b7849f91c1101688c5a0e03c56",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c32_downsample_fp16.cu",
+      "baseline_git_blob_sha256": "82d7bb641472ba6eac8a2a3775e887039a147bbf9865a1e6526913098677a3fd",
+      "current_worktree_sha256": "1483d6483fa50fe23feea9c5bca7e59229e4aba52d7b6a51ec9dbc22440f2ae7",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c32_downsample_fp8.cu",
+      "baseline_git_blob_sha256": "0804cb851b94a249bd421655378fd56380dba11997272d10916f93aed64054e4",
+      "current_worktree_sha256": "2231c6a11c779d00bed6fa8b191f5466748f2de72839d359f1c706b7f2a19a5a",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c32_fp16.cu",
+      "baseline_git_blob_sha256": "4c68da0486998445096acd0c7e813cff334e55731cdf4241ceba60b684232bc6",
+      "current_worktree_sha256": "dea071d8a91094b91fac80cb2c6cf41d82d820f32da74b737a2a06dc21d20f5d",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c32_fp8.cu",
+      "baseline_git_blob_sha256": "17cf5e708e6aeb48bcb8e24a8e3579b08f4fd7c56a9583cad3a9c69f2f235409",
+      "current_worktree_sha256": "0c93783e4dc6aa8855f2380d24f0eefdf3d4078373ef5db3d7ade1fd5bc11dc5",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c32_input_view_fp16.cu",
+      "baseline_git_blob_sha256": "08664d1661a4e4e78a314be6c6f12633c04bbceefdc511cdd66684df38c2ff5b",
+      "current_worktree_sha256": "c1ae6399c367f5ad25428cabb2ccc0135c003c2903e9a0dea8241a56fa6004ee",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c32_input_view_fp8.cu",
+      "baseline_git_blob_sha256": "4e048215420e6a29a6d3e85dd1ff4a75998da4d2ef83b0e69443d0c33a39e4b5",
+      "current_worktree_sha256": "8869621622ca5e8bbb0746f4a4e9e572f34156bbbd980906d4e970089d16f356",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c32_output_view_fp16.cu",
+      "baseline_git_blob_sha256": "39daf908775b48e14a4fea2c94d387a240316df379ccc84fd359f7a6d3df3da7",
+      "current_worktree_sha256": "b8acd067702f4145050a62e8d90ca9cd3b025f84e701f297935bbad938f045e3",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c32_output_view_fp8.cu",
+      "baseline_git_blob_sha256": "9c5155cb4b9384dd2537e618a8d53a99dacbc1c9d003bcaad07678ceae389007",
+      "current_worktree_sha256": "5bd5b6b4b8bee1e0bc9d73e8ffad59d5201ee556158d442ddd493c7b13bd292c",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c32_upsample_fp16.cu",
+      "baseline_git_blob_sha256": "55cbd762d846446c55dcd77ab10fdafac68b7f37cd0909d039257b4a7209cf2a",
+      "current_worktree_sha256": "17e8f5f558b2cac4661dd5a7154adb0483a8ce4b88845c479efe4495e678f815",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c32_upsample_fp8.cu",
+      "baseline_git_blob_sha256": "dbd608fa1c70442380d2b051f06742cebf95add8f0de222272a876749b7c761b",
+      "current_worktree_sha256": "8562923569d41eeaa63e907bb36702bd03518c5d1ccdd3769cba0839676de0d3",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c64_downsample_fp16.cu",
+      "baseline_git_blob_sha256": "add5e1ccac13cbcd7ff7bbe0a793f8692d975f656694803b97800f53240db814",
+      "current_worktree_sha256": "7d6b2b8af726a53fe94c2f551e4ac05f91c5aaab1c599e4534666d5e56b6bed6",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c64_downsample_fp8.cu",
+      "baseline_git_blob_sha256": "1f16926f52c7baa84e9f9d4fcdc92c293d5c089057d4e6336bdade656f72475f",
+      "current_worktree_sha256": "8172764f86dc0b39ee5bc51828a0ec873e9b28fa9e2bc77b1572128dc7f43088",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c64_fp16.cu",
+      "baseline_git_blob_sha256": "eaabdda636060ecdba29d2910a13ff39549b76c8c4b4c44bd3030b77cce328e2",
+      "current_worktree_sha256": "396c0a0c35a527ff9cc6745ca96e81384d740c98aca085182fe6bf4682ad27f6",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c64_fp8.cu",
+      "baseline_git_blob_sha256": "6bc6a8568f89bbbdb32cefbda1266a755023d033fea79cc646f3ba451b1e61bb",
+      "current_worktree_sha256": "bde5351d9a128b71cbb2a7674e12de35d1b989f4214923fdea9597c767b3de8d",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c64_input_view_fp16.cu",
+      "baseline_git_blob_sha256": "bbd12dc075458404b2e202f5acaf800b98fd68035819c1e7bc06a4a8b9623eee",
+      "current_worktree_sha256": "c2b73083582fa21eec7e0abe708474b1aa308ac15bc2c99a2e4f4fcd0f3c4dd7",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c64_input_view_fp8.cu",
+      "baseline_git_blob_sha256": "32ea82c3cf81b0abd83ca7cf11436a2947779831626de79d4c1b12436f55458c",
+      "current_worktree_sha256": "75687b862fe8bfa784462f7d41130d2b354b06087ab152f60d5508edddd435be",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c64_output_view_fp16.cu",
+      "baseline_git_blob_sha256": "c133be6eea38973e77f6f2eae9ce521f37e46370287da4813f15a16b37f6f40c",
+      "current_worktree_sha256": "ddc5d5ae5807b844b5fbc53837ebfa43f5c2656f6948c1fe477054e3938f9b60",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c64_output_view_fp8.cu",
+      "baseline_git_blob_sha256": "b81611fdcaf1d52ed614668c4c2cad8aa44cf8f56a466469e03ab6f05ef32b37",
+      "current_worktree_sha256": "2830ea4ea08a9f27a308e1fb33b2e70355b34c0decfb1c1a45d201ed640013d6",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c64_upsample_fp16.cu",
+      "baseline_git_blob_sha256": "5ba0728862bd5d81b306a5c493058e42e32acee25fdb0993e25118a9c8d8fc6d",
+      "current_worktree_sha256": "4ece1a15997e804e7ffd8d4e35eef522b1d824f996abaf4a88e38460515483e0",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_block_c64_upsample_fp8.cu",
+      "baseline_git_blob_sha256": "07a624c5eece69367b50395359c9bb8556f235962914672b85a0fe217834d91a",
+      "current_worktree_sha256": "3829f4b2688cd12cfe9ba59ab0d22ae8c15c0dcb84e3b1ee8a58238cccb1cc3d",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_downsample.cuh",
+      "baseline_git_blob_sha256": "4b7bdf357385b724e3ebcd348fd75ea4a3511f2a32500c31b90ea4be1f44f923",
+      "current_worktree_sha256": "d104b39e40963c5f567c031c6a9190519805f9e863c96ddae918a4b9575d9f8f",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_ffn.cuh",
+      "baseline_git_blob_sha256": "069081dab9efe11dcc71f07d50d850dc7e8c74a63a227986fd7f3914de64f465",
+      "current_worktree_sha256": "73697784e918ae14bec48df7ebccc39e095035c98487aa191d684d55c84041d8",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_ffn_c512_fp16.cu",
+      "baseline_git_blob_sha256": "de4265c2a351a80807fcc6481a15113b8c5115d28e047051b9e996ebded1b3d7",
+      "current_worktree_sha256": "4a57076b19dbbef00befe194de1bec0ba81fac9c3c47980c28192b84d2281f1e",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_ffn_c512_fp8.cu",
+      "baseline_git_blob_sha256": "ef3eae9c5e0f82f87c6cb034ff458e43fab37849533cdd75b0eaeab50ca6c4d9",
+      "current_worktree_sha256": "5485f9d82ef8855b794d3ac81f8de30187c4b061091ed4b45651065525e312db",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_ffn_input_view_c512_fp16.cu",
+      "baseline_git_blob_sha256": "00ea2a83215098fad9317f80f6351fe665c91d0b7b40997e31a22fd074a2e749",
+      "current_worktree_sha256": "dfc702f1deb881f32f424b9619fad3b4d78db6b49475739a79bc5bd5ec1c0195",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_ffn_input_view_c512_fp8.cu",
+      "baseline_git_blob_sha256": "4c08ff46e92fbd2cf3109a5c3472506b6781a8228c0726163692d7c018fea487",
+      "current_worktree_sha256": "c584b6d838eb5e8366f5b09ddde4fed6ae4c39f4dc98f1813aca855b903f1249",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_ffn_projection_c512_fp16.cu",
+      "baseline_git_blob_sha256": "ef5d8ce2ad22e7c5fd151a7d3d925e50813165f175f0d7afec425e82cfdc65b4",
+      "current_worktree_sha256": "9128023b6a1fe54041a21295d836bb5c151bceac1f832f143b05308b5c0b4fd9",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_ffn_projection_c512_fp8.cu",
+      "baseline_git_blob_sha256": "2299d1b02ae53ff4b9964d726def399ec70560ed9835e2c61fc37929dd0a0500",
+      "current_worktree_sha256": "7273688281612507d1791b0745b18b05e4045bd293ce71976e46d2212c3e8068",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_ffn_projection_input_view_c512_fp16.cu",
+      "baseline_git_blob_sha256": "117bb0f9aef1563f80170726c143e290a2870fa9cec57170ba47b3eeaa0e3566",
+      "current_worktree_sha256": "6fc64e9fceaa6bfb0cd44eb84e823fc3eece1f72a16a3b4211f3df2740be0930",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_ffn_projection_input_view_c512_fp8.cu",
+      "baseline_git_blob_sha256": "5c7800d993c2c6fe37f6b86e2af2f6f1fab89aba072c822a62656c3c81d0b567",
+      "current_worktree_sha256": "3c2a3f1efaecb4cb3f7120cc8fb2e456ae950ad0699ab58eeffaf39a07b201e4",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_pool.cuh",
+      "baseline_git_blob_sha256": "43fc015ac5795c2ad090ddd1aa118bcdbeb20118c4d9dce7223439cecf448ca4",
+      "current_worktree_sha256": "c664ffb2031213c5d0984cac77bc0ef94def9a677ffa723004b7bd105eb91ed4",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_qkv_c512_fp16.cu",
+      "baseline_git_blob_sha256": "bdfd7913ff6e8265e6060c21e861e6ece1a14b68911ffebabc24c837cd080787",
+      "current_worktree_sha256": "ff5b910edaa93957e6919481d8e871ead4af7b90864dfc05a598c2c27d1e8b83",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    },
+    {
+      "path": "csrc/kernel_impl/window_qkv_c512_fp8.cu",
+      "baseline_git_blob_sha256": "3d04b808c60c3282fe3164230d7c858af640f0e2092795a2108631dee531c374",
+      "current_worktree_sha256": "ba9717e6ca0aff10208e200f936c1e619b46dcde90dc92c0a5e16c6d7381c7cb",
+      "executable_tokens_equal": true,
+      "directives_equal": true
+    }
+  ],
+  "scope": "Comments and whitespace only. Existing qualified binary is retained. No rebuild or new GPU timing attributed to this source presentation update."
+}

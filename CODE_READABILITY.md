@@ -122,10 +122,26 @@ Training remains a separate PyTorch FP32/BF16 implementation. Deployment source 
 
 ## Review commands
 
+Keep each `#pragma unroll` at the same indentation as its following loop,
+including nested fragment loops and `unroll 1`. Separate major stages with a
+blank line and a short comment describing their role (copy setup, pipeline
+prefill, MMA reduction, normalization, or publication). Keep the comment and
+pragma attached to the loop they describe.
+
+Clang-format 19 left-aligns CUDA pragmas. Run the CUDA layout pass after using
+clang-format; it also restores attached comment indentation and stage spacing:
+
 ```powershell
+python -B tools/format_cuda.py
+python -B tools/format_cuda.py --check
 python -B tools/kernel_sources.py --output outputs/kernel-sources.json
 python run_tests.py cpu --optimized
 ```
+
+The [formatting audit](cuda_formatting_audit.json) verifies this presentation-only
+update against the qualified source: executable tokens, preprocessor directives
+and unroll choices are unchanged. The existing installed binary and benchmark
+receipts retain their original identities; no new timing is claimed here.
 
 Inspect the exported inventory rather than counting implementation files. Preserve failed trials, source/native hashes, profiler captures and exact qualification scope. Keep historical optimization reports unchanged; link a new result to the source and binary it actually tested.
 
