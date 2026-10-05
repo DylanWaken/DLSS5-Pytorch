@@ -28,8 +28,10 @@ extern "C" __global__
 				reinterpret_cast<const unsigned char*>(Arguments.g_PackedWeights);
 			FWindowActivationTile<bFp8> r_Input[4];
 			FWindowAccumulatorTile<32> r_Ffn[4];
+
+			// Load the per-channel residual scales used by the FFN and attention branches.
 			uint32_t r_FfnScale[4], r_AttentionScale[4];
-#pragma unroll
+			#pragma unroll
 			for (int r_Column = 0; r_Column < 4; ++r_Column)
 			{
 				const int g_ChannelByte = 16 * r_Column + 4 * (threadIdx.x & 3);
@@ -39,9 +41,9 @@ extern "C" __global__
 					g_PackedWeights + FConfig::AttentionScaleOffset + g_ChannelByte);
 			}
 
-// Coalesced physical-tile input. Singleton dimensions broadcast the one
-// available tile for reads, as the native entry does; writes remain bounded.
-#pragma unroll
+			// Coalesced physical-tile input. Singleton dimensions broadcast the one
+			// available tile for reads, as the native entry does; writes remain bounded.
+			#pragma unroll
 			for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 			{
 				{
@@ -53,7 +55,7 @@ extern "C" __global__
 					const int g_TileY = g_TileRows == 1 ? 0 : g_OriginTileY + (r_Tile >> 1);
 					const bool bValid =
 						g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows;
-#pragma unroll
+					#pragma unroll
 					for (int r_Chunk = 0; r_Chunk < FConfig::InputChunks; ++r_Chunk)
 					{
 						const int64_t g_Offset =
@@ -64,9 +66,9 @@ extern "C" __global__
 								   : make_uint4(0, 0, 0, 0));
 					}
 				}
-#pragma unroll
+				#pragma unroll
 				for (int r_Column = 0; r_Column < 4; ++r_Column)
-#pragma unroll
+					#pragma unroll
 					for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 					{
 						uint32_t r_ResidualPair;
@@ -77,43 +79,44 @@ extern "C" __global__
 					}
 			}
 
-// Stream four 32-channel hidden panels through 32→128→32; the contraction
-// seed is the scaled input, and its reduction chunks stay in native order.
-#pragma unroll
+			// Stream four 32-channel hidden panels through 32→128→32; the contraction
+			// seed is the scaled input, and its reduction chunks stay in native order.
+			#pragma unroll
 			for (int HiddenPanel = 0; HiddenPanel < 4; ++HiddenPanel)
 			{
 				const FWindowWeightTile<bFp8> r_Expand =
 					LoadWindowWeights<bFp8>(g_PackedWeights, 32 * HiddenPanel, 0, 128);
 				const FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>(
 					g_PackedWeights + FConfig::ContractOffset, 0, 32 * HiddenPanel, 32);
-#pragma unroll
+				#pragma unroll
 				for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 				{
 					FWindowAccumulatorTile<32> r_HiddenTile{};
 					LinearWindow32(r_Input[r_Tile], r_Expand, r_HiddenTile);
-#pragma unroll
+					#pragma unroll
 					for (int r_Column = 0; r_Column < 4; ++r_Column)
-#pragma unroll
+						#pragma unroll
 						for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 							r_HiddenTile.r_Pair[r_Column][r_RowHalf] =
 								ActivateWindow(r_HiddenTile.r_Pair[r_Column][r_RowHalf]);
 					LinearWindow32(PublishWindow32<bFp8>(r_HiddenTile), r_Contract, r_Ffn[r_Tile]);
 				}
 			}
-#pragma unroll
+			#pragma unroll
 			for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 				r_Input[r_Tile] = PublishWindow32<bFp8>(r_Ffn[r_Tile]);
 
+			// Project the FFN output into Q/K/V fragments and normalize the query/key rows.
 			FWindowActivationTile<bFp8> r_Query[4], r_Key[4];
 			FWindowValueTile<bFp8> r_Value[4];
 			const uint32_t r_HeadScale =
 				FloatToHalf2(*reinterpret_cast<const uint32_t*>(g_PackedWeights + FConfig::HeadScaleOffset));
-#pragma unroll
+			#pragma unroll
 			for (int ProjectionComponent = 0; ProjectionComponent < 3; ++ProjectionComponent)
 			{
 				const FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>(
 					g_PackedWeights + FConfig::QkvOffset, 32 * ProjectionComponent, 0, 96);
-#pragma unroll
+				#pragma unroll
 				for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 				{
 					FWindowAccumulatorTile<32> r_Projected{};
@@ -130,7 +133,7 @@ extern "C" __global__
 							r_Key[r_Tile] = PublishWindow32<bFp8>(r_Projected);
 					}
 					else
-#pragma unroll
+						#pragma unroll
 						for (int r_Column = 0; r_Column < 4; ++r_Column)
 						{
 							const uint32_t r_LowRows = TransposeM8n8(r_Projected.r_Pair[r_Column][0]);
@@ -145,27 +148,28 @@ extern "C" __global__
 
 			const FWindowWeightTile<bFp8> r_OutputWeights =
 				LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::ProjectionOffset, 0, 0, 32);
+
 			// FP8 follows the native two-query-tile softmax schedule. Keep the tested
 			// FP16 schedule independent until its register pressure is measured.
 			constexpr int CONST_QUERY_TILE_BATCH = bFp8 ? 2 : 1;
-#pragma unroll
+			#pragma unroll
 			for (int r_FirstTile = 0; r_FirstTile < 4; r_FirstTile += CONST_QUERY_TILE_BATCH)
 			{
 				FWindowAccumulatorTile<64> r_Probabilities[CONST_QUERY_TILE_BATCH];
-#pragma unroll
+				#pragma unroll
 				for (int r_LocalTile = 0; r_LocalTile < CONST_QUERY_TILE_BATCH; ++r_LocalTile)
 					r_Probabilities[r_LocalTile] = QueryKeyScores<bFp8>(
 						r_FirstTile + r_LocalTile, g_PackedWeights + FConfig::BiasOffset, r_Query, r_Key);
 				SoftmaxWindow(r_Probabilities[0]);
 
-#pragma unroll
+				#pragma unroll
 				for (int r_LocalTile = 0; r_LocalTile < CONST_QUERY_TILE_BATCH; ++r_LocalTile)
 				{
 					const int r_Tile = r_FirstTile + r_LocalTile;
 					const auto r_Attended = ProbabilityValues<bFp8>(r_Probabilities[r_LocalTile], r_Value);
-#pragma unroll
+					#pragma unroll
 					for (int r_Column = 0; r_Column < 4; ++r_Column)
-#pragma unroll
+						#pragma unroll
 						for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 							r_Ffn[r_Tile].r_Pair[r_Column][r_RowHalf] = HalfMul(
 								r_Ffn[r_Tile].r_Pair[r_Column][r_RowHalf], r_AttentionScale[r_Column]);
@@ -180,7 +184,7 @@ extern "C" __global__
 								  g_TileY = g_OriginTileY + (r_Tile >> 1);
 						if (g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows)
 						{
-#pragma unroll
+							#pragma unroll
 							for (int r_Chunk = 0; r_Chunk < FConfig::InputChunks; ++r_Chunk)
 							{
 								const FWindowAFragment r_Output =
@@ -198,10 +202,11 @@ extern "C" __global__
 				}
 			}
 		}
+
 		const auto r_Pooled = PublishWindow32<bFp8>(PoolWindow(r_WindowOutput));
 		const auto* g_Weights = reinterpret_cast<const unsigned char*>(Arguments.g_PackedWeights) +
 								FWindow32Profile<bFp8>::AttentionScaleOffset + 64;
-#pragma unroll
+		#pragma unroll
 		for (int OutputPanel = 0; OutputPanel < 2; ++OutputPanel)
 		{
 			FWindowAccumulatorTile<32> r_Output{};
@@ -216,11 +221,11 @@ extern "C" __global__
 				const int g_Width = Channels == 32 ? Arguments.Width / 2 : (g_ValidWidth + 3) & ~3;
 				const int g_OriginX = (int(blockIdx.x) * 8 + Arguments.OriginX) / 2;
 				const int g_OriginY = (int(blockIdx.y) * 8 + Arguments.OriginY) / 2;
-#pragma unroll
+				#pragma unroll
 				for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
 				{
 					const auto r_Fragment = PublishWindowChunk<bFp8>(r_Output, r_Chunk);
-#pragma unroll
+					#pragma unroll
 					for (int r_Word = 0; r_Word < 4; ++r_Word)
 					{
 						const int g_X = g_OriginX + ((threadIdx.x / 4) & 3);
@@ -233,6 +238,7 @@ extern "C" __global__
 								Arguments.g_DownsampledOutput +
 								((uint64_t(g_Plane * g_Height + g_Y) * g_Width + g_X) * 16) +
 								4 * (threadIdx.x & 3);
+
 							// The native padding clear follows these projection stores. Emit
 							// its zero immediately for our own padded cells to avoid a race.
 							*reinterpret_cast<uint32_t*>(g_OutputWordAddress) =
@@ -242,6 +248,7 @@ extern "C" __global__
 				}
 			}
 		}
+
 		{
 			// Clear the caller-provided padded border after final publication.
 			const int g_ValidHeight = (Arguments.Height + 1) / 2;
@@ -252,6 +259,7 @@ extern "C" __global__
 			const int g_OriginX = (int(blockIdx.x) * 8 + Arguments.OriginX) / 2;
 			const int g_OriginY = (int(blockIdx.y) * 8 + Arguments.OriginY) / 2;
 			const int ThreadIndex = threadIdx.y * 32 + threadIdx.x;
+
 			// The native clear footprint is a Half-sized C→2C allocation even for
 			// FP8. Preserve that documented workspace contract, but only clear padding.
 			for (int g_Index = ThreadIndex; g_Index < 16 * (Channels / 4); g_Index += Channels)
@@ -270,6 +278,7 @@ extern "C" __global__
 					*reinterpret_cast<uint4*>(g_PaddingVectorAddress) = make_uint4(0, 0, 0, 0);
 				}
 			}
+
 			// A larger caller-provided target may extend past every launched window.
 			// CTA zero handles that uncovered border, as the native clear path does.
 			if (blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0)

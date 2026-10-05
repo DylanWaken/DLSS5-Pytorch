@@ -76,9 +76,9 @@ __device__ __forceinline__ FWindowAFragment
 PublishWindowChunk(const FWindowAccumulatorTile<Columns>& r_Accumulator, int r_Chunk)
 {
 	FWindowAFragment r_PublishedFragment;
-#pragma unroll
+	#pragma unroll
 	for (int r_Half = 0; r_Half < 2; ++r_Half)
-#pragma unroll
+		#pragma unroll
 		for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 		{
 			if constexpr (bFp8)
@@ -89,6 +89,7 @@ PublishWindowChunk(const FWindowAccumulatorTile<Columns>& r_Accumulator, int r_C
 				r_PublishedFragment.r_Word[2 * r_Half + r_RowHalf] =
 					r_Accumulator.r_Pair[2 * r_Chunk + r_Half][r_RowHalf];
 		}
+
 	return r_PublishedFragment;
 }
 
@@ -97,7 +98,7 @@ __device__ __forceinline__ FWindowActivationTile<bFp8>
 PublishWindow32(const FWindowAccumulatorTile<32>& r_Accumulator)
 {
 	FWindowActivationTile<bFp8> r_PublishedActivation;
-#pragma unroll
+	#pragma unroll
 	for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
 		r_PublishedActivation.r_Reduction[r_Chunk] = PublishWindowChunk<bFp8>(r_Accumulator, r_Chunk);
 	return r_PublishedActivation;
@@ -108,9 +109,9 @@ __device__ __forceinline__ FWindowWeightTile<bFp8>
 LoadWindowWeights(const unsigned char* g_Matrix, int g_OutputBase, int g_ReductionBase, int OutputChannels)
 {
 	FWindowWeightTile<bFp8> r_Weights;
-#pragma unroll
+	#pragma unroll
 	for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
-#pragma unroll
+		#pragma unroll
 		for (int r_ColumnTile = 0; r_ColumnTile < 2; ++r_ColumnTile)
 		{
 			// Both K32 E4 and K16 Half panels contain 32 bytes per output column.
@@ -124,6 +125,7 @@ LoadWindowWeights(const unsigned char* g_Matrix, int g_OutputBase, int g_Reducti
 			r_Weights.r_Pair[r_Chunk][2 * r_ColumnTile + 1][0] = r_WeightVector.z;
 			r_Weights.r_Pair[r_Chunk][2 * r_ColumnTile + 1][1] = r_WeightVector.w;
 		}
+
 	return r_Weights;
 }
 
@@ -132,9 +134,9 @@ __device__ __forceinline__ void LinearWindow32(const FWindowActivationTile<bFp8>
 											   const FWindowWeightTile<bFp8>& r_Weights,
 											   FWindowAccumulatorTile<32>& r_Output)
 {
-#pragma unroll
+	#pragma unroll
 	for (int r_Column = 0; r_Column < 4; ++r_Column)
-#pragma unroll
+		#pragma unroll
 		for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
 			MmaWindowFragment<bFp8>(r_Input.r_Reduction[r_Chunk], r_Weights.r_Pair[r_Chunk][r_Column],
 									r_Output.r_Pair[r_Column]);
@@ -159,7 +161,7 @@ template <bool bSquareRoot> __device__ __forceinline__ uint32_t InvertReplicated
 template <bool bApplyScale>
 __device__ __forceinline__ void NormalizeWindow(FWindowAccumulatorTile<32>& r_Channels, uint32_t r_Scale)
 {
-#pragma unroll
+	#pragma unroll
 	for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 	{
 		// Preserve the native contracted square tree: channels 16..31 round
@@ -177,7 +179,7 @@ __device__ __forceinline__ void NormalizeWindow(FWindowAccumulatorTile<32>& r_Ch
 		r_SquaredNorm = HalfAdd(r_SquaredNorm, (r_SquaredNorm << 16) | (r_SquaredNorm >> 16));
 		const uint32_t r_InverseNorm =
 			InvertReplicatedHalf<true>(HalfMax(r_SquaredNorm, CONST_NORMALIZATION_EPSILON_HALF2));
-#pragma unroll
+		#pragma unroll
 		for (int r_Column = 0; r_Column < 4; ++r_Column)
 		{
 			r_Channels.r_Pair[r_Column][r_RowHalf] =
@@ -203,31 +205,32 @@ __device__ __forceinline__ uint32_t AttentionExponential(uint32_t r_Scores)
 
 __device__ __forceinline__ void SoftmaxWindow(FWindowAccumulatorTile<64>& r_Scores)
 {
-#pragma unroll
+	#pragma unroll
 	for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 	{
-#pragma unroll
+		#pragma unroll
 		for (int r_Column = 0; r_Column < 8; ++r_Column)
 			r_Scores.r_Pair[r_Column][r_RowHalf] = AttentionExponential(r_Scores.r_Pair[r_Column][r_RowHalf]);
 		uint32_t r_LocalProbabilitySum =
 			HalfAdd(r_Scores.r_Pair[0][r_RowHalf], r_Scores.r_Pair[1][r_RowHalf]);
-#pragma unroll
+		#pragma unroll
 		for (int r_Column = 2; r_Column < 8; r_Column += 2)
 			r_LocalProbabilitySum =
 				HalfAdd(r_LocalProbabilitySum, HalfAdd(r_Scores.r_Pair[r_Column][r_RowHalf],
 													   r_Scores.r_Pair[r_Column + 1][r_RowHalf]));
+
 		// Native reduction order is lane 0+1, then +2, then +3, then the two
 		// Half components. A butterfly here would change Half rounding.
 		const uint32_t r_GroupBase = threadIdx.x & ~3u;
 		uint32_t r_ProbabilitySum = ShuffleIdx(r_LocalProbabilitySum, r_GroupBase, 31, 0xffffffffu);
-#pragma unroll
+		#pragma unroll
 		for (int Lane = 1; Lane < 4; ++Lane)
 			r_ProbabilitySum = HalfAdd(
 				r_ProbabilitySum, ShuffleIdx(r_LocalProbabilitySum, r_GroupBase + Lane, 31, 0xffffffffu));
 		r_ProbabilitySum = HalfAdd(r_ProbabilitySum, (r_ProbabilitySum << 16) | (r_ProbabilitySum >> 16));
 		const uint32_t r_InverseDenominator =
 			InvertReplicatedHalf<false>(HalfMax(r_ProbabilitySum, CONST_NORMALIZATION_EPSILON_HALF2));
-#pragma unroll
+		#pragma unroll
 		for (int r_Column = 0; r_Column < 8; ++r_Column)
 			r_Scores.r_Pair[r_Column][r_RowHalf] =
 				HalfMul(r_Scores.r_Pair[r_Column][r_RowHalf], r_InverseDenominator);
@@ -236,16 +239,17 @@ __device__ __forceinline__ void SoftmaxWindow(FWindowAccumulatorTile<64>& r_Scor
 
 __device__ __forceinline__ void PermuteRowSums(uint32_t (&r_Sums)[4], int Permutation)
 {
-// XOR permutation in two swap levels: retain fixed array indices so all
-// four partial sums stay in registers during the lane-ownership transpose.
-#pragma unroll
+	// XOR permutation in two swap levels: retain fixed array indices so all
+	// four partial sums stay in registers during the lane-ownership transpose.
+	#pragma unroll
 	for (int r_Pair = 0; r_Pair < 2; ++r_Pair)
 	{
 		const uint32_t r_EvenRowSum = r_Sums[2 * r_Pair], r_OddRowSum = r_Sums[2 * r_Pair + 1];
 		r_Sums[2 * r_Pair] = (Permutation & 1) ? r_OddRowSum : r_EvenRowSum;
 		r_Sums[2 * r_Pair + 1] = (Permutation & 1) ? r_EvenRowSum : r_OddRowSum;
 	}
-#pragma unroll
+
+	#pragma unroll
 	for (int r_Pair = 0; r_Pair < 2; ++r_Pair)
 	{
 		const uint32_t r_EvenRowSum = r_Sums[r_Pair], r_OddRowSum = r_Sums[r_Pair + 2];
@@ -261,16 +265,16 @@ __device__ __forceinline__ void SoftmaxWindowPair(FWindowAccumulatorTile<64> (&r
 	// each; independent tiles would repeat the same denominator in four lanes.
 	const int Lane = threadIdx.x;
 	uint32_t r_LocalProbabilitySums[4];
-#pragma unroll
+	#pragma unroll
 	for (int r_Row = 0; r_Row < 4; ++r_Row)
 	{
 		auto& r_Pairs = r_Scores[r_Row / 2].r_Pair;
 		const int r_RowHalf = r_Row & 1;
-#pragma unroll
+		#pragma unroll
 		for (int r_Column = 0; r_Column < 8; ++r_Column)
 			r_Pairs[r_Column][r_RowHalf] = AttentionExponential(r_Pairs[r_Column][r_RowHalf]);
 		uint32_t r_Sum = HalfAdd(r_Pairs[0][r_RowHalf], r_Pairs[1][r_RowHalf]);
-#pragma unroll
+		#pragma unroll
 		for (int r_Column = 2; r_Column < 8; r_Column += 2)
 			r_Sum = HalfAdd(r_Sum, HalfAdd(r_Pairs[r_Column][r_RowHalf], r_Pairs[r_Column + 1][r_RowHalf]));
 		r_LocalProbabilitySums[r_Row] = r_Sum;
@@ -282,7 +286,7 @@ __device__ __forceinline__ void SoftmaxWindowPair(FWindowAccumulatorTile<64> (&r
 	PermuteRowSums(r_LocalProbabilitySums, Lane & 3);
 	const int r_SourceLane = ((Lane & 7) << 2) | (Lane >> 3);
 	uint32_t r_GatheredProbabilitySums[4];
-#pragma unroll
+	#pragma unroll
 	for (int r_Row = 0; r_Row < 4; ++r_Row)
 		r_GatheredProbabilitySums[r_Row] =
 			ShuffleIdx(r_LocalProbabilitySums[r_Row], r_SourceLane ^ r_Row, 31, 0xffffffffu);
@@ -294,12 +298,12 @@ __device__ __forceinline__ void SoftmaxWindowPair(FWindowAccumulatorTile<64> (&r
 	const uint32_t r_InverseDenominator =
 		InvertReplicatedHalf<false>(HalfMax(r_ProbabilitySum, CONST_NORMALIZATION_EPSILON_HALF2));
 
-#pragma unroll
+	#pragma unroll
 	for (int r_Row = 0; r_Row < 4; ++r_Row)
 	{
 		// One inverse per query row returns to all four MMA column lanes.
 		const uint32_t r_RowInverse = ShuffleIdx(r_InverseDenominator, r_Row * 8 + Lane / 4, 31, 0xffffffffu);
-#pragma unroll
+		#pragma unroll
 		for (int r_Column = 0; r_Column < 8; ++r_Column)
 			r_Scores[r_Row / 2].r_Pair[r_Column][r_Row & 1] =
 				HalfMul(r_Scores[r_Row / 2].r_Pair[r_Column][r_Row & 1], r_RowInverse);
@@ -312,7 +316,7 @@ QueryKeyScores(int r_Tile, const unsigned char* g_HeadBias, const FWindowActivat
 			   const FWindowActivationTile<bFp8> (&r_Key)[4])
 {
 	FWindowAccumulatorTile<64> r_Scores;
-#pragma unroll
+	#pragma unroll
 	for (int r_ColumnTile = 0; r_ColumnTile < 4; ++r_ColumnTile)
 	{
 		const int g_BiasOffset = 2048 * r_Tile + 512 * r_ColumnTile + int(threadIdx.x) * 16;
@@ -322,9 +326,10 @@ QueryKeyScores(int r_Tile, const unsigned char* g_HeadBias, const FWindowActivat
 		r_Scores.r_Pair[2 * r_ColumnTile + 1][0] = r_Bias.z;
 		r_Scores.r_Pair[2 * r_ColumnTile + 1][1] = r_Bias.w;
 	}
-#pragma unroll
+
+	#pragma unroll
 	for (int r_Column = 0; r_Column < 8; ++r_Column)
-#pragma unroll
+		#pragma unroll
 		for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
 		{
 			const auto& r_Keys = r_Key[r_Column / 2].r_Reduction[r_Chunk];
@@ -333,6 +338,7 @@ QueryKeyScores(int r_Tile, const unsigned char* g_HeadBias, const FWindowActivat
 			MmaWindowFragment<bFp8>(r_Query[r_Tile].r_Reduction[r_Chunk], r_KeyFragment,
 									r_Scores.r_Pair[r_Column]);
 		}
+
 	return r_Scores;
 }
 
@@ -342,11 +348,11 @@ ProbabilityValues(const FWindowAccumulatorTile<64>& r_Probabilities,
 				  const FWindowValueTile<bFp8> (&r_Value)[4])
 {
 	FWindowAccumulatorTile<32> r_Attended{};
-#pragma unroll
+	#pragma unroll
 	for (int r_Chunk = 0; r_Chunk < 64 / FWindow32Profile<bFp8>::Reduction; ++r_Chunk)
 	{
 		const auto r_Probability = PublishWindowChunk<bFp8>(r_Probabilities, r_Chunk);
-#pragma unroll
+		#pragma unroll
 		for (int r_Column = 0; r_Column < 4; ++r_Column)
 		{
 			uint32_t r_ValueFragment[2];
@@ -363,6 +369,7 @@ ProbabilityValues(const FWindowAccumulatorTile<64>& r_Probabilities,
 			MmaWindowFragment<bFp8>(r_Probability, r_ValueFragment, r_Attended.r_Pair[r_Column]);
 		}
 	}
+
 	return r_Attended;
 }
 

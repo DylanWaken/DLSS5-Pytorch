@@ -1,3 +1,5 @@
+# Follow clang-format with `python tools/format_cuda.py` to align CUDA unroll
+# directives and their comments with the loops (clang-format 19 left-aligns them).
 BasedOnStyle: LLVM
 Standard: c++17
 IndentWidth: 4

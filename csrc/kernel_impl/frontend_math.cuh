@@ -148,7 +148,7 @@ __device__ __forceinline__ float3 ReconstructHistory(uint64_t HistoryTexture,
 	const FCubicAxis r_VerticalFilter = ComputeCubicAxis(NativeFloatMultiply(Uv.y, Height), Height);
 	const float InvWidth = NativeFloatReciprocal(Width), InvHeight = NativeFloatReciprocal(Height);
 	float r_SampleX[3], r_SampleY[3];
-#pragma unroll
+	#pragma unroll
 	for (int r_Tap = 0; r_Tap < 3; ++r_Tap)
 	{
 		r_SampleX[r_Tap] = NativeFloatMultiply(
@@ -162,6 +162,7 @@ __device__ __forceinline__ float3 ReconstructHistory(uint64_t HistoryTexture,
 						   NativeFloatMultiply(InvHeight, r_VerticalFilter.r_Position[r_Tap]),
 						   Transform.BiasY));
 	}
+
 	const float4 r_Left = SampleTexture(HistoryTexture, r_SampleX[0], r_SampleY[1]);
 	const float4 r_Top = SampleTexture(HistoryTexture, r_SampleX[1], r_SampleY[0]);
 	const float4 r_Center = SampleTexture(HistoryTexture, r_SampleX[1], r_SampleY[1]);
@@ -178,7 +179,7 @@ __device__ __forceinline__ float3 ReconstructHistory(uint64_t HistoryTexture,
 		NativeFloatAdd(r_Weights[3],
 					   NativeFloatAdd(r_Weights[2], NativeFloatAdd(r_Weights[0], r_Weights[1])))));
 	float3 r_ReconstructedColor;
-#pragma unroll
+	#pragma unroll
 	for (int r_Channel = 0; r_Channel < 3; ++r_Channel)
 	{
 		float r_WeightedChannelSum = NativeFloatMultiply((&r_Top.x)[r_Channel], r_Weights[1]);
@@ -188,6 +189,7 @@ __device__ __forceinline__ float3 ReconstructHistory(uint64_t HistoryTexture,
 		r_WeightedChannelSum = NativeFloatFma((&r_Right.x)[r_Channel], r_Weights[4], r_WeightedChannelSum);
 		(&r_ReconstructedColor.x)[r_Channel] = NativeFloatMultiply(r_WeightedChannelSum, r_InverseWeightSum);
 	}
+
 	return r_ReconstructedColor;
 }
 

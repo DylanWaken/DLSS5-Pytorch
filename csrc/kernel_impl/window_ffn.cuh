@@ -55,9 +55,9 @@ AccumulateWindowFfnSingleFp8(FMmaAccumulatorTile<SpatialFragments, ChannelGroups
 							 const uint4 (&r_Input)[SpatialFragments],
 							 const uint4 (&r_Weights)[ChannelGroups])
 {
-#pragma unroll
+	#pragma unroll
 	for (int r_Spatial = 0; r_Spatial < SpatialFragments; ++r_Spatial)
-#pragma unroll
+		#pragma unroll
 		for (int r_NTile = 0; r_NTile < ChannelGroups; ++r_NTile)
 		{
 			auto& r_AccumulatorWords = r_Accumulator.r_AccumulatorWords[r_Spatial][r_NTile];

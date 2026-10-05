@@ -13,8 +13,10 @@ extern "C" __global__
 	const unsigned char* g_PackedWeights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights);
 	FWindowActivationTile<bFp8> r_Input[4];
 	FWindowAccumulatorTile<32> r_Ffn[4];
+
+	// Load the per-channel residual scales used by the FFN and attention branches.
 	uint32_t r_FfnScale[4], r_AttentionScale[4];
-#pragma unroll
+	#pragma unroll
 	for (int r_Column = 0; r_Column < 4; ++r_Column)
 	{
 		const int g_ChannelByte = 16 * r_Column + 4 * (threadIdx.x & 3);
@@ -24,9 +26,9 @@ extern "C" __global__
 			g_PackedWeights + FConfig::AttentionScaleOffset + g_ChannelByte);
 	}
 
-// Coalesced physical-tile input. Singleton dimensions broadcast the one
-// available tile for reads, as the native entry does; writes remain bounded.
-#pragma unroll
+	// Coalesced physical-tile input. Singleton dimensions broadcast the one
+	// available tile for reads, as the native entry does; writes remain bounded.
+	#pragma unroll
 	for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 	{
 		{
@@ -38,7 +40,7 @@ extern "C" __global__
 			const int g_TileY = g_TileRows == 1 ? 0 : g_OriginTileY + (r_Tile >> 1);
 			const bool bValid =
 				g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows;
-#pragma unroll
+			#pragma unroll
 			for (int r_Chunk = 0; r_Chunk < FConfig::InputChunks; ++r_Chunk)
 			{
 				const int64_t g_Offset = int64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
@@ -48,9 +50,10 @@ extern "C" __global__
 											  : make_uint4(0, 0, 0, 0));
 			}
 		}
-#pragma unroll
+
+		#pragma unroll
 		for (int r_Column = 0; r_Column < 4; ++r_Column)
-#pragma unroll
+			#pragma unroll
 			for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 			{
 				uint32_t r_ResidualPair;
@@ -61,43 +64,45 @@ extern "C" __global__
 			}
 	}
 
-// Stream four 32-channel hidden panels through 32→128→32; the contraction
-// seed is the scaled input, and its reduction chunks stay in native order.
-#pragma unroll
+	// Stream four 32-channel hidden panels through 32→128→32; the contraction
+	// seed is the scaled input, and its reduction chunks stay in native order.
+	#pragma unroll
 	for (int HiddenPanel = 0; HiddenPanel < 4; ++HiddenPanel)
 	{
 		const FWindowWeightTile<bFp8> r_Expand =
 			LoadWindowWeights<bFp8>(g_PackedWeights, 32 * HiddenPanel, 0, 128);
 		const FWindowWeightTile<bFp8> r_Contract =
 			LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::ContractOffset, 0, 32 * HiddenPanel, 32);
-#pragma unroll
+		#pragma unroll
 		for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 		{
 			FWindowAccumulatorTile<32> r_HiddenTile{};
 			LinearWindow32(r_Input[r_Tile], r_Expand, r_HiddenTile);
-#pragma unroll
+			#pragma unroll
 			for (int r_Column = 0; r_Column < 4; ++r_Column)
-#pragma unroll
+				#pragma unroll
 				for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 					r_HiddenTile.r_Pair[r_Column][r_RowHalf] =
 						ActivateWindow(r_HiddenTile.r_Pair[r_Column][r_RowHalf]);
 			LinearWindow32(PublishWindow32<bFp8>(r_HiddenTile), r_Contract, r_Ffn[r_Tile]);
 		}
 	}
-#pragma unroll
+
+	#pragma unroll
 	for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 		r_Input[r_Tile] = PublishWindow32<bFp8>(r_Ffn[r_Tile]);
 
+	// Project the FFN output into Q/K/V fragments and normalize the query/key rows.
 	FWindowActivationTile<bFp8> r_Query[4], r_Key[4];
 	FWindowValueTile<bFp8> r_Value[4];
 	const uint32_t r_HeadScale =
 		FloatToHalf2(*reinterpret_cast<const uint32_t*>(g_PackedWeights + FConfig::HeadScaleOffset));
-#pragma unroll
+	#pragma unroll
 	for (int ProjectionComponent = 0; ProjectionComponent < 3; ++ProjectionComponent)
 	{
 		const FWindowWeightTile<bFp8> r_Weights =
 			LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::QkvOffset, 32 * ProjectionComponent, 0, 96);
-#pragma unroll
+		#pragma unroll
 		for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 		{
 			FWindowAccumulatorTile<32> r_Projected{};
@@ -114,7 +119,7 @@ extern "C" __global__
 					r_Key[r_Tile] = PublishWindow32<bFp8>(r_Projected);
 			}
 			else
-#pragma unroll
+				#pragma unroll
 				for (int r_Column = 0; r_Column < 4; ++r_Column)
 				{
 					const uint32_t r_LowRows = TransposeM8n8(r_Projected.r_Pair[r_Column][0]);
@@ -126,27 +131,28 @@ extern "C" __global__
 
 	const FWindowWeightTile<bFp8> r_OutputWeights =
 		LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::ProjectionOffset, 0, 0, 32);
+
 	// FP8 follows the native two-query-tile softmax schedule. Keep the tested
 	// FP16 schedule independent until its register pressure is measured.
 	constexpr int CONST_QUERY_TILE_BATCH = bFp8 ? 2 : 1;
-#pragma unroll
+	#pragma unroll
 	for (int r_FirstTile = 0; r_FirstTile < 4; r_FirstTile += CONST_QUERY_TILE_BATCH)
 	{
 		FWindowAccumulatorTile<64> r_Probabilities[CONST_QUERY_TILE_BATCH];
-#pragma unroll
+		#pragma unroll
 		for (int r_LocalTile = 0; r_LocalTile < CONST_QUERY_TILE_BATCH; ++r_LocalTile)
 			r_Probabilities[r_LocalTile] = QueryKeyScores<bFp8>(
 				r_FirstTile + r_LocalTile, g_PackedWeights + FConfig::BiasOffset, r_Query, r_Key);
 		SoftmaxWindowPair(r_Probabilities);
 
-#pragma unroll
+		#pragma unroll
 		for (int r_LocalTile = 0; r_LocalTile < CONST_QUERY_TILE_BATCH; ++r_LocalTile)
 		{
 			const int r_Tile = r_FirstTile + r_LocalTile;
 			const auto r_Attended = ProbabilityValues<bFp8>(r_Probabilities[r_LocalTile], r_Value);
-#pragma unroll
+			#pragma unroll
 			for (int r_Column = 0; r_Column < 4; ++r_Column)
-#pragma unroll
+				#pragma unroll
 				for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 					r_Ffn[r_Tile].r_Pair[r_Column][r_RowHalf] =
 						HalfMul(r_Ffn[r_Tile].r_Pair[r_Column][r_RowHalf], r_AttentionScale[r_Column]);
@@ -159,11 +165,11 @@ extern "C" __global__
 				const int g_Width = Parameters.ViewWidth > 0 ? Parameters.ViewWidth : Parameters.Width;
 				const int g_OriginX = int(blockIdx.x) * 8 + Parameters.OriginX + ((r_Tile) & 1) * 4;
 				const int g_OriginY = int(blockIdx.y) * 8 + Parameters.OriginY + ((r_Tile) >> 1) * 4;
-#pragma unroll
+				#pragma unroll
 				for (int r_Chunk = 0; r_Chunk < Chunks; ++r_Chunk)
 				{
 					const auto r_Fragment = PublishWindowChunk<bFp8>(r_Ffn[r_Tile], r_Chunk);
-#pragma unroll
+					#pragma unroll
 					for (int r_Word = 0; r_Word < 4; ++r_Word)
 					{
 						const int g_X = g_OriginX + ((threadIdx.x / 4) & 3);

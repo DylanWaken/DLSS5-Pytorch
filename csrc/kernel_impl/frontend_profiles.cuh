@@ -48,5 +48,4 @@ struct FPostprocessWindowParameters
 	uint32_t (*r_Head)[2];
 };
 
-
 #endif

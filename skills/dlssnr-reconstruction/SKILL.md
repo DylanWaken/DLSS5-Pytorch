@@ -21,6 +21,10 @@ remaining visible inside the global body. The typed ABI is now
 `kernel_impl/kernel_abi.h`; `kernel_launcher` is host-only. The fragment
 interface is `MMA(...)`, renamed from `MultiplyAccumulate`.
 
+Indent each `#pragma unroll` with its loop and separate major stages with short
+explanatory comments and blank lines. After clang-format, run
+`python -B tools/format_cuda.py`; use `--check` to verify the CUDA layout.
+
 Read [the kernel reading guide](../../docs/KERNEL_READING_GUIDE.md) and
 [the source layout](../../docs/SOURCE_LAYOUT.md) for concrete entry filenames.
 The current [source audit](../../docs/global_entry_audit.json) records 81 CUDA

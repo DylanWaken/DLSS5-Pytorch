@@ -62,23 +62,25 @@ extern "C" __global__ __maxnreg__(168) void channel_projection_c512_to_c1024_fp8
 	// Native mbarrier arrival counts include every thread, including zero-fill warps.
 	if (Lane == 0 && Warp == 0)
 	{
-#pragma unroll
+		#pragma unroll
 		for (int s_StageIndex = 0; s_StageIndex < FProfile::s_StageCount; ++s_StageIndex)
 			BarrierInit(s_Storage, FProfile::s_BarrierOffset + s_StageIndex * 8, blockDim.x * blockDim.y);
 	}
+
 	__syncthreads();
 
 	uint4 r_WeightFragments[2][4];
+
 	// Keep weight prefetch next to the register fragment storage it fills.
 	const auto LoadWeights = [&](int g_ReductionStart)
 	{
 		const int g_WeightTileByteBase =
 			g_ReductionStart * FProfile::OutputChannels * FProfile::ElementBytes + g_OutputChannel * 32 +
 			Lane * 16;
-#pragma unroll
+		#pragma unroll
 		for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
 		{
-#pragma unroll
+			#pragma unroll
 			for (int r_ChannelGroup = 0; r_ChannelGroup < 4; ++r_ChannelGroup)
 			{
 				const int g_WeightByteOffset = g_WeightTileByteBase +
@@ -90,8 +92,9 @@ extern "C" __global__ __maxnreg__(168) void channel_projection_c512_to_c1024_fp8
 			}
 		}
 	};
+
 	LoadWeights(g_ReductionChannelBase);
-#pragma unroll
+	#pragma unroll
 	for (int s_StageIndex = 0; s_StageIndex < FProfile::s_StageCount; ++s_StageIndex)
 		StageInput(s_StageIndex, g_ReductionChannelBase + s_StageIndex * FProfile::ReductionStep, g_TileY,
 				   g_InputTileX, g_Height / 4, g_Width / 4);
@@ -100,21 +103,22 @@ extern "C" __global__ __maxnreg__(168) void channel_projection_c512_to_c1024_fp8
 
 	// Keep the reduction loop rolled as in the DLL. The fragment loops below
 	// unroll, so tile coordinates select registers rather than local memory.
-#pragma unroll 1
+	#pragma unroll 1
 	for (int ReductionTile = 0; ReductionTile < FProfile::ReductionSteps; ++ReductionTile)
 	{
 		const int s_StageIndex = ReductionTile % FProfile::s_StageCount;
 		const int s_InputStageByteOffset =
 			s_StageIndex * FProfile::s_StageBytes + (Warp >> 2) * 2048 + Lane * 16;
 		uint4 r_InputFragments[2][2];
-#pragma unroll
+		#pragma unroll
 		for (int r_SpatialTile = 0; r_SpatialTile < 2; ++r_SpatialTile)
 		{
-#pragma unroll
+			#pragma unroll
 			for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
 				r_InputFragments[r_SpatialTile][r_KSubtile] = *reinterpret_cast<const uint4*>(
 					s_Storage + s_InputStageByteOffset + r_SpatialTile * 1024 + r_KSubtile * 512);
 		}
+
 		AccumulateTile<FProfile::Precision>(r_Accumulator, r_InputFragments, r_WeightFragments);
 
 		// Prefetch weights before waiting for the next input stage. That wait
@@ -124,6 +128,7 @@ extern "C" __global__ __maxnreg__(168) void channel_projection_c512_to_c1024_fp8
 			LoadWeights(g_ReductionChannelBase + (ReductionTile + 1) * FProfile::ReductionStep);
 			WaitStage((ReductionTile + 1) % FProfile::s_StageCount);
 		}
+
 		if (ReductionTile + FProfile::s_StageCount < FProfile::ReductionSteps)
 			StageInput(s_StageIndex,
 					   g_ReductionChannelBase +
@@ -133,7 +138,7 @@ extern "C" __global__ __maxnreg__(168) void channel_projection_c512_to_c1024_fp8
 
 	// Physical output is a sequence of 4x4 spatial blocks. Half stores each
 	// N16 fragment directly; FP8 merges adjacent N8 fragments after conversion.
-#pragma unroll
+	#pragma unroll
 	for (int r_SpatialTile = 0; r_SpatialTile < 2; ++r_SpatialTile)
 	{
 		if (g_TileY < g_Height / 4 && g_TileX + r_SpatialTile < g_Width / 4)
@@ -143,7 +148,7 @@ extern "C" __global__ __maxnreg__(168) void channel_projection_c512_to_c1024_fp8
 				(g_TileIndex * FProfile::OutputChannels + g_OutputChannel) * 16 * FProfile::ElementBytes +
 				Lane * 16;
 			{
-#pragma unroll
+				#pragma unroll
 				for (int r_ChannelPair = 0; r_ChannelPair < 2; ++r_ChannelPair)
 				{
 					const auto& r_Left = r_Accumulator.r_AccumulatorWords[r_SpatialTile][r_ChannelPair * 2];

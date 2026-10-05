@@ -49,9 +49,9 @@ ConsumeGlobalContractInputStage(FMmaAccumulatorTile<4, ChannelGroups>& r_Accumul
 	const int s_Base = (ReductionTile % Profile::s_StageCount) * Profile::s_StageBytes +
 					   (TileCoordinates.Warp >> 1) * 4 * Profile::s_GroupBytes + TileCoordinates.Lane * 16;
 	uint4 r_Input[4][Profile::ReductionSubtiles];
-#pragma unroll
+	#pragma unroll
 	for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
-#pragma unroll
+		#pragma unroll
 		for (int r_KSubtile = 0; r_KSubtile < Profile::ReductionSubtiles; ++r_KSubtile)
 			r_Input[r_Spatial][r_KSubtile] = *reinterpret_cast<const uint4*>(
 				s_Storage + s_Base + r_Spatial * Profile::s_GroupBytes + r_KSubtile * 512);

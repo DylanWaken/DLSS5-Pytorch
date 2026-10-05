@@ -22,12 +22,13 @@ extern "C" __global__
 	const uint64_t g_Input = Parameters.g_Input + uint64_t(blockIdx.z) * 16384 * FProfile::ElementBytes;
 	const uint64_t g_PackedWeights =
 		Parameters.g_PackedWeights + uint64_t(blockIdx.z) * (1024 * 4096) * FProfile::ElementBytes;
+
 	// Packed storage groups 16 tokens together. Initial fill and refill copy
 	// the same two 1024-byte K slabs; out-of-range groups contribute exact zero.
 	const auto StageInput = [&](uint32_t ReductionTile, uint32_t s_StageIndex)
 	{
 		const uint32_t s_Barrier = FProfile::s_BarrierBase + s_StageIndex * 8;
-#pragma unroll
+		#pragma unroll
 		for (int CopyGroup = 0; CopyGroup < 2; ++CopyGroup)
 		{
 			const uint32_t g_TokenGroup = g_FirstTokenGroup + Warp + CopyGroup * 4;
@@ -38,6 +39,7 @@ extern "C" __global__
 				const uint32_t g_InputGroup = bBroadcastSmallHalf ? 0 : g_TokenGroup;
 				const uint64_t g_Source =
 					g_Input + uint64_t(g_InputGroup) * 16384 * FProfile::ElementBytes + ReductionTile * 1024;
+
 				// The original warp election publishes one bulk-copy transaction.
 				if (Elected(0xffffffffu))
 				{
@@ -64,28 +66,32 @@ extern "C" __global__
 
 	if ((Lane | Warp) == 0)
 	{
-#pragma unroll
+		#pragma unroll
 		for (int s_StageIndex = 0; s_StageIndex < FProfile::s_StageCount; ++s_StageIndex)
 			BarrierInit(s_Storage, FProfile::s_BarrierBase + s_StageIndex * 8, blockDim.x * blockDim.y);
 	}
+
 	__syncthreads();
 
 	uint4 r_Weight[2][4];
+
 	// Each uint4 supplies two adjacent N8 fragments. Both precisions retain
 	// the original 128-KiB weight-record stride between the two K subtiles.
 	const auto LoadWeights = [&](uint32_t ReductionTile)
 	{
 		const uint64_t g_WeightTileBase =
 			g_PackedWeights + g_OutputBlock * 4096 + (threadIdx.y & 1) * 2048 + threadIdx.x * 16;
-#pragma unroll
+		#pragma unroll
 		for (int r_KTile = 0; r_KTile < 2; ++r_KTile)
-#pragma unroll
+			#pragma unroll
 			for (int r_NTile = 0; r_NTile < 4; ++r_NTile)
 				r_Weight[r_KTile][r_NTile] = __ldca(reinterpret_cast<const uint4*>(
 					g_WeightTileBase + uint64_t(ReductionTile * 2 + r_KTile) * 131072 + r_NTile * 512));
 	};
+
+	// Prime the weight registers and input pipeline before entering the reduction loop.
 	LoadWeights(0);
-#pragma unroll
+	#pragma unroll
 	for (int s_StageIndex = 0; s_StageIndex < FProfile::s_StageCount; ++s_StageIndex)
 		StageInput(s_StageIndex, s_StageIndex);
 	WaitStage(0);
@@ -93,15 +99,15 @@ extern "C" __global__
 	// One warp accumulates 64 tokens x 64 output channels in Half. Input values
 	// are already stored in the native MMA A layout, so no transpose is needed.
 	FMmaAccumulatorTile<4, 4> r_Accumulator{};
-#pragma unroll 1
+	#pragma unroll 1
 	for (uint32_t ReductionTile = 0; ReductionTile < FProfile::ReductionSteps; ++ReductionTile)
 	{
 		const uint32_t s_StageIndex = ReductionTile % FProfile::s_StageCount;
 		const uint32_t s_WarpInput = s_StageIndex * FProfile::s_StageBytes + (Warp / 2) * 4096 + Lane * 16;
 		uint4 r_Input[4][2];
-#pragma unroll
+		#pragma unroll
 		for (int r_MTile = 0; r_MTile < 4; ++r_MTile)
-#pragma unroll
+			#pragma unroll
 			for (int r_KTile = 0; r_KTile < 2; ++r_KTile)
 				r_Input[r_MTile][r_KTile] =
 					*reinterpret_cast<const uint4*>(s_Storage + s_WarpInput + r_MTile * 1024 + r_KTile * 512);
@@ -114,23 +120,24 @@ extern "C" __global__
 			LoadWeights(ReductionTile + 1);
 			WaitStage((ReductionTile + 1) % FProfile::s_StageCount);
 		}
+
 		if (ReductionTile + FProfile::s_StageCount < FProfile::ReductionSteps)
 			StageInput(ReductionTile + FProfile::s_StageCount, s_StageIndex);
 	}
 
 	// Preserve the native clamped Half polynomial and all its rounding points.
-#pragma unroll
+	#pragma unroll
 	for (int r_MTile = 0; r_MTile < 4; ++r_MTile)
-#pragma unroll
+		#pragma unroll
 		for (int r_NTile = 0; r_NTile < 4; ++r_NTile)
-#pragma unroll
+			#pragma unroll
 			for (int r_Word = 0; r_Word < 4; ++r_Word)
 				r_Accumulator.r_AccumulatorWords[r_MTile][r_NTile][r_Word] =
 					FfnActivation(r_Accumulator.r_AccumulatorWords[r_MTile][r_NTile][r_Word]);
 
 	// Publish each valid 16-token group directly into the next layer's physical
 	// tensor layout. FP8 pairs two N16 fragments into one 128-bit vector.
-#pragma unroll
+	#pragma unroll
 	for (int r_MTile = 0; r_MTile < 4; ++r_MTile)
 	{
 		const uint32_t g_TokenGroup = g_FirstTokenGroup + (Warp / 2) * 4 + r_MTile;
@@ -140,7 +147,7 @@ extern "C" __global__
 								  uint64_t(g_TokenGroup) * 65536 * FProfile::ElementBytes +
 								  g_OutputBlock * 2048 * FProfile::ElementBytes +
 								  (Warp & 1) * 1024 * FProfile::ElementBytes + Lane * 16;
-#pragma unroll
+		#pragma unroll
 		for (int r_NTile = 0; r_NTile < (bFp8 ? 2 : 4); ++r_NTile)
 		{
 			uint4 r_OutputVector;

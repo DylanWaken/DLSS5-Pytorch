@@ -16,31 +16,38 @@ extern "C" __global__ __maxnreg__(168) void window_qkv_c512_fp8(FWindowQkvC512Fp
 												int(blockIdx.z) * 4 + int(threadIdx.y),
 												int(threadIdx.x),
 												int(threadIdx.y)};
+
+	// Initialize the shared copy barriers before any warp issues input transactions.
 	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 	{
 		BarrierInit(s_Storage, Profile::s_BarrierBase, 128);
 		BarrierInit(s_Storage, Profile::s_BarrierBase + 8, 128);
 	}
+
 	__syncthreads();
 	FWindowQkvDenseTile r_Projected{};
 	uint4 r_Weights[Profile::KSubtiles][6];
+
+	// Load this head's adjacent Q, K and V weight panels into register fragments.
 	const auto LoadWeights = [&](int ReductionTile)
 	{
 		const uint64_t g_WeightTileBase =
 			Parameters.g_PackedWeights +
 			uint64_t(ReductionTile * Profile::ReductionStep) * 1536 * Profile::ElementBytes +
 			TileCoordinates.g_Head * 3072 + TileCoordinates.Lane * 16;
-#pragma unroll
+		#pragma unroll
 		for (int r_KSubtile = 0; r_KSubtile < Profile::KSubtiles; ++r_KSubtile)
-#pragma unroll
+			#pragma unroll
 			for (int r_NTile = 0; r_NTile < 6; ++r_NTile)
 				r_Weights[r_KSubtile][r_NTile] = __ldca(
 					reinterpret_cast<const uint4*>(g_WeightTileBase + r_KSubtile * 49152 + r_NTile * 512));
 	};
+
+	// Stage bounded input tiles with async copies; reuse the same addressing on refill.
 	const auto IssueInput = [&](int ReductionTile)
 	{
 		const int s_Barrier = Profile::s_BarrierBase + (ReductionTile % 2) * 8;
-#pragma unroll
+		#pragma unroll
 		for (int CopyIndex = 0; CopyIndex < (bFp8 ? 2 : 1); ++CopyIndex)
 		{
 			const int g_LocalY = bFp8 ? CopyIndex : TileCoordinates.Warp / 2;
@@ -68,27 +75,30 @@ extern "C" __global__ __maxnreg__(168) void window_qkv_c512_fp8(FWindowQkvC512Fp
 					make_uint4(0, 0, 0, 0);
 		}
 	};
+
+	// Wait for the selected shared-memory stage before its fragments are consumed.
 	const auto WaitInput = [&](int ReductionTile)
 	{
 		const int s_Barrier = FWindowQkvProfile<bFp8>::s_BarrierBase + (ReductionTile % 2) * 8;
 		ArriveAndWait(s_Storage, s_Barrier);
 	};
 
+	// Prime the weight registers and input pipeline before entering the reduction loop.
 	LoadWeights(0);
 	IssueInput(0);
 	WaitInput(0);
 
 	// Native Half uses K16 and a 2 KiB stage. FP8 uses two K32 instructions
 	// and a 4 KiB stage. Both schedules ping-pong between two input stages.
-#pragma unroll 1
+	#pragma unroll 1
 	for (int ReductionTile = 0; ReductionTile < Profile::ReductionTiles; ++ReductionTile)
 	{
 		if (ReductionTile + 1 < Profile::ReductionTiles)
 			IssueInput(ReductionTile + 1);
 		uint4 r_Input[4][Profile::KSubtiles];
-#pragma unroll
+		#pragma unroll
 		for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
-#pragma unroll
+			#pragma unroll
 			for (int r_KSubtile = 0; r_KSubtile < Profile::KSubtiles; ++r_KSubtile)
 				r_Input[r_Spatial][r_KSubtile] = *reinterpret_cast<const uint4*>(
 					s_Storage + (ReductionTile % 2) * Profile::s_StageBytes +
@@ -101,19 +111,20 @@ extern "C" __global__ __maxnreg__(168) void window_qkv_c512_fp8(FWindowQkvC512Fp
 		}
 	}
 
+	// Project the FFN output into Q/K/V fragments and normalize the query/key rows.
 	FWindowActivationTile<bFp8> r_Query[4], r_Key[4];
 	FWindowValueTile<bFp8> r_Value[4];
 	const uint32_t r_HeadScale = FloatToHalf2(*reinterpret_cast<const uint32_t*>(
 		Parameters.g_PackedWeights + Profile::HeadScaleOffset + TileCoordinates.g_Head * 4));
-#pragma unroll
+	#pragma unroll
 	for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
 	{
 		FWindowAccumulatorTile<32> r_Qkv[3];
-#pragma unroll
+		#pragma unroll
 		for (int r_QkvComponent = 0; r_QkvComponent < 3; ++r_QkvComponent)
-#pragma unroll
+			#pragma unroll
 			for (int r_Column = 0; r_Column < 4; ++r_Column)
-#pragma unroll
+				#pragma unroll
 				for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 					r_Qkv[r_QkvComponent].r_Pair[r_Column][r_RowHalf] =
 						r_Projected.r_AccumulatorWords[r_Spatial][r_QkvComponent * 2 + r_Column / 2]
@@ -122,7 +133,7 @@ extern "C" __global__ __maxnreg__(168) void window_qkv_c512_fp8(FWindowQkvC512Fp
 		NormalizeWindow<false>(r_Qkv[1], CONST_HALF2_ONE);
 		r_Query[r_Spatial] = PublishWindow32<bFp8>(r_Qkv[0]);
 		r_Key[r_Spatial] = PublishWindow32<bFp8>(r_Qkv[1]);
-#pragma unroll
+		#pragma unroll
 		for (int r_Column = 0; r_Column < 4; ++r_Column)
 		{
 			const uint32_t r_LowerValueRows = TransposeM8n8(r_Qkv[2].r_Pair[r_Column][0]);
@@ -138,23 +149,24 @@ extern "C" __global__ __maxnreg__(168) void window_qkv_c512_fp8(FWindowQkvC512Fp
 	{
 		// The native softmax transposes two adjacent query tiles together:
 		// one inverse per logical row replaces four identical lane copies.
-#pragma unroll
+		#pragma unroll
 		for (int r_FirstTile = 0; r_FirstTile < 4; r_FirstTile += 2)
 		{
 			FWindowActivationTile<true> r_Attended[2];
+
 			// Two adjacent query tiles share one warp transpose for their four
 			// row-half denominator vectors, matching the recovered native schedule.
 			FWindowAccumulatorTile<64> r_Probabilities[2];
-#pragma unroll
+			#pragma unroll
 			for (int r_LocalTile = 0; r_LocalTile < 2; ++r_LocalTile)
 				r_Probabilities[r_LocalTile] =
 					QueryKeyScores<true>(r_FirstTile + r_LocalTile, g_HeadBias, r_Query, r_Key);
 			SoftmaxWindowPair(r_Probabilities);
-#pragma unroll
+			#pragma unroll
 			for (int r_LocalTile = 0; r_LocalTile < 2; ++r_LocalTile)
 				r_Attended[r_LocalTile] =
 					PublishWindow32<true>(ProbabilityValues<true>(r_Probabilities[r_LocalTile], r_Value));
-#pragma unroll
+			#pragma unroll
 			for (int r_LocalTile = 0; r_LocalTile < 2; ++r_LocalTile)
 			{
 				const int r_Spatial = r_FirstTile + r_LocalTile;

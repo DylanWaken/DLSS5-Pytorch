@@ -30,7 +30,7 @@ __device__ __forceinline__ void PermuteGlobalAttentionQuad(uint32_t (&r_Probabil
 {
 	// Two conditional swap levels implement Words[i] = Words[i XOR p].
 	// Fixed indices keep the quartet in registers during the warp transpose.
-#pragma unroll
+	#pragma unroll
 	for (int r_Pair = 0; r_Pair < 2; ++r_Pair)
 	{
 		const uint32_t r_EvenWord = r_ProbabilitySums[r_Pair * 2],
@@ -38,7 +38,8 @@ __device__ __forceinline__ void PermuteGlobalAttentionQuad(uint32_t (&r_Probabil
 		r_ProbabilitySums[r_Pair * 2] = (r_Permutation & 1) ? r_OddWord : r_EvenWord;
 		r_ProbabilitySums[r_Pair * 2 + 1] = (r_Permutation & 1) ? r_EvenWord : r_OddWord;
 	}
-#pragma unroll
+
+	#pragma unroll
 	for (int r_Pair = 0; r_Pair < 2; ++r_Pair)
 	{
 		const uint32_t r_EvenWord = r_ProbabilitySums[r_Pair], r_OddWord = r_ProbabilitySums[r_Pair + 2];

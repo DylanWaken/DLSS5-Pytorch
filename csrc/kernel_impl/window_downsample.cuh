@@ -27,11 +27,11 @@ __device__ __forceinline__ void PublishWindowDownsample(const FWindowDownsampleA
 	const int g_Width = Channels == 32 ? Parameters.Width / 2 : (g_ValidWidth + 3) & ~3;
 	const int g_OriginX = (int(blockIdx.x) * 8 + Parameters.OriginX) / 2;
 	const int g_OriginY = (int(blockIdx.y) * 8 + Parameters.OriginY) / 2;
-#pragma unroll
+	#pragma unroll
 	for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
 	{
 		const auto r_Fragment = PublishWindowChunk<bFp8>(r_Output, r_Chunk);
-#pragma unroll
+		#pragma unroll
 		for (int r_Word = 0; r_Word < 4; ++r_Word)
 		{
 			const int g_X = g_OriginX + ((threadIdx.x / 4) & 3);
@@ -43,6 +43,7 @@ __device__ __forceinline__ void PublishWindowDownsample(const FWindowDownsampleA
 				const uint64_t g_OutputWordAddress =
 					Parameters.g_DownsampledOutput +
 					((uint64_t(g_Plane * g_Height + g_Y) * g_Width + g_X) * 16) + 4 * (threadIdx.x & 3);
+
 				// The native padding clear follows these projection stores. Emit
 				// its zero immediately for our own padded cells to avoid a race.
 				*reinterpret_cast<uint32_t*>(g_OutputWordAddress) =
@@ -63,6 +64,7 @@ __device__ __forceinline__ void ClearDownsamplePadding(const FWindowDownsampleAr
 	const int g_OriginX = (int(blockIdx.x) * 8 + Parameters.OriginX) / 2;
 	const int g_OriginY = (int(blockIdx.y) * 8 + Parameters.OriginY) / 2;
 	const int ThreadIndex = threadIdx.y * 32 + threadIdx.x;
+
 	// The native clear footprint is a Half-sized C→2C allocation even for
 	// FP8. Preserve that documented workspace contract, but only clear padding.
 	for (int g_Index = ThreadIndex; g_Index < 16 * ClearPlanes; g_Index += Channels)
@@ -81,6 +83,7 @@ __device__ __forceinline__ void ClearDownsamplePadding(const FWindowDownsampleAr
 			*reinterpret_cast<uint4*>(g_PaddingVectorAddress) = make_uint4(0, 0, 0, 0);
 		}
 	}
+
 	// A larger caller-provided target may extend past every launched window.
 	// CTA zero handles that uncovered border, as the native clear path does.
 	if (blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0)

@@ -34,7 +34,7 @@ extern "C" __global__
 
 		// Contraction coalesces both K fragments in each 16-token group. Half
 		// attention projection instead assigns each K fragment to a separate warp.
-#pragma unroll
+		#pragma unroll
 		for (int Copy = 0; Copy < Profile::s_CopiesPerWarp; ++Copy)
 		{
 			const int g_Group = TileCoordinates.bBroadcastInput
@@ -60,7 +60,7 @@ extern "C" __global__
 			}
 			else
 			{
-#pragma unroll
+				#pragma unroll
 				for (int s_Subtile = 0; s_Subtile < Profile::s_CopyBytes / 512; ++s_Subtile)
 					*reinterpret_cast<uint4*>(s_Storage + s_Destination + s_Subtile * 512 +
 											  TileCoordinates.Lane * 16) = make_uint4(0, 0, 0, 0);
@@ -75,13 +75,15 @@ extern "C" __global__
 		ArriveAndWait(s_Storage, s_Barrier);
 	};
 
+	// Initialize the shared copy barriers before any warp issues input transactions.
 	if (Lane == 0 && Warp == 0)
-#pragma unroll
+		#pragma unroll
 		for (int s_Stage = 0; s_Stage < Profile::s_StageCount; ++s_Stage)
 			BarrierInit(s_Storage, Profile::s_BarrierOffset + s_Stage * 8, blockDim.x * blockDim.y);
 	__syncthreads();
 
 	uint4 r_Weights[Profile::ReductionSubtiles][4];
+
 	// Prefetch weights without changing the ring dependency order.
 	const auto LoadWeights = [&](int ReductionTile)
 	{
@@ -90,28 +92,31 @@ extern "C" __global__
 												   ReductionTile * Profile::ReductionStep) *
 											  1024 * Profile::ElementBytes +
 										  TileCoordinates.g_OutputChannel * 32 + TileCoordinates.Lane * 16;
-#pragma unroll
+		#pragma unroll
 		for (int r_KSubtile = 0; r_KSubtile < Profile::ReductionSubtiles; ++r_KSubtile)
-#pragma unroll
+			#pragma unroll
 			for (int r_ChannelGroup = 0; r_ChannelGroup < 4; ++r_ChannelGroup)
 				r_Weights[r_KSubtile][r_ChannelGroup] = __ldca(reinterpret_cast<const uint4*>(
 					g_WeightTileBase + r_KSubtile * 32768 + r_ChannelGroup * 512));
 	};
+
+	// Prime the weight registers and input pipeline before entering the reduction loop.
 	LoadWeights(0);
-#pragma unroll
+	#pragma unroll
 	for (int s_InitialStage = 0; s_InitialStage < Profile::s_InitialStages; ++s_InitialStage)
 		StageInput(s_InitialStage);
 	WaitStage(0);
 	FGlobalContractAccumulator r_Accumulator{};
+
 	// Only the first K split seeds the accumulator from the residual.
 	if (TileCoordinates.Split == 0)
 	{
 		// The record appends 1024 Half scales to the matrix. Lane's two adjacent
 		// channels share a packed scale; words 0/1 and 2/3 belong to separate N8s.
 		uint32_t r_ResidualScales[4][2];
-#pragma unroll
+		#pragma unroll
 		for (int r_ChannelGroup = 0; r_ChannelGroup < 4; ++r_ChannelGroup)
-#pragma unroll
+			#pragma unroll
 			for (int r_N8 = 0; r_N8 < 2; ++r_N8)
 				r_ResidualScales[r_ChannelGroup][r_N8] = *reinterpret_cast<const uint32_t*>(
 					Parameters.g_PackedWeights + Profile::MatrixBytes +
@@ -119,7 +124,7 @@ extern "C" __global__
 					 (TileCoordinates.Lane & 3) * 2) *
 						2);
 
-#pragma unroll
+		#pragma unroll
 		for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
 		{
 			const int g_Group =
@@ -131,7 +136,7 @@ extern "C" __global__
 				uint64_t(g_Group * 1024 + TileCoordinates.g_OutputChannel) * 16 * Profile::ElementBytes +
 				TileCoordinates.Lane * 16;
 			{
-#pragma unroll
+				#pragma unroll
 				for (int r_ChannelPair = 0; r_ChannelPair < 2; ++r_ChannelPair)
 				{
 					const uint4 r_PackedResidual =
@@ -140,7 +145,7 @@ extern "C" __global__
 							: make_uint4(0, 0, 0, 0);
 					const uint32_t r_PackedResidualWords[4] = {r_PackedResidual.x, r_PackedResidual.y,
 															   r_PackedResidual.z, r_PackedResidual.w};
-#pragma unroll
+					#pragma unroll
 					for (int r_InPair = 0; r_InPair < 2; ++r_InPair)
 					{
 						const int r_ChannelGroup = r_ChannelPair * 2 + r_InPair;
@@ -167,7 +172,7 @@ extern "C" __global__
 	// Native two-stage code peels the final MMA tile out of the prefetch loop.
 	// Keeping that drain explicit removes a per-iteration tail branch. The
 	// three-stage Half contraction retains its distinct refill lifecycle.
-#pragma unroll 1
+	#pragma unroll 1
 	for (int ReductionTile = 0;
 		 ReductionTile < Profile::ReductionTiles - (Profile::s_InitialStages == 1 ? 1 : 0); ++ReductionTile)
 	{
@@ -179,8 +184,10 @@ extern "C" __global__
 			WaitStage(ReductionTile + 1);
 		}
 	}
+
 	ConsumeGlobalContractInputStage<Profile>(r_Accumulator, r_Weights, s_Storage, Profile::ReductionTiles - 1,
 											 TileCoordinates);
+
 	// Compile-time split policy keeps the native branch outside all store loops.
 	const auto PublishFragments = [&](auto PublicationTag)
 	{
@@ -195,7 +202,7 @@ extern "C" __global__
 		// Serial publication preserves the DLL's Half rounding between K splits.
 		// FP8 keeps partial sums in a separate Half buffer until the fourth split.
 		const uint64_t g_PartialSums = bFp8 ? Parameters.g_SplitAccumulator : Parameters.g_Output;
-#pragma unroll
+		#pragma unroll
 		for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
 		{
 			const int g_Group =
@@ -205,7 +212,7 @@ extern "C" __global__
 				const uint64_t g_HalfBase = g_PartialSums +
 											uint64_t(g_Group * 1024 + TileCoordinates.g_OutputChannel) * 32 +
 											TileCoordinates.Lane * 16;
-#pragma unroll
+				#pragma unroll
 				for (int r_ChannelGroup = 0; r_ChannelGroup < 4; ++r_ChannelGroup)
 				{
 					auto& r_AccumulatorWords = r_Accumulator.r_AccumulatorWords[r_Spatial][r_ChannelGroup];
@@ -240,7 +247,7 @@ extern "C" __global__
 							Parameters.g_Output +
 							uint64_t(g_Group * 1024 + TileCoordinates.g_OutputChannel) * 16 +
 							TileCoordinates.Lane * 16;
-#pragma unroll
+						#pragma unroll
 						for (int r_ChannelPair = 0; r_ChannelPair < 2; ++r_ChannelPair)
 						{
 							const auto& r_LowerChannelWords =
@@ -283,6 +290,7 @@ extern "C" __global__
 			PublishFragments(std::integral_constant<EGlobalContractSplitPublication,
 													EGlobalContractSplitPublication::Final>{});
 	}
+
 	__syncthreads();
 	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 		CounterStoreRelease(g_SplitCounters, TileCoordinates.Split);

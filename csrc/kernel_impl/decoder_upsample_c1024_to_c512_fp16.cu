@@ -29,13 +29,17 @@ extern "C" __global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp16(
 	const uint64_t g_SplitAccumulator = Parameters.g_SplitAccumulator;
 	const uint64_t g_SplitCounters =
 		Parameters.g_CompletionCounters + (TileCoordinates.g_TileY * 2 * g_Columns + blockIdx.x) * 4;
+
+	// Initialize the shared copy barriers before any warp issues input transactions.
 	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 	{
 		BarrierInit(s_Storage, 2048, 64);
 		BarrierInit(s_Storage, 2056, 64);
 	}
+
 	__syncthreads();
 	FDecoderAccumulator r_Accumulator{};
+
 	// Keep the double-buffered async input pipeline and weight loads next to the MMA loop.
 	uint4 r_Weights[2][8];
 	const auto LoadWeights = [&](int ReductionTile)
@@ -45,13 +49,14 @@ extern "C" __global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp16(
 			uint64_t(TileCoordinates.Split * 256 + ReductionTile * Profile::ReductionStep) * 512 *
 				Profile::ElementBytes +
 			TileCoordinates.g_OutputChannel * 32 + TileCoordinates.Lane * 16;
-#pragma unroll
+		#pragma unroll
 		for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
-#pragma unroll
+			#pragma unroll
 			for (int r_NTile = 0; r_NTile < 8; ++r_NTile)
 				r_Weights[r_KSubtile][r_NTile] = __ldca(
 					reinterpret_cast<const uint4*>(g_WeightTileBase + r_KSubtile * 16384 + r_NTile * 512));
 	};
+
 	const auto IssueStage = [&](int ReductionTile)
 	{
 		const int g_Y = TileCoordinates.g_LowTilesHigh == 1 ? 0 : TileCoordinates.g_TileY;
@@ -75,16 +80,18 @@ extern "C" __global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp16(
 			*reinterpret_cast<uint4*>(s_Storage + s_Destination + TileCoordinates.Lane * 16) =
 				make_uint4(0, 0, 0, 0);
 	};
+
+	// Prime the weight registers and input pipeline before entering the reduction loop.
 	LoadWeights(0);
 	IssueStage(0);
 	ArriveAndWait(s_Storage, 2048);
-#pragma unroll 1
+	#pragma unroll 1
 	for (int ReductionTile = 0; ReductionTile < Profile::ReductionTiles; ++ReductionTile)
 	{
 		if (ReductionTile + 1 < Profile::ReductionTiles)
 			IssueStage(ReductionTile + 1);
 		uint4 r_Input[1][2];
-#pragma unroll
+		#pragma unroll
 		for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
 			r_Input[0][r_KSubtile] = *reinterpret_cast<const uint4*>(
 				s_Storage + (ReductionTile % 2) * 1024 + r_KSubtile * 512 + TileCoordinates.Lane * 16);
@@ -95,6 +102,7 @@ extern "C" __global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp16(
 			ArriveAndWait(s_Storage, 2048 + ((ReductionTile + 1) % 2) * 8);
 		}
 	}
+
 	if (TileCoordinates.Split > 0)
 	{
 		if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
@@ -102,6 +110,7 @@ extern "C" __global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp16(
 				PollSleep(64);
 		__syncthreads();
 	}
+
 	// Split 0 stores Half scratch; splits 1/2 reduce, and split 3 loads without overwriting scratch.
 	if (TileCoordinates.Split < 3)
 	{
@@ -113,7 +122,7 @@ extern "C" __global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp16(
 				uint64_t(TileCoordinates.g_TileY * TileCoordinates.g_LowTilesWide + TileCoordinates.g_TileX) *
 					16384 +
 				TileCoordinates.g_OutputChannel * 32 + TileCoordinates.Lane * 16;
-#pragma unroll
+			#pragma unroll
 			for (int r_NTile = 0; r_NTile < 8; ++r_NTile)
 			{
 				const auto& r_OutputWords = r_Accumulator.r_AccumulatorWords[0][r_NTile];
@@ -134,7 +143,7 @@ extern "C" __global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp16(
 		const uint64_t g_SplitAccumulatorTile =
 			g_SplitAccumulator + uint64_t(g_Y * TileCoordinates.g_LowTilesWide + g_X) * 16384 +
 			TileCoordinates.g_OutputChannel * 32 + TileCoordinates.Lane * 16;
-#pragma unroll
+		#pragma unroll
 		for (int r_NTile = 0; r_NTile < 8; ++r_NTile)
 		{
 			const uint4 r_PreviousSplitWords =
@@ -147,13 +156,14 @@ extern "C" __global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp16(
 			r_OutputWords[3] = HalfAdd(r_PreviousSplitWords.w, r_OutputWords[3]);
 		}
 	}
+
 	// Only the final split expands low pixels, adds the scaled residual, and publishes.
 	if (TileCoordinates.Split == 3)
 	{
 		uint32_t r_ResidualScales[8][2];
-#pragma unroll
+		#pragma unroll
 		for (int r_NTile = 0; r_NTile < 8; ++r_NTile)
-#pragma unroll
+			#pragma unroll
 			for (int r_N8 = 0; r_N8 < 2; ++r_N8)
 				r_ResidualScales[r_NTile][r_N8] =
 					*reinterpret_cast<const uint32_t*>(g_PackedWeights + Profile::MatrixBytes +
@@ -163,7 +173,7 @@ extern "C" __global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp16(
 
 		// A low 4x4 tile expands into four high 4x4 tiles. Indexed lane shuffles
 		// duplicate each low pixel in X/Y while preserving packed channel ownership.
-#pragma unroll
+		#pragma unroll
 		for (int QuadrantIndex = 0; QuadrantIndex < 4; ++QuadrantIndex)
 		{
 			const int g_OffsetY = QuadrantIndex / 2, g_OffsetX = QuadrantIndex % 2;
@@ -178,7 +188,7 @@ extern "C" __global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp16(
 				uint64_t(g_SkipY * TileCoordinates.g_HighTilesWide + g_SkipX) * 8192 * Profile::ElementBytes +
 				TileCoordinates.g_OutputChannel * 16 * Profile::ElementBytes + TileCoordinates.Lane * 16;
 			uint32_t r_Output[8][4];
-#pragma unroll
+			#pragma unroll
 			for (int r_NTile = 0; r_NTile < 8; ++r_NTile)
 			{
 				uint32_t r_ResidualPairs[4];
@@ -191,9 +201,9 @@ extern "C" __global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp16(
 					r_ResidualPairs[2] = r_PackedResidual.z;
 					r_ResidualPairs[3] = r_PackedResidual.w;
 				}
-#pragma unroll
+				#pragma unroll
 				for (int r_N8 = 0; r_N8 < 2; ++r_N8)
-#pragma unroll
+					#pragma unroll
 					for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 					{
 						const int r_SourceLane = (TileCoordinates.Lane & 3) |
@@ -214,7 +224,7 @@ extern "C" __global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp16(
 											  8192 * Profile::ElementBytes +
 										  TileCoordinates.g_OutputChannel * 16 * Profile::ElementBytes +
 										  TileCoordinates.Lane * 16;
-#pragma unroll
+			#pragma unroll
 			for (int r_Panel = 0; r_Panel < (bFp8 ? 4 : 8); ++r_Panel)
 			{
 				uint4 r_Published;
@@ -227,6 +237,7 @@ extern "C" __global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp16(
 			}
 		}
 	}
+
 	__syncthreads();
 	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 		CounterStoreRelease(g_SplitCounters, TileCoordinates.Split);

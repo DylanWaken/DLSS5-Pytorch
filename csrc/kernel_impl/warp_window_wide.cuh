@@ -24,6 +24,7 @@ template <int Channels, bool bFp8> struct FWideWindowProfile
 	static constexpr int HeadScaleOffset = BiasOffset + Heads * 8192;
 	static constexpr int ProjectionOffset = HeadScaleOffset + ((Heads * 4 + 15) / 16) * 16;
 	static constexpr int AttentionScaleOffset = ProjectionOffset + Channels * Channels * ElementBytes;
+
 	// Native C256 keeps all four query tiles until the projection exchange;
 	// C64/C128 reuse the shared slab twice, for two query tiles at a time.
 	static constexpr int AttentionBatch = Channels == 256 ? 4 : 2;
@@ -32,6 +33,7 @@ template <int Channels, bool bFp8> struct FWideWindowProfile
 template <int Channels, bool bFp8> struct FSharedWindow
 {
 	using FConfig = FWideWindowProfile<Channels, bFp8>;
+
 	// A vector is exactly one lane's native A fragment. No BHWC conversion or
 	// bank swizzle occurs in the FP8 ordinary block's exchange layout.
 	uint4 s_Tile[4][FConfig::Heads][FConfig::Chunks][32];
@@ -39,7 +41,7 @@ template <int Channels, bool bFp8> struct FSharedWindow
 	__device__ __forceinline__ FWindowActivationTile<bFp8> Load(int s_TileIndex, int s_PanelIndex) const
 	{
 		FWindowActivationTile<bFp8> r_ActivationTile;
-#pragma unroll
+		#pragma unroll
 		for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
 			r_ActivationTile.r_Reduction[r_Chunk] =
 				MakeWindowFragment(s_Tile[s_TileIndex][s_PanelIndex][r_Chunk][threadIdx.x]);
@@ -49,7 +51,7 @@ template <int Channels, bool bFp8> struct FSharedWindow
 	__device__ __forceinline__ void Store(int s_TileIndex, int s_PanelIndex,
 										  const FWindowActivationTile<bFp8>& r_Activation)
 	{
-#pragma unroll
+		#pragma unroll
 		for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
 		{
 			const auto& r_Fragment = r_Activation.r_Reduction[r_Chunk];
@@ -75,12 +77,12 @@ ScaledWindowResidual(const FWindowActivationTile<bFp8>& r_Input, const unsigned 
 					 int g_ChannelBase)
 {
 	FWindowAccumulatorTile<32> r_ScaledResidual;
-#pragma unroll
+	#pragma unroll
 	for (int r_Column = 0; r_Column < 4; ++r_Column)
 	{
 		const int g_Offset = 2 * g_ChannelBase + 16 * r_Column + 4 * (threadIdx.x & 3);
 		const uint32_t r_Scale = *reinterpret_cast<const uint32_t*>(g_Scale + g_Offset);
-#pragma unroll
+		#pragma unroll
 		for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 		{
 			uint32_t r_ResidualPair;
@@ -92,6 +94,7 @@ ScaledWindowResidual(const FWindowActivationTile<bFp8>& r_Input, const unsigned 
 			r_ScaledResidual.r_Pair[r_Column][r_RowHalf] = HalfMul(r_ResidualPair, r_Scale);
 		}
 	}
+
 	return r_ScaledResidual;
 }
 
@@ -104,28 +107,30 @@ __device__ __forceinline__ void ComputeWindowExpert(const FInputSource& InputSou
 	const unsigned char* g_Expansion = g_PackedWeights + ExpertIndex * FConfig::ExpertExpandBytes;
 	const unsigned char* g_Contraction =
 		g_PackedWeights + FConfig::ContractOffset + ExpertIndex * FConfig::ExpertContractBytes;
-// Each expert is C→128→32. Stream one hidden C32 panel and preserve all
-// Half MMA rounding points; the four contractions accumulate in K order.
-#pragma unroll 1
+
+	// Each expert is C→128→32. Stream one hidden C32 panel and preserve all
+	// Half MMA rounding points; the four contractions accumulate in K order.
+	#pragma unroll 1
 	for (int HiddenPanel = 0; HiddenPanel < 4; ++HiddenPanel)
 	{
 		FWindowAccumulatorTile<32> r_Expanded[Tiles]{};
-#pragma unroll
+		#pragma unroll
 		for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
 		{
 			const auto r_Weights =
 				LoadWindowWeights<bFp8>(g_Expansion, HiddenPanel * 32, PanelIndex * 32, 128);
-#pragma unroll
+			#pragma unroll
 			for (int r_Tile = 0; r_Tile < Tiles; ++r_Tile)
 				LinearWindow32(InputSource.Load(r_Tile, PanelIndex), r_Weights, r_Expanded[r_Tile]);
 		}
+
 		const auto r_Weights = LoadWindowWeights<bFp8>(g_Contraction, 0, HiddenPanel * 32, 32);
-#pragma unroll
+		#pragma unroll
 		for (int r_Tile = 0; r_Tile < Tiles; ++r_Tile)
 		{
-#pragma unroll
+			#pragma unroll
 			for (int r_Column = 0; r_Column < 4; ++r_Column)
-#pragma unroll
+				#pragma unroll
 				for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 					r_Expanded[r_Tile].r_Pair[r_Column][r_RowHalf] =
 						ActivateWindow(r_Expanded[r_Tile].r_Pair[r_Column][r_RowHalf]);
@@ -140,7 +145,7 @@ AttendWithBias(int r_Tile, const unsigned char* g_HeadBias, const FWindowActivat
 			   const FWindowActivationTile<bFp8> (&r_Key)[4], const FWindowValueTile<bFp8> (&r_Value)[4])
 {
 	FWindowAccumulatorTile<64> r_Probabilities;
-#pragma unroll
+	#pragma unroll
 	for (int r_ColumnTile = 0; r_ColumnTile < 4; ++r_ColumnTile)
 	{
 		const int g_BiasOffset = 2048 * r_Tile + 512 * r_ColumnTile + 16 * threadIdx.x;
@@ -150,9 +155,10 @@ AttendWithBias(int r_Tile, const unsigned char* g_HeadBias, const FWindowActivat
 		r_Probabilities.r_Pair[2 * r_ColumnTile + 1][0] = r_Bias.z;
 		r_Probabilities.r_Pair[2 * r_ColumnTile + 1][1] = r_Bias.w;
 	}
-#pragma unroll
+
+	#pragma unroll
 	for (int r_Column = 0; r_Column < 8; ++r_Column)
-#pragma unroll
+		#pragma unroll
 		for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
 		{
 			const auto& r_Fragment = r_Key[r_Column / 2].r_Reduction[r_Chunk];
@@ -161,13 +167,14 @@ AttendWithBias(int r_Tile, const unsigned char* g_HeadBias, const FWindowActivat
 			MmaWindowFragment<bFp8>(r_Query[r_Tile].r_Reduction[r_Chunk], r_KeyFragment,
 									r_Probabilities.r_Pair[r_Column]);
 		}
+
 	SoftmaxWindow(r_Probabilities);
 	FWindowAccumulatorTile<32> r_Attended{};
-#pragma unroll
+	#pragma unroll
 	for (int r_Chunk = 0; r_Chunk < 64 / FWindow32Profile<bFp8>::Reduction; ++r_Chunk)
 	{
 		const auto r_Probability = PublishWindowChunk<bFp8>(r_Probabilities, r_Chunk);
-#pragma unroll
+		#pragma unroll
 		for (int r_Column = 0; r_Column < 4; ++r_Column)
 		{
 			uint32_t r_ValueFragment[2];
@@ -184,6 +191,7 @@ AttendWithBias(int r_Tile, const unsigned char* g_HeadBias, const FWindowActivat
 			MmaWindowFragment<bFp8>(r_Probability, r_ValueFragment, r_Attended.r_Pair[r_Column]);
 		}
 	}
+
 	return PublishWindow32<bFp8>(r_Attended);
 }
 

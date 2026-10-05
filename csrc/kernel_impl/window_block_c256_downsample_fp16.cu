@@ -27,10 +27,11 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 			// Window FFN, attention and residual projection; retain raw Half tiles for pooling.
 			using FConfig = FWideWindowProfile<Channels, bFp8>;
 			const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(Arguments.g_PackedWeights);
+
 			// FFN: private C64 tiles, or cross-warp expert panels for C128/C256.
 			const int Warp = threadIdx.y;
 			{
-#pragma unroll
+				#pragma unroll
 				for (int TileIndex = 0; TileIndex < 4; ++TileIndex)
 				{
 					// Read the physical input tile without a separate layout staging pass.
@@ -45,7 +46,7 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 					const bool bValid =
 						g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows;
 					FWindowActivationTile<bFp8> r_InputTile;
-#pragma unroll
+					#pragma unroll
 					for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
 					{
 						const uint64_t g_InputFragmentAddress =
@@ -62,60 +63,64 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 				FWindowAccumulatorTile<32> r_Contracted[4]{};
 				ComputeWindowExpert<Channels, bFp8>(s_Window, g_PackedWeights, Warp, r_Contracted);
 				FWindowAccumulatorTile<32> r_Output[4];
-#pragma unroll
+				#pragma unroll
 				for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 					r_Output[r_Tile] = ScaledWindowResidual(
 						s_Window.Load(r_Tile, Warp), g_PackedWeights + FConfig::FfnScaleOffset, 32 * Warp);
+
 				// All experts must finish reading X before their published outputs reuse
 				// the same slab. This is a tensor lifetime barrier, not a warp shuffle.
 				__syncthreads();
-#pragma unroll
+				#pragma unroll
 				for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 					s_Window.Store(r_Tile, Warp, PublishWindow32<bFp8>(r_Contracted[r_Tile]));
 				__syncthreads();
-#pragma unroll 1
+				#pragma unroll 1
 				for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
 				{
 					const auto r_Weights = LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::MixOffset,
 																   32 * Warp, 32 * PanelIndex, Channels);
-#pragma unroll
+					#pragma unroll
 					for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 						LinearWindow32(s_Window.Load(r_Tile, PanelIndex), r_Weights, r_Output[r_Tile]);
 				}
 				__syncthreads();
-#pragma unroll
+				#pragma unroll
 				for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 					s_Window.Store(r_Tile, Warp, PublishWindow32<bFp8>(r_Output[r_Tile]));
 				__syncthreads();
 			}
+
+			// Project the FFN output into Q/K/V fragments and normalize the query/key rows.
 			FWindowActivationTile<bFp8> r_Query[4], r_Key[4];
 			FWindowValueTile<bFp8> r_Value[4];
+
 			// Q/K/V projection and normalization keep the native shared-panel ownership.
 			FWindowAccumulatorTile<32> r_Projected[3][4]{};
-#pragma unroll 1
+			#pragma unroll 1
 			for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
-#pragma unroll
+				#pragma unroll
 				for (int r_QkvComponent = 0; r_QkvComponent < 3; ++r_QkvComponent)
 				{
 					// The record interleaves Q/K/V within each head: [Head][Q,K,V][32].
 					const auto r_Weights = LoadWindowWeights<bFp8>(
 						g_PackedWeights + FConfig::QkvOffset, 96 * int(threadIdx.y) + 32 * r_QkvComponent,
 						32 * PanelIndex, 3 * Channels);
-#pragma unroll
+					#pragma unroll
 					for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 						LinearWindow32(s_Window.Load(r_Tile, PanelIndex), r_Weights,
 									   r_Projected[r_QkvComponent][r_Tile]);
 				}
 			const uint32_t r_HeadScale = FloatToHalf2(*reinterpret_cast<const uint32_t*>(
 				g_PackedWeights + FConfig::HeadScaleOffset + 4 * threadIdx.y));
-#pragma unroll
+			#pragma unroll
 			for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 			{
 				NormalizeWindow<true>(r_Projected[0][r_Tile], r_HeadScale);
 				NormalizeWindow<false>(r_Projected[1][r_Tile], CONST_HALF2_ONE);
 				r_Query[r_Tile] = PublishWindow32<bFp8>(r_Projected[0][r_Tile]);
 				r_Key[r_Tile] = PublishWindow32<bFp8>(r_Projected[1][r_Tile]);
-#pragma unroll
+				#pragma unroll
 				for (int r_Column = 0; r_Column < 4; ++r_Column)
 				{
 					// Transpose Half accumulators before E4 publication, exactly as the
@@ -131,12 +136,14 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 				}
 			}
 			__syncthreads();
-#pragma unroll
+
+			// Evaluate attention in tile batches, then project each head back into the residual stream.
+			#pragma unroll
 			for (int r_FirstTile = 0; r_FirstTile < 4; r_FirstTile += FConfig::AttentionBatch)
 			{
 				FWindowActivationTile<bFp8> r_Attended[FConfig::AttentionBatch];
 				FWindowAccumulatorTile<32> r_Output[FConfig::AttentionBatch];
-#pragma unroll
+				#pragma unroll
 				for (int r_LocalTile = 0; r_LocalTile < FConfig::AttentionBatch; ++r_LocalTile)
 				{
 					const int r_Tile = r_FirstTile + r_LocalTile;
@@ -147,24 +154,25 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 						s_Window.Load(r_Tile, threadIdx.y), g_PackedWeights + FConfig::AttentionScaleOffset,
 						32 * threadIdx.y);
 				}
-// Each warp has consumed its own published FFN residual; attention
-// output now occupies the same head panel for the cross-head projection.
-#pragma unroll
+
+				// Each warp has consumed its own published FFN residual; attention
+				// output now occupies the same head panel for the cross-head projection.
+				#pragma unroll
 				for (int r_LocalTile = 0; r_LocalTile < FConfig::AttentionBatch; ++r_LocalTile)
 					s_Window.Store(r_FirstTile + r_LocalTile, threadIdx.y, r_Attended[r_LocalTile]);
 				__syncthreads();
-#pragma unroll 1
+				#pragma unroll 1
 				for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
 				{
 					const auto r_Weights =
 						LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::ProjectionOffset, 32 * threadIdx.y,
 												32 * PanelIndex, Channels);
-#pragma unroll
+					#pragma unroll
 					for (int r_LocalTile = 0; r_LocalTile < FConfig::AttentionBatch; ++r_LocalTile)
 						LinearWindow32(s_Window.Load(r_FirstTile + r_LocalTile, PanelIndex), r_Weights,
 									   r_Output[r_LocalTile]);
 				}
-#pragma unroll
+				#pragma unroll
 				for (int r_LocalTile = 0; r_LocalTile < FConfig::AttentionBatch; ++r_LocalTile)
 				{
 					r_WindowOutput[r_FirstTile + r_LocalTile] = r_Output[r_LocalTile];
@@ -177,7 +185,7 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 						const int g_TileY = (int(blockIdx.y) * 8 + Arguments.OriginY) / 4 +
 											((r_FirstTile + r_LocalTile) >> 1);
 						if (g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows)
-#pragma unroll
+							#pragma unroll
 							for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
 							{
 								const auto r_Published =
@@ -195,17 +203,18 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 				__syncthreads();
 			}
 		}
+
 		const auto r_Pooled = PublishWindow32<bFp8>(PoolWindow(r_WindowOutput));
 		using FConfig = FWideWindowProfile<Channels, bFp8>;
 		s_Window.Store(0, threadIdx.y, r_Pooled);
 		__syncthreads();
 		const auto* g_Weights = reinterpret_cast<const unsigned char*>(Arguments.g_PackedWeights) +
 								FConfig::AttentionScaleOffset + 2 * Channels;
-#pragma unroll 1
+		#pragma unroll 1
 		for (int OutputHalf = 0; OutputHalf < 2; ++OutputHalf)
 		{
 			FWindowAccumulatorTile<32> r_Output{};
-#pragma unroll
+			#pragma unroll
 			for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
 			{
 				const auto r_Weights = LoadWindowWeights<bFp8>(
@@ -222,11 +231,11 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 				const int g_Width = Channels == 32 ? Arguments.Width / 2 : (g_ValidWidth + 3) & ~3;
 				const int g_OriginX = (int(blockIdx.x) * 8 + Arguments.OriginX) / 2;
 				const int g_OriginY = (int(blockIdx.y) * 8 + Arguments.OriginY) / 2;
-#pragma unroll
+				#pragma unroll
 				for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
 				{
 					const auto r_Fragment = PublishWindowChunk<bFp8>(r_Output, r_Chunk);
-#pragma unroll
+					#pragma unroll
 					for (int r_Word = 0; r_Word < 4; ++r_Word)
 					{
 						const int g_X = g_OriginX + ((threadIdx.x / 4) & 3);
@@ -240,6 +249,7 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 								Arguments.g_DownsampledOutput +
 								((uint64_t(g_Plane * g_Height + g_Y) * g_Width + g_X) * 16) +
 								4 * (threadIdx.x & 3);
+
 							// The native padding clear follows these projection stores. Emit
 							// its zero immediately for our own padded cells to avoid a race.
 							*reinterpret_cast<uint32_t*>(g_OutputWordAddress) =
@@ -249,6 +259,7 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 				}
 			}
 		}
+
 		__syncthreads();
 		{
 			// Clear the caller-provided padded border after final publication.
@@ -260,6 +271,7 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 			const int g_OriginX = (int(blockIdx.x) * 8 + Arguments.OriginX) / 2;
 			const int g_OriginY = (int(blockIdx.y) * 8 + Arguments.OriginY) / 2;
 			const int ThreadIndex = threadIdx.y * 32 + threadIdx.x;
+
 			// The native clear footprint is a Half-sized C→2C allocation even for
 			// FP8. Preserve that documented workspace contract, but only clear padding.
 			for (int g_Index = ThreadIndex; g_Index < 16 * (Channels / 4); g_Index += Channels)
@@ -278,6 +290,7 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 					*reinterpret_cast<uint4*>(g_PaddingVectorAddress) = make_uint4(0, 0, 0, 0);
 				}
 			}
+
 			// A larger caller-provided target may extend past every launched window.
 			// CTA zero handles that uncovered border, as the native clear path does.
 			if (blockIdx.x == 0 && blockIdx.y == 0 && blockIdx.z == 0)

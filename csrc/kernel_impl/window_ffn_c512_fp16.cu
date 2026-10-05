@@ -17,14 +17,18 @@ extern "C" __global__ __maxnreg__(255) void window_ffn_c512_fp16(FWindowFfnC512F
 													(int(threadIdx.y) % 4) + int(blockIdx.z) * 4,
 													int(threadIdx.x),
 													int(threadIdx.y)};
+
+	// Initialize the shared copy barriers before any warp issues input transactions.
 	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 	{
 		BarrierInit(s_Storage, 8192, Profile::Warps * 32);
 		BarrierInit(s_Storage, 8200, Profile::Warps * 32);
 	}
+
 	__syncthreads();
 
 	uint4 r_Weights[2][4];
+
 	// Prefill and refill share the same addressing and native copy protocol.
 	const auto LoadWeights = [&](int ReductionTile)
 	{
@@ -32,13 +36,15 @@ extern "C" __global__ __maxnreg__(255) void window_ffn_c512_fp16(FWindowFfnC512F
 			Parameters.g_PackedWeights +
 			uint64_t(ReductionTile * Profile::ReductionStep) * 512 * Profile::ElementBytes +
 			TileCoordinates.g_ExpertGroup * 2048 + TileCoordinates.Lane * 16;
-#pragma unroll
+		#pragma unroll
 		for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
-#pragma unroll
+			#pragma unroll
 			for (int r_NTile = 0; r_NTile < 4; ++r_NTile)
 				r_Weights[r_KSubtile][r_NTile] = __ldca(
 					reinterpret_cast<const uint4*>(g_WeightTileBase + r_KSubtile * 16384 + r_NTile * 512));
 	};
+
+	// Stage bounded input tiles with async copies; reuse the same addressing on refill.
 	const auto IssueInput = [&](int ReductionTile)
 	{
 		{
@@ -49,7 +55,7 @@ extern "C" __global__ __maxnreg__(255) void window_ffn_c512_fp16(FWindowFfnC512F
 
 			// Eight FP8 warps each transfer 512 bytes; four Half warps each transfer
 			// two rows. Singleton dimensions broadcast, other incomplete edges zero-fill.
-#pragma unroll
+			#pragma unroll
 			for (int CopyIndex = 0; CopyIndex < (bFp8 ? 1 : 2); ++CopyIndex)
 			{
 				const int g_LocalY = bFp8 ? TileCoordinates.Warp / 4 : CopyIndex;
@@ -75,14 +81,18 @@ extern "C" __global__ __maxnreg__(255) void window_ffn_c512_fp16(FWindowFfnC512F
 			}
 		}
 	};
+
+	// Wait for the selected shared-memory stage before its fragments are consumed.
 	const auto WaitInput = [&](int ReductionTile)
 	{
 		const int s_BarrierOffset = 8192 + (ReductionTile % 2) * 8;
 		{
 		}
+
 		ArriveAndWait(s_Storage, s_BarrierOffset);
 	};
 
+	// Prime the weight registers and input pipeline before entering the reduction loop.
 	LoadWeights(0);
 	IssueInput(0);
 	WaitInput(0);
@@ -90,17 +100,18 @@ extern "C" __global__ __maxnreg__(255) void window_ffn_c512_fp16(FWindowFfnC512F
 
 	// Two-stage pipeline: issue the next input before current MMA work, then
 	// fetch its weights and wait. The final iteration neither refills nor waits.
-#pragma unroll 1
+	#pragma unroll 1
 	for (int ReductionTile = 0; ReductionTile < Profile::ReductionTiles; ++ReductionTile)
 	{
 		if (ReductionTile + 1 < Profile::ReductionTiles)
 		{
 			IssueInput(ReductionTile + 1);
 		}
+
 		uint4 r_Input[Profile::SpatialFragments][2];
-#pragma unroll
+		#pragma unroll
 		for (int r_Spatial = 0; r_Spatial < Profile::SpatialFragments; ++r_Spatial)
-#pragma unroll
+			#pragma unroll
 			for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
 				r_Input[r_Spatial][r_KSubtile] = *reinterpret_cast<const uint4*>(
 					s_Storage + (ReductionTile % 2) * 4096 +
@@ -115,6 +126,7 @@ extern "C" __global__ __maxnreg__(255) void window_ffn_c512_fp16(FWindowFfnC512F
 	}
 
 	FMmaAccumulatorTile<Profile::SpatialFragments, 4> r_Output{};
+
 	// Grouped MLP keeps each hidden panel in registers through expansion and contraction.
 	const uint64_t g_Expand = Parameters.g_PackedWeights +
 							  (262144 + TileCoordinates.g_ExpertGroup * 16384) * Profile::ElementBytes +
@@ -125,23 +137,23 @@ extern "C" __global__ __maxnreg__(255) void window_ffn_c512_fp16(FWindowFfnC512F
 
 	// Hidden activations stay in registers. Processing 32 hidden channels at a
 	// time avoids materializing the 256-channel intermediate in shared/global memory.
-#pragma unroll 1
+	#pragma unroll 1
 	for (int HiddenTileIndex = 0; HiddenTileIndex < 8; ++HiddenTileIndex)
 	{
 		FMmaAccumulatorTile<Profile::SpatialFragments, 2> r_Hidden{};
-#pragma unroll
+		#pragma unroll
 		for (int r_KPair = 0; r_KPair < 2; ++r_KPair)
 		{
 			{
 				uint4 r_Input[Profile::SpatialFragments][2], r_Weights[2][2];
-#pragma unroll
+				#pragma unroll
 				for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
 				{
-#pragma unroll
+					#pragma unroll
 					for (int r_Spatial = 0; r_Spatial < Profile::SpatialFragments; ++r_Spatial)
 						r_Input[r_Spatial][r_KSubtile] = LoadWindowFfnInputFragment<false>(
 							r_Projected, r_Spatial, r_KPair * 2 + r_KSubtile);
-#pragma unroll
+					#pragma unroll
 					for (int r_NTile = 0; r_NTile < 2; ++r_NTile)
 						r_Weights[r_KSubtile][r_NTile] = __ldca(reinterpret_cast<const uint4*>(
 							g_Expand + HiddenTileIndex * 1024 + (r_KPair * 2 + r_KSubtile) * 8192 +
@@ -150,25 +162,26 @@ extern "C" __global__ __maxnreg__(255) void window_ffn_c512_fp16(FWindowFfnC512F
 				AccumulateTile<Profile::Precision>(r_Hidden, r_Input, r_Weights);
 			}
 		}
-#pragma unroll
+
+		#pragma unroll
 		for (int r_Spatial = 0; r_Spatial < Profile::SpatialFragments; ++r_Spatial)
-#pragma unroll
+			#pragma unroll
 			for (int r_NTile = 0; r_NTile < 2; ++r_NTile)
-#pragma unroll
+				#pragma unroll
 				for (int r_Word = 0; r_Word < 4; ++r_Word)
 					r_Hidden.r_AccumulatorWords[r_Spatial][r_NTile][r_Word] =
 						FfnActivation(r_Hidden.r_AccumulatorWords[r_Spatial][r_NTile][r_Word]);
 
 		{
 			uint4 r_Input[Profile::SpatialFragments][2], r_Weights[2][4];
-#pragma unroll
+			#pragma unroll
 			for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
 			{
-#pragma unroll
+				#pragma unroll
 				for (int r_Spatial = 0; r_Spatial < Profile::SpatialFragments; ++r_Spatial)
 					r_Input[r_Spatial][r_KSubtile] =
 						LoadWindowFfnInputFragment<false>(r_Hidden, r_Spatial, r_KSubtile);
-#pragma unroll
+				#pragma unroll
 				for (int r_NTile = 0; r_NTile < 4; ++r_NTile)
 					r_Weights[r_KSubtile][r_NTile] = __ldca(reinterpret_cast<const uint4*>(
 						g_Contract + HiddenTileIndex * 4096 + r_KSubtile * 2048 + r_NTile * 512));
@@ -176,7 +189,9 @@ extern "C" __global__ __maxnreg__(255) void window_ffn_c512_fp16(FWindowFfnC512F
 			AccumulateTile<Profile::Precision>(r_Output, r_Input, r_Weights);
 		}
 	}
-#pragma unroll
+
+	// Publish contracted expert fragments only for valid spatial tiles.
+	#pragma unroll
 	for (int r_Spatial = 0; r_Spatial < Profile::SpatialFragments; ++r_Spatial)
 	{
 		const int g_Y =
@@ -188,7 +203,7 @@ extern "C" __global__ __maxnreg__(255) void window_ffn_c512_fp16(FWindowFfnC512F
 			Parameters.g_Output +
 			uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X) * Profile::SpatialTileBytes +
 			TileCoordinates.g_ExpertGroup * 1024 * Profile::ElementBytes + TileCoordinates.Lane * 16;
-#pragma unroll
+		#pragma unroll
 		for (int r_NTile = 0; r_NTile < (bFp8 ? 2 : 4); ++r_NTile)
 			StoreNoAllocate(g_OutputTileBase + r_NTile * 512,
 							LoadWindowFfnInputFragment<bFp8>(r_Output, r_Spatial, r_NTile));

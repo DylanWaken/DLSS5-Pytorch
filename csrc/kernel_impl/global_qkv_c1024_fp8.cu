@@ -21,6 +21,7 @@ extern "C" __global__ __maxnreg__(168) void global_qkv_c1024_fp8(FGlobalQkvC1024
 													Warp,
 													int(blockIdx.z),
 													!bFp8 && uint32_t(g_Tokens + 14) < 31};
+
 	// Visible K-slice staging preserves the contract/QKV shared physical layout.
 	const auto StageInput = [&](int ReductionTile)
 	{
@@ -29,7 +30,7 @@ extern "C" __global__ __maxnreg__(168) void global_qkv_c1024_fp8(FGlobalQkvC1024
 
 		// Contraction coalesces both K fragments in each 16-token group. Half
 		// attention projection instead assigns each K fragment to a separate warp.
-#pragma unroll
+		#pragma unroll
 		for (int Copy = 0; Copy < Profile::s_CopiesPerWarp; ++Copy)
 		{
 			const int g_Group = TileCoordinates.bBroadcastInput
@@ -55,7 +56,7 @@ extern "C" __global__ __maxnreg__(168) void global_qkv_c1024_fp8(FGlobalQkvC1024
 			}
 			else
 			{
-#pragma unroll
+				#pragma unroll
 				for (int s_Subtile = 0; s_Subtile < Profile::s_CopyBytes / 512; ++s_Subtile)
 					*reinterpret_cast<uint4*>(s_Storage + s_Destination + s_Subtile * 512 +
 											  TileCoordinates.Lane * 16) = make_uint4(0, 0, 0, 0);
@@ -70,13 +71,15 @@ extern "C" __global__ __maxnreg__(168) void global_qkv_c1024_fp8(FGlobalQkvC1024
 		ArriveAndWait(s_Storage, s_Barrier);
 	};
 
+	// Initialize the shared copy barriers before any warp issues input transactions.
 	if (Lane == 0 && Warp == 0)
-#pragma unroll
+		#pragma unroll
 		for (int s_Stage = 0; s_Stage < 2; ++s_Stage)
 			BarrierInit(s_Storage, Profile::s_BarrierOffset + s_Stage * 8, blockDim.x * blockDim.y);
 	__syncthreads();
 
 	uint4 r_Weights[Profile::ReductionSubtiles][6];
+
 	// Q/K/V weight panels remain adjacent in the native record.
 	const auto LoadWeights = [&](int ReductionTile)
 	{
@@ -86,18 +89,20 @@ extern "C" __global__ __maxnreg__(168) void global_qkv_c1024_fp8(FGlobalQkvC1024
 			Parameters.g_PackedWeights + 128 +
 			uint64_t(TileCoordinates.Split * 512 + ReductionTile * 32) * 3072 * Profile::ElementBytes +
 			TileCoordinates.g_OutputChannel * 32 + TileCoordinates.Lane * 16;
-#pragma unroll
+		#pragma unroll
 		for (int r_KSubtile = 0; r_KSubtile < Profile::ReductionSubtiles; ++r_KSubtile)
-#pragma unroll
+			#pragma unroll
 			for (int r_ChannelGroup = 0; r_ChannelGroup < 6; ++r_ChannelGroup)
 				r_Weights[r_KSubtile][r_ChannelGroup] = __ldca(reinterpret_cast<const uint4*>(
 					g_WeightTileBase + r_KSubtile * 98304 + r_ChannelGroup * 512));
 	};
+
+	// Prime the weight registers and input pipeline before entering the reduction loop.
 	LoadWeights(0);
 	StageInput(0);
 	WaitStage(0);
 	FGlobalQkvAccumulator r_Accumulator{};
-#pragma unroll 1
+	#pragma unroll 1
 	for (int ReductionTile = 0; ReductionTile < 15; ++ReductionTile)
 	{
 		ConsumeGlobalContractInputStage<Profile>(r_Accumulator, r_Weights, s_Storage, ReductionTile,
@@ -106,8 +111,10 @@ extern "C" __global__ __maxnreg__(168) void global_qkv_c1024_fp8(FGlobalQkvC1024
 		LoadWeights(ReductionTile + 1);
 		WaitStage(ReductionTile + 1);
 	}
+
 	// The native loop leaves its last ready tile for an explicit pipeline drain.
 	ConsumeGlobalContractInputStage<Profile>(r_Accumulator, r_Weights, s_Storage, 15, TileCoordinates);
+
 	// One local store loop serves Q, K and V with their original compile-time layouts.
 	const auto PublishComponent = [&](auto ComponentTag, auto PublicationTag)
 	{
@@ -126,13 +133,13 @@ extern "C" __global__ __maxnreg__(168) void global_qkv_c1024_fp8(FGlobalQkvC1024
 
 		// The first slice stores ordinary Half fragments. The second slice reads
 		// and adds them before any normalization or storage-layout conversion.
-#pragma unroll
+		#pragma unroll
 		for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
 		{
 			const int g_LogicalGroup =
 				TileCoordinates.g_TokenGroupBase + (TileCoordinates.Warp >> 1) * 4 + r_Spatial;
 			const int g_ReadGroup = TileCoordinates.bBroadcastInput ? 0 : g_LogicalGroup;
-#pragma unroll
+			#pragma unroll
 			for (int r_N16 = 0; r_N16 < 2; ++r_N16)
 			{
 				auto& r_AccumulatorWords = r_Accumulator.r_AccumulatorWords[r_Spatial][Component * 2 + r_N16];
@@ -158,6 +165,7 @@ extern "C" __global__ __maxnreg__(168) void global_qkv_c1024_fp8(FGlobalQkvC1024
 				}
 			}
 		}
+
 		if (bFirstSplit)
 			return;
 		if constexpr (Component < 2)
@@ -166,11 +174,11 @@ extern "C" __global__ __maxnreg__(168) void global_qkv_c1024_fp8(FGlobalQkvC1024
 		{
 			// Transpose all V fragments before combining neighboring M16 tiles
 			// into the FP8 consumer's M32 storage groups.
-#pragma unroll
+			#pragma unroll
 			for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
-#pragma unroll
+				#pragma unroll
 				for (int r_N16 = 0; r_N16 < 2; ++r_N16)
-#pragma unroll
+					#pragma unroll
 					for (int r_Word = 0; r_Word < 4; ++r_Word)
 					{
 						auto& r_ValueChannelPair =
@@ -179,7 +187,7 @@ extern "C" __global__ __maxnreg__(168) void global_qkv_c1024_fp8(FGlobalQkvC1024
 					}
 		}
 
-#pragma unroll
+		#pragma unroll
 		for (int r_Publish = 0; r_Publish < (!bFp8 && Component == 1 ? 8 : 4); ++r_Publish)
 		{
 			const int r_Spatial = r_Publish % 4;
@@ -222,6 +230,7 @@ extern "C" __global__ __maxnreg__(168) void global_qkv_c1024_fp8(FGlobalQkvC1024
 			}
 		}
 	};
+
 	// Retain Q -> K -> V publication order for every split policy.
 	const auto PublishComponents = [&](auto PublicationTag)
 	{
@@ -239,6 +248,7 @@ extern "C" __global__ __maxnreg__(168) void global_qkv_c1024_fp8(FGlobalQkvC1024
 				PollSleep(64);
 		__syncthreads();
 	}
+
 	{
 		// Native FP8 selects its first-split stores once before publication.
 		// Keep that uniform choice outside all unrolled fragment operations.
@@ -249,6 +259,7 @@ extern "C" __global__ __maxnreg__(168) void global_qkv_c1024_fp8(FGlobalQkvC1024
 			PublishComponents(
 				std::integral_constant<EGlobalQkvSplitPublication, EGlobalQkvSplitPublication::Final>{});
 	}
+
 	__syncthreads();
 	if (Lane == 0 && Warp == 0)
 		CounterStoreRelease(g_SplitCounters, TileCoordinates.Split);

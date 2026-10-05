@@ -20,6 +20,7 @@ __device__ __forceinline__ uint32_t PoolHorizontalWords(uint32_t r_LeftLow, uint
 		r_LeftHigh = r_RightHigh;
 		r_RightHigh = r_SavedLeftUpperRows;
 	}
+
 	if (Lane & 16)
 	{
 		const uint32_t r_SavedLeftWord = r_LeftLow, r_SavedRightWord = r_RightLow;
@@ -28,11 +29,13 @@ __device__ __forceinline__ uint32_t PoolHorizontalWords(uint32_t r_LeftLow, uint
 		r_LeftHigh = r_SavedLeftWord;
 		r_RightHigh = r_SavedRightWord;
 	}
+
 	const int r_SourceLane = (Lane & 19) | ((Lane << 1) & 8) | ((Lane >> 1) & 4);
 	const uint32_t r_TopLeft = ShuffleIdx(r_LeftLow, r_SourceLane, 31, 0xffffffffu);
 	const uint32_t r_TopRight = ShuffleIdx(r_RightLow, r_SourceLane ^ 4, 31, 0xffffffffu);
 	const uint32_t r_BottomLeft = ShuffleIdx(r_LeftHigh, r_SourceLane ^ 16, 31, 0xffffffffu);
 	const uint32_t r_BottomRight = ShuffleIdx(r_RightHigh, r_SourceLane ^ 20, 31, 0xffffffffu);
+
 	// Keep three rounded Half additions and a rounded quarter multiply; neither
 	// FP32 averaging nor pooling an already published E4 image is equivalent.
 	return HalfMul(HalfAdd(HalfAdd(r_TopLeft, r_TopRight), HalfAdd(r_BottomLeft, r_BottomRight)),
@@ -43,7 +46,7 @@ __device__ __forceinline__ FWindowAccumulatorTile<32>
 PoolWindow(const FWindowAccumulatorTile<32> (&r_InputTiles)[4])
 {
 	FWindowAccumulatorTile<32> r_Pooled;
-#pragma unroll
+	#pragma unroll
 	for (int r_Column = 0; r_Column < 4; ++r_Column)
 	{
 		r_Pooled.r_Pair[r_Column][0] =
@@ -53,6 +56,7 @@ PoolWindow(const FWindowAccumulatorTile<32> (&r_InputTiles)[4])
 			PoolHorizontalWords(r_InputTiles[2].r_Pair[r_Column][0], r_InputTiles[2].r_Pair[r_Column][1],
 								r_InputTiles[3].r_Pair[r_Column][0], r_InputTiles[3].r_Pair[r_Column][1]);
 	}
+
 	return r_Pooled;
 }
 #endif

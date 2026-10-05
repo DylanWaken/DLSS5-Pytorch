@@ -47,13 +47,13 @@ __device__ __forceinline__ void NormalizeHead(FGlobalQkvAccumulator& r_Accumulat
 	const uint32_t r_Epsilon = CONST_NORMALIZATION_EPSILON_HALF2;
 	const uint32_t r_SqrtHeadDimension =
 		FloatToHalf2(FloatSqrtApproxFtzBits(CONST_ATTENTION_HEAD_DIM_FP32_BITS));
-#pragma unroll
+	#pragma unroll
 	for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
 	{
 		auto& r_LowerChannelWords = r_Accumulator.r_AccumulatorWords[r_Spatial][Component * 2];
 		auto& r_UpperChannelWords = r_Accumulator.r_AccumulatorWords[r_Spatial][Component * 2 + 1];
 		uint32_t r_SquaredPairs[4];
-#pragma unroll
+		#pragma unroll
 		for (int r_Word = 0; r_Word < 4; ++r_Word)
 			r_SquaredPairs[r_Word] =
 				HalfAdd(HalfMul(r_LowerChannelWords[r_Word], r_LowerChannelWords[r_Word]),
@@ -63,9 +63,9 @@ __device__ __forceinline__ void NormalizeHead(FGlobalQkvAccumulator& r_Accumulat
 				HalfMax(SumHeadChannels(HalfAdd(r_SquaredPairs[2], r_SquaredPairs[0])), r_Epsilon)),
 			InvertHeadSum<bFp8>(
 				HalfMax(SumHeadChannels(HalfAdd(r_SquaredPairs[3], r_SquaredPairs[1])), r_Epsilon))};
-#pragma unroll
+		#pragma unroll
 		for (int r_N16 = 0; r_N16 < 2; ++r_N16)
-#pragma unroll
+			#pragma unroll
 			for (int r_Word = 0; r_Word < 4; ++r_Word)
 			{
 				auto& r_HeadChannelPair =

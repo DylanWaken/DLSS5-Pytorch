@@ -21,14 +21,14 @@ AccumulateTile(FMmaAccumulatorTile<SpatialFragments, ChannelGroups>& r_Accumulat
 
 	// Each accumulator consumes K0 before K1, preserving Half rounding. The
 	// independent N8 fragments also retain the native instruction issue order.
-#pragma unroll
+	#pragma unroll
 	for (int r_Spatial = 0; r_Spatial < SpatialFragments; ++r_Spatial)
 	{
-#pragma unroll
+		#pragma unroll
 		for (int r_ChannelGroup = 0; r_ChannelGroup < ChannelGroups; ++r_ChannelGroup)
 		{
 			auto& r_OutputFragment = r_Accumulator.r_AccumulatorWords[r_Spatial][r_ChannelGroup];
-#pragma unroll
+			#pragma unroll
 			for (int r_KSubtile = 0; r_KSubtile < ReductionSubtiles; ++r_KSubtile)
 			{
 				const uint4 r_InputFragment = r_InputFragments[r_Spatial][r_KSubtile];

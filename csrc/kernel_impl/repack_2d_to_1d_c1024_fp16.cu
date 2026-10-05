@@ -16,6 +16,8 @@ extern "C" __global__ void repack_2d_to_1d_c1024_fp16(FGlobalRepackParameters Pa
 	const auto* g_Input = reinterpret_cast<const uint32_t*>(Parameters.g_Input);
 	auto* g_Output = reinterpret_cast<uint32_t*>(Parameters.g_Output);
 	const uint32_t g_WordStride = gridDim.x * blockDim.x;
+
+	// Remap packed words between spatial tiles and global-token storage without changing precision.
 	for (uint32_t g_WordIndex = blockIdx.x * blockDim.x + threadIdx.x; g_WordIndex < g_WordCount;
 		 g_WordIndex += g_WordStride)
 	{
@@ -25,6 +27,7 @@ extern "C" __global__ void repack_2d_to_1d_c1024_fp16(FGlobalRepackParameters Pa
 			GlobalRepackPhysicalWord<CONST_WORDS_PER_TOKEN>(g_TokenIndex, g_ChannelWord);
 		{
 			uint32_t r_CopiedWord = 0;
+
 			// Forward tail writes +0 bits and never reads the spatial input.
 			if (g_TokenIndex < g_TokenCount)
 			{

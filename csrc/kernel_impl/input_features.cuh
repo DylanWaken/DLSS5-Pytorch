@@ -50,7 +50,7 @@ __device__ __forceinline__ float3 PixelNoise(uint32_t NoiseSeed, int PixelX, int
 										 NoiseSeed * CONST_NOISE_FRAME_MULTIPLIER ^ CONST_NOISE_SEED_XOR);
 	const uint32_t r_PixelHash = (r_Hash >> 22) ^ r_Hash;
 	float r_Uniform[4];
-#pragma unroll
+	#pragma unroll
 	for (int r_Stream = 0; r_Stream < 4; ++r_Stream)
 	{
 		const uint32_t r_StreamHash = PermuteNoise(r_PixelHash * CONST_NOISE_STREAM_MULTIPLIER[r_Stream] +
@@ -59,8 +59,9 @@ __device__ __forceinline__ float3 PixelNoise(uint32_t NoiseSeed, int PixelX, int
 		r_Uniform[r_Stream] =
 			NativeFloatMultiply(__uint2float_rn(r_UniformInteger), CONST_NOISE_UINT24_SCALE);
 	}
+
 	float r_Radius[2], r_Angle[2];
-#pragma unroll
+	#pragma unroll
 	for (int r_Pair = 0; r_Pair < 2; ++r_Pair)
 	{
 		const float r_Log2 = __uint_as_float(NativeLg2ApproxFtzF32(__float_as_uint(r_Uniform[2 * r_Pair])));
@@ -70,6 +71,7 @@ __device__ __forceinline__ float3 PixelNoise(uint32_t NoiseSeed, int PixelX, int
 		r_Angle[r_Pair] =
 			NativeFloatMultiply(r_Uniform[2 * r_Pair + 1], __uint_as_float(CONST_NOISE_TWO_PI_BITS));
 	}
+
 	// Only three of the four Gaussian coordinates are retained by the DLL.
 	return make_float3(
 		NativeFloatMultiply(r_Radius[0], __uint_as_float(NativeCosApproxFtzF32(__float_as_uint(r_Angle[0])))),

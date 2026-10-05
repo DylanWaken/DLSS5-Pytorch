@@ -16,6 +16,7 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 	const FGlobalAttentionCoordinates TileCoordinates{
 		g_Tokens,		 g_PaddedTokens,  g_PaddedTokens / 16, (g_Tokens + 63) / 64, (g_Tokens + 127) / 128,
 		int(blockIdx.x), int(blockIdx.y), int(threadIdx.x),	   int(threadIdx.y)};
+
 	// Wait only for the Q/K/V token groups needed by the next copy.
 	const auto WaitPredecessor = [&](int g_FirstGroup, int g_Count)
 	{
@@ -33,7 +34,7 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 	{
 		const int s_Stage = (g_KeyTile & 1) * Profile::s_StageBytes;
 		const int s_Barrier = Profile::s_BarrierOffset + (g_KeyTile & 1) * 8;
-#pragma unroll
+		#pragma unroll
 		for (int Copy = 0; Copy < Profile::QueryChunks; ++Copy)
 		{
 			const int CopySlot = TileCoordinates.Warp + Copy * 4;
@@ -57,7 +58,8 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 				*reinterpret_cast<uint4*>(s_Storage + s_Copy + TileCoordinates.Lane * 16) =
 					make_uint4(0, 0, 0, 0);
 		}
-#pragma unroll
+
+		#pragma unroll
 		for (int Copy = 0; Copy < Profile::QueryChunks; ++Copy)
 		{
 			const int CopySlot = TileCoordinates.Warp + Copy * 4;
@@ -65,6 +67,7 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 			if (uint32_t(TileCoordinates.g_Tokens + 14) < 31)
 				g_KeyGroup = 0;
 			const int s_Copy = s_Stage + CopySlot * 512;
+
 			// V has transposed fragments. FP8 stores two neighboring M16 tiles
 			// in one M32 group; Half stores one M16 group with two N16 panels.
 			int g_ValueGroup = bFp8 ? g_KeyTile * 2 + CopySlot / 2 : g_KeyGroup;
@@ -95,17 +98,19 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 		ArriveAndWait(s_Storage, s_Barrier);
 	};
 
+	// Initialize the shared copy barriers before any warp issues input transactions.
 	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
-#pragma unroll
+		#pragma unroll
 		for (int s_Stage = 0; s_Stage < 2; ++s_Stage)
 			BarrierInit(s_Storage, Profile::s_BarrierOffset + s_Stage * 8, blockDim.x * blockDim.y);
 	__syncthreads();
 	WaitPredecessor(TileCoordinates.g_QueryBlock256 * 2, 2);
 
+	// Keep the query tile in registers while successive K/V tiles stream through shared memory.
 	FWindowAFragment r_Query[4][Profile::QueryChunks];
-#pragma unroll
+	#pragma unroll
 	for (int r_QueryTile = 0; r_QueryTile < 4; ++r_QueryTile)
-#pragma unroll
+		#pragma unroll
 		for (int r_ReductionChunk = 0; r_ReductionChunk < Profile::QueryChunks; ++r_ReductionChunk)
 		{
 			int g_Group = TileCoordinates.g_QueryBlock256 * 16 + TileCoordinates.Warp * 4 + r_QueryTile;
@@ -120,36 +125,41 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 									   ? __ldca(reinterpret_cast<const uint4*>(g_QueryFragmentAddress))
 									   : make_uint4(0, 0, 0, 0));
 		}
-#pragma unroll
+
+	#pragma unroll
 	for (int g_KeyTile = 0; g_KeyTile < 2; ++g_KeyTile)
 		if (g_KeyTile < TileCoordinates.g_KeyTiles)
 		{
 			WaitPredecessor(g_KeyTile / 2, 1);
 			StageKeyValue(g_KeyTile);
 		}
+
 	if (TileCoordinates.g_KeyTiles > 0)
 		WaitStage(0);
 	FWindowAccumulatorTile<32> r_Output[4]{};
 	uint32_t r_Denominator = 0;
 
-#pragma unroll 1
+	// Accumulate unnormalized attention and its row sums while rotating the two K/V stages.
+	#pragma unroll 1
 	for (int g_KeyTile = 0; g_KeyTile < TileCoordinates.g_KeyTiles; ++g_KeyTile)
 	{
 		const int s_Base = (g_KeyTile & 1) * Profile::s_StageBytes + TileCoordinates.Lane * 16;
 		uint4 r_Key[4][Profile::QueryChunks];
-#pragma unroll
+		#pragma unroll
 		for (int r_ColumnTile = 0; r_ColumnTile < 4; ++r_ColumnTile)
-#pragma unroll
+			#pragma unroll
 			for (int r_ReductionChunk = 0; r_ReductionChunk < Profile::QueryChunks; ++r_ReductionChunk)
 				r_Key[r_ColumnTile][r_ReductionChunk] = *reinterpret_cast<const uint4*>(
 					s_Storage + s_Base + (r_ColumnTile * Profile::QueryChunks + r_ReductionChunk) * 512);
+
+		// Form Q times K-transpose scores and apply the native packed-Half exponent surrogate.
 		FWindowAccumulatorTile<64> r_Probability[4]{};
-#pragma unroll
+		#pragma unroll
 		for (int r_QueryTile = 0; r_QueryTile < 4; ++r_QueryTile)
-#pragma unroll
+			#pragma unroll
 			for (int r_ColumnTile = 0; r_ColumnTile < 8; ++r_ColumnTile)
 			{
-#pragma unroll
+				#pragma unroll
 				for (int r_ReductionChunk = 0; r_ReductionChunk < Profile::QueryChunks; ++r_ReductionChunk)
 				{
 					const uint4 r_KeyVector = r_Key[r_ColumnTile / 2][r_ReductionChunk];
@@ -158,7 +168,7 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 					MmaWindowFragment<bFp8>(r_Query[r_QueryTile][r_ReductionChunk], r_KeyFragment,
 											r_Probability[r_QueryTile].r_Pair[r_ColumnTile]);
 				}
-#pragma unroll
+				#pragma unroll
 				for (int r_Half = 0; r_Half < 2; ++r_Half)
 				{
 					const uint32_t r_Score = r_Probability[r_QueryTile].r_Pair[r_ColumnTile][r_Half];
@@ -170,14 +180,15 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 						(r_Clamped << CONST_GLOBAL_EXP_ENCODING_SHIFT) + CONST_GLOBAL_EXP_ENCODING_OFFSET;
 				}
 			}
+
 		// Sum the current score tile with the native two-way warp transpose.
 		{
 			uint32_t r_QuerySums[2];
-#pragma unroll
+			#pragma unroll
 			for (int r_QueryHalf = 0; r_QueryHalf < 2; ++r_QueryHalf)
 			{
 				uint32_t r_LocalProbabilitySums[4], r_GatheredProbabilitySums[4];
-#pragma unroll
+				#pragma unroll
 				for (int r_Row = 0; r_Row < 4; ++r_Row)
 				{
 					const auto& r_Pairs = r_Probability[r_QueryHalf * 2 + r_Row / 2].r_Pair;
@@ -188,11 +199,12 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 					r_LocalProbabilitySums[r_Row] =
 						HalfAdd(r_Sum, HalfAdd(r_Pairs[6][r_QueryRowHalf], r_Pairs[7][r_QueryRowHalf]));
 				}
+
 				// This warp transpose turns the MMA fragment's channel ownership
 				// into one full query sum per lane, without changing Half add order.
 				const int r_SourceLane = ((TileCoordinates.Lane & 7) << 2) + (TileCoordinates.Lane >> 3);
 				PermuteGlobalAttentionQuad(r_LocalProbabilitySums, TileCoordinates.Lane & 3);
-#pragma unroll
+				#pragma unroll
 				for (int r_Row = 0; r_Row < 4; ++r_Row)
 					r_GatheredProbabilitySums[r_Row] =
 						ShuffleIdx(r_LocalProbabilitySums[r_Row], r_SourceLane ^ r_Row, 31, 0xffffffffu);
@@ -209,19 +221,20 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 			r_Denominator = HalfAdd(r_Denominator, r_ProbabilitySum);
 		}
 
+		// Multiply the current probability tile by V and accumulate the output numerator.
 		uint4 r_Value[Profile::ProbabilityChunks][2];
-#pragma unroll
+		#pragma unroll
 		for (int r_ReductionChunk = 0; r_ReductionChunk < Profile::ProbabilityChunks; ++r_ReductionChunk)
-#pragma unroll
+			#pragma unroll
 			for (int r_ColumnTile = 0; r_ColumnTile < 2; ++r_ColumnTile)
 				r_Value[r_ReductionChunk][r_ColumnTile] =
 					*reinterpret_cast<const uint4*>(s_Storage + Profile::s_ValueOffset + s_Base +
 													(r_ReductionChunk * 2 + r_ColumnTile) * 512);
-#pragma unroll
+		#pragma unroll
 		for (int r_QueryTile = 0; r_QueryTile < 4; ++r_QueryTile)
-#pragma unroll
+			#pragma unroll
 			for (int r_ColumnTile = 0; r_ColumnTile < 2; ++r_ColumnTile)
-#pragma unroll
+				#pragma unroll
 				for (int r_ReductionChunk = 0; r_ReductionChunk < Profile::ProbabilityChunks;
 					 ++r_ReductionChunk)
 				{
@@ -235,15 +248,18 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 					MmaWindowFragment<bFp8>(r_ProbabilityFragment, r_UpperValueFragment,
 											r_Output[r_QueryTile].r_Pair[r_ColumnTile * 2 + 1]);
 				}
+
 		if (g_KeyTile + 2 < TileCoordinates.g_KeyTiles)
 		{
 			WaitPredecessor((g_KeyTile + 2) / 2, 1);
 			StageKeyValue(g_KeyTile + 2);
 		}
+
 		if (g_KeyTile + 1 < TileCoordinates.g_KeyTiles)
 			WaitStage(g_KeyTile + 1);
 	}
 
+	// Remove padded-key probability mass before computing the per-query normalization.
 	uint32_t r_InverseDenominator;
 	{
 		const int PaddingKeys = TileCoordinates.g_KeyTiles * 64 - g_Tokens;
@@ -263,12 +279,15 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 				FloatToHalf2(FloatMulFtzBits(HalfToFloatBits(r_ZeroScore), UintToFloatRnBits(PaddingKeys)));
 			r_CorrectedDenominator = HalfSub(r_CorrectedDenominator, r_Correction);
 		}
+
 		r_InverseDenominator = RcpHalf2(HalfMax(r_CorrectedDenominator, CONST_NORMALIZATION_EPSILON_HALF2));
 	}
-#pragma unroll
+
+	// Apply row normalization and publish the accumulated attention in its physical layout.
+	#pragma unroll
 	for (int r_QueryTile = 0; r_QueryTile < 4; ++r_QueryTile)
 	{
-#pragma unroll
+		#pragma unroll
 		for (int r_Half = 0; r_Half < 2; ++r_Half)
 		{
 			const int QueryRow = r_QueryTile * 16 + TileCoordinates.Lane / 4 + r_Half * 8;
@@ -278,14 +297,15 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 				uint16_t(r_InverseDenominatorPair >> ((QueryRow / 32) * 16));
 			const uint32_t r_QueryNormalization =
 				JoinHalfwords(r_InverseDenominatorHalf, r_InverseDenominatorHalf);
-#pragma unroll
+			#pragma unroll
 			for (int r_ColumnTile = 0; r_ColumnTile < 4; ++r_ColumnTile)
 				r_Output[r_QueryTile].r_Pair[r_ColumnTile][r_Half] =
 					HalfMul(r_Output[r_QueryTile].r_Pair[r_ColumnTile][r_Half], r_QueryNormalization);
 		}
+
 		const int g_Group = TileCoordinates.g_QueryBlock256 * 16 + TileCoordinates.Warp * 4 + r_QueryTile;
 		if (g_Group < TileCoordinates.g_Groups16)
-#pragma unroll
+			#pragma unroll
 			for (int r_Chunk = 0; r_Chunk < Profile::QueryChunks; ++r_Chunk)
 			{
 				const auto r_OutputFragment = PublishWindowChunk<bFp8>(r_Output[r_QueryTile], r_Chunk);
@@ -296,23 +316,24 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 										   r_OutputFragment.r_Word[2], r_OutputFragment.r_Word[3]));
 			}
 	}
+
 	// Native outputs include a padded last token group. Clear only its invalid
 	// rows after all fragment stores, then release the completion counters.
 	if (g_PaddedTokens != g_Tokens)
 	{
 		__syncthreads();
-#pragma unroll
+		#pragma unroll
 		for (int r_QueryTile = 0; r_QueryTile < 4; ++r_QueryTile)
-#pragma unroll
+			#pragma unroll
 			for (int r_Half = 0; r_Half < 2; ++r_Half)
 			{
 				const int g_Group =
 					TileCoordinates.g_QueryBlock256 * 16 + TileCoordinates.Warp * 4 + r_QueryTile;
 				const int g_Row = g_Group * 16 + TileCoordinates.Lane / 4 + r_Half * 8;
 				if (g_Row >= g_Tokens && g_Row < g_PaddedTokens)
-#pragma unroll
+					#pragma unroll
 					for (int r_Chunk = 0; r_Chunk < Profile::QueryChunks; ++r_Chunk)
-#pragma unroll
+						#pragma unroll
 						for (int r_ColumnTile = 0; r_ColumnTile < 2; ++r_ColumnTile)
 							*reinterpret_cast<uint32_t*>(
 								Parameters.g_Output + uint64_t(g_Group) * 16384 * Profile::ElementBytes +
@@ -320,9 +341,10 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 								TileCoordinates.Lane * 16 + (r_ColumnTile * 2 + r_Half) * 4) = 0;
 			}
 	}
+
 	__syncthreads();
 	if (Parameters.g_CompletionCounters && TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
-#pragma unroll
+		#pragma unroll
 		for (int g_LocalGroup = 0; g_LocalGroup < 2; ++g_LocalGroup)
 		{
 			const int g_Group = TileCoordinates.g_QueryBlock256 * 2 + g_LocalGroup;
