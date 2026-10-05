@@ -22,29 +22,27 @@ def load_abi_fields():
     """
     source = (OUT / 'kernel_abi.h').read_text()
     fields_by_type = {}
-    aliases = {}
-    for namespace, body in re.findall(
-            r'namespace dlssnr::reconstructed::(\w+)\s*\{(.*?)'
-            r'\} // namespace dlssnr::reconstructed::\1', source, re.S):
-        for parameter_type, field, offset in re.findall(
-                r'offsetof\((\w+),\s*(\w+)\)\s*==\s*(\d+)', body):
-            fields = fields_by_type.setdefault((namespace, parameter_type), {})
-            offset = int(offset)
-            if offset in fields and fields[offset] != field:
-                raise ValueError(f'conflicting ABI names for {namespace} byte {offset}')
-            fields[offset] = field
-        for alias, owner, target in re.findall(
-                r'using (\w+) = dlssnr::reconstructed::(\w+)::(\w+);', body):
-            aliases[(namespace, alias)] = (owner, target)
-    for alias, target in aliases.items():
-        fields_by_type[alias] = fields_by_type[target]
+    for parameter_type, field, offset in re.findall(
+            r'offsetof\((\w+),\s*(\w+)\)\s*==\s*(\d+)', source):
+        fields = fields_by_type.setdefault(parameter_type, {})
+        offset = int(offset)
+        if offset in fields and fields[offset] != field:
+            raise ValueError(f'conflicting ABI names for {parameter_type} byte {offset}')
+        fields[offset] = field
+    aliases = dict(re.findall(r'using (\w+) = (\w+);', source))
+    while aliases:
+        resolved = [alias for alias, target in aliases.items() if target in fields_by_type]
+        if not resolved:
+            raise ValueError(f'unresolved ABI aliases: {aliases}')
+        for alias in resolved:
+            fields_by_type[alias] = fields_by_type[aliases.pop(alias)]
+    declarations = dict(re.findall(r'extern "C" void (\w+)\((\w+) r_Parameters\);', source))
     fields_by_entry = {}
     parameter_types = {}
-    for symbol in load('canonical_kernel_names.json').values():
-        namespace = symbol.split('::')[-1]
-        parameter_type = 'ClearParameters' if namespace == 'completion_counter_clear' else 'Parameters'
-        fields_by_entry[namespace] = fields_by_type[(namespace, parameter_type)]
-        parameter_types[namespace] = f'dlssnr::reconstructed::{namespace}::{parameter_type}'
+    for entry in load('canonical_kernel_names.json').values():
+        parameter_type = declarations[entry]
+        fields_by_entry[entry] = fields_by_type[parameter_type]
+        parameter_types[entry] = parameter_type
     if len(fields_by_entry) != 81:
         raise ValueError('expected all 81 compiler-checked ABI declarations')
     return fields_by_entry, parameter_types
@@ -194,7 +192,6 @@ def generate(precision="fp8"):
 #pragma once
 #include <cuda_runtime_api.h>
 #include <cstdint>
-namespace dlssnr::deployment {
 struct FGeometryPlanSpec {
     int64_t ValidWidth;
     int64_t ValidHeight;
@@ -202,12 +199,11 @@ struct FGeometryPlanSpec {
     const dim3* Grids;
     const int32_t* GeometryArguments;
 };
-} // namespace dlssnr::deployment
 '''
-    tables = [f'namespace {precision} {{', '// Generated geometry data; all shapes reuse one physical call sequence.']
+    tables = ['// Generated geometry data; all shapes reuse one physical call sequence.']
     descriptors = []
     for (width, height), plan in zip(RESOLUTIONS, plans):
-        suffix = f'{width}_{height}'
+        suffix = f'{width}_{height}_{precision}'
         tables.append(f'static const int64_t BufferBytes_{suffix}[] = {{')
         tables.extend(f'    {buffer["storage_bytes"]}LL, // {name}' for name, buffer in plan['buffers'].items())
         tables.append('};')
@@ -216,34 +212,34 @@ struct FGeometryPlanSpec {
         tables.append('};')
         tables.append(f'static const int32_t GeometryArguments_{suffix}[] = {{')
         for call in plan['calls']:
-            entry_fields = abi_fields[call['fn'].split('::')[-1]]
+            entry_fields = abi_fields[call['fn']]
             integer_fields = [(entry_fields[offset], value)
                               for offset, size, value in call['fields'] if size == 4]
             field_names = ', '.join(field for field, _ in integer_fields)
             field_values = ', '.join(value for _, value in integer_fields)
-            tables.append(f'    {field_values}, // {call["fn"].split("::")[-1]}: {field_names}')
+            tables.append(f'    {field_values}, // {call["fn"]}: {field_names}')
         tables.append('};')
         descriptors.append(f'    {{{width}, {height}, BufferBytes_{suffix}, Grids_{suffix}, GeometryArguments_{suffix}}},')
-    tables += ['static const FGeometryPlanSpec GeometryPlans[] = {', *descriptors, '};',
-               'static const FGeometryPlanSpec& SelectGeometryPlan(int64_t Width, int64_t Height) {',
-               '    for (const auto& Geometry : GeometryPlans) {',
+    tables += [f'static const FGeometryPlanSpec GeometryPlans_{precision}[] = {{', *descriptors, '};',
+               f'static const FGeometryPlanSpec& SelectGeometryPlan_{precision}(int64_t Width, int64_t Height) {{',
+               f'    for (const auto& Geometry : GeometryPlans_{precision}) {{',
                '        if (Geometry.ValidWidth == Width && Geometry.ValidHeight == Height)',
                '            return Geometry;', '    }',
                '    TORCH_CHECK(false, "FP8 trunk supports 1280x720, 1920x1080, 2560x1440, or 3840x2160");',
-               '}', '}']
+               '}']
 
-    lines = [f'namespace {precision} {{', '// Generated shared native FP8 schedule. Every resolution uses the same 185 calls.',
+    lines = ['// Generated shared native FP8 schedule. Every resolution uses the same 185 calls.',
              '// Buffer names are shared; the geometry table supplies their actual byte extents.',
-             'static const char* BufferNameTable[] = {']
+             f'static const char* BufferNameTable_{precision}[] = {{']
     lines += [f'    "{name}",' for name in names]
-    lines += ['};', 'static const FBufferSpec RecordSpecs[] = {']
+    lines += ['};', f'static const FBufferSpec RecordSpecs_{precision}[] = {{']
     lines += [f'    {{"{name}", {size}LL}},' for name, size in reference['records'].items()]
-    lines += ['};', '}', 'void FDeploymentPlan_fp8::BuildCalls() {', '    Calls.reserve(185);']
+    lines += ['};', 'void FDeploymentPlan_fp8::BuildCalls() {', '    Calls.reserve(185);']
     scalar_index = 0
     for call_index, call in enumerate(reference['calls']):
         block = ', '.join(map(str, call['block']))
-        parameter_type = parameter_types[call['fn'].split('::')[-1]]
-        entry_fields = abi_fields[call['fn'].split('::')[-1]]
+        parameter_type = parameter_types[call['fn']]
+        entry_fields = abi_fields[call['fn']]
         lines += [f'    {{ // {call["symbol"]}',
                   f'        using FParameters = {parameter_type};',
                   '        FKernelCall KernelCall{reinterpret_cast<const void*>(&%s), Geometry->Grids[%d], dim3(%s), %d, %s};'

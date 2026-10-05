@@ -1,10 +1,7 @@
 #pragma once
 #include "frontend_math.cuh"
 
-namespace dlssnr::kernels::input_features
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-using namespace dlssnr::kernels::frontend_math;
 
 // These unsigned constants reproduce the native per-frame/pixel hash and its
 // four decorrelated streams. They are recovered arithmetic, not an assertion
@@ -22,12 +19,11 @@ constexpr float CONST_NOISE_RADIUS_FACTOR = -2.0f;		  // Box-Muller radius sqrt(
 // ABI names describe how the native code uses each field. Renderer-level
 // meanings of the conditioning controls remain deliberately unspecified. Green/Blue
 // identify the texture channels used in the feature product, not renderer labels.
-using FParameters = dlssnr::reconstructed::frontend_abi::FPreprocessParameters;
 
-static_assert(sizeof(FParameters) == 264, "Native preprocessing ABI must stay 264 bytes");
-static_assert(offsetof(FParameters, CurrentTransform) == 136);
-static_assert(offsetof(FParameters, ValidHeight) == 208);
-static_assert(offsetof(FParameters, g_PooledOutput) == 248);
+static_assert(sizeof(FPreprocessParameters) == 264, "Native preprocessing ABI must stay 264 bytes");
+static_assert(offsetof(FPreprocessParameters, CurrentTransform) == 136);
+static_assert(offsetof(FPreprocessParameters, ValidHeight) == 208);
+static_assert(offsetof(FPreprocessParameters, g_PooledOutput) == 248);
 
 struct FSharedFeatures
 {
@@ -45,7 +41,7 @@ __device__ __forceinline__ uint32_t PermuteNoise(uint32_t r_HashState)
 __device__ __forceinline__ float3 PixelNoise(uint32_t NoiseSeed, int g_X, int g_Y)
 {
 	// Local constexpr tables let the unrolled stream index become an immediate
-	// in device code; namespace host arrays cannot be dynamically device-indexed.
+	// in device code; host-scope arrays cannot be dynamically device-indexed.
 	constexpr uint32_t CONST_NOISE_STREAM_MULTIPLIER[4] = {747796405u, 4201498105u, 3399858189u, 2200120369u};
 	constexpr uint32_t CONST_NOISE_STREAM_ADDEND[4] = {2891336453u, 1192405134u, 568162667u, 878960812u};
 	const uint32_t r_Hash =
@@ -59,39 +55,42 @@ __device__ __forceinline__ float3 PixelNoise(uint32_t NoiseSeed, int g_X, int g_
 		const uint32_t r_StreamHash = PermuteNoise(r_PixelHash * CONST_NOISE_STREAM_MULTIPLIER[r_Stream] +
 												   CONST_NOISE_STREAM_ADDEND[r_Stream]);
 		const uint32_t r_UniformInteger = ((r_StreamHash >> 30) ^ (r_StreamHash >> 8)) + 1;
-		r_Uniform[r_Stream] = Multiply(__uint2float_rn(r_UniformInteger), CONST_NOISE_UINT24_SCALE);
+		r_Uniform[r_Stream] =
+			NativeFloatMultiply(__uint2float_rn(r_UniformInteger), CONST_NOISE_UINT24_SCALE);
 	}
 	float r_Radius[2], r_Angle[2];
 #pragma unroll
 	for (int r_Pair = 0; r_Pair < 2; ++r_Pair)
 	{
 		const float r_Log2 = __uint_as_float(NativeLg2ApproxFtzF32(__float_as_uint(r_Uniform[2 * r_Pair])));
-		const float r_Log = Multiply(r_Log2, __uint_as_float(CONST_NOISE_LN2_BITS));
+		const float r_Log = NativeFloatMultiply(r_Log2, __uint_as_float(CONST_NOISE_LN2_BITS));
 		r_Radius[r_Pair] = __uint_as_float(
-			NativeSqrtApproxFtzF32(__float_as_uint(Multiply(r_Log, CONST_NOISE_RADIUS_FACTOR))));
-		r_Angle[r_Pair] = Multiply(r_Uniform[2 * r_Pair + 1], __uint_as_float(CONST_NOISE_TWO_PI_BITS));
+			NativeSqrtApproxFtzF32(__float_as_uint(NativeFloatMultiply(r_Log, CONST_NOISE_RADIUS_FACTOR))));
+		r_Angle[r_Pair] =
+			NativeFloatMultiply(r_Uniform[2 * r_Pair + 1], __uint_as_float(CONST_NOISE_TWO_PI_BITS));
 	}
 	// Only three of the four Gaussian coordinates are retained by the DLL.
 	return make_float3(
-		Multiply(r_Radius[0], __uint_as_float(NativeCosApproxFtzF32(__float_as_uint(r_Angle[0])))),
-		Multiply(r_Radius[0], __uint_as_float(NativeSinApproxFtzF32(__float_as_uint(r_Angle[0])))),
-		Multiply(r_Radius[1], __uint_as_float(NativeCosApproxFtzF32(__float_as_uint(r_Angle[1])))));
+		NativeFloatMultiply(r_Radius[0], __uint_as_float(NativeCosApproxFtzF32(__float_as_uint(r_Angle[0])))),
+		NativeFloatMultiply(r_Radius[0], __uint_as_float(NativeSinApproxFtzF32(__float_as_uint(r_Angle[0])))),
+		NativeFloatMultiply(r_Radius[1],
+							__uint_as_float(NativeCosApproxFtzF32(__float_as_uint(r_Angle[1])))));
 }
 
 __device__ __forceinline__ float4 SampleTransformed(uint64_t g_Texture, const FTextureTransform& r_Transform,
 													float2 r_Uv)
 {
-	const float2 r_Coordinates = Transform(r_Transform, r_Uv.x, r_Uv.y);
-	return Sample(g_Texture, r_Coordinates.x, r_Coordinates.y);
+	const float2 r_Coordinates = TransformTextureCoordinates(r_Transform, r_Uv.x, r_Uv.y);
+	return SampleTexture(g_Texture, r_Coordinates.x, r_Coordinates.y);
 }
 
-__device__ __forceinline__ float2 SelectMotionOffset(const FParameters& r_Parameters, float2 r_Uv)
+__device__ __forceinline__ float2 SelectMotionOffset(const FPreprocessParameters& r_Parameters, float2 r_Uv)
 {
 	float2 r_SelectedMotionOffset = make_float2(CONST_ZERO, CONST_ZERO);
 	if (!r_Parameters.g_DepthTexture)
 		return r_SelectedMotionOffset;
-	const float r_DepthTexelWidth = Reciprocal(r_Parameters.DepthTransform.r_ScaleX);
-	const float r_DepthTexelHeight = Reciprocal(r_Parameters.DepthTransform.r_ScaleY);
+	const float r_DepthTexelWidth = NativeFloatReciprocal(r_Parameters.DepthTransform.r_ScaleX);
+	const float r_DepthTexelHeight = NativeFloatReciprocal(r_Parameters.DepthTransform.r_ScaleY);
 	float r_BestDepth = SampleTransformed(r_Parameters.g_DepthTexture, r_Parameters.DepthTransform, r_Uv).x;
 // The four diagonal candidates are visited TL, TR, BL, BR. Ties and NaNs
 // retain the prior sample, exactly as the native unordered comparisons do.
@@ -100,9 +99,11 @@ __device__ __forceinline__ float2 SelectMotionOffset(const FParameters& r_Parame
 	{
 		const float r_OffsetX = (r_Corner & 1) ? r_DepthTexelWidth : -r_DepthTexelWidth;
 		const float r_OffsetY = (r_Corner & 2) ? r_DepthTexelHeight : -r_DepthTexelHeight;
-		const float2 r_CandidateUv = make_float2(
-			(r_Corner & 1) ? Add(r_Uv.x, r_DepthTexelWidth) : Subtract(r_Uv.x, r_DepthTexelWidth),
-			(r_Corner & 2) ? Add(r_Uv.y, r_DepthTexelHeight) : Subtract(r_Uv.y, r_DepthTexelHeight));
+		const float2 r_CandidateUv =
+			make_float2((r_Corner & 1) ? NativeFloatAdd(r_Uv.x, r_DepthTexelWidth)
+									   : NativeFloatSubtract(r_Uv.x, r_DepthTexelWidth),
+						(r_Corner & 2) ? NativeFloatAdd(r_Uv.y, r_DepthTexelHeight)
+									   : NativeFloatSubtract(r_Uv.y, r_DepthTexelHeight));
 		const float r_CandidateDepth =
 			SampleTransformed(r_Parameters.g_DepthTexture, r_Parameters.DepthTransform, r_CandidateUv).x;
 		const bool r_bKeepPreviousDepth =
@@ -115,21 +116,21 @@ __device__ __forceinline__ float2 SelectMotionOffset(const FParameters& r_Parame
 			r_BestDepth = r_CandidateDepth;
 		}
 	}
-	r_SelectedMotionOffset.x =
-		Multiply(r_SelectedMotionOffset.x,
-				 Divide(r_Parameters.DepthTransform.r_ScaleX, r_Parameters.MotionTransform.r_ScaleX));
-	r_SelectedMotionOffset.y =
-		Multiply(r_SelectedMotionOffset.y,
-				 Divide(r_Parameters.DepthTransform.r_ScaleY, r_Parameters.MotionTransform.r_ScaleY));
+	r_SelectedMotionOffset.x = NativeFloatMultiply(
+		r_SelectedMotionOffset.x,
+		NativeFloatDivide(r_Parameters.DepthTransform.r_ScaleX, r_Parameters.MotionTransform.r_ScaleX));
+	r_SelectedMotionOffset.y = NativeFloatMultiply(
+		r_SelectedMotionOffset.y,
+		NativeFloatDivide(r_Parameters.DepthTransform.r_ScaleY, r_Parameters.MotionTransform.r_ScaleY));
 	return r_SelectedMotionOffset;
 }
 
-__device__ __forceinline__ uint16_t ToHalf(float r_InputValue)
+__device__ __forceinline__ uint16_t ConvertFeatureToHalf(float r_InputValue)
 {
 	return NativeCvtRnF16F32(__float_as_uint(r_InputValue));
 }
 
-__device__ __forceinline__ uint32_t HalfWords(uint16_t r_LowerHalfword, uint16_t r_UpperHalfword)
+__device__ __forceinline__ uint32_t PackFeatureHalfWords(uint16_t r_LowerHalfword, uint16_t r_UpperHalfword)
 {
 	return uint32_t(r_LowerHalfword) | uint32_t(r_UpperHalfword) << 16;
 }
@@ -138,14 +139,18 @@ __device__ __forceinline__ uint16_t ConditionColor(float r_ColorSample, uint16_t
 {
 	// Keep both Half rounding points: round(texture), subtract 1/2, multiply
 	// rounded(2*ColorScale). A float affine transform is not equivalent.
-	return NativeMulF16(NativeSubF16(ToHalf(r_ColorSample), ToHalf(CONST_PIXEL_CENTER)), r_ColorScaleHalf);
+	return NativeMulF16(
+		NativeSubF16(ConvertFeatureToHalf(r_ColorSample), ConvertFeatureToHalf(CONST_PIXEL_CENTER)),
+		r_ColorScaleHalf);
 }
 
-__device__ __forceinline__ void FillFeatures(const FParameters& r_Parameters, FSharedFeatures& s_Features)
+__device__ __forceinline__ void FillFeatures(const FPreprocessParameters& r_Parameters,
+											 FSharedFeatures& s_Features)
 {
 	const float r_Width = __int2float_rn(r_Parameters.ValidWidth);
 	const float r_Height = __int2float_rn(r_Parameters.ValidHeight);
-	const uint16_t r_ColorScale = ToHalf(Add(r_Parameters.r_ColorScale, r_Parameters.r_ColorScale));
+	const uint16_t r_ColorScale =
+		ConvertFeatureToHalf(NativeFloatAdd(r_Parameters.r_ColorScale, r_Parameters.r_ColorScale));
 	for (int s_Pixel = 32 * threadIdx.y + threadIdx.x; s_Pixel < 64; s_Pixel += 32 * blockDim.y)
 	{
 		const int g_X = 8 * blockIdx.x + (s_Pixel & 7), g_Y = 8 * blockIdx.y + s_Pixel / 8;
@@ -154,9 +159,9 @@ __device__ __forceinline__ void FillFeatures(const FParameters& r_Parameters, FS
 		const int g_ReflectedX = g_X < r_Parameters.ValidWidth ? g_X : 2 * r_Parameters.ValidWidth - g_X - 2;
 		const int g_ReflectedY =
 			g_Y < r_Parameters.ValidHeight ? g_Y : 2 * r_Parameters.ValidHeight - g_Y - 2;
-		const float2 r_Uv =
-			make_float2(Divide(Add(__int2float_rn(g_ReflectedX), CONST_PIXEL_CENTER), r_Width),
-						Divide(Add(__int2float_rn(g_ReflectedY), CONST_PIXEL_CENTER), r_Height));
+		const float2 r_Uv = make_float2(
+			NativeFloatDivide(NativeFloatAdd(__int2float_rn(g_ReflectedX), CONST_PIXEL_CENTER), r_Width),
+			NativeFloatDivide(NativeFloatAdd(__int2float_rn(g_ReflectedY), CONST_PIXEL_CENTER), r_Height));
 		const float3 r_Noise = PixelNoise(r_Parameters.NoiseSeed, g_X, g_Y);
 		const float4 r_Current =
 			SampleTransformed(r_Parameters.g_CurrentTexture, r_Parameters.CurrentTransform, r_Uv);
@@ -168,11 +173,13 @@ __device__ __forceinline__ void FillFeatures(const FParameters& r_Parameters, FS
 		if (r_Parameters.g_HistoryTexture && r_Parameters.g_MotionTexture)
 		{
 			const float2 r_MotionSampleOffset = SelectMotionOffset(r_Parameters, r_Uv);
-			const float4 r_Motion = SampleTransformed(
-				r_Parameters.g_MotionTexture, r_Parameters.MotionTransform,
-				make_float2(Add(r_Uv.x, r_MotionSampleOffset.x), Add(r_Uv.y, r_MotionSampleOffset.y)));
-			const float2 r_PreviousUv = make_float2(Fma(r_Motion.x, r_Parameters.r_MotionScaleX, r_Uv.x),
-													Fma(r_Motion.y, r_Parameters.r_MotionScaleY, r_Uv.y));
+			const float4 r_Motion =
+				SampleTransformed(r_Parameters.g_MotionTexture, r_Parameters.MotionTransform,
+								  make_float2(NativeFloatAdd(r_Uv.x, r_MotionSampleOffset.x),
+											  NativeFloatAdd(r_Uv.y, r_MotionSampleOffset.y)));
+			const float2 r_PreviousUv =
+				make_float2(NativeFloatFma(r_Motion.x, r_Parameters.r_MotionScaleX, r_Uv.x),
+							NativeFloatFma(r_Motion.y, r_Parameters.r_MotionScaleY, r_Uv.y));
 			const float3 r_History =
 				ReconstructHistory(r_Parameters.g_HistoryTexture, r_Parameters.HistoryTransform, r_PreviousUv,
 								   r_Width, r_Height);
@@ -187,10 +194,10 @@ __device__ __forceinline__ void FillFeatures(const FParameters& r_Parameters, FS
 		float r_ConditioningOverrideBlue = r_ConditioningOverrideGreen;
 		if (r_Parameters.bConditioningOverride && !r_Parameters.g_ConditioningTexture)
 		{
-			const bool r_bExplicitConditioningOverride =
-				NativeSetpGeFtzF32(__float_as_uint(Maximum(r_Parameters.r_ConditioningOverrideGreen,
-														   r_Parameters.r_ConditioningOverrideBlue)),
-								   __float_as_uint(CONST_ZERO));
+			const bool r_bExplicitConditioningOverride = NativeSetpGeFtzF32(
+				__float_as_uint(NativeFloatMaximum(r_Parameters.r_ConditioningOverrideGreen,
+												   r_Parameters.r_ConditioningOverrideBlue)),
+				__float_as_uint(CONST_ZERO));
 			if (r_bExplicitConditioningOverride)
 			{
 				r_ConditioningBlue = CONST_UNIT;
@@ -210,19 +217,23 @@ __device__ __forceinline__ void FillFeatures(const FParameters& r_Parameters, FS
 		{
 			const float4 r_Conditioning = SampleTransformed(r_Parameters.g_ConditioningTexture,
 															r_Parameters.ConditioningTransform, r_Uv);
-			r_ConditioningGreen = Multiply(r_Conditioning.y, r_ConditioningGreen);
-			r_ConditioningBlue = Multiply(r_Conditioning.z, r_ConditioningBlue);
+			r_ConditioningGreen = NativeFloatMultiply(r_Conditioning.y, r_ConditioningGreen);
+			r_ConditioningBlue = NativeFloatMultiply(r_Conditioning.z, r_ConditioningBlue);
 		}
 		s_Features.s_Plane[0][s_Pixel] = make_uint4(
-			HalfWords(ToHalf(r_Noise.x), ToHalf(r_Noise.y)), HalfWords(ToHalf(r_Noise.z), ToHalf(CONST_UNIT)),
-			HalfWords(r_CurrentHalf[0], r_CurrentHalf[1]), HalfWords(r_CurrentHalf[2], r_HistoryHalf[0]));
+			PackFeatureHalfWords(ConvertFeatureToHalf(r_Noise.x), ConvertFeatureToHalf(r_Noise.y)),
+			PackFeatureHalfWords(ConvertFeatureToHalf(r_Noise.z), ConvertFeatureToHalf(CONST_UNIT)),
+			PackFeatureHalfWords(r_CurrentHalf[0], r_CurrentHalf[1]),
+			PackFeatureHalfWords(r_CurrentHalf[2], r_HistoryHalf[0]));
 		s_Features.s_Plane[1][s_Pixel] =
-			make_uint4(HalfWords(r_HistoryHalf[1], r_HistoryHalf[2]),
-					   HalfWords(ToHalf(r_Parameters.r_ConstantConditioning), ToHalf(r_ConditioningGreen)),
-					   HalfWords(ToHalf(r_ConditioningBlue), ToHalf(r_ConditioningOverrideGreen)),
-					   HalfWords(ToHalf(r_ConditioningOverrideBlue), ToHalf(CONST_ZERO)));
+			make_uint4(PackFeatureHalfWords(r_HistoryHalf[1], r_HistoryHalf[2]),
+					   PackFeatureHalfWords(ConvertFeatureToHalf(r_Parameters.r_ConstantConditioning),
+											ConvertFeatureToHalf(r_ConditioningGreen)),
+					   PackFeatureHalfWords(ConvertFeatureToHalf(r_ConditioningBlue),
+											ConvertFeatureToHalf(r_ConditioningOverrideGreen)),
+					   PackFeatureHalfWords(ConvertFeatureToHalf(r_ConditioningOverrideBlue),
+											ConvertFeatureToHalf(CONST_ZERO)));
 	}
 	__syncthreads();
 }
 #endif
-} // namespace dlssnr::kernels::input_features

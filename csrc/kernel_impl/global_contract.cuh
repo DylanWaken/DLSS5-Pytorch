@@ -5,14 +5,10 @@
 
 // Native global projections share M128 x N128 tiles and four resident K splits.
 // The profiles retain each operation's input width, K fragments, and pipeline.
-namespace dlssnr::kernels::global_contract
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-using namespace dlssnr::intrinsics::sm120;
-using namespace dlssnr::packed_math::sm120;
-using FAccumulator = dlssnr::tiles::sm120::FAccumulatorTile<4, 4>;
+using FGlobalContractAccumulator = FMmaAccumulatorTile<4, 4>;
 
-template <bool bFp8, bool bAttentionProjection = false> struct FProfile
+template <bool bFp8, bool bAttentionProjection = false> struct FGlobalContractProfile
 {
 	static constexpr int ElementBytes = bFp8 ? 1 : 2;
 	static constexpr int InputChannels = bAttentionProjection ? 1024 : 4096;
@@ -29,11 +25,10 @@ template <bool bFp8, bool bAttentionProjection = false> struct FProfile
 	static constexpr int s_InitialStages = s_StageCount == 3 ? 3 : 1;
 	static constexpr int s_StageBytes = 8 * s_GroupBytes;
 	static constexpr int s_BarrierOffset = s_StageCount * s_StageBytes;
-	static constexpr auto Precision =
-		bFp8 ? dlssnr::mma::sm120::EInputPrecision::Fp8 : dlssnr::mma::sm120::EInputPrecision::Fp16;
+	static constexpr auto Precision = bFp8 ? EMmaInputPrecision::Fp8 : EMmaInputPrecision::Fp16;
 };
 
-struct FTileCoordinates
+struct FGlobalContractTileCoordinates
 {
 	int g_TokenGroupBase, g_OutputChannel, g_PaddedGroups, g_ChannelBlock;
 	int r_Lane, r_Warp, r_Split;
@@ -41,9 +36,9 @@ struct FTileCoordinates
 };
 
 template <typename Profile>
-__device__ __forceinline__ void LoadWeights(uint4 (&r_Weights)[Profile::ReductionSubtiles][4],
-											uint64_t g_PackedWeights, int r_ReductionTile,
-											const FTileCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void
+LoadGlobalContractWeights(uint4 (&r_Weights)[Profile::ReductionSubtiles][4], uint64_t g_PackedWeights,
+						  int r_ReductionTile, const FGlobalContractTileCoordinates& r_TileCoordinates)
 {
 	const uint64_t g_WeightTileBase = g_PackedWeights +
 									  uint64_t(r_TileCoordinates.r_Split * Profile::SplitChannels +
@@ -59,9 +54,9 @@ __device__ __forceinline__ void LoadWeights(uint4 (&r_Weights)[Profile::Reductio
 }
 
 template <typename Profile>
-__device__ __forceinline__ void IssueInputStage(unsigned char* s_Storage, uint64_t g_Input,
-												int r_ReductionTile,
-												const FTileCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void
+IssueGlobalContractInputStage(unsigned char* s_Storage, uint64_t g_Input, int r_ReductionTile,
+							  const FGlobalContractTileCoordinates& r_TileCoordinates)
 {
 	const int s_Stage = r_ReductionTile % Profile::s_StageCount;
 	const int s_Barrier = Profile::s_BarrierOffset + s_Stage * 8;
@@ -103,19 +98,20 @@ __device__ __forceinline__ void IssueInputStage(unsigned char* s_Storage, uint64
 }
 
 template <typename Profile>
-__device__ __forceinline__ void WaitInputStage(unsigned char* s_Storage, int r_ReductionTile)
+__device__ __forceinline__ void WaitGlobalContractInputStage(unsigned char* s_Storage, int r_ReductionTile)
 {
 	const int s_Barrier = Profile::s_BarrierOffset + (r_ReductionTile % Profile::s_StageCount) * 8;
-	dlssnr::memoryops::sm120::ArriveAndWait(s_Storage, s_Barrier);
+	ArriveAndWait(s_Storage, s_Barrier);
 }
 
 // Consume a register tile from the ready shared-memory stage. ChannelGroups
 // distinguishes the N128 projection from the N192 fused Q/K/V projection.
 template <typename Profile, int ChannelGroups>
 __device__ __forceinline__ void
-ConsumeInputStage(dlssnr::tiles::sm120::FAccumulatorTile<4, ChannelGroups>& r_Accumulator,
-				  const uint4 (&r_Weights)[Profile::ReductionSubtiles][ChannelGroups],
-				  unsigned char* s_Storage, int r_ReductionTile, const FTileCoordinates& r_TileCoordinates)
+ConsumeGlobalContractInputStage(FMmaAccumulatorTile<4, ChannelGroups>& r_Accumulator,
+								const uint4 (&r_Weights)[Profile::ReductionSubtiles][ChannelGroups],
+								unsigned char* s_Storage, int r_ReductionTile,
+								const FGlobalContractTileCoordinates& r_TileCoordinates)
 {
 	const int s_Base = (r_ReductionTile % Profile::s_StageCount) * Profile::s_StageBytes +
 					   (r_TileCoordinates.r_Warp >> 1) * 4 * Profile::s_GroupBytes +
@@ -127,13 +123,13 @@ ConsumeInputStage(dlssnr::tiles::sm120::FAccumulatorTile<4, ChannelGroups>& r_Ac
 		for (int r_KSubtile = 0; r_KSubtile < Profile::ReductionSubtiles; ++r_KSubtile)
 			r_Input[r_Spatial][r_KSubtile] = *reinterpret_cast<const uint4*>(
 				s_Storage + s_Base + r_Spatial * Profile::s_GroupBytes + r_KSubtile * 512);
-	dlssnr::tiles::sm120::AccumulateTile<Profile::Precision>(r_Accumulator, r_Input, r_Weights);
+	AccumulateTile<Profile::Precision>(r_Accumulator, r_Input, r_Weights);
 }
 
 template <bool bFp8, typename TParameters, typename Profile>
-__device__ __forceinline__ void InitializeResidual(FAccumulator& r_Accumulator,
-												   const TParameters& r_Parameters,
-												   const FTileCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void
+InitializeGlobalContractResidual(FGlobalContractAccumulator& r_Accumulator, const TParameters& r_Parameters,
+								 const FGlobalContractTileCoordinates& r_TileCoordinates)
 {
 	if (r_TileCoordinates.r_Split != 0)
 		return;
@@ -211,7 +207,7 @@ __device__ __forceinline__ void InitializeResidual(FAccumulator& r_Accumulator,
 	}
 }
 
-enum class ESplitPublication
+enum class EGlobalContractSplitPublication
 {
 	Runtime,
 	First,
@@ -219,16 +215,17 @@ enum class ESplitPublication
 	Final
 };
 
-template <bool bFp8, ESplitPublication Publication, typename TParameters>
-__device__ __forceinline__ void PublishFragments(FAccumulator& r_Accumulator, const TParameters& r_Parameters,
-												 const FTileCoordinates& r_TileCoordinates)
+template <bool bFp8, EGlobalContractSplitPublication Publication, typename TParameters>
+__device__ __forceinline__ void
+PublishGlobalContractFragments(FGlobalContractAccumulator& r_Accumulator, const TParameters& r_Parameters,
+							   const FGlobalContractTileCoordinates& r_TileCoordinates)
 {
-	const bool r_bFirstSplit = Publication == ESplitPublication::Runtime
+	const bool r_bFirstSplit = Publication == EGlobalContractSplitPublication::Runtime
 								   ? r_TileCoordinates.r_Split == 0
-								   : Publication == ESplitPublication::First;
-	const bool r_bIntermediateSplit = Publication == ESplitPublication::Runtime
+								   : Publication == EGlobalContractSplitPublication::First;
+	const bool r_bIntermediateSplit = Publication == EGlobalContractSplitPublication::Runtime
 										  ? r_TileCoordinates.r_Split < 3
-										  : Publication == ESplitPublication::Intermediate;
+										  : Publication == EGlobalContractSplitPublication::Intermediate;
 
 	// Serial publication preserves the DLL's Half rounding between K splits.
 	// FP8 keeps partial sums in a separate Half buffer until the fourth split.
@@ -272,9 +269,9 @@ __device__ __forceinline__ void PublishFragments(FAccumulator& r_Accumulator, co
 			}
 			if constexpr (bFp8)
 			{
-				const bool r_bFinalSplit = Publication == ESplitPublication::Runtime
+				const bool r_bFinalSplit = Publication == EGlobalContractSplitPublication::Runtime
 											   ? r_TileCoordinates.r_Split == 3
-											   : Publication == ESplitPublication::Final;
+											   : Publication == EGlobalContractSplitPublication::Final;
 				if (r_bFinalSplit)
 				{
 					const uint64_t g_OutputBase =
@@ -302,8 +299,9 @@ __device__ __forceinline__ void PublishFragments(FAccumulator& r_Accumulator, co
 }
 
 template <bool bFp8, typename TParameters>
-__device__ __forceinline__ void PublishSplit(FAccumulator& r_Accumulator, const TParameters& r_Parameters,
-											 const FTileCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void
+PublishGlobalContractSplit(FGlobalContractAccumulator& r_Accumulator, const TParameters& r_Parameters,
+						   const FGlobalContractTileCoordinates& r_TileCoordinates)
 {
 	const uint64_t g_SplitCounters =
 		r_Parameters.g_SplitCounters +
@@ -321,35 +319,39 @@ __device__ __forceinline__ void PublishSplit(FAccumulator& r_Accumulator, const 
 		// The native epilogue selects first-store, intermediate-reduction or
 		// final-pack once. Keep that uniform choice outside fragment loops.
 		if (r_TileCoordinates.r_Split == 0)
-			PublishFragments<true, ESplitPublication::First>(r_Accumulator, r_Parameters, r_TileCoordinates);
+			PublishGlobalContractFragments<true, EGlobalContractSplitPublication::First>(
+				r_Accumulator, r_Parameters, r_TileCoordinates);
 		else if (r_TileCoordinates.r_Split < 3)
-			PublishFragments<true, ESplitPublication::Intermediate>(r_Accumulator, r_Parameters,
-																	r_TileCoordinates);
+			PublishGlobalContractFragments<true, EGlobalContractSplitPublication::Intermediate>(
+				r_Accumulator, r_Parameters, r_TileCoordinates);
 		else
-			PublishFragments<true, ESplitPublication::Final>(r_Accumulator, r_Parameters, r_TileCoordinates);
+			PublishGlobalContractFragments<true, EGlobalContractSplitPublication::Final>(
+				r_Accumulator, r_Parameters, r_TileCoordinates);
 	}
 	else
-		PublishFragments<false, ESplitPublication::Runtime>(r_Accumulator, r_Parameters, r_TileCoordinates);
+		PublishGlobalContractFragments<false, EGlobalContractSplitPublication::Runtime>(
+			r_Accumulator, r_Parameters, r_TileCoordinates);
 	__syncthreads();
 	if (r_TileCoordinates.r_Lane == 0 && r_TileCoordinates.r_Warp == 0)
 		CounterStoreRelease(g_SplitCounters, r_TileCoordinates.r_Split);
 }
 
-template <bool bFp8, typename TParameters, typename Profile = FProfile<bFp8>>
+template <bool bFp8, typename TParameters, typename Profile = FGlobalContractProfile<bFp8>>
 __device__ __forceinline__ void RunGlobalContract(TParameters r_Parameters, unsigned char* s_Storage)
 {
 	const int g_Tokens = r_Parameters.BatchCount * r_Parameters.TokensPerBatch;
 	const int g_TokenTiles = (g_Tokens + 127) / 128;
 	const int g_ChannelBlock = int(blockIdx.x) / g_TokenTiles;
 	const int r_Warp = threadIdx.y, r_Lane = threadIdx.x;
-	const FTileCoordinates r_TileCoordinates{(int(blockIdx.x) % g_TokenTiles) * 8,
-											 g_ChannelBlock * 128 + (r_Warp & 1) * 64,
-											 bFp8 ? ((g_Tokens + 31) / 32) * 2 : (g_Tokens + 15) / 16,
-											 g_ChannelBlock,
-											 r_Lane,
-											 r_Warp,
-											 int(blockIdx.z),
-											 !bFp8 && uint32_t(g_Tokens + 14) < 31};
+	const FGlobalContractTileCoordinates r_TileCoordinates{(int(blockIdx.x) % g_TokenTiles) * 8,
+														   g_ChannelBlock * 128 + (r_Warp & 1) * 64,
+														   bFp8 ? ((g_Tokens + 31) / 32) * 2
+																: (g_Tokens + 15) / 16,
+														   g_ChannelBlock,
+														   r_Lane,
+														   r_Warp,
+														   int(blockIdx.z),
+														   !bFp8 && uint32_t(g_Tokens + 14) < 31};
 
 	if (r_Lane == 0 && r_Warp == 0)
 #pragma unroll
@@ -358,13 +360,15 @@ __device__ __forceinline__ void RunGlobalContract(TParameters r_Parameters, unsi
 	__syncthreads();
 
 	uint4 r_Weights[Profile::ReductionSubtiles][4];
-	LoadWeights<Profile>(r_Weights, r_Parameters.g_PackedWeights, 0, r_TileCoordinates);
+	LoadGlobalContractWeights<Profile>(r_Weights, r_Parameters.g_PackedWeights, 0, r_TileCoordinates);
 #pragma unroll
 	for (int s_InitialStage = 0; s_InitialStage < Profile::s_InitialStages; ++s_InitialStage)
-		IssueInputStage<Profile>(s_Storage, r_Parameters.g_Input, s_InitialStage, r_TileCoordinates);
-	WaitInputStage<Profile>(s_Storage, 0);
-	FAccumulator r_Accumulator{};
-	InitializeResidual<bFp8, TParameters, Profile>(r_Accumulator, r_Parameters, r_TileCoordinates);
+		IssueGlobalContractInputStage<Profile>(s_Storage, r_Parameters.g_Input, s_InitialStage,
+											   r_TileCoordinates);
+	WaitGlobalContractInputStage<Profile>(s_Storage, 0);
+	FGlobalContractAccumulator r_Accumulator{};
+	InitializeGlobalContractResidual<bFp8, TParameters, Profile>(r_Accumulator, r_Parameters,
+																 r_TileCoordinates);
 
 	// Native two-stage code peels the final MMA tile out of the prefetch loop.
 	// Keeping that drain explicit removes a per-iteration tail branch. The
@@ -374,31 +378,32 @@ __device__ __forceinline__ void RunGlobalContract(TParameters r_Parameters, unsi
 		 r_ReductionTile < Profile::ReductionTiles - (Profile::s_InitialStages == 1 ? 1 : 0);
 		 ++r_ReductionTile)
 	{
-		ConsumeInputStage<Profile>(r_Accumulator, r_Weights, s_Storage, r_ReductionTile, r_TileCoordinates);
+		ConsumeGlobalContractInputStage<Profile>(r_Accumulator, r_Weights, s_Storage, r_ReductionTile,
+												 r_TileCoordinates);
 		if constexpr (Profile::s_InitialStages == 1)
 		{
-			IssueInputStage<Profile>(s_Storage, r_Parameters.g_Input, r_ReductionTile + 1, r_TileCoordinates);
-			LoadWeights<Profile>(r_Weights, r_Parameters.g_PackedWeights, r_ReductionTile + 1,
-								 r_TileCoordinates);
-			WaitInputStage<Profile>(s_Storage, r_ReductionTile + 1);
+			IssueGlobalContractInputStage<Profile>(s_Storage, r_Parameters.g_Input, r_ReductionTile + 1,
+												   r_TileCoordinates);
+			LoadGlobalContractWeights<Profile>(r_Weights, r_Parameters.g_PackedWeights, r_ReductionTile + 1,
+											   r_TileCoordinates);
+			WaitGlobalContractInputStage<Profile>(s_Storage, r_ReductionTile + 1);
 		}
 		else
 		{
 			if (r_ReductionTile + 1 < Profile::ReductionTiles)
 			{
-				LoadWeights<Profile>(r_Weights, r_Parameters.g_PackedWeights, r_ReductionTile + 1,
-									 r_TileCoordinates);
-				WaitInputStage<Profile>(s_Storage, r_ReductionTile + 1);
+				LoadGlobalContractWeights<Profile>(r_Weights, r_Parameters.g_PackedWeights,
+												   r_ReductionTile + 1, r_TileCoordinates);
+				WaitGlobalContractInputStage<Profile>(s_Storage, r_ReductionTile + 1);
 			}
 			if (r_ReductionTile + 3 < Profile::ReductionTiles)
-				IssueInputStage<Profile>(s_Storage, r_Parameters.g_Input, r_ReductionTile + 3,
-										 r_TileCoordinates);
+				IssueGlobalContractInputStage<Profile>(s_Storage, r_Parameters.g_Input, r_ReductionTile + 3,
+													   r_TileCoordinates);
 		}
 	}
 	if constexpr (Profile::s_InitialStages == 1)
-		ConsumeInputStage<Profile>(r_Accumulator, r_Weights, s_Storage, Profile::ReductionTiles - 1,
-								   r_TileCoordinates);
-	PublishSplit<bFp8>(r_Accumulator, r_Parameters, r_TileCoordinates);
+		ConsumeGlobalContractInputStage<Profile>(r_Accumulator, r_Weights, s_Storage,
+												 Profile::ReductionTiles - 1, r_TileCoordinates);
+	PublishGlobalContractSplit<bFp8>(r_Accumulator, r_Parameters, r_TileCoordinates);
 }
 #endif
-} // namespace dlssnr::kernels::global_contract

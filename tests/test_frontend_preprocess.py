@@ -130,7 +130,7 @@ def execute(args, report):
         for downsample in (False, True):
             native_name = "cc_tinlayout_fused_pre_block_swin_1h_32_1" + ("_ds" if downsample else "") + ("_fp8" if args.precision == "fp8" else "")
             candidate_name = "input_preprocess_window" + ("_downsample" if downsample else "") + "_c32_" + args.precision
-            candidate_symbol = "semantic_" + candidate_name if args.standalone else f"_ZN6dlssnr13reconstructed{len(candidate_name)}{candidate_name}{len(candidate_name)}{candidate_name}ENS1_10ParametersE"
+            candidate_symbol = "semantic_" + candidate_name if args.standalone else candidate_name
             native = owner.own(VendorModule(artifacts.modules[32], stream.cuda_stream, native_name, 264))
             candidate = owner.own(VendorModule(args.cubin.read_bytes(), stream.cuda_stream, candidate_symbol, 264))
             for case in args.cases:

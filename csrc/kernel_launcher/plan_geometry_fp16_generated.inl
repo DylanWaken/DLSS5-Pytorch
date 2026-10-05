@@ -1,7 +1,5 @@
-namespace fp16
-{
 // Generated geometry data; all shapes reuse one physical call sequence.
-static const int64_t BufferBytes_1280_720[] = {
+static const int64_t BufferBytes_1280_720_fp16[] = {
 	16515072LL, // input
 	16515072LL, // b1.output
 	16515072LL, // b2.output
@@ -211,7 +209,7 @@ static const int64_t BufferBytes_1280_720[] = {
 	16515072LL, // b68.output
 	16515072LL, // b69.output
 };
-static const dim3 Grids_1280_720[] = {
+static const dim3 Grids_1280_720_fp16[] = {
 	dim3(84, 48, 1), // cc_tinlayout_fused_swin_1h_32_1_inpview
 	dim3(85, 49, 1), // cc_tinlayout_fused_swin_1h_32_1
 	dim3(85, 48, 1), // cc_tinlayout_fused_swin_1h_32_1
@@ -398,7 +396,7 @@ static const dim3 Grids_1280_720[] = {
 	dim3(85, 48, 1), // cc_tinlayout_fused_swin_1h_32_1
 	dim3(84, 49, 1), // cc_tinlayout_fused_swin_1h_32_1
 };
-static const int32_t GeometryArguments_1280_720[] = {
+static const int32_t GeometryArguments_1280_720_fp16[] = {
 	384, 672, 0,  0,  384,
 	672, // window_block_c32_input_view_fp16: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
 	384, 672, -4, -4, // window_block_c32_fp16: Height, Width, OriginX, OriginY
@@ -597,7 +595,7 @@ static const int32_t GeometryArguments_1280_720[] = {
 	384, 672, -4, 0,  // window_block_c32_fp16: Height, Width, OriginX, OriginY
 	384, 672, 0,  -4, // window_block_c32_fp16: Height, Width, OriginX, OriginY
 };
-static const int64_t BufferBytes_1920_1080[] = {
+static const int64_t BufferBytes_1920_1080_fp16[] = {
 	35389440LL, // input
 	35389440LL, // b1.output
 	35389440LL, // b2.output
@@ -807,7 +805,7 @@ static const int64_t BufferBytes_1920_1080[] = {
 	35389440LL, // b68.output
 	35389440LL, // b69.output
 };
-static const dim3 Grids_1920_1080[] = {
+static const dim3 Grids_1920_1080_fp16[] = {
 	dim3(120, 72, 1), // cc_tinlayout_fused_swin_1h_32_1_inpview
 	dim3(121, 73, 1), // cc_tinlayout_fused_swin_1h_32_1
 	dim3(121, 72, 1), // cc_tinlayout_fused_swin_1h_32_1
@@ -994,7 +992,7 @@ static const dim3 Grids_1920_1080[] = {
 	dim3(121, 72, 1), // cc_tinlayout_fused_swin_1h_32_1
 	dim3(120, 73, 1), // cc_tinlayout_fused_swin_1h_32_1
 };
-static const int32_t GeometryArguments_1920_1080[] = {
+static const int32_t GeometryArguments_1920_1080_fp16[] = {
 	576, 960, 0,  0,  576,
 	960, // window_block_c32_input_view_fp16: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
 	576, 960, -4, -4, // window_block_c32_fp16: Height, Width, OriginX, OriginY
@@ -1193,7 +1191,7 @@ static const int32_t GeometryArguments_1920_1080[] = {
 	576, 960, -4, 0,  // window_block_c32_fp16: Height, Width, OriginX, OriginY
 	576, 960, 0,  -4, // window_block_c32_fp16: Height, Width, OriginX, OriginY
 };
-static const int64_t BufferBytes_2560_1440[] = {
+static const int64_t BufferBytes_2560_1440_fp16[] = {
 	60293120LL, // input
 	60293120LL, // b1.output
 	60293120LL, // b2.output
@@ -1403,7 +1401,7 @@ static const int64_t BufferBytes_2560_1440[] = {
 	60293120LL, // b68.output
 	60293120LL, // b69.output
 };
-static const dim3 Grids_2560_1440[] = {
+static const dim3 Grids_2560_1440_fp16[] = {
 	dim3(160, 92, 1), // cc_tinlayout_fused_swin_1h_32_1_inpview
 	dim3(161, 93, 1), // cc_tinlayout_fused_swin_1h_32_1
 	dim3(161, 92, 1), // cc_tinlayout_fused_swin_1h_32_1
@@ -1590,7 +1588,7 @@ static const dim3 Grids_2560_1440[] = {
 	dim3(161, 92, 1), // cc_tinlayout_fused_swin_1h_32_1
 	dim3(160, 93, 1), // cc_tinlayout_fused_swin_1h_32_1
 };
-static const int32_t GeometryArguments_2560_1440[] = {
+static const int32_t GeometryArguments_2560_1440_fp16[] = {
 	736,  1280, 0,	0,	736,
 	1280, // window_block_c32_input_view_fp16: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
 	736,  1280, -4, -4, // window_block_c32_fp16: Height, Width, OriginX, OriginY
@@ -1789,7 +1787,7 @@ static const int32_t GeometryArguments_2560_1440[] = {
 	736,  1280, -4, 0,	// window_block_c32_fp16: Height, Width, OriginX, OriginY
 	736,  1280, 0,	-4, // window_block_c32_fp16: Height, Width, OriginX, OriginY
 };
-static const int64_t BufferBytes_3840_2160[] = {
+static const int64_t BufferBytes_3840_2160_fp16[] = {
 	133693440LL, // input
 	133693440LL, // b1.output
 	133693440LL, // b2.output
@@ -1999,7 +1997,7 @@ static const int64_t BufferBytes_3840_2160[] = {
 	133693440LL, // b68.output
 	133693440LL, // b69.output
 };
-static const dim3 Grids_3840_2160[] = {
+static const dim3 Grids_3840_2160_fp16[] = {
 	dim3(240, 136, 1), // cc_tinlayout_fused_swin_1h_32_1_inpview
 	dim3(241, 137, 1), // cc_tinlayout_fused_swin_1h_32_1
 	dim3(241, 136, 1), // cc_tinlayout_fused_swin_1h_32_1
@@ -2186,7 +2184,7 @@ static const dim3 Grids_3840_2160[] = {
 	dim3(241, 136, 1), // cc_tinlayout_fused_swin_1h_32_1
 	dim3(240, 137, 1), // cc_tinlayout_fused_swin_1h_32_1
 };
-static const int32_t GeometryArguments_3840_2160[] = {
+static const int32_t GeometryArguments_3840_2160_fp16[] = {
 	1088, 1920, 0,	0,	 1088,
 	1920, // window_block_c32_input_view_fp16: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
 	1088, 1920, -4, -4, // window_block_c32_fp16: Height, Width, OriginX, OriginY
@@ -2385,20 +2383,19 @@ static const int32_t GeometryArguments_3840_2160[] = {
 	1088, 1920, -4, 0,	// window_block_c32_fp16: Height, Width, OriginX, OriginY
 	1088, 1920, 0,	-4, // window_block_c32_fp16: Height, Width, OriginX, OriginY
 };
-static const FGeometryPlanSpec GeometryPlans[] = {
-	{1280, 720, BufferBytes_1280_720, Grids_1280_720, GeometryArguments_1280_720},
-	{1920, 1080, BufferBytes_1920_1080, Grids_1920_1080, GeometryArguments_1920_1080},
-	{2560, 1440, BufferBytes_2560_1440, Grids_2560_1440, GeometryArguments_2560_1440},
-	{3840, 2160, BufferBytes_3840_2160, Grids_3840_2160, GeometryArguments_3840_2160},
+static const FGeometryPlanSpec GeometryPlans_fp16[] = {
+	{1280, 720, BufferBytes_1280_720_fp16, Grids_1280_720_fp16, GeometryArguments_1280_720_fp16},
+	{1920, 1080, BufferBytes_1920_1080_fp16, Grids_1920_1080_fp16, GeometryArguments_1920_1080_fp16},
+	{2560, 1440, BufferBytes_2560_1440_fp16, Grids_2560_1440_fp16, GeometryArguments_2560_1440_fp16},
+	{3840, 2160, BufferBytes_3840_2160_fp16, Grids_3840_2160_fp16, GeometryArguments_3840_2160_fp16},
 };
 
-static const FGeometryPlanSpec& SelectGeometryPlan(int64_t Width, int64_t Height)
+static const FGeometryPlanSpec& SelectGeometryPlan_fp16(int64_t Width, int64_t Height)
 {
-	for (const auto& Geometry : GeometryPlans)
+	for (const auto& Geometry : GeometryPlans_fp16)
 	{
 		if (Geometry.ValidWidth == Width && Geometry.ValidHeight == Height)
 			return Geometry;
 	}
 	TORCH_CHECK(false, "FP16 trunk supports 1280x720, 1920x1080, 2560x1440, or 3840x2160");
 }
-} // namespace fp16

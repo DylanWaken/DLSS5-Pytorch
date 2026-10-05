@@ -6,8 +6,6 @@
 // bits explicit preserves the native rounding and avoids decimal transcription
 // changing the network. Values below describe the observed computation; the
 // original authors' fitting/training procedure is not available.
-namespace dlssnr::numerical_constants
-{
 constexpr uint32_t CONST_HALF2_ONE = 0x3c003c00u;	  // (1, 1): identity scale.
 constexpr uint32_t CONST_HALF2_QUARTER = 0x34003400u; // (0.25, 0.25): mean of a 2x2 pool.
 
@@ -52,4 +50,3 @@ constexpr uint32_t CONST_GLOBAL_EXP_UPPER_HALF2 = 0x3fe93fe9u;	   // 1.977539062
 constexpr int CONST_GLOBAL_EXP_ENCODING_SHIFT = 4;
 constexpr uint32_t CONST_GLOBAL_EXP_ENCODING_OFFSET = 0x3ffc4000u;
 constexpr uint16_t CONST_GLOBAL_EXP_SCALAR_OFFSET = 0x4000u; // Single-lane form for padded-score correction.
-} // namespace dlssnr::numerical_constants

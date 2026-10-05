@@ -151,17 +151,15 @@ CPP = r'''#pragma once
 #include <cstdint>
 #include <limits>
 
-namespace dlssnr::resolution_policy
-{
-inline constexpr char Version[] = "@VERSION@";
-inline constexpr char ResolverVersion[] = "domain_then_same_family_measured_extrema_v1";
-inline constexpr int WidthMin = 1280, WidthMax = 3840, HeightMin = 720, HeightMax = 2160;
-enum class EPrecision : int
+inline constexpr char CONST_RESOLUTION_POLICY_VERSION[] = "@VERSION@";
+inline constexpr char CONST_RESOLUTION_RESOLVER_VERSION[] = "domain_then_same_family_measured_extrema_v1";
+inline constexpr int CONST_RESOLUTION_WIDTH_MIN = 1280, CONST_RESOLUTION_WIDTH_MAX = 3840, CONST_RESOLUTION_HEIGHT_MIN = 720, CONST_RESOLUTION_HEIGHT_MAX = 2160;
+enum class EResolutionPrecision : int
 {
 	Fp8 = 0,
 	Fp16 = 1
 };
-enum class EStatus : int
+enum class EResolutionStatus : int
 {
 	Unmeasured = 0,
 	ExactMeasured = 1,
@@ -169,7 +167,7 @@ enum class EStatus : int
 	InvalidInput = 3
 };
 
-struct FAnchor
+struct FResolutionAnchor
 {
 	int Sm, PrecisionValue, Width, Height, ConfigId;
 	int64_t MedianNs;
@@ -177,48 +175,48 @@ struct FAnchor
 	const char *ConfigurationSha256, *Interval, *BinarySha256, *SourceSha256, *ReceiptSha256;
 };
 
-struct FAdmission
+struct FResolutionAdmission
 {
 	int Sm, PrecisionValue, Width, Height;
 	bool bRuntimeQualified;
 	const char* ReceiptSha256;
 };
 
-inline constexpr std::array<FAnchor, @N@> Anchors{{
+inline constexpr std::array<FResolutionAnchor, @N@> ResolutionAnchors{{
 @ROWS@
 }};
-inline constexpr std::array<FAdmission, @A@> Admissions{{
+inline constexpr std::array<FResolutionAdmission, @A@> ResolutionAdmissions{{
 @ADMISSIONS@
 }};
 
-struct FSelection
+struct FResolutionSelection
 {
 	int ConfigId = -1;
-	EStatus StatusValue = EStatus::Unmeasured;
+	EResolutionStatus StatusValue = EResolutionStatus::Unmeasured;
 	int ActualWidth = 0, ActualHeight = 0, QueryWidth = 0, QueryHeight = 0;
 	bool bClamped = false, bActualResolutionMeasured = false, bActualShapeSupported = false,
 		 bRuntimeQualified = false;
-	const FAnchor* AnchorEvidence = nullptr;
-	const FAdmission* Admission = nullptr;
+	const FResolutionAnchor* AnchorEvidence = nullptr;
+	const FResolutionAdmission* Admission = nullptr;
 };
 
-inline FSelection Select(int Width, int Height, int Sm, EPrecision PrecisionValue)
+inline FResolutionSelection SelectResolutionPolicy(int Width, int Height, int Sm, EResolutionPrecision PrecisionValue)
 {
-	FSelection Selection;
+	FResolutionSelection Selection;
 	Selection.ActualWidth = Width;
 	Selection.ActualHeight = Height;
 	const int PrecisionIndex = static_cast<int>(PrecisionValue);
 	if (Width <= 0 || Height <= 0 || Sm <= 0 || PrecisionIndex < 0 || PrecisionIndex > 1)
 	{
-		Selection.StatusValue = EStatus::InvalidInput;
+		Selection.StatusValue = EResolutionStatus::InvalidInput;
 		return Selection;
 	}
-	Selection.QueryWidth = Width < WidthMin ? WidthMin : Width > WidthMax ? WidthMax : Width;
-	Selection.QueryHeight = Height < HeightMin ? HeightMin : Height > HeightMax ? HeightMax : Height;
+	Selection.QueryWidth = Width < CONST_RESOLUTION_WIDTH_MIN ? CONST_RESOLUTION_WIDTH_MIN : Width > CONST_RESOLUTION_WIDTH_MAX ? CONST_RESOLUTION_WIDTH_MAX : Width;
+	Selection.QueryHeight = Height < CONST_RESOLUTION_HEIGHT_MIN ? CONST_RESOLUTION_HEIGHT_MIN : Height > CONST_RESOLUTION_HEIGHT_MAX ? CONST_RESOLUTION_HEIGHT_MAX : Height;
 	// Measured extrema are family-local and affect metadata only.
-	int MeasuredWidthMin = WidthMax, MeasuredWidthMax = WidthMin, MeasuredHeightMin = HeightMax, MeasuredHeightMax = HeightMin;
+	int MeasuredWidthMin = CONST_RESOLUTION_WIDTH_MAX, MeasuredWidthMax = CONST_RESOLUTION_WIDTH_MIN, MeasuredHeightMin = CONST_RESOLUTION_HEIGHT_MAX, MeasuredHeightMax = CONST_RESOLUTION_HEIGHT_MIN;
 	bool bMeasuredFamily = false;
-	for (const auto& EvidenceRow : Anchors)
+	for (const auto& EvidenceRow : ResolutionAnchors)
 	{
 		if (EvidenceRow.Sm != Sm || EvidenceRow.PrecisionValue != PrecisionIndex)
 			continue;
@@ -241,7 +239,7 @@ inline FSelection Select(int Width, int Height, int Sm, EPrecision PrecisionValu
 	}
 	Selection.bClamped = Selection.QueryWidth != Width || Selection.QueryHeight != Height;
 	// Exact actual dimensions only. Clamped coordinates never grant admission.
-	for (const auto& EvidenceRow : Admissions)
+	for (const auto& EvidenceRow : ResolutionAdmissions)
 		if (EvidenceRow.Sm == Sm && EvidenceRow.PrecisionValue == PrecisionIndex &&
 			EvidenceRow.Width == Width && EvidenceRow.Height == Height)
 		{
@@ -251,7 +249,7 @@ inline FSelection Select(int Width, int Height, int Sm, EPrecision PrecisionValu
 			break;
 		}
 	int64_t NearestDistanceSquared = std::numeric_limits<int64_t>::max();
-	for (const auto& EvidenceRow : Anchors)
+	for (const auto& EvidenceRow : ResolutionAnchors)
 	{
 		if (EvidenceRow.Sm != Sm || EvidenceRow.PrecisionValue != PrecisionIndex)
 			continue;
@@ -270,9 +268,8 @@ inline FSelection Select(int Width, int Height, int Sm, EPrecision PrecisionValu
 		Selection.ConfigId = Selection.AnchorEvidence->ConfigId;
 		Selection.bActualResolutionMeasured =
 			Selection.AnchorEvidence->Width == Width && Selection.AnchorEvidence->Height == Height;
-		Selection.StatusValue = Selection.bActualResolutionMeasured ? EStatus::ExactMeasured : EStatus::Transferred;
+		Selection.StatusValue = Selection.bActualResolutionMeasured ? EResolutionStatus::ExactMeasured : EResolutionStatus::Transferred;
 	}
 	return Selection;
 }
-} // namespace dlssnr::resolution_policy
 '''

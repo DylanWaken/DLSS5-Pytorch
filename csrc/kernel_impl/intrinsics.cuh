@@ -6,8 +6,6 @@
 
 // SM120 instruction helpers. Arithmetic wrappers preserve explicit precision,
 // rounding and FTZ qualifiers; callers own layouts, masks and barrier protocols.
-namespace dlssnr::intrinsics::sm120
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 
 // Convert a generic shared pointer and byte offset to a 32-bit CTA-shared address.
@@ -499,4 +497,3 @@ __device__ __forceinline__ uint4 LoadGlobalCaOrZero(uint64_t g_Address, bool r_b
 }
 
 #endif // SM120-only device primitives; host admission is enforced by the launcher.
-} // namespace dlssnr::intrinsics::sm120

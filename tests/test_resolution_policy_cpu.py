@@ -93,14 +93,14 @@ class PolicyTests(unittest.TestCase):
 
     def test_codegen_has_real_selection_and_stable_empty_array(self):
         h=re.sub(r'\s+','',P.cpp_header(empty()))
-        self.assertIn('std::array<FAnchor,0>',h);self.assertIn('std::array<FAdmission,0>',h)
+        self.assertIn('std::array<FResolutionAnchor,0>',h);self.assertIn('std::array<FResolutionAdmission,0>',h)
         self.assertIn('intConfigId=-1',h);self.assertIn('bActualShapeSupported=false',h)
         self.assertIn('EvidenceRow.Width==Width&&EvidenceRow.Height==Height',h)
         self.assertIn('WidthDelta*WidthDelta*1440LL*1440LL+HeightDelta*HeightDelta*2560LL*2560LL',h)
         p=empty();p['anchors']=[anchor(2560,1440,4),anchor(1280,720,2)]
         first=P.cpp_header(p);p['anchors'].reverse()
         self.assertEqual(first,P.cpp_header(p))
-        self.assertIn('std::array<FAnchor,2>',re.sub(r'\s+','',first))
+        self.assertIn('std::array<FResolutionAnchor,2>',re.sub(r'\s+','',first))
         self.assertLess(first.index('{120,0,1280,720,2'),first.index('{120,0,2560,1440,4'))
 
     def test_invalid_lookup(self):

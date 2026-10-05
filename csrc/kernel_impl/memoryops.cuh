@@ -4,8 +4,6 @@
 #include <cstdint>
 
 // Shared asynchronous-copy synchronization used by the tiled pipelines.
-namespace dlssnr::memoryops::sm120
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 
 // Arrive once at the caller's shared mbarrier and wait for that exact phase.
@@ -14,10 +12,9 @@ namespace dlssnr::memoryops::sm120
 // not add a CTA barrier, sleep, or another memory-ordering operation.
 __device__ __forceinline__ void ArriveAndWait(unsigned char* s_Storage, uint32_t s_BarrierByteOffset)
 {
-	const uint64_t r_ArrivalPhaseToken = intrinsics::sm120::BarrierArrive(s_Storage, s_BarrierByteOffset, 1);
-	while (!intrinsics::sm120::BarrierReady(s_Storage, s_BarrierByteOffset, r_ArrivalPhaseToken))
+	const uint64_t r_ArrivalPhaseToken = BarrierArrive(s_Storage, s_BarrierByteOffset, 1);
+	while (!BarrierReady(s_Storage, s_BarrierByteOffset, r_ArrivalPhaseToken))
 	{
 	}
 }
 #endif
-} // namespace dlssnr::memoryops::sm120

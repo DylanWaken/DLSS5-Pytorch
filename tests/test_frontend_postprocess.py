@@ -67,12 +67,12 @@ def execute(args,native_code,weight,report):
  dtype=torch.float8_e4m3fn if args.precision=='fp8' else torch.float16
  symbol='cc_tinlayout_fused_post_block_swin_1h_32'+('_fp8' if args.precision=='fp8' else '')
  name='output_window_postprocess_c32_'+args.precision
- mangled=f'_ZN6dlssnr13reconstructed{len(name)}{name}{len(name)}{name}ENS1_10ParametersE'
+ candidate_symbol=name
  h,w=args.height,args.width
  try:
   with torch.cuda.stream(stream),torch.inference_mode():
    native=VendorModule(native_code,stream.cuda_stream,symbol,184)
-   candidate=VendorModule(args.cubin.read_bytes(),stream.cuda_stream,mangled,184)
+   candidate=VendorModule(args.cubin.read_bytes(),stream.cuda_stream,candidate_symbol,184)
    report['native_resources']=native.attributes;report['candidate_resources']=candidate.attributes
    surfaces.append(CudaImage(native,h+8,w+8,0,texture=False))
    surfaces.append(CudaImage(native,h+8,w+8,0,texture=False))

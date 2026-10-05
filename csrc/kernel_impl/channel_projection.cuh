@@ -8,8 +8,6 @@
 
 // Native-derived C512 -> C1024 pointwise projection. A CTA owns an 8x8 spatial
 // tile and 256 output channels; eight warps each compute 32 tokens x 64 channels.
-namespace dlssnr::projection::sm120
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 
 template <bool bFp8Storage> struct FChannelProjectionProfile
@@ -25,32 +23,32 @@ template <bool bFp8Storage> struct FChannelProjectionProfile
 	static constexpr int s_StageBytes = 4096;
 	static constexpr int s_BarrierOffset = s_StageCount * s_StageBytes;
 	static constexpr int s_StorageBytes = s_BarrierOffset + s_StageCount * 8;
-	static constexpr auto Precision =
-		bFp8Storage ? mma::sm120::EInputPrecision::Fp8 : mma::sm120::EInputPrecision::Fp16;
+	static constexpr auto Precision = bFp8Storage ? EMmaInputPrecision::Fp8 : EMmaInputPrecision::Fp16;
 };
 
 // A stage contains two 4x4 tiles in each spatial direction. Each warp copies
 // one contiguous 512-byte K subtile; the consumer warps reuse those bytes.
 template <typename TProfile>
-__device__ __forceinline__ void StageInput(unsigned char* s_Storage, const unsigned char* g_Input,
-										   int s_StageIndex, int g_ReductionStart, int g_TileY, int g_TileX,
-										   int g_TilesY, int g_TilesX, int r_WarpIndex, int r_LaneIndex)
+__device__ __forceinline__ void
+StageChannelProjectionInput(unsigned char* s_Storage, const unsigned char* g_Input, int s_StageIndex,
+							int g_ReductionStart, int g_TileY, int g_TileX, int g_TilesY, int g_TilesX,
+							int r_WarpIndex, int r_LaneIndex)
 {
 	const int g_ReadY = g_TilesY == 1 ? 0 : g_TileY;
 	const int g_ReadX = g_TilesX == 1 ? 0 : g_TileX;
 	const int s_DestinationByteOffset = s_StageIndex * TProfile::s_StageBytes + r_WarpIndex * 512;
 	if (g_ReadY < g_TilesY && g_ReadX < g_TilesX)
 	{
-		if (intrinsics::sm120::Elected(0xffffffffu))
+		if (Elected(0xffffffffu))
 		{
 			const int g_TileIndex = g_ReadY * g_TilesX + g_ReadX;
 			const int g_Channel = g_ReductionStart + (r_WarpIndex & 1) * (TProfile::ReductionStep / 2);
 			const int g_ByteOffset =
 				(g_TileIndex * TProfile::InputChannels + g_Channel) * 16 * TProfile::ElementBytes;
 			const int s_Barrier = TProfile::s_BarrierOffset + s_StageIndex * 8;
-			intrinsics::sm120::CopyBulk(s_Storage, s_DestinationByteOffset,
-										reinterpret_cast<uint64_t>(g_Input + g_ByteOffset), 512, s_Barrier);
-			intrinsics::sm120::BarrierExpect(s_Storage, s_Barrier, 512);
+			CopyBulk(s_Storage, s_DestinationByteOffset, reinterpret_cast<uint64_t>(g_Input + g_ByteOffset),
+					 512, s_Barrier);
+			BarrierExpect(s_Storage, s_Barrier, 512);
 		}
 	}
 	else
@@ -62,16 +60,16 @@ __device__ __forceinline__ void StageInput(unsigned char* s_Storage, const unsig
 }
 
 template <typename TProfile>
-__device__ __forceinline__ void WaitStage(unsigned char* s_Storage, int s_StageIndex)
+__device__ __forceinline__ void WaitChannelProjectionStage(unsigned char* s_Storage, int s_StageIndex)
 {
 	const int s_Barrier = TProfile::s_BarrierOffset + s_StageIndex * 8;
-	dlssnr::memoryops::sm120::ArriveAndWait(s_Storage, s_Barrier);
+	ArriveAndWait(s_Storage, s_Barrier);
 }
 
 template <typename TProfile>
-__device__ __forceinline__ void LoadWeights(const unsigned char* g_Weights, int g_ReductionStart,
-											int g_OutputChannel, int r_LaneIndex,
-											uint4 (&r_WeightFragments)[2][4])
+__device__ __forceinline__ void
+LoadChannelProjectionWeights(const unsigned char* g_Weights, int g_ReductionStart, int g_OutputChannel,
+							 int r_LaneIndex, uint4 (&r_WeightFragments)[2][4])
 {
 	const int g_WeightTileByteBase = g_ReductionStart * TProfile::OutputChannels * TProfile::ElementBytes +
 									 g_OutputChannel * 32 + r_LaneIndex * 16;
@@ -113,20 +111,20 @@ __device__ __forceinline__ void RunChannelProjection(TParameters r_Parameters, u
 	{
 #pragma unroll
 		for (int s_StageIndex = 0; s_StageIndex < FProfile::s_StageCount; ++s_StageIndex)
-			intrinsics::sm120::BarrierInit(s_Storage, FProfile::s_BarrierOffset + s_StageIndex * 8,
-										   blockDim.x * blockDim.y);
+			BarrierInit(s_Storage, FProfile::s_BarrierOffset + s_StageIndex * 8, blockDim.x * blockDim.y);
 	}
 	__syncthreads();
 
 	uint4 r_WeightFragments[2][4];
-	LoadWeights<FProfile>(g_Weights, g_ReductionChannelBase, g_OutputChannel, r_LaneIndex, r_WeightFragments);
+	LoadChannelProjectionWeights<FProfile>(g_Weights, g_ReductionChannelBase, g_OutputChannel, r_LaneIndex,
+										   r_WeightFragments);
 #pragma unroll
 	for (int s_StageIndex = 0; s_StageIndex < FProfile::s_StageCount; ++s_StageIndex)
-		StageInput<FProfile>(s_Storage, g_Input, s_StageIndex,
-							 g_ReductionChannelBase + s_StageIndex * FProfile::ReductionStep, g_TileY,
-							 g_InputTileX, g_Height / 4, g_Width / 4, r_WarpIndex, r_LaneIndex);
-	WaitStage<FProfile>(s_Storage, 0);
-	tiles::sm120::FAccumulatorTile<2, 4> r_Accumulator{};
+		StageChannelProjectionInput<FProfile>(
+			s_Storage, g_Input, s_StageIndex, g_ReductionChannelBase + s_StageIndex * FProfile::ReductionStep,
+			g_TileY, g_InputTileX, g_Height / 4, g_Width / 4, r_WarpIndex, r_LaneIndex);
+	WaitChannelProjectionStage<FProfile>(s_Storage, 0);
+	FMmaAccumulatorTile<2, 4> r_Accumulator{};
 
 	// Keep the reduction loop rolled as in the DLL. The fragment loops below
 	// unroll, so tile coordinates select registers rather than local memory.
@@ -145,22 +143,22 @@ __device__ __forceinline__ void RunChannelProjection(TParameters r_Parameters, u
 				r_InputFragments[r_SpatialTile][r_KSubtile] = *reinterpret_cast<const uint4*>(
 					s_Storage + s_InputStageByteOffset + r_SpatialTile * 1024 + r_KSubtile * 512);
 		}
-		tiles::sm120::AccumulateTile<FProfile::Precision>(r_Accumulator, r_InputFragments, r_WeightFragments);
+		AccumulateTile<FProfile::Precision>(r_Accumulator, r_InputFragments, r_WeightFragments);
 
 		// Prefetch weights before waiting for the next input stage. That wait
 		// also proves all warps finished reading the stage about to be reused.
 		if (r_ReductionTile + 1 < FProfile::ReductionSteps)
 		{
-			LoadWeights<FProfile>(g_Weights,
-								  g_ReductionChannelBase + (r_ReductionTile + 1) * FProfile::ReductionStep,
-								  g_OutputChannel, r_LaneIndex, r_WeightFragments);
-			WaitStage<FProfile>(s_Storage, (r_ReductionTile + 1) % FProfile::s_StageCount);
+			LoadChannelProjectionWeights<FProfile>(
+				g_Weights, g_ReductionChannelBase + (r_ReductionTile + 1) * FProfile::ReductionStep,
+				g_OutputChannel, r_LaneIndex, r_WeightFragments);
+			WaitChannelProjectionStage<FProfile>(s_Storage, (r_ReductionTile + 1) % FProfile::s_StageCount);
 		}
 		if (r_ReductionTile + FProfile::s_StageCount < FProfile::ReductionSteps)
-			StageInput<FProfile>(s_Storage, g_Input, s_StageIndex,
-								 g_ReductionChannelBase +
-									 (r_ReductionTile + FProfile::s_StageCount) * FProfile::ReductionStep,
-								 g_TileY, g_InputTileX, g_Height / 4, g_Width / 4, r_WarpIndex, r_LaneIndex);
+			StageChannelProjectionInput<FProfile>(
+				s_Storage, g_Input, s_StageIndex,
+				g_ReductionChannelBase + (r_ReductionTile + FProfile::s_StageCount) * FProfile::ReductionStep,
+				g_TileY, g_InputTileX, g_Height / 4, g_Width / 4, r_WarpIndex, r_LaneIndex);
 	}
 
 	// Physical output is a sequence of 4x4 spatial blocks. Half stores each
@@ -182,12 +180,10 @@ __device__ __forceinline__ void RunChannelProjection(TParameters r_Parameters, u
 					const auto& r_Left = r_Accumulator.r_AccumulatorWords[r_SpatialTile][r_ChannelPair * 2];
 					const auto& r_Right =
 						r_Accumulator.r_AccumulatorWords[r_SpatialTile][r_ChannelPair * 2 + 1];
-					const uint4 r_PackedOutputFragment =
-						make_uint4(packed_math::sm120::PackHalfPairsE4(r_Left[0], r_Left[2]),
-								   packed_math::sm120::PackHalfPairsE4(r_Left[1], r_Left[3]),
-								   packed_math::sm120::PackHalfPairsE4(r_Right[0], r_Right[2]),
-								   packed_math::sm120::PackHalfPairsE4(r_Right[1], r_Right[3]));
-					intrinsics::sm120::StoreNoAllocate(
+					const uint4 r_PackedOutputFragment = make_uint4(
+						PackHalfPairsE4(r_Left[0], r_Left[2]), PackHalfPairsE4(r_Left[1], r_Left[3]),
+						PackHalfPairsE4(r_Right[0], r_Right[2]), PackHalfPairsE4(r_Right[1], r_Right[3]));
+					StoreNoAllocate(
 						reinterpret_cast<uint64_t>(g_Output + g_OutputTileByteBase + r_ChannelPair * 512),
 						r_PackedOutputFragment);
 				}
@@ -199,7 +195,7 @@ __device__ __forceinline__ void RunChannelProjection(TParameters r_Parameters, u
 				{
 					const auto& r_AccumulatorWords =
 						r_Accumulator.r_AccumulatorWords[r_SpatialTile][r_ChannelGroup];
-					intrinsics::sm120::StoreNoAllocate(
+					StoreNoAllocate(
 						reinterpret_cast<uint64_t>(g_Output + g_OutputTileByteBase + r_ChannelGroup * 512),
 						make_uint4(r_AccumulatorWords[0], r_AccumulatorWords[1], r_AccumulatorWords[2],
 								   r_AccumulatorWords[3]));
@@ -209,4 +205,3 @@ __device__ __forceinline__ void RunChannelProjection(TParameters r_Parameters, u
 	}
 }
 #endif
-} // namespace dlssnr::projection::sm120

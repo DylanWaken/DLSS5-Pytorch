@@ -1,7 +1,5 @@
-namespace fp8
-{
 // Generated geometry data; all shapes reuse one physical call sequence.
-static const int64_t BufferBytes_1280_720[] = {
+static const int64_t BufferBytes_1280_720_fp8[] = {
 	8257536LL, // input
 	8257536LL, // b1.output
 	8257536LL, // b2.output
@@ -235,7 +233,7 @@ static const int64_t BufferBytes_1280_720[] = {
 	8257536LL, // b68.output
 	8257536LL, // b69.output
 };
-static const dim3 Grids_1280_720[] = {
+static const dim3 Grids_1280_720_fp8[] = {
 	dim3(84, 48, 1), // cc_tinlayout_fused_swin_1h_32_1_inpview_fp8
 	dim3(85, 49, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 	dim3(85, 48, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
@@ -422,7 +420,7 @@ static const dim3 Grids_1280_720[] = {
 	dim3(85, 48, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 	dim3(84, 49, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 };
-static const int32_t GeometryArguments_1280_720[] = {
+static const int32_t GeometryArguments_1280_720_fp8[] = {
 	384, 672, 0,  0,  384,
 	672, // window_block_c32_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
 	384, 672, -4, -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
@@ -621,7 +619,7 @@ static const int32_t GeometryArguments_1280_720[] = {
 	384, 672, -4, 0,  // window_block_c32_fp8: Height, Width, OriginX, OriginY
 	384, 672, 0,  -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
 };
-static const int64_t BufferBytes_1920_1080[] = {
+static const int64_t BufferBytes_1920_1080_fp8[] = {
 	17694720LL, // input
 	17694720LL, // b1.output
 	17694720LL, // b2.output
@@ -855,7 +853,7 @@ static const int64_t BufferBytes_1920_1080[] = {
 	17694720LL, // b68.output
 	17694720LL, // b69.output
 };
-static const dim3 Grids_1920_1080[] = {
+static const dim3 Grids_1920_1080_fp8[] = {
 	dim3(120, 72, 1), // cc_tinlayout_fused_swin_1h_32_1_inpview_fp8
 	dim3(121, 73, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 	dim3(121, 72, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
@@ -1042,7 +1040,7 @@ static const dim3 Grids_1920_1080[] = {
 	dim3(121, 72, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 	dim3(120, 73, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 };
-static const int32_t GeometryArguments_1920_1080[] = {
+static const int32_t GeometryArguments_1920_1080_fp8[] = {
 	576, 960, 0,  0,  576,
 	960, // window_block_c32_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
 	576, 960, -4, -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
@@ -1241,7 +1239,7 @@ static const int32_t GeometryArguments_1920_1080[] = {
 	576, 960, -4, 0,  // window_block_c32_fp8: Height, Width, OriginX, OriginY
 	576, 960, 0,  -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
 };
-static const int64_t BufferBytes_2560_1440[] = {
+static const int64_t BufferBytes_2560_1440_fp8[] = {
 	30146560LL, // input
 	30146560LL, // b1.output
 	30146560LL, // b2.output
@@ -1475,7 +1473,7 @@ static const int64_t BufferBytes_2560_1440[] = {
 	30146560LL, // b68.output
 	30146560LL, // b69.output
 };
-static const dim3 Grids_2560_1440[] = {
+static const dim3 Grids_2560_1440_fp8[] = {
 	dim3(160, 92, 1), // cc_tinlayout_fused_swin_1h_32_1_inpview_fp8
 	dim3(161, 93, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 	dim3(161, 92, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
@@ -1662,7 +1660,7 @@ static const dim3 Grids_2560_1440[] = {
 	dim3(161, 92, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 	dim3(160, 93, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 };
-static const int32_t GeometryArguments_2560_1440[] = {
+static const int32_t GeometryArguments_2560_1440_fp8[] = {
 	736,  1280, 0,	0,	736,
 	1280, // window_block_c32_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
 	736,  1280, -4, -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
@@ -1861,7 +1859,7 @@ static const int32_t GeometryArguments_2560_1440[] = {
 	736,  1280, -4, 0,	// window_block_c32_fp8: Height, Width, OriginX, OriginY
 	736,  1280, 0,	-4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
 };
-static const int64_t BufferBytes_3840_2160[] = {
+static const int64_t BufferBytes_3840_2160_fp8[] = {
 	66846720LL, // input
 	66846720LL, // b1.output
 	66846720LL, // b2.output
@@ -2095,7 +2093,7 @@ static const int64_t BufferBytes_3840_2160[] = {
 	66846720LL, // b68.output
 	66846720LL, // b69.output
 };
-static const dim3 Grids_3840_2160[] = {
+static const dim3 Grids_3840_2160_fp8[] = {
 	dim3(240, 136, 1), // cc_tinlayout_fused_swin_1h_32_1_inpview_fp8
 	dim3(241, 137, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 	dim3(241, 136, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
@@ -2282,7 +2280,7 @@ static const dim3 Grids_3840_2160[] = {
 	dim3(241, 136, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 	dim3(240, 137, 1), // cc_tinlayout_fused_swin_1h_32_1_fp8
 };
-static const int32_t GeometryArguments_3840_2160[] = {
+static const int32_t GeometryArguments_3840_2160_fp8[] = {
 	1088, 1920, 0,	0,	 1088,
 	1920, // window_block_c32_input_view_fp8: Height, Width, OriginX, OriginY, ViewHeight, ViewWidth
 	1088, 1920, -4, -4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
@@ -2481,20 +2479,19 @@ static const int32_t GeometryArguments_3840_2160[] = {
 	1088, 1920, -4, 0,	// window_block_c32_fp8: Height, Width, OriginX, OriginY
 	1088, 1920, 0,	-4, // window_block_c32_fp8: Height, Width, OriginX, OriginY
 };
-static const FGeometryPlanSpec GeometryPlans[] = {
-	{1280, 720, BufferBytes_1280_720, Grids_1280_720, GeometryArguments_1280_720},
-	{1920, 1080, BufferBytes_1920_1080, Grids_1920_1080, GeometryArguments_1920_1080},
-	{2560, 1440, BufferBytes_2560_1440, Grids_2560_1440, GeometryArguments_2560_1440},
-	{3840, 2160, BufferBytes_3840_2160, Grids_3840_2160, GeometryArguments_3840_2160},
+static const FGeometryPlanSpec GeometryPlans_fp8[] = {
+	{1280, 720, BufferBytes_1280_720_fp8, Grids_1280_720_fp8, GeometryArguments_1280_720_fp8},
+	{1920, 1080, BufferBytes_1920_1080_fp8, Grids_1920_1080_fp8, GeometryArguments_1920_1080_fp8},
+	{2560, 1440, BufferBytes_2560_1440_fp8, Grids_2560_1440_fp8, GeometryArguments_2560_1440_fp8},
+	{3840, 2160, BufferBytes_3840_2160_fp8, Grids_3840_2160_fp8, GeometryArguments_3840_2160_fp8},
 };
 
-static const FGeometryPlanSpec& SelectGeometryPlan(int64_t Width, int64_t Height)
+static const FGeometryPlanSpec& SelectGeometryPlan_fp8(int64_t Width, int64_t Height)
 {
-	for (const auto& Geometry : GeometryPlans)
+	for (const auto& Geometry : GeometryPlans_fp8)
 	{
 		if (Geometry.ValidWidth == Width && Geometry.ValidHeight == Height)
 			return Geometry;
 	}
 	TORCH_CHECK(false, "FP8 trunk supports 1280x720, 1920x1080, 2560x1440, or 3840x2160");
 }
-} // namespace fp8

@@ -6,14 +6,10 @@
 
 // Split C512 QKV and attention. Four warps each own one 32-channel head;
 // grid.z partitions all sixteen heads. The separate projection kernel follows.
-namespace dlssnr::kernels::window_qkv
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-using namespace dlssnr::intrinsics::sm120;
-namespace Attention = dlssnr::kernels::window32;
-using FDenseTile = dlssnr::tiles::sm120::FAccumulatorTile<4, 6>;
+using FWindowQkvDenseTile = FMmaAccumulatorTile<4, 6>;
 
-template <bool bFp8> struct FProfile
+template <bool bFp8> struct FWindowQkvProfile
 {
 	static constexpr int ElementBytes = bFp8 ? 1 : 2;
 	static constexpr int ReductionStep = bFp8 ? 64 : 16;
@@ -23,22 +19,21 @@ template <bool bFp8> struct FProfile
 	static constexpr int s_BarrierBase = 2 * s_StageBytes;
 	static constexpr int BiasOffset = 3 * 512 * 512 * ElementBytes;
 	static constexpr int HeadScaleOffset = BiasOffset + 16 * 8192;
-	static constexpr auto Precision =
-		bFp8 ? dlssnr::mma::sm120::EInputPrecision::Fp8 : dlssnr::mma::sm120::EInputPrecision::Fp16;
+	static constexpr auto Precision = bFp8 ? EMmaInputPrecision::Fp8 : EMmaInputPrecision::Fp16;
 };
 
-struct FCoordinates
+struct FWindowQkvCoordinates
 {
 	int g_TilesHigh, g_TilesWide, g_TileY, g_TileX, g_Head;
 	int r_Lane, r_Warp;
 };
 
 template <bool bFp8>
-__device__ __forceinline__ void LoadWeights(uint4 (&r_Weights)[FProfile<bFp8>::KSubtiles][6],
-											uint64_t g_PackedWeights, int r_ReductionTile,
-											const FCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void
+LoadWindowQkvWeights(uint4 (&r_Weights)[FWindowQkvProfile<bFp8>::KSubtiles][6], uint64_t g_PackedWeights,
+					 int r_ReductionTile, const FWindowQkvCoordinates& r_TileCoordinates)
 {
-	using Profile = FProfile<bFp8>;
+	using Profile = FWindowQkvProfile<bFp8>;
 	const uint64_t g_WeightTileBase =
 		g_PackedWeights + uint64_t(r_ReductionTile * Profile::ReductionStep) * 1536 * Profile::ElementBytes +
 		r_TileCoordinates.g_Head * 3072 + r_TileCoordinates.r_Lane * 16;
@@ -51,10 +46,11 @@ __device__ __forceinline__ void LoadWeights(uint4 (&r_Weights)[FProfile<bFp8>::K
 }
 
 template <bool bFp8>
-__device__ __forceinline__ void IssueStage(unsigned char* s_Storage, uint64_t g_Input, int r_ReductionTile,
-										   const FCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void IssueWindowQkvStage(unsigned char* s_Storage, uint64_t g_Input,
+													int r_ReductionTile,
+													const FWindowQkvCoordinates& r_TileCoordinates)
 {
-	using Profile = FProfile<bFp8>;
+	using Profile = FWindowQkvProfile<bFp8>;
 	const int s_Barrier = Profile::s_BarrierBase + (r_ReductionTile % 2) * 8;
 #pragma unroll
 	for (int r_Copy = 0; r_Copy < (bFp8 ? 2 : 1); ++r_Copy)
@@ -84,21 +80,23 @@ __device__ __forceinline__ void IssueStage(unsigned char* s_Storage, uint64_t g_
 	}
 }
 
-template <bool bFp8> __device__ __forceinline__ void WaitStage(unsigned char* s_Storage, int r_ReductionTile)
+template <bool bFp8>
+__device__ __forceinline__ void WaitWindowQkvStage(unsigned char* s_Storage, int r_ReductionTile)
 {
-	const int s_Barrier = FProfile<bFp8>::s_BarrierBase + (r_ReductionTile % 2) * 8;
-	dlssnr::memoryops::sm120::ArriveAndWait(s_Storage, s_Barrier);
+	const int s_Barrier = FWindowQkvProfile<bFp8>::s_BarrierBase + (r_ReductionTile % 2) * 8;
+	ArriveAndWait(s_Storage, s_Barrier);
 }
 
 template <bool bFp8>
-__device__ __forceinline__ void Project(FDenseTile& r_Projected, unsigned char* s_Storage, uint64_t g_Input,
-										uint64_t g_PackedWeights, const FCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void
+ProjectWindowQkvDense(FWindowQkvDenseTile& r_Projected, unsigned char* s_Storage, uint64_t g_Input,
+					  uint64_t g_PackedWeights, const FWindowQkvCoordinates& r_TileCoordinates)
 {
-	using Profile = FProfile<bFp8>;
+	using Profile = FWindowQkvProfile<bFp8>;
 	uint4 r_Weights[Profile::KSubtiles][6];
-	LoadWeights<bFp8>(r_Weights, g_PackedWeights, 0, r_TileCoordinates);
-	IssueStage<bFp8>(s_Storage, g_Input, 0, r_TileCoordinates);
-	WaitStage<bFp8>(s_Storage, 0);
+	LoadWindowQkvWeights<bFp8>(r_Weights, g_PackedWeights, 0, r_TileCoordinates);
+	IssueWindowQkvStage<bFp8>(s_Storage, g_Input, 0, r_TileCoordinates);
+	WaitWindowQkvStage<bFp8>(s_Storage, 0);
 
 	// Native Half uses K16 and a 2 KiB stage. FP8 uses two K32 instructions
 	// and a 4 KiB stage. Both schedules ping-pong between two input stages.
@@ -106,7 +104,7 @@ __device__ __forceinline__ void Project(FDenseTile& r_Projected, unsigned char* 
 	for (int r_ReductionTile = 0; r_ReductionTile < Profile::ReductionTiles; ++r_ReductionTile)
 	{
 		if (r_ReductionTile + 1 < Profile::ReductionTiles)
-			IssueStage<bFp8>(s_Storage, g_Input, r_ReductionTile + 1, r_TileCoordinates);
+			IssueWindowQkvStage<bFp8>(s_Storage, g_Input, r_ReductionTile + 1, r_TileCoordinates);
 		uint4 r_Input[4][Profile::KSubtiles];
 #pragma unroll
 		for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
@@ -116,7 +114,7 @@ __device__ __forceinline__ void Project(FDenseTile& r_Projected, unsigned char* 
 					s_Storage + (r_ReductionTile % 2) * Profile::s_StageBytes +
 					(r_Spatial * Profile::KSubtiles + r_KSubtile) * 512 + r_TileCoordinates.r_Lane * 16);
 		if constexpr (bFp8)
-			dlssnr::tiles::sm120::AccumulateTile<Profile::Precision>(r_Projected, r_Input, r_Weights);
+			AccumulateTile<Profile::Precision>(r_Projected, r_Input, r_Weights);
 		else
 		{
 #pragma unroll
@@ -127,12 +125,12 @@ __device__ __forceinline__ void Project(FDenseTile& r_Projected, unsigned char* 
 					auto& r_AccumulatorWords = r_Projected.r_AccumulatorWords[r_Spatial][r_NTile];
 					const uint4 r_InputFragment = r_Input[r_Spatial][0],
 								r_WeightFragment = r_Weights[0][r_NTile];
-					dlssnr::mma::sm120::MultiplyAccumulate<Profile::Precision>(
+					MultiplyAccumulate<Profile::Precision>(
 						{r_AccumulatorWords[0], r_AccumulatorWords[1]},
 						{r_InputFragment.x, r_InputFragment.y, r_InputFragment.z, r_InputFragment.w},
 						{r_WeightFragment.x, r_WeightFragment.y},
 						{r_AccumulatorWords[0], r_AccumulatorWords[1]});
-					dlssnr::mma::sm120::MultiplyAccumulate<Profile::Precision>(
+					MultiplyAccumulate<Profile::Precision>(
 						{r_AccumulatorWords[2], r_AccumulatorWords[3]},
 						{r_InputFragment.x, r_InputFragment.y, r_InputFragment.z, r_InputFragment.w},
 						{r_WeightFragment.z, r_WeightFragment.w},
@@ -141,41 +139,41 @@ __device__ __forceinline__ void Project(FDenseTile& r_Projected, unsigned char* 
 		}
 		if (r_ReductionTile + 1 < Profile::ReductionTiles)
 		{
-			LoadWeights<bFp8>(r_Weights, g_PackedWeights, r_ReductionTile + 1, r_TileCoordinates);
-			WaitStage<bFp8>(s_Storage, r_ReductionTile + 1);
+			LoadWindowQkvWeights<bFp8>(r_Weights, g_PackedWeights, r_ReductionTile + 1, r_TileCoordinates);
+			WaitWindowQkvStage<bFp8>(s_Storage, r_ReductionTile + 1);
 		}
 	}
 }
 
 template <bool bFp8, typename TParameters>
-__device__ __forceinline__ void Forward(const TParameters& r_Parameters, unsigned char* s_Storage)
+__device__ __forceinline__ void RunWindowQkv(const TParameters& r_Parameters, unsigned char* s_Storage)
 {
-	using Profile = FProfile<bFp8>;
-	const FCoordinates r_TileCoordinates{r_Parameters.Height / 4,
-										 r_Parameters.Width / 4,
-										 (int(blockIdx.y) * 8 + r_Parameters.OriginY) / 4,
-										 (int(blockIdx.x) * 8 + r_Parameters.OriginX) / 4,
-										 int(blockIdx.z) * 4 + int(threadIdx.y),
-										 int(threadIdx.x),
-										 int(threadIdx.y)};
+	using Profile = FWindowQkvProfile<bFp8>;
+	const FWindowQkvCoordinates r_TileCoordinates{r_Parameters.Height / 4,
+												  r_Parameters.Width / 4,
+												  (int(blockIdx.y) * 8 + r_Parameters.OriginY) / 4,
+												  (int(blockIdx.x) * 8 + r_Parameters.OriginX) / 4,
+												  int(blockIdx.z) * 4 + int(threadIdx.y),
+												  int(threadIdx.x),
+												  int(threadIdx.y)};
 	if (r_TileCoordinates.r_Lane == 0 && r_TileCoordinates.r_Warp == 0)
 	{
 		BarrierInit(s_Storage, Profile::s_BarrierBase, 128);
 		BarrierInit(s_Storage, Profile::s_BarrierBase + 8, 128);
 	}
 	__syncthreads();
-	FDenseTile r_Projected{};
-	Project<bFp8>(r_Projected, s_Storage, r_Parameters.g_Input, r_Parameters.g_PackedWeights,
-				  r_TileCoordinates);
+	FWindowQkvDenseTile r_Projected{};
+	ProjectWindowQkvDense<bFp8>(r_Projected, s_Storage, r_Parameters.g_Input, r_Parameters.g_PackedWeights,
+								r_TileCoordinates);
 
-	Attention::FActivationTile<bFp8> r_Query[4], r_Key[4];
-	Attention::FValueTile<bFp8> r_Value[4];
-	const uint32_t r_HeadScale = dlssnr::packed_math::sm120::FloatToHalf2(*reinterpret_cast<const uint32_t*>(
+	FWindowActivationTile<bFp8> r_Query[4], r_Key[4];
+	FWindowValueTile<bFp8> r_Value[4];
+	const uint32_t r_HeadScale = FloatToHalf2(*reinterpret_cast<const uint32_t*>(
 		r_Parameters.g_PackedWeights + Profile::HeadScaleOffset + r_TileCoordinates.g_Head * 4));
 #pragma unroll
 	for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
 	{
-		Attention::FAccumulatorTile<32> r_Qkv[3];
+		FWindowAccumulatorTile<32> r_Qkv[3];
 #pragma unroll
 		for (int r_QkvComponent = 0; r_QkvComponent < 3; ++r_QkvComponent)
 #pragma unroll
@@ -185,10 +183,10 @@ __device__ __forceinline__ void Forward(const TParameters& r_Parameters, unsigne
 					r_Qkv[r_QkvComponent].r_Pair[r_Column][r_RowHalf] =
 						r_Projected.r_AccumulatorWords[r_Spatial][r_QkvComponent * 2 + r_Column / 2]
 													  [(r_Column % 2) * 2 + r_RowHalf];
-		Attention::Normalize<true>(r_Qkv[0], r_HeadScale);
-		Attention::Normalize<false>(r_Qkv[1], dlssnr::numerical_constants::CONST_HALF2_ONE);
-		r_Query[r_Spatial] = Attention::Publish<bFp8>(r_Qkv[0]);
-		r_Key[r_Spatial] = Attention::Publish<bFp8>(r_Qkv[1]);
+		NormalizeWindow<true>(r_Qkv[0], r_HeadScale);
+		NormalizeWindow<false>(r_Qkv[1], CONST_HALF2_ONE);
+		r_Query[r_Spatial] = PublishWindow32<bFp8>(r_Qkv[0]);
+		r_Key[r_Spatial] = PublishWindow32<bFp8>(r_Qkv[1]);
 #pragma unroll
 		for (int r_Column = 0; r_Column < 4; ++r_Column)
 		{
@@ -196,7 +194,7 @@ __device__ __forceinline__ void Forward(const TParameters& r_Parameters, unsigne
 			const uint32_t r_UpperValueRows = TransposeM8n8(r_Qkv[2].r_Pair[r_Column][1]);
 			if constexpr (bFp8)
 				r_Value[r_Spatial].r_Column[r_Column][0] =
-					dlssnr::packed_math::sm120::PackHalfPairsE4(r_LowerValueRows, r_UpperValueRows);
+					PackHalfPairsE4(r_LowerValueRows, r_UpperValueRows);
 			else
 			{
 				r_Value[r_Spatial].r_Column[r_Column][0] = r_LowerValueRows;
@@ -216,9 +214,8 @@ __device__ __forceinline__ void Forward(const TParameters& r_Parameters, unsigne
 #pragma unroll
 		for (int r_FirstTile = 0; r_FirstTile < 4; r_FirstTile += 2)
 		{
-			Attention::FActivationTile<true> r_Attended[2];
-			dlssnr::kernels::window_wide::AttendPairWithBias<true>(r_FirstTile, g_HeadBias, r_Query, r_Key,
-																   r_Value, r_Attended);
+			FWindowActivationTile<true> r_Attended[2];
+			AttendPairWithBias<true>(r_FirstTile, g_HeadBias, r_Query, r_Key, r_Value, r_Attended);
 #pragma unroll
 			for (int r_LocalTile = 0; r_LocalTile < 2; ++r_LocalTile)
 			{
@@ -243,8 +240,7 @@ __device__ __forceinline__ void Forward(const TParameters& r_Parameters, unsigne
 #pragma unroll
 		for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
 		{
-			const auto r_AttendedTile = dlssnr::kernels::window_wide::AttendWithBias<bFp8>(
-				r_Spatial, g_HeadBias, r_Query, r_Key, r_Value);
+			const auto r_AttendedTile = AttendWithBias<bFp8>(r_Spatial, g_HeadBias, r_Query, r_Key, r_Value);
 			const int g_Y = r_TileCoordinates.g_TileY + r_Spatial / 2,
 					  g_X = r_TileCoordinates.g_TileX + r_Spatial % 2;
 			if (g_Y < 0 || g_Y >= r_TileCoordinates.g_TilesHigh || g_X < 0 ||
@@ -267,4 +263,3 @@ __device__ __forceinline__ void Forward(const TParameters& r_Parameters, unsigne
 	}
 }
 #endif
-} // namespace dlssnr::kernels::window_qkv

@@ -3,15 +3,11 @@
 #include "warp_window32.cuh"
 #include "composite.cuh"
 
-namespace dlssnr::kernels::postprocess
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-using namespace dlssnr::kernels::window32;
-using namespace dlssnr::packed_math::sm120;
 constexpr uint32_t CONST_WARP_CLAMP = 31u;			 // All 32 lanes form one shuffle segment.
 constexpr uint32_t CONST_WARP_MEMBERS = 0xffffffffu; // Every lane participates before boundary stores.
 
-template <bool bFp8> struct FPostProfile : FProfile<bFp8>
+template <bool bFp8> struct FPostprocessWindowProfile : FWindow32Profile<bFp8>
 {
 	static constexpr int FfnScaleOffset = bFp8 ? 8208 : 16400;
 	static constexpr int QkvOffset = bFp8 ? 8400 : 16592;
@@ -24,11 +20,11 @@ template <bool bFp8> struct FPostProfile : FProfile<bFp8>
 	static constexpr int CONST_HEAD_OFFSET = bFp8 ? 20784 : 33072;
 };
 
-struct FWindowParameters
+struct FPostprocessWindowParameters
 {
 	uint64_t g_Input, g_Output, g_PackedWeights;
 	int Height, Width, OriginX, OriginY;
-	const FAccumulatorTile<32>* r_RawInput;
+	const FWindowAccumulatorTile<32>* r_RawInput;
 	uint32_t (*r_Head)[2];
 };
 
@@ -36,11 +32,11 @@ struct FWindowParameters
 // 4x4 low-resolution patch, then broadcasts each pixel to a 2x2 high patch.
 // This preserves native scalar loads and avoids materializing an upsampled map.
 template <bool bFp8>
-__device__ __forceinline__ void MergeInput(uint64_t g_Input, uint64_t g_Adapter, uint64_t g_PackedWeights,
-										   int Height, int Width, int OriginX, int OriginY,
-										   FAccumulatorTile<32> (&r_Merged)[4])
+__device__ __forceinline__ void
+MergePostprocessInput(uint64_t g_Input, uint64_t g_Adapter, uint64_t g_PackedWeights, int Height, int Width,
+					  int OriginX, int OriginY, FWindowAccumulatorTile<32> (&r_Merged)[4])
 {
-	using FConfig = FPostProfile<bFp8>;
+	using FConfig = FPostprocessWindowProfile<bFp8>;
 	const int r_Lane = threadIdx.x;
 	const int g_LowHeight = Height / 2, g_LowWidth = Width / 2;
 	const int g_OriginX = int(blockIdx.x) * 8 + OriginX;
@@ -74,15 +70,15 @@ __device__ __forceinline__ void MergeInput(uint64_t g_Input, uint64_t g_Adapter,
 		const int g_X = g_TileColumns == 1 ? 0 : g_OriginX / 4 + (r_Tile & 1);
 		const int g_Y = g_TileRows == 1 ? 0 : g_OriginY / 4 + (r_Tile >> 1);
 		const bool r_bValid = g_X >= 0 && g_X < g_TileColumns && g_Y >= 0 && g_Y < g_TileRows;
-		FActivationTile<bFp8> r_Adapter;
+		FWindowActivationTile<bFp8> r_Adapter;
 #pragma unroll
 		for (int r_Chunk = 0; r_Chunk < FConfig::InputChunks; ++r_Chunk)
 		{
 			const int64_t g_Offset =
 				int64_t(g_Y * g_TileColumns + g_X) * FConfig::TileBytes + r_Chunk * 512 + r_Lane * 16;
 			r_Adapter.r_Reduction[r_Chunk] =
-				Fragment(r_bValid ? __ldcg(reinterpret_cast<const uint4*>(g_Adapter + g_Offset))
-								  : make_uint4(0, 0, 0, 0));
+				MakeWindowFragment(r_bValid ? __ldcg(reinterpret_cast<const uint4*>(g_Adapter + g_Offset))
+											: make_uint4(0, 0, 0, 0));
 		}
 #pragma unroll
 		for (int r_Column = 0; r_Column < 4; ++r_Column)
@@ -117,21 +113,21 @@ __device__ __forceinline__ void MergeInput(uint64_t g_Input, uint64_t g_Adapter,
 	}
 }
 
-template <bool bFp8> struct FPostIO : FOrdinaryIO
+template <bool bFp8> struct FPostprocessWindowIO : FOrdinaryWindowIO
 {
 	static constexpr bool bCustomInput = true;
 	static constexpr bool bCustomOutput = true;
 	static constexpr bool bRawResidual = true;
-	template <bool bPrecision> using FRecordProfile = FPostProfile<bPrecision>;
+	template <bool bPrecision> using FRecordProfile = FPostprocessWindowProfile<bPrecision>;
 
-	__device__ __forceinline__ static FActivationTile<bFp8> Read(const FWindowParameters& r_Parameters,
-																 int r_Tile)
+	__device__ __forceinline__ static FWindowActivationTile<bFp8>
+	Read(const FPostprocessWindowParameters& r_Parameters, int r_Tile)
 	{
-		return Publish<bFp8>(r_Parameters.r_RawInput[r_Tile]);
+		return PublishWindow32<bFp8>(r_Parameters.r_RawInput[r_Tile]);
 	}
 
-	__device__ __forceinline__ static uint32_t Residual(const FWindowParameters& r_Parameters, int r_Tile,
-														int r_Column, int r_RowHalf)
+	__device__ __forceinline__ static uint32_t Residual(const FPostprocessWindowParameters& r_Parameters,
+														int r_Tile, int r_Column, int r_RowHalf)
 	{
 		return r_Parameters.r_RawInput[r_Tile].r_Pair[r_Column][r_RowHalf];
 	}
@@ -139,19 +135,19 @@ template <bool bFp8> struct FPostIO : FOrdinaryIO
 	// The physical head record pads four useful output channels to sixteen.
 	// Native PTX issues both N8 tiles but never consumes N8 tile 1. The surviving
 	// first N8 tile is sufficient; GPU qualification checks all surface pixels.
-	__device__ __forceinline__ static void Write(const FWindowParameters& r_Parameters, int r_Tile,
-												 const FAccumulatorTile<32>& r_WindowOutput)
+	__device__ __forceinline__ static void Write(const FPostprocessWindowParameters& r_Parameters, int r_Tile,
+												 const FWindowAccumulatorTile<32>& r_WindowOutput)
 	{
 		uint32_t r_HeadAccumulator[2] = {0, 0};
 #pragma unroll
 		for (int r_ReductionChunk = 0; r_ReductionChunk < 2; ++r_ReductionChunk)
 		{
 			const uint4 r_Weights = __ldca(reinterpret_cast<const uint4*>(
-				r_Parameters.g_PackedWeights + FPostProfile<bFp8>::CONST_HEAD_OFFSET +
+				r_Parameters.g_PackedWeights + FPostprocessWindowProfile<bFp8>::CONST_HEAD_OFFSET +
 				r_ReductionChunk * 512 + threadIdx.x * 16));
 			const uint32_t r_HeadWeightFragment[2] = {r_Weights.x, r_Weights.y};
-			Mma<false>(PublishChunk<false>(r_WindowOutput, r_ReductionChunk), r_HeadWeightFragment,
-					   r_HeadAccumulator);
+			MmaWindowFragment<false>(PublishWindowChunk<false>(r_WindowOutput, r_ReductionChunk),
+									 r_HeadWeightFragment, r_HeadAccumulator);
 		}
 		r_Parameters.r_Head[r_Tile][0] = r_HeadAccumulator[0];
 		r_Parameters.r_Head[r_Tile][1] = r_HeadAccumulator[1];
@@ -160,7 +156,7 @@ template <bool bFp8> struct FPostIO : FOrdinaryIO
 
 // Transpose two adjacent 16-token MMA tiles to 32 lanes of RGBA pixels. Each
 // packed result gathers channels [0,1] and [2,3]; padded head channels stay dead.
-__device__ __forceinline__ uint2 HeadPixel(const uint32_t (&r_Head)[4][2], int r_TileRow)
+__device__ __forceinline__ uint2 HeadOutputPixel(const uint32_t (&r_Head)[4][2], int r_TileRow)
 {
 	const int r_Lane = threadIdx.x;
 	const int r_LocalRowHalf = r_Lane & 1, r_LocalTile = (r_Lane >> 1) & 1;
@@ -179,7 +175,7 @@ __device__ __forceinline__ uint2 HeadPixel(const uint32_t (&r_Head)[4][2], int r
 }
 
 template <class FParameters>
-__device__ __forceinline__ FCompositeParameters CompositeParameters(const FParameters& r_Parameters)
+__device__ __forceinline__ FCompositeParameters MakeCompositeParameters(const FParameters& r_Parameters)
 {
 	return {r_Parameters.g_OutputSurface,  r_Parameters.g_ColorTexture,
 			r_Parameters.g_HistoryTexture, r_Parameters.g_MotionTexture,
@@ -195,29 +191,29 @@ __device__ __forceinline__ FCompositeParameters CompositeParameters(const FParam
 template <bool bFp8, class FParameters>
 __device__ __forceinline__ void RunPostprocess(const FParameters& r_Parameters)
 {
-	FAccumulatorTile<32> r_RawInput[4];
+	FWindowAccumulatorTile<32> r_RawInput[4];
 	uint32_t r_Head[4][2];
-	FWindowParameters r_Window = {r_Parameters.g_Input,
-								  0,
-								  r_Parameters.g_PackedWeights,
-								  r_Parameters.Height,
-								  r_Parameters.Width,
-								  r_Parameters.OriginX,
-								  r_Parameters.OriginY,
-								  r_RawInput,
-								  r_Head};
-	MergeInput<bFp8>(r_Window.g_Input, r_Parameters.g_Adapter, r_Window.g_PackedWeights, r_Window.Height,
-					 r_Window.Width, r_Window.OriginX, r_Window.OriginY, r_RawInput);
-	RunWindow32<bFp8, FWindowParameters, FPostIO<bFp8>>(r_Window);
-	const FCompositeParameters r_Composite = CompositeParameters(r_Parameters);
+	FPostprocessWindowParameters r_Window = {r_Parameters.g_Input,
+											 0,
+											 r_Parameters.g_PackedWeights,
+											 r_Parameters.Height,
+											 r_Parameters.Width,
+											 r_Parameters.OriginX,
+											 r_Parameters.OriginY,
+											 r_RawInput,
+											 r_Head};
+	MergePostprocessInput<bFp8>(r_Window.g_Input, r_Parameters.g_Adapter, r_Window.g_PackedWeights,
+								r_Window.Height, r_Window.Width, r_Window.OriginX, r_Window.OriginY,
+								r_RawInput);
+	RunWindow32<bFp8, FPostprocessWindowParameters, FPostprocessWindowIO<bFp8>>(r_Window);
+	const FCompositeParameters r_Composite = MakeCompositeParameters(r_Parameters);
 #pragma unroll
 	for (int r_TileRow = 0; r_TileRow < 2; ++r_TileRow)
 	{
-		const uint2 r_Pixel = HeadPixel(r_Head, r_TileRow);
+		const uint2 r_Pixel = HeadOutputPixel(r_Head, r_TileRow);
 		const int g_X = int(blockIdx.x) * 8 + r_Window.OriginX + (threadIdx.x / 16) * 4 + (threadIdx.x & 3);
 		const int g_Y = int(blockIdx.y) * 8 + r_Window.OriginY + (threadIdx.x % 16) / 4 + r_TileRow * 4;
 		CompositePixel(r_Composite, g_X, g_Y, r_Pixel.x, r_Pixel.y);
 	}
 }
 #endif
-} // namespace dlssnr::kernels::postprocess

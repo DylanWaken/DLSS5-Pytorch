@@ -7,14 +7,12 @@
 
 // Include windows_dispatch.inl once from the consolidated launcher C++ TU.
 // This header is sufficient for the separate consolidated Torch API TU.
-namespace dlssnr::reconstructed_windows
-{
-enum class EPrecision : int
+enum class EWindowPrecision : int
 {
 	Fp8 = 0,
 	Fp16 = 1
 };
-enum class EKind : int
+enum class EWindowKind : int
 {
 	Ordinary = 0,
 	InputView = 1,
@@ -23,17 +21,18 @@ enum class EKind : int
 	Up = 4
 };
 
-struct FBufferRequirements
+struct FWindowBufferRequirements
 {
 	int64_t InputBytes, RecordBytes, OutputBytes, DownsampledOutputBytes, ResidualBytes;
 	int32_t DownsampledHeight, DownsampledWidth;
 	std::array<unsigned, 3> Grid, Block;
 };
 
-int EntryId(int Channels, EPrecision PrecisionValue, EKind KindValue);
-const char* OriginalSymbol(int EntryIndex);
-const void* KernelStub(int EntryIndex);
-FBufferRequirements GetBufferRequirements(int EntryIndex, int64_t Height, int64_t Width, int64_t WindowPhase);
+int WindowEntryId(int Channels, EWindowPrecision PrecisionValue, EWindowKind KindValue);
+const char* WindowOriginalSymbol(int EntryIndex);
+const void* WindowKernelStub(int EntryIndex);
+FWindowBufferRequirements WindowGetBufferRequirements(int EntryIndex, int64_t Height, int64_t Width,
+													  int64_t WindowPhase);
 std::vector<int64_t> PrepareWindow_fp8(const at::Tensor& g_DeviceAnchor, int64_t EntryIndex);
 std::vector<at::Tensor> LaunchWindow_fp8(int64_t EntryIndex, const at::Tensor& g_Input,
 										 const at::Tensor& g_PackedWeights, at::Tensor g_Output,
@@ -46,4 +45,3 @@ std::vector<at::Tensor> LaunchWindow_fp16(int64_t EntryIndex, const at::Tensor& 
 										  const c10::optional<at::Tensor>& g_DownsampledOutput,
 										  const c10::optional<at::Tensor>& g_Residual, int64_t Height,
 										  int64_t Width, int64_t WindowPhase);
-} // namespace dlssnr::reconstructed_windows

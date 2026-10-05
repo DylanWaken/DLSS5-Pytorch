@@ -63,7 +63,7 @@ def execute(args, report):
         element_bytes = 1 if precision == "fp8" else 2
         original = "cc_tinlayout_fused_swin_1h_32_1_outview" + ("_fp8" if precision == "fp8" else "")
         entry = "window_block_c32_output_view_" + precision
-        symbol = "semantic_window_c32_output_view_" + precision if args.standalone else f"_ZN6dlssnr13reconstructed{len(entry)}{entry}{len(entry)}{entry}ENS1_10ParametersE"
+        symbol = "semantic_window_c32_output_view_" + precision if args.standalone else entry
         with NativeGraphOwner(stream.synchronize, label="C32 output-view comparison") as owner:
             native = owner.own(VendorModule(artifacts.modules[32], stream.cuda_stream, original, 96))
             candidate = owner.own(VendorModule(candidate_code, stream.cuda_stream, symbol, 96))

@@ -54,7 +54,11 @@ The [semantic naming audit](NAMING_AUDIT.md) traces every ABI field to its actua
 
 ## ABI and dispatch boundaries
 
-Exported kernel names retain their `_fp8` and `_fp16` suffixes and existing namespaces. ABI types named `Parameters` or `ClearParameters` are deliberate exceptions to the internal `F` convention because their names participate in mangled CUDA symbols. Preserve field order, widths, alignment, byte offsets and the host/device declarations in `kernel_launcher/kernel_abi.h`.
+Project CUDA/C++ source has no namespaces or `using namespace` directives. Call helpers directly, for example `RunWindow32(...)`. Give shared types and helpers operation-specific names so unrelated algorithms remain distinct in global scope: `FWindow32Profile`, `FSpatialProjectionArguments` and `FResolutionSelection` describe their roles without a namespace hierarchy.
+
+All 81 exported kernels use bare `extern "C"` names. Precision-specific exports retain `_fp8` and `_fp16`; their C symbols no longer depend on C++ type mangling. Launch records use descriptive global `F` names, such as `FWindowBlockC32Fp8Parameters`, with a shared type where the layout and meaning are identical. Preserve field order, widths, alignment, byte offsets and matching host/device declarations in `kernel_launcher/kernel_abi.h`.
+
+External library qualification such as `std::`, `at::` and `c10::` remains necessary. `TORCH_LIBRARY(dlssnr, ...)` keeps the public Torch registration domain; it does not declare a project C++ namespace. [The flat-symbol migration](FLAT_SYMBOLS.md) records the separate rebuild and validation.
 
 The stable roster is **76 mathematical/frontend entries + four shared repack entries + one counter clear = 81 exports**. It is not 81 independent algorithms. Channel suffixes identify an exported configuration; they do not require a separate implementation file or copied body. Python/Torch entry names, native DLL symbols and historical provenance records keep their established spelling.
 
@@ -88,7 +92,7 @@ The [portable deployment measurements](figures/semantic_deployment_measurements.
 
 These are integrated graph ratios, not guarantees that every individual kernel is within 1% of native. The [portable optimization evidence](semantic_optimization_evidence.json) records the separate per-kernel NCU/SASS and timing comparisons that guided the source changes. Earlier staged and transcript-build receipts remain historical evidence, rather than the basis for this qualification.
 
-The current implementation has 81 exports in 17 entry headers, backed by shared semantic algorithms and ten CUDA emission units. Its 45 implementation headers total 7,953 physical source lines, including comments and blank lines; see [the source inventory breakdown](SOURCE_LAYOUT.md#current-source-inventory). Four tested plans establish neither continuous-resolution tuning nor support on another GPU architecture.
+The current implementation has 81 exports in 17 entry headers, backed by shared semantic algorithms and ten CUDA emission units. Its 45 implementation headers total 7,714 physical source lines, including comments and blank lines; see [the source inventory breakdown](SOURCE_LAYOUT.md#current-source-inventory). Four tested plans establish neither continuous-resolution tuning nor support on another GPU architecture.
 
 Training remains a separate PyTorch FP32/BF16 implementation. Deployment source proofs and speed measurements say nothing about task-specific DLSS5 transfer learning, loss design or a complete training procedure. Those remain topics for further investigation; see [training usage](training.md).
 
@@ -103,4 +107,6 @@ Inspect the exported inventory rather than counting implementation files. Preser
 
 The preceding release added an assembler cache key after the timing run. All 81 GPU kernels, resource records and constants, host machine code and imports are byte-identical to the timed build. Its installed 720p FP8/FP16 boundary and replay checks also pass. [Release identities and source hashes](semantic_release.json) and [compiled equivalence](semantic_build_equivalence.json) preserve this distinction; no new timing is attributed to the rebuilt file.
 
-The current naming-audit rebuild retains identical device instructions, constants and resource metadata, with separately validated typed host packing and all eight graph correctness cases. See [the naming audit and current build receipt](NAMING_AUDIT.md#validation).
+The preceding naming-audit rebuild retains identical device instructions, constants and resource metadata, with separately validated typed host packing and all eight graph correctness cases. See [the naming audit and its build receipt](NAMING_AUDIT.md#validation).
+
+The current flat-symbol rebuild is a separate migration of C++ names and CUDA linkage. Its source/ABI, compiled comparison and runtime evidence are documented in [FLAT_SYMBOLS.md](FLAT_SYMBOLS.md). The semantic timing table above retains its original measured build identity.

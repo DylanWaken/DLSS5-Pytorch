@@ -4,24 +4,20 @@
 
 // Two K512 slices form Q/K/V for two 32-channel heads. Each four-warp CTA
 // owns M128 x N192; normalization and V transposition fuse into the final slice.
-namespace dlssnr::kernels::global_qkv
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-using namespace dlssnr::intrinsics::sm120;
-using namespace dlssnr::packed_math::sm120;
-using FAccumulator = dlssnr::tiles::sm120::FAccumulatorTile<4, 6>;
-using FTileCoordinates = global_contract::FTileCoordinates;
+using FGlobalQkvAccumulator = FMmaAccumulatorTile<4, 6>;
+using FGlobalQkvTileCoordinates = FGlobalContractTileCoordinates;
 
-template <bool bFp8> struct FProfile : global_contract::FProfile<bFp8, true>
+template <bool bFp8> struct FGlobalQkvProfile : FGlobalContractProfile<bFp8, true>
 {
 	static constexpr int SplitChannels = 512;
 	static constexpr int ReductionTiles = 16;
 };
 
 template <typename Profile>
-__device__ __forceinline__ void LoadWeights(uint4 (&r_Weights)[Profile::ReductionSubtiles][6],
-											uint64_t g_PackedWeights, int r_ReductionTile,
-											const FTileCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void LoadGlobalQkvWeights(uint4 (&r_Weights)[Profile::ReductionSubtiles][6],
+													 uint64_t g_PackedWeights, int r_ReductionTile,
+													 const FGlobalQkvTileCoordinates& r_TileCoordinates)
 {
 	// The 128-byte header contains one FP32 scale per attention head. The
 	// matrix following it interleaves Q32, K32, V32 within each head.
@@ -62,12 +58,12 @@ template <bool bFp8> __device__ __forceinline__ uint32_t InvertHeadSum(uint32_t 
 }
 
 template <bool bFp8, int Component>
-__device__ __forceinline__ void NormalizeHead(FAccumulator& r_Accumulator, uint64_t g_PackedWeights,
+__device__ __forceinline__ void NormalizeHead(FGlobalQkvAccumulator& r_Accumulator, uint64_t g_PackedWeights,
 											  int g_Head)
 {
-	const uint32_t r_Epsilon = numerical_constants::CONST_NORMALIZATION_EPSILON_HALF2;
+	const uint32_t r_Epsilon = CONST_NORMALIZATION_EPSILON_HALF2;
 	const uint32_t r_SqrtHeadDimension =
-		FloatToHalf2(FloatSqrtApproxFtzBits(numerical_constants::CONST_ATTENTION_HEAD_DIM_FP32_BITS));
+		FloatToHalf2(FloatSqrtApproxFtzBits(CONST_ATTENTION_HEAD_DIM_FP32_BITS));
 #pragma unroll
 	for (int r_Spatial = 0; r_Spatial < 4; ++r_Spatial)
 	{
@@ -102,18 +98,19 @@ __device__ __forceinline__ void NormalizeHead(FAccumulator& r_Accumulator, uint6
 	}
 }
 
-enum class ESplitPublication
+enum class EGlobalQkvSplitPublication
 {
 	Runtime,
 	First,
 	Final
 };
 
-template <bool bFp8, int Component, ESplitPublication Publication, typename TParameters>
-__device__ __forceinline__ void PublishComponent(FAccumulator& r_Accumulator, const TParameters& r_Parameters,
-												 const FTileCoordinates& r_TileCoordinates)
+template <bool bFp8, int Component, EGlobalQkvSplitPublication Publication, typename TParameters>
+__device__ __forceinline__ void PublishGlobalQkvComponent(FGlobalQkvAccumulator& r_Accumulator,
+														  const TParameters& r_Parameters,
+														  const FGlobalQkvTileCoordinates& r_TileCoordinates)
 {
-	using Profile = FProfile<bFp8>;
+	using Profile = FGlobalQkvProfile<bFp8>;
 	const int g_Head = r_TileCoordinates.g_ChannelBlock * 2 + (r_TileCoordinates.r_Warp & 1);
 	const uint64_t g_Output = Component == 0   ? r_Parameters.g_Query
 							  : Component == 1 ? r_Parameters.g_Key
@@ -121,9 +118,9 @@ __device__ __forceinline__ void PublishComponent(FAccumulator& r_Accumulator, co
 	const uint64_t g_PartialSums = bFp8 ? r_Parameters.g_SplitAccumulator +
 											  uint64_t(Component) * r_TileCoordinates.g_PaddedGroups * 32768
 										: g_Output;
-	const bool r_bFirstSplit = Publication == ESplitPublication::Runtime
+	const bool r_bFirstSplit = Publication == EGlobalQkvSplitPublication::Runtime
 								   ? r_TileCoordinates.r_Split == 0
-								   : Publication == ESplitPublication::First;
+								   : Publication == EGlobalQkvSplitPublication::First;
 
 	// The first slice stores ordinary Half fragments. The second slice reads
 	// and adds them before any normalization or storage-layout conversion.
@@ -255,31 +252,33 @@ __device__ __forceinline__ void PublishComponent(FAccumulator& r_Accumulator, co
 	}
 }
 
-template <bool bFp8, ESplitPublication Publication, typename TParameters>
-__device__ __forceinline__ void PublishQkv(FAccumulator& r_Accumulator, const TParameters& r_Parameters,
-										   const FTileCoordinates& r_TileCoordinates)
+template <bool bFp8, EGlobalQkvSplitPublication Publication, typename TParameters>
+__device__ __forceinline__ void PublishGlobalQkv(FGlobalQkvAccumulator& r_Accumulator,
+												 const TParameters& r_Parameters,
+												 const FGlobalQkvTileCoordinates& r_TileCoordinates)
 {
-	PublishComponent<bFp8, 0, Publication>(r_Accumulator, r_Parameters, r_TileCoordinates);
-	PublishComponent<bFp8, 1, Publication>(r_Accumulator, r_Parameters, r_TileCoordinates);
-	PublishComponent<bFp8, 2, Publication>(r_Accumulator, r_Parameters, r_TileCoordinates);
+	PublishGlobalQkvComponent<bFp8, 0, Publication>(r_Accumulator, r_Parameters, r_TileCoordinates);
+	PublishGlobalQkvComponent<bFp8, 1, Publication>(r_Accumulator, r_Parameters, r_TileCoordinates);
+	PublishGlobalQkvComponent<bFp8, 2, Publication>(r_Accumulator, r_Parameters, r_TileCoordinates);
 }
 
 template <bool bFp8, typename TParameters>
 __device__ __forceinline__ void RunGlobalQkv(TParameters r_Parameters, unsigned char* s_Storage)
 {
-	using Profile = FProfile<bFp8>;
+	using Profile = FGlobalQkvProfile<bFp8>;
 	const int g_Tokens = r_Parameters.BatchCount * r_Parameters.TokensPerBatch;
 	const int g_TokenTiles = (g_Tokens + 127) / 128;
 	const int g_HeadPair = int(blockIdx.x) / g_TokenTiles;
 	const int r_Lane = threadIdx.x, r_Warp = threadIdx.y;
-	const FTileCoordinates r_TileCoordinates{(int(blockIdx.x) % g_TokenTiles) * 8,
-											 g_HeadPair * 192 + (r_Warp & 1) * 96,
-											 bFp8 ? ((g_Tokens + 31) / 32) * 2 : (g_Tokens + 15) / 16,
-											 g_HeadPair,
-											 r_Lane,
-											 r_Warp,
-											 int(blockIdx.z),
-											 !bFp8 && uint32_t(g_Tokens + 14) < 31};
+	const FGlobalQkvTileCoordinates r_TileCoordinates{(int(blockIdx.x) % g_TokenTiles) * 8,
+													  g_HeadPair * 192 + (r_Warp & 1) * 96,
+													  bFp8 ? ((g_Tokens + 31) / 32) * 2
+														   : (g_Tokens + 15) / 16,
+													  g_HeadPair,
+													  r_Lane,
+													  r_Warp,
+													  int(blockIdx.z),
+													  !bFp8 && uint32_t(g_Tokens + 14) < 31};
 	if (r_Lane == 0 && r_Warp == 0)
 #pragma unroll
 		for (int s_Stage = 0; s_Stage < 2; ++s_Stage)
@@ -287,22 +286,23 @@ __device__ __forceinline__ void RunGlobalQkv(TParameters r_Parameters, unsigned 
 	__syncthreads();
 
 	uint4 r_Weights[Profile::ReductionSubtiles][6];
-	LoadWeights<Profile>(r_Weights, r_Parameters.g_PackedWeights, 0, r_TileCoordinates);
-	global_contract::IssueInputStage<Profile>(s_Storage, r_Parameters.g_Input, 0, r_TileCoordinates);
-	global_contract::WaitInputStage<Profile>(s_Storage, 0);
-	FAccumulator r_Accumulator{};
+	LoadGlobalQkvWeights<Profile>(r_Weights, r_Parameters.g_PackedWeights, 0, r_TileCoordinates);
+	IssueGlobalContractInputStage<Profile>(s_Storage, r_Parameters.g_Input, 0, r_TileCoordinates);
+	WaitGlobalContractInputStage<Profile>(s_Storage, 0);
+	FGlobalQkvAccumulator r_Accumulator{};
 #pragma unroll 1
 	for (int r_ReductionTile = 0; r_ReductionTile < 15; ++r_ReductionTile)
 	{
-		global_contract::ConsumeInputStage<Profile>(r_Accumulator, r_Weights, s_Storage, r_ReductionTile,
-													r_TileCoordinates);
-		global_contract::IssueInputStage<Profile>(s_Storage, r_Parameters.g_Input, r_ReductionTile + 1,
-												  r_TileCoordinates);
-		LoadWeights<Profile>(r_Weights, r_Parameters.g_PackedWeights, r_ReductionTile + 1, r_TileCoordinates);
-		global_contract::WaitInputStage<Profile>(s_Storage, r_ReductionTile + 1);
+		ConsumeGlobalContractInputStage<Profile>(r_Accumulator, r_Weights, s_Storage, r_ReductionTile,
+												 r_TileCoordinates);
+		IssueGlobalContractInputStage<Profile>(s_Storage, r_Parameters.g_Input, r_ReductionTile + 1,
+											   r_TileCoordinates);
+		LoadGlobalQkvWeights<Profile>(r_Weights, r_Parameters.g_PackedWeights, r_ReductionTile + 1,
+									  r_TileCoordinates);
+		WaitGlobalContractInputStage<Profile>(s_Storage, r_ReductionTile + 1);
 	}
 	// The native loop leaves its last ready tile for an explicit pipeline drain.
-	global_contract::ConsumeInputStage<Profile>(r_Accumulator, r_Weights, s_Storage, 15, r_TileCoordinates);
+	ConsumeGlobalContractInputStage<Profile>(r_Accumulator, r_Weights, s_Storage, 15, r_TileCoordinates);
 	const uint64_t g_SplitCounters =
 		r_Parameters.g_SplitCounters + ((r_TileCoordinates.g_TokenGroupBase / 8) * 16 + g_HeadPair) * 4;
 	if (r_TileCoordinates.r_Split != 0)
@@ -317,15 +317,17 @@ __device__ __forceinline__ void RunGlobalQkv(TParameters r_Parameters, unsigned 
 		// Native FP8 selects its first-split stores once before publication.
 		// Keep that uniform choice outside all unrolled fragment operations.
 		if (r_TileCoordinates.r_Split == 0)
-			PublishQkv<true, ESplitPublication::First>(r_Accumulator, r_Parameters, r_TileCoordinates);
+			PublishGlobalQkv<true, EGlobalQkvSplitPublication::First>(r_Accumulator, r_Parameters,
+																	  r_TileCoordinates);
 		else
-			PublishQkv<true, ESplitPublication::Final>(r_Accumulator, r_Parameters, r_TileCoordinates);
+			PublishGlobalQkv<true, EGlobalQkvSplitPublication::Final>(r_Accumulator, r_Parameters,
+																	  r_TileCoordinates);
 	}
 	else
-		PublishQkv<false, ESplitPublication::Runtime>(r_Accumulator, r_Parameters, r_TileCoordinates);
+		PublishGlobalQkv<false, EGlobalQkvSplitPublication::Runtime>(r_Accumulator, r_Parameters,
+																	 r_TileCoordinates);
 	__syncthreads();
 	if (r_Lane == 0 && r_Warp == 0)
 		CounterStoreRelease(g_SplitCounters, r_TileCoordinates.r_Split);
 }
 #endif
-} // namespace dlssnr::kernels::global_qkv

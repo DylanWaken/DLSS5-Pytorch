@@ -2,12 +2,14 @@
 
 This pass replaces names that described parameter positions with names that explain the values. The previous readability audit checked spelling and storage prefixes but missed offset-only fields such as `g_Pointer24`, `Scalar32` and `Aux80`. This audit follows those fields from host packing through their actual CUDA consumers.
 
+This report and its JSON receipts preserve the preceding semantic naming pass. The current source subsequently removed project namespaces and adopted bare C kernel exports; [FLAT_SYMBOLS.md](FLAT_SYMBOLS.md) records that separate migration. The example below uses the current global type name.
+
 ## What changed
 
 The quoted attention projection now receives:
 
 ```cpp
-const dlssnr::kernels::spatial_projection::FArguments r_Arguments{
+const FSpatialProjectionArguments r_Arguments{
     r_Parameters.g_Input,
     r_Parameters.g_Residual,
     r_Parameters.g_Output,
@@ -29,15 +31,15 @@ The ABI header documents dimensions in physical pixels and distinguishes ordinar
 | Frontend `Words[offset]` | Typed texture handles, transforms, conditioning controls and extents |
 | Local MMA `r_A / r_B / r_C` | Input/weight fragments and output accumulators |
 | Global-attention M/N/K loop aliases | Query/key/feature tile indices |
-| C512 pointer/scalar arrays and numeric role codes | Named launch bindings and `EKernelRole` |
+| C512 pointer/scalar arrays and numeric role codes | Named launch bindings and `EC512KernelRole` |
 
 Offsets remain in `offsetof` assertions and reference manifests, where they establish the binary contract. Generated deployment plans use `offsetof(FParameters, FieldName)` rather than anonymous byte positions, and their authoritative generator was updated too. The C512 launcher assigns named members rather than inferring buffer roles from an ABI byte count.
 
-Preprocessing and postprocessing share typed launch records. Every exported record retains its original type name and namespace, alignment and extent, with standard-layout, trivial-copy and field-offset assertions. Unused padding is explicitly reserved; it is not given an invented tensor meaning.
+Preprocessing and postprocessing share typed launch records. The naming pass preserved the then-existing C++ type identities and namespaces. The later flat-symbol migration replaces them with descriptive global `F` types while retaining alignment, extent, standard-layout, trivial-copy and field-offset assertions. Unused padding is explicitly reserved; it is not given an invented tensor meaning.
 
 ## Audit coverage and naming conventions
 
-All 70 files under `csrc` were reviewed, including 45 kernel headers, launchers, generated plans, emission units and the Torch registration layer. The ABI review covers 76 parameter namespaces and 884 fields, plus the shared repack/counter records. The [machine-readable audit](naming_audit.json) records per-file reviews, field mappings and source hashes.
+The naming pass reviewed all 70 files then under `csrc`, including 45 kernel headers, launchers, generated plans, emission units and the Torch registration layer. Its historical ABI review covered 76 parameter namespaces and 884 fields, plus the shared repack/counter records. The [machine-readable audit](naming_audit.json) records per-file reviews, field mappings and source hashes.
 
 Storage prefixes remain `g_` for global-memory roles, `s_` for physical shared-memory roles, `sl_` for a proven logical pre-swizzle coordinate and `r_` for register/local values. Names explain the operation: input feature, residual, weight fragment, attention denominator, partial sum, publication destination or counter phase.
 
@@ -48,6 +50,8 @@ Conditioning controls are named after the observed sampled Green/Blue channels. 
 A regression check now rejects offset-named Pointer/Scalar/Aux/Parameter fields and raw frontend parameter-word decoding throughout `csrc`. That lexical check supplements the manual dataflow review; it cannot prove that an arbitrary descriptive name is correct.
 
 ## Validation
+
+The results in this section belong to the naming-pass build and receipts, before namespace removal. Current flat-symbol validation is recorded separately in [FLAT_SYMBOLS.md](FLAT_SYMBOLS.md); old source hashes and timing identities are retained.
 
 The normal extension rebuild passed every ABI assertion. All **81 CUDA instruction payloads**, their text metadata, and all ten modules' constant and resource sections are byte-identical to the preceding qualified release. Host machine code differs because argument construction now uses typed fields; it is not claimed identical.
 

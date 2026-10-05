@@ -81,8 +81,8 @@ def execute(args, report):
         if record.numel() != entry['record_bytes']:
             raise ValueError(f'Record extent differs for C512 entry{entry_id}')
         kernel_name = canonical[entry['original_symbol']].split('::')[-1]
-        mangled = f'_ZN6dlssnr13reconstructed{len(kernel_name)}{kernel_name}{len(kernel_name)}{kernel_name}ENS1_10ParametersE'
-        matches = [row for row in image_report['entries'] if row['symbol'] == mangled]
+        candidate_symbol = kernel_name
+        matches = [row for row in image_report['entries'] if row['symbol'] == candidate_symbol]
         if len(matches) != 1 or not matches[0]['text_exact']:
             raise ValueError('Missing exact compiled candidate symbol: ' + kernel_name)
         cubin_path = args.cubins / matches[0]['module']
@@ -90,7 +90,7 @@ def execute(args, report):
         phases = range(4) if role == 4 else (0,)
         for phase in phases:
             with NativeGraphOwner(stream.synchronize, label=f'C512 public dispatcher {entry_id}/{phase}') as owner:
-                driver = owner.own(VendorModule(cubin, stream.cuda_stream, mangled, entry['abi_bytes']))
+                driver = owner.own(VendorModule(cubin, stream.cuda_stream, candidate_symbol, entry['abi_bytes']))
                 allocations = {}
                 payloads = {}
 

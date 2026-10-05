@@ -6,14 +6,12 @@
 #include <cstdint>
 #include <cstddef>
 
-namespace dlssnr::reconstructed::global_repack_layout
-{
 // PTX signed division/narrow-cast expressions reduce to these nonnegative
 // dword offsets on the launcher-checked aligned geometry domain.
 // The independently recovered FP8/Half layouts differ only in the 16-token
 // group stride: 256/512 dwords per token. Keep the shared swizzle in one template.
 template <uint32_t WordsPerToken>
-__device__ __forceinline__ uint32_t PhysicalWord(uint32_t g_TokenIndex, uint32_t g_ChannelWord)
+__device__ __forceinline__ uint32_t GlobalRepackPhysicalWord(uint32_t g_TokenIndex, uint32_t g_ChannelWord)
 {
 	static_assert(WordsPerToken == 256u || WordsPerToken == 512u,
 				  "Only recovered C1024 layouts are admitted");
@@ -22,13 +20,14 @@ __device__ __forceinline__ uint32_t PhysicalWord(uint32_t g_TokenIndex, uint32_t
 		   (g_TokenIndex % 16u) / 8u;
 }
 
-__device__ __forceinline__ uint32_t SpatialToken(uint32_t g_TokenIndex, uint32_t g_Width)
+__device__ __forceinline__ uint32_t GlobalRepackSpatialToken(uint32_t g_TokenIndex, uint32_t g_Width)
 {
 	const uint32_t g_Y = g_TokenIndex / g_Width, g_X = g_TokenIndex % g_Width;
 	return ((g_Y / 4u) * (g_Width / 4u) + g_X / 4u) * 16u + (g_Y % 4u) * 4u + g_X % 4u;
 }
 
-template <bool bFp8, bool bToTokenLayout> __device__ __forceinline__ void CopyWords(Parameters r_Parameters)
+template <bool bFp8, bool bToTokenLayout>
+__device__ __forceinline__ void CopyGlobalRepackWords(FGlobalRepackParameters r_Parameters)
 {
 	constexpr uint32_t CONST_WORDS_PER_TOKEN = bFp8 ? 256u : 512u;
 	constexpr uint32_t CONST_TOKEN_ALIGNMENT = bFp8 ? 32u : 16u;
@@ -44,26 +43,28 @@ template <bool bFp8, bool bToTokenLayout> __device__ __forceinline__ void CopyWo
 	{
 		const uint32_t g_TokenIndex = g_WordIndex / CONST_WORDS_PER_TOKEN,
 					   g_ChannelWord = g_WordIndex % CONST_WORDS_PER_TOKEN;
-		const uint32_t g_TokenWord = PhysicalWord<CONST_WORDS_PER_TOKEN>(g_TokenIndex, g_ChannelWord);
+		const uint32_t g_TokenWord =
+			GlobalRepackPhysicalWord<CONST_WORDS_PER_TOKEN>(g_TokenIndex, g_ChannelWord);
 		if constexpr (bToTokenLayout)
 		{
 			uint32_t r_CopiedWord = 0;
 			// Forward tail writes +0 bits and never reads the spatial input.
 			if (g_TokenIndex < g_TokenCount)
 			{
-				const uint32_t g_SpatialToken = SpatialToken(g_TokenIndex, uint32_t(r_Parameters.Width));
-				r_CopiedWord = g_Input[PhysicalWord<CONST_WORDS_PER_TOKEN>(g_SpatialToken, g_ChannelWord)];
+				const uint32_t g_SpatialToken =
+					GlobalRepackSpatialToken(g_TokenIndex, uint32_t(r_Parameters.Width));
+				r_CopiedWord =
+					g_Input[GlobalRepackPhysicalWord<CONST_WORDS_PER_TOKEN>(g_SpatialToken, g_ChannelWord)];
 			}
 			g_Output[g_TokenWord] = r_CopiedWord;
 		}
 		else
 		{
 			// Inverse launched tail threads perform neither load nor store.
-			const uint32_t g_SpatialToken = SpatialToken(g_TokenIndex, uint32_t(r_Parameters.Width));
-			g_Output[PhysicalWord<CONST_WORDS_PER_TOKEN>(g_SpatialToken, g_ChannelWord)] =
+			const uint32_t g_SpatialToken =
+				GlobalRepackSpatialToken(g_TokenIndex, uint32_t(r_Parameters.Width));
+			g_Output[GlobalRepackPhysicalWord<CONST_WORDS_PER_TOKEN>(g_SpatialToken, g_ChannelWord)] =
 				g_Input[g_TokenWord];
 		}
 	}
 }
-
-} // namespace dlssnr::reconstructed::global_repack_layout

@@ -1,8 +1,6 @@
-namespace fp16
-{
 // Generated shared native FP16 schedule. Every resolution uses the same 185 calls.
 // Buffer names are shared; the geometry table supplies their actual byte extents.
-static const char* BufferNameTable[] = {
+static const char* BufferNameTable_fp16[] = {
 	"input",
 	"b1.output",
 	"b2.output",
@@ -212,7 +210,7 @@ static const char* BufferNameTable[] = {
 	"b68.output",
 	"b69.output",
 };
-static const FBufferSpec RecordSpecs[] = {
+static const FBufferSpec RecordSpecs_fp16[] = {
 	{"block1.layer0.layer", 32960LL},	 {"block2.layer0.layer", 32960LL},
 	{"block3.layer0.layer", 32960LL},	 {"block4.layer0.layer", 37056LL},
 	{"block5.layer0.layer", 106816LL},	 {"block6.layer0.layer", 106816LL},
@@ -285,17 +283,14 @@ static const FBufferSpec RecordSpecs[] = {
 	{"block66.layer0.layer", 37120LL},	 {"block67.layer0.layer", 32960LL},
 	{"block68.layer0.layer", 32960LL},	 {"block69.layer0.layer", 32960LL},
 };
-} // namespace fp16
 
 template <> void FDeploymentPlan<true>::BuildCalls()
 {
 	Calls.reserve(185);
 	{ // cc_tinlayout_fused_swin_1h_32_1_inpview
-		using FParameters = dlssnr::reconstructed::window_block_c32_input_view_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_block_c32_input_view_fp16::window_block_c32_input_view_fp16),
-			Geometry->Grids[0], dim3(32, 1, 1), 96, false};
+		using FParameters = FWindowBlockC32InputViewFp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c32_input_view_fp16),
+							   Geometry->Grids[0], dim3(32, 1, 1), 96, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(0));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(1));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(0));
@@ -308,10 +303,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1
-		using FParameters = dlssnr::reconstructed::window_block_c32_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c32_fp16::window_block_c32_fp16),
-							   Geometry->Grids[1], dim3(32, 1, 1), 96, false};
+		using FParameters = FWindowBlockC32Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c32_fp16), Geometry->Grids[1],
+							   dim3(32, 1, 1), 96, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(1));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(2));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(1));
@@ -322,10 +316,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1
-		using FParameters = dlssnr::reconstructed::window_block_c32_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c32_fp16::window_block_c32_fp16),
-							   Geometry->Grids[2], dim3(32, 1, 1), 96, false};
+		using FParameters = FWindowBlockC32Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c32_fp16), Geometry->Grids[2],
+							   dim3(32, 1, 1), 96, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(2));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(3));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(2));
@@ -336,11 +329,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1_ds
-		using FParameters = dlssnr::reconstructed::window_block_c32_downsample_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_block_c32_downsample_fp16::window_block_c32_downsample_fp16),
-			Geometry->Grids[3], dim3(32, 1, 1), 96, false};
+		using FParameters = FWindowBlockC32DownsampleFp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c32_downsample_fp16),
+							   Geometry->Grids[3], dim3(32, 1, 1), 96, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(3));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(4));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(3));
@@ -354,11 +345,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2_inpview
-		using FParameters = dlssnr::reconstructed::window_block_c64_input_view_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_block_c64_input_view_fp16::window_block_c64_input_view_fp16),
-			Geometry->Grids[4], dim3(32, 2, 1), 88, false};
+		using FParameters = FWindowBlockC64InputViewFp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c64_input_view_fp16),
+							   Geometry->Grids[4], dim3(32, 2, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(5));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(6));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(4));
@@ -371,10 +360,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2
-		using FParameters = dlssnr::reconstructed::window_block_c64_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c64_fp16::window_block_c64_fp16),
-							   Geometry->Grids[5], dim3(32, 2, 1), 88, false};
+		using FParameters = FWindowBlockC64Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c64_fp16), Geometry->Grids[5],
+							   dim3(32, 2, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(6));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(7));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(5));
@@ -385,10 +373,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2
-		using FParameters = dlssnr::reconstructed::window_block_c64_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c64_fp16::window_block_c64_fp16),
-							   Geometry->Grids[6], dim3(32, 2, 1), 88, false};
+		using FParameters = FWindowBlockC64Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c64_fp16), Geometry->Grids[6],
+							   dim3(32, 2, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(7));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(8));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(6));
@@ -399,11 +386,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2_ds
-		using FParameters = dlssnr::reconstructed::window_block_c64_downsample_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_block_c64_downsample_fp16::window_block_c64_downsample_fp16),
-			Geometry->Grids[7], dim3(32, 2, 1), 88, false};
+		using FParameters = FWindowBlockC64DownsampleFp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c64_downsample_fp16),
+							   Geometry->Grids[7], dim3(32, 2, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(8));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(9));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(7));
@@ -417,11 +402,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_inpview
-		using FParameters = dlssnr::reconstructed::window_block_c128_input_view_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_block_c128_input_view_fp16::window_block_c128_input_view_fp16),
-			Geometry->Grids[8], dim3(32, 4, 1), 88, false};
+		using FParameters = FWindowBlockC128InputViewFp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_input_view_fp16),
+							   Geometry->Grids[8], dim3(32, 4, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(10));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(11));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(8));
@@ -434,10 +417,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
-		using FParameters = dlssnr::reconstructed::window_block_c128_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c128_fp16::window_block_c128_fp16),
-							   Geometry->Grids[9], dim3(32, 4, 1), 88, false};
+		using FParameters = FWindowBlockC128Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[9],
+							   dim3(32, 4, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(11));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(12));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(9));
@@ -448,10 +430,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
-		using FParameters = dlssnr::reconstructed::window_block_c128_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c128_fp16::window_block_c128_fp16),
-							   Geometry->Grids[10], dim3(32, 4, 1), 88, false};
+		using FParameters = FWindowBlockC128Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[10],
+							   dim3(32, 4, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(12));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(13));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(10));
@@ -462,10 +443,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
-		using FParameters = dlssnr::reconstructed::window_block_c128_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c128_fp16::window_block_c128_fp16),
-							   Geometry->Grids[11], dim3(32, 4, 1), 88, false};
+		using FParameters = FWindowBlockC128Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[11],
+							   dim3(32, 4, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(13));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(14));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(11));
@@ -476,10 +456,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
-		using FParameters = dlssnr::reconstructed::window_block_c128_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c128_fp16::window_block_c128_fp16),
-							   Geometry->Grids[12], dim3(32, 4, 1), 88, false};
+		using FParameters = FWindowBlockC128Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[12],
+							   dim3(32, 4, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(14));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(15));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(12));
@@ -490,11 +469,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_ds
-		using FParameters = dlssnr::reconstructed::window_block_c128_downsample_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_block_c128_downsample_fp16::window_block_c128_downsample_fp16),
-			Geometry->Grids[13], dim3(32, 4, 1), 88, false};
+		using FParameters = FWindowBlockC128DownsampleFp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_downsample_fp16),
+							   Geometry->Grids[13], dim3(32, 4, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(15));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(16));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(13));
@@ -508,11 +485,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_inpview
-		using FParameters = dlssnr::reconstructed::window_block_c256_input_view_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_block_c256_input_view_fp16::window_block_c256_input_view_fp16),
-			Geometry->Grids[14], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256InputViewFp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_input_view_fp16),
+							   Geometry->Grids[14], dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(17));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(18));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(14));
@@ -525,10 +500,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
-		using FParameters = dlssnr::reconstructed::window_block_c256_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c256_fp16::window_block_c256_fp16),
-							   Geometry->Grids[15], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[15],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(18));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(19));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(15));
@@ -539,10 +513,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
-		using FParameters = dlssnr::reconstructed::window_block_c256_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c256_fp16::window_block_c256_fp16),
-							   Geometry->Grids[16], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[16],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(19));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(20));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(16));
@@ -553,10 +526,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
-		using FParameters = dlssnr::reconstructed::window_block_c256_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c256_fp16::window_block_c256_fp16),
-							   Geometry->Grids[17], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[17],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(20));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(21));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(17));
@@ -567,10 +539,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
-		using FParameters = dlssnr::reconstructed::window_block_c256_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c256_fp16::window_block_c256_fp16),
-							   Geometry->Grids[18], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[18],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(21));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(22));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(18));
@@ -581,10 +552,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
-		using FParameters = dlssnr::reconstructed::window_block_c256_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c256_fp16::window_block_c256_fp16),
-							   Geometry->Grids[19], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[19],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(22));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(23));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(19));
@@ -595,10 +565,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
-		using FParameters = dlssnr::reconstructed::window_block_c256_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c256_fp16::window_block_c256_fp16),
-							   Geometry->Grids[20], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[20],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(23));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(24));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(20));
@@ -609,11 +578,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_ds
-		using FParameters = dlssnr::reconstructed::window_block_c256_downsample_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_block_c256_downsample_fp16::window_block_c256_downsample_fp16),
-			Geometry->Grids[21], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256DownsampleFp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_downsample_fp16),
+							   Geometry->Grids[21], dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(24));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(25));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(21));
@@ -627,11 +594,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_inpview_512
-		using FParameters = dlssnr::reconstructed::window_ffn_input_view_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_input_view_c512_fp16::window_ffn_input_view_c512_fp16),
-			Geometry->Grids[22], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnInputViewC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_input_view_c512_fp16),
+							   Geometry->Grids[22], dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(27));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(22));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(26));
@@ -642,11 +607,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_inpview_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_input_view_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_projection_input_view_c512_fp16::
-											  window_ffn_projection_input_view_c512_fp16),
-			Geometry->Grids[23], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionInputViewC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_input_view_c512_fp16),
+							   Geometry->Grids[23], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(28));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(23));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(26));
@@ -656,10 +619,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[24], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[24],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(29));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(24));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(28));
@@ -670,11 +632,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512
-		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp16::
-											  window_attention_projection_c512_fp16),
-			Geometry->Grids[25], dim3(32, 8, 1), 72, false};
+		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
+							   Geometry->Grids[25], dim3(32, 8, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(30));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(25));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(28));
@@ -684,10 +644,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512
-		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp16::window_ffn_c512_fp16),
-			Geometry->Grids[26], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_c512_fp16), Geometry->Grids[26],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(31));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(26));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(30));
@@ -698,11 +657,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_projection_c512_fp16::window_ffn_projection_c512_fp16),
-			Geometry->Grids[27], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
+							   Geometry->Grids[27], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(32));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(27));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(30));
@@ -712,10 +669,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[28], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[28],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(33));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(28));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(32));
@@ -726,11 +682,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512
-		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp16::
-											  window_attention_projection_c512_fp16),
-			Geometry->Grids[29], dim3(32, 8, 1), 72, false};
+		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
+							   Geometry->Grids[29], dim3(32, 8, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(34));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(29));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(32));
@@ -740,10 +694,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512
-		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp16::window_ffn_c512_fp16),
-			Geometry->Grids[30], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_c512_fp16), Geometry->Grids[30],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(35));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(30));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(34));
@@ -754,11 +707,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_projection_c512_fp16::window_ffn_projection_c512_fp16),
-			Geometry->Grids[31], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
+							   Geometry->Grids[31], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(36));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(31));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(34));
@@ -768,10 +719,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[32], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[32],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(37));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(32));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(36));
@@ -782,11 +732,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512
-		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp16::
-											  window_attention_projection_c512_fp16),
-			Geometry->Grids[33], dim3(32, 8, 1), 72, false};
+		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
+							   Geometry->Grids[33], dim3(32, 8, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(38));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(33));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(36));
@@ -796,10 +744,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512
-		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp16::window_ffn_c512_fp16),
-			Geometry->Grids[34], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_c512_fp16), Geometry->Grids[34],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(39));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(34));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(38));
@@ -810,11 +757,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_projection_c512_fp16::window_ffn_projection_c512_fp16),
-			Geometry->Grids[35], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
+							   Geometry->Grids[35], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(40));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(35));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(38));
@@ -824,10 +769,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[36], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[36],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(41));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(36));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(40));
@@ -838,11 +782,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512
-		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp16::
-											  window_attention_projection_c512_fp16),
-			Geometry->Grids[37], dim3(32, 8, 1), 72, false};
+		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
+							   Geometry->Grids[37], dim3(32, 8, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(42));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(37));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(40));
@@ -852,10 +794,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512
-		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp16::window_ffn_c512_fp16),
-			Geometry->Grids[38], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_c512_fp16), Geometry->Grids[38],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(43));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(38));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(42));
@@ -866,11 +807,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_projection_c512_fp16::window_ffn_projection_c512_fp16),
-			Geometry->Grids[39], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
+							   Geometry->Grids[39], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(44));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(39));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(42));
@@ -880,10 +819,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[40], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[40],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(45));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(40));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(44));
@@ -894,11 +832,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512
-		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp16::
-											  window_attention_projection_c512_fp16),
-			Geometry->Grids[41], dim3(32, 8, 1), 72, false};
+		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
+							   Geometry->Grids[41], dim3(32, 8, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(46));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(41));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(44));
@@ -908,10 +844,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512
-		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp16::window_ffn_c512_fp16),
-			Geometry->Grids[42], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_c512_fp16), Geometry->Grids[42],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(47));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(42));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(46));
@@ -922,11 +857,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_projection_c512_fp16::window_ffn_projection_c512_fp16),
-			Geometry->Grids[43], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
+							   Geometry->Grids[43], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(48));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(43));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(46));
@@ -936,10 +869,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[44], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[44],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(49));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(44));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(48));
@@ -950,11 +882,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512
-		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp16::
-											  window_attention_projection_c512_fp16),
-			Geometry->Grids[45], dim3(32, 8, 1), 72, false};
+		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
+							   Geometry->Grids[45], dim3(32, 8, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(50));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(45));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(48));
@@ -964,10 +894,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512
-		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp16::window_ffn_c512_fp16),
-			Geometry->Grids[46], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_c512_fp16), Geometry->Grids[46],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(51));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(46));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(50));
@@ -978,11 +907,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_projection_c512_fp16::window_ffn_projection_c512_fp16),
-			Geometry->Grids[47], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
+							   Geometry->Grids[47], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(52));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(47));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(50));
@@ -992,10 +919,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[48], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[48],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(53));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(48));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(52));
@@ -1006,11 +932,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512
-		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp16::
-											  window_attention_projection_c512_fp16),
-			Geometry->Grids[49], dim3(32, 8, 1), 72, false};
+		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
+							   Geometry->Grids[49], dim3(32, 8, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(54));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(49));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(52));
@@ -1020,10 +944,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512
-		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp16::window_ffn_c512_fp16),
-			Geometry->Grids[50], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_c512_fp16), Geometry->Grids[50],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(55));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(50));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(54));
@@ -1034,11 +957,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_projection_c512_fp16::window_ffn_projection_c512_fp16),
-			Geometry->Grids[51], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
+							   Geometry->Grids[51], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(56));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(51));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(54));
@@ -1048,10 +969,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[52], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[52],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(57));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(52));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(56));
@@ -1062,11 +982,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_pool_512
-		using FParameters = dlssnr::reconstructed::window_attention_projection_pool_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_pool_c512_fp16::
-											  window_attention_projection_pool_c512_fp16),
-			Geometry->Grids[53], dim3(32, 4, 1), 80, false};
+		using FParameters = FWindowAttentionProjectionPoolC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_pool_c512_fp16),
+							   Geometry->Grids[53], dim3(32, 4, 1), 80, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(58));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_DownsampledOutput), GetBufferAddress(59));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(53));
@@ -1079,11 +997,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_final_head_512
-		using FParameters = dlssnr::reconstructed::channel_projection_c512_to_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::channel_projection_c512_to_c1024_fp16::
-											  channel_projection_c512_to_c1024_fp16),
-			Geometry->Grids[54], dim3(32, 8, 1), 40, false};
+		using FParameters = FChannelProjectionC512ToC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&channel_projection_c512_to_c1024_fp16),
+							   Geometry->Grids[54], dim3(32, 8, 1), 40, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(60));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(54));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(59));
@@ -1092,11 +1008,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_repack_2d_to_1d
-		using FParameters = dlssnr::reconstructed::repack_2d_to_1d_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::repack_2d_to_1d_c1024_fp16::repack_2d_to_1d_c1024_fp16),
-			Geometry->Grids[55], dim3(256, 1, 1), 24, false};
+		using FParameters = FGlobalRepackParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&repack_2d_to_1d_c1024_fp16),
+							   Geometry->Grids[55], dim3(256, 1, 1), 24, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(60));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(61));
 		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[204]);
@@ -1104,51 +1018,41 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[56], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[56],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(69));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[206]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[57], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[57],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(70));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[207]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[58], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[58],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(71));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[208]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[59], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[59],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(72));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[209]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand
-		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_expand_c1024_fp16::global_ffn_expand_c1024_fp16),
-			Geometry->Grids[60], dim3(32, 4, 1), 72, false};
+		using FParameters = FGlobalFfnExpandC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_expand_c1024_fp16),
+							   Geometry->Grids[60], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(61));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(62));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(55));
@@ -1157,11 +1061,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract
-		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_contract_c1024_fp16::global_ffn_contract_c1024_fp16),
-			Geometry->Grids[61], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalFfnContractC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_contract_c1024_fp16),
+							   Geometry->Grids[61], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(62));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(61));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(63));
@@ -1172,10 +1074,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv
-		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::global_qkv_c1024_fp16::global_qkv_c1024_fp16),
-							   Geometry->Grids[62], dim3(32, 4, 1), 80, true};
+		using FParameters = FGlobalQkvC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_qkv_c1024_fp16), Geometry->Grids[62],
+							   dim3(32, 4, 1), 80, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(63));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(64));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(65));
@@ -1187,11 +1088,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained
-		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp16::
-											  global_attention_chained_c1024_fp16),
-			Geometry->Grids[63], dim3(32, 4, 1), 64, false};
+		using FParameters = FGlobalAttentionChainedC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_attention_chained_c1024_fp16),
+							   Geometry->Grids[63], dim3(32, 4, 1), 64, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(64));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(65));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(66));
@@ -1203,11 +1102,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection
-		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_projection_c1024_fp16::global_projection_c1024_fp16),
-			Geometry->Grids[64], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalProjectionC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_projection_c1024_fp16),
+							   Geometry->Grids[64], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(67));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(63));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(68));
@@ -1218,51 +1115,41 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[65], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[65],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(80));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[220]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[66], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[66],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(81));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[221]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[67], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[67],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(82));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[222]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[68], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[68],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(83));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[223]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand
-		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_expand_c1024_fp16::global_ffn_expand_c1024_fp16),
-			Geometry->Grids[69], dim3(32, 4, 1), 72, false};
+		using FParameters = FGlobalFfnExpandC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_expand_c1024_fp16),
+							   Geometry->Grids[69], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(68));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(73));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(59));
@@ -1271,11 +1158,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract
-		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_contract_c1024_fp16::global_ffn_contract_c1024_fp16),
-			Geometry->Grids[70], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalFfnContractC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_contract_c1024_fp16),
+							   Geometry->Grids[70], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(73));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(68));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(74));
@@ -1286,10 +1171,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv
-		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::global_qkv_c1024_fp16::global_qkv_c1024_fp16),
-							   Geometry->Grids[71], dim3(32, 4, 1), 80, true};
+		using FParameters = FGlobalQkvC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_qkv_c1024_fp16), Geometry->Grids[71],
+							   dim3(32, 4, 1), 80, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(74));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(75));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(76));
@@ -1301,11 +1185,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained
-		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp16::
-											  global_attention_chained_c1024_fp16),
-			Geometry->Grids[72], dim3(32, 4, 1), 64, false};
+		using FParameters = FGlobalAttentionChainedC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_attention_chained_c1024_fp16),
+							   Geometry->Grids[72], dim3(32, 4, 1), 64, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(75));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(76));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(77));
@@ -1317,11 +1199,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection
-		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_projection_c1024_fp16::global_projection_c1024_fp16),
-			Geometry->Grids[73], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalProjectionC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_projection_c1024_fp16),
+							   Geometry->Grids[73], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(78));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(74));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(79));
@@ -1332,51 +1212,41 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[74], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[74],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(91));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[234]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[75], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[75],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(92));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[235]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[76], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[76],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(93));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[236]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[77], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[77],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(94));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[237]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand
-		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_expand_c1024_fp16::global_ffn_expand_c1024_fp16),
-			Geometry->Grids[78], dim3(32, 4, 1), 72, false};
+		using FParameters = FGlobalFfnExpandC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_expand_c1024_fp16),
+							   Geometry->Grids[78], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(79));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(84));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(63));
@@ -1385,11 +1255,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract
-		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_contract_c1024_fp16::global_ffn_contract_c1024_fp16),
-			Geometry->Grids[79], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalFfnContractC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_contract_c1024_fp16),
+							   Geometry->Grids[79], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(84));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(79));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(85));
@@ -1400,10 +1268,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv
-		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::global_qkv_c1024_fp16::global_qkv_c1024_fp16),
-							   Geometry->Grids[80], dim3(32, 4, 1), 80, true};
+		using FParameters = FGlobalQkvC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_qkv_c1024_fp16), Geometry->Grids[80],
+							   dim3(32, 4, 1), 80, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(85));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(86));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(87));
@@ -1415,11 +1282,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained
-		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp16::
-											  global_attention_chained_c1024_fp16),
-			Geometry->Grids[81], dim3(32, 4, 1), 64, false};
+		using FParameters = FGlobalAttentionChainedC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_attention_chained_c1024_fp16),
+							   Geometry->Grids[81], dim3(32, 4, 1), 64, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(86));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(87));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(88));
@@ -1431,11 +1296,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection
-		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_projection_c1024_fp16::global_projection_c1024_fp16),
-			Geometry->Grids[82], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalProjectionC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_projection_c1024_fp16),
+							   Geometry->Grids[82], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(89));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(85));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(90));
@@ -1446,51 +1309,41 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[83], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[83],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(102));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[248]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[84], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[84],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(103));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[249]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[85], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[85],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(104));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[250]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[86], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[86],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(105));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[251]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand
-		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_expand_c1024_fp16::global_ffn_expand_c1024_fp16),
-			Geometry->Grids[87], dim3(32, 4, 1), 72, false};
+		using FParameters = FGlobalFfnExpandC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_expand_c1024_fp16),
+							   Geometry->Grids[87], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(90));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(95));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(67));
@@ -1499,11 +1352,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract
-		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_contract_c1024_fp16::global_ffn_contract_c1024_fp16),
-			Geometry->Grids[88], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalFfnContractC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_contract_c1024_fp16),
+							   Geometry->Grids[88], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(95));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(90));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(96));
@@ -1514,10 +1365,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv
-		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::global_qkv_c1024_fp16::global_qkv_c1024_fp16),
-							   Geometry->Grids[89], dim3(32, 4, 1), 80, true};
+		using FParameters = FGlobalQkvC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_qkv_c1024_fp16), Geometry->Grids[89],
+							   dim3(32, 4, 1), 80, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(96));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(97));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(98));
@@ -1529,11 +1379,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained
-		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp16::
-											  global_attention_chained_c1024_fp16),
-			Geometry->Grids[90], dim3(32, 4, 1), 64, false};
+		using FParameters = FGlobalAttentionChainedC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_attention_chained_c1024_fp16),
+							   Geometry->Grids[90], dim3(32, 4, 1), 64, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(97));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(98));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(99));
@@ -1545,11 +1393,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection
-		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_projection_c1024_fp16::global_projection_c1024_fp16),
-			Geometry->Grids[91], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalProjectionC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_projection_c1024_fp16),
+							   Geometry->Grids[91], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(100));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(96));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(101));
@@ -1560,51 +1406,41 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[92], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[92],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(113));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[262]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[93], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[93],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(114));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[263]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[94], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[94],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(115));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[264]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[95], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[95],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(116));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[265]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand
-		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_expand_c1024_fp16::global_ffn_expand_c1024_fp16),
-			Geometry->Grids[96], dim3(32, 4, 1), 72, false};
+		using FParameters = FGlobalFfnExpandC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_expand_c1024_fp16),
+							   Geometry->Grids[96], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(101));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(106));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(71));
@@ -1613,11 +1449,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract
-		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_contract_c1024_fp16::global_ffn_contract_c1024_fp16),
-			Geometry->Grids[97], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalFfnContractC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_contract_c1024_fp16),
+							   Geometry->Grids[97], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(106));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(101));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(107));
@@ -1628,10 +1462,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv
-		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::global_qkv_c1024_fp16::global_qkv_c1024_fp16),
-							   Geometry->Grids[98], dim3(32, 4, 1), 80, true};
+		using FParameters = FGlobalQkvC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_qkv_c1024_fp16), Geometry->Grids[98],
+							   dim3(32, 4, 1), 80, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(107));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(108));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(109));
@@ -1643,11 +1476,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained
-		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp16::
-											  global_attention_chained_c1024_fp16),
-			Geometry->Grids[99], dim3(32, 4, 1), 64, false};
+		using FParameters = FGlobalAttentionChainedC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_attention_chained_c1024_fp16),
+							   Geometry->Grids[99], dim3(32, 4, 1), 64, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(108));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(109));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(110));
@@ -1659,11 +1490,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection
-		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_projection_c1024_fp16::global_projection_c1024_fp16),
-			Geometry->Grids[100], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalProjectionC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_projection_c1024_fp16),
+							   Geometry->Grids[100], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(111));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(107));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(112));
@@ -1674,51 +1503,41 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[101], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[101],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(124));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[276]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[102], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[102],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(125));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[277]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[103], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[103],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(126));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[278]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[104], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[104],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(127));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[279]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand
-		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_expand_c1024_fp16::global_ffn_expand_c1024_fp16),
-			Geometry->Grids[105], dim3(32, 4, 1), 72, false};
+		using FParameters = FGlobalFfnExpandC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_expand_c1024_fp16),
+							   Geometry->Grids[105], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(112));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(117));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(75));
@@ -1727,11 +1546,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract
-		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_contract_c1024_fp16::global_ffn_contract_c1024_fp16),
-			Geometry->Grids[106], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalFfnContractC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_contract_c1024_fp16),
+							   Geometry->Grids[106], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(117));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(112));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(118));
@@ -1742,10 +1559,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv
-		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::global_qkv_c1024_fp16::global_qkv_c1024_fp16),
-							   Geometry->Grids[107], dim3(32, 4, 1), 80, true};
+		using FParameters = FGlobalQkvC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_qkv_c1024_fp16), Geometry->Grids[107],
+							   dim3(32, 4, 1), 80, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(118));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(119));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(120));
@@ -1757,11 +1573,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained
-		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp16::
-											  global_attention_chained_c1024_fp16),
-			Geometry->Grids[108], dim3(32, 4, 1), 64, false};
+		using FParameters = FGlobalAttentionChainedC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_attention_chained_c1024_fp16),
+							   Geometry->Grids[108], dim3(32, 4, 1), 64, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(119));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(120));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(121));
@@ -1773,11 +1587,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection
-		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_projection_c1024_fp16::global_projection_c1024_fp16),
-			Geometry->Grids[109], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalProjectionC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_projection_c1024_fp16),
+							   Geometry->Grids[109], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(122));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(118));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(123));
@@ -1788,51 +1600,41 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[110], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[110],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(135));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[290]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[111], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[111],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(136));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[291]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[112], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[112],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(137));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[292]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[113], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[113],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(138));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[293]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand
-		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_expand_c1024_fp16::global_ffn_expand_c1024_fp16),
-			Geometry->Grids[114], dim3(32, 4, 1), 72, false};
+		using FParameters = FGlobalFfnExpandC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_expand_c1024_fp16),
+							   Geometry->Grids[114], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(123));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(128));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(79));
@@ -1841,11 +1643,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract
-		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_contract_c1024_fp16::global_ffn_contract_c1024_fp16),
-			Geometry->Grids[115], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalFfnContractC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_contract_c1024_fp16),
+							   Geometry->Grids[115], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(128));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(123));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(129));
@@ -1856,10 +1656,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv
-		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::global_qkv_c1024_fp16::global_qkv_c1024_fp16),
-							   Geometry->Grids[116], dim3(32, 4, 1), 80, true};
+		using FParameters = FGlobalQkvC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_qkv_c1024_fp16), Geometry->Grids[116],
+							   dim3(32, 4, 1), 80, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(129));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(130));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(131));
@@ -1871,11 +1670,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained
-		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp16::
-											  global_attention_chained_c1024_fp16),
-			Geometry->Grids[117], dim3(32, 4, 1), 64, false};
+		using FParameters = FGlobalAttentionChainedC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_attention_chained_c1024_fp16),
+							   Geometry->Grids[117], dim3(32, 4, 1), 64, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(130));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(131));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(132));
@@ -1887,11 +1684,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection
-		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_projection_c1024_fp16::global_projection_c1024_fp16),
-			Geometry->Grids[118], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalProjectionC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_projection_c1024_fp16),
+							   Geometry->Grids[118], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(133));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(129));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(134));
@@ -1902,51 +1697,41 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[119], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[119],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(146));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[304]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[120], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[120],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(147));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[305]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[121], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[121],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(148));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[306]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[122], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[122],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(149));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[307]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_expand
-		using FParameters = dlssnr::reconstructed::global_ffn_expand_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_expand_c1024_fp16::global_ffn_expand_c1024_fp16),
-			Geometry->Grids[123], dim3(32, 4, 1), 72, false};
+		using FParameters = FGlobalFfnExpandC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_expand_c1024_fp16),
+							   Geometry->Grids[123], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(134));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(139));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(83));
@@ -1955,11 +1740,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_ffn_contract
-		using FParameters = dlssnr::reconstructed::global_ffn_contract_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_ffn_contract_c1024_fp16::global_ffn_contract_c1024_fp16),
-			Geometry->Grids[124], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalFfnContractC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_ffn_contract_c1024_fp16),
+							   Geometry->Grids[124], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(139));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(134));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(140));
@@ -1970,10 +1753,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_qkv
-		using FParameters = dlssnr::reconstructed::global_qkv_c1024_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::global_qkv_c1024_fp16::global_qkv_c1024_fp16),
-							   Geometry->Grids[125], dim3(32, 4, 1), 80, true};
+		using FParameters = FGlobalQkvC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_qkv_c1024_fp16), Geometry->Grids[125],
+							   dim3(32, 4, 1), 80, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(140));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(141));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(142));
@@ -1985,11 +1767,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_attention_chained
-		using FParameters = dlssnr::reconstructed::global_attention_chained_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::global_attention_chained_c1024_fp16::
-											  global_attention_chained_c1024_fp16),
-			Geometry->Grids[126], dim3(32, 4, 1), 64, false};
+		using FParameters = FGlobalAttentionChainedC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_attention_chained_c1024_fp16),
+							   Geometry->Grids[126], dim3(32, 4, 1), 64, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Query), GetBufferAddress(141));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Key), GetBufferAddress(142));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Value), GetBufferAddress(143));
@@ -2001,11 +1781,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_projection
-		using FParameters = dlssnr::reconstructed::global_projection_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::global_projection_c1024_fp16::global_projection_c1024_fp16),
-			Geometry->Grids[127], dim3(32, 4, 1), 72, true};
+		using FParameters = FGlobalProjectionC1024Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&global_projection_c1024_fp16),
+							   Geometry->Grids[127], dim3(32, 4, 1), 72, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(144));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(140));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(145));
@@ -2016,11 +1794,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_vit_1d_repack_1d_to_2d
-		using FParameters = dlssnr::reconstructed::repack_1d_to_2d_c1024_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::repack_1d_to_2d_c1024_fp16::repack_1d_to_2d_c1024_fp16),
-			Geometry->Grids[128], dim3(256, 1, 1), 24, false};
+		using FParameters = FGlobalRepackParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&repack_1d_to_2d_c1024_fp16),
+							   Geometry->Grids[128], dim3(256, 1, 1), 24, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(145));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(150));
 		KernelCall.Set<int32_t>(offsetof(FParameters, Height), Geometry->GeometryArguments[318]);
@@ -2028,21 +1804,17 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_cb_clear
-		using FParameters = dlssnr::reconstructed::completion_counter_clear::ClearParameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::completion_counter_clear::completion_counter_clear),
-			Geometry->Grids[129], dim3(256, 1, 1), 16, false};
+		using FParameters = FCompletionCounterParameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&completion_counter_clear), Geometry->Grids[129],
+							   dim3(256, 1, 1), 16, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Counters), GetBufferAddress(152));
 		KernelCall.Set<int32_t>(offsetof(FParameters, CounterCount), Geometry->GeometryArguments[320]);
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_dec_input_upsample_1024_512
-		using FParameters = dlssnr::reconstructed::decoder_upsample_c1024_to_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::decoder_upsample_c1024_to_c512_fp16::
-											  decoder_upsample_c1024_to_c512_fp16),
-			Geometry->Grids[130], dim3(32, 2, 1), 80, true};
+		using FParameters = FDecoderUpsampleC1024ToC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&decoder_upsample_c1024_to_c512_fp16),
+							   Geometry->Grids[130], dim3(32, 2, 1), 80, true};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(150));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(58));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(151));
@@ -2056,10 +1828,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512
-		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp16::window_ffn_c512_fp16),
-			Geometry->Grids[131], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_c512_fp16), Geometry->Grids[131],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(154));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(88));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(151));
@@ -2070,11 +1841,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_projection_c512_fp16::window_ffn_projection_c512_fp16),
-			Geometry->Grids[132], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
+							   Geometry->Grids[132], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(155));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(89));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(151));
@@ -2084,10 +1853,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[133], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[133],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(156));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(90));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(155));
@@ -2098,11 +1866,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512
-		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp16::
-											  window_attention_projection_c512_fp16),
-			Geometry->Grids[134], dim3(32, 8, 1), 72, false};
+		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
+							   Geometry->Grids[134], dim3(32, 8, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(157));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(91));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(155));
@@ -2112,10 +1878,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512
-		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp16::window_ffn_c512_fp16),
-			Geometry->Grids[135], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_c512_fp16), Geometry->Grids[135],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(158));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(92));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(157));
@@ -2126,11 +1891,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_projection_c512_fp16::window_ffn_projection_c512_fp16),
-			Geometry->Grids[136], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
+							   Geometry->Grids[136], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(159));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(93));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(157));
@@ -2140,10 +1903,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[137], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[137],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(160));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(94));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(159));
@@ -2154,11 +1916,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512
-		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp16::
-											  window_attention_projection_c512_fp16),
-			Geometry->Grids[138], dim3(32, 8, 1), 72, false};
+		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
+							   Geometry->Grids[138], dim3(32, 8, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(161));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(95));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(159));
@@ -2168,10 +1928,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512
-		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp16::window_ffn_c512_fp16),
-			Geometry->Grids[139], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_c512_fp16), Geometry->Grids[139],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(162));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(96));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(161));
@@ -2182,11 +1941,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_projection_c512_fp16::window_ffn_projection_c512_fp16),
-			Geometry->Grids[140], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
+							   Geometry->Grids[140], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(163));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(97));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(161));
@@ -2196,10 +1953,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[141], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[141],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(164));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(98));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(163));
@@ -2210,11 +1966,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512
-		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp16::
-											  window_attention_projection_c512_fp16),
-			Geometry->Grids[142], dim3(32, 8, 1), 72, false};
+		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
+							   Geometry->Grids[142], dim3(32, 8, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(165));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(99));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(163));
@@ -2224,10 +1978,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512
-		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp16::window_ffn_c512_fp16),
-			Geometry->Grids[143], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_c512_fp16), Geometry->Grids[143],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(166));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(100));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(165));
@@ -2238,11 +1991,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_projection_c512_fp16::window_ffn_projection_c512_fp16),
-			Geometry->Grids[144], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
+							   Geometry->Grids[144], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(167));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(101));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(165));
@@ -2252,10 +2003,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[145], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[145],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(168));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(102));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(167));
@@ -2266,11 +2016,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512
-		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp16::
-											  window_attention_projection_c512_fp16),
-			Geometry->Grids[146], dim3(32, 8, 1), 72, false};
+		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
+							   Geometry->Grids[146], dim3(32, 8, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(169));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(103));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(167));
@@ -2280,10 +2028,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512
-		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp16::window_ffn_c512_fp16),
-			Geometry->Grids[147], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_c512_fp16), Geometry->Grids[147],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(170));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(104));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(169));
@@ -2294,11 +2041,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_projection_c512_fp16::window_ffn_projection_c512_fp16),
-			Geometry->Grids[148], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
+							   Geometry->Grids[148], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(171));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(105));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(169));
@@ -2308,10 +2053,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[149], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[149],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(172));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(106));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(171));
@@ -2322,11 +2066,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512
-		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp16::
-											  window_attention_projection_c512_fp16),
-			Geometry->Grids[150], dim3(32, 8, 1), 72, false};
+		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
+							   Geometry->Grids[150], dim3(32, 8, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(173));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(107));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(171));
@@ -2336,10 +2078,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512
-		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp16::window_ffn_c512_fp16),
-			Geometry->Grids[151], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_c512_fp16), Geometry->Grids[151],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(174));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(108));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(173));
@@ -2350,11 +2091,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_projection_c512_fp16::window_ffn_projection_c512_fp16),
-			Geometry->Grids[152], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
+							   Geometry->Grids[152], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(175));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(109));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(173));
@@ -2364,10 +2103,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[153], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[153],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(176));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(110));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(175));
@@ -2378,11 +2116,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512
-		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp16::
-											  window_attention_projection_c512_fp16),
-			Geometry->Grids[154], dim3(32, 8, 1), 72, false};
+		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
+							   Geometry->Grids[154], dim3(32, 8, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(177));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(111));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(175));
@@ -2392,10 +2128,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512
-		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp16::window_ffn_c512_fp16),
-			Geometry->Grids[155], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_c512_fp16), Geometry->Grids[155],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(178));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(112));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(177));
@@ -2406,11 +2141,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_projection_c512_fp16::window_ffn_projection_c512_fp16),
-			Geometry->Grids[156], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
+							   Geometry->Grids[156], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(179));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(113));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(177));
@@ -2420,10 +2153,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[157], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[157],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(180));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(114));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(179));
@@ -2434,11 +2166,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512
-		using FParameters = dlssnr::reconstructed::window_attention_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_attention_projection_c512_fp16::
-											  window_attention_projection_c512_fp16),
-			Geometry->Grids[158], dim3(32, 8, 1), 72, false};
+		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
+							   Geometry->Grids[158], dim3(32, 8, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(181));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(115));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(179));
@@ -2448,10 +2178,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_512
-		using FParameters = dlssnr::reconstructed::window_ffn_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_ffn_c512_fp16::window_ffn_c512_fp16),
-			Geometry->Grids[159], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowFfnC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_c512_fp16), Geometry->Grids[159],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(182));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(116));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(181));
@@ -2462,11 +2191,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
-		using FParameters = dlssnr::reconstructed::window_ffn_projection_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_ffn_projection_c512_fp16::window_ffn_projection_c512_fp16),
-			Geometry->Grids[160], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
+							   Geometry->Grids[160], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(183));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(117));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(181));
@@ -2476,10 +2203,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_qkv_512
-		using FParameters = dlssnr::reconstructed::window_qkv_c512_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_qkv_c512_fp16::window_qkv_c512_fp16),
-			Geometry->Grids[161], dim3(32, 4, 1), 56, false};
+		using FParameters = FWindowQkvC512Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_qkv_c512_fp16), Geometry->Grids[161],
+							   dim3(32, 4, 1), 56, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(184));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(118));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(183));
@@ -2490,12 +2216,10 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_split_swin_16h_proj_512_outview
-		using FParameters =
-			dlssnr::reconstructed::window_attention_projection_output_view_c512_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_attention_projection_output_view_c512_fp16::
-									   window_attention_projection_output_view_c512_fp16),
-							   Geometry->Grids[162], dim3(32, 4, 1), 72, false};
+		using FParameters = FWindowAttentionProjectionOutputViewC512Fp16Parameters;
+		FKernelCall KernelCall{
+			reinterpret_cast<const void*>(&window_attention_projection_output_view_c512_fp16),
+			Geometry->Grids[162], dim3(32, 4, 1), 72, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(185));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(119));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Residual), GetBufferAddress(183));
@@ -2505,11 +2229,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_upsample
-		using FParameters = dlssnr::reconstructed::window_block_c256_upsample_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_block_c256_upsample_fp16::window_block_c256_upsample_fp16),
-			Geometry->Grids[163], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256UpsampleFp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_upsample_fp16),
+							   Geometry->Grids[163], dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(185));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(186));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(120));
@@ -2521,10 +2243,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
-		using FParameters = dlssnr::reconstructed::window_block_c256_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c256_fp16::window_block_c256_fp16),
-							   Geometry->Grids[164], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[164],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(186));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(187));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(121));
@@ -2535,10 +2256,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
-		using FParameters = dlssnr::reconstructed::window_block_c256_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c256_fp16::window_block_c256_fp16),
-							   Geometry->Grids[165], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[165],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(187));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(188));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(122));
@@ -2549,10 +2269,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
-		using FParameters = dlssnr::reconstructed::window_block_c256_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c256_fp16::window_block_c256_fp16),
-							   Geometry->Grids[166], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[166],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(188));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(189));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(123));
@@ -2563,10 +2282,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
-		using FParameters = dlssnr::reconstructed::window_block_c256_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c256_fp16::window_block_c256_fp16),
-							   Geometry->Grids[167], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[167],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(189));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(190));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(124));
@@ -2577,10 +2295,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
-		using FParameters = dlssnr::reconstructed::window_block_c256_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c256_fp16::window_block_c256_fp16),
-							   Geometry->Grids[168], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[168],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(190));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(191));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(125));
@@ -2591,10 +2308,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
-		using FParameters = dlssnr::reconstructed::window_block_c256_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c256_fp16::window_block_c256_fp16),
-							   Geometry->Grids[169], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[169],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(191));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(192));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(126));
@@ -2605,11 +2321,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_outview
-		using FParameters = dlssnr::reconstructed::window_block_c256_output_view_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_block_c256_output_view_fp16::
-											  window_block_c256_output_view_fp16),
-			Geometry->Grids[170], dim3(32, 8, 1), 88, false};
+		using FParameters = FWindowBlockC256OutputViewFp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_output_view_fp16),
+							   Geometry->Grids[170], dim3(32, 8, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(192));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(193));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(127));
@@ -2622,11 +2336,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_upsample
-		using FParameters = dlssnr::reconstructed::window_block_c128_upsample_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_block_c128_upsample_fp16::window_block_c128_upsample_fp16),
-			Geometry->Grids[171], dim3(32, 4, 1), 88, false};
+		using FParameters = FWindowBlockC128UpsampleFp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_upsample_fp16),
+							   Geometry->Grids[171], dim3(32, 4, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(193));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(194));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(128));
@@ -2638,10 +2350,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
-		using FParameters = dlssnr::reconstructed::window_block_c128_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c128_fp16::window_block_c128_fp16),
-							   Geometry->Grids[172], dim3(32, 4, 1), 88, false};
+		using FParameters = FWindowBlockC128Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[172],
+							   dim3(32, 4, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(194));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(195));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(129));
@@ -2652,10 +2363,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
-		using FParameters = dlssnr::reconstructed::window_block_c128_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c128_fp16::window_block_c128_fp16),
-							   Geometry->Grids[173], dim3(32, 4, 1), 88, false};
+		using FParameters = FWindowBlockC128Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[173],
+							   dim3(32, 4, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(195));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(196));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(130));
@@ -2666,10 +2376,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
-		using FParameters = dlssnr::reconstructed::window_block_c128_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c128_fp16::window_block_c128_fp16),
-							   Geometry->Grids[174], dim3(32, 4, 1), 88, false};
+		using FParameters = FWindowBlockC128Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[174],
+							   dim3(32, 4, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(196));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(197));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(131));
@@ -2680,10 +2389,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
-		using FParameters = dlssnr::reconstructed::window_block_c128_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c128_fp16::window_block_c128_fp16),
-							   Geometry->Grids[175], dim3(32, 4, 1), 88, false};
+		using FParameters = FWindowBlockC128Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[175],
+							   dim3(32, 4, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(197));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(198));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(132));
@@ -2694,11 +2402,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_outview
-		using FParameters = dlssnr::reconstructed::window_block_c128_output_view_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(&dlssnr::reconstructed::window_block_c128_output_view_fp16::
-											  window_block_c128_output_view_fp16),
-			Geometry->Grids[176], dim3(32, 4, 1), 88, false};
+		using FParameters = FWindowBlockC128OutputViewFp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_output_view_fp16),
+							   Geometry->Grids[176], dim3(32, 4, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(198));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(199));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(133));
@@ -2711,11 +2417,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2_upsample
-		using FParameters = dlssnr::reconstructed::window_block_c64_upsample_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_block_c64_upsample_fp16::window_block_c64_upsample_fp16),
-			Geometry->Grids[177], dim3(32, 2, 1), 88, false};
+		using FParameters = FWindowBlockC64UpsampleFp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c64_upsample_fp16),
+							   Geometry->Grids[177], dim3(32, 2, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(199));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(200));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(134));
@@ -2727,10 +2431,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2
-		using FParameters = dlssnr::reconstructed::window_block_c64_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c64_fp16::window_block_c64_fp16),
-							   Geometry->Grids[178], dim3(32, 2, 1), 88, false};
+		using FParameters = FWindowBlockC64Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c64_fp16), Geometry->Grids[178],
+							   dim3(32, 2, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(200));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(201));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(135));
@@ -2741,10 +2444,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2
-		using FParameters = dlssnr::reconstructed::window_block_c64_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c64_fp16::window_block_c64_fp16),
-							   Geometry->Grids[179], dim3(32, 2, 1), 88, false};
+		using FParameters = FWindowBlockC64Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c64_fp16), Geometry->Grids[179],
+							   dim3(32, 2, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(201));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(202));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(136));
@@ -2755,11 +2457,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2_outview
-		using FParameters = dlssnr::reconstructed::window_block_c64_output_view_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_block_c64_output_view_fp16::window_block_c64_output_view_fp16),
-			Geometry->Grids[180], dim3(32, 2, 1), 88, false};
+		using FParameters = FWindowBlockC64OutputViewFp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c64_output_view_fp16),
+							   Geometry->Grids[180], dim3(32, 2, 1), 88, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(202));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(203));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(137));
@@ -2772,11 +2472,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1_upsample
-		using FParameters = dlssnr::reconstructed::window_block_c32_upsample_fp16::Parameters;
-		FKernelCall KernelCall{
-			reinterpret_cast<const void*>(
-				&dlssnr::reconstructed::window_block_c32_upsample_fp16::window_block_c32_upsample_fp16),
-			Geometry->Grids[181], dim3(32, 1, 1), 96, false};
+		using FParameters = FWindowBlockC32UpsampleFp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c32_upsample_fp16),
+							   Geometry->Grids[181], dim3(32, 1, 1), 96, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(203));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(204));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(138));
@@ -2790,10 +2488,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1
-		using FParameters = dlssnr::reconstructed::window_block_c32_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c32_fp16::window_block_c32_fp16),
-							   Geometry->Grids[182], dim3(32, 1, 1), 96, false};
+		using FParameters = FWindowBlockC32Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c32_fp16), Geometry->Grids[182],
+							   dim3(32, 1, 1), 96, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(204));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(205));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(139));
@@ -2804,10 +2501,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1
-		using FParameters = dlssnr::reconstructed::window_block_c32_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c32_fp16::window_block_c32_fp16),
-							   Geometry->Grids[183], dim3(32, 1, 1), 96, false};
+		using FParameters = FWindowBlockC32Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c32_fp16), Geometry->Grids[183],
+							   dim3(32, 1, 1), 96, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(205));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(206));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(140));
@@ -2818,10 +2514,9 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 		Calls.push_back(KernelCall);
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1
-		using FParameters = dlssnr::reconstructed::window_block_c32_fp16::Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(
-								   &dlssnr::reconstructed::window_block_c32_fp16::window_block_c32_fp16),
-							   Geometry->Grids[184], dim3(32, 1, 1), 96, false};
+		using FParameters = FWindowBlockC32Fp16Parameters;
+		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c32_fp16), Geometry->Grids[184],
+							   dim3(32, 1, 1), 96, false};
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(206));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(207));
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_PackedWeights), GetRecordAddress(141));

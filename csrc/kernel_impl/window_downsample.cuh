@@ -2,21 +2,19 @@
 #include "warp_window_wide.cuh"
 #include "window_pool.cuh"
 
-namespace dlssnr::kernels::window_downsample
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-using namespace dlssnr::kernels::window_wide;
 
 // This is an internal argument view, not an exported parameter ABI. Named
 // adapters retain the byte contracts of the four existing native structures.
-struct FArguments
+struct FWindowDownsampleArguments
 {
 	uint64_t g_Input, g_Output, g_PackedWeights, g_DownsampledOutput;
 	int Height, Width, OriginX, OriginY, DownsampledHeight, DownsampledWidth;
 };
 
 template <int Channels, bool bFp8, class FParameters>
-__device__ __forceinline__ FArguments Arguments(const FParameters& r_Source)
+__device__ __forceinline__ FWindowDownsampleArguments
+MakeWindowDownsampleArguments(const FParameters& r_Source)
 {
 	return {r_Source.g_Input,
 			r_Source.g_Output,
@@ -31,8 +29,9 @@ __device__ __forceinline__ FArguments Arguments(const FParameters& r_Source)
 }
 
 template <int Channels, bool bFp8>
-__device__ __forceinline__ void PublishDown(const FArguments& r_Parameters, int r_OutputPanel,
-											const FAccumulatorTile<32>& r_Output)
+__device__ __forceinline__ void PublishWindowDownsample(const FWindowDownsampleArguments& r_Parameters,
+														int r_OutputPanel,
+														const FWindowAccumulatorTile<32>& r_Output)
 {
 	// C32 writes compact half extents. Wider native entries align those extents
 	// to four. The separate clear operation uses the auxiliary target extents.
@@ -43,9 +42,9 @@ __device__ __forceinline__ void PublishDown(const FArguments& r_Parameters, int 
 	const int g_OriginX = (int(blockIdx.x) * 8 + r_Parameters.OriginX) / 2;
 	const int g_OriginY = (int(blockIdx.y) * 8 + r_Parameters.OriginY) / 2;
 #pragma unroll
-	for (int r_Chunk = 0; r_Chunk < FProfile<bFp8>::InputChunks; ++r_Chunk)
+	for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
 	{
-		const auto r_Fragment = PublishChunk<bFp8>(r_Output, r_Chunk);
+		const auto r_Fragment = PublishWindowChunk<bFp8>(r_Output, r_Chunk);
 #pragma unroll
 		for (int r_Word = 0; r_Word < 4; ++r_Word)
 		{
@@ -54,7 +53,7 @@ __device__ __forceinline__ void PublishDown(const FArguments& r_Parameters, int 
 			if (g_X >= 0 && g_X < g_Width && g_Y >= 0 && g_Y < g_Height)
 			{
 				const int g_Plane =
-					r_OutputPanel * 2 * FProfile<bFp8>::InputChunks + 2 * r_Chunk + r_Word / 2;
+					r_OutputPanel * 2 * FWindow32Profile<bFp8>::InputChunks + 2 * r_Chunk + r_Word / 2;
 				const uint64_t g_OutputWordAddress =
 					r_Parameters.g_DownsampledOutput +
 					((uint64_t(g_Plane * g_Height + g_Y) * g_Width + g_X) * 16) + 4 * (threadIdx.x & 3);
@@ -68,7 +67,7 @@ __device__ __forceinline__ void PublishDown(const FArguments& r_Parameters, int 
 }
 
 template <int Channels, int ClearPlanes = Channels / 4>
-__device__ __forceinline__ void ClearPadding(const FArguments& r_Parameters)
+__device__ __forceinline__ void ClearDownsamplePadding(const FWindowDownsampleArguments& r_Parameters)
 {
 	const int g_ValidHeight = (r_Parameters.Height + 1) / 2;
 	const int g_ValidWidth = (r_Parameters.Width + 1) / 2;
@@ -128,11 +127,11 @@ __device__ __forceinline__ void ClearPadding(const FArguments& r_Parameters)
 }
 
 template <int Channels, bool bFp8>
-__device__ __forceinline__ void ProjectDown(const FArguments& r_Parameters,
-											const FActivationTile<bFp8>& r_Pooled,
-											FSharedWindow<Channels, bFp8>& s_Window)
+__device__ __forceinline__ void ProjectWindowDownsample(const FWindowDownsampleArguments& r_Parameters,
+														const FWindowActivationTile<bFp8>& r_Pooled,
+														FSharedWindow<Channels, bFp8>& s_Window)
 {
-	using FConfig = FWideProfile<Channels, bFp8>;
+	using FConfig = FWideWindowProfile<Channels, bFp8>;
 	s_Window.Store(0, threadIdx.y, r_Pooled);
 	__syncthreads();
 	const auto* g_Weights = reinterpret_cast<const unsigned char*>(r_Parameters.g_PackedWeights) +
@@ -140,34 +139,34 @@ __device__ __forceinline__ void ProjectDown(const FArguments& r_Parameters,
 #pragma unroll 1
 	for (int r_OutputHalf = 0; r_OutputHalf < 2; ++r_OutputHalf)
 	{
-		FAccumulatorTile<32> r_Output{};
+		FWindowAccumulatorTile<32> r_Output{};
 #pragma unroll
 		for (int r_Panel = 0; r_Panel < FConfig::Heads; ++r_Panel)
 		{
-			const auto r_Weights = LoadWeights<bFp8>(g_Weights, 32 * threadIdx.y + r_OutputHalf * Channels,
-													 32 * r_Panel, 2 * Channels);
-			Linear32(s_Window.Load(0, r_Panel), r_Weights, r_Output);
+			const auto r_Weights = LoadWindowWeights<bFp8>(
+				g_Weights, 32 * threadIdx.y + r_OutputHalf * Channels, 32 * r_Panel, 2 * Channels);
+			LinearWindow32(s_Window.Load(0, r_Panel), r_Weights, r_Output);
 		}
-		PublishDown<Channels, bFp8>(r_Parameters, threadIdx.y + r_OutputHalf * FConfig::Heads, r_Output);
+		PublishWindowDownsample<Channels, bFp8>(r_Parameters, threadIdx.y + r_OutputHalf * FConfig::Heads,
+												r_Output);
 	}
 	__syncthreads();
-	ClearPadding<Channels>(r_Parameters);
+	ClearDownsamplePadding<Channels>(r_Parameters);
 }
 
 template <bool bFp8>
-__device__ __forceinline__ void ProjectDown32(const FArguments& r_Parameters,
-											  const FActivationTile<bFp8>& r_Pooled)
+__device__ __forceinline__ void ProjectWindowDownsample32(const FWindowDownsampleArguments& r_Parameters,
+														  const FWindowActivationTile<bFp8>& r_Pooled)
 {
 	const auto* g_Weights = reinterpret_cast<const unsigned char*>(r_Parameters.g_PackedWeights) +
-							FProfile<bFp8>::AttentionScaleOffset + 64;
+							FWindow32Profile<bFp8>::AttentionScaleOffset + 64;
 #pragma unroll
 	for (int r_OutputPanel = 0; r_OutputPanel < 2; ++r_OutputPanel)
 	{
-		FAccumulatorTile<32> r_Output{};
-		Linear32(r_Pooled, LoadWeights<bFp8>(g_Weights, 32 * r_OutputPanel, 0, 64), r_Output);
-		PublishDown<32, bFp8>(r_Parameters, r_OutputPanel, r_Output);
+		FWindowAccumulatorTile<32> r_Output{};
+		LinearWindow32(r_Pooled, LoadWindowWeights<bFp8>(g_Weights, 32 * r_OutputPanel, 0, 64), r_Output);
+		PublishWindowDownsample<32, bFp8>(r_Parameters, r_OutputPanel, r_Output);
 	}
-	ClearPadding<32>(r_Parameters);
+	ClearDownsamplePadding<32>(r_Parameters);
 }
 #endif
-} // namespace dlssnr::kernels::window_downsample

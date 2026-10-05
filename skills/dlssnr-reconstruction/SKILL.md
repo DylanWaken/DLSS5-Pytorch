@@ -5,7 +5,7 @@ description: Reconstruct, integrate, qualify and document this repository's DLSS
 
 # DLSS-NR reconstruction workflow
 
-For the current build, read `docs/RECONSTRUCTION_STATUS.md` and `docs/NAMING_AUDIT.md`. The dated UEv2 snapshot below is historical; later semantic reconstruction and naming-audit receipts supersede its coverage and timing statements.
+For the current build, read `docs/RECONSTRUCTION_STATUS.md`, `docs/NAMING_AUDIT.md` and `docs/FLAT_SYMBOLS.md`. The dated UEv2 snapshot below is historical; later semantic reconstruction and naming-audit receipts supersede its coverage and timing statements.
 
 Read `docs/RECONSTRUCTION_STATUS.md` and the exact run receipts before acting. Reconciled snapshot: 2026-10-05. The latest qualified **UEv2 normal 81-entry source build**, binary `88b7a94a…`, passes the fixed SM120, batch-one, prepared-feature FP8 trunk at 720p, 1080p, 1440p and 2160p. Its final 4K paired result is **6.496523 ms versus 6.452048 ms original**, ratio **1.006893098**: approximately **0.689% slower**. Both execution-order medians meet the user's accepted **within-1%** slowdown limit; the other three measured resolutions are faster than the original. Further performance optimization stopped at the user's criterion. Installation is a separate root-owned receipt, not inferred from qualification.
 
@@ -121,7 +121,7 @@ The postmortem should explain observed fusion/layout work, representation overhe
 
 Follow the final UE-style naming specification in `outputs/all-reconstructed-deployment-prep/readability-ue-v2/CODE_READABILITY.md`. Use meaningful CapitalCamelCase internals, `r_` register values/fragments, `r_b` proven booleans, `s_` physical shared-memory roles and `g_` proven global pointers/indices. Reserve `sl_` for logical pre-swizzle coordinates with actual def-use evidence; no such coverage is claimed merely by adding a prefix. Keep unresolved roles explicit rather than inventing tensor semantics. Preserve original PTX anchors and exact identifier inverses.
 
-Keep exported CUDA entry names/namespaces and the `Parameters`/`ClearParameters` ABI type names stable unless an intentional complete ABI migration is undertaken. Their names participate in C++ symbol mangling. Update pointer-field/member/offsetof spellings together through the per-namespace maps, while retaining field order, sizes, alignment and reserved slots. Public Python/Torch names stay stable during the internal UE pass. Shared intrinsics retain literal ISA, operand constraints and clobbers; source rename equivalence does not imply instruction identity after compilation.
+The historical UE naming pass kept CUDA namespaces and `Parameters`/`ClearParameters` type identities because they participated in C++ symbol mangling. That restriction applies when reproducing its archived binaries, not to the current source: the later complete flat-symbol migration uses bare `extern "C"` exports and descriptive global `F` types. Keep pointer-field/member/offsetof spellings aligned while retaining field order, sizes, alignment and reserved slots. Public Python/Torch names remain stable. Shared intrinsics retain literal ISA, operand constraints and clobbers; source rename equivalence does not imply instruction identity after compilation.
 
 ## Training memory is a separate measurement
 
@@ -225,8 +225,8 @@ Keep offsets in static assertions, not field names. Update host packing, wrapper
 algorithm consumers and the authoritative generators together.
 
 Use typed renderer records instead of repeated Words[offset] decoding. Preserve
-exported Parameters identities, widths, alignment, unused zero padding and every
-field offset; assert standard layout and trivial copy. Name unknown conditioning
+descriptive global `F` launch records, widths, alignment, unused zero padding and
+every field offset; assert standard layout and trivial copy. Name unknown conditioning
 controls by observed channel/dataflow rather than inventing renderer semantics.
 
 Review local aliases too: identify MMA input/weight/accumulator fragments and
@@ -239,3 +239,29 @@ launch contracts, rebuild normally, and compare device text/constants/resources.
 Host code may change even when GPU code is identical. Test public host dispatch
 as well as full plans: a full-plan graph can bypass a separately exposed operator
 launcher. Preserve timing identities instead of relabeling old samples as fresh.
+
+## Keep project C++ symbols flat
+
+Do not add project namespaces, anonymous namespaces or `using namespace`
+directives. Call operation helpers directly, such as `RunWindow32(...)`. Give
+shared helpers and types enough operation context to be unique: global
+`FWindow32Profile`, `FSpatialProjectionArguments`, `FResolutionSelection` and
+`EC512KernelRole` are examples. Avoid replacing namespace hierarchy with an
+equally long mechanical prefix on every local value.
+
+All 81 CUDA entry points use bare `extern "C"` symbols. Retain their established
+precision suffixes and native parameter layout; global ABI types have descriptive
+`F` names and may share a record only when its layout and meaning are identical.
+Keep generated FP8/FP16 tables distinct with precision suffixes. Update the ABI
+header, generators, canonical entry map, host launchers and direct Driver tests
+together when changing a symbol contract. External `std::`, `at::` and `c10::`
+qualifications remain, and `TORCH_LIBRARY(dlssnr, ...)` still owns the public
+Torch domain; it does not declare a project C++ namespace.
+
+The source inventory rejects namespaces and requires explicit C linkage. An
+archived namespaced source is readable only through the explicit historical
+migration option, not a silent fallback in the active audit. Compare the compiled
+entry roster, instruction payloads and launch records after rebuilding; exercise
+full graphs and separately exposed host dispatch. See [the migration validation](../../docs/FLAT_SYMBOLS.md).
+Preserve original source/binary identities in existing optimization receipts and
+charts. A symbol migration with fresh correctness tests is not a fresh timing run.

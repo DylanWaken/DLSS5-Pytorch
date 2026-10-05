@@ -46,7 +46,7 @@ def _body_end(source, opening):
     raise ValueError("unclosed kernel body")
 
 
-def collect(csrc):
+def collect(csrc, *, allow_legacy_namespaces=False):
     """Return a JSON-compatible inventory keyed by canonical CUDA entry name."""
     csrc = Path(csrc).resolve()
     paths = sorted(path for path in csrc.rglob("*") if path.suffix in SOURCE_SUFFIXES)
@@ -69,6 +69,8 @@ def collect(csrc):
         includes[relative] = sorted(set(dependencies))
 
         cleaned = _without_comments_and_strings(source)
+        if not allow_legacy_namespaces and re.search(r"\bnamespace\b", cleaned):
+            raise ValueError(f"{relative}: project namespaces and using namespace are forbidden")
         namespaces = list(NAMESPACE.finditer(cleaned))
         for kernel in KERNEL.finditer(cleaned):
             name = kernel[1]
@@ -77,8 +79,11 @@ def collect(csrc):
             if path.parent != csrc / "kernel_impl":
                 raise ValueError(f"CUDA entry {name} is outside kernel_impl: {relative}")
             namespace = next((match[1] for match in reversed(namespaces) if match.start() < kernel.start()), "")
-            if namespace != "dlssnr::reconstructed::" + name:
-                raise ValueError(f"{name}: unexpected exported namespace {namespace!r}")
+            c_linkage = re.search(r'\bextern\s*"C"\s*$', source[:kernel.start()]) is not None
+            if not allow_legacy_namespaces and not c_linkage:
+                raise ValueError(f'{name}: CUDA exports must use extern "C" linkage')
+            if namespace and namespace != "dlssnr::reconstructed::" + name:
+                raise ValueError(f"{name}: unexpected historical exported namespace {namespace!r}")
             end = _body_end(cleaned, kernel.end() - 1)
             calls = sorted({
                 " ".join(match[0][:-1].split()).rstrip()
@@ -87,6 +92,7 @@ def collect(csrc):
             })
             entries[name] = {
                 "namespace": namespace,
+                "linkage": "C" if c_linkage else "C++",
                 "header": relative,
                 "line": source.count("\n", 0, kernel.start()) + 1,
                 "parameters": " ".join(kernel[2].split()),
@@ -113,7 +119,7 @@ def collect(csrc):
             raise ValueError(f"{name}: expected one CUDA emission unit, found {len(owners)}: {owners}")
         entry["emission_unit"] = owners[0]
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "entry_count": len(entries),
         "body_header_count": len({entry["header"] for entry in entries.values()}),
         "emission_unit_count": len(emission_units),
@@ -132,9 +138,13 @@ def check_roster(inventory):
         raise ValueError("FP8/FP16 canonical entry families differ")
 
 
-def compare_exports(candidate, baseline):
+def compare_exports(candidate, baseline, *, allow_namespace_migration=False):
+    """Compare linkage exactly unless an explicit historical migration is requested."""
     def exported(inventory):
-        return {(name, entry["namespace"]) for name, entry in inventory["entries"].items()}
+        if allow_namespace_migration:
+            return set(inventory["entries"])
+        return {(name, entry["namespace"], entry["linkage"])
+                for name, entry in inventory["entries"].items()}
     missing = exported(baseline) - exported(candidate)
     added = exported(candidate) - exported(baseline)
     if missing or added:
@@ -146,12 +156,18 @@ def main():
     parser.add_argument("--csrc", type=Path, default=ROOT / "csrc")
     parser.add_argument("--baseline-csrc", type=Path)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--allow-namespace-migration", action="store_true",
+                        help="Compare a namespaced historical baseline by entry basename; active sources remain flat")
     args = parser.parse_args()
+    if args.allow_namespace_migration and not args.baseline_csrc:
+        parser.error("--allow-namespace-migration requires --baseline-csrc")
     inventory = collect(args.csrc)
     check_roster(inventory)
     if args.baseline_csrc:
-        compare_exports(inventory, collect(args.baseline_csrc))
-        inventory["baseline_exports_unchanged"] = True
+        baseline = collect(args.baseline_csrc, allow_legacy_namespaces=args.allow_namespace_migration)
+        compare_exports(inventory, baseline, allow_namespace_migration=args.allow_namespace_migration)
+        inventory["baseline_entry_roster_unchanged"] = True
+        inventory["namespace_migration_requested"] = args.allow_namespace_migration
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(json.dumps(inventory, indent=2) + "\n", encoding="utf-8")

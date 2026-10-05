@@ -5,15 +5,9 @@
 
 // Native streaming global attention: four warps own 256 queries for one
 // 32-channel head, consuming 64 keys at a time through a two-stage K/V ring.
-namespace dlssnr::kernels::global_attention
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-using namespace dlssnr::intrinsics::sm120;
-using namespace dlssnr::packed_math::sm120;
-using namespace dlssnr::numerical_constants;
-namespace Fragment = dlssnr::kernels::window32;
 
-template <bool bFp8> struct FProfile
+template <bool bFp8> struct FGlobalAttentionProfile
 {
 	static constexpr int ElementBytes = bFp8 ? 1 : 2;
 	static constexpr int QueryChunks = bFp8 ? 1 : 2;
@@ -23,14 +17,15 @@ template <bool bFp8> struct FProfile
 	static constexpr int s_BarrierOffset = 4 * s_StageBytes;
 };
 
-struct FCoordinates
+struct FGlobalAttentionCoordinates
 {
 	int g_Tokens, g_PaddedTokens, g_Groups16, g_KeyTiles, g_QueryBlocks128;
 	int g_Head, g_QueryBlock256, r_Lane, r_Warp;
 };
 
-__device__ __forceinline__ void WaitPredecessor(uint64_t g_Counters, int g_FirstGroup, int g_Count,
-												const FCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void
+WaitGlobalAttentionPredecessor(uint64_t g_Counters, int g_FirstGroup, int g_Count,
+							   const FGlobalAttentionCoordinates& r_TileCoordinates)
 {
 	if (r_TileCoordinates.r_Lane == 0 && r_TileCoordinates.r_Warp == 0)
 		for (int g_Group = g_FirstGroup;
@@ -42,10 +37,11 @@ __device__ __forceinline__ void WaitPredecessor(uint64_t g_Counters, int g_First
 }
 
 template <bool bFp8>
-__device__ __forceinline__ void StageKeyValue(unsigned char* s_Storage, uint64_t g_Key, uint64_t g_Value,
-											  int g_KeyTile, const FCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void StageGlobalKeyValue(unsigned char* s_Storage, uint64_t g_Key,
+													uint64_t g_Value, int g_KeyTile,
+													const FGlobalAttentionCoordinates& r_TileCoordinates)
 {
-	using Profile = FProfile<bFp8>;
+	using Profile = FGlobalAttentionProfile<bFp8>;
 	const int s_Stage = (g_KeyTile & 1) * Profile::s_StageBytes;
 	const int s_Barrier = Profile::s_BarrierOffset + (g_KeyTile & 1) * 8;
 #pragma unroll
@@ -106,13 +102,14 @@ __device__ __forceinline__ void StageKeyValue(unsigned char* s_Storage, uint64_t
 	}
 }
 
-template <bool bFp8> __device__ __forceinline__ void WaitKeyValue(unsigned char* s_Storage, int g_KeyTile)
+template <bool bFp8>
+__device__ __forceinline__ void WaitGlobalKeyValue(unsigned char* s_Storage, int g_KeyTile)
 {
-	const int s_Barrier = FProfile<bFp8>::s_BarrierOffset + (g_KeyTile & 1) * 8;
-	dlssnr::memoryops::sm120::ArriveAndWait(s_Storage, s_Barrier);
+	const int s_Barrier = FGlobalAttentionProfile<bFp8>::s_BarrierOffset + (g_KeyTile & 1) * 8;
+	ArriveAndWait(s_Storage, s_Barrier);
 }
 
-__device__ __forceinline__ uint32_t ExponentialSurrogate(uint32_t r_Score)
+__device__ __forceinline__ uint32_t GlobalAttentionExponential(uint32_t r_Score)
 {
 	const uint32_t r_Affine =
 		HalfFma(r_Score, CONST_GLOBAL_EXP_SLOPE_HALF2, CONST_GLOBAL_EXP_INTERCEPT_HALF2);
@@ -121,7 +118,8 @@ __device__ __forceinline__ uint32_t ExponentialSurrogate(uint32_t r_Score)
 	return (r_Clamped << CONST_GLOBAL_EXP_ENCODING_SHIFT) + CONST_GLOBAL_EXP_ENCODING_OFFSET;
 }
 
-__device__ __forceinline__ void PermuteQuad(uint32_t (&r_ProbabilitySums)[4], int r_Permutation)
+__device__ __forceinline__ void PermuteGlobalAttentionQuad(uint32_t (&r_ProbabilitySums)[4],
+														   int r_Permutation)
 {
 	// Two conditional swap levels implement Words[i] = Words[i XOR p].
 	// Fixed indices keep the quartet in registers during the warp transpose.
@@ -142,8 +140,8 @@ __device__ __forceinline__ void PermuteQuad(uint32_t (&r_ProbabilitySums)[4], in
 	}
 }
 
-__device__ __forceinline__ uint32_t SumProbabilities(const Fragment::FAccumulatorTile<64> (&r_Probability)[4],
-													 int r_Lane)
+__device__ __forceinline__ uint32_t
+SumGlobalAttentionProbabilities(const FWindowAccumulatorTile<64> (&r_Probability)[4], int r_Lane)
 {
 	uint32_t r_QuerySums[2];
 #pragma unroll
@@ -164,12 +162,12 @@ __device__ __forceinline__ uint32_t SumProbabilities(const Fragment::FAccumulato
 		// This warp transpose turns the MMA fragment's channel ownership
 		// into one full query sum per lane, without changing Half add order.
 		const int r_SourceLane = ((r_Lane & 7) << 2) + (r_Lane >> 3);
-		PermuteQuad(r_LocalProbabilitySums, r_Lane & 3);
+		PermuteGlobalAttentionQuad(r_LocalProbabilitySums, r_Lane & 3);
 #pragma unroll
 		for (int r_Row = 0; r_Row < 4; ++r_Row)
 			r_GatheredProbabilitySums[r_Row] =
 				ShuffleIdx(r_LocalProbabilitySums[r_Row], r_SourceLane ^ r_Row, 31, 0xffffffffu);
-		PermuteQuad(r_GatheredProbabilitySums, r_Lane >> 3);
+		PermuteGlobalAttentionQuad(r_GatheredProbabilitySums, r_Lane >> 3);
 		uint32_t r_Sum = HalfAdd(r_GatheredProbabilitySums[0], r_GatheredProbabilitySums[1]);
 		r_Sum = HalfAdd(r_Sum, r_GatheredProbabilitySums[2]);
 		r_Sum = HalfAdd(r_Sum, r_GatheredProbabilitySums[3]);
@@ -179,7 +177,8 @@ __device__ __forceinline__ uint32_t SumProbabilities(const Fragment::FAccumulato
 	return JoinHalfwords(uint16_t(r_QuerySums[0]), uint16_t(r_QuerySums[1]));
 }
 
-__device__ __forceinline__ uint32_t CorrectDenominator(uint32_t r_Denominator, int g_PaddingKeys)
+__device__ __forceinline__ uint32_t CorrectGlobalAttentionDenominator(uint32_t r_Denominator,
+																	  int g_PaddingKeys)
 {
 	if (g_PaddingKeys > 0)
 	{
@@ -201,11 +200,11 @@ __device__ __forceinline__ uint32_t CorrectDenominator(uint32_t r_Denominator, i
 template <bool bFp8, typename TParameters>
 __device__ __forceinline__ void RunGlobalAttention(TParameters r_Parameters, unsigned char* s_Storage)
 {
-	using Profile = FProfile<bFp8>;
+	using Profile = FGlobalAttentionProfile<bFp8>;
 	const int g_Tokens = r_Parameters.BatchCount * r_Parameters.TokensPerBatch;
 	const int g_Alignment = bFp8 ? 32 : 16;
 	const int g_PaddedTokens = ((g_Tokens + g_Alignment - 1) / g_Alignment) * g_Alignment;
-	const FCoordinates r_TileCoordinates{
+	const FGlobalAttentionCoordinates r_TileCoordinates{
 		g_Tokens,		 g_PaddedTokens,  g_PaddedTokens / 16, (g_Tokens + 63) / 64, (g_Tokens + 127) / 128,
 		int(blockIdx.x), int(blockIdx.y), int(threadIdx.x),	   int(threadIdx.y)};
 	if (r_TileCoordinates.r_Lane == 0 && r_TileCoordinates.r_Warp == 0)
@@ -213,10 +212,10 @@ __device__ __forceinline__ void RunGlobalAttention(TParameters r_Parameters, uns
 		for (int s_Stage = 0; s_Stage < 2; ++s_Stage)
 			BarrierInit(s_Storage, Profile::s_BarrierOffset + s_Stage * 8, blockDim.x * blockDim.y);
 	__syncthreads();
-	WaitPredecessor(r_Parameters.g_PredecessorCounters, r_TileCoordinates.g_QueryBlock256 * 2, 2,
-					r_TileCoordinates);
+	WaitGlobalAttentionPredecessor(r_Parameters.g_PredecessorCounters, r_TileCoordinates.g_QueryBlock256 * 2,
+								   2, r_TileCoordinates);
 
-	Fragment::FAFragment r_Query[4][Profile::QueryChunks];
+	FWindowAFragment r_Query[4][Profile::QueryChunks];
 #pragma unroll
 	for (int r_QueryTile = 0; r_QueryTile < 4; ++r_QueryTile)
 #pragma unroll
@@ -231,7 +230,7 @@ __device__ __forceinline__ void RunGlobalAttention(TParameters r_Parameters, uns
 													r_TileCoordinates.g_Head * 512 * Profile::ElementBytes +
 													r_ReductionChunk * 512 + r_TileCoordinates.r_Lane * 16;
 			r_Query[r_QueryTile][r_ReductionChunk] =
-				Fragment::Fragment(g_Group < r_TileCoordinates.g_Groups16
+				MakeWindowFragment(g_Group < r_TileCoordinates.g_Groups16
 									   ? __ldca(reinterpret_cast<const uint4*>(g_QueryFragmentAddress))
 									   : make_uint4(0, 0, 0, 0));
 		}
@@ -239,13 +238,14 @@ __device__ __forceinline__ void RunGlobalAttention(TParameters r_Parameters, uns
 	for (int g_KeyTile = 0; g_KeyTile < 2; ++g_KeyTile)
 		if (g_KeyTile < r_TileCoordinates.g_KeyTiles)
 		{
-			WaitPredecessor(r_Parameters.g_PredecessorCounters, g_KeyTile / 2, 1, r_TileCoordinates);
-			StageKeyValue<bFp8>(s_Storage, r_Parameters.g_Key, r_Parameters.g_Value, g_KeyTile,
-								r_TileCoordinates);
+			WaitGlobalAttentionPredecessor(r_Parameters.g_PredecessorCounters, g_KeyTile / 2, 1,
+										   r_TileCoordinates);
+			StageGlobalKeyValue<bFp8>(s_Storage, r_Parameters.g_Key, r_Parameters.g_Value, g_KeyTile,
+									  r_TileCoordinates);
 		}
 	if (r_TileCoordinates.g_KeyTiles > 0)
-		WaitKeyValue<bFp8>(s_Storage, 0);
-	Fragment::FAccumulatorTile<32> r_Output[4]{};
+		WaitGlobalKeyValue<bFp8>(s_Storage, 0);
+	FWindowAccumulatorTile<32> r_Output[4]{};
 	uint32_t r_Denominator = 0;
 
 #pragma unroll 1
@@ -259,7 +259,7 @@ __device__ __forceinline__ void RunGlobalAttention(TParameters r_Parameters, uns
 			for (int r_ReductionChunk = 0; r_ReductionChunk < Profile::QueryChunks; ++r_ReductionChunk)
 				r_Key[r_ColumnTile][r_ReductionChunk] = *reinterpret_cast<const uint4*>(
 					s_Storage + s_Base + (r_ColumnTile * Profile::QueryChunks + r_ReductionChunk) * 512);
-		Fragment::FAccumulatorTile<64> r_Probability[4]{};
+		FWindowAccumulatorTile<64> r_Probability[4]{};
 #pragma unroll
 		for (int r_QueryTile = 0; r_QueryTile < 4; ++r_QueryTile)
 #pragma unroll
@@ -271,15 +271,16 @@ __device__ __forceinline__ void RunGlobalAttention(TParameters r_Parameters, uns
 					const uint4 r_KeyVector = r_Key[r_ColumnTile / 2][r_ReductionChunk];
 					const uint32_t r_KeyFragment[2] = {r_ColumnTile & 1 ? r_KeyVector.z : r_KeyVector.x,
 													   r_ColumnTile & 1 ? r_KeyVector.w : r_KeyVector.y};
-					Fragment::Mma<bFp8>(r_Query[r_QueryTile][r_ReductionChunk], r_KeyFragment,
-										r_Probability[r_QueryTile].r_Pair[r_ColumnTile]);
+					MmaWindowFragment<bFp8>(r_Query[r_QueryTile][r_ReductionChunk], r_KeyFragment,
+											r_Probability[r_QueryTile].r_Pair[r_ColumnTile]);
 				}
 #pragma unroll
 				for (int r_Half = 0; r_Half < 2; ++r_Half)
 					r_Probability[r_QueryTile].r_Pair[r_ColumnTile][r_Half] =
-						ExponentialSurrogate(r_Probability[r_QueryTile].r_Pair[r_ColumnTile][r_Half]);
+						GlobalAttentionExponential(r_Probability[r_QueryTile].r_Pair[r_ColumnTile][r_Half]);
 			}
-		r_Denominator = HalfAdd(r_Denominator, SumProbabilities(r_Probability, r_TileCoordinates.r_Lane));
+		r_Denominator =
+			HalfAdd(r_Denominator, SumGlobalAttentionProbabilities(r_Probability, r_TileCoordinates.r_Lane));
 
 		uint4 r_Value[Profile::ProbabilityChunks][2];
 #pragma unroll
@@ -298,27 +299,28 @@ __device__ __forceinline__ void RunGlobalAttention(TParameters r_Parameters, uns
 					 ++r_ReductionChunk)
 				{
 					const auto r_ProbabilityFragment =
-						Fragment::PublishChunk<bFp8>(r_Probability[r_QueryTile], r_ReductionChunk);
+						PublishWindowChunk<bFp8>(r_Probability[r_QueryTile], r_ReductionChunk);
 					const uint4 r_ValueVector = r_Value[r_ReductionChunk][r_ColumnTile];
 					const uint32_t r_LowerValueFragment[2] = {r_ValueVector.x, r_ValueVector.y},
 								   r_UpperValueFragment[2] = {r_ValueVector.z, r_ValueVector.w};
-					Fragment::Mma<bFp8>(r_ProbabilityFragment, r_LowerValueFragment,
-										r_Output[r_QueryTile].r_Pair[r_ColumnTile * 2]);
-					Fragment::Mma<bFp8>(r_ProbabilityFragment, r_UpperValueFragment,
-										r_Output[r_QueryTile].r_Pair[r_ColumnTile * 2 + 1]);
+					MmaWindowFragment<bFp8>(r_ProbabilityFragment, r_LowerValueFragment,
+											r_Output[r_QueryTile].r_Pair[r_ColumnTile * 2]);
+					MmaWindowFragment<bFp8>(r_ProbabilityFragment, r_UpperValueFragment,
+											r_Output[r_QueryTile].r_Pair[r_ColumnTile * 2 + 1]);
 				}
 		if (g_KeyTile + 2 < r_TileCoordinates.g_KeyTiles)
 		{
-			WaitPredecessor(r_Parameters.g_PredecessorCounters, (g_KeyTile + 2) / 2, 1, r_TileCoordinates);
-			StageKeyValue<bFp8>(s_Storage, r_Parameters.g_Key, r_Parameters.g_Value, g_KeyTile + 2,
-								r_TileCoordinates);
+			WaitGlobalAttentionPredecessor(r_Parameters.g_PredecessorCounters, (g_KeyTile + 2) / 2, 1,
+										   r_TileCoordinates);
+			StageGlobalKeyValue<bFp8>(s_Storage, r_Parameters.g_Key, r_Parameters.g_Value, g_KeyTile + 2,
+									  r_TileCoordinates);
 		}
 		if (g_KeyTile + 1 < r_TileCoordinates.g_KeyTiles)
-			WaitKeyValue<bFp8>(s_Storage, g_KeyTile + 1);
+			WaitGlobalKeyValue<bFp8>(s_Storage, g_KeyTile + 1);
 	}
 
 	const uint32_t r_InverseDenominator =
-		CorrectDenominator(r_Denominator, r_TileCoordinates.g_KeyTiles * 64 - g_Tokens);
+		CorrectGlobalAttentionDenominator(r_Denominator, r_TileCoordinates.g_KeyTiles * 64 - g_Tokens);
 #pragma unroll
 	for (int r_QueryTile = 0; r_QueryTile < 4; ++r_QueryTile)
 	{
@@ -343,7 +345,7 @@ __device__ __forceinline__ void RunGlobalAttention(TParameters r_Parameters, uns
 #pragma unroll
 			for (int r_Chunk = 0; r_Chunk < Profile::QueryChunks; ++r_Chunk)
 			{
-				const auto r_OutputFragment = Fragment::PublishChunk<bFp8>(r_Output[r_QueryTile], r_Chunk);
+				const auto r_OutputFragment = PublishWindowChunk<bFp8>(r_Output[r_QueryTile], r_Chunk);
 				StoreNoAllocate(r_Parameters.g_Output + uint64_t(g_Group) * 16384 * Profile::ElementBytes +
 									r_TileCoordinates.g_Head * 512 * Profile::ElementBytes + r_Chunk * 512 +
 									r_TileCoordinates.r_Lane * 16,
@@ -387,4 +389,3 @@ __device__ __forceinline__ void RunGlobalAttention(TParameters r_Parameters, uns
 		}
 }
 #endif
-} // namespace dlssnr::kernels::global_attention

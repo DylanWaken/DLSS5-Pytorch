@@ -3,19 +3,12 @@
 #include "kernel_impl/kernel_helpers.cuh"
 #include "kernel_impl/tiled_mma.cuh"
 
-namespace dlssnr::reconstructed::global_ffn
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-using dlssnr::intrinsics::sm120::BarrierExpect;
-using dlssnr::intrinsics::sm120::BarrierInit;
-using dlssnr::intrinsics::sm120::CopyBulk;
-using dlssnr::intrinsics::sm120::Elected;
-using dlssnr::intrinsics::sm120::StoreNoAllocate;
 
 // The native FFN expands 1024 channels to 4096. Four warps cover a
 // 128-token x 128-channel CTA tile, arranged as two row groups by two columns.
 // Both precisions stage 8192 bytes per K step: K64 FP8 or K32 Half.
-template <bool bFp8> struct FExpandProfile
+template <bool bFp8> struct FGlobalFfnExpandProfile
 {
 	static constexpr int ElementBytes = bFp8 ? 1 : 2;
 	static constexpr int ReductionTile = bFp8 ? 64 : 32;
@@ -24,18 +17,18 @@ template <bool bFp8> struct FExpandProfile
 	static constexpr uint32_t s_StageBytes = 8192;
 	static constexpr uint32_t s_StageCount = 3;
 	static constexpr uint32_t s_BarrierBase = s_StageBytes * s_StageCount;
-	static constexpr auto Precision =
-		bFp8 ? mma::sm120::EInputPrecision::Fp8 : mma::sm120::EInputPrecision::Fp16;
+	static constexpr auto Precision = bFp8 ? EMmaInputPrecision::Fp8 : EMmaInputPrecision::Fp16;
 };
 
 // Packed token storage groups 16 tokens together. Each warp copies a complete
 // 1024-byte K slab from two groups; out-of-range groups contribute exact zero.
 template <bool bFp8>
-__device__ __forceinline__ void
-StageInput(unsigned char* s_Storage, uint64_t g_Input, uint32_t g_FirstTokenGroup, uint32_t g_GroupCount,
-		   uint32_t r_ReductionTile, uint32_t s_StageIndex, bool r_bBroadcastSmallHalf)
+__device__ __forceinline__ void StageGlobalFfnInput(unsigned char* s_Storage, uint64_t g_Input,
+													uint32_t g_FirstTokenGroup, uint32_t g_GroupCount,
+													uint32_t r_ReductionTile, uint32_t s_StageIndex,
+													bool r_bBroadcastSmallHalf)
 {
-	using FProfile = FExpandProfile<bFp8>;
+	using FProfile = FGlobalFfnExpandProfile<bFp8>;
 	const uint32_t r_Warp = threadIdx.y;
 	const uint32_t r_Lane = threadIdx.x;
 	const uint32_t s_Barrier = FProfile::s_BarrierBase + s_StageIndex * 8;
@@ -66,16 +59,16 @@ StageInput(unsigned char* s_Storage, uint64_t g_Input, uint32_t g_FirstTokenGrou
 
 // All threads arrive once at the selected stage. Its token includes the parity
 // needed when the three-slot ring wraps; a CTA-wide barrier is not substituted.
-__device__ __forceinline__ void WaitForInput(unsigned char* s_Storage, uint32_t s_StageIndex)
+__device__ __forceinline__ void WaitGlobalFfnInput(unsigned char* s_Storage, uint32_t s_StageIndex)
 {
 	const uint32_t s_Barrier = 24576 + s_StageIndex * 8;
-	dlssnr::memoryops::sm120::ArriveAndWait(s_Storage, s_Barrier);
+	ArriveAndWait(s_Storage, s_Barrier);
 }
 
 // Each uint4 supplies two adjacent N8 B fragments. The two K subtiles use the
 // original 128-KiB record stride in both storage precisions.
-__device__ __forceinline__ void LoadWeights(uint4 (&r_Weight)[2][4], uint64_t g_PackedWeights,
-											uint32_t g_OutputBlock, uint32_t r_ReductionTile)
+__device__ __forceinline__ void LoadGlobalFfnExpandWeights(uint4 (&r_Weight)[2][4], uint64_t g_PackedWeights,
+														   uint32_t g_OutputBlock, uint32_t r_ReductionTile)
 {
 	const uint64_t g_WeightTileBase =
 		g_PackedWeights + g_OutputBlock * 4096 + (threadIdx.y & 1) * 2048 + threadIdx.x * 16;
@@ -88,9 +81,9 @@ __device__ __forceinline__ void LoadWeights(uint4 (&r_Weight)[2][4], uint64_t g_
 }
 
 template <bool bFp8, typename TParameters>
-__device__ __forceinline__ void Expand(const TParameters& r_Parameters)
+__device__ __forceinline__ void RunGlobalFfnExpand(const TParameters& r_Parameters)
 {
-	using FProfile = FExpandProfile<bFp8>;
+	using FProfile = FGlobalFfnExpandProfile<bFp8>;
 	__shared__ __align__(512) unsigned char s_Storage[FProfile::s_BarrierBase + 24];
 	const uint32_t r_Lane = threadIdx.x;
 	const uint32_t r_Warp = threadIdx.y;
@@ -113,16 +106,16 @@ __device__ __forceinline__ void Expand(const TParameters& r_Parameters)
 	__syncthreads();
 
 	uint4 r_Weight[2][4];
-	LoadWeights(r_Weight, g_PackedWeights, g_OutputBlock, 0);
+	LoadGlobalFfnExpandWeights(r_Weight, g_PackedWeights, g_OutputBlock, 0);
 #pragma unroll
 	for (int s_StageIndex = 0; s_StageIndex < FProfile::s_StageCount; ++s_StageIndex)
-		StageInput<bFp8>(s_Storage, g_Input, g_FirstTokenGroup, g_GroupCount, s_StageIndex, s_StageIndex,
-						 r_bBroadcastSmallHalf);
-	WaitForInput(s_Storage, 0);
+		StageGlobalFfnInput<bFp8>(s_Storage, g_Input, g_FirstTokenGroup, g_GroupCount, s_StageIndex,
+								  s_StageIndex, r_bBroadcastSmallHalf);
+	WaitGlobalFfnInput(s_Storage, 0);
 
 	// One warp accumulates 64 tokens x 64 output channels in Half. Input values
 	// are already stored in the native MMA A layout, so no transpose is needed.
-	tiles::sm120::FAccumulatorTile<4, 4> r_Accumulator{};
+	FMmaAccumulatorTile<4, 4> r_Accumulator{};
 #pragma unroll 1
 	for (uint32_t r_ReductionTile = 0; r_ReductionTile < FProfile::ReductionSteps; ++r_ReductionTile)
 	{
@@ -136,18 +129,19 @@ __device__ __forceinline__ void Expand(const TParameters& r_Parameters)
 			for (int r_KTile = 0; r_KTile < 2; ++r_KTile)
 				r_Input[r_MTile][r_KTile] =
 					*reinterpret_cast<const uint4*>(s_Storage + s_WarpInput + r_MTile * 1024 + r_KTile * 512);
-		tiles::sm120::AccumulateTile<FProfile::Precision>(r_Accumulator, r_Input, r_Weight);
+		AccumulateTile<FProfile::Precision>(r_Accumulator, r_Input, r_Weight);
 
 		// Match the native software pipeline: preload B, wait for the next A
 		// stage, then recycle the consumed stage for the tile three steps ahead.
 		if (r_ReductionTile + 1 < FProfile::ReductionSteps)
 		{
-			LoadWeights(r_Weight, g_PackedWeights, g_OutputBlock, r_ReductionTile + 1);
-			WaitForInput(s_Storage, (r_ReductionTile + 1) % FProfile::s_StageCount);
+			LoadGlobalFfnExpandWeights(r_Weight, g_PackedWeights, g_OutputBlock, r_ReductionTile + 1);
+			WaitGlobalFfnInput(s_Storage, (r_ReductionTile + 1) % FProfile::s_StageCount);
 		}
 		if (r_ReductionTile + FProfile::s_StageCount < FProfile::ReductionSteps)
-			StageInput<bFp8>(s_Storage, g_Input, g_FirstTokenGroup, g_GroupCount,
-							 r_ReductionTile + FProfile::s_StageCount, s_StageIndex, r_bBroadcastSmallHalf);
+			StageGlobalFfnInput<bFp8>(s_Storage, g_Input, g_FirstTokenGroup, g_GroupCount,
+									  r_ReductionTile + FProfile::s_StageCount, s_StageIndex,
+									  r_bBroadcastSmallHalf);
 	}
 
 	// Preserve the native clamped Half polynomial and all its rounding points.
@@ -158,8 +152,7 @@ __device__ __forceinline__ void Expand(const TParameters& r_Parameters)
 #pragma unroll
 			for (int r_Word = 0; r_Word < 4; ++r_Word)
 				r_Accumulator.r_AccumulatorWords[r_MTile][r_NTile][r_Word] =
-					packed_math::sm120::FfnActivation(
-						r_Accumulator.r_AccumulatorWords[r_MTile][r_NTile][r_Word]);
+					FfnActivation(r_Accumulator.r_AccumulatorWords[r_MTile][r_NTile][r_Word]);
 
 	// Publish each valid 16-token group directly into the next layer's physical
 	// tensor layout. FP8 pairs two N16 fragments into one 128-bit vector.
@@ -181,11 +174,10 @@ __device__ __forceinline__ void Expand(const TParameters& r_Parameters)
 			{
 				const auto& r_LowerChannelWords = r_Accumulator.r_AccumulatorWords[r_MTile][r_NTile * 2];
 				const auto& r_UpperChannelWords = r_Accumulator.r_AccumulatorWords[r_MTile][r_NTile * 2 + 1];
-				r_OutputVector = make_uint4(
-					packed_math::sm120::PackHalfPairsE4(r_LowerChannelWords[0], r_LowerChannelWords[2]),
-					packed_math::sm120::PackHalfPairsE4(r_LowerChannelWords[1], r_LowerChannelWords[3]),
-					packed_math::sm120::PackHalfPairsE4(r_UpperChannelWords[0], r_UpperChannelWords[2]),
-					packed_math::sm120::PackHalfPairsE4(r_UpperChannelWords[1], r_UpperChannelWords[3]));
+				r_OutputVector = make_uint4(PackHalfPairsE4(r_LowerChannelWords[0], r_LowerChannelWords[2]),
+											PackHalfPairsE4(r_LowerChannelWords[1], r_LowerChannelWords[3]),
+											PackHalfPairsE4(r_UpperChannelWords[0], r_UpperChannelWords[2]),
+											PackHalfPairsE4(r_UpperChannelWords[1], r_UpperChannelWords[3]));
 			}
 			else
 			{
@@ -198,4 +190,3 @@ __device__ __forceinline__ void Expand(const TParameters& r_Parameters)
 	}
 }
 #endif
-} // namespace dlssnr::reconstructed::global_ffn

@@ -9,8 +9,6 @@
 #include <vector>
 #include "plan_geometry.h"
 
-namespace dlssnr::deployment
-{
 struct FBufferSpec
 {
 	const char* Name;
@@ -96,4 +94,3 @@ CreatePlanForResolution_fp16(at::Tensor g_Input, std::vector<at::Tensor> g_Packe
 							 int64_t Height);
 c10::intrusive_ptr<FDeploymentPlan_fp16> CreatePlan_fp16(at::Tensor g_Input,
 														 std::vector<at::Tensor> g_PackedWeightRecords);
-} // namespace dlssnr::deployment

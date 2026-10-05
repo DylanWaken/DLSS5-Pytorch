@@ -5,32 +5,21 @@
 // Algorithmic reconstruction of the ordinary one-warp C32 block. Arrays name
 // tensor axes, not PTX registers. Every 16-token tile is one physical 4x4 tile;
 // its fragment row order is the DLL's order, not a BHWC staging allocation.
-namespace dlssnr::kernels::window32
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-using namespace dlssnr::packed_math::sm120;
-using namespace dlssnr::numerical_constants;
-using dlssnr::intrinsics::sm120::DecodeE4;
-using dlssnr::intrinsics::sm120::MmaE4;
-using dlssnr::intrinsics::sm120::MmaHalf;
-using dlssnr::intrinsics::sm120::ShuffleBfly;
-using dlssnr::intrinsics::sm120::ShuffleIdx;
-using dlssnr::intrinsics::sm120::StoreNoAllocate;
-using dlssnr::intrinsics::sm120::TransposeM8n8;
 
-struct FAFragment
+struct FWindowAFragment
 {
 	uint32_t r_Word[4];
 };
 
 // Each word holds channels [8*Column + 2*(Lane%4), +1]. RowHalf selects
 // physical rows Lane/4 or Lane/4+8 within the tile's 16 tokens.
-template <int Columns> struct FAccumulatorTile
+template <int Columns> struct FWindowAccumulatorTile
 {
 	uint32_t r_Pair[Columns / 8][2];
 };
 
-template <bool bFp8> struct FProfile
+template <bool bFp8> struct FWindow32Profile
 {
 	static constexpr int Reduction = bFp8 ? 32 : 16;
 	static constexpr int InputChunks = 32 / Reduction;
@@ -44,23 +33,23 @@ template <bool bFp8> struct FProfile
 	static constexpr int AttentionScaleOffset = bFp8 ? 20592 : 32880;
 };
 
-template <bool bFp8> struct FActivationTile
+template <bool bFp8> struct FWindowActivationTile
 {
-	FAFragment r_Reduction[FProfile<bFp8>::InputChunks];
+	FWindowAFragment r_Reduction[FWindow32Profile<bFp8>::InputChunks];
 };
 
-template <bool bFp8> struct FWeightTile
+template <bool bFp8> struct FWindowWeightTile
 {
-	uint32_t r_Pair[FProfile<bFp8>::InputChunks][4][2];
+	uint32_t r_Pair[FWindow32Profile<bFp8>::InputChunks][4][2];
 };
 
-template <bool bFp8> struct FValueTile
+template <bool bFp8> struct FWindowValueTile
 {
 	// FP8 pairs the two K8 halves into one word; Half keeps both words.
 	uint32_t r_Column[4][bFp8 ? 1 : 2];
 };
 
-__device__ __forceinline__ FAFragment Fragment(uint4 r_FragmentVector)
+__device__ __forceinline__ FWindowAFragment MakeWindowFragment(uint4 r_FragmentVector)
 {
 	return {{r_FragmentVector.x, r_FragmentVector.y, r_FragmentVector.z, r_FragmentVector.w}};
 }
@@ -68,8 +57,9 @@ __device__ __forceinline__ FAFragment Fragment(uint4 r_FragmentVector)
 // MMA computes Accumulator += LeftOperand * RightOperand. Call sites pass
 // activation/weight, query/key, or probability/value fragments in these roles.
 template <bool bFp8>
-__device__ __forceinline__ void Mma(const FAFragment& r_LeftOperand, const uint32_t (&r_RightOperand)[2],
-									uint32_t (&r_Accumulator)[2])
+__device__ __forceinline__ void MmaWindowFragment(const FWindowAFragment& r_LeftOperand,
+												  const uint32_t (&r_RightOperand)[2],
+												  uint32_t (&r_Accumulator)[2])
 {
 	if constexpr (bFp8)
 		MmaE4(r_Accumulator[0], r_Accumulator[1], r_LeftOperand.r_Word[0], r_LeftOperand.r_Word[1],
@@ -82,10 +72,10 @@ __device__ __forceinline__ void Mma(const FAFragment& r_LeftOperand, const uint3
 }
 
 template <bool bFp8, int Columns>
-__device__ __forceinline__ FAFragment PublishChunk(const FAccumulatorTile<Columns>& r_Accumulator,
-												   int r_Chunk)
+__device__ __forceinline__ FWindowAFragment
+PublishWindowChunk(const FWindowAccumulatorTile<Columns>& r_Accumulator, int r_Chunk)
 {
-	FAFragment r_PublishedFragment;
+	FWindowAFragment r_PublishedFragment;
 #pragma unroll
 	for (int r_Half = 0; r_Half < 2; ++r_Half)
 #pragma unroll
@@ -103,28 +93,29 @@ __device__ __forceinline__ FAFragment PublishChunk(const FAccumulatorTile<Column
 }
 
 template <bool bFp8>
-__device__ __forceinline__ FActivationTile<bFp8> Publish(const FAccumulatorTile<32>& r_Accumulator)
+__device__ __forceinline__ FWindowActivationTile<bFp8>
+PublishWindow32(const FWindowAccumulatorTile<32>& r_Accumulator)
 {
-	FActivationTile<bFp8> r_PublishedActivation;
+	FWindowActivationTile<bFp8> r_PublishedActivation;
 #pragma unroll
-	for (int r_Chunk = 0; r_Chunk < FProfile<bFp8>::InputChunks; ++r_Chunk)
-		r_PublishedActivation.r_Reduction[r_Chunk] = PublishChunk<bFp8>(r_Accumulator, r_Chunk);
+	for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
+		r_PublishedActivation.r_Reduction[r_Chunk] = PublishWindowChunk<bFp8>(r_Accumulator, r_Chunk);
 	return r_PublishedActivation;
 }
 
 template <bool bFp8>
-__device__ __forceinline__ FWeightTile<bFp8> LoadWeights(const unsigned char* g_Matrix, int g_OutputBase,
-														 int g_ReductionBase, int r_OutputChannels)
+__device__ __forceinline__ FWindowWeightTile<bFp8>
+LoadWindowWeights(const unsigned char* g_Matrix, int g_OutputBase, int g_ReductionBase, int r_OutputChannels)
 {
-	FWeightTile<bFp8> r_Weights;
+	FWindowWeightTile<bFp8> r_Weights;
 #pragma unroll
-	for (int r_Chunk = 0; r_Chunk < FProfile<bFp8>::InputChunks; ++r_Chunk)
+	for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
 #pragma unroll
 		for (int r_ColumnTile = 0; r_ColumnTile < 2; ++r_ColumnTile)
 		{
 			// Both K32 E4 and K16 Half panels contain 32 bytes per output column.
 			const int g_WeightByteOffset =
-				(g_ReductionBase / FProfile<bFp8>::Reduction + r_Chunk) * r_OutputChannels * 32 +
+				(g_ReductionBase / FWindow32Profile<bFp8>::Reduction + r_Chunk) * r_OutputChannels * 32 +
 				(g_OutputBase / 16 + r_ColumnTile) * 512 + int(threadIdx.x) * 16;
 			const uint4 r_WeightVector =
 				__ldca(reinterpret_cast<const uint4*>(g_Matrix + g_WeightByteOffset));
@@ -137,18 +128,19 @@ __device__ __forceinline__ FWeightTile<bFp8> LoadWeights(const unsigned char* g_
 }
 
 template <bool bFp8>
-__device__ __forceinline__ void Linear32(const FActivationTile<bFp8>& r_Input,
-										 const FWeightTile<bFp8>& r_Weights, FAccumulatorTile<32>& r_Output)
+__device__ __forceinline__ void LinearWindow32(const FWindowActivationTile<bFp8>& r_Input,
+											   const FWindowWeightTile<bFp8>& r_Weights,
+											   FWindowAccumulatorTile<32>& r_Output)
 {
 #pragma unroll
 	for (int r_Column = 0; r_Column < 4; ++r_Column)
 #pragma unroll
-		for (int r_Chunk = 0; r_Chunk < FProfile<bFp8>::InputChunks; ++r_Chunk)
-			Mma<bFp8>(r_Input.r_Reduction[r_Chunk], r_Weights.r_Pair[r_Chunk][r_Column],
-					  r_Output.r_Pair[r_Column]);
+		for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
+			MmaWindowFragment<bFp8>(r_Input.r_Reduction[r_Chunk], r_Weights.r_Pair[r_Chunk][r_Column],
+									r_Output.r_Pair[r_Column]);
 }
 
-__device__ __forceinline__ uint32_t Activate(uint32_t r_Input)
+__device__ __forceinline__ uint32_t ActivateWindow(uint32_t r_Input)
 {
 	// Learned-network activation: Half arithmetic and six native rounding points.
 	return FfnActivation(r_Input);
@@ -159,14 +151,13 @@ __device__ __forceinline__ uint32_t Activate(uint32_t r_Input)
 template <bool bSquareRoot> __device__ __forceinline__ uint32_t InvertReplicatedHalf(uint32_t r_Sum)
 {
 	const float r_ReplicatedSum = __half2float(__ushort_as_half(uint16_t(r_Sum)));
-	const float r_Inverse = bSquareRoot ? dlssnr::intrinsics::sm120::ApproxRsqrt(r_ReplicatedSum)
-										: dlssnr::intrinsics::sm120::ApproxRcp(r_ReplicatedSum);
+	const float r_Inverse = bSquareRoot ? ApproxRsqrt(r_ReplicatedSum) : ApproxRcp(r_ReplicatedSum);
 	const uint16_t r_InverseHalf = __half_as_ushort(__float2half_rn(r_Inverse));
 	return JoinHalfwords(r_InverseHalf, r_InverseHalf);
 }
 
 template <bool bApplyScale>
-__device__ __forceinline__ void Normalize(FAccumulatorTile<32>& r_Channels, uint32_t r_Scale)
+__device__ __forceinline__ void NormalizeWindow(FWindowAccumulatorTile<32>& r_Channels, uint32_t r_Scale)
 {
 #pragma unroll
 	for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
@@ -210,7 +201,7 @@ __device__ __forceinline__ uint32_t AttentionExponential(uint32_t r_Scores)
 	return (r_Bounded << CONST_WINDOW_EXP_ENCODING_SHIFT) + CONST_WINDOW_EXP_ENCODING_OFFSET;
 }
 
-__device__ __forceinline__ void Softmax(FAccumulatorTile<64>& r_Scores)
+__device__ __forceinline__ void SoftmaxWindow(FWindowAccumulatorTile<64>& r_Scores)
 {
 #pragma unroll
 	for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
@@ -263,7 +254,7 @@ __device__ __forceinline__ void PermuteRowSums(uint32_t (&r_Sums)[4], int r_Perm
 	}
 }
 
-__device__ __forceinline__ void SoftmaxPair(FAccumulatorTile<64> (&r_Scores)[2])
+__device__ __forceinline__ void SoftmaxWindowPair(FWindowAccumulatorTile<64> (&r_Scores)[2])
 {
 	// Native window32.ptx lines 10665..10855 reduce two adjacent query tiles
 	// together. Four row halves fill all 32 lanes with one complete row sum
@@ -317,11 +308,11 @@ __device__ __forceinline__ void SoftmaxPair(FAccumulatorTile<64> (&r_Scores)[2])
 }
 
 template <bool bFp8>
-__device__ __forceinline__ FAccumulatorTile<64> QueryKeyScores(int r_Tile, const unsigned char* g_HeadBias,
-															   const FActivationTile<bFp8> (&r_Query)[4],
-															   const FActivationTile<bFp8> (&r_Key)[4])
+__device__ __forceinline__ FWindowAccumulatorTile<64>
+QueryKeyScores(int r_Tile, const unsigned char* g_HeadBias, const FWindowActivationTile<bFp8> (&r_Query)[4],
+			   const FWindowActivationTile<bFp8> (&r_Key)[4])
 {
-	FAccumulatorTile<64> r_Scores;
+	FWindowAccumulatorTile<64> r_Scores;
 #pragma unroll
 	for (int r_ColumnTile = 0; r_ColumnTile < 4; ++r_ColumnTile)
 	{
@@ -335,25 +326,27 @@ __device__ __forceinline__ FAccumulatorTile<64> QueryKeyScores(int r_Tile, const
 #pragma unroll
 	for (int r_Column = 0; r_Column < 8; ++r_Column)
 #pragma unroll
-		for (int r_Chunk = 0; r_Chunk < FProfile<bFp8>::InputChunks; ++r_Chunk)
+		for (int r_Chunk = 0; r_Chunk < FWindow32Profile<bFp8>::InputChunks; ++r_Chunk)
 		{
 			const auto& r_Keys = r_Key[r_Column / 2].r_Reduction[r_Chunk];
 			const uint32_t r_KeyFragment[2] = {r_Keys.r_Word[r_Column & 1],
 											   r_Keys.r_Word[2 + (r_Column & 1)]};
-			Mma<bFp8>(r_Query[r_Tile].r_Reduction[r_Chunk], r_KeyFragment, r_Scores.r_Pair[r_Column]);
+			MmaWindowFragment<bFp8>(r_Query[r_Tile].r_Reduction[r_Chunk], r_KeyFragment,
+									r_Scores.r_Pair[r_Column]);
 		}
 	return r_Scores;
 }
 
 template <bool bFp8>
-__device__ __forceinline__ FAccumulatorTile<32> ProbabilityValues(const FAccumulatorTile<64>& r_Probabilities,
-																  const FValueTile<bFp8> (&r_Value)[4])
+__device__ __forceinline__ FWindowAccumulatorTile<32>
+ProbabilityValues(const FWindowAccumulatorTile<64>& r_Probabilities,
+				  const FWindowValueTile<bFp8> (&r_Value)[4])
 {
-	FAccumulatorTile<32> r_Attended{};
+	FWindowAccumulatorTile<32> r_Attended{};
 #pragma unroll
-	for (int r_Chunk = 0; r_Chunk < 64 / FProfile<bFp8>::Reduction; ++r_Chunk)
+	for (int r_Chunk = 0; r_Chunk < 64 / FWindow32Profile<bFp8>::Reduction; ++r_Chunk)
 	{
-		const auto r_Probability = PublishChunk<bFp8>(r_Probabilities, r_Chunk);
+		const auto r_Probability = PublishWindowChunk<bFp8>(r_Probabilities, r_Chunk);
 #pragma unroll
 		for (int r_Column = 0; r_Column < 4; ++r_Column)
 		{
@@ -368,29 +361,29 @@ __device__ __forceinline__ FAccumulatorTile<32> ProbabilityValues(const FAccumul
 				r_ValueFragment[0] = r_Value[r_Chunk].r_Column[r_Column][0];
 				r_ValueFragment[1] = r_Value[r_Chunk].r_Column[r_Column][1];
 			}
-			Mma<bFp8>(r_Probability, r_ValueFragment, r_Attended.r_Pair[r_Column]);
+			MmaWindowFragment<bFp8>(r_Probability, r_ValueFragment, r_Attended.r_Pair[r_Column]);
 		}
 	}
 	return r_Attended;
 }
 
-struct FOrdinaryIO
+struct FOrdinaryWindowIO
 {
 	static constexpr bool bCustomInput = false;
 	static constexpr bool bCustomOutput = false;
 	static constexpr bool bRawResidual = false;
-	template <bool bPrecision> using FRecordProfile = FProfile<bPrecision>;
+	template <bool bPrecision> using FRecordProfile = FWindow32Profile<bPrecision>;
 };
 
-template <bool bFp8, class FParameters, class FIO = FOrdinaryIO, bool bCaptureRaw = false>
+template <bool bFp8, class FParameters, class FIO = FOrdinaryWindowIO, bool bCaptureRaw = false>
 __device__ __forceinline__ void RunWindow32(const FParameters& r_Parameters,
-											FAccumulatorTile<32>* r_RawTiles = nullptr)
+											FWindowAccumulatorTile<32>* r_RawTiles = nullptr)
 {
 	using FConfig = typename FIO::template FRecordProfile<bFp8>;
 	const unsigned char* g_PackedWeights =
 		reinterpret_cast<const unsigned char*>(r_Parameters.g_PackedWeights);
-	FActivationTile<bFp8> r_Input[4];
-	FAccumulatorTile<32> r_Ffn[4];
+	FWindowActivationTile<bFp8> r_Input[4];
+	FWindowAccumulatorTile<32> r_Ffn[4];
 	uint32_t r_FfnScale[4], r_AttentionScale[4];
 #pragma unroll
 	for (int r_Column = 0; r_Column < 4; ++r_Column)
@@ -425,8 +418,8 @@ __device__ __forceinline__ void RunWindow32(const FParameters& r_Parameters,
 				const int64_t g_Offset = int64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
 										 r_Chunk * 512 + int(threadIdx.x) * 16;
 				r_Input[r_Tile].r_Reduction[r_Chunk] =
-					Fragment(r_bValid ? __ldcg(reinterpret_cast<const uint4*>(g_Input + g_Offset))
-									  : make_uint4(0, 0, 0, 0));
+					MakeWindowFragment(r_bValid ? __ldcg(reinterpret_cast<const uint4*>(g_Input + g_Offset))
+												: make_uint4(0, 0, 0, 0));
 			}
 		}
 #pragma unroll
@@ -453,51 +446,52 @@ __device__ __forceinline__ void RunWindow32(const FParameters& r_Parameters,
 #pragma unroll
 	for (int r_Hidden = 0; r_Hidden < 4; ++r_Hidden)
 	{
-		const FWeightTile<bFp8> r_Expand = LoadWeights<bFp8>(g_PackedWeights, 32 * r_Hidden, 0, 128);
-		const FWeightTile<bFp8> r_Contract =
-			LoadWeights<bFp8>(g_PackedWeights + FConfig::ContractOffset, 0, 32 * r_Hidden, 32);
+		const FWindowWeightTile<bFp8> r_Expand =
+			LoadWindowWeights<bFp8>(g_PackedWeights, 32 * r_Hidden, 0, 128);
+		const FWindowWeightTile<bFp8> r_Contract =
+			LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::ContractOffset, 0, 32 * r_Hidden, 32);
 #pragma unroll
 		for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 		{
-			FAccumulatorTile<32> r_HiddenTile{};
-			Linear32(r_Input[r_Tile], r_Expand, r_HiddenTile);
+			FWindowAccumulatorTile<32> r_HiddenTile{};
+			LinearWindow32(r_Input[r_Tile], r_Expand, r_HiddenTile);
 #pragma unroll
 			for (int r_Column = 0; r_Column < 4; ++r_Column)
 #pragma unroll
 				for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 					r_HiddenTile.r_Pair[r_Column][r_RowHalf] =
-						Activate(r_HiddenTile.r_Pair[r_Column][r_RowHalf]);
-			Linear32(Publish<bFp8>(r_HiddenTile), r_Contract, r_Ffn[r_Tile]);
+						ActivateWindow(r_HiddenTile.r_Pair[r_Column][r_RowHalf]);
+			LinearWindow32(PublishWindow32<bFp8>(r_HiddenTile), r_Contract, r_Ffn[r_Tile]);
 		}
 	}
 #pragma unroll
 	for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
-		r_Input[r_Tile] = Publish<bFp8>(r_Ffn[r_Tile]);
+		r_Input[r_Tile] = PublishWindow32<bFp8>(r_Ffn[r_Tile]);
 
-	FActivationTile<bFp8> r_Query[4], r_Key[4];
-	FValueTile<bFp8> r_Value[4];
+	FWindowActivationTile<bFp8> r_Query[4], r_Key[4];
+	FWindowValueTile<bFp8> r_Value[4];
 	const uint32_t r_HeadScale =
 		FloatToHalf2(*reinterpret_cast<const uint32_t*>(g_PackedWeights + FConfig::HeadScaleOffset));
 #pragma unroll
 	for (int r_Projection = 0; r_Projection < 3; ++r_Projection)
 	{
-		const FWeightTile<bFp8> r_Weights =
-			LoadWeights<bFp8>(g_PackedWeights + FConfig::QkvOffset, 32 * r_Projection, 0, 96);
+		const FWindowWeightTile<bFp8> r_Weights =
+			LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::QkvOffset, 32 * r_Projection, 0, 96);
 #pragma unroll
 		for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 		{
-			FAccumulatorTile<32> r_Projected{};
-			Linear32(r_Input[r_Tile], r_Weights, r_Projected);
+			FWindowAccumulatorTile<32> r_Projected{};
+			LinearWindow32(r_Input[r_Tile], r_Weights, r_Projected);
 			if (r_Projection < 2)
 			{
 				if (r_Projection == 0)
-					Normalize<true>(r_Projected, r_HeadScale);
+					NormalizeWindow<true>(r_Projected, r_HeadScale);
 				else
-					Normalize<false>(r_Projected, CONST_HALF2_ONE);
+					NormalizeWindow<false>(r_Projected, CONST_HALF2_ONE);
 				if (r_Projection == 0)
-					r_Query[r_Tile] = Publish<bFp8>(r_Projected);
+					r_Query[r_Tile] = PublishWindow32<bFp8>(r_Projected);
 				else
-					r_Key[r_Tile] = Publish<bFp8>(r_Projected);
+					r_Key[r_Tile] = PublishWindow32<bFp8>(r_Projected);
 			}
 			else
 #pragma unroll
@@ -516,23 +510,23 @@ __device__ __forceinline__ void RunWindow32(const FParameters& r_Parameters,
 		}
 	}
 
-	const FWeightTile<bFp8> r_OutputWeights =
-		LoadWeights<bFp8>(g_PackedWeights + FConfig::ProjectionOffset, 0, 0, 32);
+	const FWindowWeightTile<bFp8> r_OutputWeights =
+		LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::ProjectionOffset, 0, 0, 32);
 	// FP8 follows the native two-query-tile softmax schedule. Keep the tested
 	// FP16 schedule independent until its register pressure is measured.
 	constexpr int CONST_QUERY_TILE_BATCH = bFp8 ? 2 : 1;
 #pragma unroll
 	for (int r_FirstTile = 0; r_FirstTile < 4; r_FirstTile += CONST_QUERY_TILE_BATCH)
 	{
-		FAccumulatorTile<64> r_Probabilities[CONST_QUERY_TILE_BATCH];
+		FWindowAccumulatorTile<64> r_Probabilities[CONST_QUERY_TILE_BATCH];
 #pragma unroll
 		for (int r_LocalTile = 0; r_LocalTile < CONST_QUERY_TILE_BATCH; ++r_LocalTile)
 			r_Probabilities[r_LocalTile] = QueryKeyScores<bFp8>(
 				r_FirstTile + r_LocalTile, g_PackedWeights + FConfig::BiasOffset, r_Query, r_Key);
 		if constexpr (bFp8)
-			SoftmaxPair(r_Probabilities);
+			SoftmaxWindowPair(r_Probabilities);
 		else
-			Softmax(r_Probabilities[0]);
+			SoftmaxWindow(r_Probabilities[0]);
 
 #pragma unroll
 		for (int r_LocalTile = 0; r_LocalTile < CONST_QUERY_TILE_BATCH; ++r_LocalTile)
@@ -545,7 +539,7 @@ __device__ __forceinline__ void RunWindow32(const FParameters& r_Parameters,
 				for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 					r_Ffn[r_Tile].r_Pair[r_Column][r_RowHalf] =
 						HalfMul(r_Ffn[r_Tile].r_Pair[r_Column][r_RowHalf], r_AttentionScale[r_Column]);
-			Linear32(Publish<bFp8>(r_Attended), r_OutputWeights, r_Ffn[r_Tile]);
+			LinearWindow32(PublishWindow32<bFp8>(r_Attended), r_OutputWeights, r_Ffn[r_Tile]);
 			if constexpr (bCaptureRaw)
 				r_RawTiles[r_Tile] = r_Ffn[r_Tile];
 
@@ -562,7 +556,7 @@ __device__ __forceinline__ void RunWindow32(const FParameters& r_Parameters,
 #pragma unroll
 					for (int r_Chunk = 0; r_Chunk < FConfig::InputChunks; ++r_Chunk)
 					{
-						const FAFragment r_Output = PublishChunk<bFp8>(r_Ffn[r_Tile], r_Chunk);
+						const FWindowAFragment r_Output = PublishWindowChunk<bFp8>(r_Ffn[r_Tile], r_Chunk);
 						const uint64_t g_OutputAddress =
 							r_Parameters.g_Output +
 							uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes + r_Chunk * 512 +
@@ -576,4 +570,3 @@ __device__ __forceinline__ void RunWindow32(const FParameters& r_Parameters,
 	}
 }
 #endif
-} // namespace dlssnr::kernels::window32

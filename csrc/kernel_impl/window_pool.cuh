@@ -1,10 +1,7 @@
 #pragma once
 #include "warp_window32.cuh"
 
-namespace dlssnr::kernels::window_pool
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-using namespace dlssnr::kernels::window32;
 
 __device__ __forceinline__ uint32_t PoolHorizontalWords(uint32_t r_LeftLow, uint32_t r_LeftHigh,
 														uint32_t r_RightLow, uint32_t r_RightHigh)
@@ -41,16 +38,18 @@ __device__ __forceinline__ uint32_t PoolHorizontalWords(uint32_t r_LeftLow, uint
 				   CONST_HALF2_QUARTER);
 }
 
-__device__ __forceinline__ uint32_t PoolHorizontalTiles(const FAccumulatorTile<32>& r_Left,
-														const FAccumulatorTile<32>& r_Right, int r_Column)
+__device__ __forceinline__ uint32_t PoolHorizontalTiles(const FWindowAccumulatorTile<32>& r_Left,
+														const FWindowAccumulatorTile<32>& r_Right,
+														int r_Column)
 {
 	return PoolHorizontalWords(r_Left.r_Pair[r_Column][0], r_Left.r_Pair[r_Column][1],
 							   r_Right.r_Pair[r_Column][0], r_Right.r_Pair[r_Column][1]);
 }
 
-__device__ __forceinline__ FAccumulatorTile<32> PoolWindow(const FAccumulatorTile<32> (&r_InputTiles)[4])
+__device__ __forceinline__ FWindowAccumulatorTile<32>
+PoolWindow(const FWindowAccumulatorTile<32> (&r_InputTiles)[4])
 {
-	FAccumulatorTile<32> r_Pooled;
+	FWindowAccumulatorTile<32> r_Pooled;
 #pragma unroll
 	for (int r_Column = 0; r_Column < 4; ++r_Column)
 	{
@@ -60,4 +59,3 @@ __device__ __forceinline__ FAccumulatorTile<32> PoolWindow(const FAccumulatorTil
 	return r_Pooled;
 }
 #endif
-} // namespace dlssnr::kernels::window_pool

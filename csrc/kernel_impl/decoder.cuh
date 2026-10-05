@@ -5,24 +5,19 @@
 
 // Decoder connector: split-K4 projection 1024->512, nearest 2x upsample, scaled skip.
 // CTA computes one 4x4 low-resolution tile and 256 output channels in two warps.
-namespace dlssnr::kernels::decoder
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-using namespace dlssnr::intrinsics::sm120;
-using namespace dlssnr::packed_math::sm120;
-using FAccumulator = dlssnr::tiles::sm120::FAccumulatorTile<1, 8>;
+using FDecoderAccumulator = FMmaAccumulatorTile<1, 8>;
 
-template <bool bFp8> struct FProfile
+template <bool bFp8> struct FDecoderProfile
 {
 	static constexpr int ElementBytes = bFp8 ? 1 : 2;
 	static constexpr int ReductionStep = bFp8 ? 64 : 32;
 	static constexpr int ReductionTiles = 256 / ReductionStep;
 	static constexpr int MatrixBytes = 1024 * 512 * ElementBytes;
-	static constexpr auto Precision =
-		bFp8 ? dlssnr::mma::sm120::EInputPrecision::Fp8 : dlssnr::mma::sm120::EInputPrecision::Fp16;
+	static constexpr auto Precision = bFp8 ? EMmaInputPrecision::Fp8 : EMmaInputPrecision::Fp16;
 };
 
-struct FCoordinates
+struct FDecoderCoordinates
 {
 	int g_LowTilesHigh, g_LowTilesWide, g_HighTilesHigh, g_HighTilesWide;
 	int g_TileY, g_TileX, g_OutputChannel, g_GridColumns;
@@ -30,10 +25,11 @@ struct FCoordinates
 };
 
 template <bool bFp8>
-__device__ __forceinline__ void LoadWeights(uint4 (&r_Weights)[2][8], uint64_t g_PackedWeights,
-											int r_ReductionTile, const FCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void LoadDecoderWeights(uint4 (&r_Weights)[2][8], uint64_t g_PackedWeights,
+												   int r_ReductionTile,
+												   const FDecoderCoordinates& r_TileCoordinates)
 {
-	using Profile = FProfile<bFp8>;
+	using Profile = FDecoderProfile<bFp8>;
 	const uint64_t g_WeightTileBase =
 		g_PackedWeights +
 		uint64_t(r_TileCoordinates.r_Split * 256 + r_ReductionTile * Profile::ReductionStep) * 512 *
@@ -48,10 +44,11 @@ __device__ __forceinline__ void LoadWeights(uint4 (&r_Weights)[2][8], uint64_t g
 }
 
 template <bool bFp8>
-__device__ __forceinline__ void IssueStage(unsigned char* s_Storage, uint64_t g_Input, int r_ReductionTile,
-										   const FCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void IssueDecoderStage(unsigned char* s_Storage, uint64_t g_Input,
+												  int r_ReductionTile,
+												  const FDecoderCoordinates& r_TileCoordinates)
 {
-	using Profile = FProfile<bFp8>;
+	using Profile = FDecoderProfile<bFp8>;
 	const int g_Y = r_TileCoordinates.g_LowTilesHigh == 1 ? 0 : r_TileCoordinates.g_TileY;
 	const int g_X = r_TileCoordinates.g_LowTilesWide == 1 ? 0 : r_TileCoordinates.g_TileX;
 	const int s_Destination = (r_ReductionTile % 2) * 1024 + r_TileCoordinates.r_Warp * 512;
@@ -73,45 +70,46 @@ __device__ __forceinline__ void IssueStage(unsigned char* s_Storage, uint64_t g_
 			make_uint4(0, 0, 0, 0);
 }
 
-__device__ __forceinline__ void WaitStage(unsigned char* s_Storage, int r_ReductionTile)
+__device__ __forceinline__ void WaitDecoderStage(unsigned char* s_Storage, int r_ReductionTile)
 {
 	const int s_Barrier = 2048 + (r_ReductionTile % 2) * 8;
-	dlssnr::memoryops::sm120::ArriveAndWait(s_Storage, s_Barrier);
+	ArriveAndWait(s_Storage, s_Barrier);
 }
 
 template <bool bFp8>
-__device__ __forceinline__ void Project(FAccumulator& r_Accumulator, unsigned char* s_Storage,
-										uint64_t g_Input, uint64_t g_PackedWeights,
-										const FCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void ProjectDecoder(FDecoderAccumulator& r_Accumulator, unsigned char* s_Storage,
+											   uint64_t g_Input, uint64_t g_PackedWeights,
+											   const FDecoderCoordinates& r_TileCoordinates)
 {
-	using Profile = FProfile<bFp8>;
+	using Profile = FDecoderProfile<bFp8>;
 	uint4 r_Weights[2][8];
-	LoadWeights<bFp8>(r_Weights, g_PackedWeights, 0, r_TileCoordinates);
-	IssueStage<bFp8>(s_Storage, g_Input, 0, r_TileCoordinates);
-	WaitStage(s_Storage, 0);
+	LoadDecoderWeights<bFp8>(r_Weights, g_PackedWeights, 0, r_TileCoordinates);
+	IssueDecoderStage<bFp8>(s_Storage, g_Input, 0, r_TileCoordinates);
+	WaitDecoderStage(s_Storage, 0);
 #pragma unroll 1
 	for (int r_ReductionTile = 0; r_ReductionTile < Profile::ReductionTiles; ++r_ReductionTile)
 	{
 		if (r_ReductionTile + 1 < Profile::ReductionTiles)
-			IssueStage<bFp8>(s_Storage, g_Input, r_ReductionTile + 1, r_TileCoordinates);
+			IssueDecoderStage<bFp8>(s_Storage, g_Input, r_ReductionTile + 1, r_TileCoordinates);
 		uint4 r_Input[1][2];
 #pragma unroll
 		for (int r_KSubtile = 0; r_KSubtile < 2; ++r_KSubtile)
 			r_Input[0][r_KSubtile] = *reinterpret_cast<const uint4*>(
 				s_Storage + (r_ReductionTile % 2) * 1024 + r_KSubtile * 512 + r_TileCoordinates.r_Lane * 16);
-		dlssnr::tiles::sm120::AccumulateTile<Profile::Precision>(r_Accumulator, r_Input, r_Weights);
+		AccumulateTile<Profile::Precision>(r_Accumulator, r_Input, r_Weights);
 		if (r_ReductionTile + 1 < Profile::ReductionTiles)
 		{
-			LoadWeights<bFp8>(r_Weights, g_PackedWeights, r_ReductionTile + 1, r_TileCoordinates);
-			WaitStage(s_Storage, r_ReductionTile + 1);
+			LoadDecoderWeights<bFp8>(r_Weights, g_PackedWeights, r_ReductionTile + 1, r_TileCoordinates);
+			WaitDecoderStage(s_Storage, r_ReductionTile + 1);
 		}
 	}
 }
 
 // Scratch is Half in both precisions. Split 0 stores, splits 1/2 reduce, and
 // split 3 adds the prior sum in registers. Scratch never receives split 3.
-__device__ __forceinline__ void ReduceSplit(FAccumulator& r_Accumulator, uint64_t g_SplitAccumulator,
-											const FCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void ReduceDecoderSplit(FDecoderAccumulator& r_Accumulator,
+												   uint64_t g_SplitAccumulator,
+												   const FDecoderCoordinates& r_TileCoordinates)
 {
 	if (r_TileCoordinates.r_Split < 3)
 	{
@@ -161,11 +159,11 @@ __device__ __forceinline__ void ReduceSplit(FAccumulator& r_Accumulator, uint64_
 }
 
 template <bool bFp8>
-__device__ __forceinline__ void UpsampleAndMerge(const FAccumulator& r_Projected, uint64_t g_Residual,
-												 uint64_t g_Output, uint64_t g_PackedWeights,
-												 const FCoordinates& r_TileCoordinates)
+__device__ __forceinline__ void
+UpsampleAndMergeDecoder(const FDecoderAccumulator& r_Projected, uint64_t g_Residual, uint64_t g_Output,
+						uint64_t g_PackedWeights, const FDecoderCoordinates& r_TileCoordinates)
 {
-	using Profile = FProfile<bFp8>;
+	using Profile = FDecoderProfile<bFp8>;
 	uint32_t r_ResidualScales[8][2];
 #pragma unroll
 	for (int r_NTile = 0; r_NTile < 8; ++r_NTile)
@@ -270,20 +268,20 @@ __device__ __forceinline__ void UpsampleAndMerge(const FAccumulator& r_Projected
 }
 
 template <bool bFp8, typename TParameters>
-__device__ __forceinline__ void Forward(const TParameters& r_Parameters, unsigned char* s_Storage)
+__device__ __forceinline__ void RunDecoder(const TParameters& r_Parameters, unsigned char* s_Storage)
 {
 	const int g_Columns = (r_Parameters.InputWidth + 3) / 4;
-	const FCoordinates r_TileCoordinates{r_Parameters.InputHeight / 4,
-										 r_Parameters.InputWidth / 4,
-										 r_Parameters.OutputHeight / 4,
-										 r_Parameters.OutputWidth / 4,
-										 int(blockIdx.y),
-										 int(blockIdx.x) % g_Columns,
-										 (int(blockIdx.x) / g_Columns) * 256 + int(threadIdx.y) * 128,
-										 g_Columns,
-										 int(blockIdx.z),
-										 int(threadIdx.x),
-										 int(threadIdx.y)};
+	const FDecoderCoordinates r_TileCoordinates{r_Parameters.InputHeight / 4,
+												r_Parameters.InputWidth / 4,
+												r_Parameters.OutputHeight / 4,
+												r_Parameters.OutputWidth / 4,
+												int(blockIdx.y),
+												int(blockIdx.x) % g_Columns,
+												(int(blockIdx.x) / g_Columns) * 256 + int(threadIdx.y) * 128,
+												g_Columns,
+												int(blockIdx.z),
+												int(threadIdx.x),
+												int(threadIdx.y)};
 	const uint64_t g_SplitAccumulator = r_Parameters.g_SplitAccumulator;
 	const uint64_t g_SplitCounters =
 		r_Parameters.g_CompletionCounters + (r_TileCoordinates.g_TileY * 2 * g_Columns + blockIdx.x) * 4;
@@ -293,9 +291,9 @@ __device__ __forceinline__ void Forward(const TParameters& r_Parameters, unsigne
 		BarrierInit(s_Storage, 2056, 64);
 	}
 	__syncthreads();
-	FAccumulator r_Accumulator{};
-	Project<bFp8>(r_Accumulator, s_Storage, r_Parameters.g_Input, r_Parameters.g_PackedWeights,
-				  r_TileCoordinates);
+	FDecoderAccumulator r_Accumulator{};
+	ProjectDecoder<bFp8>(r_Accumulator, s_Storage, r_Parameters.g_Input, r_Parameters.g_PackedWeights,
+						 r_TileCoordinates);
 	if (r_TileCoordinates.r_Split > 0)
 	{
 		if (r_TileCoordinates.r_Lane == 0 && r_TileCoordinates.r_Warp == 0)
@@ -303,13 +301,12 @@ __device__ __forceinline__ void Forward(const TParameters& r_Parameters, unsigne
 				PollSleep(64);
 		__syncthreads();
 	}
-	ReduceSplit(r_Accumulator, g_SplitAccumulator, r_TileCoordinates);
+	ReduceDecoderSplit(r_Accumulator, g_SplitAccumulator, r_TileCoordinates);
 	if (r_TileCoordinates.r_Split == 3)
-		UpsampleAndMerge<bFp8>(r_Accumulator, r_Parameters.g_Residual, r_Parameters.g_Output,
-							   r_Parameters.g_PackedWeights, r_TileCoordinates);
+		UpsampleAndMergeDecoder<bFp8>(r_Accumulator, r_Parameters.g_Residual, r_Parameters.g_Output,
+									  r_Parameters.g_PackedWeights, r_TileCoordinates);
 	__syncthreads();
 	if (r_TileCoordinates.r_Lane == 0 && r_TileCoordinates.r_Warp == 0)
 		CounterStoreRelease(g_SplitCounters, r_TileCoordinates.r_Split);
 }
 #endif
-} // namespace dlssnr::kernels::decoder

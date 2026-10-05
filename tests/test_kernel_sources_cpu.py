@@ -18,9 +18,8 @@ class KernelSourcesCPUTest(unittest.TestCase):
 
     def write_kernel(self, path, name="example_fp8"):
         path.write_text(
-            f"namespace dlssnr::reconstructed::{name} {{\n"
-            f"__global__ __maxnreg__(192) void {name}(Parameters r_P) {{\n"
-            "    SharedBody<64, false>(r_P);\n}\n}\n", encoding="utf-8"
+            f'extern "C" __global__ __maxnreg__(192) void {name}(FExampleParameters r_Parameters) {{\n'
+            "    SharedBody<64, false>(r_Parameters);\n}\n", encoding="utf-8"
         )
 
     def test_active_sources_have_complete_paired_exports_and_one_owner(self):
@@ -94,6 +93,40 @@ class KernelSourcesCPUTest(unittest.TestCase):
             (root / "kernel_launcher/group.cu").write_text("", encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "found 0"):
                 collect(root)
+
+    def test_namespaces_and_using_directives_are_rejected(self):
+        for declaration in ("namespace Hidden { }", "namespace { }", "using namespace std;"):
+            with self.subTest(declaration=declaration), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                self.make_fixture(root)
+                path = root / "kernel_impl/group.cuh"
+                path.write_text(declaration + "\n" + path.read_text(), encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, "namespaces and using namespace are forbidden"):
+                    collect(root)
+
+    def test_cuda_entries_require_c_linkage(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.make_fixture(root)
+            path = root / "kernel_impl/group.cuh"
+            path.write_text(path.read_text().replace('extern "C" ', ''), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, 'must use extern "C" linkage'):
+                collect(root)
+
+    def test_historical_namespace_migration_requires_explicit_flag(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.make_fixture(root)
+            current = collect(root)
+            path = root / "kernel_impl/group.cuh"
+            original = path.read_text().replace('extern "C" ', '')
+            path.write_text("namespace dlssnr::reconstructed::example_fp8 {\n" + original + "}\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "namespaces and using namespace are forbidden"):
+                collect(root)
+            historical = collect(root, allow_legacy_namespaces=True)
+            with self.assertRaisesRegex(ValueError, "exported entry roster changed"):
+                compare_exports(current, historical)
+            compare_exports(current, historical, allow_namespace_migration=True)
 
     def test_export_comparison_rejects_rename(self):
         with tempfile.TemporaryDirectory() as directory:

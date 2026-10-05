@@ -5,12 +5,7 @@
 #include <cstdint>
 
 // Packed Half arithmetic, bit reinterpretation and per-lane approximate math composition.
-namespace dlssnr::packed_math::sm120
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-using dlssnr::intrinsics::sm120::ApproxRsqrt;
-using dlssnr::intrinsics::sm120::ApproxRcp;
-
 // Reinterpret one packed 32-bit word as two Half values without split/rejoin conversions.
 __device__ __forceinline__ __half2 HalfPair(uint32_t r_PackedBits)
 {
@@ -45,7 +40,7 @@ __device__ __forceinline__ uint32_t JoinHalfwords(uint16_t r_LowHalfword, uint16
 // conversion and low/high byte placement while exposing conversion/merge fusion.
 __device__ __forceinline__ uint32_t PackHalfPairsE4(uint32_t r_LowHalfPair, uint32_t r_HighHalfPair)
 {
-	return dlssnr::intrinsics::sm120::PublishFourE4(r_LowHalfPair, r_HighHalfPair);
+	return PublishFourE4(r_LowHalfPair, r_HighHalfPair);
 }
 
 // Subtract corresponding packed Half lanes with the original Half2 operation.
@@ -136,11 +131,9 @@ __device__ __forceinline__ uint32_t ClampedHalfPolynomial(uint32_t r_Input, uint
 // coefficients and their decoded values/formula live in numerical_constants.cuh.
 __device__ __forceinline__ uint32_t FfnActivation(uint32_t r_Input)
 {
-	using namespace dlssnr::numerical_constants;
 	return ClampedHalfPolynomial(r_Input, CONST_FFN_CLAMP_UPPER_HALF2, CONST_FFN_CLAMP_LOWER_HALF2,
 								 CONST_FFN_ABS_SLOPE_HALF2, CONST_FFN_ABS_INTERCEPT_HALF2,
 								 CONST_FFN_GATE_OFFSET_HALF2);
 }
 
 #endif
-} // namespace dlssnr::packed_math::sm120

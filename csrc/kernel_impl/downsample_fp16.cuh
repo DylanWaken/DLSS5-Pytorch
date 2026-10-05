@@ -20,122 +20,105 @@
 // -----------------------------------------------------------------------------
 // Recovered tensor algorithm of cc_tinlayout_fused_pre_block_swin_1h_32_1_ds. Not recovered historical source.
 
-namespace dlssnr::reconstructed::input_preprocess_window_downsample_c32_fp16
-{
-__global__ __maxnreg__(168) void input_preprocess_window_downsample_c32_fp16(Parameters r_Parameters)
+extern "C" __global__ __maxnreg__(168) void input_preprocess_window_downsample_c32_fp16(
+	FInputPreprocessWindowDownsampleC32Fp16Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	__shared__ dlssnr::kernels::input_features::FSharedFeatures s_Features;
-	const dlssnr::kernels::input_features::FParameters& r_Input = r_Parameters;
-	dlssnr::kernels::window_preprocess::RunPreprocess<false, true>(r_Input, s_Features);
+	__shared__ FSharedFeatures s_Features;
+	const FPreprocessParameters& r_Input = r_Parameters;
+	RunPreprocess<false, true>(r_Input, s_Features);
 #endif
 }
-} // namespace dlssnr::reconstructed::input_preprocess_window_downsample_c32_fp16
 
 // -----------------------------------------------------------------------------
 // window_block_c32_downsample_fp16
 // -----------------------------------------------------------------------------
 // Recovered tensor algorithm of cc_tinlayout_fused_swin_1h_32_1_ds. Not recovered historical source.
 
-namespace dlssnr::reconstructed::window_block_c32_downsample_fp16
-{
-__global__ __maxnreg__(168) void window_block_c32_downsample_fp16(Parameters r_Parameters)
+extern "C" __global__ __maxnreg__(168) void window_block_c32_downsample_fp16(
+	FWindowBlockC32DownsampleFp16Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	using namespace dlssnr::kernels::window_downsample;
-	const FArguments r_Arguments = Arguments<32, false>(r_Parameters);
-	FAccumulatorTile<32> r_WindowOutput[4];
-	RunWindow32<false, FArguments, FOrdinaryIO, true>(r_Arguments, r_WindowOutput);
-	ProjectDown32<false>(r_Arguments,
-						 Publish<false>(dlssnr::kernels::window_pool::PoolWindow(r_WindowOutput)));
+	const FWindowDownsampleArguments r_Arguments = MakeWindowDownsampleArguments<32, false>(r_Parameters);
+	FWindowAccumulatorTile<32> r_WindowOutput[4];
+	RunWindow32<false, FWindowDownsampleArguments, FOrdinaryWindowIO, true>(r_Arguments, r_WindowOutput);
+	ProjectWindowDownsample32<false>(r_Arguments, PublishWindow32<false>(PoolWindow(r_WindowOutput)));
 #endif
 }
-} // namespace dlssnr::reconstructed::window_block_c32_downsample_fp16
 
 // -----------------------------------------------------------------------------
 // window_block_c64_downsample_fp16
 // -----------------------------------------------------------------------------
 // Source reconstruction from cc_tinlayout_fused_swin_2h_64_2_ds. Not the historical C++ source.
 
-namespace dlssnr::reconstructed::window_block_c64_downsample_fp16
-{
-__global__ __maxnreg__(168) void window_block_c64_downsample_fp16(Parameters r_Parameters)
+extern "C" __global__ __maxnreg__(168) void window_block_c64_downsample_fp16(
+	FWindowBlockC64DownsampleFp16Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	using namespace dlssnr::kernels::window_downsample;
-	const FArguments r_Arguments = Arguments<64, false>(r_Parameters);
-	FAccumulatorTile<32> r_WindowOutput[4];
+	const FWindowDownsampleArguments r_Arguments = MakeWindowDownsampleArguments<64, false>(r_Parameters);
+	FWindowAccumulatorTile<32> r_WindowOutput[4];
 	__shared__ FSharedWindow<64, false> s_Window;
-	RunWindowWide<64, false, FTiledIO<64, false>, true>(r_Arguments, s_Window, r_WindowOutput);
-	ProjectDown<64, false>(
-		r_Arguments, Publish<false>(dlssnr::kernels::window_pool::PoolWindow(r_WindowOutput)), s_Window);
+	RunWindowWide<64, false, FTiledWindowIO<64, false>, true>(r_Arguments, s_Window, r_WindowOutput);
+	ProjectWindowDownsample<64, false>(r_Arguments, PublishWindow32<false>(PoolWindow(r_WindowOutput)),
+									   s_Window);
 #endif
 }
-} // namespace dlssnr::reconstructed::window_block_c64_downsample_fp16
 
 // -----------------------------------------------------------------------------
 // window_block_c128_downsample_fp16
 // -----------------------------------------------------------------------------
 // Recovered tensor algorithm of cc_tinlayout_fused_swin_4h_128_4_ds. Not historical source.
 
-namespace dlssnr::reconstructed::window_block_c128_downsample_fp16
-{
-__global__ __maxnreg__(168) void window_block_c128_downsample_fp16(Parameters r_Parameters)
+extern "C" __global__ __maxnreg__(168) void window_block_c128_downsample_fp16(
+	FWindowBlockC128DownsampleFp16Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	using namespace dlssnr::kernels::window_downsample;
-	const FArguments r_Arguments = Arguments<128, false>(r_Parameters);
-	FAccumulatorTile<32> r_WindowOutput[4];
+	const FWindowDownsampleArguments r_Arguments = MakeWindowDownsampleArguments<128, false>(r_Parameters);
+	FWindowAccumulatorTile<32> r_WindowOutput[4];
 	__shared__ FSharedWindow<128, false> s_Window;
-	RunWindowWide<128, false, FTiledIO<128, false>, true>(r_Arguments, s_Window, r_WindowOutput);
-	ProjectDown<128, false>(
-		r_Arguments, Publish<false>(dlssnr::kernels::window_pool::PoolWindow(r_WindowOutput)), s_Window);
+	RunWindowWide<128, false, FTiledWindowIO<128, false>, true>(r_Arguments, s_Window, r_WindowOutput);
+	ProjectWindowDownsample<128, false>(r_Arguments, PublishWindow32<false>(PoolWindow(r_WindowOutput)),
+										s_Window);
 #endif
 }
-} // namespace dlssnr::reconstructed::window_block_c128_downsample_fp16
 
 // -----------------------------------------------------------------------------
 // window_block_c256_downsample_fp16
 // -----------------------------------------------------------------------------
 // Readable equivalent of cc_tinlayout_fused_swin_8h_256_8_ds; not historical source.
 
-namespace dlssnr::reconstructed::window_block_c256_downsample_fp16
-{
-__global__ __maxnreg__(192) void window_block_c256_downsample_fp16(Parameters r_Parameters)
+extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
+	FWindowBlockC256DownsampleFp16Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	using namespace dlssnr::kernels::window_downsample;
-	const FArguments r_Arguments = Arguments<256, false>(r_Parameters);
-	FAccumulatorTile<32> r_WindowOutput[4];
+	const FWindowDownsampleArguments r_Arguments = MakeWindowDownsampleArguments<256, false>(r_Parameters);
+	FWindowAccumulatorTile<32> r_WindowOutput[4];
 	__shared__ FSharedWindow<256, false> s_Window;
-	RunWindowWide<256, false, FTiledIO<256, false>, true>(r_Arguments, s_Window, r_WindowOutput);
-	ProjectDown<256, false>(
-		r_Arguments, Publish<false>(dlssnr::kernels::window_pool::PoolWindow(r_WindowOutput)), s_Window);
+	RunWindowWide<256, false, FTiledWindowIO<256, false>, true>(r_Arguments, s_Window, r_WindowOutput);
+	ProjectWindowDownsample<256, false>(r_Arguments, PublishWindow32<false>(PoolWindow(r_WindowOutput)),
+										s_Window);
 #endif
 }
-} // namespace dlssnr::reconstructed::window_block_c256_downsample_fp16
 
 // -----------------------------------------------------------------------------
 // window_attention_projection_pool_c512_fp16
 // -----------------------------------------------------------------------------
 // Readable equivalent of cc_split_swin_16h_proj_pool_512; not historical source.
 
-namespace dlssnr::reconstructed::window_attention_projection_pool_c512_fp16
-{
-__global__ __maxnreg__(168) void window_attention_projection_pool_c512_fp16(Parameters r_Parameters)
+extern "C" __global__ __maxnreg__(168) void window_attention_projection_pool_c512_fp16(
+	FWindowAttentionProjectionPoolC512Fp16Parameters r_Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	__shared__ __align__(512) unsigned char s_Storage[8208];
-	const dlssnr::kernels::spatial_projection::FArguments r_Arguments{r_Parameters.g_Input,
-																	  r_Parameters.g_Residual,
-																	  r_Parameters.g_Output,
-																	  r_Parameters.g_PackedWeights,
-																	  int(r_Parameters.Height),
-																	  int(r_Parameters.Width),
-																	  r_Parameters.g_DownsampledOutput,
-																	  int(r_Parameters.DownsampledHeight),
-																	  int(r_Parameters.DownsampledWidth)};
-	dlssnr::kernels::spatial_projection::Forward<false, 4, false, false, 2, true>(r_Arguments, s_Storage);
+	const FSpatialProjectionArguments r_Arguments{r_Parameters.g_Input,
+												  r_Parameters.g_Residual,
+												  r_Parameters.g_Output,
+												  r_Parameters.g_PackedWeights,
+												  int(r_Parameters.Height),
+												  int(r_Parameters.Width),
+												  r_Parameters.g_DownsampledOutput,
+												  int(r_Parameters.DownsampledHeight),
+												  int(r_Parameters.DownsampledWidth)};
+	RunSpatialProjection<false, 4, false, false, 2, true>(r_Arguments, s_Storage);
 #endif
 }
-} // namespace dlssnr::reconstructed::window_attention_projection_pool_c512_fp16

@@ -1,22 +1,20 @@
 #pragma once
 #include "warp_window_wide.cuh"
 
-namespace dlssnr::kernels::window_wide
-{
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 // Native view storage is [ChannelPlane][Y][X][16 bytes]. A plane holds 16
 // E4 channels or eight Half channels. The fragment's existing packed word is
 // already in that plane's channel order; no transpose or numeric conversion.
 template <bool bFp8, class FParameters>
-__device__ __forceinline__ FActivationTile<bFp8> ReadViewTile(const FParameters& r_Parameters, int r_Tile,
-															  int r_Panel)
+__device__ __forceinline__ FWindowActivationTile<bFp8> ReadWindowViewTile(const FParameters& r_Parameters,
+																		  int r_Tile, int r_Panel)
 {
-	constexpr int Chunks = FProfile<bFp8>::InputChunks;
+	constexpr int Chunks = FWindow32Profile<bFp8>::InputChunks;
 	const int g_Height = r_Parameters.ViewHeight > 0 ? r_Parameters.ViewHeight : r_Parameters.Height;
 	const int g_Width = r_Parameters.ViewWidth > 0 ? r_Parameters.ViewWidth : r_Parameters.Width;
 	const int g_OriginX = int(blockIdx.x) * 8 + r_Parameters.OriginX + (r_Tile & 1) * 4;
 	const int g_OriginY = int(blockIdx.y) * 8 + r_Parameters.OriginY + (r_Tile >> 1) * 4;
-	FActivationTile<bFp8> r_InputTile;
+	FWindowActivationTile<bFp8> r_InputTile;
 #pragma unroll
 	for (int r_Chunk = 0; r_Chunk < Chunks; ++r_Chunk)
 #pragma unroll
@@ -39,10 +37,10 @@ __device__ __forceinline__ FActivationTile<bFp8> ReadViewTile(const FParameters&
 }
 
 template <bool bFp8, class FParameters>
-__device__ __forceinline__ void WriteViewTile(const FParameters& r_Parameters, int r_Tile, int r_Panel,
-											  const FAccumulatorTile<32>& r_Output)
+__device__ __forceinline__ void WriteWindowViewTile(const FParameters& r_Parameters, int r_Tile, int r_Panel,
+													const FWindowAccumulatorTile<32>& r_Output)
 {
-	constexpr int Chunks = FProfile<bFp8>::InputChunks;
+	constexpr int Chunks = FWindow32Profile<bFp8>::InputChunks;
 	const int g_Height = r_Parameters.ViewHeight > 0 ? r_Parameters.ViewHeight : r_Parameters.Height;
 	const int g_Width = r_Parameters.ViewWidth > 0 ? r_Parameters.ViewWidth : r_Parameters.Width;
 	const int g_OriginX = int(blockIdx.x) * 8 + r_Parameters.OriginX + (r_Tile & 1) * 4;
@@ -50,7 +48,7 @@ __device__ __forceinline__ void WriteViewTile(const FParameters& r_Parameters, i
 #pragma unroll
 	for (int r_Chunk = 0; r_Chunk < Chunks; ++r_Chunk)
 	{
-		const auto r_Fragment = PublishChunk<bFp8>(r_Output, r_Chunk);
+		const auto r_Fragment = PublishWindowChunk<bFp8>(r_Output, r_Chunk);
 #pragma unroll
 		for (int r_Word = 0; r_Word < 4; ++r_Word)
 		{
@@ -68,49 +66,49 @@ __device__ __forceinline__ void WriteViewTile(const FParameters& r_Parameters, i
 	}
 }
 
-template <int Channels, bool bFp8, bool bInputView, bool bOutputView> struct FViewIO
+template <int Channels, bool bFp8, bool bInputView, bool bOutputView> struct FWindowViewIO
 {
-	using FRecordProfile = FWideProfile<Channels, bFp8>;
+	using FRecordProfile = FWideWindowProfile<Channels, bFp8>;
 
 	template <class FParameters>
-	__device__ __forceinline__ static FActivationTile<bFp8> Read(const FParameters& r_Parameters, int r_Tile,
-																 int r_Panel)
+	__device__ __forceinline__ static FWindowActivationTile<bFp8> Read(const FParameters& r_Parameters,
+																	   int r_Tile, int r_Panel)
 	{
 		if constexpr (bInputView)
-			return ReadViewTile<bFp8>(r_Parameters, r_Tile, r_Panel);
+			return ReadWindowViewTile<bFp8>(r_Parameters, r_Tile, r_Panel);
 		else
-			return FTiledIO<Channels, bFp8>::Read(r_Parameters, r_Tile, r_Panel);
+			return FTiledWindowIO<Channels, bFp8>::Read(r_Parameters, r_Tile, r_Panel);
 	}
 
 	template <class FParameters>
 	__device__ __forceinline__ static void Write(const FParameters& r_Parameters, int r_Tile,
-												 const FAccumulatorTile<32>& r_Output)
+												 const FWindowAccumulatorTile<32>& r_Output)
 	{
 		if constexpr (bOutputView)
-			WriteViewTile<bFp8>(r_Parameters, r_Tile, threadIdx.y, r_Output);
+			WriteWindowViewTile<bFp8>(r_Parameters, r_Tile, threadIdx.y, r_Output);
 		else
-			FTiledIO<Channels, bFp8>::Write(r_Parameters, r_Tile, r_Output);
+			FTiledWindowIO<Channels, bFp8>::Write(r_Parameters, r_Tile, r_Output);
 	}
 };
 
 // Each native ABI exposes ViewHeight/ViewWidth at its verified byte positions.
-template <bool bFp8, bool bInputView, bool bOutputView> struct FSmallViewIO : FOrdinaryIO
+template <bool bFp8, bool bInputView, bool bOutputView> struct FSmallWindowViewIO : FOrdinaryWindowIO
 {
 	static constexpr bool bCustomInput = bInputView;
 	static constexpr bool bCustomOutput = bOutputView;
 
 	template <class FParameters>
-	__device__ __forceinline__ static FActivationTile<bFp8> Read(const FParameters& r_Parameters, int r_Tile)
+	__device__ __forceinline__ static FWindowActivationTile<bFp8> Read(const FParameters& r_Parameters,
+																	   int r_Tile)
 	{
-		return ReadViewTile<bFp8>(r_Parameters, r_Tile, 0);
+		return ReadWindowViewTile<bFp8>(r_Parameters, r_Tile, 0);
 	}
 
 	template <class FParameters>
 	__device__ __forceinline__ static void Write(const FParameters& r_Parameters, int r_Tile,
-												 const FAccumulatorTile<32>& r_Output)
+												 const FWindowAccumulatorTile<32>& r_Output)
 	{
-		WriteViewTile<bFp8>(r_Parameters, r_Tile, 0, r_Output);
+		WriteWindowViewTile<bFp8>(r_Parameters, r_Tile, 0, r_Output);
 	}
 };
 #endif
-} // namespace dlssnr::kernels::window_wide

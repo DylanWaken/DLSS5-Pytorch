@@ -3,8 +3,6 @@
 #include <cuda_runtime_api.h>
 #include <cstdint>
 
-namespace dlssnr::deployment
-{
 struct FGeometryPlanSpec
 {
 	int64_t ValidWidth;
@@ -13,4 +11,3 @@ struct FGeometryPlanSpec
 	const dim3* Grids;
 	const int32_t* GeometryArguments;
 };
-} // namespace dlssnr::deployment
