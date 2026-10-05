@@ -1,6 +1,6 @@
 # Reconstructed deployment API migration
 
-FP8 and FP16 support four exact prepared-feature fields on SM120: **1280 × 720, 1920 × 1080, 2560 × 1440 and 3840 × 2160**, batch one. Original/candidate comparisons pass all 74 published boundaries at each size in both precisions and meet the accepted no-more-than-1% slowdown criterion in both execution orders. The final 4K pooled gap is 0.689%; the older 0.324% result remains a separate historical trial. See [current status](RECONSTRUCTION_STATUS.md) for timings, evidence and installation state.
+FP8 and FP16 support four exact prepared-feature fields on SM120: **1280 × 720, 1920 × 1080, 2560 × 1440 and 3840 × 2160**, batch one. Original/candidate comparisons pass all 74 published boundaries at each size in both precisions and meet the accepted no-more-than-1% slowdown criterion in both execution orders. The current readable CUDA implementation is qualified separately from the preserved historical transcript builds. See [current status](RECONSTRUCTION_STATUS.md) for timings, evidence and installation state.
 
 ## Explicit precision names
 
@@ -66,7 +66,7 @@ The model is minimally trainable. **DLSS5 transfer-learning methodology, actual 
 
 ## Source and policy conventions
 
-Body files and family APIs end in `_fp8` or `_fp16`, for example `window_block_c128_fp8.cuh` and `global_attention_chained_c1024_fp16.cuh`. ABI headers remain separate. Shared force-inlined intrinsics and MMA/integer/packed-memory helpers preserve each family's layout, synchronization and precision-specific reduction dimension. The census is 40 precision pairs plus clear, not 81 algorithms. See [code readability](CODE_READABILITY.md) and the [project workflow skill](../skills/dlssnr-reconstruction/SKILL.md).
+Body files are grouped by operation and precision, for example `window_block_fp8.cuh`, `downsample_fp16.cuh`, `attention_fp16.cuh` and `ffn_fp8.cuh`. Channel/configuration variants live together within these headers; exported kernel and family API names remain stable. Shared parameter contracts live under `kernel_launcher`, with no per-entry ABI files in `kernel_impl`. Shared force-inlined intrinsics and MMA/integer/packed-memory helpers preserve each family's layout, synchronization and precision-specific reduction dimension. The census is 40 precision pairs plus clear, not 81 algorithms. See [source organization and template decisions](SOURCE_LAYOUT.md), [code readability](CODE_READABILITY.md) and the [project workflow skill](../skills/dlssnr-reconstruction/SKILL.md).
 
 Policy JSON/CLI precision tokens are `fp8` and `fp16`; new `half` inputs are rejected. Frozen historical receipts retain their original vocabulary. The per-device `sm_120.json` has no measured anchors. Unmeasured selection returns `config_id=-1`. Matching-family measured extrema and deterministic nearest-anchor selection apply only to query metadata and preserve actual dimensions; they never grant execution support. Four tested C++ baseline shapes are not continuous 720p–4K tuning coverage.
 

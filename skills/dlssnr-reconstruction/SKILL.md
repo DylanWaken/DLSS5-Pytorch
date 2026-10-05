@@ -153,3 +153,63 @@ Use `docs/FP16_DEPLOYMENT.md` and `docs/figures/fp16_deployment_measurements.jso
 Profile the actual repeated workload before choosing a register cap. In C256 Half, Nsight found 238 reconstructed registers versus 188 native with equal occupancy; a 192 cap improved whole-trunk timing despite a small stack frame. Do not claim an occupancy gain. The non-volatile pure-MMA experiment compiled to identical machine code and was discarded. Static MMA/NOP count differences alone do not prove dead arithmetic or dynamic workload differences; compare full SASS, counters and balanced graph timings.
 
 At 4K, native Half split grids exceed all-resident capacity. The retained SM120 path admits one complete XY plane and empirically validates native ordered Z progress under bounded workers. This is architecture-specific evidence, not a CUDA scheduling guarantee or admission for other devices. Preserve the rejected occupancy run and native-only progress probe. The final per-order <=1% gate is tight at 4K; retain raw pairs and do not round a failure into a pass.
+
+## Semantic reconstruction: source must explain the algorithm
+
+Use [the semantic reconstruction report](../../docs/SEMANTIC_RECONSTRUCTION.md),
+[source map](../../docs/SOURCE_LAYOUT.md) and current
+[code conventions](../../docs/CODE_READABILITY.md) for the new implementation.
+Earlier instructions about retaining PTX-numbered identifiers apply only to
+historical transcripts. Production code must use named tiles, fragment arrays,
+short loops and shared operation/layout policies. Do not hide a transcript in a
+helper or generate thousands of scalar assignments under nicer filenames.
+
+Recover and document the invariant before simplifying arithmetic: which Half
+lanes are equal after a reduction, which warp owns a denominator, which split
+publishes an intermediate, and which rounded values are actually consumed.
+Match ordered operands, not only commutative real-number expressions. Keep
+nontrivial coefficients as named `CONST_*` constexpr values with bits, decoded
+values and observed roles; distinguish algebraic deductions from unknown
+coefficient-fitting rationale.
+
+When compact C++ regresses, compare compiled instructions and measured work.
+The semantic FP8 investigation found extra packing permutations, repeated
+normalization work, inefficient pooling routing and duplicated uniform split
+branches. A scoped conversion-and-pack primitive can let the compiler fold a
+join into its conversion instruction. Moving a uniform split decision outside
+an unrolled fragment loop can avoid repeated reconvergence. Paired softmax can
+save shuffles but increase live registers and selection work: keep it only where
+compiled correctness and measured timing justify it.
+
+Do not call increased instruction count extra tensor work without checking
+opcodes. In the C128 investigation, dynamic QMMA counts were identical while
+NOP and packing counts differed. Stall samples, scheduling controls and isolated
+timing are evidence with different scopes; none alone establishes a causal
+percentage of whole-network latency.
+
+For Half expressions, inspect FMA contraction explicitly. The postprocessing
+rewrite required a rounded low-resolution product followed by the native FMA
+with the adapter product. Two multiplies plus an add permitted the compiler to
+fuse the wrong side and changed Half results. Preserve the native rounded
+dependency using shared primitives, then rerun texture/surface fixtures.
+
+Qualify the final normal extension separately from standalone candidate cubins.
+Record its source/binary hashes, all-resolution boundary and replay checks, and
+balanced native-speed results. Historical matching speed does not transfer to a
+new semantic build. The user's 1% speed gate does not prove an 85% roofline.
+
+Before changing a proven tile traversal to address extra NOPs, isolate the
+compiler backend. The C128 profile executed the same 805,376 tensor instructions
+in both roles; most excess issued work was NOPs. Identical CUDA 12.8 PTX assembled
+with 13.4 retained register counts and tensor work while removing most explicit
+NOPs and improving measured latency. Reassembling with 12.8 first reproduced the
+baseline exactly. The cached reference cubin's 13.4.0 stamp identifies that
+image's backend, not necessarily the original DLL source-build compiler.
+
+Use the explicit `DLSSNR_PTXAS_PATH` build option to reproduce the qualified
+assembler selection. It keeps the CUDA_HOME compiler, headers, libdevice, host
+glue and runtime, verifies helper paths, and records the copied assembler's
+hash. Do not replace installed toolkit files or bypass PyTorch version checks.
+Keep architecture flags explicit: PyTorch's substring-based detection can
+mistake a path containing `arch` for an existing architecture flag. See
+[the compiler scheduling report](../../docs/COMPILER_SCHEDULING.md).

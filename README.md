@@ -22,14 +22,18 @@ Explore the [architecture guide](docs/ARCHITECTURE.md) for expanded SVGs of ever
 
 ## Getting started
 
-Use PyTorch with CUDA and a compatible C++ compiler. The validated build uses Windows, PyTorch 2.8.0+cu128 and CUDA 12.8.
+Use PyTorch with CUDA and a compatible C++ compiler. The measured Windows build uses PyTorch 2.8.0+cu128, the CUDA 12.8 compiler/runtime and CUDA 13.4's PTX assembler. The newer assembler improves SM120 tensor-instruction scheduling; [build details](docs/COMPILER_SCHEDULING.md) explain the controlled comparison.
 
 Portable FP8 and FP16 [PyTorch checkpoints](ckpts/README.md) are provided through Git LFS. Run `git lfs pull` after cloning. Both load directly for training; the FP8 file also supplies the complete deployment record set. FP16 weights are losslessly widened from the original mixed-precision resource.
 
 ```powershell
+$env:CUDA_HOME = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8"
+$env:DLSSNR_PTXAS_PATH = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.4\bin\ptxas.exe"
 python setup.py build_ext --inplace
 python -B run_tests.py cpu --optimized
 ```
+
+Adjust the installation paths above. Omitting `DLSSNR_PTXAS_PATH` uses the toolkit's default assembler; the published speed results require the measured build configuration.
 
 For training research, keep FP32 master parameters and enable checkpointing to reduce activation memory:
 
@@ -53,13 +57,15 @@ See the [training guide](docs/training.md) for input contracts and benchmarking,
 
 ## Speed overview
 
-**FP8 inference:** the prepared-feature trunk is within the accepted 1% slowdown limit versus extracted original kernels at all four tested resolutions. At 4K: **6.497 ms reconstructed / 6.452 ms original**. This excludes input/output stages and DLL host processing.
+**FP8 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **6.557 ms reconstructed / 6.698 ms original**.
 
 ![FP8 deployment latency at 720p, 1080p, 2K and 4K](docs/figures/deployment_fp8_resolutions.svg)
 
-**FP16 inference:** the same trunk now runs with native Half layouts and losslessly promoted weights. At 4K: **11.409 ms reconstructed / 11.301 ms original**, a **0.96%** difference. Both execution orders pass the 1% gate at every tested size.
+**FP16 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **11.336 ms reconstructed / 11.590 ms original**.
 
 ![FP16 deployment latency at 720p, 1080p, 2K and 4K](docs/figures/deployment_fp16_resolutions.svg)
+
+Inference charts exclude input/output stages and DLL host processing.
 
 **Training:** full-network FP32/BF16 forward and backward, with checkpointing, batch one and no optimizer. At 4K, peak allocated memory is **52.4 / 43.3 GiB**, respectively.
 
@@ -70,7 +76,7 @@ See the [training guide](docs/training.md) for input contracts and benchmarking,
 
 ![Six matched kernel families in FP8 and FP16](docs/figures/deployment_kernel_precision_comparison.svg)
 
-These are individual-kernel comparisons, not a full FP16 network benchmark. Execution order affects many rankings; some kernels remain slower than their original counterparts.
+This historical individual-kernel suite predates the current semantic rewrite. Execution order affects many rankings; some kernels remain slower than their original counterparts.
 
 </details>
 
@@ -78,8 +84,8 @@ See [benchmark scope and detailed results](docs/BENCHMARKS.md) for methodology, 
 
 ## Project layout and further reading
 
-`csrc/kernel_impl` contains kernel bodies and shared intrinsics; `kernel_launcher` handles launches and selection; `torch_api` exposes PyTorch operators. `dlssnr` contains the Python entry points and training model. `tests` and `tuning` hold validation and offline policy tools.
+`csrc/kernel_impl` groups kernels by operation and FP8/FP16 precision, with shared math and memory helpers. `kernel_launcher` owns the ABI, launches and selection; `torch_api` exposes PyTorch operators. `dlssnr` contains the Python entry points and training model. `tests` and `tuning` hold validation and offline policy tools.
 
 - [Architecture atlas](docs/ARCHITECTURE.md) · [Current coverage and limitations](docs/RECONSTRUCTION_STATUS.md)
-- [Code conventions](docs/CODE_READABILITY.md) · [Optimization log](docs/optimization_log_2026-10-05.md)
+- [Source layout and shared helpers](docs/SOURCE_LAYOUT.md) · [Code conventions](docs/CODE_READABILITY.md) · [Readable CUDA reconstruction](docs/SEMANTIC_RECONSTRUCTION.md) · [Historical optimization log](docs/optimization_log_2026-10-05.md)
 - [Training memory diagnosis](docs/TRAINING_MEMORY.md) · [Kernel reconstruction workflow](skills/dlssnr-reconstruction/SKILL.md)

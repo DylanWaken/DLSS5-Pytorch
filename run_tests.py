@@ -11,6 +11,9 @@ import sys
 
 ROOT = Path(__file__).resolve().parent
 CPU_TESTS = (
+    "test_kernel_sources_cpu.py",
+    "test_frontend_preprocess.py",
+    "test_window_output_view.py",
     "test_checkpoint_cpu.py",
     "test_fp16_plan_cpu.py",
     "test_clean_records.py",

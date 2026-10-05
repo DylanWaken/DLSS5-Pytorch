@@ -3,22 +3,21 @@
 #include <cuda_fp16.h>
 #include <cstdint>
 
-// Conversions between a caller-owned shared allocation, generic addresses and relative offsets.
+// Shared asynchronous-copy synchronization used by the tiled pipelines.
 namespace dlssnr::memoryops::sm120
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 
-// Form the original generic shared pointer from the CTA allocation and relative byte offset.
-__device__ __forceinline__ uint64_t SharedGeneric(unsigned char* s_SharedStorage, uint64_t s_ByteOffset)
+// Arrive once at the caller's shared mbarrier and wait for that exact phase.
+// The pipeline owns initialization and expected-copy byte counts. This helper
+// preserves the original per-thread arrival and tight polling sequence; it does
+// not add a CTA barrier, sleep, or another memory-ordering operation.
+__device__ __forceinline__ void ArriveAndWait(unsigned char* s_Storage, uint32_t s_BarrierByteOffset)
 {
-	return reinterpret_cast<uint64_t>(s_SharedStorage) + s_ByteOffset;
-}
-
-// Recover a byte offset relative to the same shared allocation; do not treat it as a device pointer.
-__device__ __forceinline__ uint64_t SharedOffset(unsigned char* s_SharedStorage, uint64_t s_GenericAddress)
-{
-	return uint64_t(__cvta_generic_to_shared(reinterpret_cast<void*>(s_GenericAddress))) -
-		   uint64_t(__cvta_generic_to_shared(s_SharedStorage));
+	const uint64_t r_Phase = intrinsics::sm120::BarrierArrive(s_Storage, s_BarrierByteOffset, 1);
+	while (!intrinsics::sm120::BarrierReady(s_Storage, s_BarrierByteOffset, r_Phase))
+	{
+	}
 }
 #endif
 } // namespace dlssnr::memoryops::sm120

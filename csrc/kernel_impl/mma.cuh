@@ -34,13 +34,6 @@ struct FOutput
 	uint32_t& Word1;
 };
 
-template <EInputPrecision r_Precision> struct FShape
-{
-	static constexpr int Rows = 16;
-	static constexpr int Columns = 8;
-	static constexpr int Reduction = r_Precision == EInputPrecision::Fp8 ? 32 : 16;
-};
-
 // Value-owned input fragments preserve argument evaluation before output writes.
 // Output references are passed directly to the exact ISA wrapper; no repacking,
 // accumulator conversion or extra assignment is introduced by this interface.
@@ -62,26 +55,5 @@ __device__ __forceinline__ void MultiplyAccumulate(FOutput r_Output, FAFragment 
 	}
 }
 
-// Compatibility with the exact original body operand roster. The call-site
-// token order stays fixed while the common implementation names its fragments.
-__device__ __forceinline__ void MmaE4(uint32_t& r_OutputWord0, uint32_t& r_OutputWord1, uint32_t r_AFragment0,
-									  uint32_t r_AFragment1, uint32_t r_AFragment2, uint32_t r_AFragment3,
-									  uint32_t r_BFragment0, uint32_t r_BFragment1,
-									  uint32_t r_AccumulatorWord0, uint32_t r_AccumulatorWord1)
-{
-	MultiplyAccumulate<EInputPrecision::Fp8>(
-		{r_OutputWord0, r_OutputWord1}, {r_AFragment0, r_AFragment1, r_AFragment2, r_AFragment3},
-		{r_BFragment0, r_BFragment1}, {r_AccumulatorWord0, r_AccumulatorWord1});
-}
-
-__device__ __forceinline__ void MmaHalf(uint32_t& r_OutputWord0, uint32_t& r_OutputWord1,
-										uint32_t r_AFragment0, uint32_t r_AFragment1, uint32_t r_AFragment2,
-										uint32_t r_AFragment3, uint32_t r_BFragment0, uint32_t r_BFragment1,
-										uint32_t r_AccumulatorWord0, uint32_t r_AccumulatorWord1)
-{
-	MultiplyAccumulate<EInputPrecision::Fp16>(
-		{r_OutputWord0, r_OutputWord1}, {r_AFragment0, r_AFragment1, r_AFragment2, r_AFragment3},
-		{r_BFragment0, r_BFragment1}, {r_AccumulatorWord0, r_AccumulatorWord1});
-}
 #endif
 } // namespace dlssnr::mma::sm120

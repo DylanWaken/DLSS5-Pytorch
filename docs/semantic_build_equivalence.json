@@ -1,0 +1,2779 @@
+{
+  "baseline": {
+    "path": "outputs\\semantic-rewrite\\extension-v7\\workspace\\dlssnr\\_C.cp311-win_amd64.pyd",
+    "sha256": "feffe3dbfabb952fa77608785028dca009a4e4dfc4820cc868e1c3bb82dd9172",
+    "pe": {
+      "sections": {
+        ".text": {
+          "virtual_size": 333230,
+          "virtual_address": 4096,
+          "raw_size": 333312,
+          "raw_offset": 1024,
+          "sha256": "9ddcfbde7acdd869b185ce060a5f09ed33d15285a28a6a056c531ac613c41cac"
+        },
+        ".rdata": {
+          "virtual_size": 152390,
+          "virtual_address": 339968,
+          "raw_size": 152576,
+          "raw_offset": 334336,
+          "sha256": "ca015fada2bfa1937012bd2fd58166537a860a7474c469c1fb2205cb2c38502a"
+        },
+        ".data": {
+          "virtual_size": 39440,
+          "virtual_address": 495616,
+          "raw_size": 36864,
+          "raw_offset": 486912,
+          "sha256": "705d23c26a4af101e581eded5648e72af95059f69e0bab7af758bbea07d0d2cf"
+        },
+        ".pdata": {
+          "virtual_size": 10116,
+          "virtual_address": 536576,
+          "raw_size": 10240,
+          "raw_offset": 523776,
+          "sha256": "054808d0f4e0a6f234f0e5ad354ad7a1ee4342824ea51aa5b65362d9c5eb302d"
+        },
+        ".nv_fatb": {
+          "virtual_size": 16750888,
+          "virtual_address": 548864,
+          "raw_size": 16751104,
+          "raw_offset": 534016,
+          "sha256": "e7ad50163a6805111d5ef4beae0296bfff5c91fd7fb2564e54ce0188bbb07fc8"
+        },
+        ".nvFatBi": {
+          "virtual_size": 240,
+          "virtual_address": 17301504,
+          "raw_size": 512,
+          "raw_offset": 17285120,
+          "sha256": "d45bfa4aea5bed3def8f9c44ce1df53b4ed40de188ba63a301439681a038d0b3"
+        },
+        ".rsrc": {
+          "virtual_size": 248,
+          "virtual_address": 17305600,
+          "raw_size": 512,
+          "raw_offset": 17285632,
+          "sha256": "5c0ef87f9e13ac1a6438cc99457df5408dad296ddb6f9a4f84e489550f85851e"
+        },
+        ".reloc": {
+          "virtual_size": 2684,
+          "virtual_address": 17309696,
+          "raw_size": 3072,
+          "raw_offset": 17286144,
+          "sha256": "e3cc0162897d042011f14c13099b8806703d7f38309d7537b49c256407e3cfa8"
+        }
+      },
+      "imports": [
+        {
+          "dll": "c10.dll",
+          "symbols": [
+            {
+              "name": "??0Error@c10@@QEAA@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$shared_ptr@$$CBV?$LazyValue@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@c10@@@3@PEBX@Z"
+            },
+            {
+              "name": "?torchCheckMsgImpl@detail@c10@@YAPEBDPEBD@Z"
+            },
+            {
+              "name": "?torchCheckMsgImpl@detail@c10@@YAPEBDPEBD0@Z"
+            },
+            {
+              "name": "?torchInternalAssertFail@detail@c10@@YAXPEBD0I0UCompileTimeEmptyString@12@@Z"
+            },
+            {
+              "name": "??0intrusive_ptr_target@c10@@IEAA@XZ"
+            },
+            {
+              "name": "??1intrusive_ptr_target@c10@@MEAA@XZ"
+            },
+            {
+              "name": "??0intrusive_ptr_target@c10@@IEAA@$$QEAV01@@Z"
+            },
+            {
+              "name": "??0intrusive_ptr_target@c10@@IEAA@AEBV01@@Z"
+            },
+            {
+              "name": "?release_resources@intrusive_ptr_target@c10@@EEAAXXZ"
+            },
+            {
+              "name": "??0Device@c10@@QEAA@W4DeviceType@1@C@Z"
+            },
+            {
+              "name": "?toScalarType@TypeMeta@caffe2@@QEBA?AW4ScalarType@c10@@XZ"
+            },
+            {
+              "name": "??0Error@c10@@QEAA@AEBV01@@Z"
+            },
+            {
+              "name": "?data_ptr@StorageImpl@c10@@QEBAAEBVDataPtr@2@XZ"
+            },
+            {
+              "name": "?data_ptr@Storage@c10@@QEBAAEBVDataPtr@2@XZ"
+            },
+            {
+              "name": "??1Warning@c10@@QEAA@XZ"
+            },
+            {
+              "name": "?device@Stream@c10@@QEBA?AUDevice@2@XZ"
+            },
+            {
+              "name": "??1Error@c10@@UEAA@XZ"
+            },
+            {
+              "name": "?device_index@Stream@c10@@QEBACXZ"
+            },
+            {
+              "name": "?device_opt@TensorOptions@c10@@QEBA?AV?$optional@UDevice@c10@@@std@@XZ"
+            },
+            {
+              "name": "?detail_guard_long_unique_std_vector_long_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?dtype_opt@TensorOptions@c10@@QEBA?AV?$optional@VTypeMeta@caffe2@@@std@@XZ"
+            },
+            {
+              "name": "?layout_opt@TensorOptions@c10@@QEBA?AV?$optional@W4Layout@c10@@@std@@XZ"
+            },
+            {
+              "name": "?pinned_memory_opt@TensorOptions@c10@@QEBA?AV?$optional@_N@std@@XZ"
+            },
+            {
+              "name": "??1Scalar@c10@@QEAA@XZ"
+            },
+            {
+              "name": "??0Scalar@c10@@QEAA@E@Z"
+            },
+            {
+              "name": "??0Scalar@c10@@QEAA@_J@Z"
+            },
+            {
+              "name": "??0DeviceGuardImplInterface@impl@c10@@QEAA@XZ"
+            },
+            {
+              "name": "??1DeviceGuardImplInterface@impl@c10@@UEAA@XZ"
+            },
+            {
+              "name": "??0ValueError@c10@@QEAA@USourceLocation@1@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z"
+            },
+            {
+              "name": "??1ValueError@c10@@UEAA@XZ"
+            },
+            {
+              "name": "??0ValueError@c10@@QEAA@AEBV01@@Z"
+            },
+            {
+              "name": "?get_trace@GPUTrace@impl@c10@@SAPEBUPyInterpreter@23@XZ"
+            },
+            {
+              "name": "??0DeviceGuardImplInterface@impl@c10@@QEAA@$$QEAU012@@Z"
+            },
+            {
+              "name": "?torchCheckFail@detail@c10@@YAXPEBD0I0@Z"
+            },
+            {
+              "name": "?torchCheckFail@detail@c10@@YAXPEBD0IAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z"
+            },
+            {
+              "name": "?torchInternalAssertFail@detail@c10@@YAXPEBD0I0AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z"
+            },
+            {
+              "name": "?torchInternalAssertFail@detail@c10@@YAXPEBD0I00@Z"
+            },
+            {
+              "name": "??0Warning@c10@@QEAA@V?$variant@VUserWarning@Warning@c10@@VDeprecationWarning@23@@std@@AEBUSourceLocation@1@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@3@_N@Z"
+            },
+            {
+              "name": "?warn@c10@@YAXAEBVWarning@1@@Z"
+            },
+            {
+              "name": "?DeviceTypeName@c10@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@W4DeviceType@1@_N@Z"
+            },
+            {
+              "name": "??6c10@@YAAEAV?$basic_ostream@DU?$char_traits@D@std@@@std@@AEAV12@AEBUDevice@0@@Z"
+            },
+            {
+              "name": "??6c10@@YAAEAV?$basic_ostream@DU?$char_traits@D@std@@@std@@AEAV12@W4DeviceType@0@@Z"
+            },
+            {
+              "name": "?device_guard_impl_registry@impl@c10@@3V?$array@U?$atomic@PEBUDeviceGuardImplInterface@impl@c10@@@std@@$0BF@@std@@A"
+            },
+            {
+              "name": "??0MessageLogger@c10@@QEAA@PEBDHH@Z"
+            },
+            {
+              "name": "??1MessageLogger@c10@@QEAA@XZ"
+            },
+            {
+              "name": "?int_ptr_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?std_unique_ptr_std_atomic_bool_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?detail_guard_long_unique_long_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?std_unique_ptr_std_mutex_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?std_vector_unsigned_long_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?float_ptr_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?std_vector_int64_t_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?char_ptr_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?at_Half_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?bool_ptr_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?std_string_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?std_vector_int32_t_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?char_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?device_type@Stream@c10@@QEBA?AW4DeviceType@2@XZ"
+            }
+          ]
+        },
+        {
+          "dll": "torch_cpu.dll",
+          "symbols": [
+            {
+              "name": "??8c10@@YA_NAEBUType@0@0@Z"
+            },
+            {
+              "name": "??0TensorBase@at@@QEAA@$$QEAV01@@Z"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@VTensorBase@at@@@Z"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@_J@Z"
+            },
+            {
+              "name": "?toInt@IValue@c10@@QEBA_JXZ"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@_N@Z"
+            },
+            {
+              "name": "?toBool@IValue@c10@@QEBA_NXZ"
+            },
+            {
+              "name": "?null_to_undefined_tensor@IValue@c10@@CAPEAVintrusive_ptr_target@2@PEAV32@@Z"
+            },
+            {
+              "name": "?toObject@IValue@c10@@QEGBA?AV?$intrusive_ptr@UObject@ivalue@c10@@U?$intrusive_target_default_null_type@UObject@ivalue@c10@@@detail@3@@2@XZ"
+            },
+            {
+              "name": "?toTensor@IValue@c10@@QEHAA?AVTensor@at@@XZ"
+            },
+            {
+              "name": "?toTensor@IValue@c10@@QEGAAAEAVTensor@at@@XZ"
+            },
+            {
+              "name": "?toTensor@IValue@c10@@QEGBAAEBVTensor@at@@XZ"
+            },
+            {
+              "name": "?toCapsule@IValue@c10@@QEGBA?AV?$intrusive_ptr@VCustomClassHolder@torch@@U?$intrusive_target_default_null_type@VCustomClassHolder@torch@@@detail@c10@@@2@XZ"
+            },
+            {
+              "name": "?toIntList@IValue@c10@@QEGBA?AV?$List@_J@2@XZ"
+            },
+            {
+              "name": "?toTensorList@IValue@c10@@QEHAA?AV?$List@VTensor@at@@@2@XZ"
+            },
+            {
+              "name": "?toTensorList@IValue@c10@@QEGBA?AV?$List@VTensor@at@@@2@XZ"
+            },
+            {
+              "name": "?toList@IValue@c10@@QEHAA?AV?$List@UIValue@c10@@@2@XZ"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@V?$List@UIValue@c10@@@1@@Z"
+            },
+            {
+              "name": "?make_capsule@IValue@c10@@SA?AU12@V?$intrusive_ptr@VCustomClassHolder@torch@@U?$intrusive_target_default_null_type@VCustomClassHolder@torch@@@detail@c10@@@2@@Z"
+            },
+            {
+              "name": "?toStringRef@IValue@c10@@QEBAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ"
+            },
+            {
+              "name": "?setAliasAnalysis@FunctionSchema@c10@@QEAAXW4AliasAnalysisKind@2@@Z"
+            },
+            {
+              "name": "??1FunctionSchema@c10@@QEAA@XZ"
+            },
+            {
+              "name": "??0KernelFunction@c10@@AEAA@V?$unique_ptr@UOperatorKernel@c10@@U?$default_delete@UOperatorKernel@c10@@@std@@@std@@P6AXPEAUOperatorKernel@1@AEBVOperatorHandle@1@VDispatchKeySet@1@PEAV?$vector@UIValue@c10@@V?$allocator@UIValue@c10@@@std@@@3@@ZPEAX6@Z"
+            },
+            {
+              "name": "??1KernelFunction@c10@@QEAA@XZ"
+            },
+            {
+              "name": "??0CppSignature@impl@c10@@AEAA@Vtype_index@std@@@Z"
+            },
+            {
+              "name": "??0FunctionSchema@c10@@QEAA@$$QEAU01@@Z"
+            },
+            {
+              "name": "??1Library@torch@@QEAA@XZ"
+            },
+            {
+              "name": "?isGraphFunction@Function@jit@torch@@UEBA_NXZ"
+            },
+            {
+              "name": "??0Function@jit@torch@@QEAA@XZ"
+            },
+            {
+              "name": "??1Function@jit@torch@@UEAA@XZ"
+            },
+            {
+              "name": "??4FunctionSchema@c10@@QEAAAEAU01@$$QEAU01@@Z"
+            },
+            {
+              "name": "??1class_base@detail@torch@@QEAA@XZ"
+            },
+            {
+              "name": "??0OperatorKernel@c10@@QEAA@XZ"
+            },
+            {
+              "name": "??1OperatorKernel@c10@@UEAA@XZ"
+            },
+            {
+              "name": "??1CppFunction@torch@@QEAA@XZ"
+            },
+            {
+              "name": "??0class_base@detail@torch@@IEAA@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0V34@AEBVtype_info@@2@Z"
+            },
+            {
+              "name": "?withNewArguments@class_base@detail@torch@@KA?AUFunctionSchema@c10@@AEBU45@V?$initializer_list@Uarg@torch@@@std@@@Z"
+            },
+            {
+              "name": "?isSubtypeOf@Type@c10@@QEBA_NAEBU12@@Z"
+            },
+            {
+              "name": "?_def@Library@torch@@AEGAAAEAV12@$$QEAV?$variant@UOperatorName@c10@@UFunctionSchema@2@@std@@$$QEAVCppFunction@2@AEBV?$vector@W4Tag@at@@V?$allocator@W4Tag@at@@@std@@@4@@Z"
+            },
+            {
+              "name": "?parseSchemaOrName@jit@torch@@YA?AV?$variant@UOperatorName@c10@@UFunctionSchema@2@@std@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@4@_N@Z"
+            },
+            {
+              "name": "?registerCustomClassMethod@torch@@YAXV?$unique_ptr@UFunction@jit@torch@@U?$default_delete@UFunction@jit@torch@@@std@@@std@@@Z"
+            },
+            {
+              "name": "?get@?$TagType@UType@c10@@@IValue@c10@@SA?AV?$SingletonOrSharedTypePtr@UType@c10@@@Type@3@AEBU23@@Z"
+            },
+            {
+              "name": "??0ListImpl@detail@c10@@QEAA@V?$vector@UIValue@c10@@V?$allocator@UIValue@c10@@@std@@@std@@V?$SingletonOrSharedTypePtr@UType@c10@@@Type@2@@Z"
+            },
+            {
+              "name": "?make_function_schema@infer_schema@detail@c10@@YA?AUFunctionSchema@3@V?$ArrayRef@UArgumentDef@infer_schema@detail@c10@@@3@0@Z"
+            },
+            {
+              "name": "?make_function_schema@infer_schema@detail@c10@@YA?AUFunctionSchema@3@$$QEAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0V?$ArrayRef@UArgumentDef@infer_schema@detail@c10@@@3@1@Z"
+            },
+            {
+              "name": "?addMethod@ClassType@c10@@QEAAXPEAUFunction@jit@torch@@@Z"
+            },
+            {
+              "name": "?getCustomClassTypeImpl@c10@@YA?AV?$shared_ptr@UClassType@c10@@@std@@AEBVtype_index@3@@Z"
+            },
+            {
+              "name": "?get@BoolType@c10@@SA?AV?$SingletonTypePtr@UBoolType@c10@@@2@XZ"
+            },
+            {
+              "name": "?get@StringType@c10@@SA?AV?$SingletonTypePtr@UStringType@c10@@@2@XZ"
+            },
+            {
+              "name": "?get@OptionalType@c10@@SA?AV?$SingletonOrSharedTypePtr@UType@c10@@@Type@2@V342@@Z"
+            },
+            {
+              "name": "?get@ListType@c10@@SA?AV?$SingletonOrSharedTypePtr@UType@c10@@@Type@2@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V342@@Z"
+            },
+            {
+              "name": "?get@NoneType@c10@@SA?AV?$SingletonTypePtr@UNoneType@c10@@@2@XZ"
+            },
+            {
+              "name": "?create@Object@ivalue@c10@@SA?AV?$intrusive_ptr@UObject@ivalue@c10@@U?$intrusive_target_default_null_type@UObject@ivalue@c10@@@detail@3@@3@V?$shared_ptr@UClassType@c10@@@std@@_K@Z"
+            },
+            {
+              "name": "?checkCustomClassType@ivalue@c10@@YAXPEBUClassType@2@PEBUType@2@@Z"
+            },
+            {
+              "name": "?get@TensorType@c10@@SAAEBV?$shared_ptr@UTensorType@c10@@@std@@XZ"
+            },
+            {
+              "name": "?get@IntType@c10@@SA?AV?$SingletonTypePtr@UIntType@c10@@@2@XZ"
+            },
+            {
+              "name": "?symmetric@Type@c10@@MEBA_NXZ"
+            },
+            {
+              "name": "?repr_str@Type@c10@@UEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ"
+            },
+            {
+              "name": "?isUnionType@Type@c10@@UEBA_NXZ"
+            },
+            {
+              "name": "?requires_grad@Type@c10@@UEBA_NXZ"
+            },
+            {
+              "name": "?containedType@Type@c10@@UEBA?AV?$SingletonOrSharedTypePtr@UType@c10@@@12@_K@Z"
+            },
+            {
+              "name": "?containedTypeSize@Type@c10@@UEBA_KXZ"
+            },
+            {
+              "name": "?dim@TensorBase@at@@QEBA_JXZ"
+            },
+            {
+              "name": "?defined@TensorBase@at@@QEBA_NXZ"
+            },
+            {
+              "name": "?is_contiguous@TensorBase@at@@QEBA_NW4MemoryFormat@c10@@@Z"
+            },
+            {
+              "name": "?numel@TensorBase@at@@QEBA_JXZ"
+            },
+            {
+              "name": "?scalar_type@TensorBase@at@@QEBA?AW4ScalarType@c10@@XZ"
+            },
+            {
+              "name": "?storage@TensorBase@at@@QEBAAEBUStorage@c10@@XZ"
+            },
+            {
+              "name": "?device@TensorBase@at@@QEBA?AUDevice@c10@@XZ"
+            },
+            {
+              "name": "?get_device@TensorBase@at@@QEBACXZ"
+            },
+            {
+              "name": "?is_cuda@TensorBase@at@@QEBA_NXZ"
+            },
+            {
+              "name": "?options@TensorBase@at@@QEBA?AUTensorOptions@c10@@XZ"
+            },
+            {
+              "name": "?data_ptr@TensorBase@at@@QEBAPEAXXZ"
+            },
+            {
+              "name": "?requires_grad@TensorBase@at@@QEBA_NXZ"
+            },
+            {
+              "name": "??1Tensor@at@@QEAA@XZ"
+            },
+            {
+              "name": "??0Tensor@at@@QEAA@AEBV01@@Z"
+            },
+            {
+              "name": "?fill_@Tensor@at@@QEBAAEAV12@AEBVScalar@c10@@@Z"
+            },
+            {
+              "name": "?narrow@Tensor@at@@QEBA?AV12@_J00@Z"
+            },
+            {
+              "name": "?eq@Tensor@at@@QEBA?AV12@AEBVScalar@c10@@@Z"
+            },
+            {
+              "name": "?all@Tensor@at@@QEBA?AV12@XZ"
+            },
+            {
+              "name": "??0Tensor@at@@QEAA@$$QEAV01@@Z"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@AEBU01@@Z"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@$$QEAU01@@Z"
+            },
+            {
+              "name": "??1IValue@c10@@QEAA@XZ"
+            },
+            {
+              "name": "??4IValue@c10@@QEGAAAEAU01@AEBU01@@Z"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@XZ"
+            },
+            {
+              "name": "?destroy@IValue@c10@@AEAAXXZ"
+            },
+            {
+              "name": "??0WeakOrStrongTypePtr@c10@@QEAA@UWeakTypePtr@1@@Z"
+            },
+            {
+              "name": "??0WeakOrStrongTypePtr@c10@@QEAA@UStrongTypePtr@1@@Z"
+            },
+            {
+              "name": "?holds_strong_ref@WeakOrStrongTypePtr@c10@@QEBA_NXZ"
+            },
+            {
+              "name": "?holds_empty_strong_ref@WeakOrStrongTypePtr@c10@@QEBA_NXZ"
+            },
+            {
+              "name": "??1StrongTypePtr@c10@@QEAA@XZ"
+            },
+            {
+              "name": "?str@AwaitType@c10@@UEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ"
+            },
+            {
+              "name": "?createWithContained@AwaitType@c10@@UEBA?AV?$SingletonOrSharedTypePtr@UType@c10@@@Type@2@V?$vector@V?$SingletonOrSharedTypePtr@UType@c10@@@Type@c10@@V?$allocator@V?$SingletonOrSharedTypePtr@UType@c10@@@Type@c10@@@std@@@std@@@Z"
+            },
+            {
+              "name": "?isSubtypeOfExt@AwaitType@c10@@UEBA_NAEBUType@2@PEAV?$basic_ostream@DU?$char_traits@D@std@@@std@@@Z"
+            },
+            {
+              "name": "??0AwaitType@c10@@AEAA@V?$SingletonOrSharedTypePtr@UType@c10@@@Type@1@@Z"
+            },
+            {
+              "name": "?annotation_str_impl@AwaitType@c10@@EEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV?$function@$$A6A?AV?$optional@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@AEBUType@c10@@@Z@4@@Z"
+            },
+            {
+              "name": "??1AwaitType@c10@@UEAA@XZ"
+            },
+            {
+              "name": "??0WeakOrStrongTypePtr@c10@@QEAA@AEBU01@@Z"
+            },
+            {
+              "name": "??0WeakOrStrongTypePtr@c10@@QEAA@$$QEAU01@@Z"
+            },
+            {
+              "name": "??4WeakOrStrongTypePtr@c10@@QEAAAEAU01@AEBU01@@Z"
+            },
+            {
+              "name": "??4WeakOrStrongTypePtr@c10@@QEAAAEAU01@$$QEAU01@@Z"
+            },
+            {
+              "name": "??1WeakOrStrongTypePtr@c10@@QEAA@XZ"
+            },
+            {
+              "name": "??0StrongTypePtr@c10@@QEAA@$$QEAU01@@Z"
+            },
+            {
+              "name": "?equals@?$SingleElementType@$0M@UAwaitType@c10@@@c10@@UEBA_NAEBUType@2@@Z"
+            },
+            {
+              "name": "?containedTypes@?$SingleElementType@$0M@UAwaitType@c10@@@c10@@UEBA?AV?$ArrayRef@V?$SingletonOrSharedTypePtr@UType@c10@@@Type@c10@@@2@XZ"
+            },
+            {
+              "name": "?hasFreeVariables@?$SingleElementType@$0M@UAwaitType@c10@@@c10@@UEBA_NXZ"
+            },
+            {
+              "name": "??0CustomClassHolder@torch@@QEAA@XZ"
+            },
+            {
+              "name": "??1CustomClassHolder@torch@@UEAA@XZ"
+            },
+            {
+              "name": "?asWeakTypePtr@WeakOrStrongTypePtr@c10@@QEBA?AUWeakTypePtr@2@XZ"
+            },
+            {
+              "name": "?is_module@Type@c10@@UEBA_NXZ"
+            },
+            {
+              "name": "?resizeObject@Object@ivalue@c10@@AEAAX_K@Z"
+            },
+            {
+              "name": "?extractStorages@Future@ivalue@c10@@CA?AV?$vector@V?$weak_intrusive_ptr@UStorageImpl@c10@@U?$intrusive_target_default_null_type@UStorageImpl@c10@@@detail@2@@c10@@V?$allocator@V?$weak_intrusive_ptr@UStorageImpl@c10@@U?$intrusive_target_default_null_type@UStorageImpl@c10@@@detail@2@@c10@@@std@@@std@@AEBUIValue@3@@Z"
+            },
+            {
+              "name": "?call@full@_ops@at@@SA?AVTensor@3@V?$ArrayRef@VSymInt@c10@@@c10@@AEBVScalar@6@V?$optional@W4ScalarType@c10@@@std@@V?$optional@W4Layout@c10@@@9@V?$optional@UDevice@c10@@@9@V?$optional@_N@9@@Z"
+            },
+            {
+              "name": "??$item@_N@Tensor@at@@QEBA_NXZ"
+            },
+            {
+              "name": "??0Library@torch@@QEAA@W4Kind@01@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$optional@W4DispatchKey@c10@@@4@PEBDI@Z"
+            }
+          ]
+        },
+        {
+          "dll": "cudart64_12.dll",
+          "symbols": [
+            {
+              "name": "__cudaRegisterFunction"
+            },
+            {
+              "name": "__cudaUnregisterFatBinary"
+            },
+            {
+              "name": "__cudaRegisterFatBinaryEnd"
+            },
+            {
+              "name": "__cudaRegisterFatBinary"
+            },
+            {
+              "name": "__cudaPopCallConfiguration"
+            },
+            {
+              "name": "cudaEventQuery"
+            },
+            {
+              "name": "cudaDeviceSynchronize"
+            },
+            {
+              "name": "cudaEventElapsedTime"
+            },
+            {
+              "name": "cudaGetErrorString"
+            },
+            {
+              "name": "cudaEventDestroy"
+            },
+            {
+              "name": "cudaLaunchKernel"
+            },
+            {
+              "name": "cudaGetDeviceProperties_v2"
+            },
+            {
+              "name": "cudaOccupancyMaxActiveBlocksPerMultiprocessor"
+            },
+            {
+              "name": "cudaEventCreateWithFlags"
+            },
+            {
+              "name": "cudaEventRecord"
+            },
+            {
+              "name": "cudaFuncGetAttributes"
+            },
+            {
+              "name": "cudaStreamIsCapturing"
+            },
+            {
+              "name": "cudaEventSynchronize"
+            },
+            {
+              "name": "cudaGetLastError"
+            },
+            {
+              "name": "cudaStreamWaitEvent"
+            }
+          ]
+        },
+        {
+          "dll": "c10_cuda.dll",
+          "symbols": [
+            {
+              "name": "??0CUDAStream@cuda@c10@@QEAA@VStream@2@@Z"
+            },
+            {
+              "name": "?query@CUDAStream@cuda@c10@@QEBA_NXZ"
+            },
+            {
+              "name": "?synchronize@CUDAStream@cuda@c10@@QEBAXXZ"
+            },
+            {
+              "name": "?setCurrentCUDAStream@cuda@c10@@YAXVCUDAStream@12@@Z"
+            },
+            {
+              "name": "?stream@CUDAStream@cuda@c10@@QEBAPEAUCUstream_st@@XZ"
+            },
+            {
+              "name": "?getDefaultCUDAStream@cuda@c10@@YA?AVCUDAStream@12@C@Z"
+            },
+            {
+              "name": "?getStreamFromPool@cuda@c10@@YA?AVCUDAStream@12@HC@Z"
+            },
+            {
+              "name": "?getStreamFromPool@cuda@c10@@YA?AVCUDAStream@12@_NC@Z"
+            },
+            {
+              "name": "?allocator@CUDACachingAllocator@cuda@c10@@3U?$atomic@PEAVCUDAAllocator@CUDACachingAllocator@cuda@c10@@@std@@A"
+            },
+            {
+              "name": "?getCurrentCUDAStream@cuda@c10@@YA?AVCUDAStream@12@C@Z"
+            },
+            {
+              "name": "?ExchangeDevice@cuda@c10@@YACC@Z"
+            },
+            {
+              "name": "?device_count@cuda@c10@@YACXZ"
+            },
+            {
+              "name": "?c10_cuda_check_implementation@cuda@c10@@YAXHPEBD0H_N@Z"
+            },
+            {
+              "name": "?MaybeSetDevice@cuda@c10@@YA?AW4cudaError@@C@Z"
+            },
+            {
+              "name": "?GetDevice@cuda@c10@@YA?AW4cudaError@@PEAC@Z"
+            },
+            {
+              "name": "?SetDevice@cuda@c10@@YA?AW4cudaError@@C_N@Z"
+            }
+          ]
+        },
+        {
+          "dll": "MSVCP140.dll",
+          "symbols": [
+            {
+              "name": "?_Osfx@?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAXXZ"
+            },
+            {
+              "name": "?flush@?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAAEAV12@XZ"
+            },
+            {
+              "name": "?setstate@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAAXH_N@Z"
+            },
+            {
+              "name": "??0?$basic_ios@DU?$char_traits@D@std@@@std@@IEAA@XZ"
+            },
+            {
+              "name": "?sputc@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QEAAHD@Z"
+            },
+            {
+              "name": "?sputn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QEAA_JPEBD_J@Z"
+            },
+            {
+              "name": "??0?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAA@PEAV?$basic_streambuf@DU?$char_traits@D@std@@@1@_N@Z"
+            },
+            {
+              "name": "??1?$basic_ios@DU?$char_traits@D@std@@@std@@UEAA@XZ"
+            },
+            {
+              "name": "??0?$basic_streambuf@DU?$char_traits@D@std@@@std@@IEAA@XZ"
+            },
+            {
+              "name": "?_Lock@?$basic_streambuf@DU?$char_traits@D@std@@@std@@UEAAXXZ"
+            },
+            {
+              "name": "?_Unlock@?$basic_streambuf@DU?$char_traits@D@std@@@std@@UEAAXXZ"
+            },
+            {
+              "name": "?showmanyc@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAA_JXZ"
+            },
+            {
+              "name": "?uflow@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAAHXZ"
+            },
+            {
+              "name": "?xsgetn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAA_JPEAD_J@Z"
+            },
+            {
+              "name": "?xsputn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAA_JPEBD_J@Z"
+            },
+            {
+              "name": "?setbuf@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAAPEAV12@PEAD_J@Z"
+            },
+            {
+              "name": "?sync@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAAHXZ"
+            },
+            {
+              "name": "?imbue@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAAXAEBVlocale@2@@Z"
+            },
+            {
+              "name": "??1?$basic_ostream@DU?$char_traits@D@std@@@std@@UEAA@XZ"
+            },
+            {
+              "name": "??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAAEAV01@_J@Z"
+            },
+            {
+              "name": "??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAAEAV01@_K@Z"
+            },
+            {
+              "name": "?good@ios_base@std@@QEBA_NXZ"
+            },
+            {
+              "name": "??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAAEAV01@I@Z"
+            },
+            {
+              "name": "_Cnd_broadcast"
+            },
+            {
+              "name": "_Mtx_unlock"
+            },
+            {
+              "name": "_Cnd_wait"
+            },
+            {
+              "name": "?__ExceptionPtrRethrow@@YAXPEBX@Z"
+            },
+            {
+              "name": "?__ExceptionPtrCurrentException@@YAXPEAX@Z"
+            },
+            {
+              "name": "_Mtx_lock"
+            },
+            {
+              "name": "?__ExceptionPtrDestroy@@YAXPEAX@Z"
+            },
+            {
+              "name": "?__ExceptionPtrToBool@@YA_NPEBX@Z"
+            },
+            {
+              "name": "?__ExceptionPtrAssign@@YAXPEAXPEBX@Z"
+            },
+            {
+              "name": "?__ExceptionPtrCreate@@YAXPEAX@Z"
+            },
+            {
+              "name": "?__ExceptionPtrCopy@@YAXPEAXPEBX@Z"
+            },
+            {
+              "name": "?_Throw_Cpp_error@std@@YAXH@Z"
+            },
+            {
+              "name": "?uncaught_exception@std@@YA_NXZ"
+            },
+            {
+              "name": "?_Xout_of_range@std@@YAXPEBD@Z"
+            },
+            {
+              "name": "?_Xbad_function_call@std@@YAXXZ"
+            },
+            {
+              "name": "?_Xlength_error@std@@YAXPEBD@Z"
+            },
+            {
+              "name": "??1?$basic_streambuf@DU?$char_traits@D@std@@@std@@UEAA@XZ"
+            },
+            {
+              "name": "?_Syserror_map@std@@YAPEBDH@Z"
+            }
+          ]
+        },
+        {
+          "dll": "KERNEL32.dll",
+          "symbols": [
+            {
+              "name": "DisableThreadLibraryCalls"
+            },
+            {
+              "name": "GetSystemTimeAsFileTime"
+            },
+            {
+              "name": "GetCurrentThreadId"
+            },
+            {
+              "name": "GetCurrentProcessId"
+            },
+            {
+              "name": "QueryPerformanceCounter"
+            },
+            {
+              "name": "IsDebuggerPresent"
+            },
+            {
+              "name": "IsProcessorFeaturePresent"
+            },
+            {
+              "name": "TerminateProcess"
+            },
+            {
+              "name": "GetCurrentProcess"
+            },
+            {
+              "name": "SetUnhandledExceptionFilter"
+            },
+            {
+              "name": "UnhandledExceptionFilter"
+            },
+            {
+              "name": "RtlVirtualUnwind"
+            },
+            {
+              "name": "RtlLookupFunctionEntry"
+            },
+            {
+              "name": "RtlCaptureContext"
+            },
+            {
+              "name": "SleepConditionVariableSRW"
+            },
+            {
+              "name": "WakeAllConditionVariable"
+            },
+            {
+              "name": "AcquireSRWLockExclusive"
+            },
+            {
+              "name": "ReleaseSRWLockExclusive"
+            },
+            {
+              "name": "InitializeSListHead"
+            }
+          ]
+        },
+        {
+          "dll": "VCRUNTIME140_1.dll",
+          "symbols": [
+            {
+              "name": "__CxxFrameHandler4"
+            }
+          ]
+        },
+        {
+          "dll": "VCRUNTIME140.dll",
+          "symbols": [
+            {
+              "name": "__std_exception_destroy"
+            },
+            {
+              "name": "__std_exception_copy"
+            },
+            {
+              "name": "_purecall"
+            },
+            {
+              "name": "__std_terminate"
+            },
+            {
+              "name": "memcmp"
+            },
+            {
+              "name": "memcpy"
+            },
+            {
+              "name": "memset"
+            },
+            {
+              "name": "__current_exception"
+            },
+            {
+              "name": "__current_exception_context"
+            },
+            {
+              "name": "__C_specific_handler"
+            },
+            {
+              "name": "_CxxThrowException"
+            },
+            {
+              "name": "__std_type_info_destroy_list"
+            },
+            {
+              "name": "memmove"
+            }
+          ]
+        },
+        {
+          "dll": "api-ms-win-crt-heap-l1-1-0.dll",
+          "symbols": [
+            {
+              "name": "_callnewh"
+            },
+            {
+              "name": "malloc"
+            },
+            {
+              "name": "free"
+            }
+          ]
+        },
+        {
+          "dll": "api-ms-win-crt-runtime-l1-1-0.dll",
+          "symbols": [
+            {
+              "name": "_initialize_narrow_environment"
+            },
+            {
+              "name": "_initialize_onexit_table"
+            },
+            {
+              "name": "_register_onexit_function"
+            },
+            {
+              "name": "_execute_onexit_table"
+            },
+            {
+              "name": "_crt_atexit"
+            },
+            {
+              "name": "_configure_narrow_argv"
+            },
+            {
+              "name": "_cexit"
+            },
+            {
+              "name": "_initterm"
+            },
+            {
+              "name": "_initterm_e"
+            },
+            {
+              "name": "terminate"
+            },
+            {
+              "name": "_invoke_watson"
+            },
+            {
+              "name": "_seh_filter_dll"
+            }
+          ]
+        }
+      ],
+      "delay_imports": []
+    }
+  },
+  "candidate": {
+    "path": "outputs\\semantic-rewrite\\extension-v8\\workspace\\dlssnr\\_C.cp311-win_amd64.pyd",
+    "sha256": "ee24994f7c72e323ffc512d4849ffdcb218e3f4df730057c18ab279ba7ffde22",
+    "pe": {
+      "sections": {
+        ".text": {
+          "virtual_size": 333230,
+          "virtual_address": 4096,
+          "raw_size": 333312,
+          "raw_offset": 1024,
+          "sha256": "9ddcfbde7acdd869b185ce060a5f09ed33d15285a28a6a056c531ac613c41cac"
+        },
+        ".rdata": {
+          "virtual_size": 152390,
+          "virtual_address": 339968,
+          "raw_size": 152576,
+          "raw_offset": 334336,
+          "sha256": "fa8f540d8ea706e0b8382fa241a235eb97787b3a377c855a07b3b625ebda4d9f"
+        },
+        ".data": {
+          "virtual_size": 39440,
+          "virtual_address": 495616,
+          "raw_size": 36864,
+          "raw_offset": 486912,
+          "sha256": "705d23c26a4af101e581eded5648e72af95059f69e0bab7af758bbea07d0d2cf"
+        },
+        ".pdata": {
+          "virtual_size": 10116,
+          "virtual_address": 536576,
+          "raw_size": 10240,
+          "raw_offset": 523776,
+          "sha256": "054808d0f4e0a6f234f0e5ad354ad7a1ee4342824ea51aa5b65362d9c5eb302d"
+        },
+        ".nv_fatb": {
+          "virtual_size": 16750888,
+          "virtual_address": 548864,
+          "raw_size": 16751104,
+          "raw_offset": 534016,
+          "sha256": "19c4316a55aa525001db10a99afd805cfa912f884f9d70c008f7da3342cfe5c8"
+        },
+        ".nvFatBi": {
+          "virtual_size": 240,
+          "virtual_address": 17301504,
+          "raw_size": 512,
+          "raw_offset": 17285120,
+          "sha256": "d45bfa4aea5bed3def8f9c44ce1df53b4ed40de188ba63a301439681a038d0b3"
+        },
+        ".rsrc": {
+          "virtual_size": 248,
+          "virtual_address": 17305600,
+          "raw_size": 512,
+          "raw_offset": 17285632,
+          "sha256": "5c0ef87f9e13ac1a6438cc99457df5408dad296ddb6f9a4f84e489550f85851e"
+        },
+        ".reloc": {
+          "virtual_size": 2684,
+          "virtual_address": 17309696,
+          "raw_size": 3072,
+          "raw_offset": 17286144,
+          "sha256": "e3cc0162897d042011f14c13099b8806703d7f38309d7537b49c256407e3cfa8"
+        }
+      },
+      "imports": [
+        {
+          "dll": "c10.dll",
+          "symbols": [
+            {
+              "name": "??0Error@c10@@QEAA@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$shared_ptr@$$CBV?$LazyValue@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@c10@@@3@PEBX@Z"
+            },
+            {
+              "name": "?torchCheckMsgImpl@detail@c10@@YAPEBDPEBD@Z"
+            },
+            {
+              "name": "?torchCheckMsgImpl@detail@c10@@YAPEBDPEBD0@Z"
+            },
+            {
+              "name": "?torchInternalAssertFail@detail@c10@@YAXPEBD0I0UCompileTimeEmptyString@12@@Z"
+            },
+            {
+              "name": "??0intrusive_ptr_target@c10@@IEAA@XZ"
+            },
+            {
+              "name": "??1intrusive_ptr_target@c10@@MEAA@XZ"
+            },
+            {
+              "name": "??0intrusive_ptr_target@c10@@IEAA@$$QEAV01@@Z"
+            },
+            {
+              "name": "??0intrusive_ptr_target@c10@@IEAA@AEBV01@@Z"
+            },
+            {
+              "name": "?release_resources@intrusive_ptr_target@c10@@EEAAXXZ"
+            },
+            {
+              "name": "??0Device@c10@@QEAA@W4DeviceType@1@C@Z"
+            },
+            {
+              "name": "?toScalarType@TypeMeta@caffe2@@QEBA?AW4ScalarType@c10@@XZ"
+            },
+            {
+              "name": "??0Error@c10@@QEAA@AEBV01@@Z"
+            },
+            {
+              "name": "?data_ptr@StorageImpl@c10@@QEBAAEBVDataPtr@2@XZ"
+            },
+            {
+              "name": "?data_ptr@Storage@c10@@QEBAAEBVDataPtr@2@XZ"
+            },
+            {
+              "name": "??1Warning@c10@@QEAA@XZ"
+            },
+            {
+              "name": "?device@Stream@c10@@QEBA?AUDevice@2@XZ"
+            },
+            {
+              "name": "??1Error@c10@@UEAA@XZ"
+            },
+            {
+              "name": "?device_index@Stream@c10@@QEBACXZ"
+            },
+            {
+              "name": "?device_opt@TensorOptions@c10@@QEBA?AV?$optional@UDevice@c10@@@std@@XZ"
+            },
+            {
+              "name": "?detail_guard_long_unique_std_vector_long_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?dtype_opt@TensorOptions@c10@@QEBA?AV?$optional@VTypeMeta@caffe2@@@std@@XZ"
+            },
+            {
+              "name": "?layout_opt@TensorOptions@c10@@QEBA?AV?$optional@W4Layout@c10@@@std@@XZ"
+            },
+            {
+              "name": "?pinned_memory_opt@TensorOptions@c10@@QEBA?AV?$optional@_N@std@@XZ"
+            },
+            {
+              "name": "??1Scalar@c10@@QEAA@XZ"
+            },
+            {
+              "name": "??0Scalar@c10@@QEAA@E@Z"
+            },
+            {
+              "name": "??0Scalar@c10@@QEAA@_J@Z"
+            },
+            {
+              "name": "??0DeviceGuardImplInterface@impl@c10@@QEAA@XZ"
+            },
+            {
+              "name": "??1DeviceGuardImplInterface@impl@c10@@UEAA@XZ"
+            },
+            {
+              "name": "??0ValueError@c10@@QEAA@USourceLocation@1@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z"
+            },
+            {
+              "name": "??1ValueError@c10@@UEAA@XZ"
+            },
+            {
+              "name": "??0ValueError@c10@@QEAA@AEBV01@@Z"
+            },
+            {
+              "name": "?get_trace@GPUTrace@impl@c10@@SAPEBUPyInterpreter@23@XZ"
+            },
+            {
+              "name": "??0DeviceGuardImplInterface@impl@c10@@QEAA@$$QEAU012@@Z"
+            },
+            {
+              "name": "?torchCheckFail@detail@c10@@YAXPEBD0I0@Z"
+            },
+            {
+              "name": "?torchCheckFail@detail@c10@@YAXPEBD0IAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z"
+            },
+            {
+              "name": "?torchInternalAssertFail@detail@c10@@YAXPEBD0I0AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z"
+            },
+            {
+              "name": "?torchInternalAssertFail@detail@c10@@YAXPEBD0I00@Z"
+            },
+            {
+              "name": "??0Warning@c10@@QEAA@V?$variant@VUserWarning@Warning@c10@@VDeprecationWarning@23@@std@@AEBUSourceLocation@1@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@3@_N@Z"
+            },
+            {
+              "name": "?warn@c10@@YAXAEBVWarning@1@@Z"
+            },
+            {
+              "name": "?DeviceTypeName@c10@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@W4DeviceType@1@_N@Z"
+            },
+            {
+              "name": "??6c10@@YAAEAV?$basic_ostream@DU?$char_traits@D@std@@@std@@AEAV12@AEBUDevice@0@@Z"
+            },
+            {
+              "name": "??6c10@@YAAEAV?$basic_ostream@DU?$char_traits@D@std@@@std@@AEAV12@W4DeviceType@0@@Z"
+            },
+            {
+              "name": "?device_guard_impl_registry@impl@c10@@3V?$array@U?$atomic@PEBUDeviceGuardImplInterface@impl@c10@@@std@@$0BF@@std@@A"
+            },
+            {
+              "name": "??0MessageLogger@c10@@QEAA@PEBDHH@Z"
+            },
+            {
+              "name": "??1MessageLogger@c10@@QEAA@XZ"
+            },
+            {
+              "name": "?int_ptr_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?std_unique_ptr_std_atomic_bool_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?detail_guard_long_unique_long_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?std_unique_ptr_std_mutex_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?std_vector_unsigned_long_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?float_ptr_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?std_vector_int64_t_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?char_ptr_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?at_Half_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?bool_ptr_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?std_string_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?std_vector_int32_t_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?char_metadata_index@detail@caffe2@@3GB"
+            },
+            {
+              "name": "?device_type@Stream@c10@@QEBA?AW4DeviceType@2@XZ"
+            }
+          ]
+        },
+        {
+          "dll": "torch_cpu.dll",
+          "symbols": [
+            {
+              "name": "??8c10@@YA_NAEBUType@0@0@Z"
+            },
+            {
+              "name": "??0TensorBase@at@@QEAA@$$QEAV01@@Z"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@VTensorBase@at@@@Z"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@_J@Z"
+            },
+            {
+              "name": "?toInt@IValue@c10@@QEBA_JXZ"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@_N@Z"
+            },
+            {
+              "name": "?toBool@IValue@c10@@QEBA_NXZ"
+            },
+            {
+              "name": "?null_to_undefined_tensor@IValue@c10@@CAPEAVintrusive_ptr_target@2@PEAV32@@Z"
+            },
+            {
+              "name": "?toObject@IValue@c10@@QEGBA?AV?$intrusive_ptr@UObject@ivalue@c10@@U?$intrusive_target_default_null_type@UObject@ivalue@c10@@@detail@3@@2@XZ"
+            },
+            {
+              "name": "?toTensor@IValue@c10@@QEHAA?AVTensor@at@@XZ"
+            },
+            {
+              "name": "?toTensor@IValue@c10@@QEGAAAEAVTensor@at@@XZ"
+            },
+            {
+              "name": "?toTensor@IValue@c10@@QEGBAAEBVTensor@at@@XZ"
+            },
+            {
+              "name": "?toCapsule@IValue@c10@@QEGBA?AV?$intrusive_ptr@VCustomClassHolder@torch@@U?$intrusive_target_default_null_type@VCustomClassHolder@torch@@@detail@c10@@@2@XZ"
+            },
+            {
+              "name": "?toIntList@IValue@c10@@QEGBA?AV?$List@_J@2@XZ"
+            },
+            {
+              "name": "?toTensorList@IValue@c10@@QEHAA?AV?$List@VTensor@at@@@2@XZ"
+            },
+            {
+              "name": "?toTensorList@IValue@c10@@QEGBA?AV?$List@VTensor@at@@@2@XZ"
+            },
+            {
+              "name": "?toList@IValue@c10@@QEHAA?AV?$List@UIValue@c10@@@2@XZ"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@V?$List@UIValue@c10@@@1@@Z"
+            },
+            {
+              "name": "?make_capsule@IValue@c10@@SA?AU12@V?$intrusive_ptr@VCustomClassHolder@torch@@U?$intrusive_target_default_null_type@VCustomClassHolder@torch@@@detail@c10@@@2@@Z"
+            },
+            {
+              "name": "?toStringRef@IValue@c10@@QEBAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ"
+            },
+            {
+              "name": "?setAliasAnalysis@FunctionSchema@c10@@QEAAXW4AliasAnalysisKind@2@@Z"
+            },
+            {
+              "name": "??1FunctionSchema@c10@@QEAA@XZ"
+            },
+            {
+              "name": "??0KernelFunction@c10@@AEAA@V?$unique_ptr@UOperatorKernel@c10@@U?$default_delete@UOperatorKernel@c10@@@std@@@std@@P6AXPEAUOperatorKernel@1@AEBVOperatorHandle@1@VDispatchKeySet@1@PEAV?$vector@UIValue@c10@@V?$allocator@UIValue@c10@@@std@@@3@@ZPEAX6@Z"
+            },
+            {
+              "name": "??1KernelFunction@c10@@QEAA@XZ"
+            },
+            {
+              "name": "??0CppSignature@impl@c10@@AEAA@Vtype_index@std@@@Z"
+            },
+            {
+              "name": "??0FunctionSchema@c10@@QEAA@$$QEAU01@@Z"
+            },
+            {
+              "name": "??1Library@torch@@QEAA@XZ"
+            },
+            {
+              "name": "?isGraphFunction@Function@jit@torch@@UEBA_NXZ"
+            },
+            {
+              "name": "??0Function@jit@torch@@QEAA@XZ"
+            },
+            {
+              "name": "??1Function@jit@torch@@UEAA@XZ"
+            },
+            {
+              "name": "??4FunctionSchema@c10@@QEAAAEAU01@$$QEAU01@@Z"
+            },
+            {
+              "name": "??1class_base@detail@torch@@QEAA@XZ"
+            },
+            {
+              "name": "??0OperatorKernel@c10@@QEAA@XZ"
+            },
+            {
+              "name": "??1OperatorKernel@c10@@UEAA@XZ"
+            },
+            {
+              "name": "??1CppFunction@torch@@QEAA@XZ"
+            },
+            {
+              "name": "??0class_base@detail@torch@@IEAA@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0V34@AEBVtype_info@@2@Z"
+            },
+            {
+              "name": "?withNewArguments@class_base@detail@torch@@KA?AUFunctionSchema@c10@@AEBU45@V?$initializer_list@Uarg@torch@@@std@@@Z"
+            },
+            {
+              "name": "?isSubtypeOf@Type@c10@@QEBA_NAEBU12@@Z"
+            },
+            {
+              "name": "?_def@Library@torch@@AEGAAAEAV12@$$QEAV?$variant@UOperatorName@c10@@UFunctionSchema@2@@std@@$$QEAVCppFunction@2@AEBV?$vector@W4Tag@at@@V?$allocator@W4Tag@at@@@std@@@4@@Z"
+            },
+            {
+              "name": "?parseSchemaOrName@jit@torch@@YA?AV?$variant@UOperatorName@c10@@UFunctionSchema@2@@std@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@4@_N@Z"
+            },
+            {
+              "name": "?registerCustomClassMethod@torch@@YAXV?$unique_ptr@UFunction@jit@torch@@U?$default_delete@UFunction@jit@torch@@@std@@@std@@@Z"
+            },
+            {
+              "name": "?get@?$TagType@UType@c10@@@IValue@c10@@SA?AV?$SingletonOrSharedTypePtr@UType@c10@@@Type@3@AEBU23@@Z"
+            },
+            {
+              "name": "??0ListImpl@detail@c10@@QEAA@V?$vector@UIValue@c10@@V?$allocator@UIValue@c10@@@std@@@std@@V?$SingletonOrSharedTypePtr@UType@c10@@@Type@2@@Z"
+            },
+            {
+              "name": "?make_function_schema@infer_schema@detail@c10@@YA?AUFunctionSchema@3@V?$ArrayRef@UArgumentDef@infer_schema@detail@c10@@@3@0@Z"
+            },
+            {
+              "name": "?make_function_schema@infer_schema@detail@c10@@YA?AUFunctionSchema@3@$$QEAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0V?$ArrayRef@UArgumentDef@infer_schema@detail@c10@@@3@1@Z"
+            },
+            {
+              "name": "?addMethod@ClassType@c10@@QEAAXPEAUFunction@jit@torch@@@Z"
+            },
+            {
+              "name": "?getCustomClassTypeImpl@c10@@YA?AV?$shared_ptr@UClassType@c10@@@std@@AEBVtype_index@3@@Z"
+            },
+            {
+              "name": "?get@BoolType@c10@@SA?AV?$SingletonTypePtr@UBoolType@c10@@@2@XZ"
+            },
+            {
+              "name": "?get@StringType@c10@@SA?AV?$SingletonTypePtr@UStringType@c10@@@2@XZ"
+            },
+            {
+              "name": "?get@OptionalType@c10@@SA?AV?$SingletonOrSharedTypePtr@UType@c10@@@Type@2@V342@@Z"
+            },
+            {
+              "name": "?get@ListType@c10@@SA?AV?$SingletonOrSharedTypePtr@UType@c10@@@Type@2@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V342@@Z"
+            },
+            {
+              "name": "?get@NoneType@c10@@SA?AV?$SingletonTypePtr@UNoneType@c10@@@2@XZ"
+            },
+            {
+              "name": "?create@Object@ivalue@c10@@SA?AV?$intrusive_ptr@UObject@ivalue@c10@@U?$intrusive_target_default_null_type@UObject@ivalue@c10@@@detail@3@@3@V?$shared_ptr@UClassType@c10@@@std@@_K@Z"
+            },
+            {
+              "name": "?checkCustomClassType@ivalue@c10@@YAXPEBUClassType@2@PEBUType@2@@Z"
+            },
+            {
+              "name": "?get@TensorType@c10@@SAAEBV?$shared_ptr@UTensorType@c10@@@std@@XZ"
+            },
+            {
+              "name": "?get@IntType@c10@@SA?AV?$SingletonTypePtr@UIntType@c10@@@2@XZ"
+            },
+            {
+              "name": "?symmetric@Type@c10@@MEBA_NXZ"
+            },
+            {
+              "name": "?repr_str@Type@c10@@UEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ"
+            },
+            {
+              "name": "?isUnionType@Type@c10@@UEBA_NXZ"
+            },
+            {
+              "name": "?requires_grad@Type@c10@@UEBA_NXZ"
+            },
+            {
+              "name": "?containedType@Type@c10@@UEBA?AV?$SingletonOrSharedTypePtr@UType@c10@@@12@_K@Z"
+            },
+            {
+              "name": "?containedTypeSize@Type@c10@@UEBA_KXZ"
+            },
+            {
+              "name": "?dim@TensorBase@at@@QEBA_JXZ"
+            },
+            {
+              "name": "?defined@TensorBase@at@@QEBA_NXZ"
+            },
+            {
+              "name": "?is_contiguous@TensorBase@at@@QEBA_NW4MemoryFormat@c10@@@Z"
+            },
+            {
+              "name": "?numel@TensorBase@at@@QEBA_JXZ"
+            },
+            {
+              "name": "?scalar_type@TensorBase@at@@QEBA?AW4ScalarType@c10@@XZ"
+            },
+            {
+              "name": "?storage@TensorBase@at@@QEBAAEBUStorage@c10@@XZ"
+            },
+            {
+              "name": "?device@TensorBase@at@@QEBA?AUDevice@c10@@XZ"
+            },
+            {
+              "name": "?get_device@TensorBase@at@@QEBACXZ"
+            },
+            {
+              "name": "?is_cuda@TensorBase@at@@QEBA_NXZ"
+            },
+            {
+              "name": "?options@TensorBase@at@@QEBA?AUTensorOptions@c10@@XZ"
+            },
+            {
+              "name": "?data_ptr@TensorBase@at@@QEBAPEAXXZ"
+            },
+            {
+              "name": "?requires_grad@TensorBase@at@@QEBA_NXZ"
+            },
+            {
+              "name": "??1Tensor@at@@QEAA@XZ"
+            },
+            {
+              "name": "??0Tensor@at@@QEAA@AEBV01@@Z"
+            },
+            {
+              "name": "?fill_@Tensor@at@@QEBAAEAV12@AEBVScalar@c10@@@Z"
+            },
+            {
+              "name": "?narrow@Tensor@at@@QEBA?AV12@_J00@Z"
+            },
+            {
+              "name": "?eq@Tensor@at@@QEBA?AV12@AEBVScalar@c10@@@Z"
+            },
+            {
+              "name": "?all@Tensor@at@@QEBA?AV12@XZ"
+            },
+            {
+              "name": "??0Tensor@at@@QEAA@$$QEAV01@@Z"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@AEBU01@@Z"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@$$QEAU01@@Z"
+            },
+            {
+              "name": "??1IValue@c10@@QEAA@XZ"
+            },
+            {
+              "name": "??4IValue@c10@@QEGAAAEAU01@AEBU01@@Z"
+            },
+            {
+              "name": "??0IValue@c10@@QEAA@XZ"
+            },
+            {
+              "name": "?destroy@IValue@c10@@AEAAXXZ"
+            },
+            {
+              "name": "??0WeakOrStrongTypePtr@c10@@QEAA@UWeakTypePtr@1@@Z"
+            },
+            {
+              "name": "??0WeakOrStrongTypePtr@c10@@QEAA@UStrongTypePtr@1@@Z"
+            },
+            {
+              "name": "?holds_strong_ref@WeakOrStrongTypePtr@c10@@QEBA_NXZ"
+            },
+            {
+              "name": "?holds_empty_strong_ref@WeakOrStrongTypePtr@c10@@QEBA_NXZ"
+            },
+            {
+              "name": "??1StrongTypePtr@c10@@QEAA@XZ"
+            },
+            {
+              "name": "?str@AwaitType@c10@@UEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ"
+            },
+            {
+              "name": "?createWithContained@AwaitType@c10@@UEBA?AV?$SingletonOrSharedTypePtr@UType@c10@@@Type@2@V?$vector@V?$SingletonOrSharedTypePtr@UType@c10@@@Type@c10@@V?$allocator@V?$SingletonOrSharedTypePtr@UType@c10@@@Type@c10@@@std@@@std@@@Z"
+            },
+            {
+              "name": "?isSubtypeOfExt@AwaitType@c10@@UEBA_NAEBUType@2@PEAV?$basic_ostream@DU?$char_traits@D@std@@@std@@@Z"
+            },
+            {
+              "name": "??0AwaitType@c10@@AEAA@V?$SingletonOrSharedTypePtr@UType@c10@@@Type@1@@Z"
+            },
+            {
+              "name": "?annotation_str_impl@AwaitType@c10@@EEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV?$function@$$A6A?AV?$optional@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@AEBUType@c10@@@Z@4@@Z"
+            },
+            {
+              "name": "??1AwaitType@c10@@UEAA@XZ"
+            },
+            {
+              "name": "??0WeakOrStrongTypePtr@c10@@QEAA@AEBU01@@Z"
+            },
+            {
+              "name": "??0WeakOrStrongTypePtr@c10@@QEAA@$$QEAU01@@Z"
+            },
+            {
+              "name": "??4WeakOrStrongTypePtr@c10@@QEAAAEAU01@AEBU01@@Z"
+            },
+            {
+              "name": "??4WeakOrStrongTypePtr@c10@@QEAAAEAU01@$$QEAU01@@Z"
+            },
+            {
+              "name": "??1WeakOrStrongTypePtr@c10@@QEAA@XZ"
+            },
+            {
+              "name": "??0StrongTypePtr@c10@@QEAA@$$QEAU01@@Z"
+            },
+            {
+              "name": "?equals@?$SingleElementType@$0M@UAwaitType@c10@@@c10@@UEBA_NAEBUType@2@@Z"
+            },
+            {
+              "name": "?containedTypes@?$SingleElementType@$0M@UAwaitType@c10@@@c10@@UEBA?AV?$ArrayRef@V?$SingletonOrSharedTypePtr@UType@c10@@@Type@c10@@@2@XZ"
+            },
+            {
+              "name": "?hasFreeVariables@?$SingleElementType@$0M@UAwaitType@c10@@@c10@@UEBA_NXZ"
+            },
+            {
+              "name": "??0CustomClassHolder@torch@@QEAA@XZ"
+            },
+            {
+              "name": "??1CustomClassHolder@torch@@UEAA@XZ"
+            },
+            {
+              "name": "?asWeakTypePtr@WeakOrStrongTypePtr@c10@@QEBA?AUWeakTypePtr@2@XZ"
+            },
+            {
+              "name": "?is_module@Type@c10@@UEBA_NXZ"
+            },
+            {
+              "name": "?resizeObject@Object@ivalue@c10@@AEAAX_K@Z"
+            },
+            {
+              "name": "?extractStorages@Future@ivalue@c10@@CA?AV?$vector@V?$weak_intrusive_ptr@UStorageImpl@c10@@U?$intrusive_target_default_null_type@UStorageImpl@c10@@@detail@2@@c10@@V?$allocator@V?$weak_intrusive_ptr@UStorageImpl@c10@@U?$intrusive_target_default_null_type@UStorageImpl@c10@@@detail@2@@c10@@@std@@@std@@AEBUIValue@3@@Z"
+            },
+            {
+              "name": "?call@full@_ops@at@@SA?AVTensor@3@V?$ArrayRef@VSymInt@c10@@@c10@@AEBVScalar@6@V?$optional@W4ScalarType@c10@@@std@@V?$optional@W4Layout@c10@@@9@V?$optional@UDevice@c10@@@9@V?$optional@_N@9@@Z"
+            },
+            {
+              "name": "??$item@_N@Tensor@at@@QEBA_NXZ"
+            },
+            {
+              "name": "??0Library@torch@@QEAA@W4Kind@01@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$optional@W4DispatchKey@c10@@@4@PEBDI@Z"
+            }
+          ]
+        },
+        {
+          "dll": "cudart64_12.dll",
+          "symbols": [
+            {
+              "name": "__cudaRegisterFunction"
+            },
+            {
+              "name": "__cudaUnregisterFatBinary"
+            },
+            {
+              "name": "__cudaRegisterFatBinaryEnd"
+            },
+            {
+              "name": "__cudaRegisterFatBinary"
+            },
+            {
+              "name": "__cudaPopCallConfiguration"
+            },
+            {
+              "name": "cudaEventQuery"
+            },
+            {
+              "name": "cudaDeviceSynchronize"
+            },
+            {
+              "name": "cudaEventElapsedTime"
+            },
+            {
+              "name": "cudaGetErrorString"
+            },
+            {
+              "name": "cudaEventDestroy"
+            },
+            {
+              "name": "cudaLaunchKernel"
+            },
+            {
+              "name": "cudaGetDeviceProperties_v2"
+            },
+            {
+              "name": "cudaOccupancyMaxActiveBlocksPerMultiprocessor"
+            },
+            {
+              "name": "cudaEventCreateWithFlags"
+            },
+            {
+              "name": "cudaEventRecord"
+            },
+            {
+              "name": "cudaFuncGetAttributes"
+            },
+            {
+              "name": "cudaStreamIsCapturing"
+            },
+            {
+              "name": "cudaEventSynchronize"
+            },
+            {
+              "name": "cudaGetLastError"
+            },
+            {
+              "name": "cudaStreamWaitEvent"
+            }
+          ]
+        },
+        {
+          "dll": "c10_cuda.dll",
+          "symbols": [
+            {
+              "name": "??0CUDAStream@cuda@c10@@QEAA@VStream@2@@Z"
+            },
+            {
+              "name": "?query@CUDAStream@cuda@c10@@QEBA_NXZ"
+            },
+            {
+              "name": "?synchronize@CUDAStream@cuda@c10@@QEBAXXZ"
+            },
+            {
+              "name": "?setCurrentCUDAStream@cuda@c10@@YAXVCUDAStream@12@@Z"
+            },
+            {
+              "name": "?stream@CUDAStream@cuda@c10@@QEBAPEAUCUstream_st@@XZ"
+            },
+            {
+              "name": "?getDefaultCUDAStream@cuda@c10@@YA?AVCUDAStream@12@C@Z"
+            },
+            {
+              "name": "?getStreamFromPool@cuda@c10@@YA?AVCUDAStream@12@HC@Z"
+            },
+            {
+              "name": "?getStreamFromPool@cuda@c10@@YA?AVCUDAStream@12@_NC@Z"
+            },
+            {
+              "name": "?allocator@CUDACachingAllocator@cuda@c10@@3U?$atomic@PEAVCUDAAllocator@CUDACachingAllocator@cuda@c10@@@std@@A"
+            },
+            {
+              "name": "?getCurrentCUDAStream@cuda@c10@@YA?AVCUDAStream@12@C@Z"
+            },
+            {
+              "name": "?ExchangeDevice@cuda@c10@@YACC@Z"
+            },
+            {
+              "name": "?device_count@cuda@c10@@YACXZ"
+            },
+            {
+              "name": "?c10_cuda_check_implementation@cuda@c10@@YAXHPEBD0H_N@Z"
+            },
+            {
+              "name": "?MaybeSetDevice@cuda@c10@@YA?AW4cudaError@@C@Z"
+            },
+            {
+              "name": "?GetDevice@cuda@c10@@YA?AW4cudaError@@PEAC@Z"
+            },
+            {
+              "name": "?SetDevice@cuda@c10@@YA?AW4cudaError@@C_N@Z"
+            }
+          ]
+        },
+        {
+          "dll": "MSVCP140.dll",
+          "symbols": [
+            {
+              "name": "?_Osfx@?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAXXZ"
+            },
+            {
+              "name": "?flush@?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAAEAV12@XZ"
+            },
+            {
+              "name": "?setstate@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAAXH_N@Z"
+            },
+            {
+              "name": "??0?$basic_ios@DU?$char_traits@D@std@@@std@@IEAA@XZ"
+            },
+            {
+              "name": "?sputc@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QEAAHD@Z"
+            },
+            {
+              "name": "?sputn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QEAA_JPEBD_J@Z"
+            },
+            {
+              "name": "??0?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAA@PEAV?$basic_streambuf@DU?$char_traits@D@std@@@1@_N@Z"
+            },
+            {
+              "name": "??1?$basic_ios@DU?$char_traits@D@std@@@std@@UEAA@XZ"
+            },
+            {
+              "name": "??0?$basic_streambuf@DU?$char_traits@D@std@@@std@@IEAA@XZ"
+            },
+            {
+              "name": "?_Lock@?$basic_streambuf@DU?$char_traits@D@std@@@std@@UEAAXXZ"
+            },
+            {
+              "name": "?_Unlock@?$basic_streambuf@DU?$char_traits@D@std@@@std@@UEAAXXZ"
+            },
+            {
+              "name": "?showmanyc@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAA_JXZ"
+            },
+            {
+              "name": "?uflow@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAAHXZ"
+            },
+            {
+              "name": "?xsgetn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAA_JPEAD_J@Z"
+            },
+            {
+              "name": "?xsputn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAA_JPEBD_J@Z"
+            },
+            {
+              "name": "?setbuf@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAAPEAV12@PEAD_J@Z"
+            },
+            {
+              "name": "?sync@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAAHXZ"
+            },
+            {
+              "name": "?imbue@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAAXAEBVlocale@2@@Z"
+            },
+            {
+              "name": "??1?$basic_ostream@DU?$char_traits@D@std@@@std@@UEAA@XZ"
+            },
+            {
+              "name": "??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAAEAV01@_J@Z"
+            },
+            {
+              "name": "??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAAEAV01@_K@Z"
+            },
+            {
+              "name": "?good@ios_base@std@@QEBA_NXZ"
+            },
+            {
+              "name": "??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAAEAV01@I@Z"
+            },
+            {
+              "name": "_Cnd_broadcast"
+            },
+            {
+              "name": "_Mtx_unlock"
+            },
+            {
+              "name": "_Cnd_wait"
+            },
+            {
+              "name": "?__ExceptionPtrRethrow@@YAXPEBX@Z"
+            },
+            {
+              "name": "?__ExceptionPtrCurrentException@@YAXPEAX@Z"
+            },
+            {
+              "name": "_Mtx_lock"
+            },
+            {
+              "name": "?__ExceptionPtrDestroy@@YAXPEAX@Z"
+            },
+            {
+              "name": "?__ExceptionPtrToBool@@YA_NPEBX@Z"
+            },
+            {
+              "name": "?__ExceptionPtrAssign@@YAXPEAXPEBX@Z"
+            },
+            {
+              "name": "?__ExceptionPtrCreate@@YAXPEAX@Z"
+            },
+            {
+              "name": "?__ExceptionPtrCopy@@YAXPEAXPEBX@Z"
+            },
+            {
+              "name": "?_Throw_Cpp_error@std@@YAXH@Z"
+            },
+            {
+              "name": "?uncaught_exception@std@@YA_NXZ"
+            },
+            {
+              "name": "?_Xout_of_range@std@@YAXPEBD@Z"
+            },
+            {
+              "name": "?_Xbad_function_call@std@@YAXXZ"
+            },
+            {
+              "name": "?_Xlength_error@std@@YAXPEBD@Z"
+            },
+            {
+              "name": "??1?$basic_streambuf@DU?$char_traits@D@std@@@std@@UEAA@XZ"
+            },
+            {
+              "name": "?_Syserror_map@std@@YAPEBDH@Z"
+            }
+          ]
+        },
+        {
+          "dll": "KERNEL32.dll",
+          "symbols": [
+            {
+              "name": "DisableThreadLibraryCalls"
+            },
+            {
+              "name": "GetSystemTimeAsFileTime"
+            },
+            {
+              "name": "GetCurrentThreadId"
+            },
+            {
+              "name": "GetCurrentProcessId"
+            },
+            {
+              "name": "QueryPerformanceCounter"
+            },
+            {
+              "name": "IsDebuggerPresent"
+            },
+            {
+              "name": "IsProcessorFeaturePresent"
+            },
+            {
+              "name": "TerminateProcess"
+            },
+            {
+              "name": "GetCurrentProcess"
+            },
+            {
+              "name": "SetUnhandledExceptionFilter"
+            },
+            {
+              "name": "UnhandledExceptionFilter"
+            },
+            {
+              "name": "RtlVirtualUnwind"
+            },
+            {
+              "name": "RtlLookupFunctionEntry"
+            },
+            {
+              "name": "RtlCaptureContext"
+            },
+            {
+              "name": "SleepConditionVariableSRW"
+            },
+            {
+              "name": "WakeAllConditionVariable"
+            },
+            {
+              "name": "AcquireSRWLockExclusive"
+            },
+            {
+              "name": "ReleaseSRWLockExclusive"
+            },
+            {
+              "name": "InitializeSListHead"
+            }
+          ]
+        },
+        {
+          "dll": "VCRUNTIME140_1.dll",
+          "symbols": [
+            {
+              "name": "__CxxFrameHandler4"
+            }
+          ]
+        },
+        {
+          "dll": "VCRUNTIME140.dll",
+          "symbols": [
+            {
+              "name": "__std_exception_destroy"
+            },
+            {
+              "name": "__std_exception_copy"
+            },
+            {
+              "name": "_purecall"
+            },
+            {
+              "name": "__std_terminate"
+            },
+            {
+              "name": "memcmp"
+            },
+            {
+              "name": "memcpy"
+            },
+            {
+              "name": "memset"
+            },
+            {
+              "name": "__current_exception"
+            },
+            {
+              "name": "__current_exception_context"
+            },
+            {
+              "name": "__C_specific_handler"
+            },
+            {
+              "name": "_CxxThrowException"
+            },
+            {
+              "name": "__std_type_info_destroy_list"
+            },
+            {
+              "name": "memmove"
+            }
+          ]
+        },
+        {
+          "dll": "api-ms-win-crt-heap-l1-1-0.dll",
+          "symbols": [
+            {
+              "name": "_callnewh"
+            },
+            {
+              "name": "malloc"
+            },
+            {
+              "name": "free"
+            }
+          ]
+        },
+        {
+          "dll": "api-ms-win-crt-runtime-l1-1-0.dll",
+          "symbols": [
+            {
+              "name": "_initialize_narrow_environment"
+            },
+            {
+              "name": "_initialize_onexit_table"
+            },
+            {
+              "name": "_register_onexit_function"
+            },
+            {
+              "name": "_execute_onexit_table"
+            },
+            {
+              "name": "_crt_atexit"
+            },
+            {
+              "name": "_configure_narrow_argv"
+            },
+            {
+              "name": "_cexit"
+            },
+            {
+              "name": "_initterm"
+            },
+            {
+              "name": "_initterm_e"
+            },
+            {
+              "name": "terminate"
+            },
+            {
+              "name": "_invoke_watson"
+            },
+            {
+              "name": "_seh_filter_dll"
+            }
+          ]
+        }
+      ],
+      "delay_imports": []
+    }
+  },
+  "modules": [
+    {
+      "name": "reconstructed_attention.sm_120.cubin",
+      "baseline_sha256": "d91d6fea3cd029e8ae495b21db3dd7a6747a6c8efd0762e04a9b01d0a3732c94",
+      "candidate_sha256": "5ea5ef9d9a753b8ade79ae18f77e18c8bb302f8148131738e184cf8089897d0a",
+      "constant_sections_exact": true,
+      "section_differences": []
+    },
+    {
+      "name": "reconstructed_connectors.sm_120.cubin",
+      "baseline_sha256": "9cfdcc889814f0bbd6f9ec9fdb09d77621b01d8237a3adc2bb33bd17a7491a28",
+      "candidate_sha256": "8a639be6d345c1bea9f459c8b51cc4de6160fe97dce22a71b14557dc50246047",
+      "constant_sections_exact": true,
+      "section_differences": []
+    },
+    {
+      "name": "reconstructed_downsample_fp16.sm_120.cubin",
+      "baseline_sha256": "8bb5156da1b160b366a790b85146149238a77f4b9501981e47b7f6202767012e",
+      "candidate_sha256": "e2d2de170072b4e191d7e6897374ee2e8f9ec8eea07b8cb56e4d3531d2b4748d",
+      "constant_sections_exact": true,
+      "section_differences": []
+    },
+    {
+      "name": "reconstructed_downsample_fp8.sm_120.cubin",
+      "baseline_sha256": "99b83c881154da2314d14690d553e289315382eec340c472b464e4cad490e1fb",
+      "candidate_sha256": "4748b27169044891d06d84ebfac3e51e46c73a281ecb1eca5f9134afc59d7515",
+      "constant_sections_exact": true,
+      "section_differences": []
+    },
+    {
+      "name": "reconstructed_ffn.sm_120.cubin",
+      "baseline_sha256": "832ebd3dfc98b68ac766bd1305c2649d64b78a865c2cb0d248a19f717492424c",
+      "candidate_sha256": "00030c2a53e170367477e441c95157ee537aaf22e0699032c71909eaf05c50ee",
+      "constant_sections_exact": true,
+      "section_differences": []
+    },
+    {
+      "name": "reconstructed_frontend.sm_120.cubin",
+      "baseline_sha256": "92d5950b51f3c10ff09bc150c4af9a48f53ae2c93aebf1ae882a0708bf60b217",
+      "candidate_sha256": "6dc82a18108167c64c99d5bb26c44eba6f5d2e051e53da0e5cfd075fbd98093e",
+      "constant_sections_exact": true,
+      "section_differences": []
+    },
+    {
+      "name": "reconstructed_upsample_fp16.sm_120.cubin",
+      "baseline_sha256": "56674742d802783990b2d00a73244bfa929c2611733d65428b5c7dec87deb453",
+      "candidate_sha256": "f2e0cfd9a46429499469662f70739a9815db41289fda4cf04217c03562f073d7",
+      "constant_sections_exact": true,
+      "section_differences": []
+    },
+    {
+      "name": "reconstructed_upsample_fp8.sm_120.cubin",
+      "baseline_sha256": "9493431e2229c477142237d505d2d5bef8ea717cb27b3a280b673422c79c6426",
+      "candidate_sha256": "5b34ad1be7a50a7206e478d08b216069b11529cc6fdc5b9f506c53c6ddbe8262",
+      "constant_sections_exact": true,
+      "section_differences": []
+    },
+    {
+      "name": "reconstructed_window_block_fp16.sm_120.cubin",
+      "baseline_sha256": "ce6c4555aca496e3d08bc6828151dbc03229b00f71ee3dcaf0547b1c61d06489",
+      "candidate_sha256": "f8d6853c531ae1314d5bc4c14557d1118e5b7e1068ac93c5da95fcdadb470dbe",
+      "constant_sections_exact": true,
+      "section_differences": []
+    },
+    {
+      "name": "reconstructed_window_block_fp8.sm_120.cubin",
+      "baseline_sha256": "712fbe6826e18b5e64e2f293b64733262e83ca9e4c0156df8cefe020162f5f1f",
+      "candidate_sha256": "793a4d037dfda4d67433a2c3e58a25abd29cab160ed93f4794e5679cac57217d",
+      "constant_sections_exact": true,
+      "section_differences": []
+    }
+  ],
+  "entries": [
+    {
+      "symbol": "_ZN6dlssnr13reconstructed19window_qkv_c512_fp819window_qkv_c512_fp8ENS1_10ParametersE",
+      "module": "reconstructed_attention.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:161 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:161 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed20global_qkv_c1024_fp820global_qkv_c1024_fp8ENS1_10ParametersE",
+      "module": "reconstructed_attention.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:158 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:158 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed20window_qkv_c512_fp1620window_qkv_c512_fp16ENS1_10ParametersE",
+      "module": "reconstructed_attention.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:153 STACK:0 SHARED:5136 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:153 STACK:0 SHARED:5136 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed21global_qkv_c1024_fp1621global_qkv_c1024_fp16ENS1_10ParametersE",
+      "module": "reconstructed_attention.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:200 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:200 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed27global_projection_c1024_fp827global_projection_c1024_fp8ENS1_10ParametersE",
+      "module": "reconstructed_attention.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:116 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:116 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed28global_projection_c1024_fp1628global_projection_c1024_fp16ENS1_10ParametersE",
+      "module": "reconstructed_attention.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:152 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:152 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed34global_attention_chained_c1024_fp834global_attention_chained_c1024_fp8ENS1_10ParametersE",
+      "module": "reconstructed_attention.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:162 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:960 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:162 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:960 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed35global_attention_chained_c1024_fp1635global_attention_chained_c1024_fp16ENS1_10ParametersE",
+      "module": "reconstructed_attention.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:158 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:960 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:158 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:960 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed36window_attention_projection_c512_fp836window_attention_projection_c512_fp8ENS1_10ParametersE",
+      "module": "reconstructed_attention.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:98 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:98 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed37window_attention_projection_c512_fp1637window_attention_projection_c512_fp16ENS1_10ParametersE",
+      "module": "reconstructed_attention.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:100 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:100 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed48window_attention_projection_output_view_c512_fp848window_attention_projection_output_view_c512_fp8ENS1_10ParametersE",
+      "module": "reconstructed_attention.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:121 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:121 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed49window_attention_projection_output_view_c512_fp1649window_attention_projection_output_view_c512_fp16ENS1_10ParametersE",
+      "module": "reconstructed_attention.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:128 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:128 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed24completion_counter_clear24completion_counter_clearENS0_20global_repack_layout15ClearParametersE",
+      "module": "reconstructed_connectors.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:10 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:912 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:10 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:912 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed25repack_1d_to_2d_c1024_fp825repack_1d_to_2d_c1024_fp8ENS0_20global_repack_layout10ParametersE",
+      "module": "reconstructed_connectors.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed25repack_2d_to_1d_c1024_fp825repack_2d_to_1d_c1024_fp8ENS0_20global_repack_layout10ParametersE",
+      "module": "reconstructed_connectors.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed26repack_1d_to_2d_c1024_fp1626repack_1d_to_2d_c1024_fp16ENS0_20global_repack_layout10ParametersE",
+      "module": "reconstructed_connectors.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed26repack_2d_to_1d_c1024_fp1626repack_2d_to_1d_c1024_fp16ENS0_20global_repack_layout10ParametersE",
+      "module": "reconstructed_connectors.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed36channel_projection_c512_to_c1024_fp836channel_projection_c512_to_c1024_fp8ENS1_10ParametersE",
+      "module": "reconstructed_connectors.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:98 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:936 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:98 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:936 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed37channel_projection_c512_to_c1024_fp1637channel_projection_c512_to_c1024_fp16ENS1_10ParametersE",
+      "module": "reconstructed_connectors.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:96 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:936 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:96 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:936 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed32window_block_c32_downsample_fp1632window_block_c32_downsample_fp16ENS1_10ParametersE",
+      "module": "reconstructed_downsample_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed32window_block_c64_downsample_fp1632window_block_c64_downsample_fp16ENS1_10ParametersE",
+      "module": "reconstructed_downsample_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:167 STACK:8 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:167 STACK:8 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed33window_block_c128_downsample_fp1633window_block_c128_downsample_fp16ENS1_10ParametersE",
+      "module": "reconstructed_downsample_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed33window_block_c256_downsample_fp1633window_block_c256_downsample_fp16ENS1_10ParametersE",
+      "module": "reconstructed_downsample_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:186 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:186 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed42window_attention_projection_pool_c512_fp1642window_attention_projection_pool_c512_fp16ENS1_10ParametersE",
+      "module": "reconstructed_downsample_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:142 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:142 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed43input_preprocess_window_downsample_c32_fp1643input_preprocess_window_downsample_c32_fp16ENS1_10ParametersE",
+      "module": "reconstructed_downsample_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed31window_block_c32_downsample_fp831window_block_c32_downsample_fp8ENS1_10ParametersE",
+      "module": "reconstructed_downsample_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed31window_block_c64_downsample_fp831window_block_c64_downsample_fp8ENS1_10ParametersE",
+      "module": "reconstructed_downsample_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:161 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:161 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed32window_block_c128_downsample_fp832window_block_c128_downsample_fp8ENS1_10ParametersE",
+      "module": "reconstructed_downsample_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:167 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:167 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed32window_block_c256_downsample_fp832window_block_c256_downsample_fp8ENS1_10ParametersE",
+      "module": "reconstructed_downsample_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:167 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:167 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed41window_attention_projection_pool_c512_fp841window_attention_projection_pool_c512_fp8ENS1_10ParametersE",
+      "module": "reconstructed_downsample_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:140 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:140 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed42input_preprocess_window_downsample_c32_fp842input_preprocess_window_downsample_c32_fp8ENS1_10ParametersE",
+      "module": "reconstructed_downsample_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed19window_ffn_c512_fp819window_ffn_c512_fp8ENS1_10ParametersE",
+      "module": "reconstructed_ffn.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:108 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:108 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed20window_ffn_c512_fp1620window_ffn_c512_fp16ENS1_10ParametersE",
+      "module": "reconstructed_ffn.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:217 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:217 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed27global_ffn_expand_c1024_fp827global_ffn_expand_c1024_fp8ENS1_10ParametersE",
+      "module": "reconstructed_ffn.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:139 STACK:0 SHARED:25624 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:139 STACK:0 SHARED:25624 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed28global_ffn_expand_c1024_fp1628global_ffn_expand_c1024_fp16ENS1_10ParametersE",
+      "module": "reconstructed_ffn.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:139 STACK:0 SHARED:25624 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:139 STACK:0 SHARED:25624 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed29global_ffn_contract_c1024_fp829global_ffn_contract_c1024_fp8ENS1_10ParametersE",
+      "module": "reconstructed_ffn.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:149 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:149 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed30global_ffn_contract_c1024_fp1630global_ffn_contract_c1024_fp16ENS1_10ParametersE",
+      "module": "reconstructed_ffn.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:140 STACK:0 SHARED:25624 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:140 STACK:0 SHARED:25624 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed30window_ffn_input_view_c512_fp830window_ffn_input_view_c512_fp8ENS1_10ParametersE",
+      "module": "reconstructed_ffn.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:161 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:161 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed30window_ffn_projection_c512_fp830window_ffn_projection_c512_fp8ENS1_10ParametersE",
+      "module": "reconstructed_ffn.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:122 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:122 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed31window_ffn_input_view_c512_fp1631window_ffn_input_view_c512_fp16ENS1_10ParametersE",
+      "module": "reconstructed_ffn.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:215 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:215 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed31window_ffn_projection_c512_fp1631window_ffn_projection_c512_fp16ENS1_10ParametersE",
+      "module": "reconstructed_ffn.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:122 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:122 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed41window_ffn_projection_input_view_c512_fp841window_ffn_projection_input_view_c512_fp8ENS1_10ParametersE",
+      "module": "reconstructed_ffn.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:128 STACK:24 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:128 STACK:24 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed42window_ffn_projection_input_view_c512_fp1642window_ffn_projection_input_view_c512_fp16ENS1_10ParametersE",
+      "module": "reconstructed_ffn.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:128 STACK:8 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:128 STACK:8 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed31input_preprocess_window_c32_fp831input_preprocess_window_c32_fp8ENS1_10ParametersE",
+      "module": "reconstructed_frontend.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed32input_preprocess_window_c32_fp1632input_preprocess_window_c32_fp16ENS1_10ParametersE",
+      "module": "reconstructed_frontend.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed33output_window_postprocess_c32_fp833output_window_postprocess_c32_fp8ENS1_10ParametersE",
+      "module": "reconstructed_frontend.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:48 SHARED:0 LOCAL:0 CONSTANT[0]:1080 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:48 SHARED:0 LOCAL:0 CONSTANT[0]:1080 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed34output_window_postprocess_c32_fp1634output_window_postprocess_c32_fp16ENS1_10ParametersE",
+      "module": "reconstructed_frontend.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:64 SHARED:0 LOCAL:0 CONSTANT[0]:1080 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:64 SHARED:0 LOCAL:0 CONSTANT[0]:1080 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed30window_block_c32_upsample_fp1630window_block_c32_upsample_fp16ENS1_10ParametersE",
+      "module": "reconstructed_upsample_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed30window_block_c64_upsample_fp1630window_block_c64_upsample_fp16ENS1_10ParametersE",
+      "module": "reconstructed_upsample_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:8 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:8 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed31window_block_c128_upsample_fp1631window_block_c128_upsample_fp16ENS1_10ParametersE",
+      "module": "reconstructed_upsample_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:8 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:8 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed31window_block_c256_upsample_fp1631window_block_c256_upsample_fp16ENS1_10ParametersE",
+      "module": "reconstructed_upsample_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:184 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:184 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed35decoder_upsample_c1024_to_c512_fp1635decoder_upsample_c1024_to_c512_fp16ENS1_10ParametersE",
+      "module": "reconstructed_upsample_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:124 STACK:0 SHARED:3088 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:124 STACK:0 SHARED:3088 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed29window_block_c32_upsample_fp829window_block_c32_upsample_fp8ENS1_10ParametersE",
+      "module": "reconstructed_upsample_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed29window_block_c64_upsample_fp829window_block_c64_upsample_fp8ENS1_10ParametersE",
+      "module": "reconstructed_upsample_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:161 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:161 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed30window_block_c128_upsample_fp830window_block_c128_upsample_fp8ENS1_10ParametersE",
+      "module": "reconstructed_upsample_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:162 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:162 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed30window_block_c256_upsample_fp830window_block_c256_upsample_fp8ENS1_10ParametersE",
+      "module": "reconstructed_upsample_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:161 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:161 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed34decoder_upsample_c1024_to_c512_fp834decoder_upsample_c1024_to_c512_fp8ENS1_10ParametersE",
+      "module": "reconstructed_upsample_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:124 STACK:0 SHARED:3088 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:124 STACK:0 SHARED:3088 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed21window_block_c32_fp1621window_block_c32_fp16ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed21window_block_c64_fp1621window_block_c64_fp16ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:166 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:166 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed22window_block_c128_fp1622window_block_c128_fp16ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:8 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:8 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed22window_block_c256_fp1622window_block_c256_fp16ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:180 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:180 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed32window_block_c32_input_view_fp1632window_block_c32_input_view_fp16ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed32window_block_c64_input_view_fp1632window_block_c64_input_view_fp16ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:16 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:16 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed33window_block_c128_input_view_fp1633window_block_c128_input_view_fp16ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed33window_block_c256_input_view_fp1633window_block_c256_input_view_fp16ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:184 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:184 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed33window_block_c32_output_view_fp1633window_block_c32_output_view_fp16ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:24 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:24 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed33window_block_c64_output_view_fp1633window_block_c64_output_view_fp16ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:16 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:16 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed34window_block_c128_output_view_fp1634window_block_c128_output_view_fp16ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed34window_block_c256_output_view_fp1634window_block_c256_output_view_fp16ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp16.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:180 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:180 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed20window_block_c32_fp820window_block_c32_fp8ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed20window_block_c64_fp820window_block_c64_fp8ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:159 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:159 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed21window_block_c128_fp821window_block_c128_fp8ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:163 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:163 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed21window_block_c256_fp821window_block_c256_fp8ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:163 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:163 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed31window_block_c32_input_view_fp831window_block_c32_input_view_fp8ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed31window_block_c64_input_view_fp831window_block_c64_input_view_fp8ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:154 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:154 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed32window_block_c128_input_view_fp832window_block_c128_input_view_fp8ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:160 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:160 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed32window_block_c256_input_view_fp832window_block_c256_input_view_fp8ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:164 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:164 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed32window_block_c32_output_view_fp832window_block_c32_output_view_fp8ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed32window_block_c64_output_view_fp832window_block_c64_output_view_fp8ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:159 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:159 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed33window_block_c128_output_view_fp833window_block_c128_output_view_fp8ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:161 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:161 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    },
+    {
+      "symbol": "_ZN6dlssnr13reconstructed33window_block_c256_output_view_fp833window_block_c256_output_view_fp8ENS1_10ParametersE",
+      "module": "reconstructed_window_block_fp8.sm_120.cubin",
+      "text_exact": true,
+      "resource_exact": true,
+      "baseline_resource": "REG:161 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0",
+      "candidate_resource": "REG:161 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0"
+    }
+  ],
+  "summary": {
+    "entries": 81,
+    "text_exact": 81,
+    "resources_exact": 81,
+    "modules_all_constants_exact": 10,
+    "module_count": 10,
+    "total_elf_section_differences": 0,
+    "host_pe_text_exact": true,
+    "host_imports_exact": true,
+    "host_delay_imports_exact": true,
+    "host_import_dll_count": 10
+  },
+  "limits": [
+    "GPU text, constants, resources and host .text/import tables are compared directly. The complete PE image can differ in debug data or build metadata; equal whole-file hashes are not asserted."
+  ]
+}

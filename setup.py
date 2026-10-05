@@ -26,6 +26,18 @@ os.environ.setdefault('TORCH_CUDA_ARCH_LIST','12.0')
 if os.environ['TORCH_CUDA_ARCH_LIST'].strip()!='12.0':
     raise RuntimeError('Reconstructed device bodies currently require TORCH_CUDA_ARCH_LIST=12.0 (SM120).')
 from torch.utils.cpp_extension import BuildExtension, CUDAExtension
+from tuning.cuda_toolchain import prepare_cuda_assembler
+
+# Optional newer assembler for SM120 instruction scheduling. The compiler,
+# headers, libdevice and runtime stay with CUDA_HOME; no PyTorch version check
+# is bypassed. The private backend cache records executable identities.
+assembler_flags=[]
+if os.environ.get('DLSSNR_PTXAS_PATH'):
+    if not os.environ.get('CUDA_HOME'):
+        raise RuntimeError('Set CUDA_HOME when selecting DLSSNR_PTXAS_PATH.')
+    assembler=prepare_cuda_assembler(os.environ['CUDA_HOME'],ROOT/'build/ptxas_backend')
+    os.environ['PATH']=assembler.environment()['PATH']
+    assembler_flags=list(assembler.nvcc_flags)
 
 # Conda CUDA places import libraries in lib; the Windows CUDA installer uses
 # lib/x64, which CUDAExtension already adds. Support either installed layout.
@@ -52,5 +64,9 @@ setup(name='dlssnr',version='0.1.0',description='Reconstructed SM120 CUDA deploy
         include_dirs=[str(ROOT/'csrc')],
         library_dirs=cuda_library_dirs,
         extra_compile_args={'cxx':['/O2','/std:c++17'] if os.name=='nt' else ['-O3','-std=c++17'],
-                            'nvcc':['-O3','-lineinfo','--expt-relaxed-constexpr','-Xptxas=-v']})],
+                            # PyTorch's flag scan treats any "arch" substring
+                            # (including a toolkit path) as an explicit target.
+                            # State our already-validated SM120 target directly.
+                            'nvcc':[*assembler_flags,'-gencode=arch=compute_120,code=sm_120',
+                                    '-O3','-lineinfo','--expt-relaxed-constexpr','-Xptxas=-v']})],
     cmdclass={'build_ext':RegistrationOnlyBuildExtension},zip_safe=False)
