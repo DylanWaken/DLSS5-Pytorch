@@ -1,5 +1,9 @@
 # Storage-prefix audit
 
+This report preserves the storage-prefix snapshot. The later
+[kernel-body refactor](KERNEL_READING_GUIDE.md#validation) has its own source,
+compiled-code, numerical and timing qualification for the current build.
+
 Storage prefixes now describe a value's role instead of marking nearly every
 local variable. The audit reviewed all **70 C++/CUDA files**, changing 326
 file-scoped identifier pairs across 47 files. Every changed source token is an

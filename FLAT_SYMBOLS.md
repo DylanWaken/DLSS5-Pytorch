@@ -1,8 +1,9 @@
 # Flat CUDA and C++ interfaces
 
 This report preserves the namespace-removal snapshot. The subsequent
-[storage-prefix audit](STORAGE_PREFIX_AUDIT.md) records the current naming cleanup
-and installed build separately.
+[storage-prefix audit](STORAGE_PREFIX_AUDIT.md) records the naming cleanup
+separately. The later [kernel-body refactor](KERNEL_READING_GUIDE.md#validation)
+records the current installed build and its fresh performance qualification.
 
 All project-defined namespaces have been removed from `csrc`, including device
 helpers, ABI records, launchers, generated plans and Torch bindings. A window
