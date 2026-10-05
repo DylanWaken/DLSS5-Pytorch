@@ -1,84 +1,102 @@
 # Reading a deployment kernel
 
-Start with the canonical function below. It contains the operation's storage,
-loop structure, pipeline and output handling. FP8/FP16 exports in the operation
-wrapper headers select the ABI type and compile-time profile; they share these
-implementations rather than duplicating whole kernels.
+Open `csrc/kernel_impl/<export_name>.cu`. Each of the **81 exported kernels**
+has its own source file, and its `extern "C" __global__` function contains the
+actual storage, stage order, loops, synchronization and writebacks. There is no
+separate `Run*` implementation behind a one-line exported wrapper.
 
-| Export family | Main function and source |
+For example, [window_block_c64_fp8.cu](../csrc/kernel_impl/window_block_c64_fp8.cu)
+contains `window_block_c64_fp8(...)` itself. Its FP16 counterpart is
+[window_block_c64_fp16.cu](../csrc/kernel_impl/window_block_c64_fp16.cu). The local
+precision/channel constants select the recovered native profile; they do not
+hide the operation in another function.
+
+## Where to start
+
+The following are concrete entry files. Other channel, precision and view
+variants follow the same exact-export filename convention.
+
+| Operation | Example entry file |
 | --- | --- |
-| C32 fused window, including views | `RunWindow32` in [warp_window32.cuh](../csrc/kernel_impl/warp_window32.cuh) |
-| C64/C128/C256 fused window, including views | `RunWindowWide` in [warp_window_wide.cuh](../csrc/kernel_impl/warp_window_wide.cuh) |
-| Fused window downsample | `RunWindowDownsample` in [window_downsample.cuh](../csrc/kernel_impl/window_downsample.cuh) |
-| Fused window upsample | `RunWindowUpsample` in [window_upsample.cuh](../csrc/kernel_impl/window_upsample.cuh) |
-| C512 FFN | `RunWindowFfn` in [window_ffn.cuh](../csrc/kernel_impl/window_ffn.cuh) |
-| C512 QKV/attention | `RunWindowQkv` in [window_qkv.cuh](../csrc/kernel_impl/window_qkv.cuh) |
-| C512 projection, views and pooling | `RunSpatialProjection` in [spatial_projection.cuh](../csrc/kernel_impl/spatial_projection.cuh) |
-| C512→C1024 projection | `RunChannelProjection` in [channel_projection.cuh](../csrc/kernel_impl/channel_projection.cuh) |
-| Global FFN expansion | `RunGlobalFfnExpand` in [global_ffn_expand.cuh](../csrc/kernel_impl/global_ffn_expand.cuh) |
-| Global FFN contraction and attention projection | `RunGlobalContract` in [global_contract.cuh](../csrc/kernel_impl/global_contract.cuh) |
-| Global QKV | `RunGlobalQkv` in [global_qkv.cuh](../csrc/kernel_impl/global_qkv.cuh) |
-| Global attention | `RunGlobalAttention` in [global_attention.cuh](../csrc/kernel_impl/global_attention.cuh) |
-| C1024→C512 decoder | `RunDecoder` in [decoder.cuh](../csrc/kernel_impl/decoder.cuh) |
-| Preprocessing, with optional downsample | `RunPreprocess` in [window_preprocess.cuh](../csrc/kernel_impl/window_preprocess.cuh) |
-| Output head and compositing | `RunPostprocess` in [postprocess.cuh](../csrc/kernel_impl/postprocess.cuh) |
-| Global layout copies | `CopyGlobalRepackWords` in [global_repack_layout.cuh](../csrc/kernel_impl/global_repack_layout.cuh) |
-| Counter reset | `completion_counter_clear` in [completion_counter_clear.cuh](../csrc/kernel_impl/completion_counter_clear.cuh) |
+| Warp-local C32 window | [window_block_c32_fp8.cu](../csrc/kernel_impl/window_block_c32_fp8.cu) |
+| Wider window with shared exchange | [window_block_c128_fp16.cu](../csrc/kernel_impl/window_block_c128_fp16.cu) |
+| Physical input view | [window_block_c64_input_view_fp8.cu](../csrc/kernel_impl/window_block_c64_input_view_fp8.cu) |
+| Fused window downsample | [window_block_c256_downsample_fp8.cu](../csrc/kernel_impl/window_block_c256_downsample_fp8.cu) |
+| Fused window upsample | [window_block_c64_upsample_fp16.cu](../csrc/kernel_impl/window_block_c64_upsample_fp16.cu) |
+| C512 FFN | [window_ffn_c512_fp8.cu](../csrc/kernel_impl/window_ffn_c512_fp8.cu) |
+| C512 QKV/attention | [window_qkv_c512_fp16.cu](../csrc/kernel_impl/window_qkv_c512_fp16.cu) |
+| C512 projection and pooling | [window_attention_projection_pool_c512_fp8.cu](../csrc/kernel_impl/window_attention_projection_pool_c512_fp8.cu) |
+| C512 to C1024 projection | [channel_projection_c512_to_c1024_fp16.cu](../csrc/kernel_impl/channel_projection_c512_to_c1024_fp16.cu) |
+| Global FFN expansion/contraction | [global_ffn_expand_c1024_fp8.cu](../csrc/kernel_impl/global_ffn_expand_c1024_fp8.cu), [global_ffn_contract_c1024_fp8.cu](../csrc/kernel_impl/global_ffn_contract_c1024_fp8.cu) |
+| Global QKV and attention | [global_qkv_c1024_fp16.cu](../csrc/kernel_impl/global_qkv_c1024_fp16.cu), [global_attention_chained_c1024_fp16.cu](../csrc/kernel_impl/global_attention_chained_c1024_fp16.cu) |
+| Global output projection | [global_projection_c1024_fp8.cu](../csrc/kernel_impl/global_projection_c1024_fp8.cu) |
+| C1024 to C512 decoder | [decoder_upsample_c1024_to_c512_fp16.cu](../csrc/kernel_impl/decoder_upsample_c1024_to_c512_fp16.cu) |
+| Input feature preparation and window | [input_preprocess_window_c32_fp8.cu](../csrc/kernel_impl/input_preprocess_window_c32_fp8.cu) |
+| Output head and compositing | [output_window_postprocess_c32_fp16.cu](../csrc/kernel_impl/output_window_postprocess_c32_fp16.cu) |
+| Global layout copy | [repack_2d_to_1d_c1024_fp8.cu](../csrc/kernel_impl/repack_2d_to_1d_c1024_fp8.cu) |
+| Counter reset | [completion_counter_clear.cu](../csrc/kernel_impl/completion_counter_clear.cu) |
 
-Pipeline helpers that belong to just one operation are local to its main
-function. Repeated copy/refill sequences use local lambdas where necessary, so
-their address calculation, zero fill and barrier accounting remain visible.
-The same applies to split-reduction publication and operation-specific stores.
+## Follow the data through the entry
 
-Some large pieces remain shared deliberately:
+For a window block, read the fragment/shared-storage declarations, input loads,
+FFN loops, QKV normalization, attention and output projection in order. In fused
+downsampling, that same global body then pools the captured Half output,
+projects it and writes the downsampled field. In upsampling, the global body
+first projects the low-resolution input and merges the skip, then executes the
+window schedule and writes its output.
 
-- Window computation is reused by ordinary blocks, views, sampling and frontend
-  fusions. Those callers own any shared slab whose lifetime spans multiple stages.
-- Tensor-fragment arithmetic, normalization, softmax and packing keep their
-  native rounding/operand contracts in common helpers.
-- Layout policies and per-tile frontend callbacks preserve the original order
-  between window computation and output-head work. They are not separate kernel
-  launches or a second inference path.
-- Intrinsics remain in `intrinsics.cuh`; named profile constants and data types
-  stay beside the algorithm that consumes them.
+For a staged C512 or global GEMM, the global function also defines any small
+local `LoadWeights`, `StageInput` or `WaitStage` lambdas. Their bodies keep
+prefill/refill addressing and barrier accounting visible beside the reduction
+loop. A local lambda is useful for repeated pipeline steps; it must not become
+an anonymous wrapper around the whole kernel.
 
-Future refactors should preserve this reading order. The criterion is whether
-the operation's dataflow and schedule are visible in its main body, not whether
-every mathematical primitive has been pasted into every precision variant.
+Parameter records and checked byte offsets are in
+[kernel_abi.h](../csrc/kernel_impl/kernel_abi.h). Host launch geometry, plan
+admission and C++ selection live in `kernel_launcher`; that directory contains
+host code, not the device implementations.
 
-## Validation
+## What remains shared
 
-This refactor keeps all 81 exports and their launch contracts. It removes the
-obsolete `composite.cuh` and moves operation-specific orchestration into the
-canonical bodies above. The [source audit](kernel_locality_audit.json) records
-the moved stages, storage ownership and retained helpers with their users.
+Shared headers contain substantial reused tensor arithmetic, physical-layout
+maps, real storage/profile types and intrinsics. Examples include
+`LinearWindow32`, normalization/softmax, expert GEMMs, packed Half reductions,
+and fragment publication. FP8/FP16 profile pairs may share their record types
+and constants without sharing a hidden whole-kernel owner.
 
-The normal extension was rebuilt and tested on an RTX PRO 6000 Blackwell
-(SM120). Against the preceding storage-prefix build, 43 of 81 GPU instruction
-payloads and 71 resource records remain identical; all ten modules' constant
-payloads and extents remain identical. The 38 changed instruction payloads are
-qualified by fresh numerical and performance measurements, not by a claim of
-compiled equivalence.
+The fragment interface is `MMA(...)` in [mma.cuh](../csrc/kernel_impl/mma.cuh).
+Instruction-level assembly remains in
+[intrinsics.cuh](../csrc/kernel_impl/intrinsics.cuh). Shared helpers must have
+actual repeated users and preserve operand order, rounding, packing, cache and
+synchronization contracts. A stage used only by one entry belongs in that
+entry's file, normally in its global body.
 
-- 62 CPU checks pass both normally and with Python optimization enabled.
-- FP8 and FP16 pass all 74 native graph boundaries at 720p, 1080p, 1440p and
-  4K, including poisoned and changed-input replay.
-- All eight timing cases pass the 1% limit in both execution orders. The worst
-  order median is a 0.750% slowdown (FP8, 1080p).
-- All 24 C512 public-dispatch cases pass, comparing Torch launches with direct
-  Driver launches of the same candidate kernels.
-- FP8 and FP16 postprocessing each pass 24 native-comparison cases, including
-  border and immutable-buffer checks.
+## Validation status
 
-The [validation receipt](kernel_locality_validation.json) pins source, binary,
-module and harness hashes, raw graph timings and worker completion. The C512
-harness now verifies candidate extension/module hashes instead of requiring
-unchanged instructions from an earlier release; its first rejected prelaunch
-attempt is retained in the receipt. The qualified binary is installed locally.
-See [benchmark results](BENCHMARKS.md) for the refreshed charts.
+The current layout has **81 CUDA compilation units and 25 shared headers**,
+with ABI declarations in `kernel_impl` and host-only launchers. The portable
+[source audit](global_entry_audit.json) records each entry's ownership and the
+shared-helper review. The [validation receipt](global_entry_validation.json)
+pins the successfully built candidate `aa207d37…`: compared with the preceding
+build, 50/81 GPU instruction payloads, 72/81 decoded resource records and all
+81 entry constant sections are identical.
 
-Timing covers the batch-one prepared-feature trunk, blocks 1–69, at four exact
-resolutions. It does not time renderer stages or full DLL host execution, prove
-every isolated kernel's speed, establish continuous-resolution or other-GPU
-support, or measure a hardware roofline. This readability pass adds no new
-Nsight captures; earlier optimization evidence remains historical.
+Fresh measurements qualify this candidate in FP8 and FP16 at 720p, 1080p,
+2K/1440p and 4K: all eight graph cases pass 74 native byte comparisons,
+poisoned and changed-input replay, and the within-1% latency gate in each
+execution order. The [paired measurements](figures/global_entry_deployment_measurements.json)
+retain the samples and binary identities. The same validation receipt includes
+70 CPU checks in each Python mode, native frontend/output-view fixtures and
+24 C512 dispatcher cases.
+
+The preceding canonical-function cleanup has a separate historical
+[validation receipt](kernel_locality_validation.json) and
+[source audit](kernel_locality_audit.json). Its 43/81 identical GPU instruction
+payloads and successful four-resolution timing results describe that earlier
+binary, not this per-entry-file migration. Older semantic and profiler records
+remain historical evidence as well.
+
+Deployment timing scope remains the batch-one prepared-feature trunk,
+blocks 1–69, at four exact resolutions on SM120. That scope does not establish
+full DLL/renderer host speed, every isolated kernel's speed, continuous
+resolution support, other GPU support or an 85% hardware roofline.
