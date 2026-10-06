@@ -1,6 +1,6 @@
 # Reconstructed deployment API migration
 
-FP8 and FP16 support four exact prepared-feature fields on SM120: **1280 × 720, 1920 × 1080, 2560 × 1440 and 3840 × 2160**, batch one. Original/candidate comparisons pass all 74 published boundaries at each size in both precisions and meet the accepted no-more-than-1% slowdown criterion in both execution orders. The current readable CUDA implementation is qualified separately from the preserved historical transcript builds. See [current status](RECONSTRUCTION_STATUS.md) for timings, evidence and installation state.
+FP8 and FP16 admit four exact prepared-feature fields on SM120: **1280 × 720, 1920 × 1080, 2560 × 1440 and 3840 × 2160**, batch one. The preceding per-entry build passed all 74 published boundaries and the within-1% native-speed gate at each size. Current template integration preserves the public API but requires its own [validation receipt](template_integration_validation.json); historical measurements retain their original binary identity. See [current status](RECONSTRUCTION_STATUS.md) for evidence and installation state.
 
 ## Explicit precision names
 
@@ -50,7 +50,7 @@ The caller supplies packed features and 142 physical records, not a BHWC image o
 
 ## Individual kernels and `torch.compile`
 
-Every one of the 81 native exports now has a named Torch operator, for example
+Every one of the 81 logical kernels has a named Torch operator, for example
 `torch.ops.dlssnr.window_block_c32_fp8`. They share this explicit contract:
 
 ```text
@@ -99,7 +99,7 @@ assembling a different sequence, preserve those dependencies and initialize coun
 the corresponding clear operation before their producers; a consumer is not an independent
 matrix multiply merely because it has an individual Torch entry point.
 
-CUDA and Meta implementations are registered for all 81 named operations. On Windows,
+CUDA and Meta implementations are registered for all 81 named operations. The following compiler results describe the preceding per-entry build pinned by `global_entry_validation.json`; integrated-template checks are recorded separately in `template_integration_validation.json`. On Windows,
 PyTorch **2.8.0+cu128** with **triton-windows 3.4.0.post21** passes actual default-Inductor
 GPU tests for the complete **720p FP8 and FP16 trunks**: byte-exact outputs and all published
 boundaries against the integrated C++ route, changed-input execution, storage replacement,
@@ -226,15 +226,29 @@ The model is minimally trainable. **DLSS5 transfer-learning methodology, actual 
 
 ## Source and policy conventions
 
-Current exported CUDA functions live in individually named `.cu` files under `kernel_impl`.
-Each function shows its storage, loops, pipeline and writeback; genuinely repeated tensor
-math, layouts and low-level intrinsics remain shared headers. Parameter contracts live in
-`kernel_impl/common/kernel_abi.h`. `kernel_launcher` contains host launchers and generated schedules,
-and `torch_api` contains schemas, custom classes and dispatcher registration. Project symbols
-are global; CUDA entries use bare `extern "C"` exports. External `std`, `at` and `c10`
-qualifications and the public Torch `dlssnr` registration domain are unchanged. The census is
-40 precision pairs plus clear, not 81 algorithms. See [source organization](SOURCE_LAYOUT.md),
-[code readability](CODE_READABILITY.md) and the [workflow skill](../skills/dlssnr-reconstruction/SKILL.md).
+Current source has 81 stable logical names represented by 56 full-body CUDA files:
+40 configurations share 15 global templates, and 41 retain direct definitions.
+Each global shows its storage, loops, pipeline and writes. The manifest
+`kernel_impl/common/kernel_templates.json` maps template configurations to source
+and compile-time arguments; `kernel_abi.h` owns records, checked aliases and
+resolver declarations. Same-TU host resolvers return specialization addresses;
+launch dispatch and generated schedules remain in `kernel_launcher`.
+
+Templated CUDA symbols have C++ mangled names; public Torch names do not change.
+An additive diagnostic operation returns the registered symbol of the loaded build:
+
+```python
+ops = load_extension()
+symbol = ops.kernel_symbol("window_block_c128_fp8")
+```
+
+C++ callers use `KernelSymbol(Name)` from `kernel_symbols.h`. Driver fixtures
+should use this lookup rather than assume a logical name equals a CUDA symbol.
+This query performs no kernel launch and is separate from normal preparation.
+Project source stays namespace-free; external library qualifications and the
+Torch `dlssnr` domain remain unchanged. See [source organization](SOURCE_LAYOUT.md),
+[readability](CODE_READABILITY.md) and the
+[workflow skill](../skills/dlssnr-reconstruction/SKILL.md).
 
 Policy JSON/CLI precision tokens are `fp8` and `fp16`; new `half` inputs are rejected. Frozen historical receipts retain their original vocabulary. The per-device `sm_120.json` has no measured anchors. Unmeasured selection returns `config_id=-1`. Matching-family measured extrema and deterministic nearest-anchor selection apply only to query metadata and preserve actual dimensions; they never grant execution support. Four tested C++ baseline shapes are not continuous 720p–4K tuning coverage.
 

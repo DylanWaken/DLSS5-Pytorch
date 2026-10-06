@@ -289,8 +289,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	Calls.reserve(185);
 	{ // cc_tinlayout_fused_swin_1h_32_1_inpview
 		using FParameters = FWindowBlockC32InputViewFp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c32_input_view_fp16),
-							   Geometry->Grids[0], dim3(32, 1, 1), 96, false};
+		FKernelCall KernelCall{Resolve_window_block_c32_input_view_fp16(), Geometry->Grids[0], dim3(32, 1, 1),
+							   96, false};
 		KernelCall.Name = "window_block_c32_input_view_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 0, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(0));
@@ -308,8 +308,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1
 		using FParameters = FWindowBlockC32Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c32_fp16), Geometry->Grids[1],
-							   dim3(32, 1, 1), 96, false};
+		FKernelCall KernelCall{Resolve_window_block_c32_fp16(), Geometry->Grids[1], dim3(32, 1, 1), 96,
+							   false};
 		KernelCall.Name = "window_block_c32_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 1, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(1));
@@ -325,8 +325,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1
 		using FParameters = FWindowBlockC32Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c32_fp16), Geometry->Grids[2],
-							   dim3(32, 1, 1), 96, false};
+		FKernelCall KernelCall{Resolve_window_block_c32_fp16(), Geometry->Grids[2], dim3(32, 1, 1), 96,
+							   false};
 		KernelCall.Name = "window_block_c32_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 2, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(2));
@@ -363,8 +363,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2_inpview
 		using FParameters = FWindowBlockC64InputViewFp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c64_input_view_fp16),
-							   Geometry->Grids[4], dim3(32, 2, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c64_input_view_fp16(), Geometry->Grids[4], dim3(32, 2, 1),
+							   88, false};
 		KernelCall.Name = "window_block_c64_input_view_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 5, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(5));
@@ -382,8 +382,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2
 		using FParameters = FWindowBlockC64Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c64_fp16), Geometry->Grids[5],
-							   dim3(32, 2, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c64_fp16(), Geometry->Grids[5], dim3(32, 2, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c64_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 6, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(6));
@@ -399,8 +399,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2
 		using FParameters = FWindowBlockC64Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c64_fp16), Geometry->Grids[6],
-							   dim3(32, 2, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c64_fp16(), Geometry->Grids[6], dim3(32, 2, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c64_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 7, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(7));
@@ -437,8 +437,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_inpview
 		using FParameters = FWindowBlockC128InputViewFp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_input_view_fp16),
-							   Geometry->Grids[8], dim3(32, 4, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c128_input_view_fp16(), Geometry->Grids[8],
+							   dim3(32, 4, 1), 88, false};
 		KernelCall.Name = "window_block_c128_input_view_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 10, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(10));
@@ -456,8 +456,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
 		using FParameters = FWindowBlockC128Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[9],
-							   dim3(32, 4, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c128_fp16(), Geometry->Grids[9], dim3(32, 4, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c128_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 11, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(11));
@@ -473,8 +473,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
 		using FParameters = FWindowBlockC128Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[10],
-							   dim3(32, 4, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c128_fp16(), Geometry->Grids[10], dim3(32, 4, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c128_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 12, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(12));
@@ -490,8 +490,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
 		using FParameters = FWindowBlockC128Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[11],
-							   dim3(32, 4, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c128_fp16(), Geometry->Grids[11], dim3(32, 4, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c128_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 13, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(13));
@@ -507,8 +507,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
 		using FParameters = FWindowBlockC128Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[12],
-							   dim3(32, 4, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c128_fp16(), Geometry->Grids[12], dim3(32, 4, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c128_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 14, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(14));
@@ -524,8 +524,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_ds
 		using FParameters = FWindowBlockC128DownsampleFp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_downsample_fp16),
-							   Geometry->Grids[13], dim3(32, 4, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c128_downsample_fp16(), Geometry->Grids[13],
+							   dim3(32, 4, 1), 88, false};
 		KernelCall.Name = "window_block_c128_downsample_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 15, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(15));
@@ -545,8 +545,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_inpview
 		using FParameters = FWindowBlockC256InputViewFp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_input_view_fp16),
-							   Geometry->Grids[14], dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_input_view_fp16(), Geometry->Grids[14],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Name = "window_block_c256_input_view_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 17, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(17));
@@ -564,8 +564,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
 		using FParameters = FWindowBlockC256Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[15],
-							   dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_fp16(), Geometry->Grids[15], dim3(32, 8, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c256_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 18, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(18));
@@ -581,8 +581,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
 		using FParameters = FWindowBlockC256Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[16],
-							   dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_fp16(), Geometry->Grids[16], dim3(32, 8, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c256_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 19, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(19));
@@ -598,8 +598,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
 		using FParameters = FWindowBlockC256Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[17],
-							   dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_fp16(), Geometry->Grids[17], dim3(32, 8, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c256_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 20, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(20));
@@ -615,8 +615,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
 		using FParameters = FWindowBlockC256Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[18],
-							   dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_fp16(), Geometry->Grids[18], dim3(32, 8, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c256_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 21, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(21));
@@ -632,8 +632,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
 		using FParameters = FWindowBlockC256Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[19],
-							   dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_fp16(), Geometry->Grids[19], dim3(32, 8, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c256_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 22, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(22));
@@ -649,8 +649,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
 		using FParameters = FWindowBlockC256Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[20],
-							   dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_fp16(), Geometry->Grids[20], dim3(32, 8, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c256_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 23, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(23));
@@ -666,8 +666,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_ds
 		using FParameters = FWindowBlockC256DownsampleFp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_downsample_fp16),
-							   Geometry->Grids[21], dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_downsample_fp16(), Geometry->Grids[21],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Name = "window_block_c256_downsample_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 24, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(24));
@@ -738,8 +738,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_proj_512
 		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
-							   Geometry->Grids[25], dim3(32, 8, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_attention_projection_c512_fp16(), Geometry->Grids[25],
+							   dim3(32, 8, 1), 72, false};
 		KernelCall.Name = "window_attention_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 30, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(30));
@@ -772,8 +772,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
 		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
-							   Geometry->Grids[27], dim3(32, 4, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_ffn_projection_c512_fp16(), Geometry->Grids[27], dim3(32, 4, 1),
+							   72, false};
 		KernelCall.Name = "window_ffn_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 32, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(32));
@@ -806,8 +806,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_proj_512
 		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
-							   Geometry->Grids[29], dim3(32, 8, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_attention_projection_c512_fp16(), Geometry->Grids[29],
+							   dim3(32, 8, 1), 72, false};
 		KernelCall.Name = "window_attention_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 34, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(34));
@@ -840,8 +840,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
 		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
-							   Geometry->Grids[31], dim3(32, 4, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_ffn_projection_c512_fp16(), Geometry->Grids[31], dim3(32, 4, 1),
+							   72, false};
 		KernelCall.Name = "window_ffn_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 36, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(36));
@@ -874,8 +874,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_proj_512
 		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
-							   Geometry->Grids[33], dim3(32, 8, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_attention_projection_c512_fp16(), Geometry->Grids[33],
+							   dim3(32, 8, 1), 72, false};
 		KernelCall.Name = "window_attention_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 38, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(38));
@@ -908,8 +908,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
 		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
-							   Geometry->Grids[35], dim3(32, 4, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_ffn_projection_c512_fp16(), Geometry->Grids[35], dim3(32, 4, 1),
+							   72, false};
 		KernelCall.Name = "window_ffn_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 40, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(40));
@@ -942,8 +942,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_proj_512
 		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
-							   Geometry->Grids[37], dim3(32, 8, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_attention_projection_c512_fp16(), Geometry->Grids[37],
+							   dim3(32, 8, 1), 72, false};
 		KernelCall.Name = "window_attention_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 42, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(42));
@@ -976,8 +976,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
 		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
-							   Geometry->Grids[39], dim3(32, 4, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_ffn_projection_c512_fp16(), Geometry->Grids[39], dim3(32, 4, 1),
+							   72, false};
 		KernelCall.Name = "window_ffn_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 44, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(44));
@@ -1010,8 +1010,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_proj_512
 		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
-							   Geometry->Grids[41], dim3(32, 8, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_attention_projection_c512_fp16(), Geometry->Grids[41],
+							   dim3(32, 8, 1), 72, false};
 		KernelCall.Name = "window_attention_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 46, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(46));
@@ -1044,8 +1044,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
 		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
-							   Geometry->Grids[43], dim3(32, 4, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_ffn_projection_c512_fp16(), Geometry->Grids[43], dim3(32, 4, 1),
+							   72, false};
 		KernelCall.Name = "window_ffn_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 48, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(48));
@@ -1078,8 +1078,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_proj_512
 		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
-							   Geometry->Grids[45], dim3(32, 8, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_attention_projection_c512_fp16(), Geometry->Grids[45],
+							   dim3(32, 8, 1), 72, false};
 		KernelCall.Name = "window_attention_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 50, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(50));
@@ -1112,8 +1112,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
 		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
-							   Geometry->Grids[47], dim3(32, 4, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_ffn_projection_c512_fp16(), Geometry->Grids[47], dim3(32, 4, 1),
+							   72, false};
 		KernelCall.Name = "window_ffn_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 52, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(52));
@@ -1146,8 +1146,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_proj_512
 		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
-							   Geometry->Grids[49], dim3(32, 8, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_attention_projection_c512_fp16(), Geometry->Grids[49],
+							   dim3(32, 8, 1), 72, false};
 		KernelCall.Name = "window_attention_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 54, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(54));
@@ -1180,8 +1180,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
 		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
-							   Geometry->Grids[51], dim3(32, 4, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_ffn_projection_c512_fp16(), Geometry->Grids[51], dim3(32, 4, 1),
+							   72, false};
 		KernelCall.Name = "window_ffn_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 56, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(56));
@@ -1250,8 +1250,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_vit_1d_repack_2d_to_1d
 		using FParameters = FGlobalRepackParameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&repack_2d_to_1d_c1024_fp16),
-							   Geometry->Grids[55], dim3(256, 1, 1), 24, false};
+		FKernelCall KernelCall{Resolve_repack_2d_to_1d_c1024_fp16(), Geometry->Grids[55], dim3(256, 1, 1), 24,
+							   false};
 		KernelCall.Name = "repack_2d_to_1d_c1024_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 60, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(60));
@@ -2343,8 +2343,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_vit_1d_repack_1d_to_2d
 		using FParameters = FGlobalRepackParameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&repack_1d_to_2d_c1024_fp16),
-							   Geometry->Grids[128], dim3(256, 1, 1), 24, false};
+		FKernelCall KernelCall{Resolve_repack_1d_to_2d_c1024_fp16(), Geometry->Grids[128], dim3(256, 1, 1),
+							   24, false};
 		KernelCall.Name = "repack_1d_to_2d_c1024_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 145, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(145));
@@ -2406,8 +2406,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
 		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
-							   Geometry->Grids[132], dim3(32, 4, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_ffn_projection_c512_fp16(), Geometry->Grids[132],
+							   dim3(32, 4, 1), 72, false};
 		KernelCall.Name = "window_ffn_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 155, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(155));
@@ -2440,8 +2440,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_proj_512
 		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
-							   Geometry->Grids[134], dim3(32, 8, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_attention_projection_c512_fp16(), Geometry->Grids[134],
+							   dim3(32, 8, 1), 72, false};
 		KernelCall.Name = "window_attention_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 157, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(157));
@@ -2474,8 +2474,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
 		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
-							   Geometry->Grids[136], dim3(32, 4, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_ffn_projection_c512_fp16(), Geometry->Grids[136],
+							   dim3(32, 4, 1), 72, false};
 		KernelCall.Name = "window_ffn_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 159, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(159));
@@ -2508,8 +2508,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_proj_512
 		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
-							   Geometry->Grids[138], dim3(32, 8, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_attention_projection_c512_fp16(), Geometry->Grids[138],
+							   dim3(32, 8, 1), 72, false};
 		KernelCall.Name = "window_attention_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 161, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(161));
@@ -2542,8 +2542,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
 		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
-							   Geometry->Grids[140], dim3(32, 4, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_ffn_projection_c512_fp16(), Geometry->Grids[140],
+							   dim3(32, 4, 1), 72, false};
 		KernelCall.Name = "window_ffn_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 163, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(163));
@@ -2576,8 +2576,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_proj_512
 		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
-							   Geometry->Grids[142], dim3(32, 8, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_attention_projection_c512_fp16(), Geometry->Grids[142],
+							   dim3(32, 8, 1), 72, false};
 		KernelCall.Name = "window_attention_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 165, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(165));
@@ -2610,8 +2610,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
 		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
-							   Geometry->Grids[144], dim3(32, 4, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_ffn_projection_c512_fp16(), Geometry->Grids[144],
+							   dim3(32, 4, 1), 72, false};
 		KernelCall.Name = "window_ffn_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 167, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(167));
@@ -2644,8 +2644,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_proj_512
 		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
-							   Geometry->Grids[146], dim3(32, 8, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_attention_projection_c512_fp16(), Geometry->Grids[146],
+							   dim3(32, 8, 1), 72, false};
 		KernelCall.Name = "window_attention_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 169, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(169));
@@ -2678,8 +2678,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
 		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
-							   Geometry->Grids[148], dim3(32, 4, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_ffn_projection_c512_fp16(), Geometry->Grids[148],
+							   dim3(32, 4, 1), 72, false};
 		KernelCall.Name = "window_ffn_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 171, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(171));
@@ -2712,8 +2712,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_proj_512
 		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
-							   Geometry->Grids[150], dim3(32, 8, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_attention_projection_c512_fp16(), Geometry->Grids[150],
+							   dim3(32, 8, 1), 72, false};
 		KernelCall.Name = "window_attention_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 173, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(173));
@@ -2746,8 +2746,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
 		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
-							   Geometry->Grids[152], dim3(32, 4, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_ffn_projection_c512_fp16(), Geometry->Grids[152],
+							   dim3(32, 4, 1), 72, false};
 		KernelCall.Name = "window_ffn_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 175, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(175));
@@ -2780,8 +2780,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_proj_512
 		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
-							   Geometry->Grids[154], dim3(32, 8, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_attention_projection_c512_fp16(), Geometry->Grids[154],
+							   dim3(32, 8, 1), 72, false};
 		KernelCall.Name = "window_attention_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 177, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(177));
@@ -2814,8 +2814,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
 		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
-							   Geometry->Grids[156], dim3(32, 4, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_ffn_projection_c512_fp16(), Geometry->Grids[156],
+							   dim3(32, 4, 1), 72, false};
 		KernelCall.Name = "window_ffn_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 179, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(179));
@@ -2848,8 +2848,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_proj_512
 		using FParameters = FWindowAttentionProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_attention_projection_c512_fp16),
-							   Geometry->Grids[158], dim3(32, 8, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_attention_projection_c512_fp16(), Geometry->Grids[158],
+							   dim3(32, 8, 1), 72, false};
 		KernelCall.Name = "window_attention_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 181, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(181));
@@ -2882,8 +2882,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_split_swin_16h_ffwd_proj_512
 		using FParameters = FWindowFfnProjectionC512Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16),
-							   Geometry->Grids[160], dim3(32, 4, 1), 72, false};
+		FKernelCall KernelCall{Resolve_window_ffn_projection_c512_fp16(), Geometry->Grids[160],
+							   dim3(32, 4, 1), 72, false};
 		KernelCall.Name = "window_ffn_projection_c512_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Output), 183, false, true);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Output), GetBufferAddress(183));
@@ -2934,8 +2934,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_upsample
 		using FParameters = FWindowBlockC256UpsampleFp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_upsample_fp16),
-							   Geometry->Grids[163], dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_upsample_fp16(), Geometry->Grids[163],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Name = "window_block_c256_upsample_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 185, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(185));
@@ -2953,8 +2953,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
 		using FParameters = FWindowBlockC256Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[164],
-							   dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_fp16(), Geometry->Grids[164], dim3(32, 8, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c256_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 186, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(186));
@@ -2970,8 +2970,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
 		using FParameters = FWindowBlockC256Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[165],
-							   dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_fp16(), Geometry->Grids[165], dim3(32, 8, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c256_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 187, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(187));
@@ -2987,8 +2987,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
 		using FParameters = FWindowBlockC256Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[166],
-							   dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_fp16(), Geometry->Grids[166], dim3(32, 8, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c256_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 188, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(188));
@@ -3004,8 +3004,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
 		using FParameters = FWindowBlockC256Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[167],
-							   dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_fp16(), Geometry->Grids[167], dim3(32, 8, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c256_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 189, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(189));
@@ -3021,8 +3021,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
 		using FParameters = FWindowBlockC256Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[168],
-							   dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_fp16(), Geometry->Grids[168], dim3(32, 8, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c256_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 190, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(190));
@@ -3038,8 +3038,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8
 		using FParameters = FWindowBlockC256Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_fp16), Geometry->Grids[169],
-							   dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_fp16(), Geometry->Grids[169], dim3(32, 8, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c256_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 191, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(191));
@@ -3055,8 +3055,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_8h_256_8_outview
 		using FParameters = FWindowBlockC256OutputViewFp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c256_output_view_fp16),
-							   Geometry->Grids[170], dim3(32, 8, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c256_output_view_fp16(), Geometry->Grids[170],
+							   dim3(32, 8, 1), 88, false};
 		KernelCall.Name = "window_block_c256_output_view_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 192, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(192));
@@ -3074,8 +3074,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_upsample
 		using FParameters = FWindowBlockC128UpsampleFp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_upsample_fp16),
-							   Geometry->Grids[171], dim3(32, 4, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c128_upsample_fp16(), Geometry->Grids[171],
+							   dim3(32, 4, 1), 88, false};
 		KernelCall.Name = "window_block_c128_upsample_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 193, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(193));
@@ -3093,8 +3093,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
 		using FParameters = FWindowBlockC128Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[172],
-							   dim3(32, 4, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c128_fp16(), Geometry->Grids[172], dim3(32, 4, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c128_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 194, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(194));
@@ -3110,8 +3110,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
 		using FParameters = FWindowBlockC128Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[173],
-							   dim3(32, 4, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c128_fp16(), Geometry->Grids[173], dim3(32, 4, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c128_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 195, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(195));
@@ -3127,8 +3127,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
 		using FParameters = FWindowBlockC128Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[174],
-							   dim3(32, 4, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c128_fp16(), Geometry->Grids[174], dim3(32, 4, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c128_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 196, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(196));
@@ -3144,8 +3144,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4
 		using FParameters = FWindowBlockC128Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_fp16), Geometry->Grids[175],
-							   dim3(32, 4, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c128_fp16(), Geometry->Grids[175], dim3(32, 4, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c128_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 197, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(197));
@@ -3161,8 +3161,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_4h_128_4_outview
 		using FParameters = FWindowBlockC128OutputViewFp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c128_output_view_fp16),
-							   Geometry->Grids[176], dim3(32, 4, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c128_output_view_fp16(), Geometry->Grids[176],
+							   dim3(32, 4, 1), 88, false};
 		KernelCall.Name = "window_block_c128_output_view_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 198, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(198));
@@ -3199,8 +3199,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2
 		using FParameters = FWindowBlockC64Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c64_fp16), Geometry->Grids[178],
-							   dim3(32, 2, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c64_fp16(), Geometry->Grids[178], dim3(32, 2, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c64_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 200, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(200));
@@ -3216,8 +3216,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2
 		using FParameters = FWindowBlockC64Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c64_fp16), Geometry->Grids[179],
-							   dim3(32, 2, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c64_fp16(), Geometry->Grids[179], dim3(32, 2, 1), 88,
+							   false};
 		KernelCall.Name = "window_block_c64_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 201, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(201));
@@ -3233,8 +3233,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_2h_64_2_outview
 		using FParameters = FWindowBlockC64OutputViewFp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c64_output_view_fp16),
-							   Geometry->Grids[180], dim3(32, 2, 1), 88, false};
+		FKernelCall KernelCall{Resolve_window_block_c64_output_view_fp16(), Geometry->Grids[180],
+							   dim3(32, 2, 1), 88, false};
 		KernelCall.Name = "window_block_c64_output_view_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 202, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(202));
@@ -3273,8 +3273,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1
 		using FParameters = FWindowBlockC32Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c32_fp16), Geometry->Grids[182],
-							   dim3(32, 1, 1), 96, false};
+		FKernelCall KernelCall{Resolve_window_block_c32_fp16(), Geometry->Grids[182], dim3(32, 1, 1), 96,
+							   false};
 		KernelCall.Name = "window_block_c32_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 204, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(204));
@@ -3290,8 +3290,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1
 		using FParameters = FWindowBlockC32Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c32_fp16), Geometry->Grids[183],
-							   dim3(32, 1, 1), 96, false};
+		FKernelCall KernelCall{Resolve_window_block_c32_fp16(), Geometry->Grids[183], dim3(32, 1, 1), 96,
+							   false};
 		KernelCall.Name = "window_block_c32_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 205, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(205));
@@ -3307,8 +3307,8 @@ template <> void FDeploymentPlan<true>::BuildCalls()
 	}
 	{ // cc_tinlayout_fused_swin_1h_32_1
 		using FParameters = FWindowBlockC32Fp16Parameters;
-		FKernelCall KernelCall{reinterpret_cast<const void*>(&window_block_c32_fp16), Geometry->Grids[184],
-							   dim3(32, 1, 1), 96, false};
+		FKernelCall KernelCall{Resolve_window_block_c32_fp16(), Geometry->Grids[184], dim3(32, 1, 1), 96,
+							   false};
 		KernelCall.Name = "window_block_c32_fp16";
 		KernelCall.Bind(offsetof(FParameters, g_Input), 206, false, false);
 		KernelCall.Set<uint64_t>(offsetof(FParameters, g_Input), GetBufferAddress(206));

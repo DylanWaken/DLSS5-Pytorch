@@ -1,14 +1,13 @@
-// Reconstructed native window_block_c32_input_view_fp16 schedule.
-// The exported entry owns its storage, tensor stages and final publication.
+// Compile-time window schedule; each specialization retains its native launch profile.
+// Storage, tensor stages, layout reads and final publication remain in this global body.
 #include "../common/kernel_helpers.cuh"
 #include "../common/warp_window32.cuh"
 
-extern "C" __global__
-	__maxnreg__(168) void window_block_c32_input_view_fp16(FWindowBlockC32InputViewFp16Parameters Parameters)
+template <int Channels, bool bInputView, typename FParameters>
+__global__ __maxnreg__(168) void window_block_compact_fp16(FParameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	constexpr bool bFp8 = false;
-	constexpr int Channels = 32;
 	using FConfig = FWindow32Profile<bFp8>;
 	const unsigned char* g_PackedWeights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights);
 	FWindowActivationTile<bFp8> r_Input[4];
@@ -31,6 +30,7 @@ extern "C" __global__
 	#pragma unroll
 	for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 	{
+		if constexpr (bInputView)
 		{
 			// Read the physical input tile without a separate layout staging pass.
 			constexpr int Chunks = FWindow32Profile<bFp8>::InputChunks;
@@ -58,6 +58,26 @@ extern "C" __global__
 							: 0u;
 				}
 			r_Input[r_Tile] = r_InputTile;
+		}
+		else
+		{
+			const unsigned char* g_Input = reinterpret_cast<const unsigned char*>(Parameters.g_Input);
+			const int g_TileColumns = Parameters.Width / 4, g_TileRows = Parameters.Height / 4;
+			const int g_OriginTileX = (int(blockIdx.x) * 8 + Parameters.OriginX) / 4;
+			const int g_OriginTileY = (int(blockIdx.y) * 8 + Parameters.OriginY) / 4;
+			const int g_TileX = g_TileColumns == 1 ? 0 : g_OriginTileX + (r_Tile & 1);
+			const int g_TileY = g_TileRows == 1 ? 0 : g_OriginTileY + (r_Tile >> 1);
+			const bool bValid =
+				g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows;
+			#pragma unroll
+			for (int r_Chunk = 0; r_Chunk < FConfig::InputChunks; ++r_Chunk)
+			{
+				const int64_t g_Offset = int64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
+										 r_Chunk * 512 + int(threadIdx.x) * 16;
+				r_Input[r_Tile].r_Reduction[r_Chunk] =
+					MakeWindowFragment(bValid ? __ldcg(reinterpret_cast<const uint4*>(g_Input + g_Offset))
+											  : make_uint4(0, 0, 0, 0));
+			}
 		}
 
 		#pragma unroll
@@ -192,4 +212,17 @@ extern "C" __global__
 		}
 	}
 #endif
+}
+
+// Host dispatch resolves the 32-channel specialization.
+extern "C" const void* Resolve_window_block_c32_fp16()
+{
+	return reinterpret_cast<const void*>(window_block_compact_fp16<32, false, FWindowBlockC32Fp16Parameters>);
+}
+
+// Host dispatch resolves the 32-channel specialization.
+extern "C" const void* Resolve_window_block_c32_input_view_fp16()
+{
+	return reinterpret_cast<const void*>(
+		window_block_compact_fp16<32, true, FWindowBlockC32InputViewFp16Parameters>);
 }

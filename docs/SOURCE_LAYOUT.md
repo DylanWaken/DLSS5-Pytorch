@@ -1,160 +1,118 @@
 # CUDA source layout
 
-Each exported deployment kernel is implemented in
-`csrc/kernel_impl/<fp8|fp16|common>/<exact_export_name>.cu`. The file contains one
-`extern "C" __global__` definition whose body shows its storage, pipeline,
-computation loops, synchronization and writebacks. Open the named `.cu` file
-to read the algorithm; there is no separate canonical `Run*` body behind an
-ABI adapter. The [kernel reading guide](KERNEL_READING_GUIDE.md) gives concrete
-entry files for every operation family.
+The source exposes **81 logical deployment kernels through 56 CUDA compilation
+units**. Forty logical entries share 15 full-body global templates; 41 retain
+direct global definitions. Each global body shows storage, pipeline, loops,
+synchronization and writebacks. There is no device wrapper forwarding the whole
+algorithm to a hidden `Run*` function.
 
-The roster has **81 entries: 76 mathematical/frontend entries, four repack
-entries and one completion-counter clear**. The first 80 form 40 FP8/FP16 pairs.
-These are exported configurations, not 81 unrelated algorithms or 81 network
-positions. Repeated graph positions can launch the same entry.
-
-The [template feasibility audit](KERNEL_TEMPLATE_FEASIBILITY.md) identifies
-40 configurations that can share 15 full-body global templates while preserving
-their GPU instructions. It records isolated prototypes and runtime comparisons;
-the per-entry production layout described here remains unchanged.
-
-The [directory-migration audit](precision_layout_audit.json) records the move of
-107 files into `fp8`, `fp16` and `common`. The reorganized build preserves all
-81 GPU instruction payloads, constants and decoded resource rows from the
-measured build. Existing benchmark samples retain their original binary identity.
+The roster comprises 76 mathematical/frontend entries, four repacks and one
+counter clear. The first 80 form 40 precision pairs. These are configurations,
+not unrelated algorithms or network positions; the trunk reuses them. The
+latest template request supersedes one-file-per-logical-export ownership.
 
 ## Directory responsibilities
 
 ```text
 csrc/
   kernel_impl/
-    fp8/                      40 named FP8 kernel entries
-    fp16/                     40 named FP16 kernel entries
-    common/                   Shared math, profiles, storage and intrinsics
-      kernel_abi.h            Typed launch records, offsets and declarations
-      completion_counter_clear.cu   Precision-independent counter reset
-  kernel_launcher/            Host launchers, geometry, plans and C++ selection
-  torch_api/                  PyTorch bindings and tensor-facing contracts
-tests/                        CPU, CUDA, graph and training checks
-tuning/                       Native profiles and measured selection policies
-__init__.py                   Minimal public Python entry points
+    fp8/                      26 precision-specific global-body files
+    fp16/                     27 precision-specific global-body files
+    common/                   Shared primitives, profiles and ABI
+      kernel_abi.h            Typed records, offsets, aliases and resolvers
+      kernel_templates.json  Logical names and template ownership
+      repack_token_to_spatial.cu
+      repack_spatial_to_token.cu
+      completion_counter_clear.cu
+  kernel_launcher/            Host dispatch, plans, geometry and C++ selection
+    kernel_symbols.*          Logical name to registered function mapping
+  torch_api/                  Torch schemas, contracts and bindings
+tests/                        CPU, CUDA, capture and training checks
+tuning/                       Native profiles and measured policies
 run_tests.py                  Test entry point
 run_tuning.py                 Offline tuning entry point
 ```
 
-`kernel_launcher` is host-only. Kernel bodies, device helpers and the authoritative
-parameter ABI reside in `kernel_impl`. A parameter record is declared once in
-[kernel_abi.h](../csrc/kernel_impl/common/kernel_abi.h), with size, alignment and offset
-assertions; host and device code consume the same record. Python does not choose
-a different arithmetic implementation on each call.
+Each `.cu` owns one complete global definition, either a template or a direct
+entry. Shared repack templates emit both precisions from `common/`; other
+templates retain FP8/FP16 files where schedules differ. Small
+`Resolve_<logical_name>()` functions beside templates return registered host-stub
+addresses. They perform no launch or tuning-policy selection. Launch dispatch
+remains entirely in `kernel_launcher`.
 
-Project declarations and helpers are global, with descriptive names instead of
-namespaces. ABI/profile types use the `F` prefix. Bare C export names retain
-`_fp8` and `_fp16`; the counter clear is precision-independent. External
-`std::`, `at::` and `c10::` qualifications and the public
-`TORCH_LIBRARY(dlssnr, ...)` domain remain unchanged.
+## Find a logical kernel
 
-## Entry bodies and shared helpers
+[kernel_templates.json](../csrc/kernel_impl/common/kernel_templates.json) maps
+40 names to source files, compile-time arguments and resolvers. The other 41
+names still match their `.cu` filenames. [The reading guide](KERNEL_READING_GUIDE.md)
+links each family. [kernel_abi.h](../csrc/kernel_impl/common/kernel_abi.h) owns
+parameter layouts, checked offsets and host aliases/resolver declarations.
 
-The entry owns its work from setup to publication, including any fused sampling
-or frontend stage. A small local lambda may express a repeated prefill/refill
-sequence while keeping its address calculations and waits in view. A helper
-used only by one kernel stays in that kernel's file. Do not move the complete
-schedule into a shared function, a macro or an included body fragment.
+[kernel_symbols.cpp](../csrc/kernel_launcher/kernel_symbols.cpp) and its generated
+table map stable logical names to registered functions. C++ `KernelSymbol(Name)`
+and `torch.ops.dlssnr.kernel_symbol(name)` return the current binary's CUDA symbol
+for diagnostics and Driver tools. Ordinary execution uses function pointers;
+Python does not choose the arithmetic implementation.
 
-Shared headers retain substantial repeated mathematics and real data/layout
-contracts. They can serve FP8/FP16 pairs or several channel configurations;
-sharing a profile does not require sharing the whole global function.
+Project declarations remain namespace-free. Direct globals use C linkage;
+templates have mangled C++ symbols behind stable logical names and C-linkage
+host resolvers. External `std::`, `at::`, `c10::` and the Torch `dlssnr` domain
+are unchanged.
 
-| Shared source | Retained responsibility |
+## Visible flow and shared helpers
+
+Keep declarations, prefill/refill, loops, waits and publication in the owning
+global body. A short local lambda may share a repeated pipeline step while
+keeping address calculations visible. File-local helpers stay with their owner.
+Shared headers contain actual reused mathematics, profiles and layout contracts.
+
+| Shared source | Responsibility |
 | --- | --- |
-| `warp_window32.cuh`, `warp_window_wide.cuh` | Window profiles, register/shared fragments, linear/attention/normalization/expert arithmetic |
-| `window_ffn.cuh`, `window_qkv.cuh`, `spatial_projection.cuh` | C512 profiles, coordinate types and reused fragment/address primitives |
-| `window_pool.cuh`, `window_downsample.cuh`, `window_upsample.cuh` | Exact pooling arithmetic, common publication/padding contracts and sampling profiles |
-| `global_*.cuh`, `channel_projection.cuh`, `decoder.cuh` | Global/connector profiles, layout types and reused mathematical primitives |
-| `frontend_profiles.cuh`, `frontend_math.cuh`, `input_features.cuh` | Shared renderer-stage types, numerical constants and reused feature/filter math |
-| `global_repack_layout.cuh` | Pure physical-layout maps used by both repack directions and precisions |
+| `warp_window32.cuh`, `warp_window_wide.cuh` | Window profiles, fragments and linear/attention/normalization/expert math |
+| `window_ffn.cuh`, `window_qkv.cuh`, `spatial_projection.cuh` | C512 profiles and fragment/address primitives |
+| `window_pool.cuh`, `window_downsample.cuh`, `window_upsample.cuh` | Exact pooling, publication/padding and sampling contracts |
+| `global_*.cuh`, `channel_projection.cuh`, `decoder.cuh` | Global/connector layouts and repeated math |
+| `frontend_profiles.cuh`, `frontend_math.cuh`, `input_features.cuh` | Renderer types, numerical constants and feature/filter math |
+| `intrinsics.cuh` | Force-inlined PTX with explicit rounding, address-space and synchronization behavior |
+| `mma.cuh`, `tiled_mma.cuh` | `MMA`, fragments and accumulation; FP8 K32 versus FP16 K16 |
+| `packed_math.cuh`, `numerical_constants.cuh`, `memoryops.cuh` | Packed arithmetic, named constants and shared barrier primitives |
 
-Examples of local flow are the asynchronous copy/wait/reduction sequence in
-[global_qkv_c1024_fp8.cu](../csrc/kernel_impl/fp8/global_qkv_c1024_fp8.cu), the grouped
-MLP in [window_ffn_c512_fp8.cu](../csrc/kernel_impl/fp8/window_ffn_c512_fp8.cu), and
-the sampling plus full window schedule in
-[window_block_c64_upsample_fp16.cu](../csrc/kernel_impl/fp16/window_block_c64_upsample_fp16.cu).
-The old operation/precision wrapper headers and `Run*` owners are superseded.
+Windows preserve three visible schedules: compact C32, two-warp C64 and shared
+exchange for C128/C256. Compile-time layout branches keep reads/writes inline.
+Downsample and upsample remain separate full bodies. C32 output-view entries
+remain direct because their template pilots changed compiler output.
 
-## Device primitives
+C512 and global stages preserve separate launches, split reductions and
+completion counters. Generated plans retain logical names, geometry, buffers
+and ABI bindings; template entries resolve through the manifest and checked
+aliases. No device implementation is emitted by a launcher translation unit.
+Four admitted SM120 plans do not establish arbitrary channels, continuous
+resolution tuning or another GPU architecture.
 
-| Header | Contract |
-| --- | --- |
-| `intrinsics.cuh` | Force-inlined PTX instructions with explicit operand, rounding, address-space and synchronization behavior |
-| `mma.cuh`, `tiled_mma.cuh` | `MMA(...)`, named tensor fragments and reused tile accumulation; FP8 K32 and FP16 K16 selection |
-| `packed_math.cuh` | Packed Half arithmetic, conversion, publication and activation |
-| `numerical_constants.cuh` | Named `CONST_*` bit patterns, decoded values and observed arithmetic roles |
-| `memoryops.cuh` | Shared barrier arrival and phase-wait primitives |
-| `kernel_helpers.cuh` | Common ABI and device-utility includes |
-
-`MMA` is the current fragment interface name; it replaces `MultiplyAccumulate`.
-Shared helpers must not merge distinct Half reduction trees, cache policies,
-packing boundaries or synchronization contracts merely to shorten source.
-
-## Native profiles and resolution plans
-
-C32 windows are warp-local. C64 uses token parallelism in the FFN, while
-C128/C256 exchange channel panels through shared memory. Their entry files show
-those schedules explicitly. Input/output views and fused sampling retain the
-native bounds, singleton broadcasts, fragment ordering and barriers.
-
-C512 FFN, QKV and projections remain separately launched stages. FP8 and FP16
-can differ in warp count, tensor-core K step and copy transactions. C1024
-stages use their recovered global layout, split reductions and completion
-counters. Profile types express those real differences; they do not introduce
-a new runtime algorithm-selection path.
-
-Host launch tables and generated deployment/geometry plans retain the admitted
-configurations. `tuning/plan[_fp16]_W_H.json` records native symbols, geometry,
-buffers and ABI bindings. The plan generator resolves each bare entry to its
-checked parameter fields. The source build compiles the named kernel `.cu`
-files; device implementations are not emitted by launcher translation units.
-
-Four admitted SM120 plans do not establish continuous-resolution tuning,
-arbitrary channel counts or another GPU architecture. Template coverage and
-source organization add no performance or correctness qualification.
-
-## Inventory and qualification
+## Inventory and evidence
 
 ```powershell
 python -B tools/kernel_sources.py --output outputs/kernel-sources.json
 python run_tests.py cpu --optimized
 ```
 
-The [current source audit](global_entry_audit.json) records **81 CUDA
-compilation units and 25 shared headers**, with no CUDA translation units in
-the host-only launcher directory. Inspect the exact exported roster, C linkage,
-local include resolution and unique `.cu` owner for each entry. Structural
-checks remain separate from compilation, native numerical comparison and timing.
+Audit **81 logical names, 56 body owners and 40 template mappings** separately.
+Source counts do not establish compilation, correctness or speed. The
+[integration receipt](template_integration_validation.json) records the normal
+extension's identities and completed checks. The preceding
+[feasibility study](KERNEL_TEMPLATE_FEASIBILITY.md) qualifies isolated prototypes,
+not host integration.
 
-The [current validation receipt](global_entry_validation.json) qualifies the
-built per-entry implementation. Compared with the preceding build, **50/81 GPU
-instruction payloads, 72/81 decoded resource records and all 81 entry constant
-sections** are identical. All eight FP8/FP16 graph cases at 720p, 1080p,
-2K/1440p and 4K pass native boundary/replay checks and the within-1% latency
-gate in each execution order; the
-[current paired timings](figures/global_entry_deployment_measurements.json)
-pin this candidate's binary and harness. The receipt also records 70 CPU tests
-in each Python mode, separate native frontend/output-view fixtures and 24
-C512 dispatcher cases.
+The [81-file source audit](global_entry_audit.json),
+[validation](global_entry_validation.json) and
+[paired timings](figures/global_entry_deployment_measurements.json) are historical.
+That build had 50/81 unchanged instruction payloads and 72/81 unchanged resource
+rows against its predecessor, and all eight native graph timing cases passed.
+The later [directory migration](precision_layout_audit.json) preserved its 81
+device implementations. These records retain their original binary identities.
 
-The preceding [kernel-body validation](kernel_locality_validation.json) and its
-[timing data](figures/kernel_locality_deployment_measurements.json) are
-historical: they tested the earlier layout with canonical functions and small
-exports. Their 43/81 unchanged GPU payloads and successful timing gates must
-not be relabeled as results for this migration.
-
-Earlier [semantic graph receipts](semantic_graph_qualification.json),
-[semantic timing data](figures/semantic_deployment_measurements.json),
-[naming](NAMING_AUDIT.md), [flat-symbol](FLAT_SYMBOLS.md) and
-[storage-prefix](STORAGE_PREFIX_AUDIT.md) qualifications keep their original
-source and binary identities. The [historical schedule census](kernel_schedule_census.json)
-describes earlier transcript counts, not dynamic instruction work in these
-loop-based kernels. See [code conventions](CODE_READABILITY.md) for the evidence
-required before carrying a speed claim to a rebuilt source.
+Earlier [kernel-body](kernel_locality_validation.json),
+[semantic](semantic_graph_qualification.json), [naming](NAMING_AUDIT.md),
+[flat-symbol](FLAT_SYMBOLS.md) and [storage-prefix](STORAGE_PREFIX_AUDIT.md)
+records also remain historical. Keep receipts and failed trials unchanged;
+[code conventions](CODE_READABILITY.md) describe qualification requirements.

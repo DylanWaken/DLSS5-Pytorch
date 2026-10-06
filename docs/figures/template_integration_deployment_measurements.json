@@ -1,0 +1,198 @@
+{
+  "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+  "architecture": "SM120",
+  "scope": "Batch-one prepared-feature trunk, blocks 1-69; excludes input/output stages and DLL host work",
+  "protocol": "64 alternating pairs, 32 per order; 20 warmup graph replays per role; three calls per graph, ten graph replays per timed interval",
+  "acceptance": "Median paired ratio <= 1.01 in each execution order at all four resolutions",
+  "torch_version": "2.8.0+cu128",
+  "native_cubin_sha256": {
+    "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+    "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+    "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+    "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+    "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+    "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+    "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+  },
+  "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+  "order_labels": [
+    "original-first",
+    "candidate-first"
+  ],
+  "measurement_series": "template-integration-v2",
+  "binary_sha256": "aa628311b56c0a0c2b374af83ff152512c4f144e3c9abaa58b0777e8c2e6b5b5",
+  "source_receipt": {
+    "path": "docs/template_integration_validation.json"
+  },
+  "compiled_comparison": {
+    "identical_gpu_text_entries": 81,
+    "total_entries": 81,
+    "baseline_binary_sha256": "4a45e4f3e903406a91775729b815cc709c8f704c97249d1eec4b9aa50408e346"
+  },
+  "precisions": {
+    "fp8": [
+      {
+        "label": "720p",
+        "width": 1280,
+        "height": 720,
+        "native_ms": 2.1774037679036455,
+        "candidate_ms": 2.1760682423909508,
+        "ratio": 0.9991147844990673,
+        "by_order": [
+          0.9998178123277874,
+          0.9988898218314499
+        ],
+        "accepted": true,
+        "receipt": {
+          "path": "outputs/semantic-rewrite/template-full-720-fp8-v2/result.json",
+          "sha256": "99df1ef60b96403cbba1719d02ad525c349402c2af2a127d21a3889bea5e3efc",
+          "job_path": "outputs/semantic-rewrite/template-full-720-fp8-v2/job.json",
+          "job_sha256": "7f32ca254bba2c0d5f030c4f646bfdf0eeec495bf0d9c25ecd5f1c96a8cfb30e",
+          "cleanup_confirmed": true
+        }
+      },
+      {
+        "label": "1080p",
+        "width": 1920,
+        "height": 1080,
+        "native_ms": 2.557883707682292,
+        "candidate_ms": 2.5789455413818363,
+        "ratio": 1.0083785708850768,
+        "by_order": [
+          1.0084080496874614,
+          1.0083354202800778
+        ],
+        "accepted": true,
+        "receipt": {
+          "path": "outputs/semantic-rewrite/template-full-1080-fp8-v2/result.json",
+          "sha256": "80bb4f70cddbd90a5ea0aee9ad4e199d223696c5e4487cc4d84ecb3397a15dae",
+          "job_path": "outputs/semantic-rewrite/template-full-1080-fp8-v2/job.json",
+          "job_sha256": "d6fae084bcad5e45f5e1bc7036b8374bd62ce67856f07b844622ec67856dc7f2",
+          "cleanup_confirmed": true
+        }
+      },
+      {
+        "label": "2K / 1440p",
+        "width": 2560,
+        "height": 1440,
+        "native_ms": 3.59291508992513,
+        "candidate_ms": 3.5530357360839844,
+        "ratio": 0.9874021293705709,
+        "by_order": [
+          0.9882168542413092,
+          0.9871127026535123
+        ],
+        "accepted": true,
+        "receipt": {
+          "path": "outputs/semantic-rewrite/template-full-1440-fp8-v2/result.json",
+          "sha256": "66da30d727da84a65d3e80848fc6683a15bf5cb5758fc406bdd8be121027c49f",
+          "job_path": "outputs/semantic-rewrite/template-full-1440-fp8-v2/job.json",
+          "job_sha256": "bd81ea7263f86872db60b712dcaaa169023d393ab86c2210fdaf61523e7c952b",
+          "cleanup_confirmed": true
+        }
+      },
+      {
+        "label": "4K",
+        "width": 3840,
+        "height": 2160,
+        "native_ms": 6.846234130859375,
+        "candidate_ms": 6.7334635416666675,
+        "ratio": 0.9835237410879097,
+        "by_order": [
+          0.984516545592556,
+          0.9821394307729987
+        ],
+        "accepted": true,
+        "receipt": {
+          "path": "outputs/semantic-rewrite/template-full-2160-fp8-v2/result.json",
+          "sha256": "179240b7804d4911600024bb033c5247671cb778a82f352f1d720860d6888044",
+          "job_path": "outputs/semantic-rewrite/template-full-2160-fp8-v2/job.json",
+          "job_sha256": "90800661827578389bcc5876794221ab4cd63adc2c4acb8a0fecfede6e34e720",
+          "cleanup_confirmed": true
+        }
+      }
+    ],
+    "fp16": [
+      {
+        "label": "720p",
+        "width": 1280,
+        "height": 720,
+        "native_ms": 3.689265569051107,
+        "candidate_ms": 3.6347066243489583,
+        "ratio": 0.9853115233954134,
+        "by_order": [
+          0.9857027383535772,
+          0.9850485393488526
+        ],
+        "accepted": true,
+        "receipt": {
+          "path": "outputs/semantic-rewrite/template-full-720-fp16-v2/result.json",
+          "sha256": "ded85ba4de58b32519df22d4c610a6a143f20287cd5a6a42267fa1ca5512c803",
+          "job_path": "outputs/semantic-rewrite/template-full-720-fp16-v2/job.json",
+          "job_sha256": "95ecd58435b42a071cd885e7532a97260ff25423530163e3e7600a38cbb8fe9a",
+          "cleanup_confirmed": true
+        }
+      },
+      {
+        "label": "1080p",
+        "width": 1920,
+        "height": 1080,
+        "native_ms": 4.43693339029948,
+        "candidate_ms": 4.350074768066406,
+        "ratio": 0.979743644798866,
+        "by_order": [
+          0.9802221211577226,
+          0.9792366278359939
+        ],
+        "accepted": true,
+        "receipt": {
+          "path": "outputs/semantic-rewrite/template-full-1080-fp16-v2/result.json",
+          "sha256": "665160159cb40da7464d6dcbbe718c67c01101f9621f3414bd75f4dd7cb5b397",
+          "job_path": "outputs/semantic-rewrite/template-full-1080-fp16-v2/job.json",
+          "job_sha256": "c4723c6918d0ba9ffb948d7efd7550592417e35680af4f983365539265f26bed",
+          "cleanup_confirmed": true
+        }
+      },
+      {
+        "label": "2K / 1440p",
+        "width": 2560,
+        "height": 1440,
+        "native_ms": 6.09865239461263,
+        "candidate_ms": 5.964049530029297,
+        "ratio": 0.978396190396911,
+        "by_order": [
+          0.9780316115840366,
+          0.9792625035803991
+        ],
+        "accepted": true,
+        "receipt": {
+          "path": "outputs/semantic-rewrite/template-full-1440-fp16-v2/result.json",
+          "sha256": "b1fb43df414ada7687cb8153a9b8095d174b0d4f202459816844606cb593e4f9",
+          "job_path": "outputs/semantic-rewrite/template-full-1440-fp16-v2/job.json",
+          "job_sha256": "a1c4ba908d7da294bbebcaa412e1aa1a24d9190cd067e9502c1165415e533252",
+          "cleanup_confirmed": true
+        }
+      },
+      {
+        "label": "4K",
+        "width": 3840,
+        "height": 2160,
+        "native_ms": 11.75285390218099,
+        "candidate_ms": 11.471992492675781,
+        "ratio": 0.976280468132251,
+        "by_order": [
+          0.9762031750459295,
+          0.9763311011057583
+        ],
+        "accepted": true,
+        "receipt": {
+          "path": "outputs/semantic-rewrite/template-full-2160-fp16-v2/result.json",
+          "sha256": "ec2bf0300f9f88bf99d7f96691a63540aec582a34ff80687b14b562e9ae505d4",
+          "job_path": "outputs/semantic-rewrite/template-full-2160-fp16-v2/job.json",
+          "job_sha256": "b301d12d770bcd3e6b5f136695f5dcdbd7a8e7fe4bcfd6e2c19375219f8f1119",
+          "cleanup_confirmed": true
+        }
+      }
+    ]
+  }
+}

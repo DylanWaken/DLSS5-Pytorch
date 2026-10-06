@@ -18,6 +18,10 @@ sys.path.insert(0, str(ROOT))
 
 def compile_route(function, backend):
     import torch
+    # These fixture/backend combinations are independent compiler experiments.
+    # Clear guards from earlier fixtures before compiling this one, so the
+    # multi-backend suite does not consume Dynamo's per-code recompile budget.
+    torch._dynamo.reset()
     if backend == 'default':
         return torch.compile(function, fullgraph=True)
     return torch.compile(function, backend=backend, fullgraph=True)

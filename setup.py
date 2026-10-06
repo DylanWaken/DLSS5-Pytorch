@@ -1,4 +1,4 @@
-"""Normal source build: one CUDA translation unit per exported kernel.
+"""Normal source build: one CUDA translation unit per complete global body.
 
 This is an SM120-only deployment extension. It registers Torch operators and
 classes; it deliberately has no Python PyInit entry point.
@@ -53,8 +53,10 @@ class RegistrationOnlyBuildExtension(BuildExtension):
 
 cuda=sorted((ROOT/'csrc/kernel_impl').rglob('*.cu'))
 host=sorted((ROOT/'csrc/kernel_launcher').glob('*.cpp')) + sorted((ROOT/'csrc/torch_api').glob('*.cpp'))
-if len(cuda)!=81 or not host or list((ROOT/'csrc/kernel_launcher').glob('*.cu')):
-    raise RuntimeError('Expected 81 named kernel implementation TUs and host-only launchers.')
+templates=json.loads((ROOT/'csrc/kernel_impl/common/kernel_templates.json').read_text(encoding='utf8'))['entries']
+expected_units=81-len(templates)+len({entry['source'] for entry in templates})
+if len(cuda)!=expected_units or not host or list((ROOT/'csrc/kernel_launcher').glob('*.cu')):
+    raise RuntimeError(f'Expected {expected_units} global-body TUs for 81 logical kernels and host-only launchers.')
 
 setup(name='dlssnr',version='0.1.0',description='Reconstructed SM120 CUDA deployment',
     packages=find_packages(),

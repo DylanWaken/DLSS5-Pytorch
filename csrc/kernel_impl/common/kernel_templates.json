@@ -1,0 +1,326 @@
+{
+  "schema_version": 1,
+  "description": "Logical launch names mapped to complete global template definitions and registered host-stub resolvers. ABI layouts remain authoritative in kernel_abi.h.",
+  "entries": [
+    {
+      "name": "global_ffn_contract_c1024_fp8",
+      "template_function": "global_contract_fp8",
+      "source": "kernel_impl/fp8/global_contract_fp8.cu",
+      "parameters": "FGlobalFfnContractC1024Fp8Parameters",
+      "template_arguments": "false, FGlobalFfnContractC1024Fp8Parameters",
+      "resolver": "Resolve_global_ffn_contract_c1024_fp8"
+    },
+    {
+      "name": "global_projection_c1024_fp8",
+      "template_function": "global_contract_fp8",
+      "source": "kernel_impl/fp8/global_contract_fp8.cu",
+      "parameters": "FGlobalProjectionC1024Fp8Parameters",
+      "template_arguments": "true, FGlobalProjectionC1024Fp8Parameters",
+      "resolver": "Resolve_global_projection_c1024_fp8"
+    },
+    {
+      "name": "repack_1d_to_2d_c1024_fp16",
+      "template_function": "repack_token_to_spatial",
+      "source": "kernel_impl/common/repack_token_to_spatial.cu",
+      "parameters": "FGlobalRepackParameters",
+      "template_arguments": "false",
+      "resolver": "Resolve_repack_1d_to_2d_c1024_fp16"
+    },
+    {
+      "name": "repack_1d_to_2d_c1024_fp8",
+      "template_function": "repack_token_to_spatial",
+      "source": "kernel_impl/common/repack_token_to_spatial.cu",
+      "parameters": "FGlobalRepackParameters",
+      "template_arguments": "true",
+      "resolver": "Resolve_repack_1d_to_2d_c1024_fp8"
+    },
+    {
+      "name": "repack_2d_to_1d_c1024_fp16",
+      "template_function": "repack_spatial_to_token",
+      "source": "kernel_impl/common/repack_spatial_to_token.cu",
+      "parameters": "FGlobalRepackParameters",
+      "template_arguments": "false",
+      "resolver": "Resolve_repack_2d_to_1d_c1024_fp16"
+    },
+    {
+      "name": "repack_2d_to_1d_c1024_fp8",
+      "template_function": "repack_spatial_to_token",
+      "source": "kernel_impl/common/repack_spatial_to_token.cu",
+      "parameters": "FGlobalRepackParameters",
+      "template_arguments": "true",
+      "resolver": "Resolve_repack_2d_to_1d_c1024_fp8"
+    },
+    {
+      "name": "window_attention_projection_c512_fp16",
+      "template_function": "spatial_projection_fp16",
+      "source": "kernel_impl/fp16/spatial_projection_fp16.cu",
+      "parameters": "FWindowAttentionProjectionC512Fp16Parameters",
+      "template_arguments": "2, FWindowAttentionProjectionC512Fp16Parameters",
+      "resolver": "Resolve_window_attention_projection_c512_fp16"
+    },
+    {
+      "name": "window_attention_projection_c512_fp8",
+      "template_function": "spatial_projection_fp8",
+      "source": "kernel_impl/fp8/spatial_projection_fp8.cu",
+      "parameters": "FWindowAttentionProjectionC512Fp8Parameters",
+      "template_arguments": "2, FWindowAttentionProjectionC512Fp8Parameters",
+      "resolver": "Resolve_window_attention_projection_c512_fp8"
+    },
+    {
+      "name": "window_block_c128_downsample_fp16",
+      "template_function": "window_block_wide_downsample_fp16",
+      "source": "kernel_impl/fp16/window_block_wide_downsample_fp16.cu",
+      "parameters": "FWindowBlockC128DownsampleFp16Parameters",
+      "template_arguments": "128, FWindowBlockC128DownsampleFp16Parameters",
+      "resolver": "Resolve_window_block_c128_downsample_fp16"
+    },
+    {
+      "name": "window_block_c128_downsample_fp8",
+      "template_function": "window_block_wide_downsample_fp8",
+      "source": "kernel_impl/fp8/window_block_wide_downsample_fp8.cu",
+      "parameters": "FWindowBlockC128DownsampleFp8Parameters",
+      "template_arguments": "128, FWindowBlockC128DownsampleFp8Parameters",
+      "resolver": "Resolve_window_block_c128_downsample_fp8"
+    },
+    {
+      "name": "window_block_c128_fp16",
+      "template_function": "window_block_wide_fp16",
+      "source": "kernel_impl/fp16/window_block_wide_fp16.cu",
+      "parameters": "FWindowBlockC128Fp16Parameters",
+      "template_arguments": "128, false, false, FWindowBlockC128Fp16Parameters",
+      "resolver": "Resolve_window_block_c128_fp16"
+    },
+    {
+      "name": "window_block_c128_fp8",
+      "template_function": "window_block_wide_fp8",
+      "source": "kernel_impl/fp8/window_block_wide_fp8.cu",
+      "parameters": "FWindowBlockC128Fp8Parameters",
+      "template_arguments": "128, false, false, FWindowBlockC128Fp8Parameters",
+      "resolver": "Resolve_window_block_c128_fp8"
+    },
+    {
+      "name": "window_block_c128_input_view_fp16",
+      "template_function": "window_block_wide_fp16",
+      "source": "kernel_impl/fp16/window_block_wide_fp16.cu",
+      "parameters": "FWindowBlockC128InputViewFp16Parameters",
+      "template_arguments": "128, true, false, FWindowBlockC128InputViewFp16Parameters",
+      "resolver": "Resolve_window_block_c128_input_view_fp16"
+    },
+    {
+      "name": "window_block_c128_input_view_fp8",
+      "template_function": "window_block_wide_fp8",
+      "source": "kernel_impl/fp8/window_block_wide_fp8.cu",
+      "parameters": "FWindowBlockC128InputViewFp8Parameters",
+      "template_arguments": "128, true, false, FWindowBlockC128InputViewFp8Parameters",
+      "resolver": "Resolve_window_block_c128_input_view_fp8"
+    },
+    {
+      "name": "window_block_c128_output_view_fp16",
+      "template_function": "window_block_wide_fp16",
+      "source": "kernel_impl/fp16/window_block_wide_fp16.cu",
+      "parameters": "FWindowBlockC128OutputViewFp16Parameters",
+      "template_arguments": "128, false, true, FWindowBlockC128OutputViewFp16Parameters",
+      "resolver": "Resolve_window_block_c128_output_view_fp16"
+    },
+    {
+      "name": "window_block_c128_output_view_fp8",
+      "template_function": "window_block_wide_fp8",
+      "source": "kernel_impl/fp8/window_block_wide_fp8.cu",
+      "parameters": "FWindowBlockC128OutputViewFp8Parameters",
+      "template_arguments": "128, false, true, FWindowBlockC128OutputViewFp8Parameters",
+      "resolver": "Resolve_window_block_c128_output_view_fp8"
+    },
+    {
+      "name": "window_block_c128_upsample_fp16",
+      "template_function": "window_block_wide_upsample_fp16",
+      "source": "kernel_impl/fp16/window_block_wide_upsample_fp16.cu",
+      "parameters": "FWindowBlockC128UpsampleFp16Parameters",
+      "template_arguments": "128, FWindowBlockC128UpsampleFp16Parameters",
+      "resolver": "Resolve_window_block_c128_upsample_fp16"
+    },
+    {
+      "name": "window_block_c128_upsample_fp8",
+      "template_function": "window_block_wide_upsample_fp8",
+      "source": "kernel_impl/fp8/window_block_wide_upsample_fp8.cu",
+      "parameters": "FWindowBlockC128UpsampleFp8Parameters",
+      "template_arguments": "128, FWindowBlockC128UpsampleFp8Parameters",
+      "resolver": "Resolve_window_block_c128_upsample_fp8"
+    },
+    {
+      "name": "window_block_c256_downsample_fp16",
+      "template_function": "window_block_wide_downsample_fp16",
+      "source": "kernel_impl/fp16/window_block_wide_downsample_fp16.cu",
+      "parameters": "FWindowBlockC256DownsampleFp16Parameters",
+      "template_arguments": "256, FWindowBlockC256DownsampleFp16Parameters",
+      "resolver": "Resolve_window_block_c256_downsample_fp16"
+    },
+    {
+      "name": "window_block_c256_downsample_fp8",
+      "template_function": "window_block_wide_downsample_fp8",
+      "source": "kernel_impl/fp8/window_block_wide_downsample_fp8.cu",
+      "parameters": "FWindowBlockC256DownsampleFp8Parameters",
+      "template_arguments": "256, FWindowBlockC256DownsampleFp8Parameters",
+      "resolver": "Resolve_window_block_c256_downsample_fp8"
+    },
+    {
+      "name": "window_block_c256_fp16",
+      "template_function": "window_block_wide_fp16",
+      "source": "kernel_impl/fp16/window_block_wide_fp16.cu",
+      "parameters": "FWindowBlockC256Fp16Parameters",
+      "template_arguments": "256, false, false, FWindowBlockC256Fp16Parameters",
+      "resolver": "Resolve_window_block_c256_fp16"
+    },
+    {
+      "name": "window_block_c256_fp8",
+      "template_function": "window_block_wide_fp8",
+      "source": "kernel_impl/fp8/window_block_wide_fp8.cu",
+      "parameters": "FWindowBlockC256Fp8Parameters",
+      "template_arguments": "256, false, false, FWindowBlockC256Fp8Parameters",
+      "resolver": "Resolve_window_block_c256_fp8"
+    },
+    {
+      "name": "window_block_c256_input_view_fp16",
+      "template_function": "window_block_wide_fp16",
+      "source": "kernel_impl/fp16/window_block_wide_fp16.cu",
+      "parameters": "FWindowBlockC256InputViewFp16Parameters",
+      "template_arguments": "256, true, false, FWindowBlockC256InputViewFp16Parameters",
+      "resolver": "Resolve_window_block_c256_input_view_fp16"
+    },
+    {
+      "name": "window_block_c256_input_view_fp8",
+      "template_function": "window_block_wide_fp8",
+      "source": "kernel_impl/fp8/window_block_wide_fp8.cu",
+      "parameters": "FWindowBlockC256InputViewFp8Parameters",
+      "template_arguments": "256, true, false, FWindowBlockC256InputViewFp8Parameters",
+      "resolver": "Resolve_window_block_c256_input_view_fp8"
+    },
+    {
+      "name": "window_block_c256_output_view_fp16",
+      "template_function": "window_block_wide_fp16",
+      "source": "kernel_impl/fp16/window_block_wide_fp16.cu",
+      "parameters": "FWindowBlockC256OutputViewFp16Parameters",
+      "template_arguments": "256, false, true, FWindowBlockC256OutputViewFp16Parameters",
+      "resolver": "Resolve_window_block_c256_output_view_fp16"
+    },
+    {
+      "name": "window_block_c256_output_view_fp8",
+      "template_function": "window_block_wide_fp8",
+      "source": "kernel_impl/fp8/window_block_wide_fp8.cu",
+      "parameters": "FWindowBlockC256OutputViewFp8Parameters",
+      "template_arguments": "256, false, true, FWindowBlockC256OutputViewFp8Parameters",
+      "resolver": "Resolve_window_block_c256_output_view_fp8"
+    },
+    {
+      "name": "window_block_c256_upsample_fp16",
+      "template_function": "window_block_wide_upsample_fp16",
+      "source": "kernel_impl/fp16/window_block_wide_upsample_fp16.cu",
+      "parameters": "FWindowBlockC256UpsampleFp16Parameters",
+      "template_arguments": "256, FWindowBlockC256UpsampleFp16Parameters",
+      "resolver": "Resolve_window_block_c256_upsample_fp16"
+    },
+    {
+      "name": "window_block_c256_upsample_fp8",
+      "template_function": "window_block_wide_upsample_fp8",
+      "source": "kernel_impl/fp8/window_block_wide_upsample_fp8.cu",
+      "parameters": "FWindowBlockC256UpsampleFp8Parameters",
+      "template_arguments": "256, FWindowBlockC256UpsampleFp8Parameters",
+      "resolver": "Resolve_window_block_c256_upsample_fp8"
+    },
+    {
+      "name": "window_block_c32_fp16",
+      "template_function": "window_block_compact_fp16",
+      "source": "kernel_impl/fp16/window_block_compact_fp16.cu",
+      "parameters": "FWindowBlockC32Fp16Parameters",
+      "template_arguments": "32, false, FWindowBlockC32Fp16Parameters",
+      "resolver": "Resolve_window_block_c32_fp16"
+    },
+    {
+      "name": "window_block_c32_fp8",
+      "template_function": "window_block_compact_fp8",
+      "source": "kernel_impl/fp8/window_block_compact_fp8.cu",
+      "parameters": "FWindowBlockC32Fp8Parameters",
+      "template_arguments": "32, false, FWindowBlockC32Fp8Parameters",
+      "resolver": "Resolve_window_block_c32_fp8"
+    },
+    {
+      "name": "window_block_c32_input_view_fp16",
+      "template_function": "window_block_compact_fp16",
+      "source": "kernel_impl/fp16/window_block_compact_fp16.cu",
+      "parameters": "FWindowBlockC32InputViewFp16Parameters",
+      "template_arguments": "32, true, FWindowBlockC32InputViewFp16Parameters",
+      "resolver": "Resolve_window_block_c32_input_view_fp16"
+    },
+    {
+      "name": "window_block_c32_input_view_fp8",
+      "template_function": "window_block_compact_fp8",
+      "source": "kernel_impl/fp8/window_block_compact_fp8.cu",
+      "parameters": "FWindowBlockC32InputViewFp8Parameters",
+      "template_arguments": "32, true, FWindowBlockC32InputViewFp8Parameters",
+      "resolver": "Resolve_window_block_c32_input_view_fp8"
+    },
+    {
+      "name": "window_block_c64_fp16",
+      "template_function": "window_block_two_warp_fp16",
+      "source": "kernel_impl/fp16/window_block_two_warp_fp16.cu",
+      "parameters": "FWindowBlockC64Fp16Parameters",
+      "template_arguments": "64, false, false, FWindowBlockC64Fp16Parameters",
+      "resolver": "Resolve_window_block_c64_fp16"
+    },
+    {
+      "name": "window_block_c64_fp8",
+      "template_function": "window_block_two_warp_fp8",
+      "source": "kernel_impl/fp8/window_block_two_warp_fp8.cu",
+      "parameters": "FWindowBlockC64Fp8Parameters",
+      "template_arguments": "64, false, false, FWindowBlockC64Fp8Parameters",
+      "resolver": "Resolve_window_block_c64_fp8"
+    },
+    {
+      "name": "window_block_c64_input_view_fp16",
+      "template_function": "window_block_two_warp_fp16",
+      "source": "kernel_impl/fp16/window_block_two_warp_fp16.cu",
+      "parameters": "FWindowBlockC64InputViewFp16Parameters",
+      "template_arguments": "64, true, false, FWindowBlockC64InputViewFp16Parameters",
+      "resolver": "Resolve_window_block_c64_input_view_fp16"
+    },
+    {
+      "name": "window_block_c64_input_view_fp8",
+      "template_function": "window_block_two_warp_fp8",
+      "source": "kernel_impl/fp8/window_block_two_warp_fp8.cu",
+      "parameters": "FWindowBlockC64InputViewFp8Parameters",
+      "template_arguments": "64, true, false, FWindowBlockC64InputViewFp8Parameters",
+      "resolver": "Resolve_window_block_c64_input_view_fp8"
+    },
+    {
+      "name": "window_block_c64_output_view_fp16",
+      "template_function": "window_block_two_warp_fp16",
+      "source": "kernel_impl/fp16/window_block_two_warp_fp16.cu",
+      "parameters": "FWindowBlockC64OutputViewFp16Parameters",
+      "template_arguments": "64, false, true, FWindowBlockC64OutputViewFp16Parameters",
+      "resolver": "Resolve_window_block_c64_output_view_fp16"
+    },
+    {
+      "name": "window_block_c64_output_view_fp8",
+      "template_function": "window_block_two_warp_fp8",
+      "source": "kernel_impl/fp8/window_block_two_warp_fp8.cu",
+      "parameters": "FWindowBlockC64OutputViewFp8Parameters",
+      "template_arguments": "64, false, true, FWindowBlockC64OutputViewFp8Parameters",
+      "resolver": "Resolve_window_block_c64_output_view_fp8"
+    },
+    {
+      "name": "window_ffn_projection_c512_fp16",
+      "template_function": "spatial_projection_fp16",
+      "source": "kernel_impl/fp16/spatial_projection_fp16.cu",
+      "parameters": "FWindowFfnProjectionC512Fp16Parameters",
+      "template_arguments": "4, FWindowFfnProjectionC512Fp16Parameters",
+      "resolver": "Resolve_window_ffn_projection_c512_fp16"
+    },
+    {
+      "name": "window_ffn_projection_c512_fp8",
+      "template_function": "spatial_projection_fp8",
+      "source": "kernel_impl/fp8/spatial_projection_fp8.cu",
+      "parameters": "FWindowFfnProjectionC512Fp8Parameters",
+      "template_arguments": "4, FWindowFfnProjectionC512Fp8Parameters",
+      "resolver": "Resolve_window_ffn_projection_c512_fp8"
+    }
+  ]
+}

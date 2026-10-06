@@ -1,13 +1,14 @@
 """Render qualified FP8/FP16 measurements as accessible standalone SVGs."""
 from html import escape
+import argparse
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "docs/figures/global_entry_deployment_measurements.json"
+DATA = ROOT / "docs/figures/template_integration_deployment_measurements.json"
 
 
-def render(precision, rows):
+def render(precision, rows, source_name=DATA.name):
     accepted = all(row["accepted"] for row in rows)
     gate = ("Both execution orders pass the 1% gate at every size."
             if accepted else "The 1% gate has not passed at every size.")
@@ -40,7 +41,7 @@ def render(precision, rows):
         svg.append(f'<text x="1015" y="{y+29}" text-anchor="middle" font-size="18" font-weight="600">{delta:+.2f}%</text>')
     svg += [
         f'<text x="42" y="512" font-size="14" class="muted">64 alternating pairs; paired-ratio medians. {gate}</text>',
-        '<text x="42" y="537" font-size="13" class="muted">Excludes input/output stages and DLL host work. Data: global_entry_deployment_measurements.json.</text>',
+        f'<text x="42" y="537" font-size="13" class="muted">Excludes input/output stages and DLL host work. Data: {escape(source_name)}.</text>',
         '</svg>',
     ]
     output = ROOT / f"docs/figures/deployment_{precision}_resolutions.svg"
@@ -48,9 +49,12 @@ def render(precision, rows):
 
 
 def main():
-    data = json.loads(DATA.read_text(encoding="utf8"))
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--data', type=Path, default=DATA)
+    args = parser.parse_args()
+    data = json.loads(args.data.read_text(encoding="utf8"))
     for precision, rows in data["precisions"].items():
-        render(precision, rows)
+        render(precision, rows, args.data.name)
 
 
 if __name__ == "__main__":

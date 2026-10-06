@@ -2,7 +2,7 @@
 
 The deployment source should explain the algorithm recovered from the DLL: tensor tiles, physical layouts, accumulation order, staging and publication. A reader should be able to follow those concepts through compact loops and named fragment arrays. PTX remains the evidence for those choices; a long list of renamed PTX registers is not an acceptable final implementation.
 
-The earlier register-transcript naming pass and its qualification records are preserved unchanged in [CODE_READABILITY_HISTORY.md](CODE_READABILITY_HISTORY.md). Its timings and source conventions apply to that historical implementation. [SOURCE_LAYOUT.md](SOURCE_LAYOUT.md) describes the current named `.cu` entries and their source ownership.
+The earlier register-transcript naming pass and its qualification records are preserved unchanged in [CODE_READABILITY_HISTORY.md](CODE_READABILITY_HISTORY.md). Its timings and source conventions apply to that historical implementation. [SOURCE_LAYOUT.md](SOURCE_LAYOUT.md) describes the current full-body global templates, retained direct entries and logical ownership.
 
 ## Names describe values and storage roles
 
@@ -26,9 +26,11 @@ Name axes explicitly: M/spatial fragments, N/channel groups, K/reduction subtile
 
 ## Write the recovered algorithm
 
-The actual `extern "C" __global__` entry must be readable from setup through
-final stores. Each export has its own `kernel_impl/<fp8|fp16|common>/<exact_export_name>.cu`
-file. Keep tile ownership, register/shared declarations, pipeline prefill,
+The actual `__global__` definition must be readable from setup through final
+stores. A file may own a full-body template for several logical configurations;
+retained direct entries keep their exact-name file. The current tree has 81
+logical kernels, 15 templates covering 40 configurations, and 41 direct bodies:
+56 CUDA compilation units in total. Keep tile ownership, register/shared declarations, pipeline prefill,
 reduction loops, waits/recycling and writebacks in that global function.
 Fused down/up sampling and frontend stages belong in the same global body as
 their window schedule. Do not hide the implementation behind a `Run*` call,
@@ -41,9 +43,12 @@ in that kernel's file. External helpers are reserved for intrinsics and
 substantial repeated logic such as fragment MMA, normalization, softmax,
 expert GEMMs and packing. Name their actual users and preserved contracts.
 
-FP8/FP16 entries and channel/view variants each show their own selected native
-schedule. Keep shared profile constants and real storage/fragment types where
-they serve multiple entries; use local constexpr selectors when useful. The
+Keep distinct native schedules visible: compact C32, two-warp C64 and wide
+C128/C256 are separate bodies. Compile-time channel/layout/profile parameters
+may share a body where qualified. Preserve per-specialization register caps,
+warp ownership, barriers and rounding; avoid runtime channel or precision
+branches. Keep FP8/FP16 files when schedules differ. The latest template request
+supersedes one-file-per-logical-export ownership. The
 [kernel reading guide](KERNEL_READING_GUIDE.md) links the actual `.cu` globals,
 not a second set of canonical owner functions. These requirements replace the
 earlier small-export/shared-whole-body rule.
@@ -80,11 +85,11 @@ The [semantic naming audit](NAMING_AUDIT.md) traces every ABI field to its actua
 
 Project CUDA/C++ source has no namespaces or `using namespace` directives. Call helpers directly, for example `LinearWindow32(...)` or `MMA(...)`. Give shared types and helpers operation-specific names so unrelated algorithms remain distinct in global scope: `FWindow32Profile`, `FSpatialProjectionArguments` and `FResolutionSelection` describe their roles without a namespace hierarchy.
 
-All 81 exported kernels use bare `extern "C"` names. Precision-specific exports retain `_fp8` and `_fp16`; their C symbols no longer depend on C++ type mangling. Launch records use descriptive global `F` names, such as `FWindowBlockC32Fp8Parameters`, with a shared type where the layout and meaning are identical. Preserve field order, widths, alignment, byte offsets and matching host/device declarations in `kernel_impl/common/kernel_abi.h`.
+All 81 logical names remain stable, including `_fp8` and `_fp16`. Direct globals use C linkage; global templates have mangled C++ symbols. Same-translation-unit `Resolve_<logical>()` host functions expose registered specialization addresses without launching. The authoritative `kernel_impl/common/kernel_templates.json` maps logical names to bodies and arguments; `kernel_abi.h` retains typed records, checked aliases and resolver declarations. Host `kernel_symbols` provides the mapping and additive `KernelSymbol` / Torch `kernel_symbol` diagnostic lookup. Preserve field order, widths, alignment and offsets.
 
 External library qualification such as `std::`, `at::` and `c10::` remains necessary. `TORCH_LIBRARY(dlssnr, ...)` keeps the public Torch registration domain; it does not declare a project C++ namespace. [The flat-symbol migration](FLAT_SYMBOLS.md) records the separate rebuild and validation.
 
-The stable roster is **76 mathematical/frontend entries + four shared repack entries + one counter clear = 81 exports**. It is not 81 independent algorithms. Channel suffixes identify an exported configuration. Each export now requires its own named `.cu` file and visible global body; substantial repeated arithmetic remains shared. Python/Torch entry names, native DLL symbols and historical provenance records keep their established spelling.
+The stable roster is **76 mathematical/frontend entries + four repacks + one counter clear = 81 logical kernels**. It is not 81 independent algorithms. Channel suffixes identify configurations. Every authored definition must expose its full global body; a qualified template may own several configurations. Python/Torch names and historical provenance retain their established spelling; Driver tools must query the current compiled symbol rather than assume it equals the logical name.
 
 ## Source quality and compiled performance are separate
 
@@ -116,7 +121,7 @@ The [portable deployment measurements](figures/semantic_deployment_measurements.
 
 These are integrated graph ratios, not guarantees that every individual kernel is within 1% of native. The [portable optimization evidence](semantic_optimization_evidence.json) records the separate per-kernel NCU/SASS and timing comparisons that guided the source changes. Earlier staged and transcript-build receipts remain historical evidence, rather than the basis for this qualification.
 
-The current source has 81 named `.cu` entry files, with host-only launchers and shared device primitives; see [the source layout](SOURCE_LAYOUT.md). The table above describes the earlier semantic binary. Four tested plans establish neither continuous-resolution tuning nor support on another GPU architecture.
+The current source has 56 full-body CUDA files representing 81 logical kernels, with host-only launchers and shared device primitives; see [the source layout](SOURCE_LAYOUT.md). The table above describes the earlier semantic binary. Four tested plans establish neither continuous-resolution tuning nor support on another GPU architecture.
 
 Training remains a separate PyTorch FP32/BF16 implementation. Deployment source proofs and speed measurements say nothing about task-specific DLSS5 transfer learning, loss design or a complete training procedure. Those remain topics for further investigation; see [training usage](training.md).
 
@@ -153,11 +158,10 @@ The preceding flat-symbol rebuild is a separate migration of C++ names and CUDA 
 
 The preceding [storage-prefix audit](STORAGE_PREFIX_AUDIT.md) applies the narrower storage-role convention above. It retains identical GPU instructions, decoded resources, constants and launch contracts, with fresh graph and public-dispatch validation.
 
-## Current per-entry-file migration
+## Per-entry-file migration (historical)
 
-The [kernel reading guide](KERNEL_READING_GUIDE.md) now maps directly to each
-export's `.cu` file. Those global bodies own storage, staging, loops and
-writebacks. `kernel_impl/common/kernel_abi.h` is the authoritative host/device ABI;
+Before template integration, each export had its own `.cu` file. That migration
+placed storage, staging, loops and writebacks in the actual global body. `kernel_impl/common/kernel_abi.h` is the authoritative host/device ABI;
 `kernel_launcher` contains host code. The shared fragment operation is named
 `MMA`, replacing `MultiplyAccumulate`.
 
@@ -172,7 +176,7 @@ remaining compiled instructions/resources, so this candidate was measured again.
 All eight FP8/FP16 graph cases at 720p, 1080p, 2K/1440p and 4K pass all 74
 physical native-byte boundaries, poisoned and changed-input replay, and the
 within-1% latency gate in both execution orders. The
-[current paired measurements](figures/global_entry_deployment_measurements.json)
+[historical paired measurements](figures/global_entry_deployment_measurements.json)
 retain raw samples and identities for the SM120 batch-one prepared-feature
 trunk, blocks 1–69. Separate checks pass 70 CPU tests in each Python mode,
 18 tensor-facing native frontend fixtures, 36 C32 output-view cases per
@@ -186,3 +190,13 @@ instruction payloads, fresh successful FP8/FP16 graph timings, C512 dispatch,
 frontend and CPU checks for that earlier build. Its
 [raw timings](figures/kernel_locality_deployment_measurements.json) retain their
 original identity and must not be presented as measurements of this migration.
+
+## Current template integration
+
+Forty logical configurations now share 15 true global templates; 41 retain
+direct definitions. See the [reading guide](KERNEL_READING_GUIDE.md) for current
+paths and the [integration receipt](template_integration_validation.json) for
+the normal extension's completed qualification. The preceding
+[feasibility experiment](KERNEL_TEMPLATE_FEASIBILITY.md) demonstrated isolated
+compiled equivalence but does not qualify host integration by itself. Retain
+the two C32 output-view direct bodies until changed-template code is qualified.

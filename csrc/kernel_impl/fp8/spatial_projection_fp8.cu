@@ -1,14 +1,13 @@
-// The exported entry owns its storage, pipeline, computation and publication.
-// Shared headers contain only profiles, layout maps and reused tensor primitives.
+// The complete global template retains each native schedule and register limit.
+// Only supported profiles are emitted; host launch selection remains in kernel_launcher.
 #include "../common/kernel_helpers.cuh"
 #include "../common/spatial_projection.cuh"
 
-extern "C" __global__
-	__maxnreg__(128) void window_ffn_projection_c512_fp16(FWindowFfnProjectionC512Fp16Parameters Parameters)
+template <int SpatialTiles, typename FParameters>
+__global__ __maxnreg__((SpatialTiles == 2 ? 168 : 128)) void spatial_projection_fp8(FParameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	constexpr bool bFp8 = false;
-	constexpr int SpatialTiles = 4;
+	constexpr bool bFp8 = true;
 	constexpr bool bInputPlane = false;
 	constexpr bool bOutputPlane = false;
 	constexpr int StageCount = 3;
@@ -133,16 +132,35 @@ extern "C" __global__
 				TileCoordinates.g_OutputChannel * 16 * Profile::ElementBytes + TileCoordinates.Lane * 16;
 			{
 				#pragma unroll
-				for (int r_ChannelGroup = 0; r_ChannelGroup < 4; ++r_ChannelGroup)
+				for (int r_ChannelPair = 0; r_ChannelPair < 2; ++r_ChannelPair)
 				{
-					const uint4 r_Residual = bValid ? __ldcg(reinterpret_cast<const uint4*>(
-														  g_ResidualTileBase + r_ChannelGroup * 512))
-													: make_uint4(0, 0, 0, 0);
-					auto& r_AccumulatorWords = r_Accumulator.r_AccumulatorWords[r_Spatial][r_ChannelGroup];
-					r_AccumulatorWords[0] = HalfMul(r_Residual.x, r_ResidualScales[r_ChannelGroup][0]);
-					r_AccumulatorWords[1] = HalfMul(r_Residual.y, r_ResidualScales[r_ChannelGroup][0]);
-					r_AccumulatorWords[2] = HalfMul(r_Residual.z, r_ResidualScales[r_ChannelGroup][1]);
-					r_AccumulatorWords[3] = HalfMul(r_Residual.w, r_ResidualScales[r_ChannelGroup][1]);
+					const uint4 r_PackedResidual =
+						bValid
+							? __ldcg(reinterpret_cast<const uint4*>(g_ResidualTileBase + r_ChannelPair * 512))
+							: make_uint4(0, 0, 0, 0);
+					const uint32_t r_PackedResidualWords[4] = {r_PackedResidual.x, r_PackedResidual.y,
+															   r_PackedResidual.z, r_PackedResidual.w};
+					#pragma unroll
+					for (int r_GroupInPair = 0; r_GroupInPair < 2; ++r_GroupInPair)
+					{
+						const int r_ChannelGroup = r_ChannelPair * 2 + r_GroupInPair;
+						auto& r_AccumulatorWords =
+							r_Accumulator.r_AccumulatorWords[r_Spatial][r_ChannelGroup];
+
+						// E4 storage interleaves the two N8 groups; restore MMA accumulator order.
+						r_AccumulatorWords[0] =
+							HalfMul(DecodeE4(uint16_t(r_PackedResidualWords[r_GroupInPair * 2])),
+									r_ResidualScales[r_ChannelGroup][0]);
+						r_AccumulatorWords[1] =
+							HalfMul(DecodeE4(uint16_t(r_PackedResidualWords[r_GroupInPair * 2 + 1])),
+									r_ResidualScales[r_ChannelGroup][0]);
+						r_AccumulatorWords[2] =
+							HalfMul(DecodeE4(uint16_t(r_PackedResidualWords[r_GroupInPair * 2] >> 16)),
+									r_ResidualScales[r_ChannelGroup][1]);
+						r_AccumulatorWords[3] =
+							HalfMul(DecodeE4(uint16_t(r_PackedResidualWords[r_GroupInPair * 2 + 1] >> 16)),
+									r_ResidualScales[r_ChannelGroup][1]);
+					}
 				}
 			}
 		}
@@ -188,13 +206,18 @@ extern "C" __global__
 				TileCoordinates.g_OutputChannel * 16 * Profile::ElementBytes + TileCoordinates.Lane * 16;
 			{
 				#pragma unroll
-				for (int r_ChannelGroup = 0; r_ChannelGroup < 4; ++r_ChannelGroup)
+				for (int r_ChannelPair = 0; r_ChannelPair < 2; ++r_ChannelPair)
 				{
-					const auto& r_AccumulatorWords =
-						r_Accumulator.r_AccumulatorWords[r_Spatial][r_ChannelGroup];
-					StoreNoAllocate(g_OutputTileBase + r_ChannelGroup * 512,
-									make_uint4(r_AccumulatorWords[0], r_AccumulatorWords[1],
-											   r_AccumulatorWords[2], r_AccumulatorWords[3]));
+					const auto& r_LowerChannelWords =
+						r_Accumulator.r_AccumulatorWords[r_Spatial][2 * r_ChannelPair];
+					const auto& r_UpperChannelWords =
+						r_Accumulator.r_AccumulatorWords[r_Spatial][2 * r_ChannelPair + 1];
+					const uint4 r_OutputVector =
+						make_uint4(PackHalfPairsE4(r_LowerChannelWords[0], r_LowerChannelWords[2]),
+								   PackHalfPairsE4(r_LowerChannelWords[1], r_LowerChannelWords[3]),
+								   PackHalfPairsE4(r_UpperChannelWords[0], r_UpperChannelWords[2]),
+								   PackHalfPairsE4(r_UpperChannelWords[1], r_UpperChannelWords[3]));
+					StoreNoAllocate(g_OutputTileBase + r_ChannelPair * 512, r_OutputVector);
 				}
 			}
 		}
@@ -203,4 +226,16 @@ extern "C" __global__
 	{
 	}
 #endif
+}
+
+// Host address resolver keeps the registered window_attention_projection_c512_fp8 specialization in this translation unit.
+extern "C" const void* Resolve_window_attention_projection_c512_fp8()
+{
+	return reinterpret_cast<const void*>(spatial_projection_fp8<2, FWindowAttentionProjectionC512Fp8Parameters>);
+}
+
+// Host address resolver keeps the registered window_ffn_projection_c512_fp8 specialization in this translation unit.
+extern "C" const void* Resolve_window_ffn_projection_c512_fp8()
+{
+	return reinterpret_cast<const void*>(spatial_projection_fp8<4, FWindowFfnProjectionC512Fp8Parameters>);
 }

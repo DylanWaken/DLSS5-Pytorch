@@ -1,18 +1,18 @@
-// Reconstructed native window_block_c64_fp16 schedule.
-// The exported entry owns its storage, tensor stages and final publication.
+// Compile-time window schedule; each specialization retains its native launch profile.
+// Storage, tensor stages, layout reads and final publication remain in this global body.
 #include "../common/kernel_helpers.cuh"
 #include "../common/warp_window_wide.cuh"
 
-extern "C" __global__ __maxnreg__(168) void window_block_c64_fp16(FWindowBlockC64Fp16Parameters Parameters)
+template <int Channels, bool bInputView, bool bOutputView, typename FParameters>
+__global__ __maxnreg__(168) void window_block_two_warp_fp8(FParameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	constexpr bool bFp8 = false;
-	constexpr int Channels = 64;
+	constexpr bool bFp8 = true;
 	__shared__ FSharedWindow<Channels, bFp8> s_Window;
 	using FConfig = FWideWindowProfile<Channels, bFp8>;
 	const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights);
 
-	// FFN: private C64 tiles, or cross-warp expert panels for C128/C256.
+	// FFN: each warp retains two token tiles and both channel panels.
 	const int Warp = threadIdx.y;
 	{
 		// C64 uses token parallelism in the FFN: one warp owns left/right tiles
@@ -24,6 +24,41 @@ extern "C" __global__ __maxnreg__(168) void window_block_c64_fp16(FWindowBlockC6
 			#pragma unroll
 			for (int r_Panel = 0; r_Panel < 2; ++r_Panel)
 			{
+				if constexpr (bInputView)
+				{
+					// Read the physical input tile without a separate layout staging pass.
+					constexpr int Chunks = FWindow32Profile<bFp8>::InputChunks;
+					const int g_Height =
+						Parameters.ViewHeight > 0 ? Parameters.ViewHeight : Parameters.Height;
+					const int g_Width = Parameters.ViewWidth > 0 ? Parameters.ViewWidth : Parameters.Width;
+					const int g_OriginX =
+						int(blockIdx.x) * 8 + Parameters.OriginX + ((2 * Warp + r_Tile) & 1) * 4;
+					const int g_OriginY =
+						int(blockIdx.y) * 8 + Parameters.OriginY + ((2 * Warp + r_Tile) >> 1) * 4;
+					FWindowActivationTile<bFp8> r_InputTile;
+					#pragma unroll
+					for (int r_Chunk = 0; r_Chunk < Chunks; ++r_Chunk)
+						#pragma unroll
+						for (int r_Word = 0; r_Word < 4; ++r_Word)
+						{
+							// Row-half words differ by two physical image rows inside a 4x4
+							// tile. Singleton dimensions broadcast; all other OOB reads zero.
+							const int g_X = g_Width == 1 ? 0 : g_OriginX + ((threadIdx.x / 4) & 3);
+							const int g_Y =
+								g_Height == 1 ? 0 : g_OriginY + threadIdx.x / 16 + 2 * (r_Word & 1);
+							const int g_Plane = (r_Panel) * 2 * Chunks + 2 * r_Chunk + r_Word / 2;
+							const uint64_t g_InputWordAddress =
+								Parameters.g_Input +
+								((uint64_t(g_Plane * g_Height + g_Y) * g_Width + g_X) * 16) +
+								4 * (threadIdx.x & 3);
+							r_InputTile.r_Reduction[r_Chunk].r_Word[r_Word] =
+								g_X >= 0 && g_X < g_Width && g_Y >= 0 && g_Y < g_Height
+									? *reinterpret_cast<const uint32_t*>(g_InputWordAddress)
+									: 0u;
+						}
+					r_Input.r_Tile[r_Tile][r_Panel] = r_InputTile;
+				}
+				else
 				{
 					// Read the physical input tile without a separate layout staging pass.
 					using FConfig = FWideWindowProfile<Channels, bFp8>;
@@ -117,10 +152,7 @@ extern "C" __global__ __maxnreg__(168) void window_block_c64_fp16(FWindowBlockC6
 			// DLL does, to obtain B fragments for probability times value.
 			const uint32_t r_LowerValueRows = TransposeM8n8(r_Projected[2][r_Tile].r_Pair[r_Column][0]);
 			const uint32_t r_UpperValueRows = TransposeM8n8(r_Projected[2][r_Tile].r_Pair[r_Column][1]);
-			{
-				r_Value[r_Tile].r_Column[r_Column][0] = r_LowerValueRows;
-				r_Value[r_Tile].r_Column[r_Column][1] = r_UpperValueRows;
-			}
+			r_Value[r_Tile].r_Column[r_Column][0] = PackHalfPairsE4(r_LowerValueRows, r_UpperValueRows);
 		}
 	}
 
@@ -164,6 +196,38 @@ extern "C" __global__ __maxnreg__(168) void window_block_c64_fp16(FWindowBlockC6
 		for (int r_LocalTile = 0; r_LocalTile < FConfig::AttentionBatch; ++r_LocalTile)
 		{
 
+			if constexpr (bOutputView)
+			{
+				// Publish final packed fragments directly to their physical output layout.
+				constexpr int Chunks = FWindow32Profile<bFp8>::InputChunks;
+				const int g_Height = Parameters.ViewHeight > 0 ? Parameters.ViewHeight : Parameters.Height;
+				const int g_Width = Parameters.ViewWidth > 0 ? Parameters.ViewWidth : Parameters.Width;
+				const int g_OriginX =
+					int(blockIdx.x) * 8 + Parameters.OriginX + ((r_FirstTile + r_LocalTile) & 1) * 4;
+				const int g_OriginY =
+					int(blockIdx.y) * 8 + Parameters.OriginY + ((r_FirstTile + r_LocalTile) >> 1) * 4;
+				#pragma unroll
+				for (int r_Chunk = 0; r_Chunk < Chunks; ++r_Chunk)
+				{
+					const auto r_Fragment = PublishWindowChunk<bFp8>(r_Output[r_LocalTile], r_Chunk);
+					#pragma unroll
+					for (int r_Word = 0; r_Word < 4; ++r_Word)
+					{
+						const int g_X = g_OriginX + ((threadIdx.x / 4) & 3);
+						const int g_Y = g_OriginY + threadIdx.x / 16 + 2 * (r_Word & 1);
+						if (g_X >= 0 && g_X < g_Width && g_Y >= 0 && g_Y < g_Height)
+						{
+							const int g_Plane = (threadIdx.y) * 2 * Chunks + 2 * r_Chunk + r_Word / 2;
+							const uint64_t g_OutputWordAddress =
+								Parameters.g_Output +
+								((uint64_t(g_Plane * g_Height + g_Y) * g_Width + g_X) * 16) +
+								4 * (threadIdx.x & 3);
+							*reinterpret_cast<uint32_t*>(g_OutputWordAddress) = r_Fragment.r_Word[r_Word];
+						}
+					}
+				}
+			}
+			else
 			{
 				// Publish final packed fragments directly to their physical output layout.
 				using FConfig = FWideWindowProfile<Channels, bFp8>;
@@ -191,4 +255,25 @@ extern "C" __global__ __maxnreg__(168) void window_block_c64_fp16(FWindowBlockC6
 		__syncthreads();
 	}
 #endif
+}
+
+// Host dispatch resolves the 64-channel specialization.
+extern "C" const void* Resolve_window_block_c64_fp8()
+{
+	return reinterpret_cast<const void*>(
+		window_block_two_warp_fp8<64, false, false, FWindowBlockC64Fp8Parameters>);
+}
+
+// Host dispatch resolves the 64-channel specialization.
+extern "C" const void* Resolve_window_block_c64_input_view_fp8()
+{
+	return reinterpret_cast<const void*>(
+		window_block_two_warp_fp8<64, true, false, FWindowBlockC64InputViewFp8Parameters>);
+}
+
+// Host dispatch resolves the 64-channel specialization.
+extern "C" const void* Resolve_window_block_c64_output_view_fp8()
+{
+	return reinterpret_cast<const void*>(
+		window_block_two_warp_fp8<64, false, true, FWindowBlockC64OutputViewFp8Parameters>);
 }

@@ -4,11 +4,13 @@
 #include "../kernel_launcher/c512_dispatch.h"
 #include "prepared_ops.h"
 #include "../kernel_launcher/frontend_dispatch.h"
+#include "../kernel_launcher/kernel_symbols.h"
 
 TORCH_LIBRARY(dlssnr, Library)
 {
 	RegisterPreparedKernelSchemas(Library);
 	RegisterFrontendKernels(Library);
+	Library.def("kernel_symbol", &KernelSymbol);
 	Library.class_<FDeploymentPlan_fp8>("DeploymentPlan_fp8")
 		.def("run_fp8", &FDeploymentPlan_fp8::Run_fp8)
 		.def("buffer", &FDeploymentPlan_fp8::GetBuffer)

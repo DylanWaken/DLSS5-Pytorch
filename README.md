@@ -72,15 +72,15 @@ All 81 entries have individual Torch operators. Default Inductor and `aot_eager`
 
 ## Speed overview
 
-**FP8 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **6.731 ms reconstructed / 6.855 ms original**.
+**FP8 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **6.733 ms reconstructed / 6.846 ms original**.
 
 ![FP8 deployment latency at 720p, 1080p, 2K and 4K](docs/figures/deployment_fp8_resolutions.svg)
 
-**FP16 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **11.445 ms reconstructed / 11.746 ms original**.
+**FP16 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **11.472 ms reconstructed / 11.753 ms original**.
 
 ![FP16 deployment latency at 720p, 1080p, 2K and 4K](docs/figures/deployment_fp16_resolutions.svg)
 
-These are fresh measurements of the per-entry CUDA source build. Inference charts exclude input/output stages and DLL host processing.
+These are measurements of the integrated template build. Inference charts exclude input/output stages and DLL host processing; the [validation report](docs/template_integration_validation.json) records all eight runs.
 
 **Training:** full-network FP32/BF16 forward and backward, with checkpointing, batch one and no optimizer. At 4K, peak allocated memory is **52.4 / 43.3 GiB**, respectively.
 
@@ -99,7 +99,7 @@ See [benchmark scope and detailed results](docs/BENCHMARKS.md) for methodology, 
 
 ## Project layout and further reading
 
-`csrc/kernel_impl/fp8` and `fp16` contain one exact-name `.cu` file per exported kernel: its global function shows storage, loops, pipelining and writeback. `common` holds shared intrinsics, `MMA`, memory helpers, ABI declarations and the precision-independent counter reset. `kernel_launcher` contains host dispatch and launch policies; `torch_api` registers the PyTorch interfaces. `dlssnr` contains Python entry points and the training model. `tests` and `tuning` hold validation and offline policy tools.
+`csrc/kernel_impl` contains **56 complete kernel bodies for 81 public configurations**. Repeated channels and layouts share compile-time templates; each global function shows its storage, loops, pipelining and writeback. `fp8` and `fp16` hold precision-specific kernels; `common` holds shared primitives, ABI records, repack templates and counter reset. `kernel_launcher` contains host dispatch and launch policies; `torch_api` registers the PyTorch interfaces. `dlssnr` contains entry points and the training model; `tests` and `tuning` hold validation and offline policy tools.
 
 - [Architecture atlas](docs/ARCHITECTURE.md) · [Current coverage and limitations](docs/RECONSTRUCTION_STATUS.md)
 - [Kernel reading guide](docs/KERNEL_READING_GUIDE.md) · [Source layout and shared helpers](docs/SOURCE_LAYOUT.md) · [Code conventions](docs/CODE_READABILITY.md) · [Naming audit](docs/NAMING_AUDIT.md) · [Readable CUDA reconstruction](docs/SEMANTIC_RECONSTRUCTION.md) · [Historical optimization log](docs/optimization_log_2026-10-05.md)

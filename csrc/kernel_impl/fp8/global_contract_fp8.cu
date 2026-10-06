@@ -1,14 +1,14 @@
-// The exported entry owns its storage, pipeline, computation and publication.
-// Shared headers contain only profiles, layout maps and reused tensor primitives.
+// The complete global template retains each native schedule and register limit.
+// Only supported profiles are emitted; host launch selection remains in kernel_launcher.
 #include "../common/kernel_helpers.cuh"
 #include "../common/global_contract.cuh"
 
-extern "C" __global__
-	__maxnreg__(168) void global_ffn_contract_c1024_fp8(FGlobalFfnContractC1024Fp8Parameters Parameters)
+template <bool bAttentionProjection, typename FParameters>
+__global__ __maxnreg__(168) void global_contract_fp8(FParameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	constexpr bool bFp8 = true;
-	using Profile = FGlobalContractProfile<bFp8>;
+	using Profile = FGlobalContractProfile<bFp8, bAttentionProjection>;
 	__shared__ __align__(512) unsigned char s_Storage[Profile::s_BarrierOffset + Profile::s_StageCount * 8];
 	const int g_Tokens = Parameters.BatchCount * Parameters.TokensPerBatch;
 	const int g_TokenTiles = (g_Tokens + 127) / 128;
@@ -293,4 +293,16 @@ extern "C" __global__
 	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 		CounterStoreRelease(g_SplitCounters, TileCoordinates.Split);
 #endif
+}
+
+// Host address resolver keeps the registered global_ffn_contract_c1024_fp8 specialization in this translation unit.
+extern "C" const void* Resolve_global_ffn_contract_c1024_fp8()
+{
+	return reinterpret_cast<const void*>(global_contract_fp8<false, FGlobalFfnContractC1024Fp8Parameters>);
+}
+
+// Host address resolver keeps the registered global_projection_c1024_fp8 specialization in this translation unit.
+extern "C" const void* Resolve_global_projection_c1024_fp8()
+{
+	return reinterpret_cast<const void*>(global_contract_fp8<true, FGlobalProjectionC1024Fp8Parameters>);
 }

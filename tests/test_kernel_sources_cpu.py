@@ -1,5 +1,6 @@
 """Detect lost/duplicate CUDA exports and stale includes after source grouping."""
 from pathlib import Path
+import json
 import sys
 import tempfile
 import unittest
@@ -22,10 +23,183 @@ class KernelSourcesCPUTest(unittest.TestCase):
             "    SharedBody<64, false>(Parameters);\n}\n", encoding="utf-8"
         )
 
+    def make_template_fixture(self, root):
+        (root / "kernel_impl/fp8").mkdir(parents=True)
+        (root / "kernel_impl/common").mkdir()
+        (root / "kernel_launcher").mkdir()
+        path = root / "kernel_impl/fp8/example_fp8.cu"
+        path.write_text(
+            "template <int Channels, typename FParameters>\n"
+            "__global__ __maxnreg__(168) void example_fp8(FParameters Parameters)\n"
+            "{\n"
+            "    const int ThreadIndex = threadIdx.x;\n"
+            "    int Value = Parameters.Input[ThreadIndex];\n"
+            "    for (int Channel = 0; Channel < Channels; ++Channel)\n"
+            "    {\n"
+            "        if (Channel < Parameters.ValidChannels)\n"
+            "        {\n"
+            "            Value += Parameters.Weights[Channel];\n"
+            "        }\n"
+            "        else\n"
+            "        {\n"
+            "            Value += 0;\n"
+            "        }\n"
+            "    }\n"
+            "    if (ThreadIndex < Parameters.OutputCount)\n"
+            "    {\n"
+            "        Parameters.Output[ThreadIndex] = Value;\n"
+            "    }\n"
+            "    else\n"
+            "    {\n"
+            "        return;\n"
+            "    }\n"
+            "}\n"
+            'extern "C" const void* Resolve_example_c32_fp8()\n'
+            "{\n"
+            "    return reinterpret_cast<const void*>(example_fp8<32, FExampleParameters>);\n"
+            "}\n"
+            'extern "C" const void* Resolve_example_c64_fp8()\n'
+            "{\n"
+            "    return reinterpret_cast<const void*>(example_fp8<64, FExampleParameters>);\n"
+            "}\n",
+            encoding="utf-8",
+        )
+        entries = [{
+            "name": f"example_c{channels}_fp8",
+            "template_function": "example_fp8",
+            "source": "kernel_impl/fp8/example_fp8.cu",
+            "parameters": "FExampleParameters",
+            "template_arguments": f"{channels}, FExampleParameters",
+            "resolver": f"Resolve_example_c{channels}_fp8",
+        } for channels in (32, 64)]
+        manifest = root / "kernel_impl/common/kernel_templates.json"
+        manifest.write_text(json.dumps({"entries": entries}), encoding="utf-8")
+        return path, manifest, entries
+
     def test_active_sources_have_complete_paired_exports_and_one_owner(self):
         inventory = collect(ROOT / "csrc")
         check_roster(inventory)
         check_entry_layout(inventory, ROOT / "csrc")
+        self.assertEqual(inventory["entry_count"], 81)
+        self.assertEqual(inventory["definition_count"], 56)
+        self.assertEqual(inventory["emission_unit_count"], 56)
+        self.assertEqual(inventory["template_entry_count"], 40)
+
+    def test_replaced_entry_files_do_not_survive_beside_templates(self):
+        manifest = ROOT / "csrc/kernel_impl/common/kernel_templates.json"
+        entries = json.loads(manifest.read_text(encoding="utf-8"))["entries"]
+        for entry in entries:
+            with self.subTest(entry=entry["name"]):
+                precision = "fp16" if entry["name"].endswith("_fp16") else "fp8"
+                old = ROOT / "csrc/kernel_impl" / precision / (entry["name"] + ".cu")
+                self.assertFalse(old.exists(), f"obsolete standalone entry remains: {old}")
+                self.assertTrue((ROOT / "csrc" / entry["source"]).is_file())
+
+    def test_registered_template_has_one_definition_and_two_logical_entries(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.make_template_fixture(root)
+            inventory = collect(root)
+            check_entry_layout(inventory, root)
+            self.assertEqual(inventory["entry_count"], 2)
+            self.assertEqual(inventory["definition_count"], 1)
+            self.assertEqual(inventory["emission_unit_count"], 1)
+            self.assertEqual(inventory["template_entry_count"], 2)
+            self.assertEqual(set(inventory["entries"]), {"example_c32_fp8", "example_c64_fp8"})
+            for entry in inventory["entries"].values():
+                self.assertEqual(entry["definition"], "example_fp8")
+                self.assertEqual(entry["emission_unit"], "kernel_impl/fp8/example_fp8.cu")
+
+    def test_unmapped_cpp_template_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            _, manifest, _ = self.make_template_fixture(root)
+            manifest.unlink()
+            with self.assertRaisesRegex(ValueError, 'must use extern "C" linkage'):
+                collect(root)
+
+    def test_missing_template_resolver_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path, _, _ = self.make_template_fixture(root)
+            path.write_text(path.read_text(encoding="utf-8").replace(
+                "Resolve_example_c32_fp8", "RemovedResolver"), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "resolver does not reference its exact specialization"):
+                collect(root)
+
+    def test_template_resolver_cannot_silently_select_another_channel_profile(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path, _, _ = self.make_template_fixture(root)
+            path.write_text(path.read_text(encoding="utf-8").replace(
+                "example_fp8<32, FExampleParameters>", "example_fp8<64, FExampleParameters>"),
+                encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "resolver does not reference its exact specialization"):
+                collect(root)
+
+    def test_duplicate_logical_template_entry_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            _, manifest, entries = self.make_template_fixture(root)
+            manifest.write_text(json.dumps({"entries": entries + [entries[0]]}), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "duplicate logical entry"):
+                collect(root)
+
+    def test_missing_owning_global_template_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path, _, _ = self.make_template_fixture(root)
+            path.write_text("// The owning global definition was removed.\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "missing owning global template"):
+                collect(root)
+
+    def test_template_and_surviving_original_c_entry_are_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.make_template_fixture(root)
+            self.write_kernel(root / "kernel_impl/fp8/example_c32_fp8.cu", "example_c32_fp8")
+            with self.assertRaisesRegex(ValueError, "duplicate CUDA entry.*template and direct definition"):
+                collect(root)
+
+    def test_unrelated_template_helper_does_not_authorize_non_template_global(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path, _, _ = self.make_template_fixture(root)
+            path.write_text(path.read_text(encoding="utf-8").replace(
+                "template <int Channels, typename FParameters>\n",
+                "template <typename TValue> void Helper(TValue Value) {}\n", 1), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, r"registered template must be a C\+\+ global template"):
+                collect(root)
+
+    def test_template_resolver_requires_c_linkage_and_const_pointer_signature(self):
+        for signature in ("const void*", 'extern "C" void*'):
+            with self.subTest(signature=signature), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                path, _, _ = self.make_template_fixture(root)
+                path.write_text(path.read_text(encoding="utf-8").replace(
+                    'extern "C" const void* Resolve_example_c32_fp8',
+                    signature + " Resolve_example_c32_fp8", 1), encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, r"resolver must have extern C const void\* signature"):
+                    collect(root)
+
+    def test_template_migration_requires_explicit_flag_and_preserves_typed_abi(self):
+        with tempfile.TemporaryDirectory() as current_dir, tempfile.TemporaryDirectory() as baseline_dir:
+            current_root, baseline_root = Path(current_dir), Path(baseline_dir)
+            self.make_template_fixture(current_root)
+            (baseline_root / "kernel_impl").mkdir()
+            for channels in (32, 64):
+                self.write_kernel(baseline_root / f"kernel_impl/example_c{channels}_fp8.cu",
+                                  f"example_c{channels}_fp8")
+            current, baseline = collect(current_root), collect(baseline_root)
+            with self.assertRaisesRegex(ValueError, "exported entry roster changed"):
+                compare_exports(current, baseline)
+            compare_exports(current, baseline, allow_template_migration=True)
+
+            path = baseline_root / "kernel_impl/example_c64_fp8.cu"
+            path.write_text(path.read_text(encoding="utf-8").replace(
+                "FExampleParameters", "FChangedAbiParameters"), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "exported entry roster changed"):
+                compare_exports(current, collect(baseline_root), allow_template_migration=True)
 
     def test_algorithm_headers_do_not_reintroduce_register_transcripts(self):
         for path in (ROOT / "csrc/kernel_impl").rglob("*"):

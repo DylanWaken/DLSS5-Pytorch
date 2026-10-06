@@ -14,6 +14,19 @@ OUT = ROOT / 'csrc' / 'kernel_launcher'
 def load(name):
     return json.loads((PREP / name).read_text(encoding='utf-8'))
 
+def load_template_resolvers():
+    """Resolve logical names to same-TU getters, independent of CUDA mangling."""
+    source = (ROOT / 'csrc/kernel_impl/common/kernel_abi.h').read_text(encoding='utf-8')
+    return {
+        entry: resolver for resolver, entry in re.findall(
+            r'extern\s+"C"\s+const\s+void\s*\*\s*(Resolve_(\w+))\s*\(\s*\)\s*;', source)
+    }
+
+
+def kernel_address(entry, resolvers):
+    return f'{resolvers[entry]}()' if entry in resolvers else f'reinterpret_cast<const void*>(&{entry})'
+
+
 def load_abi_fields():
     """Read names from compiler-checked offsets, resolving shared ABI aliases.
 
@@ -29,7 +42,7 @@ def load_abi_fields():
         if offset in fields and fields[offset] != field:
             raise ValueError(f'conflicting ABI names for {parameter_type} byte {offset}')
         fields[offset] = field
-    aliases = dict(re.findall(r'using (\w+) = (\w+);', source))
+    aliases = dict(re.findall(r'using\s+(\w+)\s*=\s*(\w+)\s*;', source))
     while aliases:
         resolved = [alias for alias, target in aliases.items() if target in fields_by_type]
         if not resolved:
@@ -37,6 +50,12 @@ def load_abi_fields():
         for alias in resolved:
             fields_by_type[alias] = fields_by_type[aliases.pop(alias)]
     declarations = dict(re.findall(r'extern\s+"C"\s+void\s+(\w+)\s*\(\s*(\w+)\s+Parameters\s*\);', source))
+    template_parameters = dict(re.findall(r'using\s+FKernelParameters_(\w+)\s*=\s*(\w+)\s*;', source))
+    if set(template_parameters) != set(load_template_resolvers()):
+        raise ValueError('each template resolver requires one compiler-checked parameter alias')
+    if set(declarations) & set(template_parameters):
+        raise ValueError('a logical kernel cannot declare both a bare entry and a template resolver')
+    declarations.update(template_parameters)
     fields_by_entry = {}
     parameter_types = {}
     for entry in load('canonical_kernel_names.json').values():
@@ -175,6 +194,7 @@ def generate(precision="fp8"):
     from physical_schedule import make
 
     abi_fields, parameter_types = load_abi_fields()
+    resolvers = load_template_resolvers()
 
     schedules = [make(width, height, precision=precision) for width, height in RESOLUTIONS]
     plans = [build_plan(schedule) for schedule in schedules]
@@ -246,8 +266,8 @@ struct FGeometryPlanSpec {
         entry_fields = abi_fields[call['fn']]
         lines += [f'    {{ // {call["symbol"]}',
                   f'        using FParameters = {parameter_type};',
-                  '        FKernelCall KernelCall{reinterpret_cast<const void*>(&%s), Geometry->Grids[%d], dim3(%s), %d, %s};'
-                  % (call['fn'], call_index, block, call['abi'], str(call['all_resident']).lower()),
+                  '        FKernelCall KernelCall{%s, Geometry->Grids[%d], dim3(%s), %d, %s};'
+                  % (kernel_address(call['fn'], resolvers), call_index, block, call['abi'], str(call['all_resident']).lower()),
                   f'        KernelCall.Name = "{call["fn"]}";']
         for offset, size, value in call['fields']:
             cpp_type = 'uint64_t' if size == 8 else 'int32_t'
@@ -276,6 +296,14 @@ struct FGeometryPlanSpec {
     entries += [f'    "{name}",' for name in sorted(load('canonical_kernel_names.json').values())]
     entries += ['};']
     (OUT / 'prepared_kernel_names_generated.inl').write_text('\n'.join(entries) + '\n', encoding='utf-8', newline='\n')
+    symbols = ['// Generated logical-name to registered host-stub mapping.',
+               '// Resolver calls take addresses only; no CUDA initialization or launches.',
+               'static const std::array<FKernelSymbolEntry, 81>& GetKernelSymbolTable() {',
+               '    static const std::array<FKernelSymbolEntry, 81> Table{{']
+    symbols += [f'    {{"{name}", {kernel_address(name, resolvers)}}},'
+                for name in sorted(load('canonical_kernel_names.json').values())]
+    symbols += ['    }};', '    return Table;', '}']
+    (OUT / 'kernel_symbols_generated.inl').write_text('\n'.join(symbols) + '\n', encoding='utf-8', newline='\n')
     for (width, height), plan, schedule in zip(RESOLUTIONS, plans, schedules):
         (PREP / f'plan{suffix}_{width}_{height}.json').write_text(json.dumps(plan, indent=2) + '\n', encoding='utf-8')
         (PREP / f'network_schedule_{precision}_{width}_{height}.json').write_text(json.dumps(schedule, indent=2) + '\n', encoding='utf-8')

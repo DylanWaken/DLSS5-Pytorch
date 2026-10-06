@@ -93,7 +93,7 @@ def execute(args, report):
         if record.numel() != entry['record_bytes']:
             raise ValueError(f'Record extent differs for C512 entry{entry_id}')
         kernel_name = canonical[entry['original_symbol']].split('::')[-1]
-        candidate_symbol = kernel_name
+        candidate_symbol = torch.ops.dlssnr.kernel_symbol(kernel_name)
         matches = [row for row in image_report['entries'] if row['symbol'] == candidate_symbol]
         if len(matches) != 1:
             raise ValueError('Missing unique compiled candidate symbol: ' + kernel_name)

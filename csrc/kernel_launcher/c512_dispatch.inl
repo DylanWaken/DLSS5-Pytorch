@@ -54,9 +54,9 @@ const std::array<FC512KernelEntry, C512EntryCount>& C512GetEntryTable()
 		{EC512KernelRole::FfnExpansionInputView, 2, 56, 4, 1048576,
 		 reinterpret_cast<const void*>(&window_ffn_input_view_c512_fp16)}, // 3: ffn_input_view/half
 		{EC512KernelRole::FfnProjection, 1, 72, 4, 263168,
-		 reinterpret_cast<const void*>(&window_ffn_projection_c512_fp8)}, // 4: ffn_projection/fp8
+		 Resolve_window_ffn_projection_c512_fp8()}, // 4: ffn_projection/fp8
 		{EC512KernelRole::FfnProjection, 2, 72, 4, 525312,
-		 reinterpret_cast<const void*>(&window_ffn_projection_c512_fp16)}, // 5: ffn_projection/half
+		 Resolve_window_ffn_projection_c512_fp16()}, // 5: ffn_projection/half
 		{EC512KernelRole::FfnProjectionInputView, 1, 72, 4, 263168,
 		 reinterpret_cast<const void*>(
 			 &window_ffn_projection_input_view_c512_fp8)}, // 6: ffn_projection_input_view/fp8
@@ -68,11 +68,9 @@ const std::array<FC512KernelEntry, C512EntryCount>& C512GetEntryTable()
 		{EC512KernelRole::QkvAttention, 2, 56, 4, 1704000,
 		 reinterpret_cast<const void*>(&window_qkv_c512_fp16)}, // 9: qkv_attention/half
 		{EC512KernelRole::AttentionProjection, 1, 72, 8, 263168,
-		 reinterpret_cast<const void*>(
-			 &window_attention_projection_c512_fp8)}, // 10: attention_projection/fp8
+		 Resolve_window_attention_projection_c512_fp8()}, // 10: attention_projection/fp8
 		{EC512KernelRole::AttentionProjection, 2, 72, 8, 525312,
-		 reinterpret_cast<const void*>(
-			 &window_attention_projection_c512_fp16)}, // 11: attention_projection/half
+		 Resolve_window_attention_projection_c512_fp16()}, // 11: attention_projection/half
 		{EC512KernelRole::AttentionProjectionOutputView, 1, 72, 4, 263168,
 		 reinterpret_cast<const void*>(
 			 &window_attention_projection_output_view_c512_fp8)}, // 12: attention_projection_output_view/fp8

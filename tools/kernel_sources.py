@@ -1,4 +1,4 @@
-"""Inspect CUDA source ownership and enforce one named entry per CUDA file.
+"""Inspect logical CUDA exports and their full-body global definitions.
 
 The canonical exported name is the inventory key. The collector can read older
 grouped snapshots for comparison; active sources use self-contained entries.
@@ -54,6 +54,10 @@ def collect(csrc, *, allow_legacy_namespaces=False):
     if not paths:
         raise ValueError(f"no C++/CUDA sources found in {csrc}")
     sources = {path: path.read_text(encoding="utf-8") for path in paths}
+    manifest = csrc / "kernel_impl/common/kernel_templates.json"
+    templates = json.loads(manifest.read_text(encoding="utf8"))["entries"] if manifest.is_file() else []
+    if len({entry["name"] for entry in templates}) != len(templates):
+        raise ValueError("duplicate logical entry in template manifest")
     includes = {}
     entries = {}
     for path, source in sources.items():
@@ -81,8 +85,12 @@ def collect(csrc, *, allow_legacy_namespaces=False):
                 raise ValueError(f"CUDA entry {name} is outside kernel_impl: {relative}")
             namespace = next((match[1] for match in reversed(namespaces) if match.start() < kernel.start()), "")
             c_linkage = re.search(r'\bextern\s*"C"\s*$', source[:kernel.start()]) is not None
-            if not allow_legacy_namespaces and not c_linkage:
+            template_rows = [entry for entry in templates
+                             if entry["template_function"] == name and entry["source"] == relative]
+            if not allow_legacy_namespaces and not c_linkage and not template_rows:
                 raise ValueError(f'{name}: CUDA exports must use extern "C" linkage')
+            if template_rows and (c_linkage or not re.search(r"\btemplate\s*<[^;{}]+>\s*$", cleaned[:kernel.start()])):
+                raise ValueError(f"{name}: registered template must be a C++ global template")
             if namespace and namespace != "dlssnr::reconstructed::" + name:
                 raise ValueError(f"{name}: unexpected historical exported namespace {namespace!r}")
             end = _body_end(cleaned, kernel.end() - 1)
@@ -99,6 +107,7 @@ def collect(csrc, *, allow_legacy_namespaces=False):
                 "parameters": " ".join(kernel[2].split()),
                 "template_calls": calls,
                 "body_lines": source[kernel.end():end].count("\n"),
+                "definition": name,
             }
 
     def closure(path, seen):
@@ -120,10 +129,34 @@ def collect(csrc, *, allow_legacy_namespaces=False):
         if len(owners) != 1:
             raise ValueError(f"{name}: expected one CUDA emission unit, found {len(owners)}: {owners}")
         entry["emission_unit"] = owners[0]
+    definitions = entries
+    entries = {name: entry for name, entry in definitions.items()
+               if not any(row["template_function"] == name for row in templates)}
+    for row in templates:
+        name = row["name"]
+        if name in entries:
+            raise ValueError(f"duplicate CUDA entry {name}: template and direct definition")
+        definition = definitions.get(row["template_function"])
+        if definition is None or definition["header"] != row["source"]:
+            raise ValueError(f"{name}: missing owning global template")
+        source = sources[csrc / row["source"]]
+        code = _without_comments_and_strings(source)
+        resolver = re.search(r"\b" + re.escape(row["resolver"]) + r"\s*\(\s*\)\s*\{([^{}]*)\}", code)
+        expected = ("returnreinterpret_cast<constvoid*>(" + row["template_function"]
+                    + "<" + re.sub(r"\s+", "", row["template_arguments"]) + ">);")
+        if resolver is None or re.sub(r"\s+", "", resolver[1]).replace("(&", "(") != expected:
+            raise ValueError(f"{name}: resolver does not reference its exact specialization")
+        if not re.search(r'extern\s+"C"\s+const\s+void\s*\*\s*$', source[:resolver.start()]):
+            raise ValueError(f"{name}: resolver must have extern C const void* signature")
+        entries[name] = dict(definition, resolver=row["resolver"],
+                             template_arguments=row["template_arguments"],
+                             parameters=row["parameters"] + " Parameters")
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "entry_count": len(entries),
-        "body_header_count": len({entry["header"] for entry in entries.values()}),
+        "definition_count": len(definitions),
+        "template_entry_count": len(templates),
+        "body_header_count": len({entry["header"] for entry in definitions.values()}),
         "emission_unit_count": len(emission_units),
         "entries": dict(sorted(entries.items())),
     }
@@ -145,9 +178,13 @@ def check_entry_layout(inventory, csrc):
     csrc = Path(csrc)
     for name, entry in inventory["entries"].items():
         precision = "fp8" if name.endswith("_fp8") else "fp16" if name.endswith("_fp16") else "common"
-        expected = f"kernel_impl/{precision}/{name}.cu"
+        definition = entry.get("definition", name)
+        # A precision-independent global template can instantiate both formats.
+        if "resolver" in entry and entry["header"].startswith("kernel_impl/common/"):
+            precision = "common"
+        expected = f"kernel_impl/{precision}/{definition}.cu"
         if entry["header"] != expected or entry["emission_unit"] != expected:
-            raise ValueError(f"{name}: expected its own named CUDA file {expected}")
+            raise ValueError(f"{name}: expected its own named CUDA file for the global definition: {expected}")
         if name != "completion_counter_clear" and entry["body_lines"] < 20:
             raise ValueError(f"{name}: global entry must contain its execution flow")
     for path in (csrc / "kernel_launcher").rglob("*"):
@@ -164,11 +201,14 @@ def check_entry_layout(inventory, csrc):
             raise ValueError(f"{path.name}: kernel orchestration belongs in the global entry")
 
 
-def compare_exports(candidate, baseline, *, allow_namespace_migration=False):
+def compare_exports(candidate, baseline, *, allow_namespace_migration=False, allow_template_migration=False):
     """Compare linkage exactly unless an explicit historical migration is requested."""
     def exported(inventory):
         if allow_namespace_migration:
             return set(inventory["entries"])
+        if allow_template_migration:
+            return {(name, entry["namespace"], entry["parameters"])
+                    for name, entry in inventory["entries"].items()}
         return {(name, entry["namespace"], entry["linkage"])
                 for name, entry in inventory["entries"].items()}
     missing = exported(baseline) - exported(candidate)
@@ -184,6 +224,8 @@ def main():
     parser.add_argument("--output", type=Path)
     parser.add_argument("--allow-namespace-migration", action="store_true",
                         help="Compare a namespaced historical baseline by entry basename; active sources remain flat")
+    parser.add_argument("--allow-template-migration", action="store_true",
+                        help="Compare stable logical names and typed ABI records while allowing C++ template linkage")
     args = parser.parse_args()
     if args.allow_namespace_migration and not args.baseline_csrc:
         parser.error("--allow-namespace-migration requires --baseline-csrc")
@@ -192,7 +234,8 @@ def main():
     check_entry_layout(inventory, args.csrc)
     if args.baseline_csrc:
         baseline = collect(args.baseline_csrc, allow_legacy_namespaces=args.allow_namespace_migration)
-        compare_exports(inventory, baseline, allow_namespace_migration=args.allow_namespace_migration)
+        compare_exports(inventory, baseline, allow_namespace_migration=args.allow_namespace_migration,
+                        allow_template_migration=args.allow_template_migration)
         inventory["baseline_entry_roster_unchanged"] = True
         inventory["namespace_migration_requested"] = args.allow_namespace_migration
     if args.output:

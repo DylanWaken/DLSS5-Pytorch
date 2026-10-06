@@ -1,13 +1,13 @@
-// Reconstructed native window_block_c32_fp8 schedule.
-// The exported entry owns its storage, tensor stages and final publication.
+// Compile-time window schedule; each specialization retains its native launch profile.
+// Storage, tensor stages, layout reads and final publication remain in this global body.
 #include "../common/kernel_helpers.cuh"
 #include "../common/warp_window32.cuh"
 
-extern "C" __global__ __maxnreg__(168) void window_block_c32_fp8(FWindowBlockC32Fp8Parameters Parameters)
+template <int Channels, bool bInputView, typename FParameters>
+__global__ __maxnreg__(168) void window_block_compact_fp8(FParameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	constexpr bool bFp8 = true;
-	constexpr int Channels = 32;
 	using FConfig = FWindow32Profile<bFp8>;
 	const unsigned char* g_PackedWeights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights);
 	FWindowActivationTile<bFp8> r_Input[4];
@@ -30,6 +30,36 @@ extern "C" __global__ __maxnreg__(168) void window_block_c32_fp8(FWindowBlockC32
 	#pragma unroll
 	for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 	{
+		if constexpr (bInputView)
+		{
+			// Read the physical input tile without a separate layout staging pass.
+			constexpr int Chunks = FWindow32Profile<bFp8>::InputChunks;
+			const int g_Height = Parameters.ViewHeight > 0 ? Parameters.ViewHeight : Parameters.Height;
+			const int g_Width = Parameters.ViewWidth > 0 ? Parameters.ViewWidth : Parameters.Width;
+			const int g_OriginX = int(blockIdx.x) * 8 + Parameters.OriginX + ((r_Tile) & 1) * 4;
+			const int g_OriginY = int(blockIdx.y) * 8 + Parameters.OriginY + ((r_Tile) >> 1) * 4;
+			FWindowActivationTile<bFp8> r_InputTile;
+			#pragma unroll
+			for (int r_Chunk = 0; r_Chunk < Chunks; ++r_Chunk)
+				#pragma unroll
+				for (int r_Word = 0; r_Word < 4; ++r_Word)
+				{
+					// Row-half words differ by two physical image rows inside a 4x4
+					// tile. Singleton dimensions broadcast; all other OOB reads zero.
+					const int g_X = g_Width == 1 ? 0 : g_OriginX + ((threadIdx.x / 4) & 3);
+					const int g_Y = g_Height == 1 ? 0 : g_OriginY + threadIdx.x / 16 + 2 * (r_Word & 1);
+					const int g_Plane = (0) * 2 * Chunks + 2 * r_Chunk + r_Word / 2;
+					const uint64_t g_InputWordAddress =
+						Parameters.g_Input + ((uint64_t(g_Plane * g_Height + g_Y) * g_Width + g_X) * 16) +
+						4 * (threadIdx.x & 3);
+					r_InputTile.r_Reduction[r_Chunk].r_Word[r_Word] =
+						g_X >= 0 && g_X < g_Width && g_Y >= 0 && g_Y < g_Height
+							? *reinterpret_cast<const uint32_t*>(g_InputWordAddress)
+							: 0u;
+				}
+			r_Input[r_Tile] = r_InputTile;
+		}
+		else
 		{
 			const unsigned char* g_Input = reinterpret_cast<const unsigned char*>(Parameters.g_Input);
 			const int g_TileColumns = Parameters.Width / 4, g_TileRows = Parameters.Height / 4;
@@ -180,4 +210,17 @@ extern "C" __global__ __maxnreg__(168) void window_block_c32_fp8(FWindowBlockC32
 		}
 	}
 #endif
+}
+
+// Host dispatch resolves the 32-channel specialization.
+extern "C" const void* Resolve_window_block_c32_fp8()
+{
+	return reinterpret_cast<const void*>(window_block_compact_fp8<32, false, FWindowBlockC32Fp8Parameters>);
+}
+
+// Host dispatch resolves the 32-channel specialization.
+extern "C" const void* Resolve_window_block_c32_input_view_fp8()
+{
+	return reinterpret_cast<const void*>(
+		window_block_compact_fp8<32, true, FWindowBlockC32InputViewFp8Parameters>);
 }

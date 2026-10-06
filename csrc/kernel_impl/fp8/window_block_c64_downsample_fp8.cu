@@ -28,7 +28,7 @@ extern "C" __global__
 			using FConfig = FWideWindowProfile<Channels, bFp8>;
 			const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(Arguments.g_PackedWeights);
 
-			// FFN: private C64 tiles, or cross-warp expert panels for C128/C256.
+			// FFN: each warp retains two token tiles and both channel panels.
 			const int Warp = threadIdx.y;
 			{
 				// C64 uses token parallelism in the FFN: one warp owns left/right tiles

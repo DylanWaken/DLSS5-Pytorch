@@ -4,7 +4,8 @@
 #include <type_traits>
 
 // The launch records are shared by host launchers and CUDA implementations.
-// Each entry uses a descriptive global record type and an unmangled C symbol.
+// Each logical entry uses a descriptive, compiler-checked parameter record.
+// Shared template bodies expose a same-TU resolver; retained kernels use C symbols.
 // Shared layouts retain one type where their fields and semantics are identical.
 // Every launch passes one pointer to an entire zero-initialized record.
 // Static assertions preserve the recovered DLL parameter offsets and extents.
@@ -90,7 +91,9 @@ static_assert(offsetof(FWindowBlockC128Fp16Parameters, ReservedTailPadding) == 4
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c128_fp16(FWindowBlockC128Fp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c128_fp16 = FWindowBlockC128Fp16Parameters;
+extern "C" const void* Resolve_window_block_c128_fp16();
 #endif
 
 struct alignas(8) FWindowBlockC128Fp8Parameters
@@ -115,7 +118,9 @@ static_assert(offsetof(FWindowBlockC128Fp8Parameters, ReservedTailPadding) == 48
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c128_fp8(FWindowBlockC128Fp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c128_fp8 = FWindowBlockC128Fp8Parameters;
+extern "C" const void* Resolve_window_block_c128_fp8();
 #endif
 
 // ViewHeight/ViewWidth are physical channel-plane pixel extents; zero uses Height/Width.
@@ -145,7 +150,9 @@ static_assert(offsetof(FWindowBlockC128InputViewFp16Parameters, ViewWidth) == 84
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c128_input_view_fp16(FWindowBlockC128InputViewFp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c128_input_view_fp16 = FWindowBlockC128InputViewFp16Parameters;
+extern "C" const void* Resolve_window_block_c128_input_view_fp16();
 #endif
 
 // ViewHeight/ViewWidth are physical channel-plane pixel extents; zero uses Height/Width.
@@ -175,7 +182,9 @@ static_assert(offsetof(FWindowBlockC128InputViewFp8Parameters, ViewWidth) == 84)
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c128_input_view_fp8(FWindowBlockC128InputViewFp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c128_input_view_fp8 = FWindowBlockC128InputViewFp8Parameters;
+extern "C" const void* Resolve_window_block_c128_input_view_fp8();
 #endif
 
 // ViewHeight/ViewWidth are physical channel-plane pixel extents; zero uses Height/Width.
@@ -205,7 +214,9 @@ static_assert(offsetof(FWindowBlockC128OutputViewFp16Parameters, ViewWidth) == 8
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c128_output_view_fp16(FWindowBlockC128OutputViewFp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c128_output_view_fp16 = FWindowBlockC128OutputViewFp16Parameters;
+extern "C" const void* Resolve_window_block_c128_output_view_fp16();
 #endif
 
 // ViewHeight/ViewWidth are physical channel-plane pixel extents; zero uses Height/Width.
@@ -235,7 +246,9 @@ static_assert(offsetof(FWindowBlockC128OutputViewFp8Parameters, ViewWidth) == 84
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c128_output_view_fp8(FWindowBlockC128OutputViewFp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c128_output_view_fp8 = FWindowBlockC128OutputViewFp8Parameters;
+extern "C" const void* Resolve_window_block_c128_output_view_fp8();
 #endif
 
 struct alignas(8) FWindowBlockC256Fp16Parameters
@@ -260,7 +273,9 @@ static_assert(offsetof(FWindowBlockC256Fp16Parameters, ReservedTailPadding) == 4
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c256_fp16(FWindowBlockC256Fp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c256_fp16 = FWindowBlockC256Fp16Parameters;
+extern "C" const void* Resolve_window_block_c256_fp16();
 #endif
 
 struct alignas(8) FWindowBlockC256Fp8Parameters
@@ -285,7 +300,9 @@ static_assert(offsetof(FWindowBlockC256Fp8Parameters, ReservedTailPadding) == 48
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c256_fp8(FWindowBlockC256Fp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c256_fp8 = FWindowBlockC256Fp8Parameters;
+extern "C" const void* Resolve_window_block_c256_fp8();
 #endif
 
 // ViewHeight/ViewWidth are physical channel-plane pixel extents; zero uses Height/Width.
@@ -315,7 +332,9 @@ static_assert(offsetof(FWindowBlockC256InputViewFp16Parameters, ViewWidth) == 84
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c256_input_view_fp16(FWindowBlockC256InputViewFp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c256_input_view_fp16 = FWindowBlockC256InputViewFp16Parameters;
+extern "C" const void* Resolve_window_block_c256_input_view_fp16();
 #endif
 
 // ViewHeight/ViewWidth are physical channel-plane pixel extents; zero uses Height/Width.
@@ -345,7 +364,9 @@ static_assert(offsetof(FWindowBlockC256InputViewFp8Parameters, ViewWidth) == 84)
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c256_input_view_fp8(FWindowBlockC256InputViewFp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c256_input_view_fp8 = FWindowBlockC256InputViewFp8Parameters;
+extern "C" const void* Resolve_window_block_c256_input_view_fp8();
 #endif
 
 // ViewHeight/ViewWidth are physical channel-plane pixel extents; zero uses Height/Width.
@@ -375,7 +396,9 @@ static_assert(offsetof(FWindowBlockC256OutputViewFp16Parameters, ViewWidth) == 8
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c256_output_view_fp16(FWindowBlockC256OutputViewFp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c256_output_view_fp16 = FWindowBlockC256OutputViewFp16Parameters;
+extern "C" const void* Resolve_window_block_c256_output_view_fp16();
 #endif
 
 // ViewHeight/ViewWidth are physical channel-plane pixel extents; zero uses Height/Width.
@@ -405,7 +428,9 @@ static_assert(offsetof(FWindowBlockC256OutputViewFp8Parameters, ViewWidth) == 84
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c256_output_view_fp8(FWindowBlockC256OutputViewFp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c256_output_view_fp8 = FWindowBlockC256OutputViewFp8Parameters;
+extern "C" const void* Resolve_window_block_c256_output_view_fp8();
 #endif
 
 struct alignas(8) FWindowBlockC32Fp16Parameters
@@ -429,7 +454,9 @@ static_assert(offsetof(FWindowBlockC32Fp16Parameters, ReservedTailPadding) == 40
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c32_fp16(FWindowBlockC32Fp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c32_fp16 = FWindowBlockC32Fp16Parameters;
+extern "C" const void* Resolve_window_block_c32_fp16();
 #endif
 
 struct alignas(8) FWindowBlockC32Fp8Parameters
@@ -453,7 +480,9 @@ static_assert(offsetof(FWindowBlockC32Fp8Parameters, ReservedTailPadding) == 40)
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c32_fp8(FWindowBlockC32Fp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c32_fp8 = FWindowBlockC32Fp8Parameters;
+extern "C" const void* Resolve_window_block_c32_fp8();
 #endif
 
 // Native C32 transition dimensions are pixels. Unused native slots retain padding fields.
@@ -488,7 +517,9 @@ static_assert(offsetof(FWindowBlockC32InputViewFp16Parameters, ReservedTailWordH
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c32_input_view_fp16(FWindowBlockC32InputViewFp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c32_input_view_fp16 = FWindowBlockC32InputViewFp16Parameters;
+extern "C" const void* Resolve_window_block_c32_input_view_fp16();
 #endif
 
 // Native C32 transition dimensions are pixels. Unused native slots retain padding fields.
@@ -523,7 +554,9 @@ static_assert(offsetof(FWindowBlockC32InputViewFp8Parameters, ReservedTailWordHi
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c32_input_view_fp8(FWindowBlockC32InputViewFp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c32_input_view_fp8 = FWindowBlockC32InputViewFp8Parameters;
+extern "C" const void* Resolve_window_block_c32_input_view_fp8();
 #endif
 
 // Native C32 transition dimensions are pixels. Unused native slots retain padding fields.
@@ -618,7 +651,9 @@ static_assert(offsetof(FWindowBlockC64Fp16Parameters, ReservedTailPadding) == 48
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c64_fp16(FWindowBlockC64Fp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c64_fp16 = FWindowBlockC64Fp16Parameters;
+extern "C" const void* Resolve_window_block_c64_fp16();
 #endif
 
 struct alignas(8) FWindowBlockC64Fp8Parameters
@@ -643,7 +678,9 @@ static_assert(offsetof(FWindowBlockC64Fp8Parameters, ReservedTailPadding) == 48)
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c64_fp8(FWindowBlockC64Fp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c64_fp8 = FWindowBlockC64Fp8Parameters;
+extern "C" const void* Resolve_window_block_c64_fp8();
 #endif
 
 struct alignas(8) FWindowBlockC64InputViewFp16Parameters
@@ -673,7 +710,9 @@ static_assert(offsetof(FWindowBlockC64InputViewFp16Parameters, ViewWidth) == 84)
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c64_input_view_fp16(FWindowBlockC64InputViewFp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c64_input_view_fp16 = FWindowBlockC64InputViewFp16Parameters;
+extern "C" const void* Resolve_window_block_c64_input_view_fp16();
 #endif
 
 struct alignas(8) FWindowBlockC64InputViewFp8Parameters
@@ -703,7 +742,9 @@ static_assert(offsetof(FWindowBlockC64InputViewFp8Parameters, ViewWidth) == 84);
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c64_input_view_fp8(FWindowBlockC64InputViewFp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c64_input_view_fp8 = FWindowBlockC64InputViewFp8Parameters;
+extern "C" const void* Resolve_window_block_c64_input_view_fp8();
 #endif
 
 struct alignas(8) FWindowBlockC64OutputViewFp16Parameters
@@ -733,7 +774,9 @@ static_assert(offsetof(FWindowBlockC64OutputViewFp16Parameters, ViewWidth) == 84
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c64_output_view_fp16(FWindowBlockC64OutputViewFp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c64_output_view_fp16 = FWindowBlockC64OutputViewFp16Parameters;
+extern "C" const void* Resolve_window_block_c64_output_view_fp16();
 #endif
 
 struct alignas(8) FWindowBlockC64OutputViewFp8Parameters
@@ -763,7 +806,9 @@ static_assert(offsetof(FWindowBlockC64OutputViewFp8Parameters, ViewWidth) == 84)
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c64_output_view_fp8(FWindowBlockC64OutputViewFp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c64_output_view_fp8 = FWindowBlockC64OutputViewFp8Parameters;
+extern "C" const void* Resolve_window_block_c64_output_view_fp8();
 #endif
 
 // -----------------------------------------------------------------------------
@@ -965,7 +1010,9 @@ static_assert(offsetof(FWindowBlockC128DownsampleFp16Parameters, DownsampledWidt
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c128_downsample_fp16(FWindowBlockC128DownsampleFp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c128_downsample_fp16 = FWindowBlockC128DownsampleFp16Parameters;
+extern "C" const void* Resolve_window_block_c128_downsample_fp16();
 #endif
 
 struct alignas(8) FWindowBlockC128DownsampleFp8Parameters
@@ -995,7 +1042,9 @@ static_assert(offsetof(FWindowBlockC128DownsampleFp8Parameters, DownsampledWidth
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c128_downsample_fp8(FWindowBlockC128DownsampleFp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c128_downsample_fp8 = FWindowBlockC128DownsampleFp8Parameters;
+extern "C" const void* Resolve_window_block_c128_downsample_fp8();
 #endif
 
 struct alignas(8) FWindowBlockC256DownsampleFp16Parameters
@@ -1025,7 +1074,9 @@ static_assert(offsetof(FWindowBlockC256DownsampleFp16Parameters, DownsampledWidt
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c256_downsample_fp16(FWindowBlockC256DownsampleFp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c256_downsample_fp16 = FWindowBlockC256DownsampleFp16Parameters;
+extern "C" const void* Resolve_window_block_c256_downsample_fp16();
 #endif
 
 struct alignas(8) FWindowBlockC256DownsampleFp8Parameters
@@ -1055,7 +1106,9 @@ static_assert(offsetof(FWindowBlockC256DownsampleFp8Parameters, DownsampledWidth
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c256_downsample_fp8(FWindowBlockC256DownsampleFp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c256_downsample_fp8 = FWindowBlockC256DownsampleFp8Parameters;
+extern "C" const void* Resolve_window_block_c256_downsample_fp8();
 #endif
 
 // Native C32 transition dimensions are pixels. Unused native slots retain padding fields.
@@ -1277,7 +1330,9 @@ static_assert(offsetof(FWindowBlockC128UpsampleFp16Parameters, ReservedTailPaddi
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c128_upsample_fp16(FWindowBlockC128UpsampleFp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c128_upsample_fp16 = FWindowBlockC128UpsampleFp16Parameters;
+extern "C" const void* Resolve_window_block_c128_upsample_fp16();
 #endif
 
 struct alignas(8) FWindowBlockC128UpsampleFp8Parameters
@@ -1303,7 +1358,9 @@ static_assert(offsetof(FWindowBlockC128UpsampleFp8Parameters, ReservedTailPaddin
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c128_upsample_fp8(FWindowBlockC128UpsampleFp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c128_upsample_fp8 = FWindowBlockC128UpsampleFp8Parameters;
+extern "C" const void* Resolve_window_block_c128_upsample_fp8();
 #endif
 
 struct alignas(8) FWindowBlockC256UpsampleFp16Parameters
@@ -1329,7 +1386,9 @@ static_assert(offsetof(FWindowBlockC256UpsampleFp16Parameters, ReservedTailPaddi
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c256_upsample_fp16(FWindowBlockC256UpsampleFp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c256_upsample_fp16 = FWindowBlockC256UpsampleFp16Parameters;
+extern "C" const void* Resolve_window_block_c256_upsample_fp16();
 #endif
 
 struct alignas(8) FWindowBlockC256UpsampleFp8Parameters
@@ -1355,7 +1414,9 @@ static_assert(offsetof(FWindowBlockC256UpsampleFp8Parameters, ReservedTailPaddin
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_block_c256_upsample_fp8(FWindowBlockC256UpsampleFp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_block_c256_upsample_fp8 = FWindowBlockC256UpsampleFp8Parameters;
+extern "C" const void* Resolve_window_block_c256_upsample_fp8();
 #endif
 
 // Native C32 transition dimensions are pixels. Unused native slots retain padding fields.
@@ -1595,7 +1656,9 @@ static_assert(offsetof(FGlobalProjectionC1024Fp8Parameters, TokensPerBatch) == 6
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void global_projection_c1024_fp8(FGlobalProjectionC1024Fp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_global_projection_c1024_fp8 = FGlobalProjectionC1024Fp8Parameters;
+extern "C" const void* Resolve_global_projection_c1024_fp8();
 #endif
 
 struct alignas(8) FGlobalQkvC1024Fp16Parameters
@@ -1673,8 +1736,9 @@ static_assert(offsetof(FWindowAttentionProjectionC512Fp16Parameters, ReservedTai
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void
-window_attention_projection_c512_fp16(FWindowAttentionProjectionC512Fp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_attention_projection_c512_fp16 = FWindowAttentionProjectionC512Fp16Parameters;
+extern "C" const void* Resolve_window_attention_projection_c512_fp16();
 #endif
 
 struct alignas(8) FWindowAttentionProjectionC512Fp8Parameters
@@ -1698,7 +1762,9 @@ static_assert(offsetof(FWindowAttentionProjectionC512Fp8Parameters, ReservedTail
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_attention_projection_c512_fp8(FWindowAttentionProjectionC512Fp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_attention_projection_c512_fp8 = FWindowAttentionProjectionC512Fp8Parameters;
+extern "C" const void* Resolve_window_attention_projection_c512_fp8();
 #endif
 
 // Tensor roles follow the loads, residual merge, and publication in the shared algorithm.
@@ -1864,7 +1930,9 @@ static_assert(offsetof(FGlobalFfnContractC1024Fp8Parameters, TokensPerBatch) == 
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void global_ffn_contract_c1024_fp8(FGlobalFfnContractC1024Fp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_global_ffn_contract_c1024_fp8 = FGlobalFfnContractC1024Fp8Parameters;
+extern "C" const void* Resolve_global_ffn_contract_c1024_fp8();
 #endif
 
 struct alignas(8) FGlobalFfnExpandC1024Fp16Parameters
@@ -2040,7 +2108,9 @@ static_assert(offsetof(FWindowFfnProjectionC512Fp16Parameters, ReservedTailPaddi
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_ffn_projection_c512_fp16(FWindowFfnProjectionC512Fp16Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_ffn_projection_c512_fp16 = FWindowFfnProjectionC512Fp16Parameters;
+extern "C" const void* Resolve_window_ffn_projection_c512_fp16();
 #endif
 
 struct alignas(8) FWindowFfnProjectionC512Fp8Parameters
@@ -2064,7 +2134,9 @@ static_assert(offsetof(FWindowFfnProjectionC512Fp8Parameters, ReservedTailPaddin
 
 #if !defined(__CUDACC__)
 // NVCC provides this entry's host stub; device definitions retain their attributes.
-extern "C" void window_ffn_projection_c512_fp8(FWindowFfnProjectionC512Fp8Parameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_window_ffn_projection_c512_fp8 = FWindowFfnProjectionC512Fp8Parameters;
+extern "C" const void* Resolve_window_ffn_projection_c512_fp8();
 #endif
 
 struct alignas(8) FWindowFfnProjectionInputViewC512Fp16Parameters
@@ -2387,19 +2459,27 @@ static_assert(offsetof(FCompletionCounterParameters, ReservedPadding) == 12);
 // Same-stream ordering and disjoint repack buffers are caller obligations.
 
 #if !defined(__CUDACC__)
-extern "C" void repack_2d_to_1d_c1024_fp8(FGlobalRepackParameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_repack_2d_to_1d_c1024_fp8 = FGlobalRepackParameters;
+extern "C" const void* Resolve_repack_2d_to_1d_c1024_fp8();
 #endif
 
 #if !defined(__CUDACC__)
-extern "C" void repack_1d_to_2d_c1024_fp8(FGlobalRepackParameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_repack_1d_to_2d_c1024_fp8 = FGlobalRepackParameters;
+extern "C" const void* Resolve_repack_1d_to_2d_c1024_fp8();
 #endif
 
 #if !defined(__CUDACC__)
-extern "C" void repack_2d_to_1d_c1024_fp16(FGlobalRepackParameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_repack_2d_to_1d_c1024_fp16 = FGlobalRepackParameters;
+extern "C" const void* Resolve_repack_2d_to_1d_c1024_fp16();
 #endif
 
 #if !defined(__CUDACC__)
-extern "C" void repack_1d_to_2d_c1024_fp16(FGlobalRepackParameters Parameters);
+// The resolver returns the registered host stub for this exact specialization.
+using FKernelParameters_repack_1d_to_2d_c1024_fp16 = FGlobalRepackParameters;
+extern "C" const void* Resolve_repack_1d_to_2d_c1024_fp16();
 #endif
 
 #if !defined(__CUDACC__)

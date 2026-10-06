@@ -1,11 +1,11 @@
-// The exported entry owns its storage, pipeline, computation and publication.
-// Shared headers contain only profiles, layout maps and reused tensor primitives.
-#include "../common/kernel_helpers.cuh"
-#include "../common/global_repack_layout.cuh"
+// The complete global template retains each native schedule and register limit.
+// Only supported profiles are emitted; host launch selection remains in kernel_launcher.
+#include "kernel_helpers.cuh"
+#include "global_repack_layout.cuh"
 
-extern "C" __global__ void repack_2d_to_1d_c1024_fp16(FGlobalRepackParameters Parameters)
+template <bool bFp8>
+__global__ void repack_spatial_to_token(FGlobalRepackParameters Parameters)
 {
-	constexpr bool bFp8 = false;
 	constexpr bool bToTokenLayout = true;
 	constexpr uint32_t CONST_WORDS_PER_TOKEN = bFp8 ? 256u : 512u;
 	constexpr uint32_t CONST_TOKEN_ALIGNMENT = bFp8 ? 32u : 16u;
@@ -39,4 +39,16 @@ extern "C" __global__ void repack_2d_to_1d_c1024_fp16(FGlobalRepackParameters Pa
 			g_Output[g_TokenWord] = r_CopiedWord;
 		}
 	}
+}
+
+// Host address resolver keeps the registered repack_2d_to_1d_c1024_fp8 specialization in this translation unit.
+extern "C" const void* Resolve_repack_2d_to_1d_c1024_fp8()
+{
+	return reinterpret_cast<const void*>(repack_spatial_to_token<true>);
+}
+
+// Host address resolver keeps the registered repack_2d_to_1d_c1024_fp16 specialization in this translation unit.
+extern "C" const void* Resolve_repack_2d_to_1d_c1024_fp16()
+{
+	return reinterpret_cast<const void*>(repack_spatial_to_token<false>);
 }

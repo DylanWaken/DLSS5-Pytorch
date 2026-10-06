@@ -1,14 +1,13 @@
-// Reconstructed native window_block_c256_downsample_fp16 schedule.
-// The exported entry owns its storage, tensor stages and final publication.
+// Compile-time window schedule; each specialization retains its native launch profile.
+// Storage, tensor stages, layout reads and final publication remain in this global body.
 #include "../common/kernel_helpers.cuh"
 #include "../common/window_downsample.cuh"
 
-extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
-	FWindowBlockC256DownsampleFp16Parameters Parameters)
+template <int Channels, typename FParameters>
+__global__ __maxnreg__(168) void window_block_wide_downsample_fp8(FParameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
-	constexpr bool bFp8 = false;
-	constexpr int Channels = 256;
+	constexpr bool bFp8 = true;
 	const FWindowDownsampleArguments Arguments{Parameters.g_Input,
 											   Parameters.g_Output,
 											   Parameters.g_PackedWeights,
@@ -28,7 +27,7 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 			using FConfig = FWideWindowProfile<Channels, bFp8>;
 			const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(Arguments.g_PackedWeights);
 
-			// FFN: private C64 tiles, or cross-warp expert panels for C128/C256.
+			// FFN: compute per-warp experts, then mix their shared channel panels.
 			const int Warp = threadIdx.y;
 			{
 				#pragma unroll
@@ -129,10 +128,8 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 						TransposeM8n8(r_Projected[2][r_Tile].r_Pair[r_Column][0]);
 					const uint32_t r_UpperValueRows =
 						TransposeM8n8(r_Projected[2][r_Tile].r_Pair[r_Column][1]);
-					{
-						r_Value[r_Tile].r_Column[r_Column][0] = r_LowerValueRows;
-						r_Value[r_Tile].r_Column[r_Column][1] = r_UpperValueRows;
-					}
+					r_Value[r_Tile].r_Column[r_Column][0] =
+						PackHalfPairsE4(r_LowerValueRows, r_UpperValueRows);
 				}
 			}
 			__syncthreads();
@@ -325,4 +322,18 @@ extern "C" __global__ __maxnreg__(192) void window_block_c256_downsample_fp16(
 		}
 	}
 #endif
+}
+
+// Host dispatch resolves the 128-channel specialization.
+extern "C" const void* Resolve_window_block_c128_downsample_fp8()
+{
+	return reinterpret_cast<const void*>(
+		window_block_wide_downsample_fp8<128, FWindowBlockC128DownsampleFp8Parameters>);
+}
+
+// Host dispatch resolves the 256-channel specialization.
+extern "C" const void* Resolve_window_block_c256_downsample_fp8()
+{
+	return reinterpret_cast<const void*>(
+		window_block_wide_downsample_fp8<256, FWindowBlockC256DownsampleFp8Parameters>);
 }

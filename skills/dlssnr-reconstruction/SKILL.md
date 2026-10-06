@@ -7,44 +7,44 @@ description: Reconstruct, integrate, qualify and document this repository's DLSS
 
 ## Current source-ownership rule
 
-The latest user requirement supersedes the older canonical-body/ABI-adapter
-layout described in historical notes below. Every exported kernel has a named
-`csrc/kernel_impl/<fp8|fp16|common>/<exact_export_name>.cu` file, with the actual `extern "C"
-__global__` function owning storage, staging, loops, synchronization and
-writebacks. Do not restore a one-line export that forwards the whole operation
-to `Run*`, a macro, an include fragment or a whole-body lambda.
+The latest user template request supersedes both the earlier one-file-per-logical
+export rule and the older canonical-body/ABI-adapter design. Current source has
+81 logical kernels in 56 CUDA units: 40 configurations share 15 true global
+templates, and 41 retain direct definitions. Each authored `__global__` body
+must show storage, staging, loops, synchronization and writes. Do not restore a
+device wrapper forwarding the algorithm to `Run*`, a macro or an include fragment.
 
-Keep a helper used only by one entry in that entry's file. Shared headers are
-for substantial repeated arithmetic/layout logic, real profile/storage types
-and intrinsics. Local lambdas may share small repeated pipeline steps while
-remaining visible inside the global body. The typed ABI is now
-`kernel_impl/common/kernel_abi.h`; `kernel_launcher` is host-only. The fragment
-interface is `MMA(...)`, renamed from `MultiplyAccumulate`.
+Use `csrc/kernel_impl/common/kernel_templates.json` to find template source and
+arguments. Preserve the compact C32, two-warp C64 and wide C128/C256 schedules,
+per-specialization register caps, layouts and native arithmetic order. Keep
+FP8/FP16 files where schedules differ; shared repacks live in `common/`. C32
+output-view direct bodies remain separate until changed template code is qualified.
 
-Indent each `#pragma unroll` with its loop and separate major stages with short
-explanatory comments and blank lines. After clang-format, run
-`python -B tools/format_cuda.py`; use `--check` to verify the CUDA layout.
+`kernel_abi.h` owns typed records, checked aliases and host resolver declarations.
+Small same-TU `Resolve_<logical>()` functions return registered specialization
+addresses; launch and policy work stay in host-only `kernel_launcher`. Direct
+globals retain C symbols; template globals have mangled C++ symbols. Stable
+logical names remain the public API. `kernel_symbols` and additive C++
+`KernelSymbol` / Torch `kernel_symbol` expose runtime symbols for Driver tools.
 
-Read [the kernel reading guide](../../docs/KERNEL_READING_GUIDE.md) and
-[the source layout](../../docs/SOURCE_LAYOUT.md) for concrete entry filenames.
-The current [source audit](../../docs/global_entry_audit.json) records 81 CUDA
-compilation units and 25 shared headers. The
-[validation receipt](../../docs/global_entry_validation.json) pins the built
-candidate `aa207d37…`: 50/81 GPU instruction payloads, 72/81 decoded resource
-records and all 81 entry constant sections match the preceding build. Fresh
-native boundary/replay checks and
-[paired measurements](../../docs/figures/global_entry_deployment_measurements.json)
-qualify all eight FP8/FP16 graph cases at 720p, 1080p, 2K/1440p and 4K within
-the 1% latency gate in each execution order. Scope remains the SM120 batch-one
-prepared-feature trunk, blocks 1–69. The receipt separately records 70 CPU
-checks per Python mode, 18 tensor-facing native frontend fixtures, 36 C32
-output-view cases per precision and 24 C512 dispatcher cases.
+Keep one-use helpers with their owner; share only real repeated math/layout
+contracts and intrinsics. Small local lambdas may share repeated pipeline steps
+while their definitions remain visible in the global body. The fragment
+interface is `MMA`. Indent each `#pragma unroll` with its loop and separate major
+stages with comments and blank lines. After clang-format, run
+`python -B tools/format_cuda.py`, then its `--check` mode.
 
-For the current build, read `docs/RECONSTRUCTION_STATUS.md` and the portable
-receipts above. The previous `kernel_locality_validation.json` qualifies the
-earlier canonical-function layout. Naming, flat-symbol and dated UEv2 records
-below remain historical; preserve their original source, binary and timing
-identities rather than carrying results forward from source inspection alone.
+Read [the reading guide](../../docs/KERNEL_READING_GUIDE.md),
+[source layout](../../docs/SOURCE_LAYOUT.md) and
+[integration validation](../../docs/template_integration_validation.json) for
+current ownership and completed qualification. Isolated
+[template feasibility](../../docs/KERNEL_TEMPLATE_FEASIBILITY.md) results do not
+qualify the integrated extension. The preceding
+[81-file validation](../../docs/global_entry_validation.json), directory/naming/
+flat-symbol records and dated UEv2 notes below remain historical. Preserve their
+original identities; do not transfer latency claims by source inspection alone.
+
+## Historical UEv2 snapshot
 
 Read `docs/RECONSTRUCTION_STATUS.md` and the exact run receipts before acting. Reconciled snapshot: 2026-10-05. The latest qualified **UEv2 normal 81-entry source build**, binary `88b7a94a…`, passes the fixed SM120, batch-one, prepared-feature FP8 trunk at 720p, 1080p, 1440p and 2160p. Its final 4K paired result is **6.496523 ms versus 6.452048 ms original**, ratio **1.006893098**: approximately **0.689% slower**. Both execution-order medians meet the user's accepted **within-1%** slowdown limit; the other three measured resolutions are faster than the original. Further performance optimization stopped at the user's criterion. Installation is a separate root-owned receipt, not inferred from qualification.
 
@@ -160,7 +160,7 @@ The postmortem should explain observed fusion/layout work, representation overhe
 
 The historical UE naming specification is preserved in `outputs/all-reconstructed-deployment-prep/readability-ue-v2/CODE_READABILITY.md`. Current code follows `docs/CODE_READABILITY.md` and `docs/STORAGE_PREFIX_AUDIT.md`: meaningful CapitalCamelCase internals, `r_` for tensor/arithmetic register payload and fragment selectors, `s_` for physical shared-memory roles, and `g_` for proven global pointers/indices. Ordinary control flags use plain `b` names. Reserve `sl_` for logical pre-swizzle coordinates with actual def-use evidence; no such coverage is claimed merely by adding a prefix. Keep unresolved roles explicit rather than inventing tensor semantics. Preserve original PTX anchors and exact identifier inverses.
 
-The historical UE naming pass kept CUDA namespaces and `Parameters`/`ClearParameters` type identities because they participated in C++ symbol mangling. That restriction applies when reproducing its archived binaries, not to the current source: the later complete flat-symbol migration uses bare `extern "C"` exports and descriptive global `F` types. Keep pointer-field/member/offsetof spellings aligned while retaining field order, sizes, alignment and reserved slots. Public Python/Torch names remain stable. Shared intrinsics retain literal ISA, operand constraints and clobbers; source rename equivalence does not imply instruction identity after compilation.
+The historical UE naming pass kept CUDA namespaces and `Parameters`/`ClearParameters` type identities because they participated in C++ symbol mangling. That restriction applies when reproducing its archived binaries. The later flat-symbol migration introduced bare C exports and descriptive global `F` types; current template integration retains those logical names but uses mapped C++ template symbols and C-linkage host resolvers where necessary. Keep pointer-field/member/offsetof spellings aligned while retaining field order, sizes, alignment and reserved slots. Public Python/Torch names remain stable. Shared intrinsics retain literal ISA, operand constraints and clobbers; source rename equivalence does not imply instruction identity after compilation.
 
 ## Training memory is a separate measurement
 
@@ -288,18 +288,19 @@ shared helpers and types enough operation context to be unique: global
 `EC512KernelRole` are examples. Avoid replacing namespace hierarchy with an
 equally long mechanical prefix on every local value.
 
-All 81 CUDA entry points use bare `extern "C"` symbols. Retain their established
-precision suffixes and native parameter layout; global ABI types have descriptive
-`F` names and may share a record only when its layout and meaning are identical.
+All 81 logical entry names retain their established precision suffixes and
+native parameter layout. Direct globals use C linkage; full-body global
+templates use mapped C++ symbols with C-linkage host resolvers. Global ABI types
+have descriptive `F` names and may share records only when layout and meaning agree.
 Keep generated FP8/FP16 tables distinct with precision suffixes. Update the ABI
 header, generators, canonical entry map, host launchers and direct Driver tests
 together when changing a symbol contract. External `std::`, `at::` and `c10::`
 qualifications remain, and `TORCH_LIBRARY(dlssnr, ...)` still owns the public
 Torch domain; it does not declare a project C++ namespace.
 
-The source inventory rejects namespaces and requires explicit C linkage. An
-archived namespaced source is readable only through the explicit historical
-migration option, not a silent fallback in the active audit. Compare the compiled
+The source inventory rejects namespaces and checks direct C entries separately
+from explicitly mapped global templates and resolvers. Archived source requires
+an explicit historical audit path, never a silent active fallback. Compare the compiled
 entry roster, instruction payloads and launch records after rebuilding; exercise
 full graphs and separately exposed host dispatch. See [the migration validation](../../docs/FLAT_SYMBOLS.md).
 Preserve original source/binary identities in existing optimization receipts and
@@ -328,9 +329,10 @@ rebuild and inspect compiled code before carrying forward performance evidence.
 
 ## Keep the schedule inside the actual global entry
 
-Use `docs/KERNEL_READING_GUIDE.md` to find the exact named `.cu` file. Its
-`extern "C" __global__` function must expose ownership, register/shared storage,
-pipeline prefill, main loops, synchronization/recycling and final writebacks.
+Use `docs/KERNEL_READING_GUIDE.md` and the template manifest to find the owning
+`.cu` file. Its actual `__global__` definition, direct or templated, must expose
+ownership, register/shared storage, pipeline prefill, loops, synchronization/
+recycling and final writebacks.
 Include fused sampling or frontend flow in that same body. Do not reintroduce
 an exported ABI adapter around a shared whole-kernel implementation.
 

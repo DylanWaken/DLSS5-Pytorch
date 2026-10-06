@@ -1,14 +1,13 @@
-// The exported entry owns its storage, pipeline, computation and publication.
-// Shared headers contain only profiles, layout maps and reused tensor primitives.
+// The complete global template retains each native schedule and register limit.
+// Only supported profiles are emitted; host launch selection remains in kernel_launcher.
 #include "../common/kernel_helpers.cuh"
 #include "../common/spatial_projection.cuh"
 
-extern "C" __global__ __maxnreg__(168) void window_attention_projection_c512_fp16(
-	FWindowAttentionProjectionC512Fp16Parameters Parameters)
+template <int SpatialTiles, typename FParameters>
+__global__ __maxnreg__((SpatialTiles == 2 ? 168 : 128)) void spatial_projection_fp16(FParameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
 	constexpr bool bFp8 = false;
-	constexpr int SpatialTiles = 2;
 	constexpr bool bInputPlane = false;
 	constexpr bool bOutputPlane = false;
 	constexpr int StageCount = 3;
@@ -203,4 +202,16 @@ extern "C" __global__ __maxnreg__(168) void window_attention_projection_c512_fp1
 	{
 	}
 #endif
+}
+
+// Host address resolver keeps the registered window_attention_projection_c512_fp16 specialization in this translation unit.
+extern "C" const void* Resolve_window_attention_projection_c512_fp16()
+{
+	return reinterpret_cast<const void*>(spatial_projection_fp16<2, FWindowAttentionProjectionC512Fp16Parameters>);
+}
+
+// Host address resolver keeps the registered window_ffn_projection_c512_fp16 specialization in this translation unit.
+extern "C" const void* Resolve_window_ffn_projection_c512_fp16()
+{
+	return reinterpret_cast<const void*>(spatial_projection_fp16<4, FWindowFfnProjectionC512Fp16Parameters>);
 }

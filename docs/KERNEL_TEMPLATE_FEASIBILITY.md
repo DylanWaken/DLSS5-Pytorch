@@ -1,5 +1,11 @@
 # Kernel template feasibility
 
+**Historical study:** the proposed production consolidation has now been
+implemented. The current tree has 56 full global bodies with all 81 logical
+launch names; see the [source layout](SOURCE_LAYOUT.md) and
+[integrated validation](template_integration_validation.json). Statements below
+about unchanged production sources describe the earlier feasibility stage.
+
 The repeated channel configurations can share **true CUDA global templates**
 while keeping their specialized GPU schedules. This investigation builds isolated
 prototypes; the production source files and installed extension are unchanged.
