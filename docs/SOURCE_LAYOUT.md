@@ -13,6 +13,11 @@ entries and one completion-counter clear**. The first 80 form 40 FP8/FP16 pairs.
 These are exported configurations, not 81 unrelated algorithms or 81 network
 positions. Repeated graph positions can launch the same entry.
 
+The [template feasibility audit](KERNEL_TEMPLATE_FEASIBILITY.md) identifies
+40 configurations that can share 15 full-body global templates while preserving
+their GPU instructions. It records isolated prototypes and runtime comparisons;
+the per-entry production layout described here remains unchanged.
+
 The [directory-migration audit](precision_layout_audit.json) records the move of
 107 files into `fp8`, `fp16` and `common`. The reorganized build preserves all
 81 GPU instruction payloads, constants and decoded resource rows from the
