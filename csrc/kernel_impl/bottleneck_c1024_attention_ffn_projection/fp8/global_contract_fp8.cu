@@ -9,6 +9,10 @@ __global__ __maxnreg__(168) void global_contract_fp8(FParameters Parameters)
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 890
 	constexpr bool bFp8 = true;
 	using Profile = FGlobalContractProfile<bFp8, bAttentionProjection>;
+#if __CUDA_ARCH__ < 900
+	static_assert(Profile::s_InitialStages == 1 && Profile::s_StageCount == 2,
+				  "Early prefetch requires one initial stage and two alternating slots");
+#endif
 	__shared__ __align__(512) unsigned char s_Storage[Profile::s_BarrierOffset + Profile::s_StageCount * 8];
 	const int g_Tokens = Parameters.BatchCount * Parameters.TokensPerBatch;
 	const int g_TokenTiles = (g_Tokens + 127) / 128;
@@ -178,10 +182,18 @@ __global__ __maxnreg__(168) void global_contract_fp8(FParameters Parameters)
 	for (int ReductionTile = 0;
 		 ReductionTile < Profile::ReductionTiles - (Profile::s_InitialStages == 1 ? 1 : 0); ++ReductionTile)
 	{
+#if __CUDA_ARCH__ < 900
+		// WaitStage(i) completed every thread's arrival after Consume(i-1),
+		// releasing that old slot. Prefetch i+1 into it while i's MMA runs in
+		// the other slot; the weight registers still hold i until consumption.
+		StageInput(ReductionTile + 1);
+#endif
 		ConsumeGlobalContractInputStage<Profile>(r_Accumulator, r_Weights, s_Storage, ReductionTile,
 												 TileCoordinates);
 		{
+#if __CUDA_ARCH__ >= 900
 			StageInput(ReductionTile + 1);
+#endif
 			LoadWeights(ReductionTile + 1);
 			WaitStage(ReductionTile + 1);
 		}
@@ -224,13 +236,12 @@ __global__ __maxnreg__(168) void global_contract_fp8(FParameters Parameters)
 										make_uint4(r_AccumulatorWords[0], r_AccumulatorWords[1],
 												   r_AccumulatorWords[2], r_AccumulatorWords[3]));
 					else if (bIntermediateSplit)
-						ReduceHalf4(g_PartialSumAddress,
-									make_uint4(r_AccumulatorWords[0], r_AccumulatorWords[1],
-											   r_AccumulatorWords[2], r_AccumulatorWords[3]));
+						AccumulateExclusiveHalf4(g_PartialSumAddress,
+												 make_uint4(r_AccumulatorWords[0], r_AccumulatorWords[1],
+															r_AccumulatorWords[2], r_AccumulatorWords[3]));
 					else
 					{
-						const uint4 r_PreviousSplitWords =
-							__ldca(reinterpret_cast<const uint4*>(g_PartialSumAddress));
+						const uint4 r_PreviousSplitWords = LoadSplitAccumulatorHalf4(g_PartialSumAddress);
 						r_AccumulatorWords[0] = HalfAdd(r_PreviousSplitWords.x, r_AccumulatorWords[0]);
 						r_AccumulatorWords[1] = HalfAdd(r_PreviousSplitWords.y, r_AccumulatorWords[1]);
 						r_AccumulatorWords[2] = HalfAdd(r_PreviousSplitWords.z, r_AccumulatorWords[2]);
@@ -277,8 +288,15 @@ __global__ __maxnreg__(168) void global_contract_fp8(FParameters Parameters)
 	if (Parameters.OrderedSplit == 0 && TileCoordinates.Split > 0)
 	{
 		if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
+		{
 			while (int32_t(CounterLoadRelaxed(g_SplitCounters)) < TileCoordinates.Split - 1)
 				PollSleep(64);
+#if __CUDA_ARCH__ < 900
+			// Acquire the completed split before any lane reads its Half scratch.
+			AcquireSplitPublication();
+#endif
+		}
+
 		__syncthreads();
 	}
 

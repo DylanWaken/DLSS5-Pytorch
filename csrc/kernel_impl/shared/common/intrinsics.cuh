@@ -57,6 +57,14 @@ __device__ __forceinline__ uint32_t CounterLoadRelaxed(uint64_t g_CounterAddress
 	return r_CounterBits;
 }
 
+// Complete the acquire pattern after observing a predecessor's release counter.
+// The caller's following CTA barrier carries that visibility to every consumer.
+// Issue once after the polling loop, not on every unsuccessful counter read.
+__device__ __forceinline__ void AcquireSplitPublication()
+{
+	asm volatile("fence.acq_rel.gpu;" : : : "memory");
+}
+
 // Publish a GPU-scope release counter without allocating an L1 line.
 __device__ __forceinline__ void CounterStoreRelease(uint64_t g_CounterAddress, uint32_t r_CounterBits)
 {

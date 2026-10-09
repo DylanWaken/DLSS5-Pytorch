@@ -55,6 +55,33 @@ __device__ __forceinline__ uint32_t HalfAdd(uint32_t r_LhsBits, uint32_t r_RhsBi
 	return PairBits(__hadd2(HalfPair(r_LhsBits), HalfPair(r_RhsBits)));
 }
 
+// Split scratch is published by another CTA. The portable exclusive-update
+// path reads through L2 so a previous phase's L1 line cannot supply stale data.
+__device__ __forceinline__ uint4 LoadSplitAccumulatorHalf4(uint64_t g_GlobalAddress)
+{
+#if __CUDA_ARCH__ < 900
+	return __ldcg(reinterpret_cast<const uint4*>(g_GlobalAddress));
+#else
+	return __ldca(reinterpret_cast<const uint4*>(g_GlobalAddress));
+#endif
+}
+
+// Only use after the predecessor split has completed: each address must belong
+// to exactly one lane in the current split. Keep one Half rounding per split.
+// SM90+ retains the native vector atomic; older GPUs avoid four scalar atomics.
+__device__ __forceinline__ void AccumulateExclusiveHalf4(uint64_t g_GlobalAddress, uint4 r_PackedHalfWords)
+{
+#if __CUDA_ARCH__ < 900
+	const uint4 r_PreviousWords = __ldcg(reinterpret_cast<const uint4*>(g_GlobalAddress));
+	const uint4 r_UpdatedWords = make_uint4(
+		HalfAdd(r_PreviousWords.x, r_PackedHalfWords.x), HalfAdd(r_PreviousWords.y, r_PackedHalfWords.y),
+		HalfAdd(r_PreviousWords.z, r_PackedHalfWords.z), HalfAdd(r_PreviousWords.w, r_PackedHalfWords.w));
+	StoreNoAllocate(g_GlobalAddress, r_UpdatedWords);
+#else
+	ReduceHalf4(g_GlobalAddress, r_PackedHalfWords);
+#endif
+}
+
 // Multiply corresponding packed Half lanes; do not introduce a wider intermediate.
 __device__ __forceinline__ uint32_t HalfMul(uint32_t r_LhsBits, uint32_t r_RhsBits)
 {

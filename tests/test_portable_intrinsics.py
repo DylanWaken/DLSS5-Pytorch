@@ -31,6 +31,8 @@ class PortableModule:
             "cuModuleLoadData": [C.POINTER(pointer), pointer],
             "cuModuleGetFunction": [C.POINTER(pointer), pointer, C.c_char_p],
             "cuFuncGetAttribute": [C.POINTER(C.c_int), C.c_int, pointer],
+            "cuOccupancyMaxActiveBlocksPerMultiprocessor": [C.POINTER(C.c_int), pointer,
+                                                           C.c_int, C.c_size_t],
             "cuModuleUnload": [pointer],
             "cuLaunchKernel": [pointer, *([C.c_uint] * 7), pointer,
                                C.POINTER(pointer), C.POINTER(pointer)],
@@ -44,7 +46,9 @@ class PortableModule:
         self.functions = {}
         self.attributes = {}
         try:
-            for name in ("ProbeCopies", "ProbeCopyRing", "ProbeHalfReduction"):
+            for name in ("ProbeCopies", "ProbeCopyRing", "ProbePrefetchCopies", "ProbeHalfReduction",
+                         "ProbeExclusiveHalfReduction", "ProbeAtomicSplitHandoff",
+                         "ProbeExclusiveSplitHandoff"):
                 function = pointer()
                 self.call("cuModuleGetFunction", C.byref(function), self.module, name.encode("ascii"))
                 self.functions[name] = function
@@ -65,16 +69,125 @@ class PortableModule:
             self.driver.cuGetErrorString(code, C.byref(description))
             raise RuntimeError(f"{name}: CUDA {code}: {(description.value or b'unknown').decode()}")
 
-    def launch(self, name, source, destination, threads=128):
-        arguments = [C.c_uint64(source.data_ptr()), C.c_uint64(destination.data_ptr())]
-        pointers = (C.c_void_p * 2)(*(C.addressof(argument) for argument in arguments))
-        self.call("cuLaunchKernel", self.functions[name], 1, 1, 1, threads, 1, 1, 0,
+    def launch(self, name, source, destination, threads=128, grid=(1, 1, 1), extra=(), scalars=()):
+        arguments = [C.c_uint64(tensor.data_ptr()) for tensor in (source, destination, *extra)]
+        arguments.extend(C.c_int(value) for value in scalars)
+        pointers = (C.c_void_p * len(arguments))(*(C.addressof(argument) for argument in arguments))
+        self.call("cuLaunchKernel", self.functions[name], *grid, threads, 1, 1, 0,
                   self.stream, pointers, None)
+
+    def active_blocks_per_sm(self, name, threads):
+        result = C.c_int()
+        self.call("cuOccupancyMaxActiveBlocksPerMultiprocessor", C.byref(result),
+                  self.functions[name], threads, 0)
+        return result.value
 
     def close(self):
         if self.module:
             self.call("cuModuleUnload", self.module)
             self.module = C.c_void_p()
+
+
+def guarded_buffer(torch, byte_count, guard_bytes=32):
+    owner = torch.full((byte_count + guard_bytes * 2,), 0xB9, device="cuda", dtype=torch.uint8)
+    return owner, owner[guard_bytes:-guard_bytes]
+
+
+def check_guards(torch, owners, guard_bytes=32):
+    for name, owner in owners.items():
+        if not (bool(torch.all(owner[:guard_bytes] == 0xB9))
+                and bool(torch.all(owner[-guard_bytes:] == 0xB9))):
+            raise AssertionError(f"Exclusive-reduction test changed the {name} guard")
+
+
+def check_exclusive_arithmetic(torch, module):
+    """Compare against actual atomics, including every Half encoding and NaN payload."""
+    # Cross every 16-bit Half pattern with representative zeros, subnormals,
+    # normals, infinities and several quiet/signaling NaNs, in both operand orders.
+    edge_bits = (0x0000, 0x8000, 0x0001, 0x8001, 0x03FF, 0x0400, 0x3C00, 0xBC00,
+                 0x7BFF, 0xFBFF, 0x7C00, 0xFC00, 0x7E00, 0x7FFF, 0x7C01, 0xFC01)
+    all_encodings = torch.arange(65536, device="cuda", dtype=torch.int32)
+    left = all_encodings.repeat_interleave(len(edge_bits)).to(torch.uint16).view(torch.uint8)
+    right = torch.tensor(edge_bits, device="cuda", dtype=torch.int32).repeat(65536)
+    right = right.to(torch.uint16).view(torch.uint8)
+    byte_count = left.numel()
+    vector_count = byte_count // 16
+    if vector_count % 128:
+        raise AssertionError("Arithmetic test vectors must exactly cover their launch grid")
+    owners, views = {}, {}
+    for name in ("input", "atomic", "exclusive"):
+        owners[name], views[name] = guarded_buffer(torch, byte_count)
+
+    for order, (initial, contribution) in enumerate(((left, right), (right, left))):
+        views["input"].copy_(contribution)
+        views["atomic"].copy_(initial)
+        views["exclusive"].copy_(initial)
+        original = owners["input"].clone()
+        module.launch("ProbeHalfReduction", views["input"], views["atomic"],
+                      grid=(vector_count // 128, 1, 1))
+        module.launch("ProbeExclusiveHalfReduction", views["input"], views["exclusive"],
+                      grid=(vector_count // 128, 1, 1))
+        torch.cuda.synchronize()
+        if not torch.equal(views["atomic"], views["exclusive"]):
+            differences = torch.nonzero(views["atomic"] != views["exclusive"]).flatten()
+            raise AssertionError(f"Exclusive Half arithmetic differs from atomic: order {order}, "
+                                 f"first byte {differences[0].item()}, {differences.numel()} bytes")
+        if not torch.equal(owners["input"], original):
+            raise AssertionError("Exclusive Half arithmetic modified its input")
+        check_guards(torch, owners)
+    return dict(half_encodings=65536, edge_operands=[hex(value) for value in edge_bits],
+                operand_orders=2, comparisons=65536 * len(edge_bits) * 2,
+                bytes_equal=True, guards_intact=True, inputs_immutable=True)
+
+
+def check_exclusive_handoff(torch, module, replays):
+    """Exercise ordered split ownership across resident CTAs and reused scratch."""
+    phases, splits, tiles, threads = 8, 4, 2, 128
+    grid = (tiles, 1, splits)
+    sm_count = torch.cuda.get_device_properties(torch.cuda.current_device()).multi_processor_count
+    occupancy = {}
+    for name in ("ProbeAtomicSplitHandoff", "ProbeExclusiveSplitHandoff"):
+        active_blocks = module.active_blocks_per_sm(name, threads)
+        occupancy[name] = active_blocks
+        if active_blocks * sm_count < tiles * splits:
+            raise RuntimeError(f"Refusing a dependent grid that cannot all reside: {name}, "
+                               f"{active_blocks} blocks/SM x {sm_count} SMs")
+    phase_vectors = tiles * threads
+    input_bytes = phases * splits * phase_vectors * 16
+    output_bytes = phases * phase_vectors * 16
+    owners, views = {}, {}
+    owners["input"], views["input"] = guarded_buffer(torch, input_bytes)
+    for route in ("atomic", "exclusive"):
+        for name, size in (("output", output_bytes), ("scratch", phase_vectors * 16),
+                           ("counters", tiles * 4)):
+            key = f"{route}_{name}"
+            owners[key], views[key] = guarded_buffer(torch, size)
+    indices = torch.arange(input_bytes // 2, device="cuda", dtype=torch.int32)
+    for replay in range(replays):
+        # Odd-stride permutations visit every Half encoding. A changed phase
+        # and replay pattern makes stale scratch distinguishable from fresh data.
+        values = ((indices * 23 + replay * 101) % 65536).to(torch.uint16).view(torch.uint8)
+        views["input"].copy_(values)
+        original = owners["input"].clone()
+        for route, kernel in (("atomic", "ProbeAtomicSplitHandoff"),
+                              ("exclusive", "ProbeExclusiveSplitHandoff")):
+            views[f"{route}_output"].fill_(0xA7)
+            views[f"{route}_scratch"].fill_(0xD1)
+            views[f"{route}_counters"].view(torch.int32).fill_(-1)
+            module.launch(kernel, views["input"], views[f"{route}_output"], threads=threads,
+                          grid=grid, extra=(views[f"{route}_scratch"], views[f"{route}_counters"]))
+        torch.cuda.synchronize()
+        for name in ("output", "scratch", "counters"):
+            if not torch.equal(views[f"atomic_{name}"], views[f"exclusive_{name}"]):
+                raise AssertionError(f"Exclusive split {name} differs from atomics, replay {replay}")
+        if not bool(torch.all(views["exclusive_counters"].view(torch.int32) == phases * splits - 1)):
+            raise AssertionError("A split handoff did not publish every phase")
+        if not torch.equal(owners["input"], original):
+            raise AssertionError("Split handoff modified its input")
+        check_guards(torch, owners)
+    return dict(phases=phases, splits=splits, independent_tiles=tiles, grid=list(grid),
+                threads=threads, replays=replays, active_blocks_per_sm=occupancy, sm_count=sm_count,
+                bytes_equal=True, guards_intact=True, inputs_immutable=True)
 
 
 def execute(args):
@@ -124,6 +237,10 @@ def execute(args):
                  copies_per_warp=2, mixed_zero_fill=True),
             dict(kernel="ProbeCopyRing", warps=8, phases=16, copy_bytes=1024,
                  copies_per_warp=2, mixed_zero_fill=True),
+            *(dict(kernel="ProbePrefetchCopies", warps=warps, phases=8, copy_bytes=copy_bytes,
+                   copies_per_warp=2, mixed_zero_fill=True, read_vector_rotation=32,
+                   prefetch_before_read=True, after_read_cta_barrier=False)
+              for warps in (4, 8) for copy_bytes in (512, 1024)),
         )
         report["copy_cases"] = []
         for case in copy_cases:
@@ -146,14 +263,24 @@ def execute(args):
                     warps = torch.arange(case["warps"], device="cuda")[None, :, None]
                     copies = torch.arange(case["copies_per_warp"], device="cuda")[None, None, :]
                     expected_slots[(phases + warps + copies) % 3 == 0] = 0
+                if case.get("read_vector_rotation"):
+                    # Each thread writes its own vector index after reading a
+                    # vector 32 places ahead within the current physical slot.
+                    expected = expected.view(case["phases"], -1, 16).roll(
+                        -case["read_vector_rotation"], dims=1).flatten()
                 destination_owner = torch.full_like(source_owner, 0xB9)
                 destination = destination_owner[guard_bytes:-guard_bytes]
-                module.launch(case["kernel"], source, destination, threads=case["warps"] * 32)
+                scalars = (case["copy_bytes"],) if case["kernel"] == "ProbePrefetchCopies" else ()
+                module.launch(case["kernel"], source, destination, threads=case["warps"] * 32,
+                              scalars=scalars)
                 torch.cuda.synchronize()
-                assert torch.equal(expected, destination), ("copy mismatch", case, replay)
-                assert torch.equal(source_owner, original), ("copy modified input", case, replay)
-                assert bool(torch.all(destination_owner[:guard_bytes] == 0xB9))
-                assert bool(torch.all(destination_owner[-guard_bytes:] == 0xB9))
+                if not torch.equal(expected, destination):
+                    raise AssertionError(("copy mismatch", case, replay))
+                if not torch.equal(source_owner, original):
+                    raise AssertionError(("copy modified input", case, replay))
+                if not (bool(torch.all(destination_owner[:guard_bytes] == 0xB9))
+                        and bool(torch.all(destination_owner[-guard_bytes:] == 0xB9))):
+                    raise AssertionError(("copy changed an output guard", case, replay))
             case_report["pass"] = True
         report["copy_bytes_equal"] = True
 
@@ -179,6 +306,8 @@ def execute(args):
             assert bool(torch.all(destination_owner[:guard_bytes] == 0xB9))
             assert bool(torch.all(destination_owner[-guard_bytes:] == 0xB9))
         report.update(half_reduction_bytes_equal=True, guards_intact=True, inputs_immutable=True)
+        report["exclusive_arithmetic"] = check_exclusive_arithmetic(torch, module)
+        report["exclusive_handoff"] = check_exclusive_handoff(torch, module, args.reduction_replays)
         report["pass"] = True
     except BaseException as error:
         report["error"] = str(error)
