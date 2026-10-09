@@ -99,6 +99,7 @@ MMA flow while selecting these instruction paths at compile time:
 | Global-to-shared bulk copy | Adjacent lanes issue adjacent 16-byte `cp.async` copies; one or two copies per lane for 512/1024-byte tiles | One `cp.async.bulk` for the tile |
 | Copy completion | Each producer attaches its own copies with `cp.async.mbarrier.arrive`; readers use `mbarrier.test_wait` | Transaction-byte tracking and `mbarrier.try_wait` |
 | Four Half2 atomic reductions | Four scalar Half2 reductions | Vector Half2 reduction |
+| Exclusive FP8 bottleneck split accumulation | One vector load, four Half2 additions and one vector store after the predecessor publishes | Original vector Half2 reduction |
 | FP16 tensor product | Native Half `mma.sync` | Same |
 | FP8 tensor product/conversion | Native E4M3 instructions on SM89; rejected below SM89 | Native E4M3 instructions |
 
@@ -115,6 +116,20 @@ not prove the copies finished. `BarrierExpect` is a no-op on SM80/86/89 because
 the fallback tracks arrivals rather than transaction bytes. Readers consume the
 tile only after successful `mbarrier.test_wait`, and the existing pipeline
 protects each shared stage from reuse until its readers finish.
+
+The FP8 bottleneck projection/contraction and FP16 bottleneck projection start
+their next input copy before the current MMA on targets below SM90. They retain
+two shared slots: completing the current stage's collective barrier proves that
+all warps finished reading the previous slot before it is reused. Weight
+registers are replaced only after the current MMA finishes.
+
+The FP8 bottleneck's intermediate split updates have one writer per address
+within a split. After the predecessor's release counter is observed, a GPU
+acquire fence and a CTA barrier publish its scratch values to all readers.
+L2-cached vector loads avoid stale L1 lines; each addition still rounds to Half.
+This removes four scalar atomics below SM90 without changing split order.
+Other reduction sites retain their atomic implementation: applying this change
+to FP16 or the decoder did not improve measured runtime.
 
 Host preparation verifies both the loaded binary and virtual target, block and
 shared-memory limits, and active blocks per SM. This also prevents an SM80 FP8
@@ -152,6 +167,10 @@ alongside the physical GPU. It checks multiple producer warps, a two-stage ring,
 multiple copies per producer, mixed zero-filled tiles, repeated barrier phases,
 Half2 reductions, buffer guards and immutable inputs. `--ptx` remains available
 only for explicit JIT experiments.
+
+The same test also compares exclusive additions with the atomic oracle across
+all 65,536 Half encodings and 16 edge operands in both operand orders, and checks
+resident split publication over repeated scratch reuse.
 
 The extension registers Torch operations rather than a Python module. Public
 deployment calls load it automatically; for an explicit binary, use
@@ -198,9 +217,9 @@ paired ratio against the DLL to reduce clock drift.
 These are steady-state timings of the prepared-feature trunk's 185 logical
 calls; automatic split launches can increase the physical launch count. They
 exclude checkpoint loading, packing, preparation, first-time JIT and renderer
-input/output processing. An older PTX target JIT-compiled on SM120 measures that
-instruction path on SM120, not the speed of an RTX 30/40 GPU. The comparison also
-includes differences between driver JIT and the offline PTX assembler.
+input/output processing. These offline source-path controls measure SM120,
+not the speed of an RTX 30/40 GPU. Only the earlier PTX-JIT experiments also
+mixed differences between the driver JIT and offline PTX assembler.
 
 The **pre-optimization** 2026-10-09 regression sweep on RTX PRO 6000 SM120 covered all four sizes:
 the new native SM120 build stayed within 1% of the pre-portability build, with
@@ -231,6 +250,29 @@ fallback reduces FFN expansion from 131.68 to 58.50 µs and contraction from
 137.12 to 73.82 µs under controlled profiler replay. Those kernel timings
 are diagnostic, not the graph timings above. All 81 native SM120 kernels
 retain identical machine instructions and resource usage after this change.
+
+The follow-up adds earlier bottleneck prefetch and exclusive FP8 split updates.
+A fresh 20-case sweep includes separate compute80 and compute89 source paths,
+both assembled offline to SM120, and native SM120 controls. The table gives
+their **latency difference against native SM120**, normalized through each
+run's paired DLL ratio; positive means slower. These are cross-run comparisons,
+not direct paired A/B timings.
+
+| Resolution | SM80 source, FP16 | SM89 source, FP16 | SM89 source, FP8 |
+|---|---:|---:|---:|
+| 720p | +3.61% | +3.40% | +1.25% |
+| 1080p | +3.08% | +3.29% | +1.50% |
+| 1440p (2K) | +4.04% | +4.24% | +2.09% |
+| 4K | +2.79% | +2.72% | +1.50% |
+
+All 20 cases pass 74 byte-equal boundaries and poisoned/changed-input graph
+replays. Both older source paths produce identical instructions, encodings and
+resources for all 40 FP16 entries on SM120; their small timing differences do
+not represent different FP16 device code. Relative to the DLL itself, the
+SM89-source 4K results are +0.29% for FP16 and -0.24% for FP8, but lower
+resolutions still exceed the 1% goal. Native SM120's 81 kernels remain unchanged.
+These results establish neither parity across all sizes nor physical SM80/SM89
+performance. Forced stream-ordered splits also pass at 4K for both precisions.
 
 ### Profile a warm deployment workload
 
