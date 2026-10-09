@@ -178,6 +178,49 @@ deployment calls load it automatically; for an explicit binary, use
 process when switching binaries. Training alone does not need this extension
 or the CUDA compiler.
 
+### Test speed on your GPU
+
+```powershell
+python test_speed.py
+python test_speed.py --device 0 --per-kernel --output outputs/my-speed-run
+```
+
+The script tests 1280x720, 1920x1080, 2560x1440 (2K), and 3840x2160. It selects
+FP16 on SM80+ and adds FP8 on SM89+. It reuses a compatible installed extension;
+when none is usable it compiles a native split binary for the selected GPU only.
+An installed CUDA toolkit, compatible PyTorch and C++ compiler are needed for
+building. On Windows it discovers and activates Visual Studio's x64 tools.
+`CUDA_HOME`, `DLSSNR_PTXAS_PATH` and `MAX_JOBS` retain your settings; inherited
+architecture lists and fat-build mode do not change the selected build target.
+`--rebuild` forces a fresh compile. Build logs remain in `build/speed/`.
+
+Run `git lfs pull` to retrieve the checkpoints first. No extracted DLL assets
+are used, and this command does not compare against the DLL. The benchmark
+prepares deterministic synthetic packed features and times the integrated C++
+blocks 1-69 trunk using CUDA events around warmed CUDA graph replays. Loading,
+packing, preparation, input preprocessing and renderer composition are excluded.
+Throughput is **trunk passes per second**, not rendered-game FPS.
+
+Results are printed and saved to `results.json` and `results.csv` in a new
+`outputs/speed/<timestamp>` directory, or your `--output` directory. They include
+median/p10/p90 latency, throughput, peak PyTorch allocated memory, padding, launch
+counts and device/binary/checkpoint identities. Each case runs in a fresh
+process; OOMs and failures are reported explicitly while remaining cases run.
+Any failed case makes the command return a nonzero exit code. An unsupported
+precision is skipped. Outputs must be finite, graph replay must match eager
+execution, and buffer guards must remain intact; these are smoke checks, not
+DLL-equivalence validation.
+
+Defaults are 20 warmup graph replays and 30 timed samples, with 10 replays of
+three network passes per sample. Adjust `--warmup`, `--samples`, `--iterations`,
+or the per-case `--timeout` for your machine. `--precision fp16` or `fp8` selects
+one supported precision; `--checkpoint-dir` overrides the checkpoint location.
+
+`--per-kernel` additionally saves `kernels.csv` and per-call JSON timings from a
+separate graph. It preserves the complete schedule, including counter resets
+and any ordered split launches. Timing events perturb those short kernels, so
+these diagnostics should not be summed or substituted for the headline latency.
+
 ### Benchmark architecture paths on one GPU
 
 There are two distinct comparisons. Production binaries use matching source and
