@@ -10,12 +10,12 @@
 <text x="165.0" y="204" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Example: 272 × 480 × 128</text>
 <rect x="355" y="130" width="340" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
 <text x="525.0" y="157" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Leading window blocks</text>
-<text x="525.0" y="181" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">FFN → local attention</text>
-<text x="525.0" y="204" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Example: blocks 9–13</text>
+<text x="525.0" y="181" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Branched FFN → Window attention</text>
+<text x="525.0" y="204" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">C128 example: blocks 9–13</text>
 <rect x="760" y="130" width="405" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
 <text x="962.5" y="157" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Tail window block</text>
-<text x="962.5" y="181" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">FFN → local attention</text>
-<text x="962.5" y="204" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Example: block 14</text>
+<text x="962.5" y="181" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Branched FFN → Window attention</text>
+<text x="962.5" y="204" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">C128 example: block 14</text>
 <path d="M 295,174.5 L 355,174.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
 <path d="M 695,174.5 L 760,174.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
 <rect x="790" y="280" width="360" height="89" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
@@ -78,8 +78,8 @@
 <text x="200" y="962" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">512</text>
 <text x="295" y="962" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">30 → 39</text>
 <text x="500" y="962" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">1024</text>
-<text x="35" y="1030" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">4K C128 tail: 272 × 480 × 128 → pool 136 × 240 × 128 → project 136 × 240 × 256.</text>
-<text x="35" y="1054" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Padding changes no size here; other fields gain zero rows or columns before projection.</text>
+<text x="35" y="1030" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">FFN variants by C: 32 Dense; 64 / 128 / 256 Branched; 512 Grouped. All use Window attention.</text>
+<text x="35" y="1054" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">4K C128 tail: 272 × 480 × 128 → pool 136 × 240 × 128 → project 136 × 240 × 256.</text>
 <text x="35" y="1078" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">The retained skip keeps the high-resolution field, before pooling and channel projection.</text>
 <text x="35" y="1140" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Pool averages in FP32, casts back, pads, then publishes. The projection is published again.</text>
 <text x="35" y="1164" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Source: DLSSNR._encoder_stage, Numerics.pool and Geometry.levels.</text>

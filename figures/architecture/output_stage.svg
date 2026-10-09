@@ -38,8 +38,8 @@
 <text x="987.5" y="687" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Publish M</text>
 <text x="987.5" y="711" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Block70 input state</text>
 <rect x="400" y="660" width="330" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
-<text x="565.0" y="687" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Window block70</text>
-<text x="565.0" y="711" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">C32 FFN → local attention</text>
+<text x="565.0" y="687" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Window block70 · C32</text>
+<text x="565.0" y="711" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Dense FFN → Window attention</text>
 <text x="565.0" y="734" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">FFN residual uses raw M</text>
 <path d="M 987.5,581 L 987.5,660" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
 <path d="M 815,693.0 L 775,693 L 775,704.5 L 730,704.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>

@@ -21,8 +21,8 @@
 <text x="1010.0" y="332" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Publish A</text>
 <text x="1010.0" y="356" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Working-precision boundary</text>
 <rect x="385" y="305" width="320" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
-<text x="545.0" y="332" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Window block0</text>
-<text x="545.0" y="356" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">C32 FFN → local attention</text>
+<text x="545.0" y="332" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Window block0 · C32</text>
+<text x="545.0" y="356" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Dense FFN → Window attention</text>
 <text x="545.0" y="379" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">FFN residual uses raw A</text>
 <path d="M 1010.0,244 L 1010.0,305" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
 <path d="M 860,338.0 L 790,338 L 790,349.5 L 705,349.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>

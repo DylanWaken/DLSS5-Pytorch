@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1370" viewBox="0 0 1200 1370" role="img" aria-labelledby="title desc">
+<title id="title">Attention variants: local windows and global tokens</title><desc id="desc">Both follow the FFN residual and QKV projection; each head has 32 channels. V bypasses Q/K normalization.</desc>
+<defs><marker id="arrow-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#2563ab"/></marker><marker id="arrow-tensor" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#087f80"/></marker><marker id="arrow-skip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#b86910"/></marker><marker id="arrow-attention" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#7750aa"/></marker><marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#52647c"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="32" y="40" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="600" text-anchor="start">Attention variants: local windows and global tokens</text>
+<text x="32" y="70" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Both follow the FFN residual and QKV projection; each head has 32 channels. V bypasses Q/K normalization.</text>
+<rect x="240" y="115" width="720" height="89" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="600.0" y="142" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Shared Q/K normalization</text>
+<text x="600.0" y="166" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Split projected QKV into heads; L2-normalize Q and K separately.</text>
+<text x="600.0" y="189" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Reduce over 32 channels, before spatial padding; V is unchanged.</text>
+<rect x="25" y="255" width="560" height="1010" rx="14" fill="#f3eefb" stroke="#7750aa" stroke-opacity=".25"/>
+<text x="43" y="283" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" text-anchor="start">Window attention</text>
+<rect x="615" y="255" width="560" height="1010" rx="14" fill="#f3eefb" stroke="#7750aa" stroke-opacity=".25"/>
+<text x="633" y="283" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" text-anchor="start">Global attention</text>
+<text x="305" y="318" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="600" text-anchor="middle">C32 / C64 / C128 / C256 / C512</text>
+<text x="895" y="318" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="600" text-anchor="middle">C1024 · 32 heads · T = padded field H × W</text>
+<rect x="80" y="350" width="450" height="66" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="305.0" y="377" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Scale Q by learned scalar per head</text>
+<text x="305.0" y="401" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">K remains normalized; V remains unnormalized</text>
+<rect x="670" y="350" width="450" height="66" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="895.0" y="377" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Scale Q by √32, then learned scalar</text>
+<text x="895.0" y="401" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">K remains normalized; V remains unnormalized</text>
+<path d="M 240,159.5 L 10,159.5 L 10,383 L 80,383.0" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 960,159.5 L 1190,159.5 L 1190,383 L 1120,383.0" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="80" y="460" width="450" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="305.0" y="487" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Pad and partition into 8 × 8 windows</text>
+<text x="305.0" y="511" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">64 query/key/value positions per window</text>
+<text x="305.0" y="534" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Reorder K and V together as Kπ and Vπ</text>
+<rect x="670" y="460" width="450" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="895.0" y="487" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Flatten field; pad K/V to P tokens</text>
+<text x="895.0" y="511" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">T real query rows; P = 64⌈T/64⌉ key/value rows</text>
+<text x="895.0" y="534" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">P − T extra K/V rows are zero</text>
+<path d="M 305.0,416 L 305.0,460" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 895.0,416 L 895.0,460" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="80" y="590" width="450" height="66" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="305.0" y="617" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Window scores + learned position bias</text>
+<text x="305.0" y="641" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Q · Kπᵀ + B → 64 × 64 per head</text>
+<rect x="670" y="590" width="450" height="66" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="895.0" y="617" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Global scores; no position bias</text>
+<text x="895.0" y="641" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Q · Kᵀ → T × P per head</text>
+<path d="M 305.0,549 L 305.0,590" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 895.0,549 L 895.0,590" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="80" y="700" width="450" height="66" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="305.0" y="727" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Clamped exponential Ewindow</text>
+<text x="305.0" y="751" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">One positive value per query/key pair</text>
+<rect x="670" y="700" width="450" height="66" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="895.0" y="727" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Clamped exponential Eglobal</text>
+<text x="895.0" y="751" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">One positive value per query/key pair</text>
+<path d="M 305.0,656 L 305.0,700" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 895.0,656 L 895.0,700" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="80" y="845" width="450" height="89" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="305.0" y="872" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Normalize weights before value mixing</text>
+<text x="305.0" y="896" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">A = Publish(E / Σkey E)</text>
+<text x="305.0" y="919" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Each denominator includes all 64 key slots</text>
+<path d="M 305.0,766 L 305.0,845" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="640" y="845" width="245" height="89" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="762.5" y="872" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Numerator N</text>
+<text x="762.5" y="896" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Publish E; then E · V</text>
+<text x="762.5" y="919" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">T × 32 per head</text>
+<rect x="915" y="845" width="245" height="89" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="1037.5" y="872" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Denominator d</text>
+<text x="1037.5" y="896" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Σkey E − (P − T)E(0)</text>
+<text x="1037.5" y="919" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">FP32 sum over keys</text>
+<path d="M 895.0,766 L 895,805 L 762.5,805 L 762.5,845" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 895.0,766 L 895,805 L 1037.5,805 L 1037.5,845" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="80" y="1010" width="450" height="66" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="305.0" y="1037" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Mix values: A · Vπ</text>
+<text x="305.0" y="1061" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">64 × 32 per head</text>
+<rect x="670" y="1010" width="450" height="66" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="895.0" y="1037" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Normalize after value mixing: N / d</text>
+<text x="895.0" y="1061" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">T × 32 per head</text>
+<path d="M 305.0,934 L 305.0,1010" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 762.5,934 L 762.5,973 L 895,973 L 895.0,1010" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 1037.5,934 L 1037.5,973 L 895,973 L 895.0,1010" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 530,504.5 L 565,504.5 L 565,1043 L 530,1043.0" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<text x="554" y="977" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="end">Vπ</text>
+<path d="M 670,504.5 L 627,504.5 L 627,889.5 L 640,889.5" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<text x="638" y="793" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">V</text>
+<rect x="80" y="1140" width="450" height="66" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="305.0" y="1167" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Assemble windows; crop padding</text>
+<text x="305.0" y="1191" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Join heads → H × W × C</text>
+<rect x="670" y="1140" width="450" height="66" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="895.0" y="1167" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Restore spatial field; join heads</text>
+<text x="895.0" y="1191" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × 1024</text>
+<path d="M 305.0,1076 L 305.0,1140" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 895.0,1076 L 895.0,1140" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<text x="35" y="1300" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Q/K normalization is across channels. The later division normalizes attention over key positions.</text>
+<text x="35" y="1324" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Window padding stays in the row sum; global padding is subtracted. Output projection and residual follow.</text>
+<text x="32" y="1351" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">Logical tensor flow · shapes omit batch unless shown · operations may be fused in CUDA</text>
+</svg>

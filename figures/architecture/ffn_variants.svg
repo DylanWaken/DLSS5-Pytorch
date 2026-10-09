@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1120" viewBox="0 0 1200 1120" role="img" aria-labelledby="title desc">
+<title id="title">FFN variants: three ways to mix channels</title><desc id="desc">All operate independently at each spatial position; outputs shown before the learned FFN residual join.</desc>
+<defs><marker id="arrow-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#2563ab"/></marker><marker id="arrow-tensor" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#087f80"/></marker><marker id="arrow-skip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#b86910"/></marker><marker id="arrow-attention" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#7750aa"/></marker><marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#52647c"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="32" y="40" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="600" text-anchor="start">FFN variants: three ways to mix channels</text>
+<text x="32" y="70" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">All operate independently at each spatial position; outputs shown before the learned FFN residual join.</text>
+<rect x="20" y="105" width="370" height="860" rx="14" fill="#f6f8fb" stroke="#52647c" stroke-opacity=".25"/>
+<text x="38" y="133" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" text-anchor="start">Dense FFN</text>
+<text x="205" y="170" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" text-anchor="middle">C32 and C1024</text>
+<rect x="50" y="205" width="310" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="205.0" y="232" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Input X</text>
+<text x="205.0" y="256" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × C</text>
+<rect x="50" y="860" width="310" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="205.0" y="887" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">FFN result F(X)</text>
+<text x="205.0" y="911" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × C</text>
+<rect x="415" y="105" width="370" height="860" rx="14" fill="#f6f8fb" stroke="#52647c" stroke-opacity=".25"/>
+<text x="433" y="133" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" text-anchor="start">Branched FFN</text>
+<text x="600" y="170" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" text-anchor="middle">C64, C128 and C256</text>
+<rect x="445" y="205" width="310" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="600.0" y="232" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Input X</text>
+<text x="600.0" y="256" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × C</text>
+<rect x="445" y="860" width="310" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="600.0" y="887" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">FFN result F(X)</text>
+<text x="600.0" y="911" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × C</text>
+<rect x="810" y="105" width="370" height="860" rx="14" fill="#f6f8fb" stroke="#52647c" stroke-opacity=".25"/>
+<text x="828" y="133" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" text-anchor="start">Grouped FFN</text>
+<text x="995" y="170" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" text-anchor="middle">C512</text>
+<rect x="840" y="205" width="310" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="995.0" y="232" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Input X</text>
+<text x="995.0" y="256" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × C</text>
+<rect x="840" y="860" width="310" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="995.0" y="887" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">FFN result F(X)</text>
+<text x="995.0" y="911" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × C</text>
+<rect x="50" y="320" width="310" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="205.0" y="347" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Expand C → 4C</text>
+<text x="205.0" y="371" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">32 → 128</text>
+<text x="205.0" y="394" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">1024 → 4096</text>
+<rect x="50" y="465" width="310" height="66" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="205.0" y="492" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Activation φ + publish</text>
+<text x="205.0" y="516" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Same expanded channel count</text>
+<rect x="50" y="610" width="310" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="205.0" y="637" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Contract 4C → C</text>
+<text x="205.0" y="661" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">128 → 32</text>
+<text x="205.0" y="684" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">4096 → 1024</text>
+<path d="M 205.0,271 L 205.0,320" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 205.0,409 L 205.0,465" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 205.0,531 L 205.0,610" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 205.0,699 L 205.0,860" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="445" y="320" width="310" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="600.0" y="347" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Broadcast full X to each branch</text>
+<text x="600.0" y="371" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">E = C/32 = 2, 4 or 8</text>
+<text x="600.0" y="394" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Each branch reads all C channels</text>
+<rect x="445" y="465" width="310" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="600.0" y="492" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">E independent branches</text>
+<text x="600.0" y="516" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Each: C → 128 → φ → 32</text>
+<text x="600.0" y="539" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Publish each 32-channel result</text>
+<rect x="445" y="610" width="310" height="66" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="600.0" y="637" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Concatenate branch outputs</text>
+<text x="600.0" y="661" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">E × 32 channels = C</text>
+<rect x="445" y="740" width="310" height="43" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="600.0" y="767" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Final channel mixing C → C</text>
+<path d="M 600.0,271 L 600.0,320" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 600.0,409 L 600.0,465" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 600.0,554 L 600.0,610" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 600.0,676 L 600.0,740" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 600.0,783 L 600.0,860" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="840" y="320" width="310" height="66" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="995.0" y="347" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Premix 512 → 512; publish</text>
+<text x="995.0" y="371" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Every output sees all 512 inputs</text>
+<rect x="840" y="430" width="310" height="66" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="995.0" y="457" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Split into eight channel slices</text>
+<text x="995.0" y="481" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Each receives a different 64 lanes</text>
+<rect x="840" y="540" width="310" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="995.0" y="567" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Eight independent groups</text>
+<text x="995.0" y="591" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Each: 64 → 256 → φ → 64</text>
+<text x="995.0" y="614" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Publish each 64-channel result</text>
+<rect x="840" y="665" width="310" height="66" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="995.0" y="692" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Concatenate group outputs</text>
+<text x="995.0" y="716" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">8 × 64 channels = 512</text>
+<rect x="840" y="770" width="310" height="43" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="995.0" y="797" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Postmix 512 → 512</text>
+<path d="M 995.0,271 L 995.0,320" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 995.0,386 L 995.0,430" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 995.0,496 L 995.0,540" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 995.0,629 L 995.0,665" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 995.0,731 L 995.0,770" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 995.0,813 L 995.0,860" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<text x="35" y="1000" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Branched FFN broadcasts the full input. Grouped FFN splits the premixed input into disjoint slices.</text>
+<text x="35" y="1024" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Every branch/group executes with its own weights; there is no router or sparse expert selection.</text>
+<text x="35" y="1048" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">φ is the recovered pointwise activation. No FFN family inserts LayerNorm or RMSNorm.</text>
+<text x="32" y="1101" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">Logical tensor flow · shapes omit batch unless shown · operations may be fused in CUDA</text>
+</svg>
