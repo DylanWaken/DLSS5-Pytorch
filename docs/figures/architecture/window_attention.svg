@@ -1,80 +1,101 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1020" viewBox="0 0 1440 1020" role="img" aria-labelledby="title desc">
-<title id="title">Window attention · C32 through C512</title><desc id="desc">Each head has 32 channels. Each 8 × 8 window has 64 query positions and 64 key positions.</desc>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="context-stroke"/></marker></defs>
-<rect width="1440" height="100%" fill="#ffffff"/>
-<text x="42" y="45" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="29" font-weight="650" text-anchor="start">Window attention · C32 through C512</text>
-<text x="42" y="77" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Each head has 32 channels. Each 8 × 8 window has 64 query positions and 64 key positions.</text>
-<text x="44" y="128" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Prepare Q, K and V</text>
-<rect x="44" y="147" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
-<text x="59" y="176" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">QKV: C → 3C</text>
-<text x="59" y="201" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Reshape [B,H,W,heads,3,32]</text>
-<text x="59" y="223" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Heads = C / 32</text>
-<path d="M 364.0,210.0 L 388.0,210.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="388.0" y="147" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
-<text x="403.0" y="176" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Normalize + scale</text>
-<text x="403.0" y="201" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Q, K: vector L2 normalize</text>
-<text x="403.0" y="223" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Q *= learned head_scale</text>
-<text x="403.0" y="245" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Publish Q, K and V</text>
-<path d="M 708.0,210.0 L 732.0,210.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="732.0" y="147" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
-<text x="747.0" y="176" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Pad into windows</text>
-<text x="747.0" y="201" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Positive left/top padding</text>
-<text x="747.0" y="223" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Pad right/bottom to 8</text>
-<text x="747.0" y="245" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Partition each field into 8×8</text>
-<path d="M 1052.0,210.0 L 1076.0,210.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="1076.0" y="147" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
-<text x="1091.0" y="176" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Key/value order</text>
-<text x="1091.0" y="201" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Permute K and V tokens</text>
-<text x="1091.0" y="223" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">by physical_key_order</text>
-<text x="1091.0" y="245" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Bias uses matching key order</text>
-<text x="44" y="363" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Compute weighted values</text>
-<rect x="44" y="382" width="320.0" height="126" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="59" y="411" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Scores</text>
-<text x="59" y="436" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Q × Kᵀ + learned bias</text>
-<text x="59" y="458" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Bias: [heads, 64, 64]</text>
-<path d="M 364.0,445.0 L 388.0,445.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="388.0" y="382" width="320.0" height="126" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="403.0" y="411" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Surrogate exponential</text>
-<text x="403.0" y="436" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">E = exp_local(scores)</text>
-<text x="403.0" y="458" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Clamped affine + exponential</text>
-<text x="403.0" y="480" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Not ordinary softmax</text>
-<path d="M 708.0,445.0 L 732.0,445.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="732.0" y="382" width="320.0" height="126" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="747.0" y="411" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Normalize weights</text>
-<text x="747.0" y="436" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">P = E / sum_64(E)</text>
-<text x="747.0" y="458" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">FP32 sum and reciprocal</text>
-<text x="747.0" y="480" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Publish probabilities</text>
-<path d="M 1052.0,445.0 L 1076.0,445.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="1076.0" y="382" width="320.0" height="126" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="1091.0" y="411" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Values and restore</text>
-<text x="1091.0" y="436" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">P × V; publish</text>
-<text x="1091.0" y="458" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Unpartition 8 × 8 windows</text>
-<text x="1091.0" y="480" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Crop off left/top padding</text>
-<path d="M 1220,273 L 1407,273 L 1407,327 L 24,327 L 24,445 L 44,445" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="44" y="609" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="21" font-weight="650" text-anchor="start">Four-phase window origins</text>
-<rect x="44" y="630" width="320" height="145" rx="12" fill="#f3eefb" stroke="#7750aa" stroke-width="1.5"/>
-<text x="59" y="659" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Phase 0</text>
-<text x="59" y="684" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Left pad 0; top pad 0</text>
-<text x="59" y="706" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Window origin (0, 0)</text>
-<text x="59" y="728" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Advance per spatial level</text>
-<rect x="388" y="630" width="320" height="145" rx="12" fill="#f3eefb" stroke="#7750aa" stroke-width="1.5"/>
-<text x="403" y="659" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Phase 1</text>
-<text x="403" y="684" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Left pad 4; top pad 4</text>
-<text x="403" y="706" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Window origin (-4, -4)</text>
-<text x="403" y="728" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Advance per spatial level</text>
-<rect x="732" y="630" width="320" height="145" rx="12" fill="#f3eefb" stroke="#7750aa" stroke-width="1.5"/>
-<text x="747" y="659" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Phase 2</text>
-<text x="747" y="684" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Left pad 4; top pad 0</text>
-<text x="747" y="706" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Window origin (-4, 0)</text>
-<text x="747" y="728" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Advance per spatial level</text>
-<rect x="1076" y="630" width="320" height="145" rx="12" fill="#f3eefb" stroke="#7750aa" stroke-width="1.5"/>
-<text x="1091" y="659" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Phase 3</text>
-<text x="1091" y="684" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Left pad 0; top pad 4</text>
-<text x="1091" y="706" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Window origin (0, -4)</text>
-<text x="1091" y="728" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Advance per spatial level</text>
-<text x="44" y="818" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">This is padding and cropping, not a cyclic torch.roll or a claim of standard Swin attention. Padding participates in the local computation.</text>
-<text x="44" y="850" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Encoder and decoder blocks share the phase counter for their level. Block 0 and block 70 share a separate full-resolution counter.</text>
-<text x="44" y="897" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">4K fields use 1 / 2 / 4 / 8 / 16 heads at C32 / C64 / C128 / C256 / C512. Attention output is projected by the enclosing block.</text>
-<text x="44" y="943" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Source: NRBlock.attend, _windows, _unwindows, window_shift and WeightArchive.relative_bias.</text>
-<text x="44" y="1000" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">DLSSNR-PyTorch · implemented logical graph · source and shape ledger: architecture/source-map.json</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1730" viewBox="0 0 1200 1730" role="img" aria-labelledby="title desc">
+<title id="title">Window attention · one 8 × 8 neighborhood at a time</title><desc id="desc">C ∈ {32, 64, 128, 256, 512} · h = C/32 heads · 32 channels per head · S = number of padded windows</desc>
+<defs><marker id="arrow-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#2563ab"/></marker><marker id="arrow-tensor" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#087f80"/></marker><marker id="arrow-skip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#b86910"/></marker><marker id="arrow-attention" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#7750aa"/></marker><marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#52647c"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="32" y="40" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="600" text-anchor="start">Window attention · one 8 × 8 neighborhood at a time</text>
+<text x="32" y="70" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">C ∈ {32, 64, 128, 256, 512} · h = C/32 heads · 32 channels per head · S = number of padded windows</text>
+<rect x="380" y="130" width="440" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="600.0" y="157" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Projected QKV field</text>
+<text x="600.0" y="181" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × 3C</text>
+<rect x="380" y="240" width="440" height="66" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="600.0" y="267" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Separate Q, K and V</text>
+<text x="600.0" y="291" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × h × 3 × 32 → three fields</text>
+<path d="M 600.0,196 L 600.0,240" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="55" y="355" width="290" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="200.0" y="382" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Query Q</text>
+<text x="200.0" y="406" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × h × 32</text>
+<path d="M 600.0,306 L 600,330 L 200,330 L 200.0,355" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="455" y="355" width="290" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="600.0" y="382" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Key K</text>
+<text x="600.0" y="406" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × h × 32</text>
+<path d="M 600.0,306 L 600,330 L 600,330 L 600.0,355" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="855" y="355" width="290" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="1000.0" y="382" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Value V</text>
+<text x="1000.0" y="406" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × h × 32</text>
+<path d="M 600.0,306 L 600,330 L 1000,330 L 1000.0,355" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="55" y="470" width="290" height="89" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="200.0" y="497" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Normalize + scale Q</text>
+<text x="200.0" y="521" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">L2 norm over 32 channels</text>
+<text x="200.0" y="544" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">× learned head_scale[h]</text>
+<rect x="455" y="470" width="290" height="89" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="600.0" y="497" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Normalize K</text>
+<text x="600.0" y="521" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">L2 norm over 32 channels</text>
+<text x="600.0" y="544" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">one vector per pixel / head</text>
+<path d="M 200.0,421 L 200.0,470" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 600.0,421 L 600.0,470" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="55" y="615" width="290" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="200.0" y="642" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Pad + partition Q</text>
+<text x="200.0" y="666" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Zero pad, then 8 × 8 windows</text>
+<text x="200.0" y="689" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">S × h × 64 × 32</text>
+<rect x="455" y="615" width="290" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="600.0" y="642" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Pad + partition K</text>
+<text x="600.0" y="666" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Zero pad, then 8 × 8 windows</text>
+<text x="600.0" y="689" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">S × h × 64 × 32</text>
+<rect x="855" y="615" width="290" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="1000.0" y="642" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Pad + partition V</text>
+<text x="1000.0" y="666" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Zero pad, then 8 × 8 windows</text>
+<text x="1000.0" y="689" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">S × h × 64 × 32</text>
+<path d="M 200.0,559 L 200.0,615" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 600.0,559 L 600.0,615" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 1000.0,421 L 1000.0,615" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<text x="1017" y="512" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="14" font-weight="400" text-anchor="start">V bypasses normalization</text>
+<rect x="455" y="755" width="690" height="66" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="800.0" y="782" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Reorder K and V together</text>
+<text x="800.0" y="806" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Kπ = K[π]; Vπ = V[π] · each S × h × 64 × 32</text>
+<path d="M 600.0,704 L 600,755" fill="none" stroke="#7750aa" stroke-width="2" marker-end="url(#arrow-attention)"/>
+<path d="M 1000.0,704 L 1000,755" fill="none" stroke="#7750aa" stroke-width="2" marker-end="url(#arrow-attention)"/>
+<rect x="55" y="865" width="490" height="66" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="300.0" y="892" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Dot product Q · Kπᵀ</text>
+<text x="300.0" y="916" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">S × h × 64 queries × 64 keys</text>
+<path d="M 200.0,704 L 200,820 L 230,820 L 230,865" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 455,788.0 L 395,788 L 395,865" fill="none" stroke="#7750aa" stroke-width="2" marker-end="url(#arrow-attention)"/>
+<circle cx="300" cy="995" r="21" fill="#fff5e5" stroke="#b86910" stroke-width="2"/>
+<text x="300" y="1003" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="26" font-weight="600" text-anchor="middle">+</text>
+<path d="M 300.0,931 L 300.0,974" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="660" y="960" width="450" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="885.0" y="987" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Learned relative-position bias B</text>
+<text x="885.0" y="1011" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">h × 64 natural queries × 64 physical keys</text>
+<path d="M 660,993.0 L 321,995.0" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<rect x="55" y="1055" width="490" height="66" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="300.0" y="1082" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Surrogate exponential E = f(scores + B)</text>
+<text x="300.0" y="1106" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">S × h × 64 × 64</text>
+<path d="M 300.0,1016 L 300.0,1055" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="650" y="1200" width="460" height="66" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="880.0" y="1227" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Row sum d = Σkey E</text>
+<text x="880.0" y="1251" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">S × h × 64 × 1</text>
+<rect x="55" y="1260" width="490" height="89" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="300.0" y="1287" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Normalize each query row: P = E / d</text>
+<text x="300.0" y="1311" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Publish to the working precision</text>
+<text x="300.0" y="1334" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">S × h × 64 × 64</text>
+<path d="M 300.0,1121 L 300,1160 L 880,1160 L 880.0,1200" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 300.0,1121 L 300.0,1260" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 650,1233.0 L 595,1233 L 595,1304.5 L 545,1304.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="55" y="1400" width="490" height="66" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="300.0" y="1427" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Weighted values: P · Vπ</text>
+<text x="300.0" y="1451" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">S × h × 64 × 32</text>
+<path d="M 300.0,1349 L 300.0,1400" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 1145,788.0 L 1170,788 L 1170,1433 L 545,1433.0" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<text x="650" y="1415" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Vπ bypasses scores and row normalization</text>
+<rect x="55" y="1520" width="490" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="300.0" y="1547" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Merge windows + crop padding</text>
+<text x="300.0" y="1571" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">S × h × 64 × 32 → H × W × C</text>
+<text x="300.0" y="1594" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Crop away top / left shifted padding</text>
+<path d="M 300.0,1466 L 300.0,1520" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<text x="650" y="1328" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Each output token combines 64 value vectors.</text>
+<text x="650" y="1352" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">The denominator sums keys within its own window.</text>
+<text x="650" y="1530" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Q rows keep natural spatial order.</text>
+<text x="650" y="1554" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">The same π reorders key columns and value rows.</text>
+<text x="650" y="1578" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">The unpacked bias already uses that key order.</text>
+<text x="55" y="1665" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Boundary windows also contain zero-padded slots; local normalization includes all 64 slots.</text>
+<text x="32" y="1711" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">Logical tensor flow · shapes omit batch unless shown · operations may be fused in CUDA</text>
 </svg>

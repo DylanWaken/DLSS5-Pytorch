@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="945" viewBox="0 0 1200 945" role="img" aria-labelledby="title desc">
+<title id="title">Input stage: raw adapter residual and two block0 outputs</title><desc id="desc">H × W × C notation · Hp,Wp are padded full-field dimensions; H0,W0 are encoder level0 dimensions</desc>
+<defs><marker id="arrow-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#2563ab"/></marker><marker id="arrow-tensor" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#087f80"/></marker><marker id="arrow-skip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#b86910"/></marker><marker id="arrow-attention" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#7750aa"/></marker><marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#52647c"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="32" y="40" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="600" text-anchor="start">Input stage: raw adapter residual and two block0 outputs</text>
+<text x="32" y="70" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">H × W × C notation · Hp,Wp are padded full-field dimensions; H0,W0 are encoder level0 dimensions</text>
+<rect x="40" y="155" width="280" height="89" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="180.0" y="182" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Caller-provided features</text>
+<text x="180.0" y="206" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Hp × Wp × 16</text>
+<text x="180.0" y="229" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">FP32 or BF16 training input</text>
+<rect x="385" y="155" width="320" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="545.0" y="182" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Input adapter 16 → 32</text>
+<text x="545.0" y="206" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Learned per-pixel matrix</text>
+<text x="545.0" y="229" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Hp × Wp × 32</text>
+<rect x="860" y="155" width="300" height="89" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="1010.0" y="182" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Raw adapter A</text>
+<text x="1010.0" y="206" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Hp × Wp × 32</text>
+<path d="M 320,199.5 L 385,199.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 705,199.5 L 860,199.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="860" y="305" width="300" height="66" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="1010.0" y="332" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Publish A</text>
+<text x="1010.0" y="356" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Working-precision boundary</text>
+<rect x="385" y="305" width="320" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="545.0" y="332" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Window block0</text>
+<text x="545.0" y="356" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">C32 FFN → local attention</text>
+<text x="545.0" y="379" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">FFN residual uses raw A</text>
+<path d="M 1010.0,244 L 1010.0,305" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 860,338.0 L 790,338 L 790,349.5 L 705,349.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 1010.0,244 L 1010,275 L 545,275 L 545.0,305" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<text x="572" y="262" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Raw adapter residual</text>
+<rect x="385" y="460" width="320" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="545.0" y="487" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Raw block0 result</text>
+<text x="545.0" y="511" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Hp × Wp × 32</text>
+<path d="M 545.0,394 L 545.0,460" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="860" y="460" width="300" height="66" rx="13" fill="#fff5e5" stroke="#b86910" stroke-width="1.7"/>
+<text x="1010.0" y="487" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Publish block0 result</text>
+<text x="1010.0" y="511" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Hp × Wp × 32</text>
+<path d="M 705,493.0 L 860,493.0" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<rect x="860" y="610" width="300" height="89" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="1010.0" y="637" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Retain block0 skip</text>
+<text x="1010.0" y="661" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Hp × Wp × 32</text>
+<text x="1010.0" y="684" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Used only at output merge</text>
+<path d="M 1010.0,526 L 1010.0,610" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<rect x="70" y="610" width="355" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="247.5" y="637" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">2 × 2 mean pool + pad</text>
+<text x="247.5" y="661" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Raw result → H0 × W0 × 32</text>
+<text x="247.5" y="684" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Publish; no channel projection</text>
+<path d="M 545.0,526 L 545,565 L 247.5,565 L 247.5,610" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="70" y="755" width="355" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="247.5" y="782" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Encoder input · block1</text>
+<text x="247.5" y="806" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H0 × W0 × 32</text>
+<path d="M 247.5,699 L 247.5,755" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<text x="480" y="770" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">4K padded field: 2176 × 3840.</text>
+<text x="480" y="794" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Level0 field: 1088 × 1920.</text>
+<text x="480" y="818" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">The two block0 outputs are distinct values.</text>
+<text x="35" y="890" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Source: _input_block, _input_stage and Numerics.pool. Retain the block0 skip for output70.</text>
+<text x="32" y="926" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">Logical tensor flow · shapes omit batch unless shown · operations may be fused in CUDA</text>
+</svg>

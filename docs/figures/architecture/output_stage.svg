@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1150" viewBox="0 0 1200 1150" role="img" aria-labelledby="title desc">
+<title id="title">Output stage: two scaled paths meet before block70</title><desc id="desc">H × W × C notation · retain the published block0 skip; block70 uses the raw merge as a residual</desc>
+<defs><marker id="arrow-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#2563ab"/></marker><marker id="arrow-tensor" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#087f80"/></marker><marker id="arrow-skip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#b86910"/></marker><marker id="arrow-attention" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#7750aa"/></marker><marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#52647c"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="32" y="40" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="600" text-anchor="start">Output stage: two scaled paths meet before block70</text>
+<text x="32" y="70" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">H × W × C notation · retain the published block0 skip; block70 uses the raw merge as a residual</text>
+<rect x="35" y="130" width="300" height="89" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="185.0" y="157" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Published block69 state</text>
+<text x="185.0" y="181" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H0 × W0 × 32</text>
+<rect x="420" y="130" width="325" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="582.5" y="157" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Repeat ×2, then crop</text>
+<text x="582.5" y="181" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Hp × Wp × 32</text>
+<text x="582.5" y="204" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">No channel projection here</text>
+<rect x="840" y="130" width="320" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="1000.0" y="157" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Scale resized state</text>
+<text x="1000.0" y="181" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">input_scale ⊙ upsample</text>
+<text x="1000.0" y="204" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Learned channelwise scale</text>
+<path d="M 335,174.5 L 420,174.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 745,174.5 L 840,174.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="35" y="310" width="300" height="89" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="185.0" y="337" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Retained block0 skip</text>
+<text x="185.0" y="361" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Hp × Wp × 32</text>
+<text x="185.0" y="384" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">From the input stage</text>
+<rect x="420" y="310" width="325" height="89" rx="13" fill="#fff5e5" stroke="#b86910" stroke-width="1.7"/>
+<text x="582.5" y="337" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Scale retained block0 skip</text>
+<text x="582.5" y="361" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">adapter_scale ⊙ block0</text>
+<text x="582.5" y="384" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Separate learned scale</text>
+<path d="M 335,354.5 L 420,354.5" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<circle cx="985" cy="445" r="21" fill="#fff5e5" stroke="#b86910" stroke-width="2"/>
+<text x="985" y="453" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="26" font-weight="600" text-anchor="middle">+</text>
+<path d="M 1000.0,219 L 985.0,424" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 745,354.5 L 790,354.5 L 790,445 L 964,445.0" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<rect x="815" y="515" width="345" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="987.5" y="542" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Raw full-field merge M</text>
+<text x="987.5" y="566" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Hp × Wp × 32</text>
+<path d="M 985.0,466 L 987.5,515" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="815" y="660" width="345" height="66" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="987.5" y="687" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Publish M</text>
+<text x="987.5" y="711" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Block70 input state</text>
+<rect x="400" y="660" width="330" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="565.0" y="687" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Window block70</text>
+<text x="565.0" y="711" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">C32 FFN → local attention</text>
+<text x="565.0" y="734" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">FFN residual uses raw M</text>
+<path d="M 987.5,581 L 987.5,660" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 815,693.0 L 775,693 L 775,704.5 L 730,704.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 815,548.0 L 565,548 L 565.0,660" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<text x="420" y="615" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Raw merge residual</text>
+<rect x="400" y="820" width="330" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="565.0" y="847" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Head projection 32 → 4</text>
+<text x="565.0" y="871" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Consumes raw block70 result</text>
+<text x="565.0" y="894" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">FP32 four-channel head</text>
+<path d="M 565.0,749 L 565.0,820" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="35" y="820" width="300" height="66" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="185.0" y="847" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Optional valid-size crop</text>
+<text x="185.0" y="871" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Hp × Wp → Hv × Wv</text>
+<path d="M 400,864.5 L 367,864.5 L 367,853 L 335,853.0" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="35" y="965" width="300" height="89" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="185.0" y="992" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Model output</text>
+<text x="185.0" y="1016" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Hv × Wv × 4 if cropped</text>
+<text x="185.0" y="1039" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Hp × Wp × 4 otherwise</text>
+<path d="M 185.0,886 L 185.0,965" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<text x="805" y="835" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">4K example:</text>
+<text x="805" y="859" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Level0: 1088 × 1920 × 32</text>
+<text x="805" y="883" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Full field: 2176 × 3840 × 32</text>
+<text x="805" y="907" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Cropped head: 2160 × 3840 × 4</text>
+<text x="400" y="990" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">The head uses the raw attention result.</text>
+<text x="400" y="1014" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">The published block70 value is only</text>
+<text x="400" y="1038" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">returned as an optional boundary.</text>
+<text x="35" y="1093" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Source: _post_head and Numerics.upsample_residual. Optional compose() consumes this head afterward.</text>
+<text x="32" y="1131" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">Logical tensor flow · shapes omit batch unless shown · operations may be fused in CUDA</text>
+</svg>

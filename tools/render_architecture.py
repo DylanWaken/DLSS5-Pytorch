@@ -12,6 +12,10 @@ from pathlib import Path
 import sys
 import textwrap
 
+from architecture_attention import render as render_attention
+from architecture_blocks import render as render_blocks
+from architecture_stages import render as render_stages
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "docs/figures/architecture"
 spec = importlib.util.spec_from_file_location("architecture_geometry", ROOT / "dlssnr/geometry.py")
@@ -123,149 +127,6 @@ def overview():
     d.save()
 
 
-def encoder():
-    d = Diagram("encoder", "Encoder stages · preserve detail, reduce spatial size", "Each row is one complete level. The last block exposes a published skip and a raw tail for the downsampling path.", 1240)
-    rows = [(1, 4, 32), (5, 8, 64), (9, 14, 128), (15, 22, 256), (23, 30, 512)]
-    for level, (first, last, c) in enumerate(rows):
-        target = [66, 62, 56, 48, 39][level]
-        d.lane(123 + level * 205, f"Level {level} · C{c} · {field(level)}", [
-            (f"Blocks {first}–{last}", [f"{last-first+1} × FFN + window attention", f"{c//32} heads × 32 channels"]),
-            ("Tail has two views", [f"Published block {last} → skip", f"Skip consumed at block {target}", "Raw tail → pooling path"]),
-            ("2 × 2 mean pool", ["Average in FP32; cast back", "Pad to the next level field"]),
-            (f"Projection {c} → {2*c}", ["Learned per-pixel linear", f"Next field: {field(level+1)}"]),
-        ], BLUE, note="Skip storage is taken before downsampling; it retains this level's width, height and channel count.", height=120)
-    d.note(1173, "At C64/C128/C256 the FFN uses parallel branches; C512 has a pre-projection and eight branches. See the FFN expansion diagram.")
-    d.note(1201, "Source: DLSSNR.forward → _encoder_stage → Numerics.pool → down_projection. Shifts advance per spatial level.")
-    d.save()
-
-
-def decoder():
-    d = Diagram("decoder", "Decoder stages · restore spatial detail with encoder skips", "Projection happens before 2× nearest-neighbor upsampling; crop to the recorded target field before adding the skip.", 1250)
-    rows = [(4, 39, 40, 47, 512, 30), (3, 48, 48, 55, 256, 22), (2, 56, 56, 61, 128, 14), (1, 62, 62, 65, 64, 8), (0, 66, 66, 69, 32, 4)]
-    for row, (level, transition, first, last, c, skip) in enumerate(rows):
-        d.lane(123 + row * 205, f"Restore level {level} · C{c} · {field(level)}", [
-            (f"Transition {transition}", [f"Learned linear {2*c} → {c}", "Read lower-resolution state"]),
-            ("Upsample + crop", ["Repeat rows and columns ×2", f"Crop to {field(level)}"]),
-            (f"Merge block-{skip} skip", ["U + transition_scale × skip", "Publish to working precision"]),
-            (f"Blocks {first}–{last}", [f"{last-first+1} window blocks", "FFN then attention per block"]),
-        ], TEAL, note=("Block 39 contains only projection and skip merge; the next ordinary block is 40." if transition == 39 else
-                        "The transition weights belong to the first decoder block; that block's FFN and attention run after the merge."), height=120)
-    d.note(1175, "C32 exception: block 66 keeps the raw merge as its first FFN residual. Other decoder levels use the published merged state.")
-    d.note(1203, "Source: _bottleneck_stage (39), _decoder_stage (48/56/62/66). Block 70 performs a separate full-resolution merge.")
-    d.save()
-
-
-def endpoints():
-    d = Diagram("endpoints", "Input adapter, output head and optional composition", "These full-resolution stages belong to the training graph. The measured CUDA deployment trunk begins after input-stage pooling.", 960)
-    d.lane(128, "Input stage · block 0", [
-        ("Caller features", ["[B, padded H, padded W, 16]", "FP32 or BF16 floating input"]),
-        ("Adapter 16 → 32", ["Learned per-pixel linear", "Raw adapter seeds residual"]),
-        ("C32 window block", ["32 → 128 → 32 FFN", "1 head, 8 × 8 attention"]),
-        ("Two outgoing paths", ["Published → block-70 skip", "Raw → 2 × 2 mean pool", "Pooled C32 → block 1"]),
-    ], BLUE, height=125)
-    d.lane(351, "Output stage · block 70", [
-        ("Block-69 state", ["C32 at encoder level 0", "2× upsample to full field"]),
-        ("Full-field merge", ["input_scale × upsample", "+ adapter_scale × block 0", "Raw merge seeds residual"]),
-        ("C32 window block", ["FFN then window attention", "Use raw attention output"]),
-        ("Head 32 → 4", ["Learned linear; FP32 result", "Optional valid-size crop", "RGB correction + blend lane"]),
-    ], TEAL, height=125)
-    d.text(44, 574, "Optional compose() · caller supplies proxy and reprojected history", 20, ORANGE, True)
-    d.box(44, 625, 470, 150, "Neural RGB", ["N = clamp(proxy + head.rgb / 4)", "Clamp range: [0, 1]", "Proxy uses sRGB code space"], ORANGE)
-    d.box(630, 600, 766, 90, "Without history", ["Return N directly", "Composition is outside forward_train"], ORANGE)
-    d.box(630, 710, 766, 100, "With history H", ["a = clamp(sigmoid(head.a) × blend_scale, 0, 1)", "Return N + a × (H − N)"], ORANGE)
-    d.arrow([(514, 700), (565, 700), (565, 645), (630, 645)], ORANGE)
-    d.arrow([(565, 700), (565, 760), (630, 760)], ORANGE)
-    d.note(842, "The model does not generate renderer features, a proxy image, motion vectors or a reprojected history buffer.")
-    d.note(870, "Training benchmarks stop at the four-channel head and use a diagnostic scalar; composition and temporal training are not measured.")
-    d.note(909, "Source: _input_block, _input_stage, _post_head and compose in dlssnr/model.py.")
-    d.save()
-
-
-def block():
-    d = Diagram("residual_block", "Inside a repeated network block", "FFN comes before attention. Norm means per-head vector L2 normalization of Q and K; this is not a pre-LayerNorm Transformer.", 780)
-    d.lane(136, "1 · Channel mixing and first residual", [
-        ("Input state X", ["C ∈ {32, 64, 128, 256,", "512, 1024}", "Residual R usually equals X"]),
-        ("Channel FFN F(X)", ["Choose the channel family", "Learned linear layers and", "piecewise activation"]),
-        ("Scaled residual", ["Zraw = F(X) + ffn_scale × R", "Scales act channelwise"]),
-        ("Publish Z", ["Working-precision boundary", "FP32 or BF16 in training"]),
-    ], BLUE, height=126)
-    d.lane(380, "2 · Attention and second residual", [
-        ("QKV projection", ["Linear C → 3C", "Reshape to C/32 heads", "32 channels per head"]),
-        ("Attention A(Z)", ["C ≤ 512: 8 × 8 windows", "C = 1024: global tokens", "Normalize Q/K; scale Q"]),
-        ("Output projection", ["Linear C → C", "+ attn_scale × residual", "C32 residual: Zraw; else Z"]),
-        ("Output pair", ["Publish for next block / skip", "Also return raw result", "Raw feeds selected transitions"]),
-    ], PURPLE, height=126)
-    d.arrow([(1220, 281), (1407, 281), (1407, 350), (24, 350), (24, 462), (44, 462)], BLUE)
-    d.note(613, "Residual overrides: input block 0 uses the raw adapter; block 66 uses its raw merge; output block 70 uses its raw full-field merge.")
-    d.note(644, "Training can checkpoint each bound stage: retain stage inputs, recompute internal activations during backward; arithmetic stays the same.")
-    d.note(687, "FP8/FP16 deployment has separate packed publication and fused CUDA schedules. Boxes here describe logical operations, not launch counts.")
-    d.note(720, "Source: NRBlock.forward and NRBlock.attend. Transition-only block 39 does not execute this block body.")
-    d.save()
-
-
-def ffn():
-    d = Diagram("ffn", "Four feed-forward network families", "Linear sizes are input channels → output channels. Every branch executes; the source has no router or top-k expert selection.", 1060)
-    rows = [
-        ("C32 · input, finest encoder/decoder and output", [("Input", ["32 channels"]), ("Expand + activate", ["W1: 32 → 128", "Piecewise activation"]), ("Contract", ["W2: 128 → 32"]), ("Residual", ["+ ffn_scale × R", "Publish 32 channels"])], BLUE),
-        ("C64 / C128 / C256 · 2 / 4 / 8 parallel branches", [("Broadcast full X", ["Each branch reads all C", "E = C / 32 branches"]), ("Each branch", ["W1[e]: C → 128 + activation", "W2[e]: 128 → 32", "Publish branch output"]), ("Join and mix", ["Concatenate E × 32 = C", "W3: C → C"]), ("Residual", ["+ ffn_scale × R", "Publish C channels"])], BLUE),
-        ("C512 · eight fixed 64-channel branches", [("Mix then split", ["W1: 512 → 512", "Publish, then split into", "8 groups of 64"]), ("Each branch", ["W2[e]: 64 → 256 + activation", "W3[e]: 256 → 64", "Publish branch output"]), ("Join and mix", ["Concatenate 8 × 64 = 512", "W4: 512 → 512"]), ("Residual", ["+ ffn_scale × R", "Publish 512 channels"])], TEAL),
-        ("C1024 · global bottleneck", [("Input", ["1024 channels per token"]), ("Expand + activate", ["W1: 1024 → 4096", "Piecewise activation"]), ("Contract", ["W2: 4096 → 1024"]), ("Residual", ["+ ffn_scale × R", "Publish 1024 channels"])], PURPLE),
-    ]
-    for i, (title, cards, color) in enumerate(rows):
-        d.lane(128 + i * 214, title, cards, color, height=126)
-    d.note(976, "Matrix dimensions come from WeightArchive.decode_block; learned matrices are transposed once into the PyTorch linear convention.")
-    d.note(1005, "The activation is the reconstructed piecewise function, not torch.nn.functional.silu. See the numerical primitives diagram.")
-    d.save()
-
-
-def local_attention():
-    d = Diagram("window_attention", "Window attention · C32 through C512", "Each head has 32 channels. Each 8 × 8 window has 64 query positions and 64 key positions.", 1020)
-    d.lane(128, "Prepare Q, K and V", [
-        ("QKV: C → 3C", ["Reshape [B,H,W,heads,3,32]", "Heads = C / 32"]),
-        ("Normalize + scale", ["Q, K: vector L2 normalize", "Q *= learned head_scale", "Publish Q, K and V"]),
-        ("Pad into windows", ["Positive left/top padding", "Pad right/bottom to 8", "Partition each field into 8×8"]),
-        ("Key/value order", ["Permute K and V tokens", "by physical_key_order", "Bias uses matching key order"]),
-    ], BLUE, height=126)
-    d.lane(363, "Compute weighted values", [
-        ("Scores", ["Q × Kᵀ + learned bias", "Bias: [heads, 64, 64]"]),
-        ("Surrogate exponential", ["E = exp_local(scores)", "Clamped affine + exponential", "Not ordinary softmax"]),
-        ("Normalize weights", ["P = E / sum_64(E)", "FP32 sum and reciprocal", "Publish probabilities"]),
-        ("Values and restore", ["P × V; publish", "Unpartition 8 × 8 windows", "Crop off left/top padding"]),
-    ], TEAL, height=126)
-    d.arrow([(1220, 273), (1407, 273), (1407, 327), (24, 327), (24, 445), (44, 445)], BLUE)
-    d.text(44, 609, "Four-phase window origins", 21, PURPLE, True)
-    for phase, (sx, sy) in enumerate(((0, 0), (4, 4), (4, 0), (0, 4))):
-        x = 44 + phase * 344
-        d.box(x, 630, 320, 145, f"Phase {phase}", [f"Left pad {sx}; top pad {sy}", f"Window origin ({-sx}, {-sy})", "Advance per spatial level"], PURPLE)
-    d.note(818, "This is padding and cropping, not a cyclic torch.roll or a claim of standard Swin attention. Padding participates in the local computation.")
-    d.note(850, "Encoder and decoder blocks share the phase counter for their level. Block 0 and block 70 share a separate full-resolution counter.")
-    d.note(897, "4K fields use 1 / 2 / 4 / 8 / 16 heads at C32 / C64 / C128 / C256 / C512. Attention output is projected by the enclosing block.")
-    d.note(943, "Source: NRBlock.attend, _windows, _unwindows, window_shift and WeightArchive.relative_bias.")
-    d.save()
-
-
-def global_attention():
-    d = Diagram("global_attention", "Global attention · blocks 31–38", "C1024 · 32 heads × 32 channels · all bottleneck tokens attend globally · no local relative-bias table in this branch", 945)
-    d.lane(128, "Prepare the global token sequence", [
-        ("QKV: 1024 → 3072", ["Split 32 heads × Q/K/V", "Q and K: L2 normalize"]),
-        ("Scale and flatten", ["Q *= √32 × head_scale", "Flatten H × W = T tokens", "Publish working values"]),
-        ("Pad keys and values", ["P = ceil(T / 64) × 64", "Zero-pad K and V to P", "Q keeps T rows"]),
-        ("Global scores", ["Q × Kᵀ", "[B, 32, T, P]", "4K: T=2160, P=2176"]),
-    ], PURPLE, height=126)
-    d.lane(377, "Normalize with explicit padded-key correction", [
-        ("Exponential E", ["Use exp_global(scores)", "Global constants differ", "from local-window constants"]),
-        ("Denominator D", ["Sum E in 64-key chunks", "FP32 running total", "Subtract (P−T) × exp_global(0)"]),
-        ("Weighted value sum", ["publish(E) × padded V", "Padded V entries are zero", "No value correction needed"]),
-        ("Normalize + restore", ["Multiply output by 1 / D", "Publish and restore [B,H,W,C]", "Then enclosing projection"]),
-    ], PURPLE, height=126)
-    d.arrow([(1220, 273), (1407, 273), (1407, 330), (24, 330), (24, 459), (44, 459)], PURPLE)
-    d.box(44, 620, 654, 166, "Why the correction matters", ["Zero-padded K produces a zero dot product, but exp_global(0) is nonzero.", "Subtract its contribution from the denominator so padding does not dilute the normalized result."], ORANGE)
-    d.box(728, 620, 668, 166, "Why training uses more memory", ["The eager Torch graph explicitly materializes score and exponential tensors.", "The reconstructed CUDA route uses its own tiled physical schedule; logical boxes do not imply these full allocations."], MUTED)
-    d.note(840, "This diagram describes the implemented floating training arithmetic. It is not a substitution with a standard softmax/SDPA operator.")
-    d.note(883, "Source: NRBlock.attend (C1024 branch), Numerics.exp(global_mode=True), sum64, matmul and reciprocal.")
-    d.save()
-
-
 def numerics():
     d = Diagram("numerics", "Numerical primitives and training precision", "Exact formulas below describe the pure-PyTorch training implementation; deployment additionally has precision-specific packing and rounding.", 965)
     d.box(44, 120, 654, 195, "Piecewise activation", ["b = clamp(x, −4, 4)", "a = −0.055908203125 × |b| + 0.447265625", "f(x) = x × (b × a + 0.89453125)", "Evaluate in FP32, then cast back to input dtype.", "Despite its source name, this is not standard SiLU."], BLUE)
@@ -283,10 +144,18 @@ def main():
     if len(SCHEDULE) != 71 or SCHEDULE[39]["kind"] != "transition":
         raise RuntimeError("Network schedule changed; review the diagram annotations")
     OUT.mkdir(parents=True, exist_ok=True)
-    for render in (overview, encoder, decoder, endpoints, block, ffn, local_attention, global_attention, numerics):
+    for render in (overview, render_blocks, render_attention, render_stages, numerics):
         render()
+    # These summary-card figures were replaced by individual tensor-flow views.
+    for obsolete in ("ffn.svg", "endpoints.svg"):
+        (OUT / obsolete).unlink(missing_ok=True)
     sources = ("dlssnr/model.py", "dlssnr/geometry.py", "dlssnr/weights.py")
-    data = dict(scope="Implemented logical training graph, with separately labelled FP8 deployment boundary",
+    renderers = ("tools/render_architecture.py", "tools/architecture_flow.py",
+                 "tools/architecture_attention.py", "tools/architecture_blocks.py",
+                 "tools/architecture_stages.py")
+    data = dict(scope="Implemented logical training tensor flow; deployment operations may be fused and use packed layouts",
+                tensor_axes="Expanded flows: H,W,C; batch omitted unless shown. Master example fields: W,H.",
+                renderer_sha256={name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in renderers},
                 source_sha256={name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in sources},
                 valid_example=[3840, 2160], full_padded_example=[G.full_width, G.full_height],
                 schedule=SCHEDULE, diagrams=[p.name for p in sorted(OUT.glob("*.svg"))])
