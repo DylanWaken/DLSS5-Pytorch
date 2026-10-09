@@ -47,11 +47,11 @@
 <rect x="490" y="835" width="320" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
 <text x="650.0" y="862" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">First window block</text>
 <text x="650.0" y="886" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">40 / 48 / 56 / 62 / 66</text>
-<text x="650.0" y="909" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">FFN → local attention</text>
+<text x="650.0" y="909" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">FFN → Window attention</text>
 <path d="M 650.0,766 L 650.0,835" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
 <rect x="875" y="835" width="290" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
 <text x="1020.0" y="862" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Remaining blocks</text>
-<text x="1020.0" y="886" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">FFN → local attention</text>
+<text x="1020.0" y="886" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">FFN → Window attention</text>
 <text x="1020.0" y="909" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Published Ht × Wt × C</text>
 <path d="M 810,879.5 L 875,879.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
 <path d="M 490,599.5 L 430,599.5 L 430,879.5 L 490,879.5" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
@@ -92,7 +92,7 @@
 <text x="380" y="1222" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">4</text>
 <text x="590" y="1222" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">66</text>
 <text x="790" y="1222" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">67–69</text>
-<text x="35" y="1270" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Transitions48/56/62/66 belong to the first block record;39 has no FFN or attention.</text>
+<text x="35" y="1270" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">FFN variants by C: 32 Dense; 64 / 128 / 256 Branched; 512 Grouped. Record 39 has no FFN or attention.</text>
 <text x="35" y="1294" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Source: _decoder_stage, _bottleneck_stage and Numerics.upsample_residual.</text>
 <text x="32" y="1341" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">Logical tensor flow · shapes omit batch unless shown · operations may be fused in CUDA</text>
 </svg>

@@ -145,7 +145,7 @@ def window_partition():
 
 def global_attention():
     d = Flow(
-        "global_attention", "Global bottleneck attention · every query sees all valid tokens",
+        "global_attention", "Global attention · every query sees the whole bottleneck field",
         "C = 1024 · 32 heads × 32 channels · T = H×W query tokens · P = 64⌈T/64⌉ padded key/value tokens",
         1700)
     d.tensor("qkv", 380, 130, 440, "Projected QKV field", "H × W × 3072")
@@ -166,6 +166,7 @@ def global_attention():
     d.link("qnorm", "qflat")
     d.link("knorm", "kflat")
     d.link("v", "vflat")
+    d.text(1000, 512, "V bypasses normalization", 14, MUTED, anchor="middle")
     d.op("scores", 55, 790, 490, "Dot product: S = Q · Kᵀ", "32 × T queries × P keys", kind="attention")
     d.arrow([d.port("qflat", "bottom"), (200, 750), (235, 750), (235, 790)])
     d.arrow([d.port("kflat", "bottom"), (600, 745), (395, 745), (395, 790)])

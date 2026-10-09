@@ -18,7 +18,7 @@ A multiscale encoder–decoder combines local window attention, a global-attenti
 
 ![Network architecture, stage ranges and skip connections](docs/figures/architecture/network.svg)
 
-Follow the [architecture guide](docs/ARCHITECTURE.md) into tensor-flow diagrams with shapes and explicit branches: [window/global attention](docs/ARCHITECTURE.md#how-positions-exchange-information), [FFN families](docs/ARCHITECTURE.md#channel-mixing-inside-a-block), [encoder/decoder transitions](docs/ARCHITECTURE.md#moving-between-resolutions) and [input/output blocks](docs/ARCHITECTURE.md#entering-and-leaving-the-network).
+The master diagram labels each stage's FFN and attention variants. The [architecture guide](docs/ARCHITECTURE.md) compares [FFN variants](docs/ARCHITECTURE.md#channel-mixing-inside-a-block) and [attention variants](docs/ARCHITECTURE.md#how-positions-exchange-information) side by side, then expands their tensor flows, shapes and normalization steps. It also covers [encoder/decoder transitions](docs/ARCHITECTURE.md#moving-between-resolutions) and [input/output blocks](docs/ARCHITECTURE.md#entering-and-leaving-the-network).
 
 ## Getting started
 

@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1700" viewBox="0 0 1200 1700" role="img" aria-labelledby="title desc">
-<title id="title">Global bottleneck attention · every query sees all valid tokens</title><desc id="desc">C = 1024 · 32 heads × 32 channels · T = H×W query tokens · P = 64⌈T/64⌉ padded key/value tokens</desc>
+<title id="title">Global attention · every query sees the whole bottleneck field</title><desc id="desc">C = 1024 · 32 heads × 32 channels · T = H×W query tokens · P = 64⌈T/64⌉ padded key/value tokens</desc>
 <defs><marker id="arrow-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#2563ab"/></marker><marker id="arrow-tensor" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#087f80"/></marker><marker id="arrow-skip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#b86910"/></marker><marker id="arrow-attention" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#7750aa"/></marker><marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#52647c"/></marker></defs>
 <rect width="100%" height="100%" fill="white"/>
-<text x="32" y="40" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="600" text-anchor="start">Global bottleneck attention · every query sees all valid tokens</text>
+<text x="32" y="40" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="600" text-anchor="start">Global attention · every query sees the whole bottleneck field</text>
 <text x="32" y="70" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">C = 1024 · 32 heads × 32 channels · T = H×W query tokens · P = 64⌈T/64⌉ padded key/value tokens</text>
 <rect x="380" y="130" width="440" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
 <text x="600.0" y="157" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Projected QKV field</text>
@@ -48,6 +48,7 @@
 <path d="M 200.0,559 L 200.0,615" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
 <path d="M 600.0,559 L 600.0,615" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
 <path d="M 1000.0,421 L 1000.0,615" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<text x="1000" y="512" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="14" font-weight="400" text-anchor="middle">V bypasses normalization</text>
 <rect x="55" y="790" width="490" height="66" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
 <text x="300.0" y="817" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Dot product: S = Q · Kᵀ</text>
 <text x="300.0" y="841" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">32 × T queries × P keys</text>

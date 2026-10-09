@@ -11,10 +11,10 @@ from architecture_flow import Flow
 
 def residual_block():
     d = Flow("residual_block", "Repeated block: two learned residual paths",
-             "FFN comes before attention · every main-state tensor is H × W × C unless labeled otherwise", 1675)
+             "FFN before attention · Q / K channel norms are separate from attention normalization over keys", 2300)
     d.tensor("x", 345, 110, 320, "Published input X", "H × W × C")
     d.tensor("override", 835, 110, 325, "Raw skip override", ["0: raw input adapter", "66 / 70: raw upsample merge"])
-    d.op("ffn", 345, 245, 320, "FFN transform", ["Dense / branched / grouped", "Output F(X), before residual"])
+    d.op("ffn", 345, 215, 320, "FFN transform", ["Dense FFN: C32 / C1024", "Branched FFN: C64–C256", "Grouped FFN: C512", "F(X) is before residual addition"])
     d.op("choose_ffn", 835, 260, 325, "Choose FFN skip R", ["Normally R = X", "Override only for 0 / 66 / 70"], kind="skip")
     d.tensor("ffn_result", 345, 380, 320, "F(X)", "H × W × C")
     d.op("ffn_scale", 835, 410, 325, "Learned channel scale", ["R ⊙ s_ffn", "s_ffn has C values"], kind="skip")
@@ -24,18 +24,33 @@ def residual_block():
     d.tensor("z", 345, 760, 320, "Published FFN result Zp", "H × W × C")
     d.op("choose_attn", 835, 760, 325, "Choose attention skip", ["C32: raw Z", "Other widths: published Zp"], kind="skip")
     d.op("qkv", 345, 870, 320, "QKV projection", ["C → 3C", "Q, K, V: H × W × C"], kind="attention")
-    d.op("attention", 345, 995, 320, "Attention", ["C / 32 heads; 32 channels/head", "Window C≤512; global C1024"], kind="attention")
     d.op("attn_scale", 835, 1000, 325, "Learned channel scale", ["Chosen skip ⊙ s_attn", "s_attn has C values"], kind="skip")
-    d.op("projection", 345, 1125, 320, "Attention projection", "H × W × C → H × W × C", kind="attention")
-    d.add("attn_add", 505, 1235)
-    d.tensor("yraw", 345, 1290, 320, "Raw block result Y", "Projected attention + scaled skip")
-    d.tensor("raw_use", 835, 1290, 325, "Raw-result consumers", ["Encoder tail / block 0: pool", "Block 70: learned output head"])
-    d.op("ypublish", 395, 1400, 220, "Publish", "Working precision")
-    d.tensor("y", 345, 1500, 320, "Published block result Yp", "Next block / saved encoder skip")
+
+    # Show the channel normalization axis, learned Q scale and V bypass.
+    for key, x, title in (("q", 35, "Q"), ("k", 300, "K"), ("v", 565, "V")):
+        d.tensor(key, x, 985, 230, title, "H × W × (C/32) × 32")
+        d.link("qkv", key, via=((505, 972), (x + 115, 972)), kind="attention")
+    d.op("qnorm", 35, 1080, 230, "Q L2 norm", ["32 channels per head", "FP32; norm floor 1e−12"], kind="attention")
+    d.op("knorm", 300, 1080, 230, "K L2 norm", ["32 channels per head", "FP32; norm floor 1e−12"], kind="attention")
+    d.op("vpass", 565, 1080, 230, "V bypass", ["No normalization", "32 values per head"], kind="attention")
+    d.op("qscale", 35, 1200, 230, "Q scale + publish", ["Global: × √32, round first", "Round learned head scale", "Multiply, round, publish"], kind="attention")
+    d.op("kpublish", 300, 1200, 230, "K publish", "Working precision", kind="attention")
+    d.op("vpublish", 565, 1200, 230, "V publish", "Working precision", kind="attention")
+
+    # Expanded figures own tiling/padding details; this view locates both norms.
+    d.op("scores", 35, 1360, 760, "Scores → positive weights E", ["Window attention (C≤512): local Q Kᵀ + learned bias", "Global attention (C1024): global Q Kᵀ, no bias", "Apply the family's recovered clamped exponential"], kind="attention")
+    d.op("weight_norm", 35, 1510, 760, "Normalize over keys + mix values", ["Window attention: p = publish(round(E / sum64(E)))", "Then output = publish(p @ V): normalize before the value product", "Global attention: N = publish(E) @ V", "Then output = publish(round(N / corrected_sum(E))): divide after the value product"], kind="attention")
+    d.tensor("attended", 345, 1680, 320, "Restore attended features", "H × W × C; published")
+    d.op("projection", 345, 1770, 320, "Attention projection", "H × W × C → H × W × C", kind="attention")
+    d.add("attn_add", 505, 1880)
+    d.tensor("yraw", 345, 1930, 320, "Raw block result Y", "Projected attention + scaled skip")
+    d.tensor("raw_use", 835, 1930, 325, "Raw-result consumers", ["Encoder tail / block 0: pool", "Block 70: learned output head"])
+    d.op("ypublish", 395, 2025, 220, "Publish", "Working precision")
+    d.tensor("y", 345, 2120, 320, "Published block result Yp", "Next block / saved encoder skip")
 
     d.link("x", "ffn")
     d.link("x", "choose_ffn", start="right", end="left", via=((750, 143), (750, 304.5)),
-           kind="skip", label="Default skip", label_at=(660, 230))
+           kind="skip", label="Default skip", label_at=(765, 230))
     d.link("override", "choose_ffn", kind="skip")
     d.link("ffn", "ffn_result")
     d.link("choose_ffn", "ffn_scale", kind="skip")
@@ -48,17 +63,26 @@ def residual_block():
            label="C32 raw path", label_at=(820, 580))
     d.link("z", "choose_attn", start="right", end="left", via=((755, 793), (755, 804.5)), kind="skip")
     d.link("z", "qkv")
-    d.link("qkv", "attention", kind="attention")
-    d.link("attention", "projection", kind="attention")
+    for source, target in (("q", "qnorm"), ("k", "knorm"), ("v", "vpass"),
+                           ("qnorm", "qscale"), ("knorm", "kpublish"), ("vpass", "vpublish")):
+        d.link(source, target, kind="attention")
+    for source, x in (("qscale", 150), ("kpublish", 415)):
+        sx, sy = d.port(source, "bottom")
+        d.arrow(((sx, sy), (x, 1360)), kind="attention")
+    d.link("scores", "weight_norm", kind="attention")
+    d.link("vpublish", "weight_norm", start="right", end="right", via=((815, 1233), (815, 1577.5)),
+           kind="attention", label="V", label_at=(819, 1490))
+    d.link("weight_norm", "attended", via=((415, 1660), (505, 1660)), kind="attention")
+    d.link("attended", "projection", kind="attention")
     d.link("choose_attn", "attn_scale", kind="skip")
     d.link("projection", "attn_add", kind="attention")
-    d.link("attn_scale", "attn_add", end="right", via=((997.5, 1235),), kind="skip")
+    d.link("attn_scale", "attn_add", start="right", end="right", via=((1180, 1044.5), (1180, 1880)), kind="skip")
     d.link("attn_add", "yraw")
-    d.link("yraw", "raw_use", start="right", end="left")
+    d.link("yraw", "raw_use", start="right", end="left", via=((750, 1963), (750, 1974.5)))
     d.link("yraw", "ypublish")
     d.link("ypublish", "y")
-    d.note(35, 1605, ["Raw means before publication; it does not imply FP32 storage. The block returns both Yp and Y.",
-                      "Block 39 is a transition only. The attention internals and each FFN family have separate expanded views."])
+    d.note(35, 2220, ["corrected_sum(E) sums unrounded global weights, then removes padded-key contributions; see expanded attention views.",
+                      "Raw means before publication, not FP32 storage. No pre-FFN LayerNorm; block 39 is transition-only."])
     d.save()
 
 
@@ -174,6 +198,15 @@ def source_checks():
         "skip_override=raw_merge if index == 66 else None",
         "phase, skip_override=raw_adapter",
         "phase, skip_override=raw_merge",
+        "q, k = n.norm(q), n.norm(k)",
+        "q = n.round(q * math.sqrt(32))",
+        "q = n.publish(n.round(q * n.round(self.head_scale).unsqueeze(-1)))",
+        "k, v = n.publish(k), n.publish(v)",
+        "p = n.publish(n.round(e * n.reciprocal(n.sum64(e))))",
+        "attended = n.publish(n.matmul(p, vw.transpose(-1, -2)))",
+        "output = n.matmul(n.publish(exponentials), v.transpose(-1, -2))",
+        "total = n.reduction_round(total - correction)",
+        "output = n.publish(n.round(output * n.reciprocal(total)))",
     )
     for contract in contracts:
         if contract not in model:

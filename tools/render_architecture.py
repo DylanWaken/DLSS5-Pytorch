@@ -13,6 +13,7 @@ import textwrap
 from architecture_attention import render as render_attention
 from architecture_blocks import render as render_blocks
 from architecture_stages import render as render_stages
+from architecture_variants import render as render_variants
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "docs/figures/architecture"
@@ -91,37 +92,46 @@ def field(level):
 
 
 def overview():
-    d = Diagram("network", "DLSS-NR network architecture", "71 numbered records · five encoder levels · global attention · five decoder levels · 4K example fields shown as W × H", 1175)
-    d.rect(25, 245, 1390, 830, "#f8fafc", "#d8e1ed", 18)
-    d.text(720, 268, "FP8 prepared-feature deployment boundary: blocks 1–69", 16, BLUE, True, anchor="middle")
-    d.box(60, 114, 370, 105, "Input stage · block 0", ["Padded features: 3840 × 2176 × 16", "Adapter 16 → 32 + window block"], BLUE)
-    d.box(1010, 114, 370, 105, "Output stage · block 70", ["Full-field merge + window block", "Head 32 → 4; optional crop"], TEAL)
-    d.arrow([(430, 169), (1010, 169)], ORANGE, True)
-    d.text(720, 155, "Full-resolution block-0 skip", 16, ORANGE, anchor="middle")
+    d = Diagram("network", "DLSS-NR network architecture", "71 numbered records · five encoder levels · global bottleneck · five decoder levels · 4K example fields shown as W × H", 1580)
+    d.rect(25, 292, 1390, 1124, "#f8fafc", "#d8e1ed", 18)
+    d.text(720, 318, "FP8 / FP16 prepared-feature deployment boundary: blocks 1–69", 16, BLUE, True, anchor="middle")
+    d.box(44, 120, 440, 146, "Input stage C32 · block 0", ["Padded features: 3840 × 2176 × 16", "Adapter 16 → 32", "Dense FFN → Window attention"], BLUE)
+    d.box(956, 120, 440, 146, "Output stage C32 · block 70", ["Full-field upsample + skip merge", "Dense FFN → Window attention", "Head 32 → 4; optional crop"], TEAL)
+    d.arrow([(484, 194), (956, 194)], ORANGE, True)
+    d.text(720, 181, "Full-field skip: block 0 → 70", 16, ORANGE, anchor="middle")
     enc = [(1, 4, 32), (5, 8, 64), (9, 14, 128), (15, 22, 256), (23, 30, 512)]
     dec = [(66, 69), (62, 65), (56, 61), (48, 55), (40, 47)]
     for level, ((first, last, c), (dfirst, dlast)) in enumerate(zip(enc, dec)):
-        y = 292 + level * 135
-        d.box(60, y, 370, 94, f"Encoder C{c} · blocks {first}–{last}", [f"{last-first+1} window blocks · {field(level)}", "Save tail skip; pool + project down"], BLUE)
+        y = 350 + level * 172
+        ffn = "Dense" if c == 32 else "Grouped" if c == 512 else "Branched"
+        block_family = f"{ffn} FFN → Window attention"
+        d.box(44, y, 440, 134, f"Encoder C{c} · blocks {first}–{last}", [f"{last-first+1} blocks · {field(level)}", block_family, "Save tail skip; pool + project down"], BLUE)
         title = f"Decoder C{c} · blocks {dfirst}–{dlast}"
-        d.box(1010, y, 370, 94, title, [f"{dlast-dfirst+1} window blocks · {field(level)}", "Block 39 merges here first" if c == 512 else "Project + upsample + skip first"], TEAL)
-        d.arrow([(430, y + 51), (1010, y + 51)], ORANGE, True)
+        d.box(956, y, 440, 134, title, [f"{dlast-dfirst+1} blocks · {field(level)}", block_family, "After block 39's upsample + skip" if c == 512 else "Project + upsample + skip first"], TEAL)
         target = 39 if c == 512 else dfirst
-        d.text(720, y + 38, f"C{c} skip: block {last} → {target}", 16, ORANGE, anchor="middle")
-        if level == 0:
-            d.arrow([(245, 219), (245, y)])
-            d.text(64, 240, "2 × 2 mean pool", 14, BLUE)
-            d.arrow([(1195, y), (1195, 219)])
+        if c == 512:
+            # This tail skip enters transition 39 before the C512 decoder blocks.
+            d.arrow([(484, y + 74), (908, y + 74), (908, 1220), (1030, 1220), (1030, 1250)], ORANGE, True)
         else:
-            d.arrow([(245, y - 41), (245, y)])
-            d.arrow([(1195, y), (1195, y - 41)])
-    d.box(480, 975, 480, 85, "Global bottleneck · blocks 31–38", ["8 global blocks · 60 × 36 × 1024", "32 heads; 2160 tokens, K/V padded to 2176"], PURPLE)
-    d.arrow([(245, 926), (245, 1017), (480, 1017)], PURPLE)
-    d.arrow([(960, 1017), (1195, 1017), (1195, 926)], PURPLE)
-    d.text(65, 973, "512 → 1024 after pool", 15, PURPLE)
-    d.text(1010, 973, "39: 1024 → 512, upsample", 15, PURPLE)
-    d.note(1105, "Solid arrows: main state. Dashed amber arrows: learned-scale skip merges. Fields include padding, not just valid image pixels.")
-    d.note(1131, "Training covers input through output. Block 39 is transition-only. Renderer feature preparation and temporal reprojection are external.")
+            d.arrow([(484, y + 74), (956, y + 74)], ORANGE, True)
+        d.text(720, y + 61, f"C{c} skip: block {last} → {target}", 16, ORANGE, anchor="middle")
+        if level == 0:
+            d.arrow([(264, 266), (264, y)])
+            d.text(48, 292, "2 × 2 mean pool", 14, BLUE)
+            d.arrow([(1176, y), (1176, 266)])
+        else:
+            d.arrow([(264, y - 38), (264, y)])
+            d.arrow([(1176, y), (1176, y - 38)])
+    d.box(250, 1250, 620, 134, "Global bottleneck C1024 · blocks 31–38", [f"8 blocks · {field(5)} × 1024", "Dense FFN → Global attention", "32 heads; 2160 tokens, K/V padded to 2176"], PURPLE)
+    d.box(972, 1250, 424, 134, "Decoder transition · block 39", ["Project 1024 → 512; 2× upsample", "Merge C512 skip from block 30", "No FFN or attention"], TEAL)
+    d.arrow([(264, 1172), (264, 1210), (560, 1210), (560, 1250)], PURPLE)
+    d.arrow([(870, 1317), (972, 1317)], PURPLE)
+    d.arrow([(1176, 1250), (1176, 1172)], PURPLE)
+    d.text(44, 1240, "Pool + project 512 → 1024", 15, PURPLE)
+    d.note(1450, "FFN families: Dense at C32 / C1024 · Branched at C64 / C128 / C256 · Grouped at C512.")
+    d.note(1476, "Attention: 8 × 8 Window attention at C32–C512 · Global attention over the C1024 bottleneck field.")
+    d.note(1502, "Solid: main state. Dashed amber: learned-scale skip merges. Fields include padding; training includes input and output stages.")
+    d.note(1528, "Block 39 only changes resolution and merges a skip. Renderer feature preparation and temporal reprojection are external.")
     d.save()
 
 
@@ -142,7 +152,7 @@ def main():
     if len(SCHEDULE) != 71 or SCHEDULE[39]["kind"] != "transition":
         raise RuntimeError("Network schedule changed; review the diagram annotations")
     OUT.mkdir(parents=True, exist_ok=True)
-    for render in (overview, render_blocks, render_attention, render_stages, numerics):
+    for render in (overview, render_blocks, render_variants, render_attention, render_stages, numerics):
         render()
     # These summary-card figures were replaced by individual tensor-flow views.
     for obsolete in ("ffn.svg", "endpoints.svg"):

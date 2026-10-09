@@ -18,8 +18,8 @@ def encoder():
     d = Flow('encoder', 'Encoder: one tail, two distinct paths',
              'H × W × C notation · pool the raw tail; retain its published value for the decoder', 1240)
     d.tensor('input', 35, 130, 260, 'Level input', ['H × W × C', 'Example: 272 × 480 × 128'])
-    d.op('leading', 355, 130, 340, 'Leading window blocks', ['FFN → local attention', 'Example: blocks 9–13'])
-    d.op('tail', 760, 130, 405, 'Tail window block', ['FFN → local attention', 'Example: block 14'])
+    d.op('leading', 355, 130, 340, 'Leading window blocks', ['Branched FFN → Window attention', 'C128 example: blocks 9–13'])
+    d.op('tail', 760, 130, 405, 'Tail window block', ['Branched FFN → Window attention', 'C128 example: block 14'])
     d.link('input', 'leading', start='right', end='left')
     d.link('leading', 'tail', start='right', end='left')
     d.tensor('raw', 790, 280, 360, 'Raw tail R', ['H × W × C', 'Before output publication'])
@@ -40,8 +40,8 @@ def encoder():
            (('1–4', '32', '4 → 66', '64'), ('5–8', '64', '8 → 62', '128'),
             ('9–14', '128', '14 → 56', '256'), ('15–22', '256', '22 → 48', '512'),
             ('23–30', '512', '30 → 39', '1024')), 'Same dependency at all five levels')
-    d.note(35, 1030, ['4K C128 tail: 272 × 480 × 128 → pool 136 × 240 × 128 → project 136 × 240 × 256.',
-                     'Padding changes no size here; other fields gain zero rows or columns before projection.',
+    d.note(35, 1030, ['FFN variants by C: 32 Dense; 64 / 128 / 256 Branched; 512 Grouped. All use Window attention.',
+                     '4K C128 tail: 272 × 480 × 128 → pool 136 × 240 × 128 → project 136 × 240 × 256.',
                      'The retained skip keeps the high-resolution field, before pooling and channel projection.'])
     d.note(35, 1140, ['Pool averages in FP32, casts back, pads, then publishes. The projection is published again.',
                      'Source: DLSSNR._encoder_stage, Numerics.pool and Geometry.levels.'])
@@ -69,9 +69,9 @@ def decoder():
     d.link('merge', 'raw')
     d.op('publish', 490, 700, 320, 'Publish merged state', ['Ht × Wt × C'])
     d.link('raw', 'publish')
-    d.op('first', 490, 835, 320, 'First window block', ['40 / 48 / 56 / 62 / 66', 'FFN → local attention'])
+    d.op('first', 490, 835, 320, 'First window block', ['40 / 48 / 56 / 62 / 66', 'FFN → Window attention'])
     d.link('publish', 'first')
-    d.op('remaining', 875, 835, 290, 'Remaining blocks', ['FFN → local attention', 'Published Ht × Wt × C'])
+    d.op('remaining', 875, 835, 290, 'Remaining blocks', ['FFN → Window attention', 'Published Ht × Wt × C'])
     d.link('first', 'remaining', start='right', end='left')
     d.link('raw', 'first', start='left', end='left', via=((430, 599.5), (430, 879.5)), kind='skip')
     d.note(35, 695, ['Block66 only:', 'Raw merge bypasses publication', 'for its first FFN residual.',
@@ -82,7 +82,7 @@ def decoder():
            (('39', '512', '30', '40', '41–47'), ('48', '256', '22', '48', '49–55'),
             ('56', '128', '14', '56', '57–61'), ('62', '64', '8', '62', '63–65'),
             ('66', '32', '4', '66', '67–69')), 'Weights and record ownership')
-    d.note(35, 1270, ['Transitions48/56/62/66 belong to the first block record;39 has no FFN or attention.',
+    d.note(35, 1270, ['FFN variants by C: 32 Dense; 64 / 128 / 256 Branched; 512 Grouped. Record 39 has no FFN or attention.',
                      'Source: _decoder_stage, _bottleneck_stage and Numerics.upsample_residual.'])
     d.save()
     return d
@@ -97,7 +97,7 @@ def input_stage():
     d.link('features', 'adapter', start='right', end='left')
     d.link('adapter', 'raw_adapter', start='right', end='left')
     d.op('publish_adapter', 860, 305, 300, 'Publish A', ['Working-precision boundary'])
-    d.op('block0', 385, 305, 320, 'Window block0', ['C32 FFN → local attention', 'FFN residual uses raw A'])
+    d.op('block0', 385, 305, 320, 'Window block0 · C32', ['Dense FFN → Window attention', 'FFN residual uses raw A'])
     d.link('raw_adapter', 'publish_adapter')
     d.link('publish_adapter', 'block0', start='left', end='right', via=((790, 338), (790, 349.5)))
     d.link('raw_adapter', 'block0', start='bottom', end='top',
@@ -136,7 +136,7 @@ def output_stage():
     d.tensor('raw70', 815, 515, 345, 'Raw full-field merge M', ['Hp × Wp × 32'])
     d.link('merge70', 'raw70')
     d.op('publish70', 815, 660, 345, 'Publish M', ['Block70 input state'])
-    d.op('block70', 400, 660, 330, 'Window block70', ['C32 FFN → local attention', 'FFN residual uses raw M'])
+    d.op('block70', 400, 660, 330, 'Window block70 · C32', ['Dense FFN → Window attention', 'FFN residual uses raw M'])
     d.link('raw70', 'publish70')
     d.link('publish70', 'block70', start='left', end='right', via=((775, 693), (775, 704.5)))
     d.link('raw70', 'block70', start='left', end='top', via=((565, 548),), kind='skip')
