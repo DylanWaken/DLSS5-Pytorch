@@ -1,8 +1,10 @@
 #include "deployment.h"
 #include "windows_dispatch.inl"
 #include "c512_dispatch.inl"
-#include "kernel_impl/common/kernel_abi.h"
+#include "kernel_impl/shared/common/kernel_abi.h"
 #include "compiled_resolution_policy.h"
+#include "split_launch.h"
+#include "split_launch_policy.h"
 #include <c10/cuda/CUDAGuard.h>
 #include <c10/cuda/CUDAStream.h>
 #include <c10/cuda/CUDAException.h>
@@ -23,7 +25,7 @@ template <> struct FPlanData<false>
 	static constexpr auto& RecordSpecs = RecordSpecs_fp8;
 	static constexpr auto& BufferNameTable = BufferNameTable_fp8;
 
-	static const FGeometryPlanSpec& SelectGeometryPlan(int64_t Width, int64_t Height)
+	static FGeometryPlanSpec SelectGeometryPlan(int64_t Width, int64_t Height)
 	{
 		return SelectGeometryPlan_fp8(Width, Height);
 	}
@@ -34,7 +36,7 @@ template <> struct FPlanData<true>
 	static constexpr auto& RecordSpecs = RecordSpecs_fp16;
 	static constexpr auto& BufferNameTable = BufferNameTable_fp16;
 
-	static const FGeometryPlanSpec& SelectGeometryPlan(int64_t Width, int64_t Height)
+	static FGeometryPlanSpec SelectGeometryPlan(int64_t Width, int64_t Height)
 	{
 		return SelectGeometryPlan_fp16(Width, Height);
 	}
@@ -85,7 +87,7 @@ FDeploymentPlan<bFp16>::FDeploymentPlan(at::Tensor Input, std::vector<at::Tensor
 	  DeviceIndex(Input.is_cuda() ? Input.get_device() : -1)
 {
 	TORCH_CHECK(DeviceIndex >= 0, "deployment input must be CUDA physical storage");
-	Geometry = &FPlanData<bFp16>::SelectGeometryPlan(Width, Height);
+	Geometry = std::make_unique<FGeometryPlanSpec>(FPlanData<bFp16>::SelectGeometryPlan(Width, Height));
 	c10::cuda::CUDAGuard DeviceGuard(Input.device());
 	const auto Stream = c10::cuda::getCurrentCUDAStream(DeviceIndex);
 	RequireDeploymentOutsideCapture(Stream.stream());
@@ -132,12 +134,13 @@ FDeploymentPlan<bFp16>::FDeploymentPlan(at::Tensor Input, std::vector<at::Tensor
 		BufferAddresses.push_back(GetDeploymentTensorAddress(Tensor));
 	BuildCalls();
 	TORCH_CHECK(Calls.size() == 185, "reconstructed trunk schedule census");
-	// FP8 retains its all-resident admission. Native Half uses ordered Z waves;
-	// admit one complete XY partition plane on the qualified SM120 scheduler.
-	// This is an empirically validated native protocol, not a portable guarantee
-	// of arbitrary CUDA block scheduling. Keep other architectures excluded.
+	// Cache the choice before capture. If the complete dependent grid cannot fit,
+	// stream-ordered Z launches let each independent XY plane run in any number
+	// of waves, without relying on the scheduler to start predecessors first.
+	const int EffectiveSmCount =
+		EffectiveSplitSmCount(DeviceProperties.multiProcessorCount, ReadSplitSmCountLimit());
 	std::set<const void*> UniqueKernels;
-	for (const auto& KernelCall : Calls)
+	for (auto& KernelCall : Calls)
 	{
 		cudaFuncAttributes FunctionAttributes{};
 		C10_CUDA_CHECK(cudaFuncGetAttributes(&FunctionAttributes, KernelCall.Function));
@@ -155,12 +158,18 @@ FDeploymentPlan<bFp16>::FDeploymentPlan(at::Tensor Input, std::vector<at::Tensor
 		int ActiveBlocksPerSm = 0;
 		C10_CUDA_CHECK(cudaOccupancyMaxActiveBlocksPerMultiprocessor(&ActiveBlocksPerSm, KernelCall.Function,
 																	 int(ThreadsPerBlock), 0));
-		const int64_t ResidentBlocksRequired =
-			int64_t(KernelCall.Grid.x) * KernelCall.Grid.y * (bFp16 ? 1 : KernelCall.Grid.z);
-		TORCH_CHECK(!KernelCall.bAllResident ||
-						int64_t(ActiveBlocksPerSm) * DeviceProperties.multiProcessorCount >=
-							ResidentBlocksRequired,
-					"ordered split reduction exceeds compiled resident capacity");
+		TORCH_CHECK(ActiveBlocksPerSm > 0, KernelCall.Name,
+					": no block can reside on this device with the compiled resources");
+		const unsigned LaunchCount =
+			SelectSplitLaunchCount(KernelCall.bAllResident, uint64_t(KernelCall.Grid.x) * KernelCall.Grid.y,
+								   KernelCall.Grid.z, ActiveBlocksPerSm, EffectiveSmCount);
+		if (LaunchCount > 1)
+		{
+			KernelCall.SplitParameterOffset = OrderedSplitParameterOffset(KernelCall.Name);
+			TORCH_CHECK(KernelCall.SplitParameterOffset >= 0 &&
+							KernelCall.SplitParameterOffset + int(sizeof(uint64_t)) <= KernelCall.AbiBytes,
+						"ordered split control outside parameter block: ", KernelCall.Name);
+		}
 		if (UniqueKernels.insert(KernelCall.Function).second)
 		{
 			const int64_t ResourceRow[] = {FunctionAttributes.numRegs,
@@ -197,7 +206,7 @@ std::vector<c10::intrusive_ptr<FPreparedKernelHandle>> FDeploymentPlan<bFp16>::P
 		}
 		auto Descriptor = std::make_shared<FPhysicalKernelDescriptor>(
 			Call.Name, DeviceIndex, Call.Function, Call.Grid, Call.Block, ParameterBlock, std::move(Bindings),
-			std::move(InputBytes), std::move(OutputBytes));
+			std::move(InputBytes), std::move(OutputBytes), Call.SplitParameterOffset);
 		Prepared.push_back(
 			RegisterPreparedKernel(std::move(Descriptor), std::move(Inputs), std::move(Outputs)));
 	}
@@ -299,12 +308,20 @@ template <bool bFp16> at::Tensor FDeploymentPlan<bFp16>::Run()
 	// Parameters and storage are prepared once; capture records these same kernel launches.
 	for (auto& KernelCall : Calls)
 	{
-		void* KernelArguments[] = {KernelCall.ParameterBlock.data()};
-		C10_CUDA_CHECK(cudaLaunchKernel(KernelCall.Function, KernelCall.Grid, KernelCall.Block,
-										KernelArguments, 0, Stream.stream()));
+		LaunchPhysicalKernel(KernelCall.Function, KernelCall.Grid, KernelCall.Block,
+							 KernelCall.ParameterBlock, KernelCall.SplitParameterOffset, Stream.stream());
 	}
 	C10_CUDA_KERNEL_LAUNCH_CHECK();
 	return Buffers.back();
+}
+
+template <bool bFp16> std::vector<int64_t> FDeploymentPlan<bFp16>::GetSplitLaunchCounts() const
+{
+	std::vector<int64_t> Counts;
+	Counts.reserve(Calls.size());
+	for (const auto& Call : Calls)
+		Counts.push_back(Call.SplitParameterOffset < 0 ? 1 : Call.Grid.z);
+	return Counts;
 }
 
 template <bool bFp16> std::vector<std::string> FDeploymentPlan<bFp16>::GetBufferNames() const

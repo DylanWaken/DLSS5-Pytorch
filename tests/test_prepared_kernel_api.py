@@ -7,7 +7,9 @@ Run in a fresh process, for example:
 """
 import argparse
 import gc
+import hashlib
 import json
+import os
 from pathlib import Path
 import sys
 import traceback
@@ -53,19 +55,33 @@ def execute(args):
     torch.set_num_threads(8)
     torch.cuda.set_device(args.device)
     load_extension(args.extension)
-    suffix = '_fp16' if args.precision == 'fp16' else ''
-    shape = json.loads((ROOT / f'tuning/plan{suffix}_{args.width}_{args.height}.json').read_text(encoding='utf-8'))
+    from tuning.physical_schedule import make
+    from tuning.generate_plan import build_plan
+    shape = build_plan(make(args.width, args.height, precision=args.precision))
     input_bytes = next(iter(shape['buffers'].values()))['storage_bytes']
     dtype = torch.float16 if args.precision == 'fp16' else torch.float8_e4m3fn
     element_bytes = 2 if args.precision == 'fp16' else 1
     state = (torch.randn(input_bytes // element_bytes, device='cuda', dtype=torch.float16) * .025).to(dtype).view(torch.uint8)
     archive = load_checkpoint(ROOT / f'ckpts/dlss5_nr_{args.precision}.pt')
     plan = getattr(archive, f'create_plan_{args.precision}')(state, width=args.width, height=args.height)
+    assert list(plan.buffer_names()) == list(shape['buffers'])
+    for name, buffer in shape['buffers'].items():
+        assert plan.buffer(name).numel() == buffer['storage_bytes'], name
     integrated = getattr(plan, f'run_{args.precision}')
     sequence = prepare_kernels(plan)
     assert len(sequence.kernels) == 185
     report = dict(precision=args.precision, width=args.width, height=args.height,
-                  torch_version=torch.__version__, calls=185, routes=[], pass_=False)
+                  torch_version=torch.__version__, calls=185, routes=[], pass_=False,
+                  input_bytes=input_bytes, runtime_geometry_matches_reference=True,
+                  reference_plan_sha256=hashlib.sha256(json.dumps(shape, sort_keys=True).encode('utf-8')).hexdigest())
+    report['sm_count_limit'] = os.environ.get('DLSSNR_SM_COUNT_LIMIT')
+    report['split_launch_counts'] = list(plan.split_launch_counts())
+    assert len(report['split_launch_counts']) == 185
+    for count, call in zip(report['split_launch_counts'], shape['calls']):
+        assert count in (1, call['grid'][2])
+        assert call['all_resident'] or count == 1
+        if report['sm_count_limit'] == '1' and call['all_resident']:
+            assert count == call['grid'][2], call['fn']
 
     golden_output = integrated().clone()
     golden_boundaries = [tensor.clone() for tensor in plan.boundaries()]

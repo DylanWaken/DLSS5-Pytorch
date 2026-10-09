@@ -53,7 +53,7 @@ class RegistrationOnlyBuildExtension(BuildExtension):
 
 cuda=sorted((ROOT/'csrc/kernel_impl').rglob('*.cu'))
 host=sorted((ROOT/'csrc/kernel_launcher').glob('*.cpp')) + sorted((ROOT/'csrc/torch_api').glob('*.cpp'))
-templates=json.loads((ROOT/'csrc/kernel_impl/common/kernel_templates.json').read_text(encoding='utf8'))['entries']
+templates=json.loads((ROOT/'csrc/kernel_impl/shared/common/kernel_templates.json').read_text(encoding='utf8'))['entries']
 expected_units=81-len(templates)+len({entry['source'] for entry in templates})
 if len(cuda)!=expected_units or not host or list((ROOT/'csrc/kernel_launcher').glob('*.cu')):
     raise RuntimeError(f'Expected {expected_units} global-body TUs for 81 logical kernels and host-only launchers.')

@@ -1,11 +1,13 @@
 """FP16 trunk differential validation against original cubin functions.
 
-Run in a bounded child process. JSON plans are offline launch contracts; no
-extracted PTX is compiled or substituted into the CUDA/C++ candidate.
+Run in a bounded child process. The reference geometry is computed from exact
+shape formulas; no extracted PTX is compiled or substituted into the CUDA/C++
+candidate. Saved reference JSON records the dimensions actually tested.
 """
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import statistics
 import struct
@@ -37,14 +39,35 @@ def main():
     torch.cuda.set_stream(stream)
     ops = load_extension(args.extension)
     checkpoint = load_checkpoint(ROOT / f'ckpts/dlss5_nr_{args.precision}.pt')
-    plan_suffix = '_fp16' if args.precision == 'fp16' else ''
-    spec = json.loads((ROOT / f'tuning/plan{plan_suffix}_{args.width}_{args.height}.json').read_text())
-    schedule = json.loads((ROOT / f'tuning/network_schedule_{args.precision}_{args.width}_{args.height}.json').read_text())
+    # The independent native reference follows the same exact geometry rules
+    # at any resolution, without requiring a pre-generated per-shape JSON file.
+    from tuning.physical_schedule import make
+    from tuning.generate_plan import build_plan
+    schedule = make(args.width, args.height, precision=args.precision)
+    spec = build_plan(schedule)
+    spec_json = json.dumps(spec, indent=2) + '\n'
+    schedule_json = json.dumps(schedule, indent=2) + '\n'
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    reference_plan_path = args.output.with_name(args.output.stem + '.reference_plan.json')
+    reference_schedule_path = args.output.with_name(args.output.stem + '.reference_schedule.json')
+    reference_plan_path.write_bytes(spec_json.encode('utf-8'))
+    reference_schedule_path.write_bytes(schedule_json.encode('utf-8'))
     names = list(spec['buffers'])
     dtype = torch.float16 if args.precision == 'fp16' else torch.float8_e4m3fn
     state = (torch.randn(spec['buffers']['input']['storage_bytes'] // (2 if args.precision == 'fp16' else 1), device='cuda', dtype=torch.float16) * .02).to(dtype).view(torch.uint8)
     candidate = None if args.native_only else getattr(checkpoint, 'create_plan_' + args.precision)(state, width=args.width, height=args.height)
     candidate_run = None if candidate is None else getattr(candidate, 'run_' + args.precision)
+    split_launch_counts = [] if candidate is None else list(candidate.split_launch_counts())
+    if candidate is not None:
+        assert list(candidate.buffer_names()) == names
+        for name, buffer in spec['buffers'].items():
+            assert candidate.buffer(name).numel() == buffer['storage_bytes'], name
+        assert len(split_launch_counts) == len(spec['calls'])
+        for count, call in zip(split_launch_counts, spec['calls']):
+            assert count in (1, call['grid'][2])
+            assert call['all_resident'] or count == 1
+            if os.environ.get('DLSSNR_SM_COUNT_LIMIT') == '1' and call['all_resident']:
+                assert count == call['grid'][2], call['fn']
     print('Candidate created', flush=True)
     # Candidate records are private; create independent reference weights from
     # the same validated checkpoint values and compare their CPU packing hashes.
@@ -141,10 +164,19 @@ def main():
     compared,failures=compare()
     report = dict(width=args.width,height=args.height,extension_sha256=hashlib.sha256(args.extension.read_bytes()).hexdigest(),boundaries=compared,failures=failures,
                   device=torch.cuda.get_device_name(), torch_version=torch.__version__,
+                  device_sm_count=torch.cuda.get_device_properties(0).multi_processor_count,
+                  sm_count_limit=os.environ.get('DLSSNR_SM_COUNT_LIMIT'),
+                  split_launch_counts=split_launch_counts,
                   harness_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                   native_cubin_sha256={str(index):hashlib.sha256((ROOT / f'assets/vendor_modules/module_{index}.cubin').read_bytes()).hexdigest() for index in range(7)},
                   precision=args.precision,
-                  schedule_sha256=hashlib.sha256((ROOT / f'tuning/plan{plan_suffix}_{args.width}_{args.height}.json').read_bytes()).hexdigest())
+                  runtime_geometry_matches_reference=True,
+                  schedule_sha256=hashlib.sha256(spec_json.encode('utf-8')).hexdigest(),
+                  reference_plan=str(reference_plan_path),
+                  reference_schedule=str(reference_schedule_path),
+                  physical_schedule_sha256=hashlib.sha256(schedule_json.encode('utf-8')).hexdigest(),
+                  geometry_source_sha256={path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
+                      for path in ('dlssnr/geometry.py', 'tuning/physical_schedule.py', 'tuning/generate_plan.py')})
     args.output.parent.mkdir(parents=True,exist_ok=True)
     args.output.write_text(json.dumps(report,indent=2))
     print('Boundary mismatches:',len(failures),failures[:3],flush=True)

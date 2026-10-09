@@ -1,4 +1,5 @@
 #include "prepared_kernel.h"
+#include "split_launch.h"
 #include <c10/cuda/CUDAGuard.h>
 #include <c10/cuda/CUDAStream.h>
 #include <c10/cuda/CUDAException.h>
@@ -119,11 +120,11 @@ CreateKernelSequence(std::vector<c10::intrusive_ptr<FPreparedKernelHandle>> Owne
 FPhysicalKernelDescriptor::FPhysicalKernelDescriptor(
 	std::string InputName, int InputDeviceIndex, const void* InputFunction, dim3 InputGrid, dim3 InputBlock,
 	std::array<unsigned char, 96> InputParameterBlock, std::vector<FPhysicalTensorBinding> InputBindings,
-	std::vector<int64_t> InputExtents, std::vector<int64_t> OutputExtents)
+	std::vector<int64_t> InputExtents, std::vector<int64_t> OutputExtents, int InputSplitParameterOffset)
 	: FPreparedKernelDescriptor(std::move(InputName), InputDeviceIndex), Function(InputFunction),
-	  Grid(InputGrid), Block(InputBlock), ParameterBlock(InputParameterBlock),
-	  Bindings(std::move(InputBindings)), InputBytes(std::move(InputExtents)),
-	  OutputBytes(std::move(OutputExtents))
+	  Grid(InputGrid), Block(InputBlock), SplitParameterOffset(InputSplitParameterOffset),
+	  ParameterBlock(InputParameterBlock), Bindings(std::move(InputBindings)),
+	  InputBytes(std::move(InputExtents)), OutputBytes(std::move(OutputExtents))
 {
 }
 
@@ -183,7 +184,6 @@ void FPhysicalKernelDescriptor::Launch(const std::vector<at::Tensor>& Inputs,
 		const auto g_Address = reinterpret_cast<uint64_t>(Tensor.data_ptr());
 		std::memcpy(Arguments.data() + Binding.ParameterOffset, &g_Address, sizeof(g_Address));
 	}
-	void* KernelArguments[] = {Arguments.data()};
-	C10_CUDA_CHECK(cudaLaunchKernel(Function, Grid, Block, KernelArguments, 0, Stream.stream()));
+	LaunchPhysicalKernel(Function, Grid, Block, Arguments, SplitParameterOffset, Stream.stream());
 	C10_CUDA_KERNEL_LAUNCH_CHECK();
 }

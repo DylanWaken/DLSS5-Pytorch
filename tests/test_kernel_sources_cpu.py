@@ -24,10 +24,10 @@ class KernelSourcesCPUTest(unittest.TestCase):
         )
 
     def make_template_fixture(self, root):
-        (root / "kernel_impl/fp8").mkdir(parents=True)
-        (root / "kernel_impl/common").mkdir()
+        (root / "kernel_impl/example_stage/fp8").mkdir(parents=True)
+        (root / "kernel_impl/shared/common").mkdir(parents=True)
         (root / "kernel_launcher").mkdir()
-        path = root / "kernel_impl/fp8/example_fp8.cu"
+        path = root / "kernel_impl/example_stage/fp8/example_fp8.cu"
         path.write_text(
             "template <int Channels, typename FParameters>\n"
             "__global__ __maxnreg__(168) void example_fp8(FParameters Parameters)\n"
@@ -67,12 +67,12 @@ class KernelSourcesCPUTest(unittest.TestCase):
         entries = [{
             "name": f"example_c{channels}_fp8",
             "template_function": "example_fp8",
-            "source": "kernel_impl/fp8/example_fp8.cu",
+            "source": "kernel_impl/example_stage/fp8/example_fp8.cu",
             "parameters": "FExampleParameters",
             "template_arguments": f"{channels}, FExampleParameters",
             "resolver": f"Resolve_example_c{channels}_fp8",
         } for channels in (32, 64)]
-        manifest = root / "kernel_impl/common/kernel_templates.json"
+        manifest = root / "kernel_impl/shared/common/kernel_templates.json"
         manifest.write_text(json.dumps({"entries": entries}), encoding="utf-8")
         return path, manifest, entries
 
@@ -86,13 +86,14 @@ class KernelSourcesCPUTest(unittest.TestCase):
         self.assertEqual(inventory["template_entry_count"], 40)
 
     def test_replaced_entry_files_do_not_survive_beside_templates(self):
-        manifest = ROOT / "csrc/kernel_impl/common/kernel_templates.json"
+        manifest = ROOT / "csrc/kernel_impl/shared/common/kernel_templates.json"
         entries = json.loads(manifest.read_text(encoding="utf-8"))["entries"]
         for entry in entries:
             with self.subTest(entry=entry["name"]):
-                precision = "fp16" if entry["name"].endswith("_fp16") else "fp8"
-                old = ROOT / "csrc/kernel_impl" / precision / (entry["name"] + ".cu")
-                self.assertFalse(old.exists(), f"obsolete standalone entry remains: {old}")
+                # Search every stage, including accidentally retained old folders.
+                # Testing only the removed precision folder would pass vacuously.
+                obsolete = list((ROOT / "csrc/kernel_impl").rglob(entry["name"] + ".cu"))
+                self.assertFalse(obsolete, f"obsolete standalone entries remain: {obsolete}")
                 self.assertTrue((ROOT / "csrc" / entry["source"]).is_file())
 
     def test_registered_template_has_one_definition_and_two_logical_entries(self):
@@ -108,7 +109,74 @@ class KernelSourcesCPUTest(unittest.TestCase):
             self.assertEqual(set(inventory["entries"]), {"example_c32_fp8", "example_c64_fp8"})
             for entry in inventory["entries"].values():
                 self.assertEqual(entry["definition"], "example_fp8")
-                self.assertEqual(entry["emission_unit"], "kernel_impl/fp8/example_fp8.cu")
+                self.assertEqual(entry["emission_unit"], "kernel_impl/example_stage/fp8/example_fp8.cu")
+
+    def test_historical_manifest_remains_readable_but_old_layout_is_not_active(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path, manifest, entries = self.make_template_fixture(root)
+            current = collect(root)
+            historical_path = root / "kernel_impl/fp8/example_fp8.cu"
+            historical_path.parent.mkdir()
+            historical_path.write_bytes(path.read_bytes())
+            path.unlink()
+            historical_manifest = root / "kernel_impl/common/kernel_templates.json"
+            historical_manifest.parent.mkdir()
+            for entry in entries:
+                entry["source"] = historical_path.relative_to(root).as_posix()
+            historical_manifest.write_text(json.dumps({"entries": entries}), encoding="utf-8")
+            manifest.unlink()
+            historical = collect(root)
+            compare_exports(current, historical)
+            self.assertEqual(historical["entry_count"], 2)
+            with self.assertRaisesRegex(ValueError, "own named CUDA file"):
+                check_entry_layout(historical, root)
+
+    def test_current_and_obsolete_template_catalogs_cannot_coexist(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            _, manifest, _ = self.make_template_fixture(root)
+            obsolete = root / "kernel_impl/common/kernel_templates.json"
+            obsolete.parent.mkdir()
+            obsolete.write_bytes(manifest.read_bytes())
+            with self.assertRaisesRegex(ValueError, "multiple template manifests"):
+                collect(root)
+
+    def test_stage_owned_helpers_and_intrinsics_are_admitted(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.make_template_fixture(root)
+            helpers = root / "kernel_impl/example_stage/common"
+            helpers.mkdir()
+            (helpers / "tile_helpers.cuh").write_text("#pragma once\n", encoding="utf-8")
+            (helpers / "intrinsics.cuh").write_text("#pragma once\n", encoding="utf-8")
+            check_entry_layout(collect(root), root)
+
+    def test_helpers_outside_stage_precision_folders_are_rejected(self):
+        for relative in ("kernel_impl/common/helper.cuh", "kernel_impl/example_stage/helper.cuh",
+                         "kernel_impl/example_stage/misc/helper.cuh"):
+            with self.subTest(path=relative), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                self.make_template_fixture(root)
+                misplaced = root / relative
+                misplaced.parent.mkdir(parents=True, exist_ok=True)
+                misplaced.write_text("#pragma once\n", encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, "device sources belong"):
+                    check_entry_layout(collect(root), root)
+
+    def test_precision_label_cannot_disagree_with_the_global_export(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path, manifest, entries = self.make_template_fixture(root)
+            wrong = root / "kernel_impl/example_stage/fp16/example_fp8.cu"
+            wrong.parent.mkdir()
+            wrong.write_bytes(path.read_bytes())
+            path.unlink()
+            for entry in entries:
+                entry["source"] = wrong.relative_to(root).as_posix()
+            manifest.write_text(json.dumps({"entries": entries}), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "own named CUDA file"):
+                check_entry_layout(collect(root), root)
 
     def test_unmapped_cpp_template_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -157,7 +225,7 @@ class KernelSourcesCPUTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             self.make_template_fixture(root)
-            self.write_kernel(root / "kernel_impl/fp8/example_c32_fp8.cu", "example_c32_fp8")
+            self.write_kernel(root / "kernel_impl/example_stage/fp8/example_c32_fp8.cu", "example_c32_fp8")
             with self.assertRaisesRegex(ValueError, "duplicate CUDA entry.*template and direct definition"):
                 collect(root)
 

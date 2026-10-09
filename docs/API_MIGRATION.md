@@ -1,6 +1,14 @@
 # Reconstructed deployment API migration
 
-FP8 and FP16 admit four exact prepared-feature fields on SM120: **1280 × 720, 1920 × 1080, 2560 × 1440 and 3840 × 2160**, batch one. The preceding per-entry build passed all 74 published boundaries and the within-1% native-speed gate at each size. Current template integration preserves the public API but requires its own [validation receipt](template_integration_validation.json); historical measurements retain their original binary identity. See [current status](RECONSTRUCTION_STATUS.md) for evidence and installation state.
+FP8 and FP16 use a batch-one prepared-feature interface on SM120. Plans derive
+allocation sizes and launch geometry from the requested image dimensions in C++;
+they are no longer limited to four resolution-table entries. See
+[runtime geometry](DYNAMIC_RESOLUTIONS.md) for packing, padding and size limits,
+and [small-GPU scheduling](SMALL_GPU_SCHEDULING.md) for ordered reductions when
+the dependent grid exceeds resident capacity. The
+[current validation receipt](small_gpu_validation.json) records the installed
+build and tested cases; [current status](RECONSTRUCTION_STATUS.md) distinguishes
+numerical/API coverage from the remaining FP8 1080p performance gap.
 
 ## Explicit precision names
 
@@ -15,7 +23,7 @@ FP8 and FP16 admit four exact prepared-feature fields on SM120: **1280 × 720, 1
 
 The old unsuffixed aliases are not provided. Python `create_plan_fp8` defaults to 3840 × 2160 and calls `create_plan_for_resolution_fp8`. FP16 has matching `create_plan_fp16`, `inference_forward_fp16`, `DeploymentPlan_fp16`, `run_fp16`, `record_names_fp16` and `record_bytes_fp16` entry points. See the [Half layout and profiling report](FP16_DEPLOYMENT.md). Low-level family calls use `prepare_window_fp8` / `prepare_window_fp16`, `window_out_fp8` / `window_out_fp16`, and corresponding `prepare_c512`, `c512_out` and `c512_block_out` suffix pairs. Entry IDs, physical tensor roles, mutable outputs and admitted geometries are family-specific; an FP16 suffix does not admit every shape or fuse a full model.
 
-The plan methods remain `boundaries()`, `boundary_names()`, `buffer(name)`, `buffer_names()`, `resources()`, `guards_intact()` and `poison(byte)`. Prepare the plan and perform guard inspection/poisoning outside capture. `compiled_policy_version()` and `resolution_selection(...)` expose policy metadata, not Python inference dispatch. Unreal-style internal C++ renaming does not rename these Python/Torch operations.
+The plan methods include `boundaries()`, `boundary_names()`, `buffer(name)`, `buffer_names()`, `resources()`, `guards_intact()`, `poison(byte)` and `split_launch_counts()`. The latter reports physical launches per logical call: one for native execution, two or four for an ordered reduction. Prepare the plan and perform guard inspection/poisoning outside capture. `compiled_policy_version()` and `resolution_selection(...)` expose policy metadata, not Python inference dispatch. Unreal-style internal C++ renaming does not rename these Python/Torch operations.
 
 ## Load and prepare physical inputs
 
@@ -46,7 +54,23 @@ plan = create_plan_fp8(state, records, width=1920, height=1080)
 result = inference_forward_fp8(plan)
 ```
 
-The caller supplies packed features and 142 physical records, not a BHWC image or decoded training parameters. Each precision and geometry uses a 185-launch schedule—152 compute/repack calls and 33 clears—with geometry-specific parameters and buffer extents. The entry checks byte extents, alignment, disjoint input/record storage, device and resident-capacity constraints. Unsupported dimensions or hardware are rejected; policy clamping does not create admission. Renderer preparation, pre0/frontend, post70/output helpers and DLL host work are outside this trunk.
+The caller supplies packed features and 142 physical records, not a BHWC image or decoded training parameters. Each precision and geometry uses 185 logical calls—152 compute/repack calls and 33 clears—with geometry-specific parameters and buffer extents. The entry checks byte extents, alignment, disjoint input/record storage and device limits. Renderer preparation, pre0/frontend, post70/output helpers and DLL host work are outside this trunk.
+
+Create a new plan outside capture when image dimensions change. Its computed
+geometry is owned by the plan, while that plan's buffers and prepared operators
+keep fixed extents. Policy-query clamping does not resize tensors or replace the
+requested geometry. Odd, portrait and ultrawide dimensions follow the recovered
+padding rules; integer-index, grid and available-memory limits still apply.
+
+Preparation compares the complete split-reduction grid against the current
+kernel's resident capacity. When it does not fit, the launcher submits each K
+split in order on the caller's stream, keeping the original arithmetic and
+scratch format. The same choice follows prepared individual operators through
+tensor rebinding and CUDA Graph capture. `DLSSNR_SM_COUNT_LIMIT` can lower the
+capacity used during preparation to exercise this path; it never increases the
+device's reported capacity. It does not physically restrict GPU execution to
+that number of SMs. A plan owns mutable workspace, so callers must order
+executions that share it across streams.
 
 ## Individual kernels and `torch.compile`
 
@@ -228,8 +252,10 @@ The model is minimally trainable. **DLSS5 transfer-learning methodology, actual 
 
 Current source has 81 stable logical names represented by 56 full-body CUDA files:
 40 configurations share 15 global templates, and 41 retain direct definitions.
-Each global shows its storage, loops, pipeline and writes. The manifest
-`kernel_impl/common/kernel_templates.json` maps template configurations to source
+Files are grouped by network stage, then `fp8/`, `fp16/` and stage `common/`.
+Directory names identify code shared by encoder/decoder levels; Python operator
+names are unchanged. Each global shows its storage, loops, pipeline and writes. The manifest
+`kernel_impl/shared/common/kernel_templates.json` maps template configurations to source
 and compile-time arguments; `kernel_abi.h` owns records, checked aliases and
 resolver declarations. Same-TU host resolvers return specialization addresses;
 launch dispatch and generated schedules remain in `kernel_launcher`.
@@ -250,7 +276,7 @@ Torch `dlssnr` domain remain unchanged. See [source organization](SOURCE_LAYOUT.
 [readability](CODE_READABILITY.md) and the
 [workflow skill](../skills/dlssnr-reconstruction/SKILL.md).
 
-Policy JSON/CLI precision tokens are `fp8` and `fp16`; new `half` inputs are rejected. Frozen historical receipts retain their original vocabulary. The per-device `sm_120.json` has no measured anchors. Unmeasured selection returns `config_id=-1`. Matching-family measured extrema and deterministic nearest-anchor selection apply only to query metadata and preserve actual dimensions; they never grant execution support. Four tested C++ baseline shapes are not continuous 720p–4K tuning coverage.
+Policy JSON/CLI precision tokens are `fp8` and `fp16`; new `half` inputs are rejected. Frozen historical receipts retain their original vocabulary. The per-device `sm_120.json` has no measured anchors. Unmeasured selection returns `config_id=-1`. Matching-family measured extrema and deterministic nearest-anchor selection apply only to query metadata and preserve actual dimensions; they never grant execution support. Four benchmark sizes are not a measured continuous-resolution tuning policy.
 
 The historical [readability build](../outputs/all-reconstructed-deployment-prep/readability-ue-v2/build-run-v1/build.json)
 compiled ten CUDA and two host translation units. Its [saved ELF comparison](../outputs/all-reconstructed-deployment-prep/readability-ue-v2/compiled-comparison/summary.json)

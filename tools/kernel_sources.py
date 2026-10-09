@@ -54,8 +54,15 @@ def collect(csrc, *, allow_legacy_namespaces=False):
     if not paths:
         raise ValueError(f"no C++/CUDA sources found in {csrc}")
     sources = {path: path.read_text(encoding="utf-8") for path in paths}
-    manifest = csrc / "kernel_impl/common/kernel_templates.json"
-    templates = json.loads(manifest.read_text(encoding="utf8"))["entries"] if manifest.is_file() else []
+    # Historical snapshots remain readable for export comparisons. An active
+    # tree must never contain both catalogs: that would hide stale ownership.
+    manifests = [path for path in (
+        csrc / "kernel_impl/shared/common/kernel_templates.json",
+        csrc / "kernel_impl/common/kernel_templates.json",
+    ) if path.is_file()]
+    if len(manifests) > 1:
+        raise ValueError("multiple template manifests: remove the obsolete layout catalog")
+    templates = json.loads(manifests[0].read_text(encoding="utf8"))["entries"] if manifests else []
     if len({entry["name"] for entry in templates}) != len(templates):
         raise ValueError("duplicate logical entry in template manifest")
     includes = {}
@@ -174,16 +181,20 @@ def check_roster(inventory):
 
 
 def check_entry_layout(inventory, csrc):
-    """Require readable device entries in kernel_impl and host-only launchers."""
+    """Require stage/precision device ownership and host-only launchers."""
     csrc = Path(csrc)
     for name, entry in inventory["entries"].items():
         precision = "fp8" if name.endswith("_fp8") else "fp16" if name.endswith("_fp16") else "common"
         definition = entry.get("definition", name)
+        relative = Path(entry["header"])
+        parts = relative.parts
         # A precision-independent global template can instantiate both formats.
-        if "resolver" in entry and entry["header"].startswith("kernel_impl/common/"):
+        if "resolver" in entry and len(parts) == 4 and parts[2] == "common":
             precision = "common"
-        expected = f"kernel_impl/{precision}/{definition}.cu"
-        if entry["header"] != expected or entry["emission_unit"] != expected:
+        stage = parts[1] if len(parts) == 4 else "<network_stage>"
+        expected = f"kernel_impl/{stage}/{precision}/{definition}.cu"
+        if (entry["header"] != expected or entry["emission_unit"] != expected
+                or stage in {"fp8", "fp16", "common"}):
             raise ValueError(f"{name}: expected its own named CUDA file for the global definition: {expected}")
         if name != "completion_counter_clear" and entry["body_lines"] < 20:
             raise ValueError(f"{name}: global entry must contain its execution flow")
@@ -193,9 +204,16 @@ def check_entry_layout(inventory, csrc):
         code = _without_comments_and_strings(path.read_text(encoding="utf8"))
         if path.suffix == ".cu" or re.search(r"\b(?:__device__|__global__|__shared__)\b", code):
             raise ValueError(f"{path.name}: kernel_launcher must contain only host code")
-    for path in (csrc / "kernel_impl").rglob("*.cuh"):
-        if path.parent != csrc / "kernel_impl/common":
-            raise ValueError(f"{path.name}: shared headers belong in kernel_impl/common")
+    for path in (csrc / "kernel_impl").rglob("*"):
+        if path.suffix not in SOURCE_SUFFIXES:
+            continue
+        parts = path.relative_to(csrc / "kernel_impl").parts
+        if (len(parts) != 3 or parts[0] in {"fp8", "fp16", "common"}
+                or parts[1] not in {"fp8", "fp16", "common"}
+                or not re.fullmatch(r"[a-z][a-z0-9_]*", parts[0])):
+            raise ValueError(f"{path.name}: device sources belong in kernel_impl/<network_stage>/<precision>/")
+        if path.suffix not in {".cuh", ".h"}:
+            continue
         code = _without_comments_and_strings(path.read_text(encoding="utf8"))
         if re.search(r"\bRun(?:Window|Global|Spatial|Channel|Decoder|Preprocess|Postprocess)\w*\s*\(", code):
             raise ValueError(f"{path.name}: kernel orchestration belongs in the global entry")

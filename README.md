@@ -6,11 +6,11 @@ Reconstructed DLSS-NR CUDA kernels for PyTorch, plus a differentiable network fo
 
 | Route | What you can use |
 |---|---|
-| **FP8 deployment** | CUDA-graph-compatible prepared-feature inference at 720p, 1080p, 2K and 4K; tested on SM120. |
-| **FP16 deployment** | Complete prepared-feature CUDA/C++ trunk at the same four sizes; within 1% of original kernels in both execution orders. |
+| **FP8 deployment** | CUDA-graph-compatible prepared-feature inference at arbitrary supported padded resolutions on SM120. |
+| **FP16 deployment** | Complete prepared-feature CUDA/C++ trunk with runtime geometry and automatic scheduling for smaller SM120 GPUs. |
 | **FP32 / BF16 training** | All 71 numbered network records, ordinary autograd and optional activation checkpointing. All eight resolution/precision benchmark cases pass. |
 
-The current deployment target is **SM120**, tested on an RTX PRO 6000 Blackwell. Other GPUs and continuous-resolution deployment remain future work. Inputs are prepared features; renderer integration is not included.
+The current deployment target is **SM120**, tested on an RTX PRO 6000 Blackwell. Inputs are prepared features; renderer integration is not included. [Arbitrary supported resolutions](docs/DYNAMIC_RESOLUTIONS.md) are prepared in C++; [ordered split launches](docs/SMALL_GPU_SCHEDULING.md) handle smaller GPU capacity. This fallback was tested by lowering scheduling admission on the available GPU; no physical RTX 5060 was available.
 
 ## Network at a glance
 
@@ -72,15 +72,15 @@ All 81 entries have individual Torch operators. Default Inductor and `aot_eager`
 
 ## Speed overview
 
-**FP8 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **6.733 ms reconstructed / 6.846 ms original**.
+**FP8 inference:** three of four sizes meet the 1% limit; 1080p measures **1.19% slower**. At 4K: **6.528 ms reconstructed / 6.650 ms original**.
 
 ![FP8 deployment latency at 720p, 1080p, 2K and 4K](docs/figures/deployment_fp8_resolutions.svg)
 
-**FP16 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **11.472 ms reconstructed / 11.753 ms original**.
+**FP16 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **11.307 ms reconstructed / 11.572 ms original**.
 
 ![FP16 deployment latency at 720p, 1080p, 2K and 4K](docs/figures/deployment_fp16_resolutions.svg)
 
-These are measurements of the integrated template build. Inference charts exclude input/output stages and DLL host processing; the [validation report](docs/template_integration_validation.json) records all eight runs.
+These measurements use the current build and automatic scheduling on the RTX PRO 6000. Inference charts exclude input/output stages and DLL host processing; the [validation report](docs/small_gpu_validation.json) records all eight timing runs, fourteen additional resolution checks and the performance exception.
 
 **Training:** full-network FP32/BF16 forward and backward, with checkpointing, batch one and no optimizer. At 4K, peak allocated memory is **52.4 / 43.3 GiB**, respectively.
 
@@ -99,7 +99,7 @@ See [benchmark scope and detailed results](docs/BENCHMARKS.md) for methodology, 
 
 ## Project layout and further reading
 
-`csrc/kernel_impl` contains **56 complete kernel bodies for 81 public configurations**. Repeated channels and layouts share compile-time templates; each global function shows its storage, loops, pipelining and writeback. `fp8` and `fp16` hold precision-specific kernels; `common` holds shared primitives, ABI records, repack templates and counter reset. `kernel_launcher` contains host dispatch and launch policies; `torch_api` registers the PyTorch interfaces. `dlssnr` contains entry points and the training model; `tests` and `tuning` hold validation and offline policy tools.
+`csrc/kernel_impl/<network_stage>/{fp8,fp16,common}` contains **56 complete kernel bodies for 81 public configurations**. Folder names identify shared encoder/decoder levels; repeated blocks retain one implementation. Each global function shows its storage, loops, pipelining and writeback. Stage helpers and intrinsics sit beside their kernels; `shared/common` contains cross-stage primitives and the ABI. `kernel_launcher` owns host dispatch, `torch_api` registers PyTorch interfaces, and `dlssnr` contains entry points and the training model. `tests` and `tuning` hold validation and offline policy tools.
 
 - [Architecture atlas](docs/ARCHITECTURE.md) · [Current coverage and limitations](docs/RECONSTRUCTION_STATUS.md)
 - [Kernel reading guide](docs/KERNEL_READING_GUIDE.md) · [Source layout and shared helpers](docs/SOURCE_LAYOUT.md) · [Code conventions](docs/CODE_READABILITY.md) · [Naming audit](docs/NAMING_AUDIT.md) · [Readable CUDA reconstruction](docs/SEMANTIC_RECONSTRUCTION.md) · [Historical optimization log](docs/optimization_log_2026-10-05.md)

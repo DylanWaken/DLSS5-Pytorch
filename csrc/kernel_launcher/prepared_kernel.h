@@ -91,13 +91,14 @@ struct FPhysicalKernelDescriptor final : FPreparedKernelDescriptor
 {
 	const void* const Function;
 	const dim3 Grid, Block;
+	const int SplitParameterOffset;
 	const std::array<unsigned char, 96> ParameterBlock;
 	const std::vector<FPhysicalTensorBinding> Bindings;
 	const std::vector<int64_t> InputBytes, OutputBytes;
 	FPhysicalKernelDescriptor(std::string Name, int DeviceIndex, const void* Function, dim3 Grid, dim3 Block,
 							  std::array<unsigned char, 96> ParameterBlock,
 							  std::vector<FPhysicalTensorBinding> Bindings, std::vector<int64_t> InputBytes,
-							  std::vector<int64_t> OutputBytes);
+							  std::vector<int64_t> OutputBytes, int SplitParameterOffset = -1);
 	void Validate(const std::vector<at::Tensor>& Inputs, const std::vector<at::Tensor>& Outputs,
 				  bool bMeta) const override;
 	void Launch(const std::vector<at::Tensor>& Inputs, const std::vector<at::Tensor>& Outputs) const override;

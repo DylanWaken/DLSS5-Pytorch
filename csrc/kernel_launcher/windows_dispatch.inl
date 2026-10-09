@@ -1,6 +1,6 @@
 #pragma once
 #include "windows_dispatch.h"
-#include "kernel_impl/common/kernel_abi.h"
+#include "kernel_impl/shared/common/kernel_abi.h"
 #include <cuda_runtime_api.h>
 #include <c10/cuda/CUDAGuard.h>
 #include <c10/cuda/CUDAStream.h>

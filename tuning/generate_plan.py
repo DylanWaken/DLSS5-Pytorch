@@ -16,7 +16,7 @@ def load(name):
 
 def load_template_resolvers():
     """Resolve logical names to same-TU getters, independent of CUDA mangling."""
-    source = (ROOT / 'csrc/kernel_impl/common/kernel_abi.h').read_text(encoding='utf-8')
+    source = (ROOT / 'csrc/kernel_impl/shared/common/kernel_abi.h').read_text(encoding='utf-8')
     return {
         entry: resolver for resolver, entry in re.findall(
             r'extern\s+"C"\s+const\s+void\s*\*\s*(Resolve_(\w+))\s*\(\s*\)\s*;', source)
@@ -33,7 +33,7 @@ def load_abi_fields():
     Generation fails when a written offset has no checked field. Neither the
     generated plans nor a second schema can silently redefine the native ABI.
     """
-    source = (ROOT / 'csrc' / 'kernel_impl' / 'common' / 'kernel_abi.h').read_text(encoding='utf-8')
+    source = (ROOT / 'csrc' / 'kernel_impl' / 'shared' / 'common' / 'kernel_abi.h').read_text(encoding='utf-8')
     fields_by_type = {}
     for parameter_type, field, offset in re.findall(
             r'offsetof\((\w+),\s*(\w+)\)\s*==\s*(\d+)', source):
@@ -190,6 +190,145 @@ def build_plan(schedule):
 RESOLUTIONS = ((1280, 720), (1920, 1080), (2560, 1440), (3840, 2160))
 
 
+def block_level(block):
+    for first, last, level in ((1, 4, 0), (5, 8, 1), (9, 14, 2), (15, 22, 3),
+                               (23, 30, 4), (31, 38, 5), (39, 47, 4), (48, 55, 3),
+                               (56, 61, 2), (62, 65, 1), (66, 69, 0)):
+        if first <= block <= last:
+            return level
+    raise ValueError(f'unknown network block: {block}')
+
+
+def buffer_geometry_expression(name):
+    """Emit layout formulas from buffer roles, never infer them from anchor values."""
+    if name == 'input':
+        return 'Shape.SpatialBytes(0, 32, ElementBytes)'
+    if name == 'repack-30-31':
+        return 'Shape.TokenBytes(1024, ElementBytes)'
+    if name == 'repack-38-39':
+        return 'Shape.SpatialBytes(5, 1024, ElementBytes)'
+    match = re.fullmatch(r'b(\d+)\.(\w+)', name)
+    if not match:
+        raise ValueError(f'unknown physical buffer role: {name}')
+    block, role = int(match[1]), match[2]
+    level = block_level(block)
+    channels = 32 << level
+    if 31 <= block <= 38:
+        if role.endswith('_counter'):
+            counters = {'contract_counter': 8, 'qkv_counter': 16,
+                        'attention_counter': 32, 'projection_counter': 8}[role]
+            return f'Shape.CounterBytes({counters})'
+        if role.endswith('_scratch'):
+            if role not in ('contract_scratch', 'qkv_scratch', 'projection_scratch'):
+                raise ValueError(f'unknown global scratch role: {name}')
+            return f'Shape.TokenBytes(1024, 2, {3 if role == "qkv_scratch" else 1})'
+        if role not in ('expanded', 'contracted', 'Q', 'K', 'V', 'attended', 'output'):
+            raise ValueError(f'unknown global tensor role: {name}')
+        return f'Shape.TokenBytes({4096 if role == "expanded" else 1024}, ElementBytes)'
+    if block == 39 and role == 'up_counter':
+        return 'Shape.DecoderCounterBytes()'
+    if block == 39 and role == 'scratch':
+        return 'Shape.SpatialBytes(5, 512, 2)'
+    if block == 30 and role in ('pool', 'down'):
+        return f'Shape.SpatialBytes(5, {512 if role == "pool" else 1024}, ElementBytes)'
+    if role == 'down' and block in (4, 8, 14, 22):
+        return f'Shape.DownsampleBytes({level}, {channels}, ElementBytes)'
+    if role not in ('output', 'branches', 'ffn', 'attended'):
+        raise ValueError(f'unknown spatial tensor role: {name}')
+    return f'Shape.SpatialBytes({level}, {channels}, ElementBytes)'
+
+
+def call_geometry_expressions(call, fields):
+    """Return exact grid/scalar formulas for one invariant logical call."""
+    name = call['fn']
+    values = {fields[offset]: value for offset, size, value in call['fields'] if size == 4}
+    level = None
+    if name.startswith('window_block_'):
+        channels = int(re.search(r'_c(32|64|128|256)_', name)[1])
+        level = {32: 0, 64: 1, 128: 2, 256: 3}[channels]
+    elif name.startswith(('window_ffn_', 'window_qkv_', 'window_attention_')):
+        level = 4
+    elif name.startswith(('channel_projection_', 'repack_')):
+        level = 5
+
+    scalars = {}
+    for field in values:
+        if field in ('OriginX', 'OriginY', 'BatchCount'):
+            # Window phase belongs to the fixed network sequence; global batch
+            # is explicitly one. Neither is chosen from measured dimensions.
+            scalars[field] = values[field]
+        elif field in ('Height', 'Width', 'ViewHeight', 'ViewWidth', 'ResidualHeight', 'ResidualWidth'):
+            if level is None:
+                raise ValueError(f'missing geometry level for {name}.{field}')
+            axis = 'Height' if field.endswith('Height') else 'Width'
+            scalars[field] = f'Shape.{axis}({level})'
+        elif field in ('DownsampledHeight', 'DownsampledWidth'):
+            axis = 'Height' if field.endswith('Height') else 'Width'
+            scalars[field] = f'Shape.{axis}({level + 1})'
+        elif field in ('InputHeight', 'InputWidth', 'OutputHeight', 'OutputWidth'):
+            axis = 'Height' if field.endswith('Height') else 'Width'
+            scalars[field] = f'Shape.{axis}({5 if field.startswith("Input") else 4})'
+        elif field == 'TokensPerBatch':
+            scalars[field] = 'Shape.Tokens()'
+        elif field == 'CounterCount':
+            counter = next(value for offset, size, value in call['fields'] if offset == 0 and size == 8)
+            index = re.fullmatch(r'address\((\d+)\)', counter)[1]
+            scalars[field] = f'(Geometry.BufferBytes[{index}] / 4)'
+        else:
+            raise ValueError(f'unknown geometry argument: {name}.{field}')
+
+    def divide(value, divisor):
+        return f'GeometryDivideUp({value}, {divisor})'
+
+    if name == 'completion_counter_clear':
+        grid = [divide(scalars['CounterCount'], 256), '1', '1']
+    elif name.startswith('window_block_'):
+        grid = [divide(f'Shape.Width({level}) + {-int(values["OriginX"])}', 8),
+                divide(f'Shape.Height({level}) + {-int(values["OriginY"])}', 8), '1']
+    elif name.startswith('window_qkv_'):
+        grid = [divide(f'Shape.Width(4) + {-int(values["OriginX"])}', 8),
+                divide(f'Shape.Height(4) + {-int(values["OriginY"])}', 8), '4']
+    elif name.startswith(('window_ffn_projection_', 'window_attention_projection_')):
+        grid = [f'2 * {divide("Shape.Width(4)", 8)}', divide('Shape.Height(4)', 8), '1']
+    elif name.startswith('window_ffn_'):
+        grid = [divide('Shape.Width(4)', 8), divide('Shape.Height(4)', 8), '2']
+    elif name.startswith('channel_projection_'):
+        grid = [f'4 * {divide("Shape.Width(5)", 8)}', divide('Shape.Height(5)', 8), '1']
+    elif name.startswith('repack_'):
+        grid = ['Shape.PaddedTokens() * ElementBytes', '1', '1']
+    elif name.startswith('global_attention_chained_'):
+        grid = ['32', divide('Shape.Tokens()', 256), '1']
+    elif name.startswith(('global_ffn_', 'global_qkv_', 'global_projection_')):
+        tiles, splits = ((32, 1) if name.startswith('global_ffn_expand_') else
+                         (16, 2) if name.startswith('global_qkv_') else (8, 4))
+        grid = [f'{tiles} * {divide("Shape.Tokens()", 128)}', '1', str(splits)]
+    elif name.startswith('decoder_upsample_'):
+        grid = [f'2 * {divide("Shape.Width(5)", 4)}', divide('Shape.Height(5)', 4), '4']
+    else:
+        raise ValueError(f'unknown launch geometry: {name}')
+    return grid, [scalars[field] for field in values]
+
+
+def runtime_geometry_source(precision, plan, abi_fields):
+    lines = ['// Generated exact physical-layout formulas; dimensions are runtime values.',
+             '// Measured resolutions select tuning policy only; they are not an execution whitelist.',
+             f'static FGeometryPlanSpec SelectGeometryPlan_{precision}(int64_t Width, int64_t Height)',
+             '{', '    const auto Shape = CreateNetworkGeometry(Width, Height);',
+             f'    constexpr int ElementBytes = {2 if precision == "fp16" else 1};',
+             '    FGeometryPlanSpec Geometry{Width, Height, {}, {}, {}};',
+             '    Geometry.BufferBytes = {']
+    lines += [f'        {buffer_geometry_expression(name)}, // {name}' for name in plan['buffers']]
+    lines += ['    };', '    Geometry.Grids = {']
+    calls = [call_geometry_expressions(call, abi_fields[call['fn']]) for call in plan['calls']]
+    lines += [f'        GeometryGrid({", ".join(grid)}), // {call["fn"]}'
+              for call, (grid, _) in zip(plan['calls'], calls)]
+    lines += ['    };', '    Geometry.GeometryArguments = {']
+    lines += [f'        {", ".join("GeometryScalar(" + value + ")" for value in scalars)}, // {call["fn"]}'
+              for call, (_, scalars) in zip(plan['calls'], calls)]
+    lines += ['    };', '    return Geometry;', '}']
+    return '\n'.join(lines) + '\n'
+
+
 def generate(precision="fp8"):
     from physical_schedule import make
 
@@ -211,46 +350,6 @@ def generate(precision="fp8"):
             for actual_field, expected_field in zip(actual['fields'], expected['fields']):
                 if actual_field[:2] != expected_field[:2] or (actual_field[1] == 8 and actual_field != expected_field):
                     raise ValueError('shape changed a pointer binding')
-
-    header = '''// Generated by tuning/generate_plan.py. Launch preparation only.
-#pragma once
-#include <cuda_runtime_api.h>
-#include <cstdint>
-struct FGeometryPlanSpec {
-    int64_t ValidWidth;
-    int64_t ValidHeight;
-    const int64_t* BufferBytes;
-    const dim3* Grids;
-    const int32_t* GeometryArguments;
-};
-'''
-    tables = ['// Generated geometry data; all shapes reuse one physical call sequence.']
-    descriptors = []
-    for (width, height), plan in zip(RESOLUTIONS, plans):
-        suffix = f'{width}_{height}_{precision}'
-        tables.append(f'static const int64_t BufferBytes_{suffix}[] = {{')
-        tables.extend(f'    {buffer["storage_bytes"]}LL, // {name}' for name, buffer in plan['buffers'].items())
-        tables.append('};')
-        tables.append(f'static const dim3 Grids_{suffix}[] = {{')
-        tables.extend('    dim3(%s), // %s' % (', '.join(map(str, call['grid'])), call['symbol']) for call in plan['calls'])
-        tables.append('};')
-        tables.append(f'static const int32_t GeometryArguments_{suffix}[] = {{')
-        for call in plan['calls']:
-            entry_fields = abi_fields[call['fn']]
-            integer_fields = [(entry_fields[offset], value)
-                              for offset, size, value in call['fields'] if size == 4]
-            field_names = ', '.join(field for field, _ in integer_fields)
-            field_values = ', '.join(value for _, value in integer_fields)
-            tables.append(f'    {field_values}, // {call["fn"]}: {field_names}')
-        tables.append('};')
-        descriptors.append(f'    {{{width}, {height}, BufferBytes_{suffix}, Grids_{suffix}, GeometryArguments_{suffix}}},')
-    tables += [f'static const FGeometryPlanSpec GeometryPlans_{precision}[] = {{', *descriptors, '};',
-               f'static const FGeometryPlanSpec& SelectGeometryPlan_{precision}(int64_t Width, int64_t Height) {{',
-               f'    for (const auto& Geometry : GeometryPlans_{precision}) {{',
-               '        if (Geometry.ValidWidth == Width && Geometry.ValidHeight == Height)',
-               '            return Geometry;', '    }',
-               '    TORCH_CHECK(false, "FP8 trunk supports 1280x720, 1920x1080, 2560x1440, or 3840x2160");',
-               '}']
 
     lines = ['// Generated shared native FP8 schedule. Every resolution uses the same 185 calls.',
              '// Buffer names are shared; the geometry table supplies their actual byte extents.',
@@ -287,9 +386,9 @@ struct FGeometryPlanSpec {
         lines += ['        Calls.push_back(KernelCall);', '    }']
     lines += ['}']
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / 'plan_geometry.h').write_text(header, encoding='utf-8', newline='\n')
     suffix = '' if precision == 'fp8' else '_fp16'
-    (OUT / f'plan_geometry{suffix}_generated.inl').write_text('\n'.join(tables).replace('FP8 trunk', precision.upper() + ' trunk') + '\n', encoding='utf-8', newline='\n')
+    (OUT / f'plan_geometry{suffix}_generated.inl').write_text(
+        runtime_geometry_source(precision, reference, abi_fields), encoding='utf-8', newline='\n')
     (OUT / f'plan{suffix}_generated.inl').write_text('\n'.join(lines).replace('FDeploymentPlan_fp8::BuildCalls()', f'FDeploymentPlan<{str(precision == "fp16").lower()}>::BuildCalls()').replace('void FDeploymentPlan<', 'template <> void FDeploymentPlan<').replace('native FP8', 'native ' + precision.upper()) + '\n', encoding='utf-8', newline='\n')
     entries = ['// Generated from canonical_kernel_names.json; all individual public CUDA exports.',
                'static const char* PreparedKernelNames[] = {']

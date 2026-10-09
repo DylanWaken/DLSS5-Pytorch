@@ -1,5 +1,5 @@
 #include "kernel_symbols.h"
-#include "kernel_impl/common/kernel_abi.h"
+#include "kernel_impl/shared/common/kernel_abi.h"
 #include <c10/cuda/CUDAException.h>
 #include <cuda_runtime_api.h>
 #include <array>

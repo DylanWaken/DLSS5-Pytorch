@@ -30,7 +30,12 @@ def load_extension(path=None):
     return torch.ops.dlssnr
 
 def create_plan_fp8(state, records, *, width=3840, height=2160):
-    """Prepare the admitted physical FP8 trunk outside CUDA graph capture."""
+    """Prepare the FP8 trunk for the requested valid image dimensions.
+
+    C++ computes padded fields, physical buffers and launch selection at runtime.
+    ``state`` is the packed level-zero feature field; preparation stays outside
+    CUDA graph capture. Image dimensions are not rounded to a tuned resolution.
+    """
     return load_extension().create_plan_for_resolution_fp8(state, records, width, height)
 
 def inference_forward_fp8(plan):
@@ -39,7 +44,11 @@ def inference_forward_fp8(plan):
 
 
 def create_plan_fp16(state, records, *, width=3840, height=2160):
-    """Prepare physical Half buffers outside CUDA graph capture."""
+    """Prepare the Half trunk with runtime geometry for the valid image dimensions.
+
+    ``state`` is the packed level-zero Half feature field. C++ computes its
+    padded extents and the full launch plan outside CUDA graph capture.
+    """
     return load_extension().create_plan_for_resolution_fp16(state, records, width, height)
 
 

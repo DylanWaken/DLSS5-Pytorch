@@ -318,7 +318,11 @@ class Checkpoint:
         return self._records[f"block{block}.layer{layer}.layer"].clone().to(device)
 
     def create_plan_fp16(self, state, *, width=3840, height=2160):
-        """Prepare the Half trunk; accept either native FP8 or widened FP16 storage."""
+        """Prepare the Half trunk at the requested valid image resolution.
+
+        Accept native FP8 or widened FP16 weights. Weight packing is independent
+        of image shape; the C++ plan computes the exact padded runtime geometry.
+        """
         from .deployment import load_extension, create_plan_fp16
         ops = load_extension()
         names, sizes = list(ops.record_names_fp16()), list(ops.record_bytes_fp16())
@@ -343,7 +347,11 @@ class Checkpoint:
         return create_plan_fp16(state, records, width=width, height=height)
 
     def create_plan_fp8(self, state, *, width=3840, height=2160):
-        """Prepare the existing FP8 trunk directly from original packed checkpoint records."""
+        """Prepare the FP8 trunk at the requested valid image resolution.
+
+        Packed checkpoint records are independent of image shape. The C++ plan
+        computes the exact padded runtime geometry without per-shape JSON files.
+        """
         if self.precision != "fp8":
             raise ValueError("FP16 to FP8 requires explicit quantization; no fallback to original weights")
         from .deployment import load_extension, create_plan_fp8

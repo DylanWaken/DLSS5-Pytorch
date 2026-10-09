@@ -1,8 +1,8 @@
 # From PTX transcripts to readable CUDA
 
-The deployment implementation now expresses tensor tiles, fragment arrays, pipelines and publication rules as shared CUDA algorithms, and passes the user's 1% native-speed gate in FP8 and FP16 at all four tested resolutions. The former register-by-register C++ transcriptions have been removed from the production tree. Exported kernel names and parameter layouts are retained so that the same native launch plans remain usable.
+The deployment implementation expresses tensor tiles, fragment arrays, pipelines and publication rules as shared CUDA algorithms. The qualified semantic and template snapshots passed the user's 1% native-speed gate in FP8 and FP16 at all four tested resolutions. The former register-by-register C++ transcriptions have been removed from the production tree. Exported kernel names and parameter layouts are retained so that the same native launch plans remain usable. New scheduling or geometry changes require separate validation.
 
-There are 81 exported entries, not 81 independent algorithms: 40 FP8/FP16 pairs and a counter reset. Operation files select shared bodies with precision, dimensions and layout policies. C32 is warp-local; C64/C128/C256 share a wider-window implementation; C512 has separate FFN, QKV and projection stages; the global bottleneck uses streaming attention and split reductions. See [the source map](SOURCE_LAYOUT.md).
+There are 81 exported entries, not 81 independent algorithms: 40 FP8/FP16 pairs and a counter reset. Network-stage directories contain full global bodies specialized by precision, dimensions and layout. C32 is warp-local; C64 has a two-warp schedule and C128/C256 share wider-window templates; C512 has separate FFN, QKV and projection stages; the global bottleneck uses streaming attention and split reductions. See [the source map](SOURCE_LAYOUT.md).
 
 ## What had to survive the rewrite
 
@@ -14,7 +14,7 @@ Reproducing a real-number equation was insufficient. The reference publishes pac
 - Swizzles, row ownership, padding, residual scales and view mappings.
 - Async-copy stage ownership, barrier arrival counts and ordered global split publication.
 
-The constants are documented in [numerical_constants.cuh](../csrc/kernel_impl/common/numerical_constants.cuh). For example, the FFN gate uses a clamped quadratic expression with exact Half coefficients. Their decoded values and algebraic relationships explain what the code computes. The original coefficient-fitting procedure is unknown; a plausible approximation name is not evidence of how NVIDIA selected the coefficients.
+The constants are documented in [numerical_constants.cuh](../csrc/kernel_impl/shared/common/numerical_constants.cuh). For example, the FFN gate uses a clamped quadratic expression with exact Half coefficients. Their decoded values and algebraic relationships explain what the code computes. The original coefficient-fitting procedure is unknown; a plausible approximation name is not evidence of how NVIDIA selected the coefficients.
 
 ## Validation before optimization
 
@@ -74,6 +74,17 @@ Not every plausible scheduling change helped. An isolated C512 FFN prefetch expe
 
 Final acceptance uses resident CUDA graphs, balanced execution order, warmup and per-order ratios against the original extracted kernels. NCU replay durations and isolated kernel sums explain mechanisms; they are not interchangeable with the repeated trunk timing. Profiling is serialized on one GPU owner, and final timing runs quiesce compilation and other worker activity.
 
-The current working receipts live under `outputs/semantic-rewrite`. Source snapshots, binary hashes, failed attempts, per-call results and graph results are retained there. Raw profiler captures are under `profile/semantic-*`, with exact harness snapshots and parsed PC/source metrics. Historical optimization reports remain unchanged, including [the earlier readability pass](CODE_READABILITY_HISTORY.md).
+The semantic-rewrite receipts live under `outputs/semantic-rewrite`. Source snapshots, binary hashes, failed attempts, per-call results and graph results are retained there. Raw profiler captures are under `profile/semantic-*`, with exact harness snapshots and parsed PC/source metrics. Historical optimization reports remain unchanged, including [the earlier readability pass](CODE_READABILITY_HISTORY.md).
 
-The final semantic build passes all eight graph correctness and timing cases, with a worst per-order median slowdown of about **0.73%**. [Current charts, raw pairs and scope](BENCHMARKS.md) replace the earlier transcript timings as the current qualification. [The release record](semantic_release.json) binds the timed build to the final cache-key rebuild through exact GPU/host code equivalence and installed smoke checks. No 85% hardware-roofline claim follows from passing the user's 1% native-speed criterion.
+The historical final semantic build passed all eight graph correctness and timing cases, with a worst per-order median slowdown of about **0.73%**. [Its release record](semantic_release.json) binds that timed build to its cache-key rebuild through exact GPU/host code equivalence and installed smoke checks. No 85% hardware-roofline claim follows from that result.
+
+The current stage-organized build adds [ordered split scheduling](SMALL_GPU_SCHEDULING.md)
+and [runtime geometry](DYNAMIC_RESOLUTIONS.md). Its
+[validation receipt](small_gpu_validation.json) records passing numerical/API
+checks and seven of eight anchor timings within 1%; FP8 1080p is 1.1944% slower
+than the native kernel baseline. The separate comparison against the previous
+accepted extension stays within about 0.36% at that size. These measurements
+were made on the RTX PRO 6000, including a conservative capacity override for
+fallback coverage; they do not measure RTX 5060 performance. See
+[current charts, raw pairs and scope](BENCHMARKS.md) without transferring the
+historical semantic build's all-eight timing pass to this build.

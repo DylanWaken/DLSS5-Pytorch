@@ -4,6 +4,7 @@
 #include <cuda_runtime_api.h>
 #include <array>
 #include <cstring>
+#include <memory>
 #include <mutex>
 #include <string>
 #include <vector>
@@ -24,6 +25,7 @@ struct FKernelCall
 	bool bAllResident;
 	alignas(8) std::array<unsigned char, 96> ParameterBlock{};
 	const char* Name = nullptr;
+	int SplitParameterOffset = -1;
 
 	struct FBinding
 	{
@@ -80,6 +82,9 @@ template <bool bFp16> class FDeploymentPlan : public torch::CustomClassHolder
 		return ResourceRows;
 	}
 
+	// One entry per logical call: 1 for a resident launch, 2/4 for ordered splits.
+	std::vector<int64_t> GetSplitLaunchCounts() const;
+
   private:
 	uint64_t GetBufferAddress(size_t BufferIndex) const;
 	uint64_t GetRecordAddress(size_t RecordIndex) const;
@@ -89,7 +94,7 @@ template <bool bFp16> class FDeploymentPlan : public torch::CustomClassHolder
 	std::vector<FKernelCall> Calls;
 	std::vector<int64_t> ResourceRows;
 	int DeviceIndex;
-	const FGeometryPlanSpec* Geometry;
+	std::unique_ptr<const FGeometryPlanSpec> Geometry;
 	std::mutex LaunchMutex;
 };
 

@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "docs/figures/template_integration_deployment_measurements.json"
+DATA = ROOT / "docs/figures/small_gpu_deployment_measurements.json"
 
 
 def render(precision, rows, source_name=DATA.name):

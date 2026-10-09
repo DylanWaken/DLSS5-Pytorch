@@ -7,17 +7,18 @@ description: Reconstruct, integrate, qualify and document this repository's DLSS
 
 ## Current source-ownership rule
 
-The latest user template request supersedes both the earlier one-file-per-logical
-export rule and the older canonical-body/ABI-adapter design. Current source has
+The latest user stage-layout and template requests supersede both the earlier
+one-file-per-logical export rule and the older canonical-body/ABI-adapter design. Current source has
 81 logical kernels in 56 CUDA units: 40 configurations share 15 true global
 templates, and 41 retain direct definitions. Each authored `__global__` body
 must show storage, staging, loops, synchronization and writes. Do not restore a
 device wrapper forwarding the algorithm to `Run*`, a macro or an include fragment.
 
-Use `csrc/kernel_impl/common/kernel_templates.json` to find template source and
+Use `csrc/kernel_impl/shared/common/kernel_templates.json` to find template source and
 arguments. Preserve the compact C32, two-warp C64 and wide C128/C256 schedules,
 per-specialization register caps, layouts and native arithmetic order. Keep
-FP8/FP16 files where schedules differ; shared repacks live in `common/`. C32
+FP8/FP16 files where schedules differ; shared repacks live in
+`bottleneck_c1024_layout/common/`. C32
 output-view direct bodies remain separate until changed template code is qualified.
 
 `kernel_abi.h` owns typed records, checked aliases and host resolver declarations.
@@ -26,6 +27,17 @@ addresses; launch and policy work stay in host-only `kernel_launcher`. Direct
 globals retain C symbols; template globals have mangled C++ symbols. Stable
 logical names remain the public API. `kernel_symbols` and additive C++
 `KernelSymbol` / Torch `kernel_symbol` expose runtime symbols for Driver tools.
+
+Use `kernel_impl/<network_stage>/<precision>/` for global bodies and the stage's
+`common/` for its profiles, helpers and `intrinsics.cuh`. Name reused
+encoder/decoder levels explicitly, as in
+`shared_encoder_decoder_c32_c64_c128_c256_fused_window`. Keep complete fused
+window bodies together. Endpoint instructions shared by input and output live
+in `shared_input_output_c32/common/`; C512 input-copy and bottleneck-attention
+instructions live with those stages. `shared/common/` retains genuine
+cross-stage primitives and ABI. Do not duplicate helpers or instruction wrappers
+to make each stage appear isolated. Function relocation must preserve the exact
+declaration, body, assembly modifiers and force-inline behavior.
 
 Keep one-use helpers with their owner; share only real repeated math/layout
 contracts and intrinsics. Small local lambdas may share repeated pipeline steps
@@ -36,13 +48,38 @@ stages with comments and blank lines. After clang-format, run
 
 Read [the reading guide](../../docs/KERNEL_READING_GUIDE.md),
 [source layout](../../docs/SOURCE_LAYOUT.md) and
-[integration validation](../../docs/template_integration_validation.json) for
+[current validation](../../docs/small_gpu_validation.json) for
 current ownership and completed qualification. Isolated
 [template feasibility](../../docs/KERNEL_TEMPLATE_FEASIBILITY.md) results do not
 qualify the integrated extension. The preceding
 [81-file validation](../../docs/global_entry_validation.json), directory/naming/
 flat-symbol records and dated UEv2 notes below remain historical. Preserve their
 original identities; do not transfer latency claims by source inspection alone.
+
+## Current scheduling and geometry snapshot
+
+Installed build `efdfded212d90042e5ba44d010e636a4a15b827f0091c34a060f06eb92f11a24`
+supports runtime image geometry and capacity-aware ordered split launches in
+both deployment precisions. See [geometry](../../docs/DYNAMIC_RESOLUTIONS.md)
+and [scheduling](../../docs/SMALL_GPU_SCHEDULING.md) for contracts. A plan owns
+its geometry; prepare a new plan outside capture for different dimensions.
+Keep policy lookup clamping separate from actual allocation and launch sizes.
+
+The receipt records 14 forced-fallback non-anchor cases and eight automatic
+anchor cases passing all 74 published boundaries. Eager, AOT eager, default
+Inductor and graph routes pass at 1234 × 777. Both Python modes pass 96 CPU
+tests; the compiled geometry comparison covers 116 valid shape/precision cases
+and 16 rejected cases. Stage/intrinsic relocation preserves all 81 instruction
+payloads relative to the preceding scheduling-fix build.
+
+Performance passes the 1% native-baseline target in **seven of eight** cases:
+FP8 1080p is **1.1944% slower**. A separate balanced comparison to the preceding
+accepted extension measures at most about 0.36% slowdown at that size. Preserve
+both comparisons and do not use the earlier template build's all-eight pass
+as qualification for this build. Tests used an RTX PRO 6000 Blackwell; the
+SM-count override exercises policy selection but neither restricts physical
+execution SMs nor emulates an RTX 5060. No actual RTX 5060 run, every-resolution
+performance qualification or 85% roofline claim is established.
 
 ## Historical UEv2 snapshot
 
@@ -100,7 +137,14 @@ Validate the adapter's actual positional call against the compiled Torch schema 
 
 Preparation is outside graph capture. Launches use the caller's device and current PyTorch stream, retain/record all relevant storage, and perform no hidden cache preparation. Out buffers are caller- or plan-owned. Reset graphs before unloading Driver controls, and keep each plan/module alive until every graph referring to it is destroyed. A shared mutable plan requires caller-ordered executions; a host mutex alone is not cross-stream dependency management.
 
-For original split reductions, recompute occupancy from the **actual compiled function** and current device before launch. Admit the required all-resident grid only if capacity is sufficient. Never bypass that guard or alter the synchronization to force a larger pilot to run.
+For split reductions, compute occupancy from the **actual compiled function**
+and current device during preparation. The native polling route requires the
+complete XYZ grid to fit; one XY plane is not a portable admission rule. When
+it does not fit, use the source's explicit ordered-split control and successive
+same-stream launches. Preserve split arithmetic, Half rounding, scratch/counter
+bindings and final publication, and test the fallback through both the plan and
+individual prepared APIs. An SM-count test cap may only lower reported capacity.
+Never disable the guard while retaining polling on an oversized grid.
 
 ## Reuse accepted objects and verify the linked product
 
@@ -193,7 +237,13 @@ Use `docs/FP16_DEPLOYMENT.md` and `docs/figures/fp16_deployment_measurements.jso
 
 Profile the actual repeated workload before choosing a register cap. In C256 Half, Nsight found 238 reconstructed registers versus 188 native with equal occupancy; a 192 cap improved whole-trunk timing despite a small stack frame. Do not claim an occupancy gain. The non-volatile pure-MMA experiment compiled to identical machine code and was discarded. Static MMA/NOP count differences alone do not prove dead arithmetic or dynamic workload differences; compare full SASS, counters and balanced graph timings.
 
-At 4K, native Half split grids exceed all-resident capacity. The retained SM120 path admits one complete XY plane and empirically validates native ordered Z progress under bounded workers. This is architecture-specific evidence, not a CUDA scheduling guarantee or admission for other devices. Preserve the rejected occupancy run and native-only progress probe. The final per-order <=1% gate is tight at 4K; retain raw pairs and do not round a failure into a pass.
+Historically, 4K native Half split grids exceeded all-resident capacity and an
+SM120 experiment admitted one complete XY plane. That empirical Z-progress
+observation was not a CUDA scheduling guarantee and is superseded by the
+full-grid/ordered-split admission rule above. Preserve the rejected occupancy
+run and native-only progress probe under their original identities. The
+historical per-order <=1% gate was tight at 4K; retain raw pairs and do not round
+a failure into a pass.
 
 ## Semantic reconstruction: source must explain the algorithm
 
