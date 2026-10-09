@@ -73,6 +73,12 @@ All 81 entries have individual Torch operators. Earlier SM120 validation covered
 
 ## Speed overview
 
+Run `python test_speed.py` to measure FP16 and, on supported GPUs, FP8 at all four
+resolutions. It builds a missing extension for your GPU automatically and saves
+latency, throughput and memory results as JSON/CSV. Add `--per-kernel` for a
+separate diagnostic breakdown. Checkpoints are required; extracted DLLs are not.
+See [local speed testing](docs/SETUP.md#test-speed-on-your-gpu) for options.
+
 **FP8 inference:** three of four sizes meet the 1% limit; 1080p measures **1.19% slower**. At 4K: **6.528 ms reconstructed / 6.650 ms original**.
 
 ![FP8 deployment latency at 720p, 1080p, 2K and 4K](docs/figures/deployment_fp8_resolutions.svg)
