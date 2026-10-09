@@ -63,11 +63,19 @@ A shared helper must preserve the contract that matters:
 
 Do not replace a native exponential surrogate with `exp()`, widen an intermediate for convenience, or substitute a generic GEMM layout without new correctness evidence. Equivalent real-number formulas need not produce the same Half/FP8 results.
 
-All inline PTX belongs in [intrinsics.cuh](../csrc/kernel_impl/common/intrinsics.cuh). Each wrapper should state what the instruction does and any rounding, FTZ, synchronization or address-space behavior it preserves. Operation files should call those primitives through meaningful arithmetic/memory helpers, not reproduce assembly blocks or register-number instruction streams. Unused transcript-era helpers have been removed; keep the shared utility layer limited to primitives used by the current algorithms.
+All inline PTX belongs in an `intrinsics.cuh` header. Stage-specific instructions live in `<network_stage>/common/intrinsics.cuh`; [shared intrinsics](../csrc/kernel_impl/shared/common/intrinsics.cuh) holds primitives used across stages. Each wrapper should state what the instruction does and any rounding, FTZ, synchronization or address-space behavior it preserves. Operation files should call those primitives through meaningful arithmetic/memory helpers, not reproduce assembly blocks or register-number instruction streams. Keep one definition per primitive and limit the utility layer to primitives used by the current algorithms.
+
+Organize implementations as `kernel_impl/<network_stage>/<precision>/`, with
+stage-owned helpers under that stage's `common/`. Names for repeated code must
+identify the shared encoder/decoder levels. Preserve fused global bodies; a
+directory change must not split a fused kernel into extra launches. Cross-stage
+helpers stay in `shared/common/`, or in their owning stage with explicit includes
+from other users of the same contract. Do not duplicate a helper to make a folder
+self-contained.
 
 ## Numerical constants and known versus inferred meaning
 
-Name nontrivial numerical constants `CONST_*` and make them `constexpr`. Shared activation, normalization and attention constants live in [numerical_constants.cuh](../csrc/kernel_impl/common/numerical_constants.cuh). Frontend hash and color/filter constants stay in their common frontend helpers when their scope is specific to those operations.
+Name nontrivial numerical constants `CONST_*` and make them `constexpr`. Shared activation, normalization and attention constants live in [numerical_constants.cuh](../csrc/kernel_impl/shared/common/numerical_constants.cuh). Frontend hash and color/filter constants stay in their common frontend helpers when their scope is specific to those operations.
 
 For encoded floating values, document the exact bits, decoded value and observed arithmetic role. Record a formula where it explains a stride or coefficient relationship. For example, normalization epsilon is a packed Half bit pattern, not the integer value of that pattern; a matrix stride should show its channel product or a named profile constant.
 
@@ -85,7 +93,7 @@ The [semantic naming audit](NAMING_AUDIT.md) traces every ABI field to its actua
 
 Project CUDA/C++ source has no namespaces or `using namespace` directives. Call helpers directly, for example `LinearWindow32(...)` or `MMA(...)`. Give shared types and helpers operation-specific names so unrelated algorithms remain distinct in global scope: `FWindow32Profile`, `FSpatialProjectionArguments` and `FResolutionSelection` describe their roles without a namespace hierarchy.
 
-All 81 logical names remain stable, including `_fp8` and `_fp16`. Direct globals use C linkage; global templates have mangled C++ symbols. Same-translation-unit `Resolve_<logical>()` host functions expose registered specialization addresses without launching. The authoritative `kernel_impl/common/kernel_templates.json` maps logical names to bodies and arguments; `kernel_abi.h` retains typed records, checked aliases and resolver declarations. Host `kernel_symbols` provides the mapping and additive `KernelSymbol` / Torch `kernel_symbol` diagnostic lookup. Preserve field order, widths, alignment and offsets.
+All 81 logical names remain stable, including `_fp8` and `_fp16`. Direct globals use C linkage; global templates have mangled C++ symbols. Same-translation-unit `Resolve_<logical>()` host functions expose registered specialization addresses without launching. The authoritative `kernel_impl/shared/common/kernel_templates.json` maps logical names to bodies and arguments; `kernel_abi.h` retains typed records, checked aliases and resolver declarations. Host `kernel_symbols` provides the mapping and additive `KernelSymbol` / Torch `kernel_symbol` diagnostic lookup. Preserve field order, widths, alignment and offsets.
 
 External library qualification such as `std::`, `at::` and `c10::` remains necessary. `TORCH_LIBRARY(dlssnr, ...)` keeps the public Torch registration domain; it does not declare a project C++ namespace. [The flat-symbol migration](FLAT_SYMBOLS.md) records the separate rebuild and validation.
 
@@ -161,7 +169,7 @@ The preceding [storage-prefix audit](STORAGE_PREFIX_AUDIT.md) applies the narrow
 ## Per-entry-file migration (historical)
 
 Before template integration, each export had its own `.cu` file. That migration
-placed storage, staging, loops and writebacks in the actual global body. `kernel_impl/common/kernel_abi.h` is the authoritative host/device ABI;
+placed storage, staging, loops and writebacks in the actual global body. `kernel_impl/shared/common/kernel_abi.h` is the authoritative host/device ABI;
 `kernel_launcher` contains host code. The shared fragment operation is named
 `MMA`, replacing `MultiplyAccumulate`.
 
@@ -191,12 +199,24 @@ frontend and CPU checks for that earlier build. Its
 [raw timings](figures/kernel_locality_deployment_measurements.json) retain their
 original identity and must not be presented as measurements of this migration.
 
-## Current template integration
+## Current stage layout and runtime qualification
 
-Forty logical configurations now share 15 true global templates; 41 retain
-direct definitions. See the [reading guide](KERNEL_READING_GUIDE.md) for current
-paths and the [integration receipt](template_integration_validation.json) for
-the normal extension's completed qualification. The preceding
+Forty logical configurations share 15 true global templates; 41 retain direct
+definitions. They occupy 16 network-stage directories. The relocation of 31
+instruction wrappers into stage-specific `intrinsics.cuh` files preserves all
+52 wrapper declarations, comments and bodies exactly, with 21 wrappers retained
+in the shared header. All 81 compiled GPU instruction payloads match the
+scheduling-fix build before stage relocation.
+
+See the [reading guide](KERNEL_READING_GUIDE.md) for current paths and the
+[current receipt](small_gpu_validation.json) for installed build `efdfded2…`.
+Numerical and API checks pass, including forced ordered splits and non-anchor
+sizes. The eight native-baseline timing cases have one exception to the 1%
+target: FP8 1080p is 1.1944% slower. Source equivalence does not turn that result
+into a performance pass or establish a physical RTX 5060 measurement.
+
+The previous [template receipt](template_integration_validation.json) preserves
+its own completed qualification. The preceding
 [feasibility experiment](KERNEL_TEMPLATE_FEASIBILITY.md) demonstrated isolated
 compiled equivalence but does not qualify host integration by itself. Retain
 the two C32 output-view direct bodies until changed-template code is qualified.

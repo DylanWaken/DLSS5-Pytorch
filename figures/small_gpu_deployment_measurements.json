@@ -1,0 +1,193 @@
+{
+  "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+  "architecture": "SM120",
+  "scope": "Batch-one prepared-feature trunk, blocks 1-69; excludes input/output stages and DLL host work",
+  "protocol": "64 alternating pairs, 32 per order; 20 warmup graph replays per role; three calls per graph, ten graph replays per timed interval",
+  "acceptance": "Median paired ratio <= 1.01 in each execution order at all four resolutions",
+  "torch_version": "2.8.0+cu128",
+  "native_cubin_sha256": {
+    "0": "feb368ff5279a7408b1e55554db6e468d7f114a24b18b2af8d7e6989a410c612",
+    "1": "a10a8083b9489622fe290d669f05f38db7308c3c10771d0f0d6f22718e3cb1ae",
+    "2": "9cba6bc0001a80c902ee20fd5638bf442bdf0674aaada676d67a6d1b89ca0aaa",
+    "3": "46ad7753bfb3a70a92a3524a5e638bb2fe93edb37cf3389ad1fa524e4e19b084",
+    "4": "97bdf9a571dec8bff41975fe670610b0a3363b49885ada171e61229578ecf569",
+    "5": "bfb2ebe117b7c4d92a78e1885412acbb80233f2d9b11af1e854430eb3cc0a2a1",
+    "6": "e67c8db5c29348f1650c532735b0d4740f6a003b7f932ae5c505a41ced082e7a"
+  },
+  "harness_sha256": "17340f05ea672526ca1398d0b0878b6dad46d67985d8c37d9be0123540d46875",
+  "order_labels": [
+    "original-first",
+    "candidate-first"
+  ],
+  "measurement_series": "small-sm-stage-v2",
+  "binary_sha256": "efdfded212d90042e5ba44d010e636a4a15b827f0091c34a060f06eb92f11a24",
+  "source_receipt": {
+    "path": "docs/small_gpu_validation.json"
+  },
+  "precisions": {
+    "fp8": [
+      {
+        "label": "720p",
+        "width": 1280,
+        "height": 720,
+        "native_ms": 2.199132792154948,
+        "candidate_ms": 2.2017050425211586,
+        "ratio": 1.000116923254379,
+        "by_order": [
+          0.9999858262154225,
+          1.0036623276686498
+        ],
+        "accepted": true,
+        "ordered_logical_calls": 0,
+        "receipt": {
+          "receipt": "outputs/semantic-rewrite/small-sm-auto-720-fp8-v2/result.json",
+          "receipt_sha256": "588c0f7cf571ef57355f3440c06989c3facfae33b6ba08f8f59314f247ee2bf8",
+          "job": "outputs/semantic-rewrite/small-sm-auto-720-fp8-v2/job.json",
+          "job_sha256": "99ce6e5b2b667fe39418f79498fe7efcfad1fb7b5a5dd35afe63aaeaa27e7bf6"
+        }
+      },
+      {
+        "label": "1080p",
+        "width": 1920,
+        "height": 1080,
+        "native_ms": 2.5715558369954428,
+        "candidate_ms": 2.6007787068684896,
+        "ratio": 1.0118077458414223,
+        "by_order": [
+          1.011944311854649,
+          1.0114661905498155
+        ],
+        "accepted": false,
+        "ordered_logical_calls": 0,
+        "receipt": {
+          "receipt": "outputs/semantic-rewrite/small-sm-auto-1080-fp8-v2/result.json",
+          "receipt_sha256": "3dae8f96add92dff43af0c1efddba877210b5de548ef21b0d6e8e1893728092c",
+          "job": "outputs/semantic-rewrite/small-sm-auto-1080-fp8-v2/job.json",
+          "job_sha256": "4d0a9305f9eb2ccae6434cb55845d11c4081b285226aa316fafc938b694c00e6"
+        }
+      },
+      {
+        "label": "2K / 1440p",
+        "width": 2560,
+        "height": 1440,
+        "native_ms": 3.553151448567708,
+        "candidate_ms": 3.527953592936198,
+        "ratio": 0.9921622872015232,
+        "by_order": [
+          0.9915017085137884,
+          0.9921622872015232
+        ],
+        "accepted": true,
+        "ordered_logical_calls": 0,
+        "receipt": {
+          "receipt": "outputs/semantic-rewrite/small-sm-auto-1440-fp8-v2/result.json",
+          "receipt_sha256": "f325d921ab8a387e02658bf39f8ae86b3b5f96d489ae5779d76bfd0ae6ad1d2b",
+          "job": "outputs/semantic-rewrite/small-sm-auto-1440-fp8-v2/job.json",
+          "job_sha256": "58071c108d9365e303b09a96ac7b19f6ce99624dbe3fee23ed54e5988dec38f6"
+        }
+      },
+      {
+        "label": "4K",
+        "width": 3840,
+        "height": 2160,
+        "native_ms": 6.650002034505208,
+        "candidate_ms": 6.527930196126302,
+        "ratio": 0.9827329148482999,
+        "by_order": [
+          0.9823837026162632,
+          0.9828793556863722
+        ],
+        "accepted": true,
+        "ordered_logical_calls": 0,
+        "receipt": {
+          "receipt": "outputs/semantic-rewrite/small-sm-auto-2160-fp8-v2/result.json",
+          "receipt_sha256": "5622ef675118c251975f640cfd572ff01291c8f6726f1f78ad1511106a07c724",
+          "job": "outputs/semantic-rewrite/small-sm-auto-2160-fp8-v2/job.json",
+          "job_sha256": "f8704d1d700f56b2eecf1e88030427ad0ce9a233f6dcb435c1b06752e951b396"
+        }
+      }
+    ],
+    "fp16": [
+      {
+        "label": "720p",
+        "width": 1280,
+        "height": 720,
+        "native_ms": 3.7515514373779295,
+        "candidate_ms": 3.693703460693359,
+        "ratio": 0.9852489897525388,
+        "by_order": [
+          0.9846029888605381,
+          0.9859187788111907
+        ],
+        "accepted": true,
+        "ordered_logical_calls": 0,
+        "receipt": {
+          "receipt": "outputs/semantic-rewrite/small-sm-auto-720-fp16-v2/result.json",
+          "receipt_sha256": "83bbd73ef89998355ea1d68a2828a1f918af18bc965847b3bea597267aad7d1d",
+          "job": "outputs/semantic-rewrite/small-sm-auto-720-fp16-v2/job.json",
+          "job_sha256": "840ac2b064d63eb1234bac420c5ca4315e37a642d9e21aee46e682f8df038a36"
+        }
+      },
+      {
+        "label": "1080p",
+        "width": 1920,
+        "height": 1080,
+        "native_ms": 4.490328216552735,
+        "candidate_ms": 4.398100280761719,
+        "ratio": 0.9801749420037396,
+        "by_order": [
+          0.9827965071172563,
+          0.9785310423449612
+        ],
+        "accepted": true,
+        "ordered_logical_calls": 0,
+        "receipt": {
+          "receipt": "outputs/semantic-rewrite/small-sm-auto-1080-fp16-v2/result.json",
+          "receipt_sha256": "968c72cefb62c0021713203c194e15456ee7bed47224448aafe3358ff5d9aa37",
+          "job": "outputs/semantic-rewrite/small-sm-auto-1080-fp16-v2/job.json",
+          "job_sha256": "eb9a22bed1b4a118ebfe96c0dd3203b24962a3443a236eb1d2cd1b2c8a212dcc"
+        }
+      },
+      {
+        "label": "2K / 1440p",
+        "width": 2560,
+        "height": 1440,
+        "native_ms": 6.1057690938313804,
+        "candidate_ms": 5.971514638264974,
+        "ratio": 0.9788728365014284,
+        "by_order": [
+          0.9786838544920744,
+          0.9797518055524155
+        ],
+        "accepted": true,
+        "ordered_logical_calls": 0,
+        "receipt": {
+          "receipt": "outputs/semantic-rewrite/small-sm-auto-1440-fp16-v2/result.json",
+          "receipt_sha256": "b856794ae23c93ba562f72301026d9f4e27e7e31c79ff841eef5aeab09b7de3d",
+          "job": "outputs/semantic-rewrite/small-sm-auto-1440-fp16-v2/job.json",
+          "job_sha256": "0a632dba7337e422651d668b2ad52d6d5f94146f104f44a78b87b5909e384013"
+        }
+      },
+      {
+        "label": "4K",
+        "width": 3840,
+        "height": 2160,
+        "native_ms": 11.572172546386717,
+        "candidate_ms": 11.306681823730468,
+        "ratio": 0.977071094892907,
+        "by_order": [
+          0.976600443033955,
+          0.9777582032376725
+        ],
+        "accepted": true,
+        "ordered_logical_calls": 8,
+        "receipt": {
+          "receipt": "outputs/semantic-rewrite/small-sm-auto-2160-fp16-v2/result.json",
+          "receipt_sha256": "e043e4c47989554a15267be853002c20ac658253730b50e7e9fb0440be04fc1f",
+          "job": "outputs/semantic-rewrite/small-sm-auto-2160-fp16-v2/job.json",
+          "job_sha256": "263bb7a39a106f143e1359f5cdb3fa310986fcebd073acad11e23a069b139528"
+        }
+      }
+    ]
+  }
+}
