@@ -48,6 +48,8 @@ def execute(args, report):
     from tools.native_reference.vendor_benchmark import VendorModule, GUARD_BYTES, GUARD_VALUE
     torch.set_num_threads(4)
     torch.cuda.set_device(args.device)
+    major, minor = torch.cuda.get_device_capability(args.device)
+    device_sm = 10 * major + minor
     if torch.cuda.get_device_capability(args.device) != (12, 0):
         raise RuntimeError('This compiled-dispatch qualification requires SM120')
     torch.ops.load_library(str(args.extension.resolve()))
@@ -136,7 +138,11 @@ def execute(args, report):
                 outputs = owner.retain([payloads['torch.' + name] for name in entry['output_roles']])
                 prepare = getattr(torch.ops.dlssnr, 'prepare_c512_' + precision)
                 launch = getattr(torch.ops.dlssnr, 'c512_out_' + precision)
-                prepare(payloads['state'], entry_id)
+                resources = list(prepare(payloads['state'], entry_id))
+                expected_ids = [row['id'] for row in entries if row['element_bytes'] == entry['element_bytes']]
+                assert len(resources) == 9 * 7
+                assert resources[::7] == expected_ids
+                assert resources[2::7] == [device_sm] * 9
                 addresses = {name: payload.data_ptr() for name, payload in payloads.items() if '.' not in name}
                 addresses.update({name: payloads['driver.' + name].data_ptr() for name in entry['output_roles']})
                 parameters, launch_spec = direct_parameters(entry, addresses, height, width, phase)

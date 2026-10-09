@@ -6,8 +6,15 @@
 #include "../kernel_launcher/frontend_dispatch.h"
 #include "../kernel_launcher/kernel_symbols.h"
 
+// setup.py records virtual targets, not runtime qualification or tuning claims.
+static std::vector<int64_t> DeploymentBuildArchitectures()
+{
+	return {DLSSNR_BUILD_ARCHITECTURES};
+}
+
 TORCH_LIBRARY(dlssnr, Library)
 {
+	Library.def("deployment_build_architectures", &DeploymentBuildArchitectures);
 	RegisterPreparedKernelSchemas(Library);
 	RegisterFrontendKernels(Library);
 	Library.def("kernel_symbol", &KernelSymbol);

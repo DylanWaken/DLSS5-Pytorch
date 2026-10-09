@@ -5,7 +5,7 @@
 
 // Two K512 slices form Q/K/V for two 32-channel heads. Each four-warp CTA
 // owns M128 x N192; normalization and V transposition fuse into the final slice.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 using FGlobalQkvAccumulator = FMmaAccumulatorTile<4, 6>;
 using FGlobalQkvTileCoordinates = FGlobalContractTileCoordinates;
 

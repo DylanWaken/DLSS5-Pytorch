@@ -6,7 +6,7 @@
 extern "C" __global__ __maxnreg__(168) void channel_projection_c512_to_c1024_fp16(
 	FChannelProjectionC512ToC1024Fp16Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 	constexpr bool bFp8Storage = false;
 	using FProfile = FChannelProjectionProfile<bFp8Storage>;
 	__shared__ __align__(512) unsigned char s_Storage[FProfile::s_StorageBytes];

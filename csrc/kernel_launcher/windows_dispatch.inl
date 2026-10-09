@@ -1,5 +1,6 @@
 #pragma once
 #include "windows_dispatch.h"
+#include "architecture_support.h"
 #include "kernel_impl/shared/common/kernel_abi.h"
 #include <cuda_runtime_api.h>
 #include <c10/cuda/CUDAGuard.h>
@@ -212,14 +213,10 @@ std::vector<int64_t> WindowPrepareEntry(const at::Tensor& DeviceAnchor, int Entr
 				"window prepare is forbidden during capture including cache hits");
 	cudaDeviceProp DeviceProperties{};
 	C10_CUDA_CHECK(cudaGetDeviceProperties(&DeviceProperties, DeviceIndex));
-	TORCH_CHECK(DeviceProperties.major == 12 && DeviceProperties.minor == 0,
-				"reconstructed window device bodies require SM120");
-	cudaFuncAttributes FunctionAttributes{};
-	C10_CUDA_CHECK(cudaFuncGetAttributes(&FunctionAttributes, EntrySpec.Stub));
-	TORCH_CHECK(FunctionAttributes.binaryVersion == 120,
-				"reconstructed window stub did not resolve to SM120 code");
-	TORCH_CHECK(FunctionAttributes.maxThreadsPerBlock >= EntrySpec.Channels,
-				"reconstructed window function cannot launch required block");
+	const auto Admission = ValidateKernelDevice(EntrySpec.Stub, DeviceProperties,
+												EntrySpec.PrecisionValue == EWindowPrecision::Fp16,
+												dim3(32, EntrySpec.Channels / 32), EntrySpec.Symbol);
+	const auto& FunctionAttributes = Admission.Attributes;
 	auto& Preparation = WindowGetPreparationState();
 	std::lock_guard<std::mutex> Lock(Preparation.Mutex);
 	auto& DevicePreparation = Preparation.Devices[DeviceIndex];
@@ -229,7 +226,7 @@ std::vector<int64_t> WindowPrepareEntry(const at::Tensor& DeviceAnchor, int Entr
 	DevicePreparation.bReady[EntryIndex] = true;
 	return {EntryIndex,
 			DeviceIndex,
-			120,
+			GetDeviceArchitecture(DeviceProperties),
 			FunctionAttributes.numRegs,
 			int64_t(FunctionAttributes.sharedSizeBytes),
 			int64_t(FunctionAttributes.localSizeBytes),

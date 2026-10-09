@@ -1,8 +1,7 @@
 $ErrorActionPreference = "Stop"
 $projectRoot = $PSScriptRoot
-$env:TORCH_CUDA_ARCH_LIST = "12.0"
-$env:MAX_JOBS = "2"
-$env:CUDA_HOME = Join-Path $projectRoot ".cuda/Library"
+if (-not $env:MAX_JOBS) { $env:MAX_JOBS = "2" }
+if (-not $env:CUDA_HOME) { $env:CUDA_HOME = Join-Path $projectRoot ".cuda/Library" }
 if (-not (Test-Path -LiteralPath $env:CUDA_HOME)) { throw "Set up the matching CUDA toolkit before building" }
 Set-Location -LiteralPath $projectRoot
 & python setup.py build_ext --inplace

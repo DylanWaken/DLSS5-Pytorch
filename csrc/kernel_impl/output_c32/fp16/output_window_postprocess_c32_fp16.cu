@@ -9,7 +9,7 @@
 extern "C" __global__ __maxnreg__(168) void output_window_postprocess_c32_fp16(
 	FOutputWindowPostprocessC32Fp16Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 	constexpr bool bFp8 = false;
 	FWindowAccumulatorTile<32> r_RawInput[4];
 	uint32_t r_Head[4][2];

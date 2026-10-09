@@ -324,7 +324,7 @@ class Checkpoint:
         of image shape; the C++ plan computes the exact padded runtime geometry.
         """
         from .deployment import load_extension, create_plan_fp16
-        ops = load_extension()
+        ops = load_extension(device=state.device)
         names, sizes = list(ops.record_names_fp16()), list(ops.record_bytes_fp16())
         if len(names) != len(sizes) or len(set(names)) != len(names):
             raise ValueError("Invalid compiled FP16 record roster")
@@ -355,7 +355,7 @@ class Checkpoint:
         if self.precision != "fp8":
             raise ValueError("FP16 to FP8 requires explicit quantization; no fallback to original weights")
         from .deployment import load_extension, create_plan_fp8
-        ops = load_extension()
+        ops = load_extension(device=state.device)
         names, sizes = list(ops.record_names_fp8()), list(ops.record_bytes_fp8())
         if len(names) != len(sizes) or len(set(names)) != len(names):
             raise ValueError("Invalid compiled record roster")

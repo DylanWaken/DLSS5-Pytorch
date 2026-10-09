@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "kernel_impl/shared/common/kernel_abi.h"
+#include "architecture_support.h"
 
 constexpr int C512EntryCount = 18;
 
@@ -95,7 +96,7 @@ const std::array<FC512KernelEntry, C512EntryCount>& C512GetEntryTable()
 struct FC512PreparedEntries
 {
 	std::mutex Mutex;
-	std::array<bool, 64> Devices{};
+	std::array<std::array<bool, 2>, 64> Devices{};
 };
 
 FC512PreparedEntries& C512GetPreparationState()
@@ -142,10 +143,6 @@ int C512GetDeviceIndex(const at::Tensor& Tensor)
 {
 	const int DeviceIndex = Tensor.get_device();
 	TORCH_CHECK(DeviceIndex >= 0 && DeviceIndex < 64, "C512 device outside preparation table");
-	cudaDeviceProp DeviceProperties{};
-	C10_CUDA_CHECK(cudaGetDeviceProperties(&DeviceProperties, DeviceIndex));
-	TORCH_CHECK(DeviceProperties.major == 12 && DeviceProperties.minor == 0,
-				"reconstructed C512 requires SM120");
 	return DeviceIndex;
 }
 
@@ -204,9 +201,10 @@ void C512LaunchWithParameters(const void* Function, dim3 Grid, dim3 Block, cudaS
 	C10_CUDA_CHECK(cudaLaunchKernel(Function, Grid, Block, KernelArguments, 0, Stream));
 }
 
-// Returns 18 rows of [entry,device,SM,registers,shared,local,maxThreads].
+// Returns nine rows of [entry,device,SM,registers,shared,local,maxThreads].
+// Load only the requested precision: Ampere must never prepare FP8 trap stubs.
 // Explicit loading/admission is outside capture even when already prepared.
-std::vector<int64_t> C512PrepareEntries(const at::Tensor& DeviceAnchor)
+std::vector<int64_t> C512PrepareEntries(const at::Tensor& DeviceAnchor, bool bFp16)
 {
 	TORCH_CHECK(DeviceAnchor.is_cuda(), "C512 preparation requires CUDA");
 	c10::cuda::CUDAGuard DeviceGuard(DeviceAnchor.device());
@@ -216,20 +214,22 @@ std::vector<int64_t> C512PrepareEntries(const at::Tensor& DeviceAnchor)
 	C10_CUDA_CHECK(cudaStreamIsCapturing(Stream.stream(), &CaptureStatus));
 	TORCH_CHECK(CaptureStatus == cudaStreamCaptureStatusNone,
 				"C512 preparation forbidden during capture, including cache hits");
+	cudaDeviceProp DeviceProperties{};
+	C10_CUDA_CHECK(cudaGetDeviceProperties(&DeviceProperties, DeviceIndex));
+	RequireDevicePrecision(DeviceProperties, bFp16, "C512 preparation");
 	std::vector<int64_t> ResourceRows;
-	ResourceRows.reserve(18 * 7);
+	ResourceRows.reserve(9 * 7);
 	for (int EntryIndex = 0; EntryIndex < 18; ++EntryIndex)
 	{
 		const auto& EntrySpec = C512GetEntryTable()[EntryIndex];
-		cudaFuncAttributes FunctionAttributes{};
-		C10_CUDA_CHECK(cudaFuncGetAttributes(&FunctionAttributes, EntrySpec.Function));
-		TORCH_CHECK(FunctionAttributes.binaryVersion == 120,
-					"C512 stub must resolve to the accepted SM120 device body");
-		TORCH_CHECK(FunctionAttributes.maxThreadsPerBlock >= 32 * EntrySpec.Warps,
-					"compiled C512 block admission");
+		if ((EntrySpec.ElementBytes == 2) != bFp16)
+			continue;
+		const auto Admission = ValidateKernelDevice(EntrySpec.Function, DeviceProperties, bFp16,
+													dim3(32, EntrySpec.Warps), "C512 preparation");
+		const auto& FunctionAttributes = Admission.Attributes;
 		const int64_t ResourceRow[] = {EntryIndex,
 									   DeviceIndex,
-									   120,
+									   GetDeviceArchitecture(DeviceProperties),
 									   FunctionAttributes.numRegs,
 									   int64_t(FunctionAttributes.sharedSizeBytes),
 									   int64_t(FunctionAttributes.localSizeBytes),
@@ -238,7 +238,7 @@ std::vector<int64_t> C512PrepareEntries(const at::Tensor& DeviceAnchor)
 	}
 	auto& Preparation = C512GetPreparationState();
 	std::lock_guard<std::mutex> Lock(Preparation.Mutex);
-	Preparation.Devices[DeviceIndex] = true;
+	Preparation.Devices[DeviceIndex][bFp16 ? 1 : 0] = true;
 	return ResourceRows;
 }
 
@@ -294,8 +294,8 @@ std::vector<at::Tensor> C512LaunchEntry(int64_t EntryIndex, std::vector<at::Tens
 	{
 		auto& Preparation = C512GetPreparationState();
 		std::lock_guard<std::mutex> Lock(Preparation.Mutex);
-		TORCH_CHECK(Preparation.Devices[DeviceIndex],
-					"prepare all reconstructed C512 entries outside capture first");
+		TORCH_CHECK(Preparation.Devices[DeviceIndex][EntrySpec.ElementBytes == 2 ? 1 : 0],
+					"prepare reconstructed C512 entries of the requested precision outside capture first");
 	}
 	const auto Stream = c10::cuda::getCurrentCUDAStream(DeviceIndex);
 	for (const auto* Tensor : Buffers)
@@ -480,7 +480,7 @@ std::vector<int64_t> PrepareC512_fp8(const at::Tensor& DeviceAnchor, int64_t Ent
 	TORCH_CHECK(EntryIndex >= 0 && EntryIndex < 18, "C512 entry outside catalog");
 	TORCH_CHECK(C512GetEntryTable()[EntryIndex].ElementBytes == 1,
 				"C512 precision does not match _fp8 binding");
-	return C512PrepareEntries(DeviceAnchor);
+	return C512PrepareEntries(DeviceAnchor, false);
 }
 
 std::vector<at::Tensor> LaunchC512_fp8(int64_t EntryIndex, std::vector<at::Tensor> Inputs,
@@ -504,7 +504,7 @@ std::vector<int64_t> PrepareC512_fp16(const at::Tensor& DeviceAnchor, int64_t En
 	TORCH_CHECK(EntryIndex >= 0 && EntryIndex < 18, "C512 entry outside catalog");
 	TORCH_CHECK(C512GetEntryTable()[EntryIndex].ElementBytes == 2,
 				"C512 precision does not match _fp16 binding");
-	return C512PrepareEntries(DeviceAnchor);
+	return C512PrepareEntries(DeviceAnchor, true);
 }
 
 std::vector<at::Tensor> LaunchC512_fp16(int64_t EntryIndex, std::vector<at::Tensor> Inputs,

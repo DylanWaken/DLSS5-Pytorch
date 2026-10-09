@@ -11,6 +11,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parent
 CPU_TESTS = (
+    "test_architecture_support_cpu.py",
     "test_dynamic_geometry_cpu.py",
     "test_kernel_sources_cpu.py",
     "test_split_launch_policy_cpu.py",

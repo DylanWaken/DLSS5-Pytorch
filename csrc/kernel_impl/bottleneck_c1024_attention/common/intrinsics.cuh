@@ -3,7 +3,7 @@
 
 // Instruction helpers used by this network stage in both precisions.
 // The force-inline bodies and explicit PTX modifiers are preserved.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 // Multiply raw FP32 bit patterns with subnormal flushing and return the result bits.
 __device__ __forceinline__ uint32_t FloatMulFtzBits(uint32_t r_LhsBits, uint32_t r_RhsBits)
@@ -36,4 +36,4 @@ __device__ __forceinline__ uint4 LoadGlobalCaOrZero(uint64_t g_Address, bool bVa
 	return r_Result;
 }
 
-#endif // SM120-only stage instruction helpers.
+#endif // SM80+ stage instruction helpers.

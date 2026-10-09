@@ -3,24 +3,21 @@
 Kernel choice, argument packing, layout and buffer scheduling live in C++.
 Keep the returned plan alive until every CUDA graph using it is reset.
 """
-from importlib.util import find_spec
 from pathlib import Path
 from threading import RLock
+from ._binary import extension_path
 
 _loaded = None
 _lock = RLock()
 
-def load_extension(path=None):
+def load_extension(path=None, *, device=None):
     import torch
     global _loaded
     with _lock:
         if path is None and _loaded is not None:
             return torch.ops.dlssnr
         if path is None:
-            spec = find_spec('dlssnr._C')
-            if spec is None:
-                raise RuntimeError('Build the CUDA extension with python setup.py build_ext --inplace')
-            path = spec.origin
+            path = extension_path(device)
         resolved = str(Path(path).resolve(strict=True))
         if _loaded is not None and _loaded != resolved:
             raise RuntimeError('A different DLSSNR extension is already loaded in this process')
@@ -36,7 +33,7 @@ def create_plan_fp8(state, records, *, width=3840, height=2160):
     ``state`` is the packed level-zero feature field; preparation stays outside
     CUDA graph capture. Image dimensions are not rounded to a tuned resolution.
     """
-    return load_extension().create_plan_for_resolution_fp8(state, records, width, height)
+    return load_extension(device=state.device).create_plan_for_resolution_fp8(state, records, width, height)
 
 def inference_forward_fp8(plan):
     """Run an already prepared plan on the current PyTorch CUDA stream."""
@@ -49,7 +46,7 @@ def create_plan_fp16(state, records, *, width=3840, height=2160):
     ``state`` is the packed level-zero Half feature field. C++ computes its
     padded extents and the full launch plan outside CUDA graph capture.
     """
-    return load_extension().create_plan_for_resolution_fp16(state, records, width, height)
+    return load_extension(device=state.device).create_plan_for_resolution_fp16(state, records, width, height)
 
 
 def inference_forward_fp16(plan):
@@ -131,13 +128,13 @@ def prepare_kernels(plan):
 
 def prepare_output_view_fp8(state, record, output, *, height, width, phase=0):
     """Prepare the individual C32 output-view export outside graph capture."""
-    return PreparedKernel(load_extension().prepare_output_view_fp8(
+    return PreparedKernel(load_extension(device=state.device).prepare_output_view_fp8(
         state, record, output, height, width, phase))
 
 
 def prepare_output_view_fp16(state, record, output, *, height, width, phase=0):
     """Prepare the individual Half C32 output-view export outside graph capture."""
-    return PreparedKernel(load_extension().prepare_output_view_fp16(
+    return PreparedKernel(load_extension(device=state.device).prepare_output_view_fp16(
         state, record, output, height, width, phase))
 
 
@@ -149,13 +146,18 @@ def prepare_frontend(name, configuration, inputs, outputs, *, linear_filter=Fals
     float32 HWC4; packed features/records are one-dimensional uint8. The C++
     frontend descriptor validates the exact role contracts for the named export.
     """
-    return PreparedKernel(load_extension().prepare_frontend(
+    return PreparedKernel(load_extension(device=inputs[0].device if inputs else None).prepare_frontend(
         name, configuration, list(inputs), list(outputs), linear_filter))
 
 
-def frontend_configuration(name, *, height, width, valid_height=0, valid_width=0, phase=0, seed=0):
-    """Build an owned, zero-pointer CPU ABI configuration through typed C++ fields."""
-    return load_extension().frontend_configuration(
+def frontend_configuration(name, *, height, width, valid_height=0, valid_width=0, phase=0, seed=0,
+                           device=None):
+    """Build a CPU ABI configuration, selecting the binary for the intended GPU.
+
+    Pass ``device`` when the frontend tensors will use a non-current CUDA device.
+    The configuration itself remains on the CPU and contains no tensor pointers.
+    """
+    return load_extension(device=device).frontend_configuration(
         name, height, width, valid_height, valid_width, phase, seed)
 
 

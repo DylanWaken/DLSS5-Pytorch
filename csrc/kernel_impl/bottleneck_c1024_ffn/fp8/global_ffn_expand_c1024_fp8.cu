@@ -6,7 +6,7 @@
 extern "C" __global__
 	__maxnreg__(168) void global_ffn_expand_c1024_fp8(FGlobalFfnExpandC1024Fp8Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 890
 	constexpr bool bFp8 = true;
 	using FProfile = FGlobalFfnExpandProfile<bFp8>;
 	__shared__ __align__(512) unsigned char s_Storage[FProfile::s_BarrierBase + 24];
@@ -162,5 +162,8 @@ extern "C" __global__
 			StoreNoAllocate(g_Output + r_NTile * 512, r_OutputVector);
 		}
 	}
+#else
+	// Keep the exported entry on older targets, but never silently skip FP8 work.
+	__trap();
 #endif
 }

@@ -6,11 +6,11 @@ Reconstructed DLSS-NR CUDA kernels for PyTorch, plus a differentiable network fo
 
 | Route | What you can use |
 |---|---|
-| **FP8 deployment** | CUDA-graph-compatible prepared-feature inference at arbitrary supported padded resolutions on SM120. |
-| **FP16 deployment** | Complete prepared-feature CUDA/C++ trunk with runtime geometry and automatic scheduling for smaller SM120 GPUs. |
+| **FP8 deployment** | Prepared-feature inference at arbitrary supported padded resolutions; builds for SM89+ (RTX 40 series and newer). |
+| **FP16 deployment** | Complete CUDA/C++ trunk with runtime geometry and capacity-aware scheduling; builds for SM80+ (including RTX 30 series). |
 | **FP32 / BF16 training** | All 71 numbered network records, ordinary autograd and optional activation checkpointing. All eight resolution/precision benchmark cases pass. |
 
-The current deployment target is **SM120**, tested on an RTX PRO 6000 Blackwell. Inputs are prepared features; renderer integration is not included. Arbitrary supported resolutions are prepared in C++; ordered split launches handle smaller GPU capacity. This fallback was tested by lowering scheduling admission on the available GPU; no physical RTX 5060 was available.
+Deployment builds separate binaries per architecture, or one multi-architecture library. Native runtime and performance measurements use an RTX PRO 6000 Blackwell (SM120). Ampere/Ada compilation and lower-target PTX execution on SM120 are checked; physical RTX 30/40 hardware remains untested. Inputs are prepared features; renderer integration is not included. C++ prepares arbitrary supported resolutions and uses ordered split launches for smaller GPU capacity. See [architecture build options and validation limits](docs/SETUP.md#architecture-specific-binaries).
 
 ## Network at a glance
 
@@ -28,6 +28,7 @@ Portable FP8 and FP16 [PyTorch checkpoints](ckpts/README.md) are provided throug
 
 ```powershell
 $env:CUDA_HOME = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8"
+$env:TORCH_CUDA_ARCH_LIST = "8.0;8.6;8.9;12.0"  # Or only your target.
 $env:DLSSNR_PTXAS_PATH = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.4\bin\ptxas.exe"
 python setup.py build_ext --inplace
 python -B run_tests.py cpu --optimized
@@ -66,7 +67,7 @@ kernel = sequence.kernels[0]
 kernel(kernel.inputs, kernel.outputs)  # One named CUDA kernel.
 ```
 
-All 81 entries have individual Torch operators. Default Inductor and `aot_eager` are tested; the measured Windows/PyTorch 2.8 setup uses `triton-windows==3.4.0.post21` for Inductor. See [setup and deployment](docs/SETUP.md#deployment) for the packed-input contract and a runnable plan example.
+All 81 entries have individual Torch operators. Earlier SM120 validation covered default Inductor and `aot_eager`, with `triton-windows==3.4.0.post21` for Inductor. The architecture-portability checks covered eager and `aot_eager`; Inductor was unavailable in that environment. See [setup and deployment](docs/SETUP.md#deployment) for the packed-input contract and a runnable plan example.
 
 **Actual DLSS5 transfer-learning methodology, task losses, data preparation and training procedures still require investigation.** This is a minimal trainable implementation.
 

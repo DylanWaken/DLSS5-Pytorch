@@ -4,7 +4,7 @@
 
 // Tensor-fragment interface shared by both original MMA precisions.
 // FP8 and FP16 still select independent, exact ISA operations and K dimensions.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 enum class EMmaInputPrecision
 {
 	Fp8,

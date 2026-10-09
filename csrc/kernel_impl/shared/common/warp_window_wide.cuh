@@ -4,7 +4,7 @@
 // The wide blocks share tensor operations, but not one ownership schedule.
 // C64 computes its FFN over two token tiles per warp. C128/C256 distribute
 // FFN experts between warps and exchange published C32 panels through shared.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 template <int Channels, bool bFp8> struct FWideWindowProfile
 {

@@ -5,7 +5,7 @@
 
 extern "C" __global__ __maxnreg__(255) void window_ffn_c512_fp16(FWindowFfnC512Fp16Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 	constexpr bool bFp8 = false;
 	constexpr bool bInputView = false;
 	using Profile = FWindowFfnProfile<bFp8, bInputView>;

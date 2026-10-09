@@ -4,7 +4,7 @@
 #include <cstdint>
 
 // Shared asynchronous-copy synchronization used by the tiled pipelines.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 // Arrive once at the caller's shared mbarrier and wait for that exact phase.
 // The pipeline owns initialization and expected-copy byte counts. This helper

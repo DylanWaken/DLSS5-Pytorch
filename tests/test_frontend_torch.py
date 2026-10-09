@@ -282,6 +282,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--extension", type=Path)
+    parser.add_argument("--precision", nargs='+', choices=("fp8", "fp16"), default=["fp8", "fp16"])
     parser.add_argument("--height", type=int, default=32)
     parser.add_argument("--width", type=int, default=40)
     parser.add_argument("--output", type=Path, default=ROOT / "outputs/frontend-torch/qualification.json")
@@ -302,7 +303,7 @@ def main():
             stream = torch.cuda.Stream()
             stream.wait_stream(torch.cuda.current_stream())
             with torch.cuda.stream(stream), torch.inference_mode():
-                for precision in ("fp8", "fp16"):
+                for precision in args.precision:
                     for postprocess, downsample in ((False, False), (False, True), (True, False)):
                         cases = ("raw", "motion", "history_padded") if postprocess else ("no_history", "depth_max", "conditioning_override")
                         for case_index, case in enumerate(cases):
@@ -318,7 +319,7 @@ def main():
                             finally:
                                 fixture.close()
                 stream.synchronize()
-            report["pass"] = len(report["cases"]) == 18
+            report["pass"] = len(report["cases"]) == 9 * len(args.precision)
     except BaseException as error:
         report["error"] = type(error).__name__ + ": " + str(error)
         raise

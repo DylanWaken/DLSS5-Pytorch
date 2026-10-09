@@ -2,7 +2,7 @@
 #include "../../shared/common/warp_window_wide.cuh"
 #include "../../shared/common/window_pool.cuh"
 
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 // This is an internal argument view, not an exported parameter ABI. Named
 // adapters retain the byte contracts of the four existing native structures.

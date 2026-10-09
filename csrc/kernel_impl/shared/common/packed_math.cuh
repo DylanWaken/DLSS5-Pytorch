@@ -5,7 +5,7 @@
 #include <cstdint>
 
 // Packed Half arithmetic, bit reinterpretation and per-lane approximate math composition.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 // Reinterpret one packed 32-bit word as two Half values without split/rejoin conversions.
 __device__ __forceinline__ __half2 HalfPair(uint32_t r_PackedBits)
 {

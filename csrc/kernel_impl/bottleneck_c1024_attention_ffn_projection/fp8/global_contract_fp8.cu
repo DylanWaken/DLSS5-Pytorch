@@ -6,7 +6,7 @@
 template <bool bAttentionProjection, typename FParameters>
 __global__ __maxnreg__(168) void global_contract_fp8(FParameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 890
 	constexpr bool bFp8 = true;
 	using Profile = FGlobalContractProfile<bFp8, bAttentionProjection>;
 	__shared__ __align__(512) unsigned char s_Storage[Profile::s_BarrierOffset + Profile::s_StageCount * 8];
@@ -299,6 +299,9 @@ __global__ __maxnreg__(168) void global_contract_fp8(FParameters Parameters)
 	__syncthreads();
 	if (TileCoordinates.Lane == 0 && TileCoordinates.Warp == 0)
 		CounterStoreRelease(g_SplitCounters, TileCoordinates.Split);
+#else
+	// Keep the exported entry on older targets, but never silently skip FP8 work.
+	__trap();
 #endif
 }
 

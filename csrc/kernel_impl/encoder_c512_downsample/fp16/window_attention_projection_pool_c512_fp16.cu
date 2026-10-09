@@ -6,7 +6,7 @@
 extern "C" __global__ __maxnreg__(168) void window_attention_projection_pool_c512_fp16(
 	FWindowAttentionProjectionPoolC512Fp16Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 	const FSpatialProjectionArguments Arguments{Parameters.g_Input,
 												Parameters.g_Residual,
 												Parameters.g_Output,

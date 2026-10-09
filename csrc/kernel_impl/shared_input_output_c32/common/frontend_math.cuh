@@ -2,7 +2,7 @@
 #include "intrinsics.cuh"
 #include "../../shared/common/kernel_abi.h"
 
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 // Verified PTX values and roles, not inferred model hyperparameters.
 constexpr float CONST_PIXEL_CENTER = 0.5f;			 // Sample texel centers.

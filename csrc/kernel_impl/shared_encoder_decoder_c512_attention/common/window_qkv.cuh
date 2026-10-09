@@ -6,7 +6,7 @@
 
 // Split C512 QKV and attention. Four warps each own one 32-channel head;
 // grid.z partitions all sixteen heads. The separate projection kernel follows.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 using FWindowQkvDenseTile = FMmaAccumulatorTile<4, 6>;
 
 template <bool bFp8> struct FWindowQkvProfile

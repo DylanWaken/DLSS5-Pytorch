@@ -1,7 +1,7 @@
 #pragma once
 #include "../../shared/common/warp_window_wide.cuh"
 
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 template <int Channels, bool bFp8> struct FWindowUpsampleBlockProfile : FWideWindowProfile<Channels, bFp8>
 {

@@ -6,7 +6,7 @@
 template <int SpatialTiles, typename FParameters>
 __global__ __maxnreg__((SpatialTiles == 2 ? 168 : 128)) void spatial_projection_fp16(FParameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 	constexpr bool bFp8 = false;
 	constexpr bool bInputPlane = false;
 	constexpr bool bOutputPlane = false;

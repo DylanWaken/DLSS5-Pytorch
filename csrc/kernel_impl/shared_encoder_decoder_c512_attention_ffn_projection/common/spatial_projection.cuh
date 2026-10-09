@@ -8,7 +8,7 @@
 // differ in warp ownership: FFN uses four warps with four spatial tiles each;
 // attention uses eight warps with two tiles each. Both produce 8x8x256 per CTA.
 // H/W are divisible by four; the launcher retains each original block shape.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 template <int SpatialTiles> using FSpatialProjectionAccumulator = FMmaAccumulatorTile<SpatialTiles, 4>;
 
 struct FSpatialProjectionArguments

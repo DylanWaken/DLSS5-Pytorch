@@ -3,7 +3,7 @@
 
 // Instruction helpers used by this network stage in both precisions.
 // The force-inline bodies and explicit PTX modifiers are preserved.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 // Take absolute value of an FP32 bit pattern with subnormal flushing.
 __device__ __forceinline__ uint32_t NativeAbsFtzF32(uint32_t r_InputBits)
@@ -225,4 +225,4 @@ __device__ __forceinline__ bool NativeSetpLtuFtzF32(uint32_t r_LhsBits, uint32_t
 	return PredicateWord != 0;
 }
 
-#endif // SM120-only stage instruction helpers.
+#endif // SM80+ stage instruction helpers.

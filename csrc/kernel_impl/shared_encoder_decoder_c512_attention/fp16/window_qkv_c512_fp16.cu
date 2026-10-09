@@ -5,7 +5,7 @@
 
 extern "C" __global__ __maxnreg__(168) void window_qkv_c512_fp16(FWindowQkvC512Fp16Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 	constexpr bool bFp8 = false;
 	using Profile = FWindowQkvProfile<bFp8>;
 	__shared__ __align__(512) unsigned char s_Storage[Profile::s_BarrierBase + 16];

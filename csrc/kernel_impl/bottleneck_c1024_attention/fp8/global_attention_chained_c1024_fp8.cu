@@ -6,7 +6,7 @@
 extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp8(
 	FGlobalAttentionChainedC1024Fp8Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 890
 	constexpr bool bFp8 = true;
 	using Profile = FGlobalAttentionProfile<bFp8>;
 	__shared__ __align__(512) unsigned char s_Storage[Profile::s_BarrierOffset + 16];
@@ -346,5 +346,8 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp8(
 				CounterStoreRelease(
 					Parameters.g_CompletionCounters + (g_Group * 32 + TileCoordinates.g_Head) * 4, 0);
 		}
+#else
+	// Keep the exported entry on older targets, but never silently skip FP8 work.
+	__trap();
 #endif
 }

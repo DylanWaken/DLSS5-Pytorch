@@ -4,7 +4,7 @@
 
 // Native Conv2d1x1 tile: M16 spatial fragments, N16 output groups, and a
 // compile-time count of K subtiles. FP8 uses K32; Half uses K16 instructions.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 template <int SpatialFragments, int ChannelGroups> struct FMmaAccumulatorTile
 {

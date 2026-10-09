@@ -6,7 +6,7 @@
 extern "C" __global__
 	__maxnreg__(168) void global_projection_c1024_fp16(FGlobalProjectionC1024Fp16Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 	using FProjectionProfile = FGlobalContractProfile<false, true>;
 
 	constexpr bool bFp8 = false;

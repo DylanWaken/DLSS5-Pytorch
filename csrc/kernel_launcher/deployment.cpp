@@ -1,4 +1,5 @@
 #include "deployment.h"
+#include "architecture_support.h"
 #include "windows_dispatch.inl"
 #include "c512_dispatch.inl"
 #include "kernel_impl/shared/common/kernel_abi.h"
@@ -93,10 +94,10 @@ FDeploymentPlan<bFp16>::FDeploymentPlan(at::Tensor Input, std::vector<at::Tensor
 	RequireDeploymentOutsideCapture(Stream.stream());
 	cudaDeviceProp DeviceProperties{};
 	C10_CUDA_CHECK(cudaGetDeviceProperties(&DeviceProperties, DeviceIndex));
-	TORCH_CHECK(DeviceProperties.major == 12 && DeviceProperties.minor == 0,
-				"this reconstructed schedule is currently admitted only on SM120");
-	const auto Selection = SelectResolutionPolicy(
-		int(Width), int(Height), 120, bFp16 ? EResolutionPrecision::Fp16 : EResolutionPrecision::Fp8);
+	RequireDevicePrecision(DeviceProperties, bFp16, "deployment plan");
+	const auto Selection =
+		SelectResolutionPolicy(int(Width), int(Height), GetDeviceArchitecture(DeviceProperties),
+							   bFp16 ? EResolutionPrecision::Fp16 : EResolutionPrecision::Fp8);
 	TORCH_CHECK(Selection.ConfigId == -1 || Selection.ConfigId == 0,
 				"policy selects a configuration absent from this compiled reconstruction");
 	ValidateDeploymentPhysicalBuffer(Input, Geometry->BufferBytes[0], DeviceIndex,
@@ -142,24 +143,11 @@ FDeploymentPlan<bFp16>::FDeploymentPlan(at::Tensor Input, std::vector<at::Tensor
 	std::set<const void*> UniqueKernels;
 	for (auto& KernelCall : Calls)
 	{
-		cudaFuncAttributes FunctionAttributes{};
-		C10_CUDA_CHECK(cudaFuncGetAttributes(&FunctionAttributes, KernelCall.Function));
-		const auto ThreadsPerBlock = KernelCall.Block.x * KernelCall.Block.y * KernelCall.Block.z;
-		TORCH_CHECK(FunctionAttributes.binaryVersion == 120 &&
-						FunctionAttributes.maxThreadsPerBlock >= int(ThreadsPerBlock),
-					"linked reconstructed kernel architecture or block size differs");
-		for (int Axis = 0; Axis < 3; ++Axis)
-		{
-			const unsigned GridDimensions[] = {KernelCall.Grid.x, KernelCall.Grid.y, KernelCall.Grid.z};
-			TORCH_CHECK(GridDimensions[Axis] > 0 &&
-							GridDimensions[Axis] <= unsigned(DeviceProperties.maxGridSize[Axis]),
-						"grid outside device limits");
-		}
-		int ActiveBlocksPerSm = 0;
-		C10_CUDA_CHECK(cudaOccupancyMaxActiveBlocksPerMultiprocessor(&ActiveBlocksPerSm, KernelCall.Function,
-																	 int(ThreadsPerBlock), 0));
-		TORCH_CHECK(ActiveBlocksPerSm > 0, KernelCall.Name,
-					": no block can reside on this device with the compiled resources");
+		const auto Admission = ValidateKernelDevice(KernelCall.Function, DeviceProperties, bFp16,
+													KernelCall.Block, KernelCall.Name);
+		const auto& FunctionAttributes = Admission.Attributes;
+		const int ActiveBlocksPerSm = Admission.ActiveBlocksPerSm;
+		ValidateKernelGrid(KernelCall.Grid, DeviceProperties, KernelCall.Name);
 		const unsigned LaunchCount =
 			SelectSplitLaunchCount(KernelCall.bAllResident, uint64_t(KernelCall.Grid.x) * KernelCall.Grid.y,
 								   KernelCall.Grid.z, ActiveBlocksPerSm, EffectiveSmCount);
@@ -250,11 +238,12 @@ static c10::intrusive_ptr<FPreparedKernelHandle> PrepareOutputView(bool bFp16, a
 	Entry.Stub = bFp16 ? reinterpret_cast<const void*>(&window_block_c32_output_view_fp16)
 					   : reinterpret_cast<const void*>(&window_block_c32_output_view_fp8);
 	c10::cuda::CUDAGuard DeviceGuard(Input.device());
-	cudaFuncAttributes Attributes{};
-	C10_CUDA_CHECK(cudaFuncGetAttributes(&Attributes, Entry.Stub));
-	TORCH_CHECK(Attributes.binaryVersion == 120 && Attributes.maxThreadsPerBlock >= 32,
-				"C32 output-view entry requires the admitted SM120 block");
+	cudaDeviceProp Properties{};
+	C10_CUDA_CHECK(cudaGetDeviceProperties(&Properties, Input.get_device()));
+	ValidateKernelDevice(Entry.Stub, Properties, bFp16, dim3(32), "C32 output-view");
 	const auto Requirements = WindowGetBufferRequirements(EntryIndex, Height, Width, Phase);
+	ValidateKernelGrid(dim3(Requirements.Grid[0], Requirements.Grid[1], Requirements.Grid[2]), Properties,
+					   "C32 output-view");
 	auto ParameterBlock = WindowBuildParameterBlock(Entry, Requirements, 0, 0, 0, 0, 0, int32_t(Height),
 													int32_t(Width), int(Phase));
 	const std::vector<FPhysicalTensorBinding> Bindings{{0, 0, false}, {16, 1, false}, {8, 0, true}};

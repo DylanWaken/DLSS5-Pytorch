@@ -6,7 +6,7 @@
 extern "C" __global__
 	__maxnreg__(168) void global_ffn_expand_c1024_fp16(FGlobalFfnExpandC1024Fp16Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 	constexpr bool bFp8 = false;
 	using FProfile = FGlobalFfnExpandProfile<bFp8>;
 	__shared__ __align__(512) unsigned char s_Storage[FProfile::s_BarrierBase + 24];

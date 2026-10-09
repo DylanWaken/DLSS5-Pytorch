@@ -5,7 +5,7 @@
 
 // Decoder connector: split-K4 projection 1024->512, nearest 2x upsample, scaled skip.
 // CTA computes one 4x4 low-resolution tile and 256 output channels in two warps.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 using FDecoderAccumulator = FMmaAccumulatorTile<1, 8>;
 
 template <bool bFp8> struct FDecoderProfile

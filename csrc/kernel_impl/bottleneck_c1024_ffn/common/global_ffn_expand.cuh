@@ -3,7 +3,7 @@
 #include "../../shared/common/kernel_helpers.cuh"
 #include "../../shared/common/tiled_mma.cuh"
 
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 // The native FFN expands 1024 channels to 4096. Four warps cover a
 // 128-token x 128-channel CTA tile, arranged as two row groups by two columns.

@@ -1,7 +1,7 @@
 #pragma once
 #include "warp_window32.cuh"
 
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 // Shared by whole-window pooling and C512 spatial-projection pooling; both require this exact Half reduction tree.
 __device__ __forceinline__ uint32_t PoolHorizontalWords(uint32_t r_LeftLow, uint32_t r_LeftHigh,

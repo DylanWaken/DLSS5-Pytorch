@@ -5,7 +5,7 @@
 // Algorithmic reconstruction of the ordinary one-warp C32 block. Arrays name
 // tensor axes, not PTX registers. Every 16-token tile is one physical 4x4 tile;
 // its fragment row order is the DLL's order, not a BHWC staging allocation.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 struct FWindowAFragment
 {

@@ -1,4 +1,5 @@
 #include "frontend_dispatch.h"
+#include "architecture_support.h"
 #include "kernel_impl/shared/common/kernel_abi.h"
 #include <c10/cuda/CUDAGuard.h>
 #include <c10/cuda/CUDAStream.h>
@@ -242,8 +243,6 @@ c10::intrusive_ptr<FPreparedKernelHandle> PrepareFrontend(std::string Name, at::
 				"prepare_frontend must run outside CUDA graph capture");
 	cudaDeviceProp Properties{};
 	C10_CUDA_CHECK(cudaGetDeviceProperties(&Properties, DeviceIndex));
-	TORCH_CHECK(Properties.major == 12 && Properties.minor == 0,
-				"reconstructed frontend is qualified only on SM120");
 	auto Descriptor = std::make_shared<FFrontendKernelDescriptor>(Name, DeviceIndex);
 	if (Name == "input_preprocess_window_c32_fp8")
 		Descriptor->Function = reinterpret_cast<const void*>(&input_preprocess_window_c32_fp8);
@@ -262,6 +261,7 @@ c10::intrusive_ptr<FPreparedKernelHandle> PrepareFrontend(std::string Name, at::
 	Descriptor->bPostprocess = Name.find("output_") == 0;
 	Descriptor->bDownsample = Name.find("_downsample_") != std::string::npos;
 	Descriptor->bFp8 = Name.size() >= 4 && Name.substr(Name.size() - 4) == "_fp8";
+	ValidateKernelDevice(Descriptor->Function, Properties, !Descriptor->bFp8, dim3(32), Name.c_str());
 	const bool bPostprocess = Descriptor->bPostprocess;
 	const bool bDownsample = Descriptor->bDownsample;
 	const int64_t ElementBytes = Descriptor->bFp8 ? 1 : 2;
@@ -364,6 +364,7 @@ c10::intrusive_ptr<FPreparedKernelHandle> PrepareFrontend(std::string Name, at::
 		Descriptor->TextureIndices = {1, 2, 3, 4, 5};
 		Descriptor->Grid = dim3(Parameters.FullWidth / 8, Parameters.FullHeight / 8);
 	}
+	ValidateKernelGrid(Descriptor->Grid, Properties, Name.c_str());
 	Descriptor->Validate(Inputs, Outputs, false);
 	for (const auto Index : Descriptor->TextureIndices)
 	{

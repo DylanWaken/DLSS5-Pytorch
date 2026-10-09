@@ -9,7 +9,7 @@
 extern "C" __global__ __maxnreg__(168) void output_window_postprocess_c32_fp8(
 	FOutputWindowPostprocessC32Fp8Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 890
 	constexpr bool bFp8 = true;
 	FWindowAccumulatorTile<32> r_RawInput[4];
 	uint32_t r_Head[4][2];
@@ -355,5 +355,8 @@ extern "C" __global__ __maxnreg__(168) void output_window_postprocess_c32_fp8(
 						make_uint4(__float_as_uint(r_Color.x), __float_as_uint(r_Color.y),
 								   __float_as_uint(r_Color.z), __float_as_uint(r_Color.w)));
 	}
+#else
+	// Keep the exported entry on older targets, but never silently skip FP8 work.
+	__trap();
 #endif
 }

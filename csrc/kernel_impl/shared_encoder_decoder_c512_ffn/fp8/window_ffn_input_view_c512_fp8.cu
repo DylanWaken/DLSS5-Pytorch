@@ -6,7 +6,7 @@
 extern "C" __global__
 	__maxnreg__(168) void window_ffn_input_view_c512_fp8(FWindowFfnInputViewC512Fp8Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 890
 	constexpr bool bFp8 = true;
 	constexpr bool bInputView = true;
 	using Profile = FWindowFfnProfile<bFp8, bInputView>;
@@ -188,5 +188,8 @@ extern "C" __global__
 			StoreNoAllocate(g_OutputTileBase + r_NTile * 512,
 							LoadWindowFfnInputFragment<bFp8>(r_Output, r_Spatial, r_NTile));
 	}
+#else
+	// Keep the exported entry on older targets, but never silently skip FP8 work.
+	__trap();
 #endif
 }

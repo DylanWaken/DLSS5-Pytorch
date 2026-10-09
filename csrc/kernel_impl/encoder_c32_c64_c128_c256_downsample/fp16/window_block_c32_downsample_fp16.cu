@@ -6,7 +6,7 @@
 extern "C" __global__
 	__maxnreg__(168) void window_block_c32_downsample_fp16(FWindowBlockC32DownsampleFp16Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 	constexpr bool bFp8 = false;
 	constexpr int Channels = 32;
 	const FWindowDownsampleArguments Arguments{Parameters.g_Input,

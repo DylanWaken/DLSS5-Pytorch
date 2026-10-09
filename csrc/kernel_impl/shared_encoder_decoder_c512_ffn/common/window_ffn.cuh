@@ -6,7 +6,7 @@
 
 // Fused window FFN: dense 512->512, then eight independent 64->256->64 MLPs.
 // Each CTA owns an 8x8 spatial tile and four groups; grid.z selects groups 0-3/4-7.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 template <bool bFp8, bool bInputView = false> struct FWindowFfnProfile
 {

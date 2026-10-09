@@ -6,7 +6,7 @@
 template <int SpatialTiles, typename FParameters>
 __global__ __maxnreg__((SpatialTiles == 2 ? 168 : 128)) void spatial_projection_fp8(FParameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 890
 	constexpr bool bFp8 = true;
 	constexpr bool bInputPlane = false;
 	constexpr bool bOutputPlane = false;
@@ -225,6 +225,9 @@ __global__ __maxnreg__((SpatialTiles == 2 ? 168 : 128)) void spatial_projection_
 
 	{
 	}
+#else
+	// Keep the exported entry on older targets, but never silently skip FP8 work.
+	__trap();
 #endif
 }
 

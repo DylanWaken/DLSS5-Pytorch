@@ -8,7 +8,7 @@
 
 // Native-derived C512 -> C1024 pointwise projection. A CTA owns an 8x8 spatial
 // tile and 256 output channels; eight warps each compute 32 tokens x 64 channels.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 template <bool bFp8Storage> struct FChannelProjectionProfile
 {

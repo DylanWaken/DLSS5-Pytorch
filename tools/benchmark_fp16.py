@@ -164,6 +164,8 @@ def main():
     compared,failures=compare()
     report = dict(width=args.width,height=args.height,extension_sha256=hashlib.sha256(args.extension.read_bytes()).hexdigest(),boundaries=compared,failures=failures,
                   device=torch.cuda.get_device_name(), torch_version=torch.__version__,
+                  device_sm=10*torch.cuda.get_device_capability()[0]+torch.cuda.get_device_capability()[1],
+                  compiled_architectures=list(ops.deployment_build_architectures()) if hasattr(ops, 'deployment_build_architectures') else None,
                   device_sm_count=torch.cuda.get_device_properties(0).multi_processor_count,
                   sm_count_limit=os.environ.get('DLSSNR_SM_COUNT_LIMIT'),
                   split_launch_counts=split_launch_counts,

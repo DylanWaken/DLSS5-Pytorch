@@ -9,7 +9,7 @@
 extern "C" __global__
 	__maxnreg__(168) void input_preprocess_window_c32_fp8(FInputPreprocessWindowC32Fp8Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 890
 	constexpr bool bFp8 = true;
 
 	// Stage one 8x8 window of renderer features before the Half adapter consumes it.
@@ -351,5 +351,8 @@ extern "C" __global__
 			}
 		}
 	}
+#else
+	// Keep the exported entry on older targets, but never silently skip FP8 work.
+	__trap();
 #endif
 }

@@ -6,7 +6,7 @@
 
 // Native streaming global attention: four warps own 256 queries for one
 // 32-channel head, consuming 64 keys at a time through a two-stage K/V ring.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 template <bool bFp8> struct FGlobalAttentionProfile
 {

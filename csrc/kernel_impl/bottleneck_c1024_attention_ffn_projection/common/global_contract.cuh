@@ -5,7 +5,7 @@
 
 // Native global projections share M128 x N128 tiles and four resident K splits.
 // The profiles retain each operation's input width, K fragments, and pipeline.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 using FGlobalContractAccumulator = FMmaAccumulatorTile<4, 4>;
 
 template <bool bFp8, bool bAttentionProjection = false> struct FGlobalContractProfile

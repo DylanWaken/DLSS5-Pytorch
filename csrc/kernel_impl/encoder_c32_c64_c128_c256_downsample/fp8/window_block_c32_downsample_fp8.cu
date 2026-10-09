@@ -6,7 +6,7 @@
 extern "C" __global__
 	__maxnreg__(168) void window_block_c32_downsample_fp8(FWindowBlockC32DownsampleFp8Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 890
 	constexpr bool bFp8 = true;
 	constexpr int Channels = 32;
 	const FWindowDownsampleArguments Arguments{Parameters.g_Input,
@@ -310,5 +310,8 @@ extern "C" __global__
 			}
 		}
 	}
+#else
+	// Keep the exported entry on older targets, but never silently skip FP8 work.
+	__trap();
 #endif
 }

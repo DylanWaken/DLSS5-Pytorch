@@ -6,7 +6,7 @@
 extern "C" __global__ __maxnreg__(168) void channel_projection_c512_to_c1024_fp8(
 	FChannelProjectionC512ToC1024Fp8Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 890
 	constexpr bool bFp8Storage = true;
 	using FProfile = FChannelProjectionProfile<bFp8Storage>;
 	__shared__ __align__(512) unsigned char s_Storage[FProfile::s_StorageBytes];
@@ -164,5 +164,8 @@ extern "C" __global__ __maxnreg__(168) void channel_projection_c512_to_c1024_fp8
 			}
 		}
 	}
+#else
+	// Keep the exported entry on older targets, but never silently skip FP8 work.
+	__trap();
 #endif
 }

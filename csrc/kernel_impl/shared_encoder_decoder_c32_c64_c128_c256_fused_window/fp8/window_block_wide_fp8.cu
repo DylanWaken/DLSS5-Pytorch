@@ -6,7 +6,7 @@
 template <int Channels, bool bInputView, bool bOutputView, typename FParameters>
 __global__ __maxnreg__(168) void window_block_wide_fp8(FParameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 890
 	constexpr bool bFp8 = true;
 	__shared__ FSharedWindow<Channels, bFp8> s_Window;
 	using FConfig = FWideWindowProfile<Channels, bFp8>;
@@ -245,6 +245,9 @@ __global__ __maxnreg__(168) void window_block_wide_fp8(FParameters Parameters)
 
 		__syncthreads();
 	}
+#else
+	// Keep the exported entry on older targets, but never silently skip FP8 work.
+	__trap();
 #endif
 }
 

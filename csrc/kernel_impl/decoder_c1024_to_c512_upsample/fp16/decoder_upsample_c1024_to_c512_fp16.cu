@@ -6,7 +6,7 @@
 extern "C" __global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp16(
 	FDecoderUpsampleC1024ToC512Fp16Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 	constexpr bool bFp8 = false;
 	using Profile = FDecoderProfile<bFp8>;
 	__shared__ __align__(512) unsigned char s_Storage[2064];

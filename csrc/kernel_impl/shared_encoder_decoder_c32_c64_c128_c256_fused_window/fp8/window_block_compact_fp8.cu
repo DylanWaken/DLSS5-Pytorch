@@ -6,7 +6,7 @@
 template <int Channels, bool bInputView, typename FParameters>
 __global__ __maxnreg__(168) void window_block_compact_fp8(FParameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 890
 	constexpr bool bFp8 = true;
 	using FConfig = FWindow32Profile<bFp8>;
 	const unsigned char* g_PackedWeights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights);
@@ -209,6 +209,9 @@ __global__ __maxnreg__(168) void window_block_compact_fp8(FParameters Parameters
 			}
 		}
 	}
+#else
+	// Keep the exported entry on older targets, but never silently skip FP8 work.
+	__trap();
 #endif
 }
 

@@ -6,7 +6,7 @@
 extern "C" __global__
 	__maxnreg__(168) void global_ffn_contract_c1024_fp16(FGlobalFfnContractC1024Fp16Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 	constexpr bool bFp8 = false;
 	using Profile = FGlobalContractProfile<bFp8>;
 	__shared__ __align__(512) unsigned char s_Storage[Profile::s_BarrierOffset + Profile::s_StageCount * 8];

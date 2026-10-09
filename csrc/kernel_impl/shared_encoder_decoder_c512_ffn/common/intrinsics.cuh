@@ -3,7 +3,7 @@
 
 // Instruction helpers used by this network stage in both precisions.
 // The force-inline bodies and explicit PTX modifiers are preserved.
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 // Commit this thread's outstanding cp.async transfers as one group.
 __device__ __forceinline__ void CopyCommit()
@@ -27,4 +27,4 @@ __device__ __forceinline__ void CopyAsync4(unsigned char* s_SharedStorage, uint3
 				 : "memory");
 }
 
-#endif // SM120-only stage instruction helpers.
+#endif // SM80+ stage instruction helpers.

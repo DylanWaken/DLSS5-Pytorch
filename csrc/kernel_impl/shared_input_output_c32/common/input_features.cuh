@@ -1,7 +1,7 @@
 #pragma once
 #include "frontend_math.cuh"
 
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 
 // These unsigned constants reproduce the native per-frame/pixel hash and its
 // four decorrelated streams. They are recovered arithmetic, not an assertion

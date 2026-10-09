@@ -6,7 +6,7 @@
 template <int Channels, bool bInputView, bool bOutputView, typename FParameters>
 __global__ __maxnreg__(168) void window_block_two_warp_fp16(FParameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 	constexpr bool bFp8 = false;
 	__shared__ FSharedWindow<Channels, bFp8> s_Window;
 	using FConfig = FWideWindowProfile<Channels, bFp8>;

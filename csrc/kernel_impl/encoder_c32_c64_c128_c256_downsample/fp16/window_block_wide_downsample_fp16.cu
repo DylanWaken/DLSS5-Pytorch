@@ -7,7 +7,7 @@ template <int Channels, typename FParameters>
 __global__ __maxnreg__((Channels == 256 ? 192
 										: 168)) void window_block_wide_downsample_fp16(FParameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 	constexpr bool bFp8 = false;
 	const FWindowDownsampleArguments Arguments{Parameters.g_Input,
 											   Parameters.g_Output,

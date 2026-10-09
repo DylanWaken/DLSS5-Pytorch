@@ -6,7 +6,7 @@
 extern "C" __global__ __maxnreg__(168) void window_attention_projection_pool_c512_fp8(
 	FWindowAttentionProjectionPoolC512Fp8Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 890
 	const FSpatialProjectionArguments Arguments{Parameters.g_Input,
 												Parameters.g_Residual,
 												Parameters.g_Output,
@@ -290,5 +290,8 @@ extern "C" __global__ __maxnreg__(168) void window_attention_projection_pool_c51
 			}
 		}
 	}
+#else
+	// Keep the exported entry on older targets, but never silently skip FP8 work.
+	__trap();
 #endif
 }

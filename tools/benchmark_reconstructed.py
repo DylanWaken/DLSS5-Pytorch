@@ -167,9 +167,7 @@ def execute(args):
          helper_root / "reconstructed_candidate.py", "wrong candidate helper import")
     need(Path(sys.modules[NativeReference.__module__].__file__).resolve() ==
          helper_root / "native_reference/session.py", "wrong original reference import")
-    spec = importlib.util.find_spec("dlssnr._C")
-    need(spec is not None and spec.origin is not None, "compiled extension missing")
-    extension = Path(spec.origin).resolve(strict=True)
+    extension = Path(deployment.extension_path()).resolve(strict=True)
     need(extension.parent == package_root / "dlssnr" and
          sha256(extension) == args.binary_sha256, "wrong extension identity")
     milestone("load: exact binary and clean import origins checked")

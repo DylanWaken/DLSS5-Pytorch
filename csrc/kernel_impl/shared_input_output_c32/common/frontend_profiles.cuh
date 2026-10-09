@@ -1,7 +1,7 @@
 #pragma once
 #include "../../shared/common/kernel_abi.h"
 #include "../../shared/common/warp_window32.cuh"
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 // Shared record profiles and stage descriptors used by the six frontend entries.
 template <bool bFp8> struct FPreprocessWindowProfile : FWindow32Profile<bFp8>
 {

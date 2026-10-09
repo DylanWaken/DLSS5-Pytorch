@@ -9,7 +9,7 @@
 extern "C" __global__
 	__maxnreg__(168) void input_preprocess_window_c32_fp16(FInputPreprocessWindowC32Fp16Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
 	constexpr bool bFp8 = false;
 
 	// Stage one 8x8 window of renderer features before the Half adapter consumes it.

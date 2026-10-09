@@ -6,7 +6,7 @@
 extern "C" __global__ __maxnreg__(128) void window_ffn_projection_input_view_c512_fp8(
 	FWindowFfnProjectionInputViewC512Fp8Parameters Parameters)
 {
-#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == 1200
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 890
 	constexpr bool bFp8 = true;
 	constexpr int SpatialTiles = 4;
 	constexpr bool bInputPlane = true;
@@ -213,5 +213,8 @@ extern "C" __global__ __maxnreg__(128) void window_ffn_projection_input_view_c51
 
 	{
 	}
+#else
+	// Keep the exported entry on older targets, but never silently skip FP8 work.
+	__trap();
 #endif
 }
