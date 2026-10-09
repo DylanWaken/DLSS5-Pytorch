@@ -48,7 +48,7 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 			const int s_Copy = s_Stage + CopySlot * 512;
 			if (g_KeyGroup < TileCoordinates.g_Groups16)
 			{
-				if (Elected(0xffffffffu))
+				if (IsCopyProducer(0xffffffffu))
 				{
 					CopyBulk(s_Storage, s_Copy, g_KeyAddress, 512, s_Barrier);
 					BarrierExpect(s_Storage, s_Barrier, 512);
@@ -79,7 +79,7 @@ extern "C" __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(
 			const int s_ValueCopy = Profile::s_ValueOffset + s_Copy;
 			if (g_ValueGroup < g_ValueGroups)
 			{
-				if (Elected(0xffffffffu))
+				if (IsCopyProducer(0xffffffffu))
 				{
 					CopyBulk(s_Storage, s_ValueCopy, g_ValueAddress, 512, s_Barrier);
 					BarrierExpect(s_Storage, s_Barrier, 512);

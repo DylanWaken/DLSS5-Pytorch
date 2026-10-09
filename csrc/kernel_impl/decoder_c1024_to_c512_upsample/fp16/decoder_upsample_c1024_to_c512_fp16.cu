@@ -74,7 +74,7 @@ extern "C" __global__ __maxnreg__(168) void decoder_upsample_c1024_to_c512_fp16(
 				uint64_t(g_Y * TileCoordinates.g_LowTilesWide + g_X) * 16384 * Profile::ElementBytes +
 				TileCoordinates.Split * 4096 * Profile::ElementBytes +
 				(ReductionTile * 2 + TileCoordinates.Warp) * 512;
-			if (Elected(0xffffffffu))
+			if (IsCopyProducer(0xffffffffu))
 			{
 				CopyBulk(s_Storage, s_Destination, g_Source, 512, s_Barrier);
 				BarrierExpect(s_Storage, s_Barrier, 512);

@@ -64,7 +64,7 @@ extern "C" __global__ __maxnreg__(168) void window_qkv_c512_fp8(FWindowQkvC512Fp
 					Parameters.g_Input +
 					uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X) * 8192 * Profile::ElementBytes +
 					(ReductionTile * Profile::KSubtiles + KSubtileIndex) * 512;
-				if (Elected(0xffffffffu))
+				if (IsCopyProducer(0xffffffffu))
 				{
 					CopyBulk(s_Storage, s_Destination, g_Source, 512, s_Barrier);
 					BarrierExpect(s_Storage, s_Barrier, 512);

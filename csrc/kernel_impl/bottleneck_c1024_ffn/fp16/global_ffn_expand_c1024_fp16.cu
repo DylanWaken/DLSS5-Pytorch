@@ -40,8 +40,8 @@ extern "C" __global__
 				const uint64_t g_Source =
 					g_Input + uint64_t(g_InputGroup) * 16384 * FProfile::ElementBytes + ReductionTile * 1024;
 
-				// The original warp election publishes one bulk-copy transaction.
-				if (Elected(0xffffffffu))
+				// Native bulk copies use one producer; portable copies use all lanes.
+				if (IsCopyProducer(0xffffffffu))
 				{
 					CopyBulk(s_Storage, s_Destination, g_Source, 1024, s_Barrier);
 					BarrierExpect(s_Storage, s_Barrier, 1024);

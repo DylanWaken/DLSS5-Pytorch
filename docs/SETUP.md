@@ -53,11 +53,17 @@ For one GPU, specify just its target; if unset, the build uses visible devices.
 A build server without a GPU must set the list explicitly. Other numeric targets
 (for example `9.0`) work when the selected CUDA compiler supports them.
 
+**The default deployment build compiles the CUDA/C++ sources into native cubins
+ahead of time.** For example, `8.9` uses
+`-gencode=arch=compute_89,code=sm_89`; the installed driver loads the machine
+code directly. There is no runtime PTX compilation in the build above.
+
 The loader selects the library using the input tensor's device. It prefers the
 matching split library, then a compatible earlier minor target within the same
 major architecture, then `_C`. It does not select an Ampere FP16-only library
-for Ada FP8. `+PTX`, such as `8.9+PTX`, also embeds virtual code for forward JIT;
-select an older library explicitly when testing that path.
+for Ada FP8. Optional `+PTX`, such as `8.9+PTX`, also embeds virtual code for
+forward JIT; it is only enabled when explicitly requested. Native SM89 cubins
+cannot run on SM120, which is a different major architecture.
 
 When constructing a frontend configuration before allocating its tensors, pass
 `frontend_configuration(..., device="cuda:1")` to select the intended GPU's
@@ -89,12 +95,26 @@ MMA flow while selecting these instruction paths at compile time:
 
 | Operation | SM80 / SM86 / SM89 path | SM90+ path |
 |---|---|---|
-| Elect a copy producer | Converged ballot and first participating lane | `elect.sync` |
-| Global-to-shared bulk copy | 16-byte `cp.async` operations attached to the same mbarrier | `cp.async.bulk` |
-| Copy completion | Arrival tracking and `mbarrier.test_wait` | Transaction-byte tracking and `mbarrier.try_wait` |
+| Select bulk-copy producers | All 32 lanes of the participating warp | One issuer selected by `elect.sync` |
+| Global-to-shared bulk copy | Adjacent lanes issue adjacent 16-byte `cp.async` copies; one or two copies per lane for 512/1024-byte tiles | One `cp.async.bulk` for the tile |
+| Copy completion | Each producer attaches its own copies with `cp.async.mbarrier.arrive`; readers use `mbarrier.test_wait` | Transaction-byte tracking and `mbarrier.try_wait` |
 | Four Half2 atomic reductions | Four scalar Half2 reductions | Vector Half2 reduction |
 | FP16 tensor product | Native Half `mma.sync` | Same |
 | FP8 tensor product/conversion | Native E4M3 instructions on SM89; rejected below SM89 | Native E4M3 instructions |
+
+The older-architecture copy path now stripes work across the whole warp. The
+initial fallback instead issued every 16-byte copy from one elected lane,
+serializing 32 or 64 instructions for each tile. The cooperative version keeps
+the same shared layout, stages and consumer barriers while coalescing the copy
+requests. General one-lane election still uses a converged ballot below SM90.
+
+Each `cp.async.mbarrier.arrive` implicitly adds and later completes a pending
+arrival for that producer's preceding copies. It deliberately omits `.noinc`.
+Ordinary CTA arrivals remain necessary; completing those arrivals alone does
+not prove the copies finished. `BarrierExpect` is a no-op on SM80/86/89 because
+the fallback tracks arrivals rather than transaction bytes. Readers consume the
+tile only after successful `mbarrier.test_wait`, and the existing pipeline
+protects each shared stage from reuse until its readers finish.
 
 Host preparation verifies both the loaded binary and virtual target, block and
 shared-memory limits, and active blocks per SM. This also prevents an SM80 FP8
@@ -102,10 +122,11 @@ trap entry from being admitted after JIT on a newer GPU. The instruction target
 requirements follow NVIDIA's [PTX ISA documentation](https://docs.nvidia.com/cuda/parallel-thread-execution/).
 
 Compilation and SASS inspection cover Ampere/Ada targets, but physical RTX 30/40
-hardware was unavailable. Runtime checks on the available RTX PRO 6000 test the
-native SM120 path and the lower-target PTX paths JIT-compiled on SM120. Those
-checks do not establish performance or full hardware qualification on Ampere/Ada;
-the README speed charts remain SM120 measurements.
+hardware was unavailable. Current validation also compiles the lower source
+branch directly into SM120 cubins for execution on the available RTX PRO 6000.
+Earlier portability checks used PTX JIT on that same GPU. Neither method
+emulates an Ampere/Ada GPU or establishes its performance or full hardware
+qualification; the README speed charts remain SM120 measurements.
 
 The portability validation matched the DLL's retained trunk boundaries byte for
 byte at 720p and 4K, including forced split launches, poisoned CUDA graph
@@ -118,14 +139,19 @@ To reproduce the copy/barrier test without DLL assets, compile the small test
 module with your CUDA compiler and then run it explicitly:
 
 ```powershell
-nvcc --ptx -std=c++17 -arch=compute_80 tests/cuda/portable_intrinsics.cu -o portable_intrinsics.ptx
-python -B tests/test_portable_intrinsics.py --ptx portable_intrinsics.ptx --report portable_intrinsics.json
+nvcc --cubin -std=c++17 -gencode=arch=compute_80,code=sm_120 `
+  tests/cuda/portable_intrinsics.cu -o portable_intrinsics.cubin
+python -B tests/test_portable_intrinsics.py --module portable_intrinsics.cubin `
+  --report portable_intrinsics.json
 ```
 
-Use a compiler whose emitted PTX version the installed driver supports. The
-recorded test used CUDA 12.8 PTX 8.7 on the SM120 device. The test reports both
-the virtual target and physical GPU and checks repeated copy phases, Half2
-reductions, buffer guards and immutable inputs.
+This example exercises the SM80 source branch in an offline SM120 cubin. On
+actual SM80 hardware, change `code=sm_120` to `code=sm_80`; use a compiler that
+supports the selected target. The test records source/virtual and binary targets
+alongside the physical GPU. It checks multiple producer warps, a two-stage ring,
+multiple copies per producer, mixed zero-filled tiles, repeated barrier phases,
+Half2 reductions, buffer guards and immutable inputs. `--ptx` remains available
+only for explicit JIT experiments.
 
 The extension registers Torch operations rather than a Python module. Public
 deployment calls load it automatically; for an explicit binary, use
@@ -135,10 +161,20 @@ or the CUDA compiler.
 
 ### Benchmark architecture paths on one GPU
 
-Build older targets with `+PTX` when comparing them on a newer GPU, for example
-`TORCH_CUDA_ARCH_LIST="8.0+PTX;8.6+PTX;8.9+PTX;12.0"`. An SM86 cubin alone
-cannot execute on SM120. Leave `CUDA_FORCE_PTX_JIT` unset so the DLL reference
-continues to use its original native image.
+There are two distinct comparisons. Production binaries use matching source and
+machine targets, such as `compute_89` → `sm_89`, and must be measured on compatible
+hardware. A controlled source-path experiment can instead compile
+`-gencode=arch=compute_89,code=sm_120`: `__CUDA_ARCH__` selects the older fallback,
+but the offline assembler produces native SM120 machine code. This is how the
+current optimization is compared on the available GPU, with the same compiler
+and assembler for both versions and no driver JIT.
+
+Keep these experimental libraries separate from installed deployment binaries.
+Verify their actual ELF targets and absence of PTX with `cuobjdump --list-elf`
+and `cuobjdump --list-ptx`. A source-target label in library metadata is not proof
+of its binary ISA. The earlier `+PTX` comparison remains useful historical
+evidence, but it also mixed driver-JIT and offline-assembler code generation.
+Leave `CUDA_FORCE_PTX_JIT` unset so the DLL reference uses its native image.
 
 The [architecture benchmark](../tools/benchmark_architectures.py) runs libraries
 sequentially in separate processes at 720p, 1080p, 1440p and 4K. Supply the actual
@@ -147,11 +183,13 @@ library filenames from your build; this example compares two FP16 paths:
 ```powershell
 python -B tools/benchmark_architectures.py --output outputs/architecture-speed `
   --library sm120 fp16 dlssnr/_C_sm120.cp311-win_amd64.pyd `
-  --library compute89 fp16 dlssnr/_C_sm89.cp311-win_amd64.pyd
+  --library compute89_offline_sm120 fp16 path/to/offline-control.pyd
 ```
 
-Add more `--library LABEL PRECISION PATH` arguments to include FP8 or other
-builds. Each output directory must be new. Every case validates DLL outputs and
+Replace the control path with the separate experimental build; do not pass a
+native-only SM89 library on SM120. Add more `--library LABEL PRECISION PATH`
+arguments to include FP8 or other builds. Each output directory must be new.
+Every case validates DLL outputs and
 CUDA graph replay before collecting 64 alternating DLL/candidate timing pairs.
 Each sample averages 30 network passes. Results include binary hashes, timing
 dispersion, and GPU/driver metadata; cross-process comparisons use the median
@@ -164,7 +202,7 @@ input/output processing. An older PTX target JIT-compiled on SM120 measures that
 instruction path on SM120, not the speed of an RTX 30/40 GPU. The comparison also
 includes differences between driver JIT and the offline PTX assembler.
 
-The 2026-10-09 regression sweep on RTX PRO 6000 SM120 covered all four sizes:
+The **pre-optimization** 2026-10-09 regression sweep on RTX PRO 6000 SM120 covered all four sizes:
 the new native SM120 build stayed within 1% of the pre-portability build, with
 all 81 kernels' instruction encodings and resources unchanged. The largest
 initial difference was +0.70% (FP8, 720p); a reversed-order repeat measured
@@ -173,6 +211,56 @@ PTX paths were 14–19% slower than native SM120 for FP16; compute89 FP8 was
 12–17% slower. These percentages use paired-DLL normalization. All 40 matrix
 cases and three repeat cases passed the 74 retained-boundary and graph replay
 checks. This does not qualify speed on physical Ampere/Ada GPUs.
+
+The subsequent offline-cubin comparison keeps the older source path and
+physical SM120 target fixed while changing only the copy implementation.
+All 24 cases pass all 74 retained-boundary and CUDA Graph replay checks.
+The table shows median paired latency differences against the DLL; positive
+values mean slower. These are older source paths **on SM120**, not measured
+Ampere/Ada performance.
+
+| Resolution | FP16 before → after | FP8 before → after |
+|---|---:|---:|
+| 720p | +13.20% → +2.36% | +12.63% → +3.59% |
+| 1080p | +11.98% → +1.75% | +14.04% → +4.57% |
+| 1440p (2K) | +16.38% → +1.85% | +15.54% → +2.48% |
+| 4K | +15.71% → +0.22% | +13.63% → +0.67% |
+
+NCU traced the regression to single-lane copy issue pressure. The cooperative
+fallback reduces FFN expansion from 131.68 to 58.50 µs and contraction from
+137.12 to 73.82 µs under controlled profiler replay. Those kernel timings
+are diagnostic, not the graph timings above. All 81 native SM120 kernels
+retain identical machine instructions and resource usage after this change.
+
+### Profile a warm deployment workload
+
+[profile_deployment.py](../tools/profile_deployment.py) loads the explicit
+library, prepares checkpoint weights and warms the complete trunk before
+profiling. `trace` mode captures and warms a CUDA Graph, then brackets its
+replays with the CUDA profiler API. `ncu` mode places one warmed, fully prepared
+schedule inside the NVTX range `candidate`; filter a specific kernel to inspect
+its counters and source/SASS. For example, with Nsight tools on `PATH`:
+
+```powershell
+nsys profile --trace=cuda,nvtx --cuda-graph-trace=node `
+  --capture-range=cudaProfilerApi --capture-range-end=stop -o outputs/trunk-trace `
+  python -B tools/profile_deployment.py --mode trace --precision fp16 `
+  --extension dlssnr/_C_sm120.cp311-win_amd64.pyd --width 2560 --height 1440 `
+  --output outputs/trunk-trace.json
+
+ncu --target-processes all --nvtx --nvtx-include "candidate/" --kernel-name-base function `
+  -k "regex:^global_ffn_expand_c1024_fp16$" --launch-count 1 `
+  --replay-mode kernel --clock-control base --cache-control all --set full `
+  --import-source yes -o outputs/ffn-profile `
+  python -B tools/profile_deployment.py --mode ncu --precision fp16 `
+  --extension dlssnr/_C_sm120.cp311-win_amd64.pyd --width 2560 --height 1440 `
+  --output outputs/ffn-profile.json
+```
+
+Use the same profiler options and dimensions for both libraries. NSys ranks
+kernel contributions in the warmed graph; NCU explains instruction, memory and
+pipeline behavior. Profiler replay/cache settings change execution conditions,
+so confirm improvements with the separate unprofiled, paired DLL benchmark.
 
 ## Checkpoints
 

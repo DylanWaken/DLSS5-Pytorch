@@ -32,7 +32,7 @@ extern "C" __global__ __maxnreg__(168) void channel_projection_c512_to_c1024_fp1
 		const int s_DestinationByteOffset = s_StageIndex * FProfile::s_StageBytes + Warp * 512;
 		if (g_ReadY < g_TilesY && g_ReadX < g_TilesX)
 		{
-			if (Elected(0xffffffffu))
+			if (IsCopyProducer(0xffffffffu))
 			{
 				const int g_TileIndex = g_ReadY * g_TilesX + g_ReadX;
 				const int g_Channel = g_ReductionStart + (Warp & 1) * (FProfile::ReductionStep / 2);

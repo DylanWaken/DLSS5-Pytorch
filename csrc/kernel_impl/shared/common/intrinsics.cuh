@@ -34,6 +34,18 @@ __device__ __forceinline__ uint32_t Elected(uint32_t MemberMask)
 #endif
 }
 
+// Bulk transfers need one issuer on SM90+, but earlier GPUs coalesce one
+// 16-byte copy per lane. Call from a uniform full warp before CopyBulk.
+__device__ __forceinline__ uint32_t IsCopyProducer(uint32_t MemberMask)
+{
+#if __CUDA_ARCH__ >= 900
+	return Elected(MemberMask);
+#else
+	const uint32_t Lane = (threadIdx.x + blockDim.x * (threadIdx.y + blockDim.y * threadIdx.z)) & 31;
+	return (MemberMask >> Lane) & 1u;
+#endif
+}
+
 // Load a GPU-scope relaxed completion counter without allocating an L1 line.
 __device__ __forceinline__ uint32_t CounterLoadRelaxed(uint64_t g_CounterAddress)
 {
@@ -214,7 +226,8 @@ __device__ __forceinline__ void BarrierInit(unsigned char* s_SharedStorage, uint
 				 : "memory");
 }
 
-// Copy global bytes into CTA shared memory and complete bytes against the supplied mbarrier.
+// Copy global bytes into CTA shared memory and complete against the supplied
+// mbarrier. IsCopyProducer selects one bulk issuer or all 32 striped producers.
 __device__ __forceinline__ void CopyBulk(unsigned char* s_SharedStorage, uint32_t s_DestinationOffset,
 										 uint64_t g_GlobalSource, uint32_t ByteCount,
 										 uint32_t s_BarrierOffset)
@@ -226,11 +239,11 @@ __device__ __forceinline__ void CopyBulk(unsigned char* s_SharedStorage, uint32_
 				   "r"(ByteCount), "r"(SharedAddress(s_SharedStorage, s_BarrierOffset))
 				 : "memory");
 #else
-	// The elected producer copies the same aligned byte interval in 16-byte
-	// pieces. SM80 cp.async needs no transaction-byte counter: its arrive-on
-	// instruction increments pending arrivals before completion decrements them.
-	// Thus BarrierInit still counts only the CTA's ordinary thread arrivals.
-	for (uint32_t s_CopyByteOffset = 0; s_CopyByteOffset < ByteCount; s_CopyByteOffset += 16)
+	// Adjacent lanes copy adjacent 16-byte vectors, keeping the warp's memory
+	// requests coalesced. The 512/1024-byte callers issue one/two copies per lane
+	// instead of serializing 32/64 copy instructions through one elected lane.
+	const uint32_t Lane = (threadIdx.x + blockDim.x * (threadIdx.y + blockDim.y * threadIdx.z)) & 31;
+	for (uint32_t s_CopyByteOffset = Lane * 16; s_CopyByteOffset < ByteCount; s_CopyByteOffset += 512)
 	{
 		asm volatile("cp.async.cg.shared.global [%0],[%1],16;"
 					 :
@@ -239,6 +252,8 @@ __device__ __forceinline__ void CopyBulk(unsigned char* s_SharedStorage, uint32_
 					 : "memory");
 	}
 
+	// Each producer attaches its own copies. The implicit pending-count
+	// increment is essential: ordinary CTA arrivals alone cannot track them.
 	asm volatile("cp.async.mbarrier.arrive.shared.b64 [%0];"
 				 :
 				 : "r"(SharedAddress(s_SharedStorage, s_BarrierOffset))

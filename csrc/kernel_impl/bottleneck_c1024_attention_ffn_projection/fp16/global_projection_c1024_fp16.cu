@@ -49,7 +49,7 @@ extern "C" __global__
 				s_Stage * Profile::s_StageBytes + (TileCoordinates.Warp + Copy * 4) * Profile::s_CopyBytes;
 			if (g_Group < TileCoordinates.g_PaddedGroups)
 			{
-				if (Elected(0xffffffffu))
+				if (IsCopyProducer(0xffffffffu))
 				{
 					const uint64_t g_Source =
 						Parameters.g_Input +

@@ -1,8 +1,9 @@
 """Compare deployment libraries on one GPU with an in-process DLL reference.
 
 Every case runs in a fresh, bounded child process because Torch registrations
-cannot be replaced. Older-target PTX is JIT-compiled by the actual GPU; this is
-not a performance simulation of the target architecture.
+cannot be replaced. Libraries may contain native cubins, older source paths
+compiled offline for the actual GPU, or PTX for driver JIT. Labels alone do not
+identify that route; all timings measure the reported physical GPU.
 """
 import argparse
 from datetime import datetime, timezone
@@ -101,7 +102,9 @@ def main():
     summary = {
         "started_utc": datetime.now(timezone.utc).isoformat(),
         "scope": "Prepared-feature trunk (185 logical calls); steady-state CUDA graph replay",
-        "interpretation": "All timings are on the reported physical GPU, including older-target PTX JIT",
+        "interpretation": ("All timings are on the reported physical GPU. Library labels do not establish "
+                           "native cubin, offline cross-target compilation, or PTX JIT; use build receipts "
+                           "and binary inspection to identify the route."),
         "baseline": args.baseline,
         "cleared_environment": {name: os.environ[name] for name in excluded if name in os.environ},
         "cases": [],

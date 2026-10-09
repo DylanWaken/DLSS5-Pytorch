@@ -69,7 +69,7 @@ extern "C" __global__ __maxnreg__(255) void window_ffn_c512_fp16(FWindowFfnC512F
 						Parameters.g_Input +
 						uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X) * Profile::SpatialTileBytes +
 						(ReductionTile * 2 + KSubtileIndex) * 512;
-					if (Elected(0xffffffffu))
+					if (IsCopyProducer(0xffffffffu))
 					{
 						CopyBulk(s_Storage, s_CopyOffset, g_Source, 512, s_BarrierOffset);
 						BarrierExpect(s_Storage, s_BarrierOffset, 512);

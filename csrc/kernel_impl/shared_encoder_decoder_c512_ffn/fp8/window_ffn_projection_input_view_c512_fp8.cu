@@ -79,7 +79,7 @@ extern "C" __global__ __maxnreg__(128) void window_ffn_projection_input_view_c51
 										  uint64_t(g_Y * TileCoordinates.g_TilesWide + g_X + blockIdx.z) *
 											  Profile::SpatialTileBytes +
 										  (ReductionTile * 2 + KSubtileIndex) * 512;
-				if (Elected(0xffffffffu))
+				if (IsCopyProducer(0xffffffffu))
 				{
 					CopyBulk(s_Storage, s_CopyOffset, g_Source, 512, s_BarrierOffset);
 					BarrierExpect(s_Storage, s_BarrierOffset, 512);
