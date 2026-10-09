@@ -133,6 +133,47 @@ deployment calls load it automatically; for an explicit binary, use
 process when switching binaries. Training alone does not need this extension
 or the CUDA compiler.
 
+### Benchmark architecture paths on one GPU
+
+Build older targets with `+PTX` when comparing them on a newer GPU, for example
+`TORCH_CUDA_ARCH_LIST="8.0+PTX;8.6+PTX;8.9+PTX;12.0"`. An SM86 cubin alone
+cannot execute on SM120. Leave `CUDA_FORCE_PTX_JIT` unset so the DLL reference
+continues to use its original native image.
+
+The [architecture benchmark](../tools/benchmark_architectures.py) runs libraries
+sequentially in separate processes at 720p, 1080p, 1440p and 4K. Supply the actual
+library filenames from your build; this example compares two FP16 paths:
+
+```powershell
+python -B tools/benchmark_architectures.py --output outputs/architecture-speed `
+  --library sm120 fp16 dlssnr/_C_sm120.cp311-win_amd64.pyd `
+  --library compute89 fp16 dlssnr/_C_sm89.cp311-win_amd64.pyd
+```
+
+Add more `--library LABEL PRECISION PATH` arguments to include FP8 or other
+builds. Each output directory must be new. Every case validates DLL outputs and
+CUDA graph replay before collecting 64 alternating DLL/candidate timing pairs.
+Each sample averages 30 network passes. Results include binary hashes, timing
+dispersion, and GPU/driver metadata; cross-process comparisons use the median
+paired ratio against the DLL to reduce clock drift.
+
+These are steady-state timings of the prepared-feature trunk's 185 logical
+calls; automatic split launches can increase the physical launch count. They
+exclude checkpoint loading, packing, preparation, first-time JIT and renderer
+input/output processing. An older PTX target JIT-compiled on SM120 measures that
+instruction path on SM120, not the speed of an RTX 30/40 GPU. The comparison also
+includes differences between driver JIT and the offline PTX assembler.
+
+The 2026-10-09 regression sweep on RTX PRO 6000 SM120 covered all four sizes:
+the new native SM120 build stayed within 1% of the pre-portability build, with
+all 81 kernels' instruction encodings and resources unchanged. The largest
+initial difference was +0.70% (FP8, 720p); a reversed-order repeat measured
++0.05%. The fat binary also stayed within 1%. On this same GPU, compute80/86/89
+PTX paths were 14–19% slower than native SM120 for FP16; compute89 FP8 was
+12–17% slower. These percentages use paired-DLL normalization. All 40 matrix
+cases and three repeat cases passed the 74 retained-boundary and graph replay
+checks. This does not qualify speed on physical Ampere/Ada GPUs.
+
 ## Checkpoints
 
 `git lfs pull` retrieves both [checkpoint files](../ckpts/README.md):
