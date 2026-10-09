@@ -1,59 +1,101 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="780" viewBox="0 0 1440 780" role="img" aria-labelledby="title desc">
-<title id="title">Inside a repeated network block</title><desc id="desc">FFN comes before attention. Norm means per-head vector L2 normalization of Q and K; this is not a pre-LayerNorm Transformer.</desc>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="context-stroke"/></marker></defs>
-<rect width="1440" height="100%" fill="#ffffff"/>
-<text x="42" y="45" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="29" font-weight="650" text-anchor="start">Inside a repeated network block</text>
-<text x="42" y="77" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">FFN comes before attention. Norm means per-head vector L2 normalization of Q and K; this is not a pre-LayerNorm Transformer.</text>
-<text x="44" y="136" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">1 · Channel mixing and first residual</text>
-<rect x="44" y="155" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
-<text x="59" y="184" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Input state X</text>
-<text x="59" y="209" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">C ∈ {32, 64, 128, 256,</text>
-<text x="59" y="231" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">512, 1024}</text>
-<text x="59" y="253" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Residual R usually equals X</text>
-<path d="M 364.0,218.0 L 388.0,218.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="388.0" y="155" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
-<text x="403.0" y="184" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Channel FFN F(X)</text>
-<text x="403.0" y="209" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Choose the channel family</text>
-<text x="403.0" y="231" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Learned linear layers and</text>
-<text x="403.0" y="253" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">piecewise activation</text>
-<path d="M 708.0,218.0 L 732.0,218.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="732.0" y="155" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
-<text x="747.0" y="184" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Scaled residual</text>
-<text x="747.0" y="209" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Zraw = F(X) + ffn_scale × R</text>
-<text x="747.0" y="231" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Scales act channelwise</text>
-<path d="M 1052.0,218.0 L 1076.0,218.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="1076.0" y="155" width="320.0" height="126" rx="12" fill="#edf5ff" stroke="#2563ab" stroke-width="1.5"/>
-<text x="1091.0" y="184" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Publish Z</text>
-<text x="1091.0" y="209" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Working-precision boundary</text>
-<text x="1091.0" y="231" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">FP32 or BF16 in training</text>
-<text x="44" y="380" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">2 · Attention and second residual</text>
-<rect x="44" y="399" width="320.0" height="126" rx="12" fill="#f3eefb" stroke="#7750aa" stroke-width="1.5"/>
-<text x="59" y="428" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">QKV projection</text>
-<text x="59" y="453" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Linear C → 3C</text>
-<text x="59" y="475" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Reshape to C/32 heads</text>
-<text x="59" y="497" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">32 channels per head</text>
-<path d="M 364.0,462.0 L 388.0,462.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="388.0" y="399" width="320.0" height="126" rx="12" fill="#f3eefb" stroke="#7750aa" stroke-width="1.5"/>
-<text x="403.0" y="428" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Attention A(Z)</text>
-<text x="403.0" y="453" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">C ≤ 512: 8 × 8 windows</text>
-<text x="403.0" y="475" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">C = 1024: global tokens</text>
-<text x="403.0" y="497" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Normalize Q/K; scale Q</text>
-<path d="M 708.0,462.0 L 732.0,462.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="732.0" y="399" width="320.0" height="126" rx="12" fill="#f3eefb" stroke="#7750aa" stroke-width="1.5"/>
-<text x="747.0" y="428" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Output projection</text>
-<text x="747.0" y="453" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Linear C → C</text>
-<text x="747.0" y="475" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">+ attn_scale × residual</text>
-<text x="747.0" y="497" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">C32 residual: Zraw; else Z</text>
-<path d="M 1052.0,462.0 L 1076.0,462.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="1076.0" y="399" width="320.0" height="126" rx="12" fill="#f3eefb" stroke="#7750aa" stroke-width="1.5"/>
-<text x="1091.0" y="428" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Output pair</text>
-<text x="1091.0" y="453" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Publish for next block / skip</text>
-<text x="1091.0" y="475" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Also return raw result</text>
-<text x="1091.0" y="497" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Raw feeds selected transitions</text>
-<path d="M 1220,281 L 1407,281 L 1407,350 L 24,350 L 24,462 L 44,462" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="44" y="613" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Residual overrides: input block 0 uses the raw adapter; block 66 uses its raw merge; output block 70 uses its raw full-field merge.</text>
-<text x="44" y="644" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Training can checkpoint each bound stage: retain stage inputs, recompute internal activations during backward; arithmetic stays the same.</text>
-<text x="44" y="687" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">FP8/FP16 deployment has separate packed publication and fused CUDA schedules. Boxes here describe logical operations, not launch counts.</text>
-<text x="44" y="720" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Source: NRBlock.forward and NRBlock.attend. Transition-only block 39 does not execute this block body.</text>
-<text x="44" y="760" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">DLSSNR-PyTorch · implemented logical graph · source and shape ledger: architecture/source-map.json</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1675" viewBox="0 0 1200 1675" role="img" aria-labelledby="title desc">
+<title id="title">Repeated block: two learned residual paths</title><desc id="desc">FFN comes before attention · every main-state tensor is H × W × C unless labeled otherwise</desc>
+<defs><marker id="arrow-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#2563ab"/></marker><marker id="arrow-tensor" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#087f80"/></marker><marker id="arrow-skip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#b86910"/></marker><marker id="arrow-attention" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#7750aa"/></marker><marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#52647c"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="32" y="40" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="600" text-anchor="start">Repeated block: two learned residual paths</text>
+<text x="32" y="70" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">FFN comes before attention · every main-state tensor is H × W × C unless labeled otherwise</text>
+<rect x="345" y="110" width="320" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="505.0" y="137" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Published input X</text>
+<text x="505.0" y="161" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × C</text>
+<rect x="835" y="110" width="325" height="89" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="997.5" y="137" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Raw skip override</text>
+<text x="997.5" y="161" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">0: raw input adapter</text>
+<text x="997.5" y="184" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">66 / 70: raw upsample merge</text>
+<rect x="345" y="245" width="320" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="505.0" y="272" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">FFN transform</text>
+<text x="505.0" y="296" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Dense / branched / grouped</text>
+<text x="505.0" y="319" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Output F(X), before residual</text>
+<rect x="835" y="260" width="325" height="89" rx="13" fill="#fff5e5" stroke="#b86910" stroke-width="1.7"/>
+<text x="997.5" y="287" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Choose FFN skip R</text>
+<text x="997.5" y="311" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Normally R = X</text>
+<text x="997.5" y="334" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Override only for 0 / 66 / 70</text>
+<rect x="345" y="380" width="320" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="505.0" y="407" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">F(X)</text>
+<text x="505.0" y="431" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × C</text>
+<rect x="835" y="410" width="325" height="89" rx="13" fill="#fff5e5" stroke="#b86910" stroke-width="1.7"/>
+<text x="997.5" y="437" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Learned channel scale</text>
+<text x="997.5" y="461" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">R ⊙ s_ffn</text>
+<text x="997.5" y="484" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">s_ffn has C values</text>
+<circle cx="505" cy="510" r="21" fill="#fff5e5" stroke="#b86910" stroke-width="2"/>
+<text x="505" y="518" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="26" font-weight="600" text-anchor="middle">+</text>
+<rect x="345" y="560" width="320" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="505.0" y="587" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Raw FFN result Z</text>
+<text x="505.0" y="611" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Z = F(X) + R ⊙ s_ffn</text>
+<rect x="395" y="665" width="220" height="66" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="505.0" y="692" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Publish</text>
+<text x="505.0" y="716" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Working precision</text>
+<rect x="345" y="760" width="320" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="505.0" y="787" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Published FFN result Zp</text>
+<text x="505.0" y="811" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × C</text>
+<rect x="835" y="760" width="325" height="89" rx="13" fill="#fff5e5" stroke="#b86910" stroke-width="1.7"/>
+<text x="997.5" y="787" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Choose attention skip</text>
+<text x="997.5" y="811" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">C32: raw Z</text>
+<text x="997.5" y="834" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Other widths: published Zp</text>
+<rect x="345" y="870" width="320" height="89" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="505.0" y="897" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">QKV projection</text>
+<text x="505.0" y="921" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">C → 3C</text>
+<text x="505.0" y="944" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Q, K, V: H × W × C</text>
+<rect x="345" y="995" width="320" height="89" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="505.0" y="1022" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Attention</text>
+<text x="505.0" y="1046" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">C / 32 heads; 32 channels/head</text>
+<text x="505.0" y="1069" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Window C≤512; global C1024</text>
+<rect x="835" y="1000" width="325" height="89" rx="13" fill="#fff5e5" stroke="#b86910" stroke-width="1.7"/>
+<text x="997.5" y="1027" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Learned channel scale</text>
+<text x="997.5" y="1051" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Chosen skip ⊙ s_attn</text>
+<text x="997.5" y="1074" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">s_attn has C values</text>
+<rect x="345" y="1125" width="320" height="66" rx="13" fill="#f3eefb" stroke="#7750aa" stroke-width="1.7"/>
+<text x="505.0" y="1152" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Attention projection</text>
+<text x="505.0" y="1176" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">H × W × C → H × W × C</text>
+<circle cx="505" cy="1235" r="21" fill="#fff5e5" stroke="#b86910" stroke-width="2"/>
+<text x="505" y="1243" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="26" font-weight="600" text-anchor="middle">+</text>
+<rect x="345" y="1290" width="320" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="505.0" y="1317" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Raw block result Y</text>
+<text x="505.0" y="1341" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Projected attention + scaled skip</text>
+<rect x="835" y="1290" width="325" height="89" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="997.5" y="1317" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Raw-result consumers</text>
+<text x="997.5" y="1341" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Encoder tail / block 0: pool</text>
+<text x="997.5" y="1364" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Block 70: learned output head</text>
+<rect x="395" y="1400" width="220" height="66" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="505.0" y="1427" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Publish</text>
+<text x="505.0" y="1451" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Working precision</text>
+<rect x="345" y="1500" width="320" height="66" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="505.0" y="1527" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Published block result Yp</text>
+<text x="505.0" y="1551" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Next block / saved encoder skip</text>
+<path d="M 505.0,176 L 505.0,245" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 665,143.0 L 750,143 L 750,304.5 L 835,304.5" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<text x="660" y="230" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Default skip</text>
+<path d="M 997.5,199 L 997.5,260" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<path d="M 505.0,334 L 505.0,380" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 997.5,349 L 997.5,410" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<path d="M 505.0,446 L 505.0,489" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 835,454.5 L 750,454.5 L 750,510 L 526,510.0" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<path d="M 505.0,531 L 505.0,560" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 505.0,626 L 505.0,665" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 505.0,731 L 505.0,760" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 665,593.0 L 997.5,593 L 997.5,760" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<text x="820" y="580" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">C32 raw path</text>
+<path d="M 665,793.0 L 755,793 L 755,804.5 L 835,804.5" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<path d="M 505.0,826 L 505.0,870" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 505.0,959 L 505.0,995" fill="none" stroke="#7750aa" stroke-width="2" marker-end="url(#arrow-attention)"/>
+<path d="M 505.0,1084 L 505.0,1125" fill="none" stroke="#7750aa" stroke-width="2" marker-end="url(#arrow-attention)"/>
+<path d="M 997.5,849 L 997.5,1000" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<path d="M 505.0,1191 L 505.0,1214" fill="none" stroke="#7750aa" stroke-width="2" marker-end="url(#arrow-attention)"/>
+<path d="M 997.5,1089 L 997.5,1235 L 526,1235.0" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<path d="M 505.0,1256 L 505.0,1290" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 665,1323.0 L 835,1334.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 505.0,1356 L 505.0,1400" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 505.0,1466 L 505.0,1500" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<text x="35" y="1605" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Raw means before publication; it does not imply FP32 storage. The block returns both Yp and Y.</text>
+<text x="35" y="1629" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Block 39 is a transition only. The attention internals and each FFN family have separate expanded views.</text>
+<text x="32" y="1656" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">Logical tensor flow · shapes omit batch unless shown · operations may be fused in CUDA</text>
 </svg>

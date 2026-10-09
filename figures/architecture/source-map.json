@@ -1,5 +1,13 @@
 {
-  "scope": "Implemented logical training graph, with separately labelled FP8 deployment boundary",
+  "scope": "Implemented logical training tensor flow; deployment operations may be fused and use packed layouts",
+  "tensor_axes": "Expanded flows: H,W,C; batch omitted unless shown. Master example fields: W,H.",
+  "renderer_sha256": {
+    "tools/render_architecture.py": "c9c4dc6f0faa238c33c82b4339735cbcc97f8954c3de0de50a770663e48b1ef8",
+    "tools/architecture_flow.py": "5c801cf9f70597c9426af36a8641104867ce78ea55df2e82c2c05de0cd0f8273",
+    "tools/architecture_attention.py": "9f866d10e0fe77aa40454fd9fc348c4e50eafcd6db5987d54a35001dac47a7ec",
+    "tools/architecture_blocks.py": "d9722e796265d1a5bf64d5047773193cd1bcae7361b6bbfd0909689cdb2e4183",
+    "tools/architecture_stages.py": "a78fb85e5d37b5611c28840658ff9c7109a6932366243cb0b79ccb7bda4f5e23"
+  },
   "source_sha256": {
     "dlssnr/model.py": "8bf04d6337741a6af8dd8c7abe85319d054d5c1d68190eea921f4d0890f7e616",
     "dlssnr/geometry.py": "677499c0c7bd06544581ebd719801d7d1e027fe1fa3438d5e55f3f43af5db6c1",
@@ -586,12 +594,16 @@
   "diagrams": [
     "decoder.svg",
     "encoder.svg",
-    "endpoints.svg",
-    "ffn.svg",
+    "ffn_branched.svg",
+    "ffn_dense.svg",
+    "ffn_grouped.svg",
     "global_attention.svg",
+    "input_stage.svg",
     "network.svg",
     "numerics.svg",
+    "output_stage.svg",
     "residual_block.svg",
-    "window_attention.svg"
+    "window_attention.svg",
+    "window_partition.svg"
   ]
 }

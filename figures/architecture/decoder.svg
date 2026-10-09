@@ -1,115 +1,98 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1250" viewBox="0 0 1440 1250" role="img" aria-labelledby="title desc">
-<title id="title">Decoder stages · restore spatial detail with encoder skips</title><desc id="desc">Projection happens before 2× nearest-neighbor upsampling; crop to the recorded target field before adding the skip.</desc>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="context-stroke"/></marker></defs>
-<rect width="1440" height="100%" fill="#ffffff"/>
-<text x="42" y="45" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="29" font-weight="650" text-anchor="start">Decoder stages · restore spatial detail with encoder skips</text>
-<text x="42" y="77" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Projection happens before 2× nearest-neighbor upsampling; crop to the recorded target field before adding the skip.</text>
-<text x="44" y="123" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Restore level 4 · C512 · 120 × 68</text>
-<rect x="44" y="142" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="59" y="171" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Transition 39</text>
-<text x="59" y="196" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Learned linear 1024 → 512</text>
-<text x="59" y="218" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Read lower-resolution state</text>
-<path d="M 364.0,202.0 L 388.0,202.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="388.0" y="142" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="403.0" y="171" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Upsample + crop</text>
-<text x="403.0" y="196" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Repeat rows and columns ×2</text>
-<text x="403.0" y="218" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Crop to 120 × 68</text>
-<path d="M 708.0,202.0 L 732.0,202.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="732.0" y="142" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="747.0" y="171" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Merge block-30 skip</text>
-<text x="747.0" y="196" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">U + transition_scale × skip</text>
-<text x="747.0" y="218" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Publish to working precision</text>
-<path d="M 1052.0,202.0 L 1076.0,202.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="1076.0" y="142" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="1091.0" y="171" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Blocks 40–47</text>
-<text x="1091.0" y="196" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">8 window blocks</text>
-<text x="1091.0" y="218" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">FFN then attention per block</text>
-<text x="44" y="306" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Block 39 contains only projection and skip merge; the next ordinary block is 40.</text>
-<text x="44" y="328" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Restore level 3 · C256 · 240 × 136</text>
-<rect x="44" y="347" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="59" y="376" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Transition 48</text>
-<text x="59" y="401" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Learned linear 512 → 256</text>
-<text x="59" y="423" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Read lower-resolution state</text>
-<path d="M 364.0,407.0 L 388.0,407.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="388.0" y="347" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="403.0" y="376" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Upsample + crop</text>
-<text x="403.0" y="401" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Repeat rows and columns ×2</text>
-<text x="403.0" y="423" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Crop to 240 × 136</text>
-<path d="M 708.0,407.0 L 732.0,407.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="732.0" y="347" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="747.0" y="376" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Merge block-22 skip</text>
-<text x="747.0" y="401" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">U + transition_scale × skip</text>
-<text x="747.0" y="423" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Publish to working precision</text>
-<path d="M 1052.0,407.0 L 1076.0,407.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="1076.0" y="347" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="1091.0" y="376" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Blocks 48–55</text>
-<text x="1091.0" y="401" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">8 window blocks</text>
-<text x="1091.0" y="423" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">FFN then attention per block</text>
-<text x="44" y="511" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">The transition weights belong to the first decoder block; that block&#x27;s FFN and attention run after the merge.</text>
-<text x="44" y="533" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Restore level 2 · C128 · 480 × 272</text>
-<rect x="44" y="552" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="59" y="581" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Transition 56</text>
-<text x="59" y="606" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Learned linear 256 → 128</text>
-<text x="59" y="628" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Read lower-resolution state</text>
-<path d="M 364.0,612.0 L 388.0,612.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="388.0" y="552" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="403.0" y="581" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Upsample + crop</text>
-<text x="403.0" y="606" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Repeat rows and columns ×2</text>
-<text x="403.0" y="628" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Crop to 480 × 272</text>
-<path d="M 708.0,612.0 L 732.0,612.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="732.0" y="552" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="747.0" y="581" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Merge block-14 skip</text>
-<text x="747.0" y="606" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">U + transition_scale × skip</text>
-<text x="747.0" y="628" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Publish to working precision</text>
-<path d="M 1052.0,612.0 L 1076.0,612.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="1076.0" y="552" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="1091.0" y="581" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Blocks 56–61</text>
-<text x="1091.0" y="606" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">6 window blocks</text>
-<text x="1091.0" y="628" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">FFN then attention per block</text>
-<text x="44" y="716" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">The transition weights belong to the first decoder block; that block&#x27;s FFN and attention run after the merge.</text>
-<text x="44" y="738" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Restore level 1 · C64 · 960 × 544</text>
-<rect x="44" y="757" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="59" y="786" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Transition 62</text>
-<text x="59" y="811" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Learned linear 128 → 64</text>
-<text x="59" y="833" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Read lower-resolution state</text>
-<path d="M 364.0,817.0 L 388.0,817.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="388.0" y="757" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="403.0" y="786" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Upsample + crop</text>
-<text x="403.0" y="811" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Repeat rows and columns ×2</text>
-<text x="403.0" y="833" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Crop to 960 × 544</text>
-<path d="M 708.0,817.0 L 732.0,817.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="732.0" y="757" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="747.0" y="786" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Merge block-8 skip</text>
-<text x="747.0" y="811" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">U + transition_scale × skip</text>
-<text x="747.0" y="833" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Publish to working precision</text>
-<path d="M 1052.0,817.0 L 1076.0,817.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="1076.0" y="757" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="1091.0" y="786" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Blocks 62–65</text>
-<text x="1091.0" y="811" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">4 window blocks</text>
-<text x="1091.0" y="833" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">FFN then attention per block</text>
-<text x="44" y="921" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">The transition weights belong to the first decoder block; that block&#x27;s FFN and attention run after the merge.</text>
-<text x="44" y="943" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Restore level 0 · C32 · 1920 × 1088</text>
-<rect x="44" y="962" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="59" y="991" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Transition 66</text>
-<text x="59" y="1016" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Learned linear 64 → 32</text>
-<text x="59" y="1038" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Read lower-resolution state</text>
-<path d="M 364.0,1022.0 L 388.0,1022.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="388.0" y="962" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="403.0" y="991" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Upsample + crop</text>
-<text x="403.0" y="1016" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Repeat rows and columns ×2</text>
-<text x="403.0" y="1038" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Crop to 1920 × 1088</text>
-<path d="M 708.0,1022.0 L 732.0,1022.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="732.0" y="962" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="747.0" y="991" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Merge block-4 skip</text>
-<text x="747.0" y="1016" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">U + transition_scale × skip</text>
-<text x="747.0" y="1038" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Publish to working precision</text>
-<path d="M 1052.0,1022.0 L 1076.0,1022.0" fill="none" stroke="#52647c" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="1076.0" y="962" width="320.0" height="120" rx="12" fill="#eaf8f5" stroke="#087f80" stroke-width="1.5"/>
-<text x="1091.0" y="991" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="650" text-anchor="start">Blocks 66–69</text>
-<text x="1091.0" y="1016" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">4 window blocks</text>
-<text x="1091.0" y="1038" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">FFN then attention per block</text>
-<text x="44" y="1126" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">The transition weights belong to the first decoder block; that block&#x27;s FFN and attention run after the merge.</text>
-<text x="44" y="1175" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">C32 exception: block 66 keeps the raw merge as its first FFN residual. Other decoder levels use the published merged state.</text>
-<text x="44" y="1203" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Source: _bottleneck_stage (39), _decoder_stage (48/56/62/66). Block 70 performs a separate full-resolution merge.</text>
-<text x="44" y="1230" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">DLSSNR-PyTorch · implemented logical graph · source and shape ledger: architecture/source-map.json</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1360" viewBox="0 0 1200 1360" role="img" aria-labelledby="title desc">
+<title id="title">Decoder: project, resize, then merge the encoder skip</title><desc id="desc">H × W × C notation · restore a recorded target field before ordinary window blocks resume</desc>
+<defs><marker id="arrow-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#2563ab"/></marker><marker id="arrow-tensor" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#087f80"/></marker><marker id="arrow-skip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#b86910"/></marker><marker id="arrow-attention" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#7750aa"/></marker><marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#52647c"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="32" y="40" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="600" text-anchor="start">Decoder: project, resize, then merge the encoder skip</text>
+<text x="32" y="70" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">H × W × C notation · restore a recorded target field before ordinary window blocks resume</text>
+<rect x="35" y="130" width="300" height="89" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="185.0" y="157" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Lower-resolution state</text>
+<text x="185.0" y="181" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Hℓ × Wℓ × 2C</text>
+<rect x="420" y="130" width="325" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="582.5" y="157" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Channel projection 2C → C</text>
+<text x="582.5" y="181" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Learned per-pixel matrix</text>
+<text x="582.5" y="204" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Hℓ × Wℓ × C</text>
+<rect x="830" y="130" width="335" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="997.5" y="157" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Nearest upsample ×2</text>
+<text x="997.5" y="181" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Repeat rows and columns</text>
+<text x="997.5" y="204" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">2Hℓ × 2Wℓ × C</text>
+<path d="M 335,174.5 L 420,174.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 745,174.5 L 830,174.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="830" y="295" width="335" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="997.5" y="322" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Crop to target field</text>
+<text x="997.5" y="346" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Ht × Wt × C</text>
+<text x="997.5" y="369" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">From Geometry.levels</text>
+<path d="M 997.5,219 L 997.5,295" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="35" y="305" width="300" height="89" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="185.0" y="332" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Encoder skip</text>
+<text x="185.0" y="356" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Ht × Wt × C</text>
+<text x="185.0" y="379" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Published encoder tail</text>
+<rect x="420" y="305" width="325" height="89" rx="13" fill="#fff5e5" stroke="#b86910" stroke-width="1.7"/>
+<text x="582.5" y="332" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Scale encoder skip</text>
+<text x="582.5" y="356" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">transition_scale ⊙ skip</text>
+<text x="582.5" y="379" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">One learned value / channel</text>
+<path d="M 335,349.5 L 420,349.5" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<circle cx="650" cy="485" r="21" fill="#fff5e5" stroke="#b86910" stroke-width="2"/>
+<text x="650" y="493" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="26" font-weight="600" text-anchor="middle">+</text>
+<path d="M 997.5,384 L 997.5,485 L 671,485.0" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 582.5,394 L 582.5,485 L 629,485.0" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<rect x="490" y="555" width="320" height="89" rx="4" fill="#f0fbf8" stroke="#087f80" stroke-width="1.7"/>
+<text x="650.0" y="582" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Raw merged state</text>
+<text x="650.0" y="606" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">U + scale ⊙ encoder skip</text>
+<text x="650.0" y="629" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Ht × Wt × C</text>
+<path d="M 650.0,506 L 650.0,555" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="490" y="700" width="320" height="66" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="650.0" y="727" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Publish merged state</text>
+<text x="650.0" y="751" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Ht × Wt × C</text>
+<path d="M 650.0,644 L 650.0,700" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="490" y="835" width="320" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="650.0" y="862" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">First window block</text>
+<text x="650.0" y="886" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">40 / 48 / 56 / 62 / 66</text>
+<text x="650.0" y="909" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">FFN → local attention</text>
+<path d="M 650.0,766 L 650.0,835" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<rect x="875" y="835" width="290" height="89" rx="13" fill="#edf5ff" stroke="#2563ab" stroke-width="1.7"/>
+<text x="1020.0" y="862" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle">Remaining blocks</text>
+<text x="1020.0" y="886" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">FFN → local attention</text>
+<text x="1020.0" y="909" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="middle">Published Ht × Wt × C</text>
+<path d="M 810,879.5 L 875,879.5" fill="none" stroke="#2563ab" stroke-width="2" marker-end="url(#arrow-flow)"/>
+<path d="M 490,599.5 L 430,599.5 L 430,879.5 L 490,879.5" fill="none" stroke="#b86910" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow-skip)"/>
+<text x="35" y="695" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Block66 only:</text>
+<text x="35" y="719" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Raw merge bypasses publication</text>
+<text x="35" y="743" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">for its first FFN residual.</text>
+<text x="35" y="767" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Other levels use the published</text>
+<text x="35" y="791" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">merged state as that residual.</text>
+<text x="35" y="955" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Block39 is transition-only: it ends at publication; block40 is the next ordinary window block.</text>
+<text x="35" y="1010" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="600" text-anchor="start">Weights and record ownership</text>
+<text x="35" y="1047" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="600" text-anchor="start">Transition</text>
+<text x="225" y="1047" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="600" text-anchor="start">Target C</text>
+<text x="380" y="1047" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="600" text-anchor="start">Encoder skip</text>
+<text x="590" y="1047" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="600" text-anchor="start">First block</text>
+<text x="790" y="1047" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="600" text-anchor="start">Remaining blocks</text>
+<text x="35" y="1082" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">39</text>
+<text x="225" y="1082" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">512</text>
+<text x="380" y="1082" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">30</text>
+<text x="590" y="1082" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">40</text>
+<text x="790" y="1082" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">41–47</text>
+<text x="35" y="1117" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">48</text>
+<text x="225" y="1117" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">256</text>
+<text x="380" y="1117" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">22</text>
+<text x="590" y="1117" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">48</text>
+<text x="790" y="1117" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">49–55</text>
+<text x="35" y="1152" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">56</text>
+<text x="225" y="1152" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">128</text>
+<text x="380" y="1152" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">14</text>
+<text x="590" y="1152" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">56</text>
+<text x="790" y="1152" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">57–61</text>
+<text x="35" y="1187" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">62</text>
+<text x="225" y="1187" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">64</text>
+<text x="380" y="1187" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">8</text>
+<text x="590" y="1187" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">62</text>
+<text x="790" y="1187" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">63–65</text>
+<text x="35" y="1222" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">66</text>
+<text x="225" y="1222" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">32</text>
+<text x="380" y="1222" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">4</text>
+<text x="590" y="1222" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">66</text>
+<text x="790" y="1222" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">67–69</text>
+<text x="35" y="1270" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Transitions48/56/62/66 belong to the first block record;39 has no FFN or attention.</text>
+<text x="35" y="1294" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" text-anchor="start">Source: _decoder_stage, _bottleneck_stage and Numerics.upsample_residual.</text>
+<text x="32" y="1341" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">Logical tensor flow · shapes omit batch unless shown · operations may be fused in CUDA</text>
 </svg>
