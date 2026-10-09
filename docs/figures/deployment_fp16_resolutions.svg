@@ -36,5 +36,5 @@
 <text x="852.63" y="453" font-size="14">11.307 ms</text>
 <text x="1015" y="439" text-anchor="middle" font-size="18" font-weight="600">-2.29%</text>
 <text x="42" y="512" font-size="14" class="muted">64 alternating pairs; paired-ratio medians. Both execution orders pass the 1% gate at every size.</text>
-<text x="42" y="537" font-size="13" class="muted">Excludes input/output stages and DLL host work. Data: small_gpu_deployment_measurements.json.</text>
+<text x="42" y="537" font-size="13" class="muted">Excludes input/output stages and DLL host work. Recorded CUDA-event timings on SM120.</text>
 </svg>

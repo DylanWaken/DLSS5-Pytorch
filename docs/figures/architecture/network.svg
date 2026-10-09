@@ -87,5 +87,5 @@
 <text x="1010" y="973" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" text-anchor="start">39: 1024 → 512, upsample</text>
 <text x="44" y="1105" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Solid arrows: main state. Dashed amber arrows: learned-scale skip merges. Fields include padding, not just valid image pixels.</text>
 <text x="44" y="1131" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Training covers input through output. Block 39 is transition-only. Renderer feature preparation and temporal reprojection are external.</text>
-<text x="44" y="1155" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">DLSSNR-PyTorch · implemented logical graph · source and shape ledger: architecture/source-map.json</text>
+<text x="44" y="1155" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">DLSSNR-PyTorch · implemented logical graph · model.py / geometry.py / weights.py</text>
 </svg>

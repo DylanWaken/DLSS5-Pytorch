@@ -46,13 +46,13 @@ interface is `MMA`. Indent each `#pragma unroll` with its loop and separate majo
 stages with comments and blank lines. After clang-format, run
 `python -B tools/format_cuda.py`, then its `--check` mode.
 
-Read [the reading guide](../../docs/KERNEL_READING_GUIDE.md),
-[source layout](../../docs/SOURCE_LAYOUT.md) and
-[current validation](../../docs/small_gpu_validation.json) for
+Read [the reading guide](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/KERNEL_READING_GUIDE.md),
+[source layout](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/SOURCE_LAYOUT.md) and
+[current validation](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/small_gpu_validation.json) for
 current ownership and completed qualification. Isolated
-[template feasibility](../../docs/KERNEL_TEMPLATE_FEASIBILITY.md) results do not
+[template feasibility](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/KERNEL_TEMPLATE_FEASIBILITY.md) results do not
 qualify the integrated extension. The preceding
-[81-file validation](../../docs/global_entry_validation.json), directory/naming/
+[81-file validation](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/global_entry_validation.json), directory/naming/
 flat-symbol records and dated UEv2 notes below remain historical. Preserve their
 original identities; do not transfer latency claims by source inspection alone.
 
@@ -60,8 +60,8 @@ original identities; do not transfer latency claims by source inspection alone.
 
 Installed build `efdfded212d90042e5ba44d010e636a4a15b827f0091c34a060f06eb92f11a24`
 supports runtime image geometry and capacity-aware ordered split launches in
-both deployment precisions. See [geometry](../../docs/DYNAMIC_RESOLUTIONS.md)
-and [scheduling](../../docs/SMALL_GPU_SCHEDULING.md) for contracts. A plan owns
+both deployment precisions. See [geometry](../../docs/SETUP.md#deployment)
+and [scheduling](../../docs/SETUP.md#deployment) for contracts. A plan owns
 its geometry; prepare a new plan outside capture for different dimensions.
 Keep policy lookup clamping separate from actual allocation and launch sizes.
 
@@ -83,7 +83,7 @@ performance qualification or 85% roofline claim is established.
 
 ## Historical UEv2 snapshot
 
-Read `docs/RECONSTRUCTION_STATUS.md` and the exact run receipts before acting. Reconciled snapshot: 2026-10-05. The latest qualified **UEv2 normal 81-entry source build**, binary `88b7a94a…`, passes the fixed SM120, batch-one, prepared-feature FP8 trunk at 720p, 1080p, 1440p and 2160p. Its final 4K paired result is **6.496523 ms versus 6.452048 ms original**, ratio **1.006893098**: approximately **0.689% slower**. Both execution-order medians meet the user's accepted **within-1%** slowdown limit; the other three measured resolutions are faster than the original. Further performance optimization stopped at the user's criterion. Installation is a separate root-owned receipt, not inferred from qualification.
+Read `README.md` and the exact run receipts before acting. Reconciled snapshot: 2026-10-05. The latest qualified **UEv2 normal 81-entry source build**, binary `88b7a94a…`, passes the fixed SM120, batch-one, prepared-feature FP8 trunk at 720p, 1080p, 1440p and 2160p. Its final 4K paired result is **6.496523 ms versus 6.452048 ms original**, ratio **1.006893098**: approximately **0.689% slower**. Both execution-order medians meet the user's accepted **within-1%** slowdown limit; the other three measured resolutions are faster than the original. Further performance optimization stopped at the user's criterion. Installation is a separate root-owned receipt, not inferred from qualification.
 
 The original comparison is an extracted native-kernel graph, not the DLL/NGX/renderer host. All four final paired runs check all 74 published physical boundaries, immutable input/142 records, guards, counters and same-input poisoned replay. `changed_input_graph_proof` and continuous-resolution qualification remain false. Full FP16-trunk, frontend/renderer and broader full-route exceptional/sanitizer coverage remain separate scopes.
 
@@ -202,7 +202,7 @@ The postmortem should explain observed fusion/layout work, representation overhe
 
 ## Internal readability and stable interfaces
 
-The historical UE naming specification is preserved in `outputs/all-reconstructed-deployment-prep/readability-ue-v2/CODE_READABILITY.md`. Current code follows `docs/CODE_READABILITY.md` and `docs/STORAGE_PREFIX_AUDIT.md`: meaningful CapitalCamelCase internals, `r_` for tensor/arithmetic register payload and fragment selectors, `s_` for physical shared-memory roles, and `g_` for proven global pointers/indices. Ordinary control flags use plain `b` names. Reserve `sl_` for logical pre-swizzle coordinates with actual def-use evidence; no such coverage is claimed merely by adding a prefix. Keep unresolved roles explicit rather than inventing tensor semantics. Preserve original PTX anchors and exact identifier inverses.
+The historical UE naming specification is preserved in `outputs/all-reconstructed-deployment-prep/readability-ue-v2/CODE_READABILITY.md`. Current code follows [the source conventions](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/CODE_READABILITY.md) and [STORAGE_PREFIX_AUDIT.md](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/STORAGE_PREFIX_AUDIT.md): meaningful CapitalCamelCase internals, `r_` for tensor/arithmetic register payload and fragment selectors, `s_` for physical shared-memory roles, and `g_` for proven global pointers/indices. Ordinary control flags use plain `b` names. Reserve `sl_` for logical pre-swizzle coordinates with actual def-use evidence; no such coverage is claimed merely by adding a prefix. Keep unresolved roles explicit rather than inventing tensor semantics. Preserve original PTX anchors and exact identifier inverses.
 
 The historical UE naming pass kept CUDA namespaces and `Parameters`/`ClearParameters` type identities because they participated in C++ symbol mangling. That restriction applies when reproducing its archived binaries. The later flat-symbol migration introduced bare C exports and descriptive global `F` types; current template integration retains those logical names but uses mapped C++ template symbols and C-linkage host resolvers where necessary. Keep pointer-field/member/offsetof spellings aligned while retaining field order, sizes, alignment and reserved slots. Public Python/Torch names remain stable. Shared intrinsics retain literal ISA, operand constraints and clobbers; source rename equivalence does not imply instruction identity after compilation.
 
@@ -210,14 +210,14 @@ The historical UE naming pass kept CUDA namespaces and `Parameters`/`ClearParame
 
 The pure-PyTorch trainable graph is independent of the packed inference trunk. Preserve its arithmetic and distinguish FP32/BF16 training from FP8/FP16 inference. The initial eager training benchmark's OOMs occurred during forward; they did not demonstrate an intrinsic model-resolution limit. The saved-tensor audit attributes large retained activation and attention intermediates, including FP32 intermediates in the BF16 route. Meta storage accounting is not a measured GPU resident peak, and allocator reports on Windows must not be equated with physical VRAM.
 
-Use block checkpointing with non-reentrant recomputation to trade compute for saved activations, retaining the same model arithmetic, parameters and diagnostic loss. Verify output and parameter-gradient agreement before reporting the new benchmark. Label checkpointed versus eager runs, include peaks and failures, and keep the original results. Do not claim a DLSS5 transfer-learning recipe from these diagnostic losses. See [the memory analysis](../../outputs/all-reconstructed-deployment-prep/training-benchmark/MEMORY-ANALYSIS.md) and its saved-tensor/retention evidence.
+Use block checkpointing with non-reentrant recomputation to trade compute for saved activations, retaining the same model arithmetic, parameters and diagnostic loss. Verify output and parameter-gradient agreement before reporting the new benchmark. Label checkpointed versus eager runs, include peaks and failures, and keep the original results. Do not claim a DLSS5 transfer-learning recipe from these diagnostic losses. See [the tracked memory diagnosis](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/TRAINING_MEMORY.md) and its saved-tensor/retention evidence.
 
 The saved checkpoint-parity run now passes for both FP32 and BF16. The subsequent checkpointed forward/backward benchmark completed all eight cases: FP32 and BF16 at 720p, 1080p, 1440p and 4K, with final identities preserved. This supersedes the original eager OOMs as the current benchmark outcome for that explicit checkpointed route; it does not erase them or establish task-specific training convergence. The current final UEv2 inference result is separately measured at four resolutions; its 4K gap is 0.689%. Training results neither explain that timing nor qualify a full FP16 inference trunk.
 
 Evidence anchors, relative to the repository:
 
-- `docs/RECONSTRUCTION_STATUS.md`, `docs/API_MIGRATION.md`, and `outputs/all-kernel-cuda-reconstruction/REPORT.md`.
-- `docs/optimization_walkthrough.md` §88–94, §98, §101–113, §123–124, preserving all prior experiment scopes.
+- `README.md`, `docs/SETUP.md`, and `outputs/all-kernel-cuda-reconstruction/REPORT.md`.
+- [optimization_walkthrough.md](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/optimization_walkthrough.md) §88–94, §98, §101–113, §123–124, preserving all prior experiment scopes.
 - `outputs/all-reconstructed-deployment-prep/{plan-spec.json,accepted-object-union.json,clean-source-check.json}` for the integration catalog and historical donor route.
 - `outputs/all-reconstructed-deployment-prep/readability/{install-receipt.json,build-run-v1/build.json,compiled-comparison/analysis-v2/summary.json}` for the installed normal source build and retained compiled differences.
 - `outputs/all-reconstructed-deployment-prep/gpu-runs/{readability-numerical-v1,readability-finite-codes-v1,readability-paired-v1}` for the accepted 4K prepared-feature result and its limits.
@@ -233,7 +233,7 @@ Evidence anchors, relative to the repository:
 
 ## Full FP16 integration: measured lessons (2026-10-06)
 
-Use `docs/FP16_DEPLOYMENT.md` and `docs/figures/fp16_deployment_measurements.json` for the completed SM120 Half trunk. Do not infer Half record offsets by doubling FP8 offsets: K16 packing, upsample record placement, C512 thread counts, direct global reductions and decoder scratch ABI differ. Keep 32-row allocation padding separate from logical finiteness checks; native Half can leave unused token rows poisoned.
+Use [FP16_DEPLOYMENT.md](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/FP16_DEPLOYMENT.md) and [fp16_deployment_measurements.json](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/figures/fp16_deployment_measurements.json) for the completed SM120 Half trunk. Do not infer Half record offsets by doubling FP8 offsets: K16 packing, upsample record placement, C512 thread counts, direct global reductions and decoder scratch ABI differ. Keep 32-row allocation padding separate from logical finiteness checks; native Half can leave unused token rows poisoned.
 
 Profile the actual repeated workload before choosing a register cap. In C256 Half, Nsight found 238 reconstructed registers versus 188 native with equal occupancy; a 192 cap improved whole-trunk timing despite a small stack frame. Do not claim an occupancy gain. The non-volatile pure-MMA experiment compiled to identical machine code and was discarded. Static MMA/NOP count differences alone do not prove dead arithmetic or dynamic workload differences; compare full SASS, counters and balanced graph timings.
 
@@ -247,9 +247,9 @@ a failure into a pass.
 
 ## Semantic reconstruction: source must explain the algorithm
 
-Use [the semantic reconstruction report](../../docs/SEMANTIC_RECONSTRUCTION.md),
-[source map](../../docs/SOURCE_LAYOUT.md) and current
-[code conventions](../../docs/CODE_READABILITY.md) for the new implementation.
+Use [the semantic reconstruction report](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/SEMANTIC_RECONSTRUCTION.md),
+[source map](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/SOURCE_LAYOUT.md) and current
+[code conventions](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/CODE_READABILITY.md) for the new implementation.
 Earlier instructions about retaining PTX-numbered identifiers apply only to
 historical transcripts. Production code must use named tiles, fragment arrays,
 short loops and shared operation/layout policies. Do not hide a transcript in a
@@ -303,7 +303,7 @@ glue and runtime, verifies helper paths, and records the copied assembler's
 hash. Do not replace installed toolkit files or bypass PyTorch version checks.
 Keep architecture flags explicit: PyTorch's substring-based detection can
 mistake a path containing `arch` for an existing architecture flag. See
-[the compiler scheduling report](../../docs/COMPILER_SCHEDULING.md).
+[the compiler scheduling report](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/COMPILER_SCHEDULING.md).
 
 ## Audit names through their consumers
 
@@ -352,7 +352,7 @@ The source inventory rejects namespaces and checks direct C entries separately
 from explicitly mapped global templates and resolvers. Archived source requires
 an explicit historical audit path, never a silent active fallback. Compare the compiled
 entry roster, instruction payloads and launch records after rebuilding; exercise
-full graphs and separately exposed host dispatch. See [the migration validation](../../docs/FLAT_SYMBOLS.md).
+full graphs and separately exposed host dispatch. See [the migration validation](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/FLAT_SYMBOLS.md).
 Preserve original source/binary identities in existing optimization receipts and
 charts. A symbol migration with fresh correctness tests is not a fresh timing run.
 
@@ -379,7 +379,7 @@ rebuild and inspect compiled code before carrying forward performance evidence.
 
 ## Keep the schedule inside the actual global entry
 
-Use `docs/KERNEL_READING_GUIDE.md` and the template manifest to find the owning
+Use [the source conventions](https://github.com/DylanWaken/DLSS5-Pytorch/blob/f7b935a0429db437f48db132ba02d4b1a3256f4f/docs/CODE_READABILITY.md) and the template manifest to find the owning
 `.cu` file. Its actual `__global__` definition, direct or templated, must expose
 ownership, register/shared storage, pipeline prefill, loops, synchronization/
 recycling and final writebacks.

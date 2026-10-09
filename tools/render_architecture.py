@@ -2,12 +2,10 @@
 
 Run from the project root: python -B tools/render_architecture.py
 Geometry and the 71-record schedule are read from the implementation. Component
-annotations describe model.py and weights.py; their hashes accompany the output.
+annotations describe model.py and weights.py.
 """
 from html import escape
-import hashlib
 import importlib.util
-import json
 from pathlib import Path
 import sys
 import textwrap
@@ -82,7 +80,7 @@ class Diagram:
             self.note(y + height + 63, note)
 
     def save(self):
-        self.text(44, self.height - 20, "DLSSNR-PyTorch · implemented logical graph · source and shape ledger: architecture/source-map.json", 13, MUTED)
+        self.text(44, self.height - 20, "DLSSNR-PyTorch · implemented logical graph · model.py / geometry.py / weights.py", 13, MUTED)
         self.parts.append("</svg>")
         (OUT / (self.name + ".svg")).write_text("\n".join(self.parts) + "\n", encoding="utf-8")
 
@@ -149,18 +147,7 @@ def main():
     # These summary-card figures were replaced by individual tensor-flow views.
     for obsolete in ("ffn.svg", "endpoints.svg"):
         (OUT / obsolete).unlink(missing_ok=True)
-    sources = ("dlssnr/model.py", "dlssnr/geometry.py", "dlssnr/weights.py")
-    renderers = ("tools/render_architecture.py", "tools/architecture_flow.py",
-                 "tools/architecture_attention.py", "tools/architecture_blocks.py",
-                 "tools/architecture_stages.py")
-    data = dict(scope="Implemented logical training tensor flow; deployment operations may be fused and use packed layouts",
-                tensor_axes="Expanded flows: H,W,C; batch omitted unless shown. Master example fields: W,H.",
-                renderer_sha256={name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in renderers},
-                source_sha256={name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in sources},
-                valid_example=[3840, 2160], full_padded_example=[G.full_width, G.full_height],
-                schedule=SCHEDULE, diagrams=[p.name for p in sorted(OUT.glob("*.svg"))])
-    (OUT / "source-map.json").write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
-    print(f"Rendered {len(data['diagrams'])} architecture SVGs in {OUT}")
+    print(f"Rendered {len(list(OUT.glob('*.svg')))} architecture SVGs in {OUT}")
 
 
 if __name__ == "__main__":

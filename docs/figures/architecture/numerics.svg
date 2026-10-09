@@ -45,5 +45,5 @@
 <text x="743" y="740" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">retaining every eager intermediate; no-grad bypasses it.</text>
 <text x="743" y="762" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">It does not define a task loss or training procedure.</text>
 <text x="44" y="887" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Pointwise linear layers mix channels at each pixel/token; pooling changes spatial size, and upsampling repeats rows and columns.</text>
-<text x="44" y="945" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">DLSSNR-PyTorch · implemented logical graph · source and shape ledger: architecture/source-map.json</text>
+<text x="44" y="945" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="400" text-anchor="start">DLSSNR-PyTorch · implemented logical graph · model.py / geometry.py / weights.py</text>
 </svg>

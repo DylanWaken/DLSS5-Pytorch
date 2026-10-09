@@ -22,7 +22,7 @@ model = checkpoint.training_model(
 )
 ```
 
-The model keeps FP32 master parameters; `precision` explicitly selects FP32 or BF16 computation. See the [training guide](../docs/training.md) for feature inputs and backward calls. Actual DLSS5 transfer-learning methodology, losses and training procedures remain TBD.
+The model keeps FP32 master parameters; `precision` explicitly selects FP32 or BF16 computation. See the [training guide](../docs/SETUP.md#training) for feature inputs and backward calls. Actual DLSS5 transfer-learning methodology, losses and training procedures remain TBD.
 
 ## Deployment
 
@@ -32,7 +32,7 @@ plan = checkpoint.create_plan_fp8(prepared_state, width=1280, height=720)
 output = plan.run_fp8()
 ```
 
-Use the packed feature contract in the [deployment guide](../docs/API_MIGRATION.md). Preparation and weight uploads happen outside CUDA graph capture. The full FP16 prepared-feature trunk is available through either checkpoint:
+Use the packed feature contract in the [deployment guide](../docs/SETUP.md#deployment). Preparation and weight uploads happen outside CUDA graph capture. The full FP16 prepared-feature trunk is available through either checkpoint:
 
 ```python
 checkpoint = load_checkpoint("ckpts/dlss5_nr_fp16.pt")
@@ -54,4 +54,4 @@ To reproduce into a new directory from the extracted archive:
 python -B tools/export_checkpoint.py --assets assets/nr --out-dir ckpts/reexport --precision fp8 fp16
 ```
 
-See [NOTICE](../NOTICE) and [asset provenance](../docs/assets.md) for attribution.
+See [NOTICE](../NOTICE) for attribution and the adjacent checkpoint manifests for source hashes.
