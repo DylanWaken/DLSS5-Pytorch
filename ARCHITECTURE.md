@@ -1,6 +1,6 @@
 # Network architecture
 
-For the CUDA implementation of these model pieces, read the [FP16/FP8 kernel field guide](kernel-guide/index.html): source excerpts, per-token and lane diagrams, physical addresses, storage lifetimes and optimization rationale. The [HTML architecture companion](kernel-guide/architecture.html) renders this document alongside the walkthroughs.
+For the CUDA implementation of these model pieces, read the [81 standalone FP16/FP8 kernel lessons](kernel-guide/index.html). Each public kernel has its own start-to-finish document: model equations, a scalar baseline, per-token and lane diagrams, physical addresses, storage lifetimes, optimization rationale, and reconstruction checks. The [HTML architecture companion](kernel-guide/architecture.html) renders this document alongside the walkthroughs.
 
 Start with the master diagram to identify a stage's **FFN variant** and **attention variant**. Then compare variants of that operation together, or follow the complete block to see how they connect. The same variant names appear in the master diagram, comparison views and expanded tensor flows.
 

@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Construct the exact FP16 matrix/residual kernel, including four ordered K splits, packed operands, stage reuse and publication rounding."><meta name="color-scheme" content="light"><title>FP16 C1024 FFN contraction: 4096 → 1024 · DLSS-NR Kernel Lessons</title><link rel="stylesheet" href="assets/site.css"><script defer src="assets/site.js"></script></head>
+<body class="kernel-lesson"><a class="skip" href="#main">Skip to content</a><aside class="sidebar"><a class="brand" href="index.html">DLSS<span>NR</span></a><p class="nav-kicker">One document per kernel</p><nav aria-label="Guide"><a href="index.html">All 81 kernel lessons</a><a href="architecture.html">Model architecture</a><a href="source-atlas.html">Public entry → source</a><a href="foundations.html">Tensor / lane reference</a><a href="runtime.html">Host scheduling reference</a></nav><hr><nav class="local-nav" aria-label="This lesson"><p class="nav-kicker">Inside this lesson</p><a href="#model">01. Define the model piece before choosing a GPU tile</a><a href="#baseline">02. Write a scalar baseline and identify the repeated work</a><a href="#tile">03. Grow a warp primitive into the source CTA</a><a href="#split-design">04. Introduce four K splits without losing the residual or rounding order</a><a href="#addresses">05. Derive input, weight, residual and partial addresses</a><a href="#synchronous">06. Build a one-slot synchronous split kernel</a><a href="#pipeline">07. Replace the scaffold with the actual stage schedule</a><a href="#publication">08. Publish partials and the final tensor</a><a href="#reconstruction">09. Complete reconstruction pseudocode</a><a href="#validation">10. Test the properties that define this kernel</a><a href="#source-appendix">11. Source appendix: the complete implementation and ABI</a></nav><hr><div class="meta">Source snapshot<br><a href="https://github.com/DylanWaken/DLSS5-Pytorch/tree/fc3276497f866bdad639cd443e75743f5d19b749">fc3276497f86</a><br><a href="../ARCHITECTURE.md">Architecture Markdown</a><br><a href="https://github.com/DylanWaken/DLSS5-Pytorch">Repository ↗</a></div></aside>
+<div class="topbar"><a href="index.html#kernels">Browse kernels</a><button id="toggle-code" type="button">Collapse code</button></div><main id="main" class="page"><header><p class="eyebrow">A complete kernel reconstruction</p><h1>FP16 C1024 FFN contraction: 4096 → 1024</h1><p class="kernel-identity"><code>global_ffn_contract_c1024_fp16</code></p><p class="lede">Construct the exact FP16 matrix/residual kernel, including four ordered K splits, packed operands, stage reuse and publication rounding.</p><div class="reading-meta"><span>FP16</span><span>~16 min of explanation + source study</span><span>6 diagrams</span></div></header><details class="toc"><summary>Reading sequence · 11 sections</summary><div><a href="#model">01. Define the model piece before choosing a GPU tile</a><a href="#baseline">02. Write a scalar baseline and identify the repeated work</a><a href="#tile">03. Grow a warp primitive into the source CTA</a><a href="#split-design">04. Introduce four K splits without losing the residual or rounding order</a><a href="#addresses">05. Derive input, weight, residual and partial addresses</a><a href="#synchronous">06. Build a one-slot synchronous split kernel</a><a href="#pipeline">07. Replace the scaffold with the actual stage schedule</a><a href="#publication">08. Publish partials and the final tensor</a><a href="#reconstruction">09. Complete reconstruction pseudocode</a><a href="#validation">10. Test the properties that define this kernel</a><a href="#source-appendix">11. Source appendix: the complete implementation and ABI</a></div></details><article class="content">
+<h2 id="model">01. Define the model piece before choosing a GPU tile</h2>
+<p><code>global_ffn_contract_c1024_fp16</code> belongs to the C1024 bottleneck, records 31–38. It contracts the activated dense-FFN intermediate U[T,4096] through W₂[4096,1024] and adds the separately scaled original block input X. With row-vector notation the equation is <code>Z[t,n]=Publish(Σₖ U[t,k]W[k,n]+ffn_scale[n]·X[t,n])</code>. The result is logically [T,1024]. The scale has 1024 channel values and broadcasts over tokens. There is no activation or matrix bias in this entry.</p>
+<p>The architecture’s 4K example has H=36,W=60,T=2160. This body uses <code>T=BatchCount·TokensPerBatch</code>; the prepared plan runs batch one. Inputs, matrix operands and final output use FP16. Residual scales, accumulators and intermediate split sums use Half. This public FP16 entry owns its complete kernel body. The <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/docs/ARCHITECTURE.md">architecture document</a> locates this operation in the block, while this lesson derives its implementation locally.</p>
+<figure class="diagram"><div class="diagram-scroll" tabindex="0" role="region" aria-label="contract logical model operation in FP16"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 220" role="img" aria-labelledby="figure-1-fig-c8b880baaef7" style="min-width:820px"><title id="figure-1-fig-c8b880baaef7">contract logical model operation in FP16</title><defs><marker id="figure-1-fig-c8b880baaef7-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#576c83"/></marker></defs><rect class="tensor" x="20" y="35" width="240" height="80" rx="8"/><text x="32" y="60" style="font-size:15px;font-weight:500">U[t,4096]</text><text x="32" y="83" style="font-size:15px;font-weight:500">FP16 activated FFN</text><path d="M260,75 L275,75" stroke="#527487" stroke-width="2" fill="none"/><polygon points="275,75 266.0,71.0 266.0,79.0" fill="#527487"/><rect class="compute" x="280" y="35" width="240" height="80" rx="8"/><text x="292" y="60" style="font-size:15px;font-weight:500">dot with W₂[:,n]</text><text x="292" y="83" style="font-size:15px;font-weight:500">four K1024 splits</text><path d="M520,75 L535,75" stroke="#527487" stroke-width="2" fill="none"/><polygon points="535,75 526.0,71.0 526.0,79.0" fill="#527487"/><rect class="compute" x="540" y="35" width="240" height="80" rx="8"/><text x="552" y="60" style="font-size:15px;font-weight:500">+ scale[n]×X[t,n]</text><text x="552" y="83" style="font-size:15px;font-weight:500">residual seeded once</text><path d="M780,75 L795,75" stroke="#527487" stroke-width="2" fill="none"/><polygon points="795,75 786.0,71.0 786.0,79.0" fill="#527487"/><rect class="tensor" x="800" y="35" width="240" height="80" rx="8"/><text x="812" y="60" style="font-size:15px;font-weight:500">Z[t,1024]</text><text x="812" y="83" style="font-size:15px;font-weight:500">FP16 QKV input</text><text x="25" y="160" style="font-size:15px;font-weight:500">One t is one spatial position. These matrix projections do not mix positions; they mix that token’s channels.</text><text x="25" y="190" style="font-size:15px;font-weight:500">Records 31–38 use this operation. At 4K: H=36, W=60, T=2160, C=1024.</text></svg></div><figcaption>The logical equation comes first. Subsequent diagrams explain how each value is distributed across physical vectors and lanes.</figcaption></figure>
+<h2 id="baseline">02. Write a scalar baseline and identify the repeated work</h2>
+<figure class="pseudocode"><figcaption>Scalar mathematical baseline: introduce split rounding and fragment arithmetic in later steps — an algorithmic outline, not a compiled replacement</figcaption><pre><code>for token t in 0 .. T-1:
+    for output n in 0 .. 1023:
+        sum = scale[n] * decode(X[t,n])
+        for input k in 0 .. 4095:
+            sum += decode(U[t,k]) * decode(W[k,n])
+        Z[t,n] = round_to_Half(sum)</code></pre></figure>
+<p>This baseline says one output reads all 4096 channels at one token plus one residual value. There is no communication between token t and token t+1. Assigning one thread to each output would reread each input row for many output columns, and reread the same W columns for every token. Separate residual and publication kernels would add further global reads/writes. Those costs suggest grouping outputs, reusing operand panels and fusing the residual. The scalar equation is a dependency reference; exact deployment equivalence additionally requires the recovered split order and Half rounding described below.</p>
+<p>One instruction computes a <strong>16-token × 8-output-channel</strong> tile with a reduction of <strong>16</strong> channels. All 32 lanes participate in the same matrix operation. Each lane supplies four 32-bit A words, two 32-bit B words, and two 32-bit C words. Each C word contains two Half accumulators, so a lane owns four output elements. A source loop over output groups or reduction panels repeats this operation; it does not launch a new warp.</p><p>The exact instruction on this path is <code>mma.sync.aligned.m16n8k16.row.col.f16.f16.f16.f16</code>. Both the accumulator input and output are <strong>Half</strong>. Do not replace its numerical contract with FP32 accumulation when constructing an exact oracle. For the FP8 path, packing to E4M3 is a distinct rounding step; for the FP16 path a packed word simply holds two Half values.</p><p>Let lane <code>L</code> run from 0 to 31, <code>g = L // 4</code> and <code>q = L % 4</code>. The matrix coordinates below describe instruction operands <em>after</em> any kernel-specific loads and shuffles. Storage layouts are designed to supply these coordinates cheaply.</p>
+<div class="table-scroll"><table><thead><tr><th>Per-lane operand</th><th>Logical matrix coordinates</th></tr></thead><tbody>
+<tr><td>A word i = 0…3</td><td>token row g + 8(i % 2); reduction channels 2q + 8⌊i/2⌋ + h, h = 0…1</td></tr>
+<tr><td>B word j = 0…1</td><td>output column g; reduction channels 2q + 8j + h, h = 0…1</td></tr>
+<tr><td>C / D word 0</td><td>token g, output columns 2q and 2q + 1</td></tr>
+<tr><td>C / D word 1</td><td>token g + 8, output columns 2q and 2q + 1</td></tr>
+</tbody></table></div><p>The operand and accumulator coordinates follow the <a href="https://docs.nvidia.com/cuda/parallel-thread-execution/#warp-level-matrix-fragment-mma-16816-float">NVIDIA PTX matrix-fragment specification</a>. A kernel may permute model channels before supplying these instruction coordinates; its publication and weight-packing rules must agree.</p><figure class="diagram"><div class="diagram-scroll" tabindex="0" role="region" aria-label="FP16 matrix instruction ownership"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 285" role="img" aria-labelledby="figure-2-fig-44773c64cd72" style="min-width:820px"><title id="figure-2-fig-44773c64cd72">FP16 matrix instruction ownership</title><defs><marker id="figure-2-fig-44773c64cd72-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#576c83"/></marker></defs>
+<rect class="tensor" x="15" y="35" width="245" height="155" rx="8"/><text class="label" x="32" y="64">A: 16 × 16</text><text class="small" x="32" y="94">4 packed words per lane</text><text class="small" x="32" y="120">2 Half values per word</text><text class="small" x="32" y="150">two token rows per lane</text>
+<path class="edge" style="marker-end:url(#figure-2-fig-44773c64cd72-arrow)" d="M265 112 H318"/><rect class="compute" x="325" y="55" width="225" height="125" rx="8"/><text class="label" x="343" y="85">32 lanes: D = A B + C</text><text class="small" x="343" y="115">B: 16 × 8</text><text class="small" x="343" y="141">2 B words per lane</text>
+<path class="edge" style="marker-end:url(#figure-2-fig-44773c64cd72-arrow)" d="M555 112 H610"/><rect class="storage" x="620" y="35" width="280" height="155" rx="8"/><text class="label" x="636" y="64">D: 16 × 8 Half</text><text class="small" x="636" y="96">lane 13: g = 3, q = 1</text><text class="small" x="636" y="124">word 0: D[3,2], D[3,3]</text><text class="small" x="636" y="152">word 1: D[11,2], D[11,3]</text>
+<text class="small" x="20" y="227">For output group n, add 8n to the two output-channel coordinates.</text>
+<text class="small" x="20" y="255">The whole warp owns 32 × 4 = 128 outputs: exactly the 16 × 8 tile.</text></svg></div><figcaption>Instruction fragment map. Lane 13 is one example; the map covers every token and channel exactly once.</figcaption></figure>
+<h2 id="tile">03. Grow a warp primitive into the source CTA</h2>
+<p>Four M16 fragments and eight N8 fragments give one warp a 64×64 output. Represent it as four M16 groups × four N16 groups × four Half2 accumulator words per lane. Arrange four warps as two token halves and two channel halves to cover M128×N128. This keeps each output fragment in registers while reusing one A fragment across multiple N panels and one B fragment across four M panels. A CTA contains 128 threads, with lane=threadIdx.x and warp=threadIdx.y.</p>
+<figure class="diagram"><div class="diagram-scroll" tabindex="0" role="region" aria-label="Derive M128 N128 ownership from four warps"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 330" role="img" aria-labelledby="figure-3-fig-22a291d2db91" style="min-width:820px"><title id="figure-3-fig-22a291d2db91">Derive M128 N128 ownership from four warps</title><defs><marker id="figure-3-fig-22a291d2db91-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#576c83"/></marker></defs><rect class="compute" x="20" y="25" width="340" height="100" rx="8"/><text x="32" y="50" style="font-size:15px;font-weight:500">CTA result: M128 × N128</text><text x="32" y="73" style="font-size:15px;font-weight:500">threadIdx.x = lane L, 0…31</text><text x="32" y="96" style="font-size:15px;font-weight:500">threadIdx.y = warp w, 0…3</text><rect class="tensor" x="400" y="20" width="300" height="90" rx="8"/><text x="412" y="45" style="font-size:15px;font-weight:500">Warp 0: M0…63</text><text x="412" y="68" style="font-size:15px;font-weight:500">N0…63</text><text x="412" y="91" style="font-size:15px;font-weight:500">4 M16 × 4 N16 fragments</text><rect class="tensor" x="720" y="20" width="300" height="90" rx="8"/><text x="732" y="45" style="font-size:15px;font-weight:500">Warp 1: M0…63</text><text x="732" y="68" style="font-size:15px;font-weight:500">N64…127</text><text x="732" y="91" style="font-size:15px;font-weight:500">4 M16 × 4 N16 fragments</text><rect class="tensor" x="400" y="132" width="300" height="90" rx="8"/><text x="412" y="157" style="font-size:15px;font-weight:500">Warp 2: M64…127</text><text x="412" y="180" style="font-size:15px;font-weight:500">N0…63</text><text x="412" y="203" style="font-size:15px;font-weight:500">4 M16 × 4 N16 fragments</text><rect class="tensor" x="720" y="132" width="300" height="90" rx="8"/><text x="732" y="157" style="font-size:15px;font-weight:500">Warp 3: M64…127</text><text x="732" y="180" style="font-size:15px;font-weight:500">N64…127</text><text x="732" y="203" style="font-size:15px;font-weight:500">4 M16 × 4 N16 fragments</text><text x="25" y="173" style="font-size:15px;font-weight:500">Every N16 = two m16n8 outputs.</text><text x="25" y="203" style="font-size:15px;font-weight:500">Each output word = two Half values.</text><text x="25" y="270" style="font-size:15px;font-weight:500">Lane 13: row pair 3/11; channel pairs 2/3 and 10/11, relative to one M16×N16 tile.</text><text x="25" y="300" style="font-size:15px;font-weight:500">A and B fragments use their own operand maps; the output ownership rule must not be reused as an input map.</text></svg></div><figcaption>Warp parity chooses output columns; floor(warp/2) chooses token rows. Both row warps reuse the same weight panel.</figcaption></figure>
+<p>Let Mtiles=ceil(T/128). For block.x=b, channelBlock=floor(b/Mtiles), firstGroup=(b modMtiles)·8 and outputChannel=128·channelBlock+64·(warp mod2). The warp consumes groups firstGroup+4·floor(warp/2)+m, m=0…3. Split selection is <code>OrderedSplit ? OrderedSplit−1 : blockIdx.z</code>. Unlike an ordinary complete GEMM, this CTA computes only 1024 of the 4096 input channels. Four such partial computations contribute to the same output addresses.</p>
+<h3>Define the packed layout before optimizing memory traffic</h3>
+<p>The public pointers address opaque packed buffers. A token group contains 16 rows. One native M16×K16 A panel consumes 512 bytes, distributed as 32 lanes ×16 bytes. For input width K and element size E, group g begins at <code>g·16·K·E</code>. A reduction step advances along K in whole panels. Within a panel, lane L reads the vector at <code>L·16</code>. The publication layout arranges token rows and channel pairs to make those four words immediately usable by MMA.</p>
+<p>A packed B panel for 16 output channels also occupies 512 bytes. One lane’s uint4 supplies two N8 fragments: the first two words belong to the first N8, the next two words to the second. Across K panels, the record advances by <code>N·32</code> bytes, where this kernel’s N is 1024. The equality follows from 16 reduction values × 2 bytes per value =32 bytes per output column. A cache-all vector load fetches those words directly to registers.</p>
+<p>For FP16 weights, <code>packed_f16_weight_index(k,n,N)</code> returns a Half-element offset: panel=(k//16)·ceil(N/16)+n//16; lane=4·(n mod8)+floor((k mod8)/2); within-lane index=4·floor((n mod16)/8)+2·[k mod16≥8]+(k mod2). Multiply the result by two to obtain bytes. This gives you a scalar packer independent of the kernel’s vector-load formula.</p>
+<details class="source" open><summary>Scalar channel and weight index maps used to decode the packed record <span>lines 54–77</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/weights.py#L54-L77">dlssnr/weights.py ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">54</span>    within = k &amp; 31</span>
+<span class="code-line"><span class="ln" aria-hidden="true">55</span>    quarter = within &amp; 15</span>
+<span class="code-line"><span class="ln" aria-hidden="true">56</span>    return (k &amp; ~31) + (within &amp; 16) + (quarter &gt;&gt; 2) * 2 + (quarter &amp; 1) + ((quarter &amp; 2) != 0) * 8</span>
+<span class="code-line"><span class="ln" aria-hidden="true">57</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">58</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">59</span>def inverse_packed_input_index(k):</span>
+<span class="code-line"><span class="ln" aria-hidden="true">60</span>    within = k &amp; 31</span>
+<span class="code-line"><span class="ln" aria-hidden="true">61</span>    return (k &amp; ~31) + (within &amp; 17) + ((within &amp; 2) &lt;&lt; 1) + ((within &amp; 4) &lt;&lt; 1) + ((within &amp; 8) &gt;&gt; 2)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">62</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">63</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">64</span>def packed_weight_index(k, n, output_channels):</span>
+<span class="code-line"><span class="ln" aria-hidden="true">65</span>    ki, ni = k &amp; 31, n &amp; 127</span>
+<span class="code-line"><span class="ln" aria-hidden="true">66</span>    lane = ((ni &amp; 7) &lt;&lt; 2) | ((ki &amp; 15) &gt;&gt; 2)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">67</span>    byte = (((ni &amp; 15) &gt;&gt; 3) &lt;&lt; 3) | ((ki &gt;&gt; 4) &lt;&lt; 2) | (ki &amp; 3)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">68</span>    return (k &gt;&gt; 5) * output_channels * 32 + (n &gt;&gt; 7) * 4096 + (ni &gt;&gt; 6) * 2048 + ((ni &amp; 63) &gt;&gt; 4) * 512 + lane * 16 + byte</span>
+<span class="code-line"><span class="ln" aria-hidden="true">69</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">70</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">71</span>def packed_f16_weight_index(k, n, output_channels):</span>
+<span class="code-line"><span class="ln" aria-hidden="true">72</span>    tile = (k &gt;&gt; 4) * ((output_channels + 15) // 16) + (n &gt;&gt; 4)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">73</span>    ki, ni = k &amp; 15, n &amp; 15</span>
+<span class="code-line"><span class="ln" aria-hidden="true">74</span>    lane = ((ni &amp; 7) &lt;&lt; 2) | ((ki &amp; 7) &gt;&gt; 1)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">75</span>    fragment = (ki &gt;= 8) * 2 + (ki &amp; 1)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">76</span>    return tile * 256 + lane * 8 + ((ni &gt;&gt; 3) &amp; 1) * 4 + fragment</span>
+<span class="code-line"><span class="ln" aria-hidden="true">77</span></span></code></pre></details>
+<p>The C/D accumulator has an easier map. In one M16×N8 result, lane L owns token rows floor(L/4) and floor(L/4)+8, and output channels 2·(L mod4) and 2·(L mod4)+1. Two packed Half words hold those four elements. An N16 tile contains two such fragments and therefore four words per lane. Logical output ownership, native A operand ownership and native B operand ownership are separate maps.</p>
+<h2 id="split-design">04. Introduce four K splits without losing the residual or rounding order</h2>
+<p>Partition K into ranges [0,1024),[1024,2048),[2048,3072),[3072,4096). Split s computes its own Half MMA result Cₛ. Only s=0 starts its accumulator from <code>HalfMul(scale,residual)</code>; later splits start from zero. Adding the residual in all four splits would multiply that path by four. Adding it after all dots instead would change the existing Half accumulation sequence.</p>
+<figure class="diagram"><div class="diagram-scroll" tabindex="0" role="region" aria-label="Split work and global partial-tensor lifetime"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 345" role="img" aria-labelledby="figure-4-fig-77edf13ca1fa" style="min-width:820px"><title id="figure-4-fig-77edf13ca1fa">Split work and global partial-tensor lifetime</title><defs><marker id="figure-4-fig-77edf13ca1fa-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#576c83"/></marker></defs><rect class="compute" x="30" y="30" width="230" height="100" rx="8"/><text x="42" y="55" style="font-size:15px;font-weight:500">Split 0: K0…1023</text><text x="42" y="78" style="font-size:15px;font-weight:500">first Half store</text><text x="42" y="101" style="font-size:15px;font-weight:500">residual only in split 0</text><path d="M260,80 L277,80" stroke="#527487" stroke-width="2" fill="none"/><polygon points="277,80 268.0,76.0 268.0,84.0" fill="#527487"/><rect class="compute" x="280" y="30" width="230" height="100" rx="8"/><text x="292" y="55" style="font-size:15px;font-weight:500">Split 1: K1024…2047</text><text x="292" y="78" style="font-size:15px;font-weight:500">ordered Half add</text><text x="292" y="101" style="font-size:15px;font-weight:500">residual only in split 0</text><path d="M510,80 L527,80" stroke="#527487" stroke-width="2" fill="none"/><polygon points="527,80 518.0,76.0 518.0,84.0" fill="#527487"/><rect class="compute" x="530" y="30" width="230" height="100" rx="8"/><text x="542" y="55" style="font-size:15px;font-weight:500">Split 2: K2048…3071</text><text x="542" y="78" style="font-size:15px;font-weight:500">ordered Half add</text><text x="542" y="101" style="font-size:15px;font-weight:500">residual only in split 0</text><path d="M760,80 L777,80" stroke="#527487" stroke-width="2" fill="none"/><polygon points="777,80 768.0,76.0 768.0,84.0" fill="#527487"/><rect class="compute" x="780" y="30" width="230" height="100" rx="8"/><text x="792" y="55" style="font-size:15px;font-weight:500">Split 3: K3072…4095</text><text x="792" y="78" style="font-size:15px;font-weight:500">final add + epilogue</text><text x="792" y="101" style="font-size:15px;font-weight:500">residual only in split 0</text><rect class="storage" x="70" y="190" width="920" height="80" rx="8"/><text x="82" y="215" style="font-size:15px;font-weight:500">Partial tensor lifetime spans all split publications</text><text x="82" y="238" style="font-size:15px;font-weight:500">FP16 destination used as scratch until final publication</text><text x="25" y="315" style="font-size:15px;font-weight:500">Resident mode: predecessor counter orders publication. Ordered mode: one complete split plane per stream-ordered launch.</text></svg></div><figcaption>Separate split CTAs compute independently, but Half partial updates have a required order. The final epilogue runs after the full sum exists.</figcaption></figure>
+<p>After independent computation, publish in order: P₀=C₀; P₁=HalfAdd(P₀,C₁); P₂=HalfAdd(P₁,C₂); final=HalfAdd(P₂,C₃). The output allocation itself holds P, and becomes the final tensor after split 3 writes its final Half result. This is not an arbitrary-order atomic sum and not one FP32 reduction. The structure reproduces the recorded publication boundaries.</p>
+<h2 id="addresses">05. Derive input, weight, residual and partial addresses</h2>
+<p>Within one split, the reduction advances by K32, giving 32 steps. One 16-token group’s slab contains <code>32·16·2=1024</code> bytes. Its global base is <code>U+(g·4096+s·1024+i·32)·16·2</code>. The eight groups together occupy 8192 bytes per shared stage. This specialization copies 1024 bytes per producer operation, so 1 producer warp positions cooperate per group. In the source’s unified copy loop, <code>copySlot=warp+4·Copy</code>, group=firstGroup+floor(copySlot/1), and destination=stage·8192+copySlot·1024. Contraction coalesces the two K fragments in each 1024-byte group slab.</p>
+<p>The consumer A vector is at shared <code>(i mod3)·8192+floor(warp/2)·4·1024+lane·16+m·1024+kSubtile·512</code>. W’s register vector starts at <code>W+(s·1024+i·32)·1024·2+outputChannel·32+lane·16+kSubtile·32768+n16·512</code>. There are 2 native K subtiles per step. The fixed 32768 stride is 1024 output columns ×32 bytes per native K panel; it is independent of the scalar element width.</p>
+<figure class="diagram"><div class="diagram-scroll" tabindex="0" role="region" aria-label="FP16 contract: one input, weight and result vector"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 300" role="img" aria-labelledby="figure-5-fig-f0cd5cced000" style="min-width:820px"><title id="figure-5-fig-f0cd5cced000">FP16 contract: one input, weight and result vector</title><defs><marker id="figure-5-fig-f0cd5cced000-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#576c83"/></marker></defs><rect class="tensor" x="20" y="25" width="495" height="95" rx="8"/><text x="32" y="50" style="font-size:15px;font-weight:500">Token tile 0; channelBlock 0; split 1</text><text x="32" y="73" style="font-size:15px;font-weight:500">warp 2, lane 13; step 2, M16 group 1</text><text x="32" y="96" style="font-size:15px;font-weight:500">global token group 5; N16 group 2</text><path d="M515,72 L550,72" stroke="#527487" stroke-width="2" fill="none"/><polygon points="550,72 541.0,68.0 541.0,76.0" fill="#527487"/><rect class="storage" x="550" y="25" width="490" height="95" rx="8"/><text x="562" y="50" style="font-size:15px;font-weight:500">A vector global byte offset = 690896</text><text x="562" y="73" style="font-size:15px;font-weight:500">shared vector byte offset = 22224</text><text x="562" y="96" style="font-size:15px;font-weight:500">K subtile=1; E=2 byte(s)</text><rect class="storage" x="20" y="160" width="495" height="95" rx="8"/><text x="32" y="185" style="font-size:15px;font-weight:500">B vector byte offset = 2262224</text><text x="32" y="208" style="font-size:15px;font-weight:500">Half partial: 5×1024×32+13×16+2×512</text><text x="32" y="231" style="font-size:15px;font-weight:500">=165072 bytes, independent of output format</text><path d="M515,207 L550,207" stroke="#527487" stroke-width="2" fill="none"/><polygon points="550,207 541.0,203.0 541.0,211.0" fill="#527487"/><rect class="tensor" x="550" y="160" width="490" height="95" rx="8"/><text x="562" y="185" style="font-size:15px;font-weight:500">C fragment: tokens 83 and 91</text><text x="562" y="208" style="font-size:15px;font-weight:500">output channels 34/35 and 42/43</text><text x="562" y="231" style="font-size:15px;font-weight:500">residual scale pair begins at matrixBytes+68</text></svg></div><figcaption>All offsets are bytes relative to the named allocation base. The unit conversions are part of the algorithm.</figcaption></figure>
+<p>For a Half partial, the address is <code>partial+(g·1024+outputChannel)·32+lane·16+n16·512</code>. The factor 32 is 16 tokens ×2 bytes. A residual vector instead uses the working element width: <code>X+(g·1024+outputChannel)·16·2+lane·16+publicationPanel·512</code>. Scale pairs are always Half, appended at <code>W+4096·1024·2</code>; within that tail, the byte offset is <code>2·(outputChannel+16·n16+8·n8+2·(lane mod4))</code>. The example’s n16=2,n8=0,lane 13 therefore selects scale channels 34/35, beginning 68 bytes beyond the matrix.</p>
+<details class="source" open><summary>The register weight address in this precise entry <span>lines 90–103</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu#L90-L103">csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">90</span>	const auto LoadWeights = [&amp;](int ReductionTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">91</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">92</span>		const uint64_t g_WeightTileBase = Parameters.g_PackedWeights +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">93</span>										  uint64_t(TileCoordinates.Split * Profile::SplitChannels +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">94</span>												   ReductionTile * Profile::ReductionStep) *</span>
+<span class="code-line"><span class="ln" aria-hidden="true">95</span>											  1024 * Profile::ElementBytes +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">96</span>										  TileCoordinates.g_OutputChannel * 32 + TileCoordinates.Lane * 16;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">97</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">98</span>		for (int r_KSubtile = 0; r_KSubtile &lt; Profile::ReductionSubtiles; ++r_KSubtile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">99</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">100</span>			for (int r_ChannelGroup = 0; r_ChannelGroup &lt; 4; ++r_ChannelGroup)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">101</span>				r_Weights[r_KSubtile][r_ChannelGroup] = __ldca(reinterpret_cast&lt;const uint4*&gt;(</span>
+<span class="code-line"><span class="ln" aria-hidden="true">102</span>					g_WeightTileBase + r_KSubtile * 32768 + r_ChannelGroup * 512));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">103</span>	};</span></code></pre></details>
+<p>The FP16 residual load already contains four Half2 accumulator words and can multiply them directly by the two scale pairs for each N16 group. Out-of-range groups supply zeros. For T≤16, the input and residual read group is broadcast to zero; the output remains bounded by the logical group extent.</p>
+<h2 id="synchronous">06. Build a one-slot synchronous split kernel</h2>
+<figure class="pseudocode"><figcaption>A synchronous construction isolates layout and split correctness before pipelining — an algorithmic outline, not a compiled replacement</figcaption><pre><code>s = selected K split
+C = Half zeros
+if s == 0:
+    load residual in FP16; load Half scale pairs
+    C = HalfMul(residual, scale)
+for i in 0..31:
+    copy eight K32 input slabs into a single shared slot
+    zero invalid groups; CTA_barrier()
+    read four M16 A fragments and 2 K subtiles per fragment
+    load B panels with .ca into registers
+    for m=0..3, n16=0..3, kSubtile=0..1:
+        update lower-N8 then upper-N8 Half accumulators with MMA
+    CTA_barrier()    # permit the next write to the same shared bytes
+wait for predecessor publication if required
+publish C according to split index</code></pre></figure>
+<p>At this point the arithmetic, addresses, residual and partial-tensor lifetime are complete. The remaining bottleneck in the scaffold is exposed copy latency between repeated matrix tiles. The source adds 3 shared stages, totaling 24576 data bytes plus 24 barrier bytes. This FP16 contraction retains a three-slot pipeline with three initial fills. B remains in registers rather than occupying another shared ring.</p>
+<h2 id="pipeline">07. Replace the scaffold with the actual stage schedule</h2>
+<figure class="diagram"><div class="diagram-scroll" tabindex="0" role="region" aria-label="global_ffn_contract_c1024_fp16: operand lifetime in a 3-stage ring"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 345" role="img" aria-labelledby="figure-6-fig-52a27896648b" style="min-width:820px"><title id="figure-6-fig-52a27896648b">global_ffn_contract_c1024_fp16: operand lifetime in a 3-stage ring</title><defs><marker id="figure-6-fig-52a27896648b-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#576c83"/></marker></defs><rect class="storage" x="20" y="25" width="210" height="90" rx="8"/><text x="32" y="50" style="font-size:15px;font-weight:500">Global A tensor</text><text x="32" y="73" style="font-size:15px;font-weight:500">packed 16-token groups</text><text x="32" y="96" style="font-size:15px;font-weight:500">K slabs per group</text><path d="M230,70 L270,70" stroke="#527487" stroke-width="2" fill="none"/><polygon points="270,70 261.0,66.0 261.0,74.0" fill="#527487"/><rect class="compute" x="270" y="25" width="220" height="90" rx="8"/><text x="282" y="50" style="font-size:15px;font-weight:500">Asynchronous copies</text><text x="282" y="73" style="font-size:15px;font-weight:500">SM90+: issuer per warp</text><text x="282" y="96" style="font-size:15px;font-weight:500">SM80/89: lane stripes</text><path d="M490,70 L530,70" stroke="#527487" stroke-width="2" fill="none"/><polygon points="530,70 521.0,66.0 521.0,74.0" fill="#527487"/><rect class="storage" x="530" y="25" width="230" height="90" rx="8"/><text x="542" y="50" style="font-size:15px;font-weight:500">3 shared slots</text><text x="542" y="73" style="font-size:15px;font-weight:500">8192 bytes per slot</text><text x="542" y="96" style="font-size:15px;font-weight:500">K32 per reduction step</text><path d="M760,70 L800,70" stroke="#527487" stroke-width="2" fill="none"/><polygon points="800,70 791.0,66.0 791.0,74.0" fill="#527487"/><rect class="storage" x="800" y="25" width="240" height="90" rx="8"/><text x="812" y="50" style="font-size:15px;font-weight:500">A register fragments</text><text x="812" y="73" style="font-size:15px;font-weight:500">reuse across N panels</text><text x="812" y="96" style="font-size:15px;font-weight:500">no shared transpose</text><rect class="storage" x="20" y="185" width="250" height="85" rx="8"/><text x="32" y="210" style="font-size:15px;font-weight:500">Packed W → .ca loads</text><text x="32" y="233" style="font-size:15px;font-weight:500">B fragments in registers</text><text x="32" y="256" style="font-size:15px;font-weight:500">reuse across four M16 tiles</text><path d="M270,226 L310,226" stroke="#527487" stroke-width="2" fill="none"/><polygon points="310,226 301.0,222.0 301.0,230.0" fill="#527487"/><rect class="compute" x="310" y="185" width="270" height="85" rx="8"/><text x="322" y="210" style="font-size:15px;font-weight:500">mma.sync A×B + C</text><text x="322" y="233" style="font-size:15px;font-weight:500">C stays in Half registers</text><text x="322" y="256" style="font-size:15px;font-weight:500">CTA owns its current partial</text><path d="M580,226 L630,226" stroke="#527487" stroke-width="2" fill="none"/><polygon points="630,226 621.0,222.0 621.0,230.0" fill="#527487"/><rect class="storage" x="630" y="185" width="410" height="85" rx="8"/><text x="642" y="210" style="font-size:15px;font-weight:500">Epilogue: apply this kernel’s math</text><text x="642" y="233" style="font-size:15px;font-weight:500">publish global output or ordered Half partials</text><text x="642" y="256" style="font-size:15px;font-weight:500">L1 no-allocation stores</text><path d="M920,115 L920,148" stroke="#527487" stroke-width="2" fill="none"/><polygon points="920,148 924.0,139.0 916.0,139.0" fill="#527487"/><path d="M920,148 L445,148" stroke="#527487" stroke-width="2" fill="none"/><polygon points="445,148 454.0,152.0 454.0,144.0" fill="#527487"/><path d="M445,148 L445,185" stroke="#527487" stroke-width="2" fill="none"/><polygon points="445,185 449.0,176.0 441.0,176.0" fill="#527487"/><text x="25" y="317" style="font-size:15px;font-weight:500">Prefill 3 stage(s). Wait for the matching barrier phase before reading. Recycle only after old consumers advance.</text></svg></div><figcaption>L2/L1 caching is hardware-managed. Shared slot addresses and register reuse are explicitly controlled by the kernel.</figcaption></figure>
+<h3>Make the copy barrier part of the construction</h3>
+<p>Allocate 3 shared data slots and one 8-byte mbarrier per slot. Lane 0 of warp 0 initializes each barrier with 128 expected thread arrivals, then the CTA synchronizes before any producer can issue copies. On SM90+, <code>IsCopyProducer</code> elects one lane per participating warp; it issues an ordinary-address <code>cp.async.bulk</code> and registers the transferred byte count. On SM80/89, every lane issues 16-byte <code>cp.async.cg</code> stripes and attaches its own copies with <code>cp.async.mbarrier.arrive</code>. A 512-byte transfer needs one stripe per lane, a 1024-byte transfer needs two.</p>
+<p><code>ArriveAndWait</code> makes every thread arrive, obtains the current phase token, and polls until that exact phase completes. Reusing the same barrier address next iteration requires a new token; readiness from a previous cycle is insufficient. Completion also accounts for attached asynchronous transfers. Ordinary thread arrival alone cannot establish copy completion. The schedule must separately establish that the previous tile’s readers have finished before a slot is overwritten. No tensor-map descriptor, TMEM allocation, warp-group MMA or shared-to-register <code>ldmatrix</code> operation is used in this path: its shared vectors already have the correct MMA fragment order.</p>
+<details class="source" open><summary>Wait for this arrival phase, not a permanent ready flag <span>lines 9–19</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/memoryops.cuh#L9-L19">csrc/kernel_impl/shared/common/memoryops.cuh ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">9</span>// Arrive once at the caller&#x27;s shared mbarrier and wait for that exact phase.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">10</span>// The pipeline owns initialization and expected-copy byte counts. This helper</span>
+<span class="code-line"><span class="ln" aria-hidden="true">11</span>// preserves the original per-thread arrival and tight polling sequence; it does</span>
+<span class="code-line"><span class="ln" aria-hidden="true">12</span>// not add a CTA barrier, sleep, or another memory-ordering operation.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">13</span>__device__ __forceinline__ void ArriveAndWait(unsigned char* s_Storage, uint32_t s_BarrierByteOffset)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">14</span>{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">15</span>	const uint64_t ArrivalPhaseToken = BarrierArrive(s_Storage, s_BarrierByteOffset, 1);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">16</span>	while (!BarrierReady(s_Storage, s_BarrierByteOffset, ArrivalPhaseToken))</span>
+<span class="code-line"><span class="ln" aria-hidden="true">17</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">18</span>	}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">19</span>}</span></code></pre></details>
+<p>Global storage is backed by device memory; L2 and L1 are hardware-managed caches on relevant load/store paths. The source’s <code>.ca</code> weight loads permit all-level caching. Its pre-SM90 <code>.cg</code> asynchronous copies use the global cache level. <code>L1::no_allocate</code> output stores request no new L1 allocation. None of these hints implies a guaranteed hit rate or replaces synchronization. <a href="https://docs.nvidia.com/cuda/parallel-thread-execution/#cache-operators">NVIDIA’s PTX cache specification</a> defines those distinctions.</p>
+<figure class="pseudocode"><figcaption>The exact high-level prefetch order for this specialization — an algorithmic outline, not a compiled replacement</figcaption><pre><code>prime B(0)
+prime A stages 0..2; wait stage 0
+for i=0..steps-1:
+    consume A(i), B(i) into C
+    if i+1 &lt; steps: load B(i+1); wait stage(i+1)
+    if i+3 &lt; steps: stage A(i+3) in the retired slot</code></pre></figure>
+<p>The three-slot body consumes the current tile, loads B(i+1), waits for A(i+1), then refills the retired slot with A(i+3). The last iterations stop refilling and drain the already staged tiles. The next-stage arrival provides the point at which all threads have advanced beyond the preceding shared reads. Reordering waits and refills based only on modulo arithmetic can overwrite a stage before every reader has finished.</p>
+<details class="source" open><summary>Precision-specific pipeline and final drain <span>lines 158–175</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu#L158-L175">csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">158</span>	// Native two-stage code peels the final MMA tile out of the prefetch loop.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">159</span>	// Keeping that drain explicit removes a per-iteration tail branch. The</span>
+<span class="code-line"><span class="ln" aria-hidden="true">160</span>	// three-stage Half contraction retains its distinct refill lifecycle.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">161</span>	#pragma unroll 1</span>
+<span class="code-line"><span class="ln" aria-hidden="true">162</span>	for (int ReductionTile = 0;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">163</span>		 ReductionTile &lt; Profile::ReductionTiles - (Profile::s_InitialStages == 1 ? 1 : 0); ++ReductionTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">164</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">165</span>		ConsumeGlobalContractInputStage&lt;Profile&gt;(r_Accumulator, r_Weights, s_Storage, ReductionTile,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">166</span>												 TileCoordinates);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">167</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">168</span>			if (ReductionTile + 1 &lt; Profile::ReductionTiles)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">169</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">170</span>				LoadWeights(ReductionTile + 1);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">171</span>				WaitStage(ReductionTile + 1);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">172</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">173</span>			if (ReductionTile + 3 &lt; Profile::ReductionTiles)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">174</span>				StageInput(ReductionTile + 3);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">175</span>		}</span></code></pre></details>
+<h2 id="publication">08. Publish partials and the final tensor</h2>
+<p>Split 0 stores its Half partial with no L1 allocation. Splits 1/2 use Half2 global reductions: four scalar operations before SM90, one vector operation on SM90+. Split 3 loads the accumulated predecessor partial, performs four Half2 adds per N16 tile, then writes the final Half words directly back to the output allocation. The Half implementation uses its global-reduction helper for intermediate phases and a cache-all load before the final Half add. These choices affect instruction and cache behavior, but do not change the required ownership: one lane in the current split owns each published vector.</p>
+<details class="source" open><summary>The first-store, intermediate-add and final-add publication cases <span>lines 192–229</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu#L192-L229">csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">192</span>		// Serial publication preserves the DLL&#x27;s Half rounding between K splits.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">193</span>		// FP8 keeps partial sums in a separate Half buffer until the fourth split.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">194</span>		const uint64_t g_PartialSums = bFp8 ? Parameters.g_SplitAccumulator : Parameters.g_Output;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">195</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">196</span>		for (int r_Spatial = 0; r_Spatial &lt; 4; ++r_Spatial)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">197</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">198</span>			const int g_Group =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">199</span>				TileCoordinates.g_TokenGroupBase + (TileCoordinates.Warp &gt;&gt; 1) * 4 + r_Spatial;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">200</span>			if (g_Group &lt; TileCoordinates.g_PaddedGroups)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">201</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">202</span>				const uint64_t g_HalfBase = g_PartialSums +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">203</span>											uint64_t(g_Group * 1024 + TileCoordinates.g_OutputChannel) * 32 +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">204</span>											TileCoordinates.Lane * 16;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">205</span>				#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">206</span>				for (int r_ChannelGroup = 0; r_ChannelGroup &lt; 4; ++r_ChannelGroup)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">207</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">208</span>					auto&amp; r_AccumulatorWords = r_Accumulator.r_AccumulatorWords[r_Spatial][r_ChannelGroup];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">209</span>					const uint64_t g_PartialSumAddress = g_HalfBase + r_ChannelGroup * 512;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">210</span>					if (bFirstSplit)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">211</span>						StoreNoAllocate(g_PartialSumAddress,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">212</span>										make_uint4(r_AccumulatorWords[0], r_AccumulatorWords[1],</span>
+<span class="code-line"><span class="ln" aria-hidden="true">213</span>												   r_AccumulatorWords[2], r_AccumulatorWords[3]));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">214</span>					else if (bIntermediateSplit)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">215</span>						ReduceHalf4(g_PartialSumAddress,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">216</span>									make_uint4(r_AccumulatorWords[0], r_AccumulatorWords[1],</span>
+<span class="code-line"><span class="ln" aria-hidden="true">217</span>											   r_AccumulatorWords[2], r_AccumulatorWords[3]));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">218</span>					else</span>
+<span class="code-line"><span class="ln" aria-hidden="true">219</span>					{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">220</span>						const uint4 r_PreviousSplitWords =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">221</span>							__ldca(reinterpret_cast&lt;const uint4*&gt;(g_PartialSumAddress));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">222</span>						r_AccumulatorWords[0] = HalfAdd(r_PreviousSplitWords.x, r_AccumulatorWords[0]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">223</span>						r_AccumulatorWords[1] = HalfAdd(r_PreviousSplitWords.y, r_AccumulatorWords[1]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">224</span>						r_AccumulatorWords[2] = HalfAdd(r_PreviousSplitWords.z, r_AccumulatorWords[2]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">225</span>						r_AccumulatorWords[3] = HalfAdd(r_PreviousSplitWords.w, r_AccumulatorWords[3]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">226</span>						StoreNoAllocate(g_PartialSumAddress,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">227</span>										make_uint4(r_AccumulatorWords[0], r_AccumulatorWords[1],</span>
+<span class="code-line"><span class="ln" aria-hidden="true">228</span>												   r_AccumulatorWords[2], r_AccumulatorWords[3]));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">229</span>					}</span></code></pre></details>
+<h3>Order split publication independently of computation</h3>
+<p>The source supports two protocols. With <code>OrderedSplit=0</code>, <code>blockIdx.z</code> is the logical split. A later split may compute its matrix partial while its predecessor runs, but before touching the predecessor’s global partial it polls the corresponding counter until the recorded split is available. The counter starts at −1, and each producer performs a release counter store after its publication and a CTA synchronization. This entry polls relaxed counters and uses a CTA barrier, but does not call the separate acquire helper in this source snapshot. The description records that protocol; it is not a new formal memory-order proof.</p>
+<p>With <code>OrderedSplit=s+1</code>, the host launches only the XY plane for split s, with grid.z=1. The same stream completes that plane before entering the next split. The kernel skips the resident predecessor wait. The launcher selects this path when the complete dependent grid cannot fit its occupancy-derived capacity; otherwise waiting consumers could occupy resources needed by unscheduled producers. It preserves all 4 partials and their Half rounding rather than replacing them with a different reduction.</p>
+<details class="source" open><summary>Each ordered split completes before its successor is launched in the same stream <span>lines 51–66</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_launcher/split_launch.cpp#L51-L66">csrc/kernel_launcher/split_launch.cpp ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">51</span>	}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">52</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">53</span>	// Stream order (also recorded during CUDA Graph capture) completes the prior</span>
+<span class="code-line"><span class="ln" aria-hidden="true">54</span>	// split before the next reads scratch. A plane may occupy arbitrarily many</span>
+<span class="code-line"><span class="ln" aria-hidden="true">55</span>	// waves: no block in these launches waits on another block in its grid.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">56</span>	alignas(8) auto PhaseParameters = ParameterBlock;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">57</span>	const unsigned SplitCount = Grid.z;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">58</span>	Grid.z = 1;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">59</span>	for (unsigned Split = 0; Split &lt; SplitCount; ++Split)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">60</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">61</span>		const uint64_t OrderedSplit = uint64_t(Split) + 1;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">62</span>		std::memcpy(PhaseParameters.data() + SplitParameterOffset, &amp;OrderedSplit, sizeof(OrderedSplit));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">63</span>		void* Arguments[] = {PhaseParameters.data()};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">64</span>		C10_CUDA_CHECK(cudaLaunchKernel(Function, Grid, Block, Arguments, 0, Stream));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">65</span>	}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">66</span>}</span></code></pre></details>
+<p>Keep scratch, output, residual and counter allocations live until their final consumers finish. Registers and shared memory belong to one CTA invocation and cannot carry a result into the next split launch. The partial tensor is the explicit storage bridge. Counters govern publication, not the mathematical value of a matrix element.</p>
+<p>For this entry the four-byte counter address is <code>g_SplitCounters+(firstGroup+channelBlock)·4</code>. There are eight 128-channel output blocks; firstGroup=8·tokenTile, so this indexes one counter per token tile/output-channel block. Later resident splits wait until the signed counter is at least s−1. After all lane stores and the CTA synchronization, lane 0/warp 0 releases the current split number s.</p>
+<h2 id="reconstruction">09. Complete reconstruction pseudocode</h2>
+<figure class="pseudocode"><figcaption>All phases, including residual seeding and the global publication dependency — an algorithmic outline, not a compiled replacement</figcaption><pre><code>derive T, token tile, channel block, lane/warp, paddedGroups and split s
+allocate 3 shared slots of 8192 bytes plus 3 barriers
+initialize barriers for 128 arrivals; CTA_barrier()
+load B(0); prime 3 A stage(s); wait stage 0
+C = Half zeros
+if s==0: load X, load appended Half scales, seed C=HalfMul(R,scale)
+steps = 32
+for i=0..steps-1:
+    consume A(i), B(i) into C
+    if i+1 &lt; steps: load B(i+1); wait stage(i+1)
+    if i+3 &lt; steps: stage A(i+3) in the retired slot
+partialBase = output allocation (Half)
+if resident mode and s&gt;0:
+    lane 0/warp 0 polls counter until predecessor split is published
+    CTA_barrier()
+for valid groups and every N16 lane vector:
+    if s==0: store C to Half partial
+    if s==1 or s==2: ordered Half-add C into partial
+    if s==3:
+        C = HalfAdd(load partial, C)
+        store final Half output
+CTA_barrier()
+lane 0/warp 0 release-stores counter=s
+# Ordered mode runs s=0,1,2,3 as complete XY launches in one stream.</code></pre></figure>
+<h2 id="validation">10. Test the properties that define this kernel</h2>
+<ol><li><strong>Residual once:</strong> set W to zero. Valid output rows should equal the documented publication of HalfMul(scale,residual), with no factor of four and no contribution from other tokens.</li><li><strong>Each split contributes:</strong> place one nonzero input/weight pair in each K region and compare saved P₀,P₁,P₂ and final. They must follow the specified Half addition order. Values chosen near Half rounding boundaries distinguish this from a reassociated or FP32 sum.</li><li><strong>Scratch format:</strong> verify the output buffer holds valid Half partials before it becomes the final tensor; consumers must not read it early.</li><li><strong>Address ownership:</strong> use the worked token 83/channel 34 example and nearby lane/channel groups. Every output vector must be written once per publication phase, and guard bytes must remain unchanged.</li><li><strong>Schedule equivalence:</strong> run both admitted resident mode and forced ordered split mode on supported hardware; final bytes should agree. Include more XY blocks than fit in one wave to exercise the host’s capacity fallback.</li><li><strong>Tail and ring behavior:</strong> use legal token extents around group and CTA boundaries; exercise all 32 K steps so the 3 slots wrap repeatedly. Invalid groups must be zero during computation and omitted from output publication.</li></ol>
+<p>The optimization argument follows the construction: grouped MMA shares A across columns and B across tokens; the residual seed removes a separate pass; the staged A ring can overlap transfer with work; register B avoids a shared weight copy; split-specific epilogues avoid converting partials too early. Splitting also creates global scratch traffic and synchronization, and extra stages consume shared capacity. Those tradeoffs need measurements for this precision and geometry; this lesson reports no invented speedup.</p>
+<h2 id="source-appendix">11. Source appendix: the complete implementation and ABI</h2><p>Public entry: <code>global_ffn_contract_c1024_fp16</code>. Owning definition: <code>global_ffn_contract_c1024_fp16</code>. The complete translation unit is retained below for reconstruction after the walkthrough. Exact excerpts and local source files use the pinned revision shown in the sidebar.</p><details class="source"><summary>Complete owning CUDA source <span>lines 1–254</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu#L1-L254">csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">1</span>// The exported entry owns its storage, pipeline, computation and publication.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">2</span>// Shared headers contain only profiles, layout maps and reused tensor primitives.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">3</span>#include &quot;../../shared/common/kernel_helpers.cuh&quot;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">4</span>#include &quot;../common/global_contract.cuh&quot;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">5</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">6</span>extern &quot;C&quot; __global__</span>
+<span class="code-line"><span class="ln" aria-hidden="true">7</span>	__maxnreg__(168) void global_ffn_contract_c1024_fp16(FGlobalFfnContractC1024Fp16Parameters Parameters)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">8</span>{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">9</span>#if defined(__CUDA_ARCH__) &amp;&amp; __CUDA_ARCH__ &gt;= 800</span>
+<span class="code-line"><span class="ln" aria-hidden="true">10</span>	constexpr bool bFp8 = false;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">11</span>	using Profile = FGlobalContractProfile&lt;bFp8&gt;;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">12</span>	__shared__ __align__(512) unsigned char s_Storage[Profile::s_BarrierOffset + Profile::s_StageCount * 8];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">13</span>	const int g_Tokens = Parameters.BatchCount * Parameters.TokensPerBatch;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">14</span>	const int g_TokenTiles = (g_Tokens + 127) / 128;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">15</span>	const int g_ChannelBlock = int(blockIdx.x) / g_TokenTiles;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">16</span>	const int Warp = threadIdx.y, Lane = threadIdx.x;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">17</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">18</span>	// Ordered launches carry one logical K split per stream-ordered XY grid.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">19</span>	// Zero retains the native grid-Z protocol when residency permits it.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">20</span>	const int Split = Parameters.OrderedSplit ? int(Parameters.OrderedSplit - 1) : int(blockIdx.z);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">21</span>	const FGlobalContractTileCoordinates TileCoordinates{(int(blockIdx.x) % g_TokenTiles) * 8,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">22</span>														 g_ChannelBlock * 128 + (Warp &amp; 1) * 64,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">23</span>														 bFp8 ? ((g_Tokens + 31) / 32) * 2</span>
+<span class="code-line"><span class="ln" aria-hidden="true">24</span>															  : (g_Tokens + 15) / 16,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">25</span>														 g_ChannelBlock,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">26</span>														 Lane,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">27</span>														 Warp,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">28</span>														 Split,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">29</span>														 !bFp8 &amp;&amp; uint32_t(g_Tokens + 14) &lt; 31};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">30</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">31</span>	// The initial fill and later refills share this exact staged input copy.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">32</span>	const auto StageInput = [&amp;](int ReductionTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">33</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">34</span>		const int s_Stage = ReductionTile % Profile::s_StageCount;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">35</span>		const int s_Barrier = Profile::s_BarrierOffset + s_Stage * 8;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">36</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">37</span>		// Contraction coalesces both K fragments in each 16-token group. Half</span>
+<span class="code-line"><span class="ln" aria-hidden="true">38</span>		// attention projection instead assigns each K fragment to a separate warp.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">39</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">40</span>		for (int Copy = 0; Copy &lt; Profile::s_CopiesPerWarp; ++Copy)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">41</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">42</span>			const int g_Group = TileCoordinates.bBroadcastInput</span>
+<span class="code-line"><span class="ln" aria-hidden="true">43</span>									? 0</span>
+<span class="code-line"><span class="ln" aria-hidden="true">44</span>									: TileCoordinates.g_TokenGroupBase +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">45</span>										  (TileCoordinates.Warp + Copy * 4) / Profile::s_ProducersPerGroup;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">46</span>			const int s_Destination =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">47</span>				s_Stage * Profile::s_StageBytes + (TileCoordinates.Warp + Copy * 4) * Profile::s_CopyBytes;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">48</span>			if (g_Group &lt; TileCoordinates.g_PaddedGroups)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">49</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">50</span>				if (IsCopyProducer(0xffffffffu))</span>
+<span class="code-line"><span class="ln" aria-hidden="true">51</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">52</span>					const uint64_t g_Source =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">53</span>						Parameters.g_Input +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">54</span>						uint64_t(g_Group * Profile::InputChannels +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">55</span>								 TileCoordinates.Split * Profile::SplitChannels +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">56</span>								 ReductionTile * Profile::ReductionStep) *</span>
+<span class="code-line"><span class="ln" aria-hidden="true">57</span>							16 * Profile::ElementBytes +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">58</span>						(TileCoordinates.Warp % Profile::s_ProducersPerGroup) * Profile::s_CopyBytes;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">59</span>					CopyBulk(s_Storage, s_Destination, g_Source, Profile::s_CopyBytes, s_Barrier);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">60</span>					BarrierExpect(s_Storage, s_Barrier, Profile::s_CopyBytes);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">61</span>				}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">62</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">63</span>			else</span>
+<span class="code-line"><span class="ln" aria-hidden="true">64</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">65</span>				#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">66</span>				for (int s_Subtile = 0; s_Subtile &lt; Profile::s_CopyBytes / 512; ++s_Subtile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">67</span>					*reinterpret_cast&lt;uint4*&gt;(s_Storage + s_Destination + s_Subtile * 512 +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">68</span>											  TileCoordinates.Lane * 16) = make_uint4(0, 0, 0, 0);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">69</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">70</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">71</span>	};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">72</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">73</span>	// Only a completed stage can feed the register MMA tile.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">74</span>	const auto WaitStage = [&amp;](int ReductionTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">75</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">76</span>		const int s_Barrier = Profile::s_BarrierOffset + (ReductionTile % Profile::s_StageCount) * 8;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">77</span>		ArriveAndWait(s_Storage, s_Barrier);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">78</span>	};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">79</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">80</span>	// Initialize the shared copy barriers before any warp issues input transactions.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">81</span>	if (Lane == 0 &amp;&amp; Warp == 0)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">82</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">83</span>		for (int s_Stage = 0; s_Stage &lt; Profile::s_StageCount; ++s_Stage)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">84</span>			BarrierInit(s_Storage, Profile::s_BarrierOffset + s_Stage * 8, blockDim.x * blockDim.y);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">85</span>	__syncthreads();</span>
+<span class="code-line"><span class="ln" aria-hidden="true">86</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">87</span>	uint4 r_Weights[Profile::ReductionSubtiles][4];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">88</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">89</span>	// Prefetch weights without changing the ring dependency order.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">90</span>	const auto LoadWeights = [&amp;](int ReductionTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">91</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">92</span>		const uint64_t g_WeightTileBase = Parameters.g_PackedWeights +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">93</span>										  uint64_t(TileCoordinates.Split * Profile::SplitChannels +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">94</span>												   ReductionTile * Profile::ReductionStep) *</span>
+<span class="code-line"><span class="ln" aria-hidden="true">95</span>											  1024 * Profile::ElementBytes +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">96</span>										  TileCoordinates.g_OutputChannel * 32 + TileCoordinates.Lane * 16;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">97</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">98</span>		for (int r_KSubtile = 0; r_KSubtile &lt; Profile::ReductionSubtiles; ++r_KSubtile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">99</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">100</span>			for (int r_ChannelGroup = 0; r_ChannelGroup &lt; 4; ++r_ChannelGroup)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">101</span>				r_Weights[r_KSubtile][r_ChannelGroup] = __ldca(reinterpret_cast&lt;const uint4*&gt;(</span>
+<span class="code-line"><span class="ln" aria-hidden="true">102</span>					g_WeightTileBase + r_KSubtile * 32768 + r_ChannelGroup * 512));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">103</span>	};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">104</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">105</span>	// Prime the weight registers and input pipeline before entering the reduction loop.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">106</span>	LoadWeights(0);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">107</span>	#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">108</span>	for (int s_InitialStage = 0; s_InitialStage &lt; Profile::s_InitialStages; ++s_InitialStage)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">109</span>		StageInput(s_InitialStage);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">110</span>	WaitStage(0);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">111</span>	FGlobalContractAccumulator r_Accumulator{};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">112</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">113</span>	// Only the first K split seeds the accumulator from the residual.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">114</span>	if (TileCoordinates.Split == 0)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">115</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">116</span>		// The record appends 1024 Half scales to the matrix. Lane&#x27;s two adjacent</span>
+<span class="code-line"><span class="ln" aria-hidden="true">117</span>		// channels share a packed scale; words 0/1 and 2/3 belong to separate N8s.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">118</span>		uint32_t r_ResidualScales[4][2];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">119</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">120</span>		for (int r_ChannelGroup = 0; r_ChannelGroup &lt; 4; ++r_ChannelGroup)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">121</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">122</span>			for (int r_N8 = 0; r_N8 &lt; 2; ++r_N8)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">123</span>				r_ResidualScales[r_ChannelGroup][r_N8] = *reinterpret_cast&lt;const uint32_t*&gt;(</span>
+<span class="code-line"><span class="ln" aria-hidden="true">124</span>					Parameters.g_PackedWeights + Profile::MatrixBytes +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">125</span>					(TileCoordinates.g_OutputChannel + r_ChannelGroup * 16 + r_N8 * 8 +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">126</span>					 (TileCoordinates.Lane &amp; 3) * 2) *</span>
+<span class="code-line"><span class="ln" aria-hidden="true">127</span>						2);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">128</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">129</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">130</span>		for (int r_Spatial = 0; r_Spatial &lt; 4; ++r_Spatial)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">131</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">132</span>			const int g_Group =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">133</span>				TileCoordinates.bBroadcastInput</span>
+<span class="code-line"><span class="ln" aria-hidden="true">134</span>					? 0</span>
+<span class="code-line"><span class="ln" aria-hidden="true">135</span>					: TileCoordinates.g_TokenGroupBase + (TileCoordinates.Warp &gt;&gt; 1) * 4 + r_Spatial;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">136</span>			const uint64_t g_ResidualTileBase =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">137</span>				Parameters.g_Residual +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">138</span>				uint64_t(g_Group * 1024 + TileCoordinates.g_OutputChannel) * 16 * Profile::ElementBytes +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">139</span>				TileCoordinates.Lane * 16;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">140</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">141</span>				#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">142</span>				for (int r_ChannelGroup = 0; r_ChannelGroup &lt; 4; ++r_ChannelGroup)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">143</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">144</span>					const uint4 r_PackedResidual = g_Group &lt; TileCoordinates.g_PaddedGroups</span>
+<span class="code-line"><span class="ln" aria-hidden="true">145</span>													   ? __ldcg(reinterpret_cast&lt;const uint4*&gt;(</span>
+<span class="code-line"><span class="ln" aria-hidden="true">146</span>															 g_ResidualTileBase + r_ChannelGroup * 512))</span>
+<span class="code-line"><span class="ln" aria-hidden="true">147</span>													   : make_uint4(0, 0, 0, 0);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">148</span>					auto&amp; r_AccumulatorWords = r_Accumulator.r_AccumulatorWords[r_Spatial][r_ChannelGroup];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">149</span>					r_AccumulatorWords[0] = HalfMul(r_PackedResidual.x, r_ResidualScales[r_ChannelGroup][0]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">150</span>					r_AccumulatorWords[1] = HalfMul(r_PackedResidual.y, r_ResidualScales[r_ChannelGroup][0]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">151</span>					r_AccumulatorWords[2] = HalfMul(r_PackedResidual.z, r_ResidualScales[r_ChannelGroup][1]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">152</span>					r_AccumulatorWords[3] = HalfMul(r_PackedResidual.w, r_ResidualScales[r_ChannelGroup][1]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">153</span>				}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">154</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">155</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">156</span>	}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">157</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">158</span>	// Native two-stage code peels the final MMA tile out of the prefetch loop.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">159</span>	// Keeping that drain explicit removes a per-iteration tail branch. The</span>
+<span class="code-line"><span class="ln" aria-hidden="true">160</span>	// three-stage Half contraction retains its distinct refill lifecycle.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">161</span>	#pragma unroll 1</span>
+<span class="code-line"><span class="ln" aria-hidden="true">162</span>	for (int ReductionTile = 0;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">163</span>		 ReductionTile &lt; Profile::ReductionTiles - (Profile::s_InitialStages == 1 ? 1 : 0); ++ReductionTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">164</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">165</span>		ConsumeGlobalContractInputStage&lt;Profile&gt;(r_Accumulator, r_Weights, s_Storage, ReductionTile,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">166</span>												 TileCoordinates);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">167</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">168</span>			if (ReductionTile + 1 &lt; Profile::ReductionTiles)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">169</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">170</span>				LoadWeights(ReductionTile + 1);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">171</span>				WaitStage(ReductionTile + 1);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">172</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">173</span>			if (ReductionTile + 3 &lt; Profile::ReductionTiles)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">174</span>				StageInput(ReductionTile + 3);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">175</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">176</span>	}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">177</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">178</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">179</span>	}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">180</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">181</span>	// Compile-time split policy keeps the native branch outside all store loops.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">182</span>	const auto PublishFragments = [&amp;](auto PublicationTag)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">183</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">184</span>		constexpr auto Publication = decltype(PublicationTag)::value;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">185</span>		const bool bFirstSplit = Publication == EGlobalContractSplitPublication::Runtime</span>
+<span class="code-line"><span class="ln" aria-hidden="true">186</span>									 ? TileCoordinates.Split == 0</span>
+<span class="code-line"><span class="ln" aria-hidden="true">187</span>									 : Publication == EGlobalContractSplitPublication::First;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">188</span>		const bool bIntermediateSplit = Publication == EGlobalContractSplitPublication::Runtime</span>
+<span class="code-line"><span class="ln" aria-hidden="true">189</span>											? TileCoordinates.Split &lt; 3</span>
+<span class="code-line"><span class="ln" aria-hidden="true">190</span>											: Publication == EGlobalContractSplitPublication::Intermediate;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">191</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">192</span>		// Serial publication preserves the DLL&#x27;s Half rounding between K splits.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">193</span>		// FP8 keeps partial sums in a separate Half buffer until the fourth split.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">194</span>		const uint64_t g_PartialSums = bFp8 ? Parameters.g_SplitAccumulator : Parameters.g_Output;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">195</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">196</span>		for (int r_Spatial = 0; r_Spatial &lt; 4; ++r_Spatial)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">197</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">198</span>			const int g_Group =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">199</span>				TileCoordinates.g_TokenGroupBase + (TileCoordinates.Warp &gt;&gt; 1) * 4 + r_Spatial;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">200</span>			if (g_Group &lt; TileCoordinates.g_PaddedGroups)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">201</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">202</span>				const uint64_t g_HalfBase = g_PartialSums +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">203</span>											uint64_t(g_Group * 1024 + TileCoordinates.g_OutputChannel) * 32 +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">204</span>											TileCoordinates.Lane * 16;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">205</span>				#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">206</span>				for (int r_ChannelGroup = 0; r_ChannelGroup &lt; 4; ++r_ChannelGroup)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">207</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">208</span>					auto&amp; r_AccumulatorWords = r_Accumulator.r_AccumulatorWords[r_Spatial][r_ChannelGroup];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">209</span>					const uint64_t g_PartialSumAddress = g_HalfBase + r_ChannelGroup * 512;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">210</span>					if (bFirstSplit)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">211</span>						StoreNoAllocate(g_PartialSumAddress,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">212</span>										make_uint4(r_AccumulatorWords[0], r_AccumulatorWords[1],</span>
+<span class="code-line"><span class="ln" aria-hidden="true">213</span>												   r_AccumulatorWords[2], r_AccumulatorWords[3]));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">214</span>					else if (bIntermediateSplit)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">215</span>						ReduceHalf4(g_PartialSumAddress,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">216</span>									make_uint4(r_AccumulatorWords[0], r_AccumulatorWords[1],</span>
+<span class="code-line"><span class="ln" aria-hidden="true">217</span>											   r_AccumulatorWords[2], r_AccumulatorWords[3]));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">218</span>					else</span>
+<span class="code-line"><span class="ln" aria-hidden="true">219</span>					{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">220</span>						const uint4 r_PreviousSplitWords =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">221</span>							__ldca(reinterpret_cast&lt;const uint4*&gt;(g_PartialSumAddress));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">222</span>						r_AccumulatorWords[0] = HalfAdd(r_PreviousSplitWords.x, r_AccumulatorWords[0]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">223</span>						r_AccumulatorWords[1] = HalfAdd(r_PreviousSplitWords.y, r_AccumulatorWords[1]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">224</span>						r_AccumulatorWords[2] = HalfAdd(r_PreviousSplitWords.z, r_AccumulatorWords[2]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">225</span>						r_AccumulatorWords[3] = HalfAdd(r_PreviousSplitWords.w, r_AccumulatorWords[3]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">226</span>						StoreNoAllocate(g_PartialSumAddress,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">227</span>										make_uint4(r_AccumulatorWords[0], r_AccumulatorWords[1],</span>
+<span class="code-line"><span class="ln" aria-hidden="true">228</span>												   r_AccumulatorWords[2], r_AccumulatorWords[3]));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">229</span>					}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">230</span>				}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">231</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">232</span>				}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">233</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">234</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">235</span>	};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">236</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">237</span>	const uint64_t g_SplitCounters =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">238</span>		Parameters.g_SplitCounters + (TileCoordinates.g_TokenGroupBase + TileCoordinates.g_ChannelBlock) * 4;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">239</span>	if (TileCoordinates.Split &gt; 0)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">240</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">241</span>		// The stream boundary orders Half scratch updates without resident peers.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">242</span>		if (Parameters.OrderedSplit == 0 &amp;&amp; TileCoordinates.Lane == 0 &amp;&amp; TileCoordinates.Warp == 0)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">243</span>			while (int32_t(CounterLoadRelaxed(g_SplitCounters)) &lt; TileCoordinates.Split - 1)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">244</span>				PollSleep(64);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">245</span>		__syncthreads();</span>
+<span class="code-line"><span class="ln" aria-hidden="true">246</span>	}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">247</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">248</span>	PublishFragments(</span>
+<span class="code-line"><span class="ln" aria-hidden="true">249</span>		std::integral_constant&lt;EGlobalContractSplitPublication, EGlobalContractSplitPublication::Runtime&gt;{});</span>
+<span class="code-line"><span class="ln" aria-hidden="true">250</span>	__syncthreads();</span>
+<span class="code-line"><span class="ln" aria-hidden="true">251</span>	if (TileCoordinates.Lane == 0 &amp;&amp; TileCoordinates.Warp == 0)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">252</span>		CounterStoreRelease(g_SplitCounters, TileCoordinates.Split);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">253</span>#endif</span>
+<span class="code-line"><span class="ln" aria-hidden="true">254</span>}</span></code></pre></details><details class="source"><summary>Exact launch parameter record <span>lines 1894–1901</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/kernel_abi.h#L1894-L1901">csrc/kernel_impl/shared/common/kernel_abi.h ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">1894</span>struct alignas(8) FGlobalFfnContractC1024Fp16Parameters</span>
+<span class="code-line"><span class="ln" aria-hidden="true">1895</span>{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">1896</span>	// OrderedSplit: 0 preserves the native grid; phase+1 selects one stream-ordered Z split.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">1897</span>	// This control reuses an unused native padding word; all ABI offsets are unchanged.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">1898</span>	uint64_t g_Input, g_Residual, g_Output, g_PackedWeights, g_SplitCounters, g_SplitAccumulator,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">1899</span>		OrderedSplit, ReservedTrailingPadding;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">1900</span>	int32_t BatchCount, TokensPerBatch;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">1901</span>};</span></code></pre></details><details class="dependency-list"><summary>Read or download the implementation and all repository-local included sources</summary><p>Includes are followed transitively; this list may contain declarations unused by this specialization. CUDA SDK headers are provided by your CUDA toolkit and are not bundled here. File links below open plain source files from this documentation site.</p><ul><li><a href="source/csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh"><code>csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu"><code>csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/intrinsics.cuh"><code>csrc/kernel_impl/shared/common/intrinsics.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/intrinsics.cuh">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/kernel_abi.h"><code>csrc/kernel_impl/shared/common/kernel_abi.h</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/kernel_abi.h">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/kernel_helpers.cuh"><code>csrc/kernel_impl/shared/common/kernel_helpers.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/kernel_helpers.cuh">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/memoryops.cuh"><code>csrc/kernel_impl/shared/common/memoryops.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/memoryops.cuh">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/mma.cuh"><code>csrc/kernel_impl/shared/common/mma.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/mma.cuh">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/numerical_constants.cuh"><code>csrc/kernel_impl/shared/common/numerical_constants.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/numerical_constants.cuh">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/packed_math.cuh"><code>csrc/kernel_impl/shared/common/packed_math.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/packed_math.cuh">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/tiled_mma.cuh"><code>csrc/kernel_impl/shared/common/tiled_mma.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/tiled_mma.cuh">pinned GitHub copy</a></li></ul></details></article><nav class="next-prev" aria-label="Related reading"><a href="index.html#kernels">← Kernel catalog</a><a href="global_ffn_contract_c1024_fp8.html">Read the other precision →</a></nav><footer class="footer">DLSS-NR kernel lessons · source fc3276497f86 · <a href="source-atlas.html#provenance">Provenance</a> · <a href="architecture.html">Architecture companion</a></footer></main></body></html>
