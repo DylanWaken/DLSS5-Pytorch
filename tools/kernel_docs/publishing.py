@@ -3,6 +3,7 @@ from pathlib import Path
 from html import escape, unescape
 import re
 from common import ROOT, REVISION, REPOSITORY, code, source_url
+from highlight import highlight_blocks
 
 
 def dependencies(path):
@@ -124,7 +125,7 @@ def render(page,pages):
     toc_links=''.join(f'<a href="#{ident}">{title}</a>' for ident,title in headings)
     nav=''.join(f'<a href="{slug}.html"'+(' aria-current="page"' if page['slug']==slug else '')+f'>{label}</a>' for slug,label in [('index','All 81 kernel lessons'),('architecture','Model architecture'),('source-atlas','Public entry → source'),('foundations','Tensor / lane reference'),('runtime','Host scheduling reference')])
     localnav=f'<hr><nav class="local-nav" aria-label="This lesson"><p class="nav-kicker">Inside this lesson</p>{toc_links}</nav>' if lesson else ''
-    body=isolate_svgs(page['body'])
+    body=isolate_svgs(highlight_blocks(page['body']))
     prose=re.sub(r'<(?:pre|details)\b.*?</(?:pre|details)>',' ',body,flags=re.S)
     words=len(re.sub(r'<[^>]+>',' ',prose).split())
     diagrams=body.count('<svg')+body.count('<img')

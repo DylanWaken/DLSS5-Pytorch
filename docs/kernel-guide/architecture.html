@@ -166,13 +166,13 @@
 <p>The C32 block runs FFN and local attention. A <code>32 → 4</code> head reads its raw attention output and returns FP32. <code>crop=True</code> removes network padding. Channels 0–2 represent an RGB correction; channel 3 controls optional blending during composition.</p>
 <h3 id="optional-composition-after-the-head">Optional composition after the head</h3>
 <p>Training forward ends at the four-channel head. <code>compose()</code> is separate:</p>
-<pre><code>NeuralRGB = clamp(ProxyRGB + HeadRGB / 4, 0, 1)
+<pre><code class="syntax-highlight">NeuralRGB <span class="syntax-operator">=</span> <span class="syntax-function">clamp</span>(ProxyRGB <span class="syntax-operator">+</span> HeadRGB <span class="syntax-operator">/</span> <span class="syntax-number">4</span>, <span class="syntax-number">0</span>, <span class="syntax-number">1</span>)
 
-Without history: return NeuralRGB
+Without history<span class="syntax-operator">:</span> <span class="syntax-keyword">return</span> NeuralRGB
 
-With caller-reprojected history:
-    Blend = clamp(sigmoid(HeadAlpha) * blend_scale, 0, 1)
-    return NeuralRGB + Blend * (HistoryRGB - NeuralRGB)</code></pre>
+With caller<span class="syntax-operator">-</span>reprojected history<span class="syntax-operator">:</span>
+    Blend <span class="syntax-operator">=</span> <span class="syntax-function">clamp</span>(<span class="syntax-function">sigmoid</span>(HeadAlpha) <span class="syntax-operator">*</span> blend_scale, <span class="syntax-number">0</span>, <span class="syntax-number">1</span>)
+    <span class="syntax-keyword">return</span> NeuralRGB <span class="syntax-operator">+</span> Blend <span class="syntax-operator">*</span> (HistoryRGB <span class="syntax-operator">-</span> NeuralRGB)</code></pre>
 <p>The proxy is in sRGB code space. Composition does not perform temporal reprojection. The training speed benchmark applies a diagnostic loss to the head; it does not establish a temporal loss or DLSS5 transfer-learning procedure.</p>
 <p>Sources: <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py#L257">_input_block / _input_stage</a>, <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py#L234">_post_head</a>, <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py#L331">compose</a>.</p>
 <h2 id="the-operations-behind-the-labels">The operations behind the labels</h2>
@@ -180,17 +180,17 @@ With caller-reprojected history:
 <figure class="diagram"><img src="../figures/architecture/numerics.svg" alt="Activation, normalization and attention exponential formulas" loading="lazy"><figcaption>Activation, normalization and attention exponential formulas</figcaption></figure>
 <h3 id="activation">Activation</h3>
 <p>The FFN label <code>φ</code> means this recovered pointwise function:</p>
-<pre><code>b = clamp(x, -4, 4)
-φ(x) = x * (b * (-0.055908203125 * abs(b) + 0.447265625) + 0.89453125)</code></pre>
+<pre><code class="syntax-highlight">b <span class="syntax-operator">=</span> <span class="syntax-function">clamp</span>(x, <span class="syntax-operator">-</span><span class="syntax-number">4</span>, <span class="syntax-number">4</span>)
+φ(x) <span class="syntax-operator">=</span> x <span class="syntax-operator">*</span> (b <span class="syntax-operator">*</span> (<span class="syntax-operator">-</span><span class="syntax-number">0.055908203125</span> <span class="syntax-operator">*</span> <span class="syntax-function">abs</span>(b) <span class="syntax-operator">+</span> <span class="syntax-number">0.447265625</span>) <span class="syntax-operator">+</span> <span class="syntax-number">0.89453125</span>)</code></pre>
 <p>It changes values without changing shape. The source method is named <code>silu</code>, but its formula differs from standard SiLU. Training evaluates it with FP32 intermediates and casts back to the working dtype.</p>
 <h3 id="q-and-k-normalization">Q and K normalization</h3>
 <p>Each head has a 32-channel vector at every position. Q and K are normalized separately:</p>
-<pre><code>L2Norm(v) = v / max(sqrt(sum(v * v, across 32 channels)), 1e-12)</code></pre>
+<pre><code class="syntax-highlight"><span class="syntax-function">L2Norm</span>(v) <span class="syntax-operator">=</span> v <span class="syntax-operator">/</span> <span class="syntax-function">max</span>(<span class="syntax-function">sqrt</span>(<span class="syntax-function">sum</span>(v <span class="syntax-operator">*</span> v, across <span class="syntax-number">32</span> channels)), <span class="syntax-number">1e-12</span>)</code></pre>
 <p>The reduction is across channels, not tokens or heads. It does not subtract a mean and is not a LayerNorm. Q subsequently receives the learned head scale; global Q also receives <code>sqrt(32)</code>.</p>
 <h3 id="attention-exponential">Attention exponential</h3>
 <p>Both branches use the same form with different constants:</p>
-<pre><code>z = clamp(a * score + b, lo, hi)
-E(score) = E0 * exp((z - b) * s * ln(2))</code></pre>
+<pre><code class="syntax-highlight">z <span class="syntax-operator">=</span> <span class="syntax-function">clamp</span>(a <span class="syntax-operator">*</span> score <span class="syntax-operator">+</span> b, lo, hi)
+<span class="syntax-constant">E</span>(score) <span class="syntax-operator">=</span> <span class="syntax-constant">E0</span> <span class="syntax-operator">*</span> <span class="syntax-function">exp</span>((z <span class="syntax-operator">-</span> b) <span class="syntax-operator">*</span> s <span class="syntax-operator">*</span> <span class="syntax-function">ln</span>(<span class="syntax-number">2</span>))</code></pre>
 <p>Local attention divides E by its 64-key row sum before multiplying V. Global attention uses E in the numerator, sums in 64-key chunks, subtracts padded-key contributions, then divides the value vector by the corrected denominator. The <a href="#how-positions-exchange-information">attention diagrams</a> show these separate paths.</p>
 <h3 id="publication-and-precision">Publication and precision</h3>
 <p><code>Publish</code> means cast to the selected working precision in training: FP32 or BF16. It preserves shape. <code>Raw</code> marks the value before that explicit publication, <strong>not a promise of wider storage</strong>; many operators already return the working dtype. This distinction identifies the correct residual and pooling sources and connects them to deployment&#x27;s separate numerical boundaries.</p>
@@ -200,5 +200,5 @@ E(score) = E0 * exp((z - b) * s * ln(2))</code></pre>
 <p>The diagrams follow <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py">model.py</a>, <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/geometry.py">geometry.py</a> and the dimensions decoded by <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/weights.py">weights.py</a>. They show logical computation. CUDA fuses operations and uses packed FP8/FP16 layouts: an arrow need not be a global-memory write, and a box need not be a kernel launch. The <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/kernel_templates.json">kernel template manifest</a> maps public kernel configurations to CUDA source.</p>
 <p>Training covers all 71 records, 0–70. The measured deployment trunk covers prepared features through 1–69. Renderer feature extraction and temporal reprojection remain external. Actual DLSS5 transfer-learning losses and training procedures still require investigation.</p>
 <p>Regenerate the SVG diagrams:</p>
-<pre><code>python -B tools/render_architecture.py</code></pre>
+<pre><code class="syntax-highlight">python <span class="syntax-operator">-</span><span class="syntax-constant">B</span> tools<span class="syntax-operator">/</span>render_architecture.py</code></pre>
 <p>These diagrams represent this implementation, not recovered NVIDIA source diagrams.</p></article><nav class="next-prev" aria-label="Related reading"><a href="index.html#kernels">← Kernel catalog</a></nav><footer class="footer">DLSS-NR kernel lessons · source fc3276497f86 · <a href="source-atlas.html#provenance">Provenance</a> · <a href="architecture.html">Architecture companion</a></footer></main></body></html>

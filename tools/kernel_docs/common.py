@@ -3,6 +3,7 @@ from pathlib import Path
 from html import escape
 import hashlib
 import re
+from highlight import highlight_lines
 
 ROOT = Path(__file__).resolve().parents[2]
 REVISION = "fc3276497f866bdad639cd443e75743f5d19b749"
@@ -24,13 +25,15 @@ def code(path, start, end, caption=""):
     excerpt = "\n".join(lines[start - 1:end])
     SNIPPETS.append(dict(path=path, start=start, end=end,
                          sha256=hashlib.sha256(excerpt.encode()).hexdigest()))
-    numbered = "\n".join(f'<span class="code-line"><span class="ln" aria-hidden="true">{i}</span>{escape(line)}</span>'
-                         for i, line in enumerate(lines[start - 1:end], start))
+    language = 'python' if Path(path).suffix == '.py' else 'cpp'
+    colored = highlight_lines('\n'.join(lines), language)
+    numbered = "\n".join(f'<span class="code-line"><span class="ln" aria-hidden="true">{i}</span>{line}</span>'
+                         for i, line in enumerate(colored[start - 1:end], start))
     return (f'<details class="source" open><summary>{escape(caption or Path(path).name)}'
             f' <span>lines {start}–{end}</span></summary><div class="source-toolbar">'
             f'<a href="{source_url(path, start, end)}">{escape(path)} ↗</a>'
             '<button type="button" class="copy-code">Copy code</button></div>'
-            f'<pre><code>{numbered}</code></pre></details>')
+            f'<pre><code class="syntax-highlight language-{language}">{numbered}</code></pre></details>')
 
 
 def svg(title, viewbox, inner, caption=""):

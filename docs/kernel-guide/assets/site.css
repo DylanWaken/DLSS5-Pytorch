@@ -9,3 +9,8 @@
 @media(max-width:760px){.sidebar .local-nav{display:none}.inventory td:first-child{width:auto}.lesson-link{padding:6px 9px}.kernel-lesson h1{font-size:34px}.kernel-identity{font-size:11px}.pseudocode pre{padding:15px;font-size:12px}.toc a{display:block}.sidebar nav{padding-bottom:6px}}
 @media print{.dependency-list{break-inside:avoid}.pseudocode pre{white-space:pre-wrap}.kernel-lesson h1{font-size:28pt}}
 .operation-description{font-size:13px;color:var(--muted)}
+/* Syntax colors inherit per surface; text and line numbers remain selectable. */
+pre{--syn-comment:#526b5d;--syn-keyword:#7137a8;--syn-type:#0b6970;--syn-function:#185a9e;--syn-number:#984512;--syn-string:#3b6d26;--syn-constant:#805800;--syn-cuda:#9b325a;--syn-operator:#425c72;--syn-directive:#9b325a}
+.source pre{--syn-comment:#98b5a4;--syn-keyword:#d4b2ff;--syn-type:#6cdbd4;--syn-function:#9bcaff;--syn-number:#ffc88c;--syn-string:#b7df9e;--syn-constant:#f1c276;--syn-cuda:#ffb7c5;--syn-operator:#bdd2e6;--syn-directive:#ffb7c5}
+.syntax-comment{color:var(--syn-comment)}.syntax-keyword{color:var(--syn-keyword)}.syntax-type{color:var(--syn-type)}.syntax-function{color:var(--syn-function)}.syntax-number{color:var(--syn-number)}.syntax-string{color:var(--syn-string)}.syntax-constant{color:var(--syn-constant)}.syntax-cuda{color:var(--syn-cuda)}.syntax-operator{color:var(--syn-operator)}.syntax-directive{color:var(--syn-directive)}
+@media print{.syntax-highlight [class^="syntax-"]{color:inherit}}
