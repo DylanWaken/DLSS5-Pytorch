@@ -8576,6 +8576,12 @@
       "sha256": "a972eee3515c71ac194ea5786e0e27c92c932626a3cf0d8fd0f53e211de5aee8"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
+    },
+    {
       "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_wide_downsample_fp16.cu",
       "start": 1,
       "end": 342,
@@ -8586,6 +8592,12 @@
       "start": 986,
       "end": 992,
       "sha256": "4902f5b7933ac0fd4c216b07d11bff49b7d583e5146d8da04b6db5ca0d713dd7"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
     },
     {
       "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_wide_downsample_fp8.cu",
@@ -8600,6 +8612,12 @@
       "sha256": "c6239421dc030c08666422e5608e7b4c9e4f46d366efd59ac6853f4836e00c05"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
       "start": 1,
       "end": 294,
@@ -8610,6 +8628,12 @@
       "start": 72,
       "end": 77,
       "sha256": "644a86eec4ff933cf8fbedb654e733c81c951d7334b07892a6c9c84ca9bf4704"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
@@ -8624,6 +8648,12 @@
       "sha256": "1ab38ebe875c1a2c0150c562db9858a37c49c996b95a8e56fb510a255b128966"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
       "start": 1,
       "end": 294,
@@ -8634,6 +8664,12 @@
       "start": 127,
       "end": 133,
       "sha256": "39a2ba02479e3d41f2825dda1f95a07f8158b1f4761c33ff5df33f956d9b613c"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
@@ -8648,6 +8684,12 @@
       "sha256": "d982323e9eb365d037a127369faed72c8d7d562946fc04bb338bb8b8cf2528d9"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
       "start": 1,
       "end": 294,
@@ -8658,6 +8700,12 @@
       "start": 191,
       "end": 197,
       "sha256": "e878126088010540cbe54cb77d2147e60594aee1707061248a35aa9421ade5c5"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
@@ -8672,6 +8720,12 @@
       "sha256": "f9952e00c3890ab4b3e94bef299985587b7d6ea643b30b8b1e20ec1ef3e1ba03"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
+    },
+    {
       "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_wide_upsample_fp16.cu",
       "start": 1,
       "end": 287,
@@ -8682,6 +8736,12 @@
       "start": 1314,
       "end": 1319,
       "sha256": "5f156bfdddbe1acf0943714fa2241f9dcf86bda238e9e99f24f64f86d95440a2"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
     },
     {
       "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_wide_upsample_fp8.cu",
@@ -8696,6 +8756,12 @@
       "sha256": "f13b496860aea9b246674e4d7da4fa3fefec721b5935187d2e913150ff85b099"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
+    },
+    {
       "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_wide_downsample_fp16.cu",
       "start": 1,
       "end": 342,
@@ -8706,6 +8772,12 @@
       "start": 1050,
       "end": 1056,
       "sha256": "1fb05fd84c15ca2b59b01307215e6df1edb5e1b632bb87edb655a9e36e7ddbf6"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
     },
     {
       "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_wide_downsample_fp8.cu",
@@ -8720,6 +8792,12 @@
       "sha256": "e2087102257e0c97f8f7badc9772a382b62c39fdf342707d33373cd71e0a39ef"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
       "start": 1,
       "end": 294,
@@ -8730,6 +8808,12 @@
       "start": 254,
       "end": 259,
       "sha256": "90162d92c9f71f306d4d69b80d11aa1b18edcd49996556a28aac080d6e1cf639"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
@@ -8744,6 +8828,12 @@
       "sha256": "5c70fefe5c460868c6424f3825c2633776db8b2b981c2620fb962c593d1cf248"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
       "start": 1,
       "end": 294,
@@ -8754,6 +8844,12 @@
       "start": 309,
       "end": 315,
       "sha256": "a942fe9b66342095837383e00ca7b98c3be35a39127943f88bc972e45a906dc7"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
@@ -8768,6 +8864,12 @@
       "sha256": "3f78d5a83fd20908aa7ea939e61f5e1ab4e481fda19deddb11ba1b935d81bab8"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
       "start": 1,
       "end": 294,
@@ -8778,6 +8880,12 @@
       "start": 373,
       "end": 379,
       "sha256": "4a0b58bf72209e0d83f5f3d96eab0c97cb086569735f4663e7c5b24f76a09a6a"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
@@ -8792,6 +8900,12 @@
       "sha256": "7c8a6b3a59be1e9cf1cb3ced5337bd22dfd7feed4eecc30bc34a869c4b63d6ec"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
+    },
+    {
       "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_wide_upsample_fp16.cu",
       "start": 1,
       "end": 287,
@@ -8802,6 +8916,12 @@
       "start": 1370,
       "end": 1375,
       "sha256": "d4c8a9e607cb740564019e62e4d02d98f3c0bb340e3adc8ba71b482c36f60d76"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
     },
     {
       "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_wide_upsample_fp8.cu",
@@ -8936,6 +9056,12 @@
       "sha256": "cb4eca82f1656981885de1a45e950cc174e3563bf7cece07a0d31c0875dbb65a"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
+    },
+    {
       "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_c64_downsample_fp16.cu",
       "start": 1,
       "end": 336,
@@ -8946,6 +9072,12 @@
       "start": 1184,
       "end": 1190,
       "sha256": "d5b7e3203c5e53a39370131e9a1453bd04d4d3abbb962cf6aef16416db708192"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
     },
     {
       "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_c64_downsample_fp8.cu",
@@ -8960,6 +9092,12 @@
       "sha256": "570d679a517cd6a1a63b4eb0a123b2892c3fac1820fef25ff7ca96d0224e8eeb"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
       "start": 1,
       "end": 282,
@@ -8970,6 +9108,12 @@
       "start": 632,
       "end": 637,
       "sha256": "7a2d5051b2f65b8f866ede891b6002cd4222151381c171436d6806372ea008e5"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
@@ -8984,6 +9128,12 @@
       "sha256": "6110f0d266e8eb700afb0cfdccd07ffa19f9cda8fb933967d5385f958be35254"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
       "start": 1,
       "end": 282,
@@ -8994,6 +9144,12 @@
       "start": 686,
       "end": 692,
       "sha256": "fcc90b8f98d44410fe0f579fd239b169bb8fd6c8c636aea924e18f5fa16a65b0"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
@@ -9008,6 +9164,12 @@
       "sha256": "383d58e4069fcd9cd0b39c86cc6bcfe331686624c730a7c07003bd583c89cb48"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
       "start": 1,
       "end": 282,
@@ -9018,6 +9180,12 @@
       "start": 750,
       "end": 756,
       "sha256": "91675faa7d99197f2ee25d49014f8e276a11d6dc3def075334e835226e7eda07"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
@@ -9032,6 +9200,12 @@
       "sha256": "e0a519d9e824d1ae674523377420e04cc0ceb2341d45f5dfa1061c9930ad839d"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
+    },
+    {
       "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_c64_upsample_fp16.cu",
       "start": 1,
       "end": 279,
@@ -9042,6 +9216,12 @@
       "start": 1496,
       "end": 1502,
       "sha256": "38dd5e486974e85f649d4f092af05427e3e5010555940d137ae939f4d048c9f1"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 39,
+      "end": 66,
+      "sha256": "d4b0c4e2c786626ba0088779cbb15933d7bfc8cc156a06ee8d43ff8e1e5f15a2"
     },
     {
       "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c64_upsample_fp8.cu",
@@ -9056,6 +9236,12 @@
       "sha256": "41a3e88eb1887dbf174cb195eea7d2e82a406face015c00a2f666dccadf1ee77"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu",
       "start": 1,
       "end": 212,
@@ -9066,6 +9252,12 @@
       "start": 2008,
       "end": 2013,
       "sha256": "8c429f948f67d3ccc1286d88e8e343ac17421b374dfd2f2ac0e39a0c3c837ea5"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu",
@@ -9081,6 +9273,12 @@
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_input_view_c512_fp16.cu",
+      "start": 55,
+      "end": 77,
+      "sha256": "cdb052f43d33a9e1a00ac6ca7dcc006b4fe2c8df01bc305137a9788437e6c658"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_input_view_c512_fp16.cu",
       "start": 1,
       "end": 203,
       "sha256": "36271a4168aa27e9c78d24da278d23bd19642d7d59f78ba7c63d21fd911084b4"
@@ -9090,6 +9288,12 @@
       "start": 2056,
       "end": 2061,
       "sha256": "cc52f5893fc6f0bc076f6fb6cd4ab15ee64ecb5fcfbc7e2610f7641f82b4f6ac"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu",
+      "start": 55,
+      "end": 77,
+      "sha256": "cdb052f43d33a9e1a00ac6ca7dcc006b4fe2c8df01bc305137a9788437e6c658"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu",
@@ -9104,6 +9308,12 @@
       "sha256": "ae102f456df8a10e5719661b03bc25a6aa751f829ff66d679a40b80c1f369900"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
       "start": 1,
       "end": 217,
@@ -9114,6 +9324,12 @@
       "start": 2106,
       "end": 2111,
       "sha256": "d92857c30254df57e5651429867e2f444156a8889ca166ce51697e8c2577eb10"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
@@ -9128,6 +9344,12 @@
       "sha256": "e4bcc2e4be29fa8b1861f211b3a7e3fc3b8ed6554fbf198ff8b3ce192fbbe3a2"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_projection_input_view_c512_fp16.cu",
       "start": 1,
       "end": 213,
@@ -9138,6 +9360,12 @@
       "start": 2158,
       "end": 2163,
       "sha256": "da42cb59a467e2562a3d65c6054f147643ca4308a94990252b045d1bf92771a1"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_projection_input_view_c512_fp8.cu",
@@ -9152,6 +9380,12 @@
       "sha256": "307b814232897e7b7ffafd92ea0b15c93d3c160e9cc660870d57a0f4d74957c4"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_qkv_c512_fp16.cu",
       "start": 1,
       "end": 199,
@@ -9162,6 +9396,12 @@
       "start": 1842,
       "end": 1847,
       "sha256": "5dec7ede0d196b557e714462ddb4cb242305150a49125603f4a4df9da3e56bb5"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_qkv_c512_fp8.cu",
@@ -9176,6 +9416,12 @@
       "sha256": "13e24eb005930cbcd2942dc6a17ea86881349fd56776b8a60bf57df175db2b9d"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
       "start": 1,
       "end": 217,
@@ -9186,6 +9432,12 @@
       "start": 1730,
       "end": 1735,
       "sha256": "a383102853faf77a3802c64a4351307a306ba71d70b5b97f9a3b1a5bea3c620e"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
@@ -9200,6 +9452,12 @@
       "sha256": "35db656f8613e8367669f503571cc909eb75e246c0afa2c0df96613e6c7586e7"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_attention_projection_output_view_c512_fp16.cu",
       "start": 1,
       "end": 218,
@@ -9210,6 +9468,12 @@
       "start": 1783,
       "end": 1792,
       "sha256": "89ed05c361d405c590230ea94cf4eab5b62be9194571d5f3d1859f700e39f9b2"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_attention_projection_output_view_c512_fp8.cu",
@@ -9224,6 +9488,12 @@
       "sha256": "57de111eab299e94081c8bbe0fad3e64b6b0a98df516652278ac092f4d772de4"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
+    },
+    {
       "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/window_attention_projection_pool_c512_fp16.cu",
       "start": 1,
       "end": 265,
@@ -9234,6 +9504,12 @@
       "start": 915,
       "end": 927,
       "sha256": "8bc635ea890470a7165fb9c8d4b603b7682dfe9fb60b4bf9457e83b82d9edd55"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
     },
     {
       "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/window_attention_projection_pool_c512_fp8.cu",
@@ -9248,6 +9524,12 @@
       "sha256": "1db1c691ab0963e4f9457d2d75705b75d3a3f64d538f15766f04bc3eb0578625"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
+    },
+    {
       "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
       "start": 1,
       "end": 165,
@@ -9258,6 +9540,12 @@
       "start": 2213,
       "end": 2221,
       "sha256": "4c2b20f39d0eb6acd981d8d176d51cc047b0f5c9cb58b30dfcd66c5bc9325ae4"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
     },
     {
       "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/channel_projection_c512_to_c1024_fp8.cu",
@@ -9272,6 +9560,12 @@
       "sha256": "d67f0e88c418b94c4bf797292ea50c5287256b301eadbfde273639f8a8b4207e"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
+    },
+    {
       "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp16/decoder_upsample_c1024_to_c512_fp16.cu",
       "start": 1,
       "end": 250,
@@ -9282,6 +9576,12 @@
       "start": 1250,
       "end": 1257,
       "sha256": "14f0c9490a7dc91b9cd558c1ef7ac29f04a3f97eedfbaae7ed84d9a89b91af59"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
     },
     {
       "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp8/decoder_upsample_c1024_to_c512_fp8.cu",
@@ -9356,6 +9656,12 @@
       "sha256": "24767eabf3a2b2ed9f4f6159ac66a7719416cd8780ae97c3a5329068daf12bdf"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
+    },
+    {
       "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu",
       "start": 1,
       "end": 163,
@@ -9366,6 +9672,12 @@
       "start": 1954,
       "end": 1959,
       "sha256": "e994cd7b89ec1b3843127384626b20bbc814b05a93ed8a4c81d4a271be586bba"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu",
@@ -9380,6 +9692,12 @@
       "sha256": "fc1418ee14b5b140499baf8a440ab6ac77c0a5bf655f1874d16b93e463cd44bb"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
+    },
+    {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_projection_c1024_fp16.cu",
       "start": 1,
       "end": 264,
@@ -9390,6 +9708,12 @@
       "start": 1612,
       "end": 1619,
       "sha256": "0665faaa2aadddc875173ef2b7c90052b5ea47b9c903949faedaa56af691b794"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_qkv_c1024_fp16.cu",
@@ -9405,6 +9729,12 @@
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu",
+      "start": 33,
+      "end": 63,
+      "sha256": "5e5c150fceb25fefd6df9c99a0046380c77fbd7baed9b4a46f29c9329b3fd936"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu",
       "start": 1,
       "end": 356,
       "sha256": "a409540b9b3d67625c7c06da1050839e0af8ee22a8e99d5e76f81aff8e6e03a0"
@@ -9414,6 +9744,12 @@
       "start": 1560,
       "end": 1565,
       "sha256": "34831f35c6b4e0f369f2351849e5c367d5bc116ee299b036d9f0d0fcf3d02cfc"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp8/global_ffn_expand_c1024_fp8.cu",
@@ -9428,6 +9764,12 @@
       "sha256": "9f87f89ac4815ae4e75cca10cb8f552b689f80f9bb0df0b3a32917d13e6252c3"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
+    },
+    {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
       "start": 1,
       "end": 336,
@@ -9438,6 +9780,12 @@
       "start": 1923,
       "end": 1930,
       "sha256": "c913c87c5bdb62b9dd0e4aa45a657b6619aa2f2aa035315ffb1ae54eec5679dd"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
@@ -9452,6 +9800,12 @@
       "sha256": "3b09e4cc7afb61c7a72ac9cb3c0150b81140a399cf9d2f6bc86b5330bf07bb9a"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 239,
+      "end": 270,
+      "sha256": "881760f56f51683e3c7f6517808d53b7dc28086469631b2075ad4b378cabcc7a"
+    },
+    {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_qkv_c1024_fp8.cu",
       "start": 1,
       "end": 277,
@@ -9462,6 +9816,12 @@
       "start": 1701,
       "end": 1708,
       "sha256": "f270ab0a7a790754889a9678916fc51221f510686ac3b0488b9488879347a153"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu",
+      "start": 33,
+      "end": 63,
+      "sha256": "e4a5d2d77b824a0d008cfe0704e410bfa8eec01f35066422e0c755148965b320"
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu",

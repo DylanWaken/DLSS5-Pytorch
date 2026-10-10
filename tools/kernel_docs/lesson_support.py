@@ -32,4 +32,5 @@ def mma_primer(fp8):
 <path class="edge" d="M555 112 H610"/><rect class="storage" x="620" y="35" width="280" height="155" rx="8"/><text class="label" x="636" y="64">D: 16 × 8 Half</text><text class="small" x="636" y="96">lane 13: g = 3, q = 1</text><text class="small" x="636" y="124">word 0: D[3,2], D[3,3]</text><text class="small" x="636" y="152">word 1: D[11,2], D[11,3]</text>
 <text class="small" x="20" y="227">For output group n, add 8n to the two output-channel coordinates.</text>
 <text class="small" x="20" y="255">The whole warp owns 32 × 4 = 128 outputs: exactly the 16 × 8 tile.</text>''', 'Instruction fragment map. Lane 13 is one example; the map covers every token and channel exactly once.')
-    return body
+    from token_visuals import mma_cells
+    return body + mma_cells(fp8)

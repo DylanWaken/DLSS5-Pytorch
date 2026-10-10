@@ -18,6 +18,7 @@ sys.path.insert(0, str(ROOT / 'tools/kernel_docs'))
 from common import REVISION, REPOSITORY, SNIPPETS, source_url
 from kernel_sources import collect, check_roster, check_entry_layout
 from publishing import catalog, render as render_lesson_site, source_appendix, normalize_lesson
+from token_visuals import enrich
 
 OUT = ROOT / 'docs/kernel-guide'
 
@@ -131,6 +132,7 @@ def main():
     source_bundle=set()
     for lesson in lessons:
         lesson['slug']=lesson['name']
+        enrich(lesson, inventory['entries'][lesson['name']])
         if lesson['family']=='Global bottleneck':
             precision='FP8' if lesson['name'].endswith('fp8') else 'FP16'
             roles={'global_ffn_expand':'FFN expansion: 1024 → 4096','global_ffn_contract':'FFN contraction: 4096 → 1024','global_projection':'attention output projection','global_qkv':'QKV projection and normalization','global_attention_chained':'streamed global attention'}
