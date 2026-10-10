@@ -1,0 +1,2245 @@
+{
+  "source_revision": "fc3276497f866bdad639cd443e75743f5d19b749",
+  "repository": "https://github.com/DylanWaken/DLSS5-Pytorch",
+  "file_hash_encoding": "UTF-8 with normalized LF newlines",
+  "inventory": {
+    "schema_version": 3,
+    "entry_count": 81,
+    "definition_count": 56,
+    "template_entry_count": 40,
+    "body_header_count": 56,
+    "emission_unit_count": 56,
+    "entries": {
+      "channel_projection_c512_to_c1024_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 6,
+        "parameters": "FChannelProjectionC512ToC1024Fp16Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<FProfile::Precision>"
+        ],
+        "body_lines": 157,
+        "definition": "channel_projection_c512_to_c1024_fp16",
+        "emission_unit": "kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu"
+      },
+      "channel_projection_c512_to_c1024_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/encoder_c512_downsample/fp8/channel_projection_c512_to_c1024_fp8.cu",
+        "line": 6,
+        "parameters": "FChannelProjectionC512ToC1024Fp8Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<FProfile::Precision>"
+        ],
+        "body_lines": 163,
+        "definition": "channel_projection_c512_to_c1024_fp8",
+        "emission_unit": "kernel_impl/encoder_c512_downsample/fp8/channel_projection_c512_to_c1024_fp8.cu"
+      },
+      "completion_counter_clear": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 5,
+        "parameters": "FCompletionCounterParameters Parameters",
+        "template_calls": [],
+        "body_lines": 6,
+        "definition": "completion_counter_clear",
+        "emission_unit": "kernel_impl/shared/common/completion_counter_clear.cu"
+      },
+      "decoder_upsample_c1024_to_c512_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/decoder_c1024_to_c512_upsample/fp16/decoder_upsample_c1024_to_c512_fp16.cu",
+        "line": 6,
+        "parameters": "FDecoderUpsampleC1024ToC512Fp16Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>"
+        ],
+        "body_lines": 242,
+        "definition": "decoder_upsample_c1024_to_c512_fp16",
+        "emission_unit": "kernel_impl/decoder_c1024_to_c512_upsample/fp16/decoder_upsample_c1024_to_c512_fp16.cu"
+      },
+      "decoder_upsample_c1024_to_c512_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/decoder_c1024_to_c512_upsample/fp8/decoder_upsample_c1024_to_c512_fp8.cu",
+        "line": 6,
+        "parameters": "FDecoderUpsampleC1024ToC512Fp8Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>"
+        ],
+        "body_lines": 253,
+        "definition": "decoder_upsample_c1024_to_c512_fp8",
+        "emission_unit": "kernel_impl/decoder_c1024_to_c512_upsample/fp8/decoder_upsample_c1024_to_c512_fp8.cu"
+      },
+      "global_attention_chained_c1024_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu",
+        "line": 6,
+        "parameters": "FGlobalAttentionChainedC1024Fp16Parameters Parameters",
+        "template_calls": [
+          "MmaWindowFragment<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_Group < TileCoordinates.g_Groups16 ? __ldca(reinterpret_cast<const uint4*>"
+        ],
+        "body_lines": 348,
+        "definition": "global_attention_chained_c1024_fp16",
+        "emission_unit": "kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu"
+      },
+      "global_attention_chained_c1024_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu",
+        "line": 6,
+        "parameters": "FGlobalAttentionChainedC1024Fp8Parameters Parameters",
+        "template_calls": [
+          "MmaWindowFragment<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_Group < TileCoordinates.g_Groups16 ? __ldca(reinterpret_cast<const uint4*>"
+        ],
+        "body_lines": 345,
+        "definition": "global_attention_chained_c1024_fp8",
+        "emission_unit": "kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu"
+      },
+      "global_ffn_contract_c1024_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu",
+        "line": 6,
+        "parameters": "FGlobalFfnContractC1024Fp16Parameters Parameters",
+        "template_calls": [
+          "ConsumeGlobalContractInputStage<Profile>",
+          "g_Group < TileCoordinates.g_PaddedGroups ? __ldcg(reinterpret_cast<const uint4*>"
+        ],
+        "body_lines": 246,
+        "definition": "global_ffn_contract_c1024_fp16",
+        "emission_unit": "kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu"
+      },
+      "global_ffn_contract_c1024_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 7,
+        "parameters": "FGlobalFfnContractC1024Fp8Parameters Parameters",
+        "template_calls": [
+          "ConsumeGlobalContractInputStage<Profile>",
+          "g_Group < TileCoordinates.g_PaddedGroups ? __ldcg(reinterpret_cast<const uint4*>"
+        ],
+        "body_lines": 316,
+        "definition": "global_contract_fp8",
+        "emission_unit": "kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "resolver": "Resolve_global_ffn_contract_c1024_fp8",
+        "template_arguments": "false, FGlobalFfnContractC1024Fp8Parameters"
+      },
+      "global_ffn_expand_c1024_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu",
+        "line": 6,
+        "parameters": "FGlobalFfnExpandC1024Fp16Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<FProfile::Precision>"
+        ],
+        "body_lines": 155,
+        "definition": "global_ffn_expand_c1024_fp16",
+        "emission_unit": "kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu"
+      },
+      "global_ffn_expand_c1024_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/bottleneck_c1024_ffn/fp8/global_ffn_expand_c1024_fp8.cu",
+        "line": 6,
+        "parameters": "FGlobalFfnExpandC1024Fp8Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<FProfile::Precision>"
+        ],
+        "body_lines": 161,
+        "definition": "global_ffn_expand_c1024_fp8",
+        "emission_unit": "kernel_impl/bottleneck_c1024_ffn/fp8/global_ffn_expand_c1024_fp8.cu"
+      },
+      "global_projection_c1024_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_projection_c1024_fp16.cu",
+        "line": 6,
+        "parameters": "FGlobalProjectionC1024Fp16Parameters Parameters",
+        "template_calls": [
+          "ConsumeGlobalContractInputStage<Profile>",
+          "g_Group < TileCoordinates.g_PaddedGroups ? __ldcg(reinterpret_cast<const uint4*>"
+        ],
+        "body_lines": 256,
+        "definition": "global_projection_c1024_fp16",
+        "emission_unit": "kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_projection_c1024_fp16.cu"
+      },
+      "global_projection_c1024_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 7,
+        "parameters": "FGlobalProjectionC1024Fp8Parameters Parameters",
+        "template_calls": [
+          "ConsumeGlobalContractInputStage<Profile>",
+          "g_Group < TileCoordinates.g_PaddedGroups ? __ldcg(reinterpret_cast<const uint4*>"
+        ],
+        "body_lines": 316,
+        "definition": "global_contract_fp8",
+        "emission_unit": "kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "resolver": "Resolve_global_projection_c1024_fp8",
+        "template_arguments": "true, FGlobalProjectionC1024Fp8Parameters"
+      },
+      "global_qkv_c1024_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/bottleneck_c1024_attention/fp16/global_qkv_c1024_fp16.cu",
+        "line": 6,
+        "parameters": "FGlobalQkvC1024Fp16Parameters Parameters",
+        "template_calls": [
+          "Component < 2) NormalizeHead<bFp8, Component>",
+          "ConsumeGlobalContractInputStage<Profile>",
+          "g_ReadGroup < TileCoordinates.g_PaddedGroups ? __ldca(reinterpret_cast<const uint4*>"
+        ],
+        "body_lines": 253,
+        "definition": "global_qkv_c1024_fp16",
+        "emission_unit": "kernel_impl/bottleneck_c1024_attention/fp16/global_qkv_c1024_fp16.cu"
+      },
+      "global_qkv_c1024_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/bottleneck_c1024_attention/fp8/global_qkv_c1024_fp8.cu",
+        "line": 6,
+        "parameters": "FGlobalQkvC1024Fp8Parameters Parameters",
+        "template_calls": [
+          "Component < 2) NormalizeHead<bFp8, Component>",
+          "ConsumeGlobalContractInputStage<Profile>"
+        ],
+        "body_lines": 270,
+        "definition": "global_qkv_c1024_fp8",
+        "emission_unit": "kernel_impl/bottleneck_c1024_attention/fp8/global_qkv_c1024_fp8.cu"
+      },
+      "input_preprocess_window_c32_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/input_c32/fp16/input_preprocess_window_c32_fp16.cu",
+        "line": 9,
+        "parameters": "FInputPreprocessWindowC32Fp16Parameters Parameters",
+        "template_calls": [
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "MmaWindowFragment<false>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "QueryKeyScores<bFp8>"
+        ],
+        "body_lines": 347,
+        "definition": "input_preprocess_window_c32_fp16",
+        "emission_unit": "kernel_impl/input_c32/fp16/input_preprocess_window_c32_fp16.cu"
+      },
+      "input_preprocess_window_c32_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/input_c32/fp8/input_preprocess_window_c32_fp8.cu",
+        "line": 9,
+        "parameters": "FInputPreprocessWindowC32Fp8Parameters Parameters",
+        "template_calls": [
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "MmaWindowFragment<false>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "QueryKeyScores<bFp8>"
+        ],
+        "body_lines": 347,
+        "definition": "input_preprocess_window_c32_fp8",
+        "emission_unit": "kernel_impl/input_c32/fp8/input_preprocess_window_c32_fp8.cu"
+      },
+      "input_preprocess_window_downsample_c32_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/input_c32/fp16/input_preprocess_window_downsample_c32_fp16.cu",
+        "line": 9,
+        "parameters": "FInputPreprocessWindowDownsampleC32Fp16Parameters Parameters",
+        "template_calls": [
+          "ClearDownsamplePadding<32, 4>",
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "MmaWindowFragment<false>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "PublishWindowDownsample<32, bFp8>",
+          "QueryKeyScores<bFp8>"
+        ],
+        "body_lines": 369,
+        "definition": "input_preprocess_window_downsample_c32_fp16",
+        "emission_unit": "kernel_impl/input_c32/fp16/input_preprocess_window_downsample_c32_fp16.cu"
+      },
+      "input_preprocess_window_downsample_c32_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/input_c32/fp8/input_preprocess_window_downsample_c32_fp8.cu",
+        "line": 9,
+        "parameters": "FInputPreprocessWindowDownsampleC32Fp8Parameters Parameters",
+        "template_calls": [
+          "ClearDownsamplePadding<32, 4>",
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "MmaWindowFragment<false>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "PublishWindowDownsample<32, bFp8>",
+          "QueryKeyScores<bFp8>"
+        ],
+        "body_lines": 369,
+        "definition": "input_preprocess_window_downsample_c32_fp8",
+        "emission_unit": "kernel_impl/input_c32/fp8/input_preprocess_window_downsample_c32_fp8.cu"
+      },
+      "output_window_postprocess_c32_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/output_c32/fp16/output_window_postprocess_c32_fp16.cu",
+        "line": 9,
+        "parameters": "FOutputWindowPostprocessC32Fp16Parameters Parameters",
+        "template_calls": [
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "MmaWindowFragment<false>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<false>",
+          "QueryKeyScores<bFp8>"
+        ],
+        "body_lines": 347,
+        "definition": "output_window_postprocess_c32_fp16",
+        "emission_unit": "kernel_impl/output_c32/fp16/output_window_postprocess_c32_fp16.cu"
+      },
+      "output_window_postprocess_c32_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/output_c32/fp8/output_window_postprocess_c32_fp8.cu",
+        "line": 9,
+        "parameters": "FOutputWindowPostprocessC32Fp8Parameters Parameters",
+        "template_calls": [
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "MmaWindowFragment<false>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<false>",
+          "QueryKeyScores<bFp8>"
+        ],
+        "body_lines": 351,
+        "definition": "output_window_postprocess_c32_fp8",
+        "emission_unit": "kernel_impl/output_c32/fp8/output_window_postprocess_c32_fp8.cu"
+      },
+      "repack_1d_to_2d_c1024_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/bottleneck_c1024_layout/common/repack_token_to_spatial.cu",
+        "line": 7,
+        "parameters": "FGlobalRepackParameters Parameters",
+        "template_calls": [
+          "GlobalRepackPhysicalWord<CONST_WORDS_PER_TOKEN>"
+        ],
+        "body_lines": 28,
+        "definition": "repack_token_to_spatial",
+        "emission_unit": "kernel_impl/bottleneck_c1024_layout/common/repack_token_to_spatial.cu",
+        "resolver": "Resolve_repack_1d_to_2d_c1024_fp16",
+        "template_arguments": "false"
+      },
+      "repack_1d_to_2d_c1024_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/bottleneck_c1024_layout/common/repack_token_to_spatial.cu",
+        "line": 7,
+        "parameters": "FGlobalRepackParameters Parameters",
+        "template_calls": [
+          "GlobalRepackPhysicalWord<CONST_WORDS_PER_TOKEN>"
+        ],
+        "body_lines": 28,
+        "definition": "repack_token_to_spatial",
+        "emission_unit": "kernel_impl/bottleneck_c1024_layout/common/repack_token_to_spatial.cu",
+        "resolver": "Resolve_repack_1d_to_2d_c1024_fp8",
+        "template_arguments": "true"
+      },
+      "repack_2d_to_1d_c1024_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 7,
+        "parameters": "FGlobalRepackParameters Parameters",
+        "template_calls": [
+          "GlobalRepackPhysicalWord<CONST_WORDS_PER_TOKEN>"
+        ],
+        "body_lines": 34,
+        "definition": "repack_spatial_to_token",
+        "emission_unit": "kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "resolver": "Resolve_repack_2d_to_1d_c1024_fp16",
+        "template_arguments": "false"
+      },
+      "repack_2d_to_1d_c1024_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 7,
+        "parameters": "FGlobalRepackParameters Parameters",
+        "template_calls": [
+          "GlobalRepackPhysicalWord<CONST_WORDS_PER_TOKEN>"
+        ],
+        "body_lines": 34,
+        "definition": "repack_spatial_to_token",
+        "emission_unit": "kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "resolver": "Resolve_repack_2d_to_1d_c1024_fp8",
+        "template_arguments": "true"
+      },
+      "window_attention_projection_c512_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowAttentionProjectionC512Fp16Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>"
+        ],
+        "body_lines": 197,
+        "definition": "spatial_projection_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "resolver": "Resolve_window_attention_projection_c512_fp16",
+        "template_arguments": "2, FWindowAttentionProjectionC512Fp16Parameters"
+      },
+      "window_attention_projection_c512_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowAttentionProjectionC512Fp8Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>"
+        ],
+        "body_lines": 224,
+        "definition": "spatial_projection_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
+        "resolver": "Resolve_window_attention_projection_c512_fp8",
+        "template_arguments": "2, FWindowAttentionProjectionC512Fp8Parameters"
+      },
+      "window_attention_projection_output_view_c512_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_attention_projection_output_view_c512_fp16.cu",
+        "line": 6,
+        "parameters": "FWindowAttentionProjectionOutputViewC512Fp16Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>",
+          "SpatialProjectionPlaneWordAddress<bFp8>"
+        ],
+        "body_lines": 210,
+        "definition": "window_attention_projection_output_view_c512_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_attention_projection_output_view_c512_fp16.cu"
+      },
+      "window_attention_projection_output_view_c512_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_attention_projection_output_view_c512_fp8.cu",
+        "line": 6,
+        "parameters": "FWindowAttentionProjectionOutputViewC512Fp8Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>",
+          "SpatialProjectionPlaneWordAddress<bFp8>"
+        ],
+        "body_lines": 232,
+        "definition": "window_attention_projection_output_view_c512_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_attention_projection_output_view_c512_fp8.cu"
+      },
+      "window_attention_projection_pool_c512_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/encoder_c512_downsample/fp16/window_attention_projection_pool_c512_fp16.cu",
+        "line": 6,
+        "parameters": "FWindowAttentionProjectionPoolC512Fp16Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>"
+        ],
+        "body_lines": 257,
+        "definition": "window_attention_projection_pool_c512_fp16",
+        "emission_unit": "kernel_impl/encoder_c512_downsample/fp16/window_attention_projection_pool_c512_fp16.cu"
+      },
+      "window_attention_projection_pool_c512_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/encoder_c512_downsample/fp8/window_attention_projection_pool_c512_fp8.cu",
+        "line": 6,
+        "parameters": "FWindowAttentionProjectionPoolC512Fp8Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>"
+        ],
+        "body_lines": 289,
+        "definition": "window_attention_projection_pool_c512_fp8",
+        "emission_unit": "kernel_impl/encoder_c512_downsample/fp8/window_attention_projection_pool_c512_fp8.cu"
+      },
+      "window_block_c128_downsample_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_wide_downsample_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC128DownsampleFp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>"
+        ],
+        "body_lines": 319,
+        "definition": "window_block_wide_downsample_fp16",
+        "emission_unit": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_wide_downsample_fp16.cu",
+        "resolver": "Resolve_window_block_c128_downsample_fp16",
+        "template_arguments": "128, FWindowBlockC128DownsampleFp16Parameters"
+      },
+      "window_block_c128_downsample_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_wide_downsample_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC128DownsampleFp8Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>"
+        ],
+        "body_lines": 320,
+        "definition": "window_block_wide_downsample_fp8",
+        "emission_unit": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_wide_downsample_fp8.cu",
+        "resolver": "Resolve_window_block_c128_downsample_fp8",
+        "template_arguments": "128, FWindowBlockC128DownsampleFp8Parameters"
+      },
+      "window_block_c128_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC128Fp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 244,
+        "definition": "window_block_wide_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+        "resolver": "Resolve_window_block_c128_fp16",
+        "template_arguments": "128, false, false, FWindowBlockC128Fp16Parameters"
+      },
+      "window_block_c128_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC128Fp8Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 244,
+        "definition": "window_block_wide_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+        "resolver": "Resolve_window_block_c128_fp8",
+        "template_arguments": "128, false, false, FWindowBlockC128Fp8Parameters"
+      },
+      "window_block_c128_input_view_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC128InputViewFp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 244,
+        "definition": "window_block_wide_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+        "resolver": "Resolve_window_block_c128_input_view_fp16",
+        "template_arguments": "128, true, false, FWindowBlockC128InputViewFp16Parameters"
+      },
+      "window_block_c128_input_view_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC128InputViewFp8Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 244,
+        "definition": "window_block_wide_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+        "resolver": "Resolve_window_block_c128_input_view_fp8",
+        "template_arguments": "128, true, false, FWindowBlockC128InputViewFp8Parameters"
+      },
+      "window_block_c128_output_view_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC128OutputViewFp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 244,
+        "definition": "window_block_wide_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+        "resolver": "Resolve_window_block_c128_output_view_fp16",
+        "template_arguments": "128, false, true, FWindowBlockC128OutputViewFp16Parameters"
+      },
+      "window_block_c128_output_view_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC128OutputViewFp8Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 244,
+        "definition": "window_block_wide_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+        "resolver": "Resolve_window_block_c128_output_view_fp8",
+        "template_arguments": "128, false, true, FWindowBlockC128OutputViewFp8Parameters"
+      },
+      "window_block_c128_upsample_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_wide_upsample_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC128UpsampleFp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 264,
+        "definition": "window_block_wide_upsample_fp16",
+        "emission_unit": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_wide_upsample_fp16.cu",
+        "resolver": "Resolve_window_block_c128_upsample_fp16",
+        "template_arguments": "128, FWindowBlockC128UpsampleFp16Parameters"
+      },
+      "window_block_c128_upsample_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_wide_upsample_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC128UpsampleFp8Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 265,
+        "definition": "window_block_wide_upsample_fp8",
+        "emission_unit": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_wide_upsample_fp8.cu",
+        "resolver": "Resolve_window_block_c128_upsample_fp8",
+        "template_arguments": "128, FWindowBlockC128UpsampleFp8Parameters"
+      },
+      "window_block_c256_downsample_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_wide_downsample_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC256DownsampleFp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>"
+        ],
+        "body_lines": 319,
+        "definition": "window_block_wide_downsample_fp16",
+        "emission_unit": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_wide_downsample_fp16.cu",
+        "resolver": "Resolve_window_block_c256_downsample_fp16",
+        "template_arguments": "256, FWindowBlockC256DownsampleFp16Parameters"
+      },
+      "window_block_c256_downsample_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_wide_downsample_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC256DownsampleFp8Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>"
+        ],
+        "body_lines": 320,
+        "definition": "window_block_wide_downsample_fp8",
+        "emission_unit": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_wide_downsample_fp8.cu",
+        "resolver": "Resolve_window_block_c256_downsample_fp8",
+        "template_arguments": "256, FWindowBlockC256DownsampleFp8Parameters"
+      },
+      "window_block_c256_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC256Fp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 244,
+        "definition": "window_block_wide_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+        "resolver": "Resolve_window_block_c256_fp16",
+        "template_arguments": "256, false, false, FWindowBlockC256Fp16Parameters"
+      },
+      "window_block_c256_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC256Fp8Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 244,
+        "definition": "window_block_wide_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+        "resolver": "Resolve_window_block_c256_fp8",
+        "template_arguments": "256, false, false, FWindowBlockC256Fp8Parameters"
+      },
+      "window_block_c256_input_view_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC256InputViewFp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 244,
+        "definition": "window_block_wide_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+        "resolver": "Resolve_window_block_c256_input_view_fp16",
+        "template_arguments": "256, true, false, FWindowBlockC256InputViewFp16Parameters"
+      },
+      "window_block_c256_input_view_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC256InputViewFp8Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 244,
+        "definition": "window_block_wide_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+        "resolver": "Resolve_window_block_c256_input_view_fp8",
+        "template_arguments": "256, true, false, FWindowBlockC256InputViewFp8Parameters"
+      },
+      "window_block_c256_output_view_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC256OutputViewFp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 244,
+        "definition": "window_block_wide_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+        "resolver": "Resolve_window_block_c256_output_view_fp16",
+        "template_arguments": "256, false, true, FWindowBlockC256OutputViewFp16Parameters"
+      },
+      "window_block_c256_output_view_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC256OutputViewFp8Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 244,
+        "definition": "window_block_wide_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+        "resolver": "Resolve_window_block_c256_output_view_fp8",
+        "template_arguments": "256, false, true, FWindowBlockC256OutputViewFp8Parameters"
+      },
+      "window_block_c256_upsample_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_wide_upsample_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC256UpsampleFp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 264,
+        "definition": "window_block_wide_upsample_fp16",
+        "emission_unit": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_wide_upsample_fp16.cu",
+        "resolver": "Resolve_window_block_c256_upsample_fp16",
+        "template_arguments": "256, FWindowBlockC256UpsampleFp16Parameters"
+      },
+      "window_block_c256_upsample_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_wide_upsample_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC256UpsampleFp8Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 265,
+        "definition": "window_block_wide_upsample_fp8",
+        "emission_unit": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_wide_upsample_fp8.cu",
+        "resolver": "Resolve_window_block_c256_upsample_fp8",
+        "template_arguments": "256, FWindowBlockC256UpsampleFp8Parameters"
+      },
+      "window_block_c32_downsample_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_c32_downsample_fp16.cu",
+        "line": 6,
+        "parameters": "FWindowBlockC32DownsampleFp16Parameters Parameters",
+        "template_calls": [
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "QueryKeyScores<bFp8>"
+        ],
+        "body_lines": 308,
+        "definition": "window_block_c32_downsample_fp16",
+        "emission_unit": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_c32_downsample_fp16.cu"
+      },
+      "window_block_c32_downsample_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_c32_downsample_fp8.cu",
+        "line": 6,
+        "parameters": "FWindowBlockC32DownsampleFp8Parameters Parameters",
+        "template_calls": [
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "QueryKeyScores<bFp8>"
+        ],
+        "body_lines": 309,
+        "definition": "window_block_c32_downsample_fp8",
+        "emission_unit": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_c32_downsample_fp8.cu"
+      },
+      "window_block_c32_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_compact_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC32Fp16Parameters Parameters",
+        "template_calls": [
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "QueryKeyScores<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 207,
+        "definition": "window_block_compact_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_compact_fp16.cu",
+        "resolver": "Resolve_window_block_c32_fp16",
+        "template_arguments": "32, false, FWindowBlockC32Fp16Parameters"
+      },
+      "window_block_c32_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_compact_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC32Fp8Parameters Parameters",
+        "template_calls": [
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "QueryKeyScores<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 208,
+        "definition": "window_block_compact_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_compact_fp8.cu",
+        "resolver": "Resolve_window_block_c32_fp8",
+        "template_arguments": "32, false, FWindowBlockC32Fp8Parameters"
+      },
+      "window_block_c32_input_view_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_compact_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC32InputViewFp16Parameters Parameters",
+        "template_calls": [
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "QueryKeyScores<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 207,
+        "definition": "window_block_compact_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_compact_fp16.cu",
+        "resolver": "Resolve_window_block_c32_input_view_fp16",
+        "template_arguments": "32, true, FWindowBlockC32InputViewFp16Parameters"
+      },
+      "window_block_c32_input_view_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_compact_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC32InputViewFp8Parameters Parameters",
+        "template_calls": [
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "QueryKeyScores<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 208,
+        "definition": "window_block_compact_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_compact_fp8.cu",
+        "resolver": "Resolve_window_block_c32_input_view_fp8",
+        "template_arguments": "32, true, FWindowBlockC32InputViewFp8Parameters"
+      },
+      "window_block_c32_output_view_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_c32_output_view_fp16.cu",
+        "line": 6,
+        "parameters": "FWindowBlockC32OutputViewFp16Parameters Parameters",
+        "template_calls": [
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "QueryKeyScores<bFp8>"
+        ],
+        "body_lines": 186,
+        "definition": "window_block_c32_output_view_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_c32_output_view_fp16.cu"
+      },
+      "window_block_c32_output_view_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_c32_output_view_fp8.cu",
+        "line": 6,
+        "parameters": "FWindowBlockC32OutputViewFp8Parameters Parameters",
+        "template_calls": [
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "QueryKeyScores<bFp8>"
+        ],
+        "body_lines": 187,
+        "definition": "window_block_c32_output_view_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_c32_output_view_fp8.cu"
+      },
+      "window_block_c32_upsample_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_c32_upsample_fp16.cu",
+        "line": 6,
+        "parameters": "FWindowBlockC32UpsampleFp16Parameters Parameters",
+        "template_calls": [
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "QueryKeyScores<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 271,
+        "definition": "window_block_c32_upsample_fp16",
+        "emission_unit": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_c32_upsample_fp16.cu"
+      },
+      "window_block_c32_upsample_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c32_upsample_fp8.cu",
+        "line": 6,
+        "parameters": "FWindowBlockC32UpsampleFp8Parameters Parameters",
+        "template_calls": [
+          "FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Expand = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_OutputWeights = LoadWindowWeights<bFp8>",
+          "FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<bFp8>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "QueryKeyScores<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 271,
+        "definition": "window_block_c32_upsample_fp8",
+        "emission_unit": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c32_upsample_fp8.cu"
+      },
+      "window_block_c64_downsample_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_c64_downsample_fp16.cu",
+        "line": 6,
+        "parameters": "FWindowBlockC64DownsampleFp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>"
+        ],
+        "body_lines": 328,
+        "definition": "window_block_c64_downsample_fp16",
+        "emission_unit": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_c64_downsample_fp16.cu"
+      },
+      "window_block_c64_downsample_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_c64_downsample_fp8.cu",
+        "line": 6,
+        "parameters": "FWindowBlockC64DownsampleFp8Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>"
+        ],
+        "body_lines": 329,
+        "definition": "window_block_c64_downsample_fp8",
+        "emission_unit": "kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_c64_downsample_fp8.cu"
+      },
+      "window_block_c64_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC64Fp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 253,
+        "definition": "window_block_two_warp_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
+        "resolver": "Resolve_window_block_c64_fp16",
+        "template_arguments": "64, false, false, FWindowBlockC64Fp16Parameters"
+      },
+      "window_block_c64_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC64Fp8Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 253,
+        "definition": "window_block_two_warp_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
+        "resolver": "Resolve_window_block_c64_fp8",
+        "template_arguments": "64, false, false, FWindowBlockC64Fp8Parameters"
+      },
+      "window_block_c64_input_view_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC64InputViewFp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 253,
+        "definition": "window_block_two_warp_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
+        "resolver": "Resolve_window_block_c64_input_view_fp16",
+        "template_arguments": "64, true, false, FWindowBlockC64InputViewFp16Parameters"
+      },
+      "window_block_c64_input_view_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC64InputViewFp8Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 253,
+        "definition": "window_block_two_warp_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
+        "resolver": "Resolve_window_block_c64_input_view_fp8",
+        "template_arguments": "64, true, false, FWindowBlockC64InputViewFp8Parameters"
+      },
+      "window_block_c64_output_view_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC64OutputViewFp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 253,
+        "definition": "window_block_two_warp_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
+        "resolver": "Resolve_window_block_c64_output_view_fp16",
+        "template_arguments": "64, false, true, FWindowBlockC64OutputViewFp16Parameters"
+      },
+      "window_block_c64_output_view_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowBlockC64OutputViewFp8Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 253,
+        "definition": "window_block_two_warp_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
+        "resolver": "Resolve_window_block_c64_output_view_fp8",
+        "template_arguments": "64, false, true, FWindowBlockC64OutputViewFp8Parameters"
+      },
+      "window_block_c64_upsample_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_c64_upsample_fp16.cu",
+        "line": 6,
+        "parameters": "FWindowBlockC64UpsampleFp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 271,
+        "definition": "window_block_c64_upsample_fp16",
+        "emission_unit": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_c64_upsample_fp16.cu"
+      },
+      "window_block_c64_upsample_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c64_upsample_fp8.cu",
+        "line": 6,
+        "parameters": "FWindowBlockC64UpsampleFp8Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "ComputeWindowExpert<Channels, bFp8>",
+          "LoadWindowWeights<bFp8>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindowChunk<bFp8>",
+          "g_X < g_Width && g_Y >= 0 && g_Y < g_Height ? *reinterpret_cast<const uint32_t*>"
+        ],
+        "body_lines": 272,
+        "definition": "window_block_c64_upsample_fp8",
+        "emission_unit": "kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c64_upsample_fp8.cu"
+      },
+      "window_ffn_c512_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu",
+        "line": 6,
+        "parameters": "FWindowFfnC512Fp16Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>",
+          "LoadWindowFfnInputFragment<bFp8>",
+          "LoadWindowFfnInputFragment<false>"
+        ],
+        "body_lines": 205,
+        "definition": "window_ffn_c512_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu"
+      },
+      "window_ffn_c512_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu",
+        "line": 6,
+        "parameters": "FWindowFfnC512Fp8Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>",
+          "LoadWindowFfnInputFragment<bFp8>",
+          "LoadWindowFfnInputFragment<true>"
+        ],
+        "body_lines": 197,
+        "definition": "window_ffn_c512_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu"
+      },
+      "window_ffn_input_view_c512_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_input_view_c512_fp16.cu",
+        "line": 6,
+        "parameters": "FWindowFfnInputViewC512Fp16Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>",
+          "LoadWindowFfnInputFragment<bFp8>",
+          "LoadWindowFfnInputFragment<false>"
+        ],
+        "body_lines": 195,
+        "definition": "window_ffn_input_view_c512_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_input_view_c512_fp16.cu"
+      },
+      "window_ffn_input_view_c512_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu",
+        "line": 6,
+        "parameters": "FWindowFfnInputViewC512Fp8Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>",
+          "LoadWindowFfnInputFragment<bFp8>",
+          "LoadWindowFfnInputFragment<true>"
+        ],
+        "body_lines": 187,
+        "definition": "window_ffn_input_view_c512_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu"
+      },
+      "window_ffn_projection_c512_fp16": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 7,
+        "parameters": "FWindowFfnProjectionC512Fp16Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>"
+        ],
+        "body_lines": 197,
+        "definition": "spatial_projection_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "resolver": "Resolve_window_ffn_projection_c512_fp16",
+        "template_arguments": "4, FWindowFfnProjectionC512Fp16Parameters"
+      },
+      "window_ffn_projection_c512_fp8": {
+        "namespace": "",
+        "linkage": "C++",
+        "header": "kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
+        "line": 7,
+        "parameters": "FWindowFfnProjectionC512Fp8Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>"
+        ],
+        "body_lines": 224,
+        "definition": "spatial_projection_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
+        "resolver": "Resolve_window_ffn_projection_c512_fp8",
+        "template_arguments": "4, FWindowFfnProjectionC512Fp8Parameters"
+      },
+      "window_ffn_projection_input_view_c512_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_projection_input_view_c512_fp16.cu",
+        "line": 6,
+        "parameters": "FWindowFfnProjectionInputViewC512Fp16Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>",
+          "SpatialProjectionPlaneWordAddress<bFp8>"
+        ],
+        "body_lines": 205,
+        "definition": "window_ffn_projection_input_view_c512_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_projection_input_view_c512_fp16.cu"
+      },
+      "window_ffn_projection_input_view_c512_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_projection_input_view_c512_fp8.cu",
+        "line": 6,
+        "parameters": "FWindowFfnProjectionInputViewC512Fp8Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>",
+          "SpatialProjectionPlaneWordAddress<bFp8>"
+        ],
+        "body_lines": 212,
+        "definition": "window_ffn_projection_input_view_c512_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_projection_input_view_c512_fp8.cu"
+      },
+      "window_qkv_c512_fp16": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_qkv_c512_fp16.cu",
+        "line": 6,
+        "parameters": "FWindowQkvC512Fp16Parameters Parameters",
+        "template_calls": [
+          "AttendWithBias<bFp8>",
+          "MMA<Profile::Precision>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "PublishWindow32<bFp8>"
+        ],
+        "body_lines": 192,
+        "definition": "window_qkv_c512_fp16",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_qkv_c512_fp16.cu"
+      },
+      "window_qkv_c512_fp8": {
+        "namespace": "",
+        "linkage": "C",
+        "header": "kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_qkv_c512_fp8.cu",
+        "line": 6,
+        "parameters": "FWindowQkvC512Fp8Parameters Parameters",
+        "template_calls": [
+          "AccumulateTile<Profile::Precision>",
+          "NormalizeWindow<false>",
+          "NormalizeWindow<true>",
+          "ProbabilityValues<true>",
+          "PublishWindow32<bFp8>",
+          "PublishWindow32<true>",
+          "QueryKeyScores<true>"
+        ],
+        "body_lines": 185,
+        "definition": "window_qkv_c512_fp8",
+        "emission_unit": "kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_qkv_c512_fp8.cu"
+      }
+    }
+  },
+  "files": {
+    "csrc/kernel_impl/bottleneck_c1024_attention/common/global_attention.cuh": "f8419c97d154c6b2a0b288e6cec17fa8ef2eb14f72435c5558d6ee773fd754be",
+    "csrc/kernel_impl/bottleneck_c1024_attention/common/global_qkv.cuh": "55a7f16251c2aac56b3e2162de72df7e2a9b073969a15d90ff691208b5f41fdf",
+    "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu": "bcca1759f3da53cdfb8660f03bdb07320efd25fabee8b4ac019ca3aebf46d4cb",
+    "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_qkv_c1024_fp16.cu": "5c03e60fb42f2ce3a03141ee75b60a314e538483a23536452442f768ab70b4d1",
+    "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu": "ca14f42a0ea12761608689579385f135abfb3e58f5cf75de3bb6063eab086a41",
+    "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_qkv_c1024_fp8.cu": "5fbab35850e6ca9d52e8eea232e8cadb118b4c629bdbcdac5fbaba64af1d5c99",
+    "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh": "9203285ad361e4a9cef5b9196a8b007a255392fcd9fd37f0f709ebeafba7631d",
+    "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu": "c3207c89aaa835722b247275d5de03e55bc2f72d1f4388f73b32f0527089e558",
+    "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_projection_c1024_fp16.cu": "d52b78e4daead98785058a0a5626f8d7a5b9309737713253657d004f7ccfc77e",
+    "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu": "3b692c1b53fd41f643c55052e43d9637df00cfbb5fa3bc241140042e8c11eb43",
+    "csrc/kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu": "e43ebea03bdf4ab10322aa9e7286e9a8dce561345b4ff6a0ba7daea5b01dcc75",
+    "csrc/kernel_impl/bottleneck_c1024_ffn/fp8/global_ffn_expand_c1024_fp8.cu": "717ac91e06cdd7bca12351263bcbc0093448dd1778df9148d7f1acec35231c05",
+    "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh": "bee04c431331871d8f22c630c8dbaaba723329ecdd8eec8e98bbc7974b16eb6e",
+    "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu": "d37e708b34c754e53edcebbaba906a4ba351533d94efab5fabbbc10f457cfd83",
+    "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_token_to_spatial.cu": "6f7f17f244f95e04e432fbaf278257d96b05d6092ccba1776f5cd8151c93760e",
+    "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp16/decoder_upsample_c1024_to_c512_fp16.cu": "315bf28d1a541f20e924d359be9d27d87705da4c3da2b777507ad8b00616d26b",
+    "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp8/decoder_upsample_c1024_to_c512_fp8.cu": "2671f18bf5cbe8d2eed944657b0bc462fbb004be767a8f998bba4800772745d8",
+    "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_c32_upsample_fp16.cu": "61786fb920e153bc7986e3fb455d23586592d5aca38fc275554f2045ad118192",
+    "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_c64_upsample_fp16.cu": "7a45a62a666deee08b2cc7d3b3d65af8e1880dd1d2701fca282e03356bbf8dcb",
+    "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_wide_upsample_fp16.cu": "f75cbfdf9da9f079b58dd6c60fd876acc9394aa099cea1b4ee5f2950cc6b8080",
+    "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c32_upsample_fp8.cu": "dbc81234ce1e41109e2b80db1231671c9e4bfb2e27ffdad359ac71f4349c2efe",
+    "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c64_upsample_fp8.cu": "7f609c93cf4cee49e4473a1712093233b9fcd758489471ae2aa60d37819a2302",
+    "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_wide_upsample_fp8.cu": "511376ee75cd75a44f8a73b962fec449d65464195a4bd7bfa49014421d089b48",
+    "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/common/window_downsample.cuh": "826a987a3794c56f0e2021304b64d6a74d5c4d595c9eec27696c42a55dffc654",
+    "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_c32_downsample_fp16.cu": "161f0f0970100afadacd06ec4f60db7fe753126f6ebbd226dafa619c60f49277",
+    "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_c64_downsample_fp16.cu": "e00abe01319a49831ebe35a5ada3ff8552e411d90b56c7a3a57c3250f7756ed7",
+    "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_wide_downsample_fp16.cu": "d3ffa45657cd329c8232ab232aa104d149a5b414f99d673984df80390564bb7b",
+    "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_c32_downsample_fp8.cu": "e0c9fc6a3981c4e1b5b5a739e917619878a313393a6adbac69c261fca5a62bb4",
+    "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_c64_downsample_fp8.cu": "bb17a697a41dacc6808256b53d654b2aa3e3daef53a87c3ab0c8b18f0f088a63",
+    "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_wide_downsample_fp8.cu": "acc1637cef32f8da1122d2f549174422accc25e5f44724003afed69f57d6ec5e",
+    "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu": "519080f2ac0f5d9a81160e0a8ff9c44f41248e16f2e75506042d07f8e9a6fc03",
+    "csrc/kernel_impl/encoder_c512_downsample/fp16/window_attention_projection_pool_c512_fp16.cu": "c0d708721e342087200c96e6ad4790c74e6c51ff90e930db130db2ca09653916",
+    "csrc/kernel_impl/encoder_c512_downsample/fp8/channel_projection_c512_to_c1024_fp8.cu": "161857ae62af9f374b7f6082d97e7327f42c85a7775f2d8e127bc900ee5be62b",
+    "csrc/kernel_impl/encoder_c512_downsample/fp8/window_attention_projection_pool_c512_fp8.cu": "518596ecd03236fbcf63ffb4d5d4347b742a48f7c626dce7b69ba35aa94c8379",
+    "csrc/kernel_impl/input_c32/fp16/input_preprocess_window_c32_fp16.cu": "c804c670b8154f5d1dfbc06606d15d292881eb01f8691591f65142144000021e",
+    "csrc/kernel_impl/input_c32/fp16/input_preprocess_window_downsample_c32_fp16.cu": "06cebd40160841b76fc6103c771e7b5971ecfbbe34147f84de5276126a39621f",
+    "csrc/kernel_impl/input_c32/fp8/input_preprocess_window_c32_fp8.cu": "94a48745d6a96138195b03b9a79dc508fde0c019592402bca6d5bbdbeffda501",
+    "csrc/kernel_impl/input_c32/fp8/input_preprocess_window_downsample_c32_fp8.cu": "efb508ced42f57e1df88dabaae96038c278b62d47a38c1e7f22e034c0f2fdebf",
+    "csrc/kernel_impl/output_c32/fp16/output_window_postprocess_c32_fp16.cu": "7d1d7f613477961ffb4b8c6460e10c1adbab88f0ff4ff109bb435d7a556ec315",
+    "csrc/kernel_impl/output_c32/fp8/output_window_postprocess_c32_fp8.cu": "c7d8b9ff2f9c45289ed4186a843b6143e3d7e4e6927b52c88c4f3df9933b14f0",
+    "csrc/kernel_impl/shared/common/completion_counter_clear.cu": "c11e6ecedb1d4d913e83d7a2e4a93616c78d6682c24b2acbcc1aad6fe64fc7ea",
+    "csrc/kernel_impl/shared/common/intrinsics.cuh": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+    "csrc/kernel_impl/shared/common/packed_math.cuh": "3cb3128aa0ae6b70a8267dd4cfa9bfeba3083debd57fb30c6cd897b9a54086f2",
+    "csrc/kernel_impl/shared/common/tiled_mma.cuh": "4ebc31d9bef91f75859d5e483ba2a38dc0dd49e00f9a36d1cc85462946c0fb08",
+    "csrc/kernel_impl/shared/common/warp_window32.cuh": "3ef57395adedf4d36797a11048ce296b8c36c21f4569a26dbfa6c7cc417baf1e",
+    "csrc/kernel_impl/shared/common/warp_window_wide.cuh": "cb158cf6fca3ccb90a5aaa1330b335a21c965bbe3f11657cffaf485428f70d29",
+    "csrc/kernel_impl/shared/common/window_pool.cuh": "bef92ed4a17ee32be94365d13f080a4ec3ca990521142bf97a6d9a41f94f9e19",
+    "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_c32_output_view_fp16.cu": "68e5783838eb0ad4562623d490bb5ef5b82146cc0b03d923c29e9f6eb31bc6e5",
+    "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_compact_fp16.cu": "228e493223a830ed7ce8af68675b5bf36657eb32a6a3d646ccd601a71e0faf62",
+    "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu": "d33cc7bf8f5ef8fff7bfe62b200c9018809c731ba1bcae1a449ba71fe51df727",
+    "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu": "b984e63a4f6823f1e037eb6460485c2d36997ccf1b4fe8d26db981f43a603dd2",
+    "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_c32_output_view_fp8.cu": "d2e01ac45204abfd7b54b458e03ae7415f58f7b5adc1d19d02ccd47b7d32ddcd",
+    "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_compact_fp8.cu": "11f842a59d41989c3600a433d71bcb3ba6a93bdaf2804eb37335ffe7d8e3b8a6",
+    "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu": "b02d28af1a3c08036b33242ca352fb067556bfd5d02ab5fcf372deca47969c61",
+    "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu": "c5b46550ec6e27efcb3ff2f0d5569d70931eefc4c2c0d7343f4d60df69b294c9",
+    "csrc/kernel_impl/shared_encoder_decoder_c512_attention/common/window_qkv.cuh": "585fda56f56f2f431cfd45f50cd04ca1c9bac156828ddd2eb88c0008425c9adc",
+    "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_attention_projection_output_view_c512_fp16.cu": "4e9606626cdf186b5981ba463f9c94ebd7d7fdd65a6f663adda68714fe6f445d",
+    "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_qkv_c512_fp16.cu": "72250b51bc8974efd23d2d0946c9ab18d18e47bcc5c7b46407fb0a94f871bebf",
+    "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_attention_projection_output_view_c512_fp8.cu": "3a0559f341265d6ecc9fdd71bdfd6bae36c7f55f796fb30b978c9301ec81fe78",
+    "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_qkv_c512_fp8.cu": "c1ae5cfc2a65390b999eb407a65f04c67def27f178398d69fb0bb5458a0b5502",
+    "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/common/spatial_projection.cuh": "2423d75105e5e6ccdba604ddbc1ef91092396d950d94bfda6aac04257642b9b1",
+    "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu": "27fa1b546c59d87542bf7c06f36b76dd2fd616ddd109689c12bd54a6ed6a9dff",
+    "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu": "8362d990afd9a5cd7a9e5bc43488bc2613f86d3103fb237d3d49ed263a57910f",
+    "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/common/window_ffn.cuh": "0fc393d9beb7fe6b020319c4e5f9b3b98a06c8ee435c5916509fe852de715195",
+    "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu": "c838a8f845bef96f04b89e7c817ee511bb45c26c05b7b1760ff5de632d8f7b34",
+    "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_input_view_c512_fp16.cu": "66137ab7de1a566cba140524ad833349e22321aa27b840a66530346f41087a10",
+    "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_projection_input_view_c512_fp16.cu": "6466d3f488a2b4af90514d5b4f3599d8c72e34469669745ca82fb386455a7c3f",
+    "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu": "328043ca40a2e0d2d45094b24304224edc8acb0e124f625147fe9890ea0576dc",
+    "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu": "9f5fac6a7bf29a45f2303eaacb8de268ee1d7238a25703c59f2a833d28b70337",
+    "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_projection_input_view_c512_fp8.cu": "a24c00e8dda75a7a5c8836baea37b656bad46f75fa26efb3366545e798db8851",
+    "csrc/kernel_impl/shared_input_output_c32/common/frontend_math.cuh": "052d8f60ef57510882fb152d89bbb8ceb7e1f69fd0ff3357b2f6156267b69735",
+    "csrc/kernel_impl/shared_input_output_c32/common/frontend_profiles.cuh": "5912b5609271be20e4ca5fb8cc9fa3e28206885d56de332f6ca59be53fadda85",
+    "csrc/kernel_impl/shared_input_output_c32/common/input_features.cuh": "2e96377ccefb66aa6e7331c7f098f7a14381a27a7f482bb0fe869d7e458d56ed",
+    "csrc/kernel_launcher/architecture_support.h": "3bc9f62d8527c3328e2b5da739d6f6da26e838d59f6a82fc20a00543114a30dd",
+    "csrc/kernel_launcher/c512_dispatch.inl": "4c69e7e65474bc241eca8584be372aeb5279c186d09c0bd99cdf66317c59e5b2",
+    "csrc/kernel_launcher/deployment.cpp": "c4c84490e441ca712702d78bb4366fa6f01905577823a6c03b8f62943e463762",
+    "csrc/kernel_launcher/plan_geometry.h": "ab31bfe2e7caf30f31c5af87656a9a1834ae20d679cd403869bd542cfdfff4fe",
+    "csrc/kernel_launcher/split_launch.cpp": "6013474a8fe96b2ab1d16cb9d219c54dc12ac123eb5194c99aec35604de9c2a7",
+    "csrc/kernel_launcher/split_launch_policy.h": "bdd40dbc3f56ddbace08985faf45c9635413ceaa5da3a9dd80007c69ce50c998",
+    "dlssnr/weights.py": "e798528567bf1a9cdfb6d3fae74224dc2147af67b0714c70a27d8402523738f0"
+  },
+  "snippets": [
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 193,
+      "end": 227,
+      "sha256": "74dbb756d873d9a57e7e5a3393c3d3f96c7b226e996d09766cce83c0ec3f33a1"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
+      "start": 10,
+      "end": 38,
+      "sha256": "685cf5e222602884ec69b0b55dcf95e81c257ae4d83e9c2731558827d707c03c"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_compact_fp8.cu",
+      "start": 65,
+      "end": 85,
+      "sha256": "a5201b54cbb21fa2a6a8bd315726bb01bd5998b36b55b0436178ed201b87dee3"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 106,
+      "end": 125,
+      "sha256": "cece67934adbcfc9810218f241c49c88a7ca60b340a5c0e04a57686e7844f24e"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 269,
+      "sha256": "33119cbaf0dd8c777dba5fb69dfbdbdc040eb62c78cc761e1b67dec844fe0442"
+    },
+    {
+      "path": "csrc/kernel_launcher/deployment.cpp",
+      "start": 49,
+      "end": 66,
+      "sha256": "4241ceb5269cb8724a36116a085a5c153897e97a79e02b91e1acb511bfb5475d"
+    },
+    {
+      "path": "csrc/kernel_launcher/deployment.cpp",
+      "start": 123,
+      "end": 146,
+      "sha256": "fe019953a3bbcf62e16ae6daad29c200ad36326aae86ae08b10cc5dcd69de30f"
+    },
+    {
+      "path": "csrc/kernel_launcher/plan_geometry.h",
+      "start": 68,
+      "end": 104,
+      "sha256": "9b3d1ebe19eecc17d2562c4a8c15eafb3e2c28758b10ffcded7457bdcd103db2"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+      "start": 5,
+      "end": 12,
+      "sha256": "027ae7a542f8ababd7c2db60850885f32252604ad19f001063a7748648205be1"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 47,
+      "end": 73,
+      "sha256": "49e8ef57e41ec1f9cce14c584d5e0eb758f5375ddc5dfac6f5e8ac8d1998bf51"
+    },
+    {
+      "path": "csrc/kernel_launcher/split_launch_policy.h",
+      "start": 4,
+      "end": 22,
+      "sha256": "5df90ebf63acd170a16c6a0b63c613538d9005260b13d081b8e88be937a5a2e9"
+    },
+    {
+      "path": "csrc/kernel_launcher/split_launch.cpp",
+      "start": 41,
+      "end": 66,
+      "sha256": "93beb8adff6255c25b2ab241e596094cf26454ea48cd0587931917f9294e4ec4"
+    },
+    {
+      "path": "csrc/kernel_launcher/architecture_support.h",
+      "start": 15,
+      "end": 19,
+      "sha256": "b3b75027b8432db8ad4f6b055f84d5b37e86734862eccc79dd44e3c8a234aab2"
+    },
+    {
+      "path": "csrc/kernel_launcher/architecture_support.h",
+      "start": 55,
+      "end": 66,
+      "sha256": "c1d31c72dc547a922b1177f75332b1fd37d1c9785900429d78fa00a495cbd343"
+    },
+    {
+      "path": "csrc/kernel_impl/input_c32/fp16/input_preprocess_window_downsample_c32_fp16.cu",
+      "start": 21,
+      "end": 39,
+      "sha256": "d8b3409fe1d5ae19a85821f4d7b2fc5709940d3cda2861533097130b9db9098d"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_input_output_c32/common/input_features.cuh",
+      "start": 91,
+      "end": 107,
+      "sha256": "ee862b3ae29eb49d1a395d332cce49411a3c16e2f46ac28a52c6bf49459537da"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_input_output_c32/common/frontend_math.cuh",
+      "start": 166,
+      "end": 190,
+      "sha256": "4901e490529a2b42977e377863da84331d4d582742cfe4328f37cbfaa7e7df85"
+    },
+    {
+      "path": "csrc/kernel_impl/input_c32/fp16/input_preprocess_window_downsample_c32_fp16.cu",
+      "start": 163,
+      "end": 185,
+      "sha256": "5653e17be51cad66dcf253efedbe2018654abfd746b0642dce3431a7d8ad20cd"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_input_output_c32/common/frontend_profiles.cuh",
+      "start": 6,
+      "end": 17,
+      "sha256": "682f9dc64dd6ece36ecbcc8d0a88c1b450e4ae4568683f6f556691d61b584230"
+    },
+    {
+      "path": "csrc/kernel_impl/input_c32/fp16/input_preprocess_window_downsample_c32_fp16.cu",
+      "start": 219,
+      "end": 257,
+      "sha256": "e6e8c6f47656454bf188239dde6aa0c5d90fcfa0c23b61cf9f57a71d8fb23a54"
+    },
+    {
+      "path": "csrc/kernel_impl/input_c32/fp8/input_preprocess_window_downsample_c32_fp8.cu",
+      "start": 359,
+      "end": 374,
+      "sha256": "3e1239a812f02164dd37c5766daca53e3d739907b23d5eb4e750c1a9304b6ca9"
+    },
+    {
+      "path": "csrc/kernel_impl/output_c32/fp16/output_window_postprocess_c32_fp16.cu",
+      "start": 66,
+      "end": 89,
+      "sha256": "e74031f8f22665a830f13b41de28a202bc2d215e1f63ab248081cca4d8ab196e"
+    },
+    {
+      "path": "csrc/kernel_impl/output_c32/fp16/output_window_postprocess_c32_fp16.cu",
+      "start": 229,
+      "end": 244,
+      "sha256": "6c9b8a1d94abe778c907b7c88f6f46140b5cfb91422d8501ceda6a2d28acb162"
+    },
+    {
+      "path": "csrc/kernel_impl/output_c32/fp16/output_window_postprocess_c32_fp16.cu",
+      "start": 254,
+      "end": 286,
+      "sha256": "2628621f4e14423ea37653587e72de28421bc365ad1d749f53eb33594b68c18a"
+    },
+    {
+      "path": "csrc/kernel_impl/output_c32/fp16/output_window_postprocess_c32_fp16.cu",
+      "start": 329,
+      "end": 355,
+      "sha256": "b47e21dbac1cf3a17fc8c9bdba263d489c5d3581bd31b0bc261f492ad3cb5221"
+    },
+    {
+      "path": "dlssnr/weights.py",
+      "start": 79,
+      "end": 81,
+      "sha256": "f07ac6110fb0e63472c3146180dd1289c4180c4afb3329ba7ab70644de67be99"
+    },
+    {
+      "path": "dlssnr/weights.py",
+      "start": 208,
+      "end": 216,
+      "sha256": "35110f427ef735dc3998fd598d669e871c367bd0ef70ca1a52c063992e7eedb0"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_compact_fp8.cu",
+      "start": 64,
+      "end": 79,
+      "sha256": "6e96708e37642c865330b6ac22f41787e13b9afa9e262da78c1f17f9ad07c637"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
+      "start": 105,
+      "end": 139,
+      "sha256": "6ef8c167a1056e3a2c1e276d6424369390bc1a3f9fb552dc24f013f621989851"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_compact_fp8.cu",
+      "start": 96,
+      "end": 122,
+      "sha256": "f011371056e896215030efade580b1ca74fcbdc25d3bf9b7c5eac5823c7337ef"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/packed_math.cuh",
+      "start": 141,
+      "end": 164,
+      "sha256": "b2813f84fda60ed58eb22f51bf08a3c61c7a73a687b39088dee814519024d23b"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 188,
+      "end": 224,
+      "sha256": "94ec7cfac879b281a423017e0771279bc87587c04222d53da7aef581dbcc730c"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
+      "start": 92,
+      "end": 115,
+      "sha256": "519ea0834c99c0c23e8b63d296ed027477a32eecf573193be8025a1af98dbe59"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+      "start": 76,
+      "end": 106,
+      "sha256": "0ef6a4906347799ff0dac4404c08ba4ffbd59f274e00f290e84904a7f1c40704"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+      "start": 113,
+      "end": 147,
+      "sha256": "451282d95b0390c3b413201857932b452b283bbfaaa2d4a1c2ec942474f129b2"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
+      "start": 160,
+      "end": 191,
+      "sha256": "339cea7da82b041b4fa25fa2bf2de5f7a6f6c7c7883339ce170f99f8a99ad7de"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
+      "start": 194,
+      "end": 238,
+      "sha256": "fd0bdcb1fa45a9535b7b3a5842916a76e2a82c3f0b1e2db47f316e59aa35f284"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
+      "start": 281,
+      "end": 315,
+      "sha256": "807a701aff55df62056721daaa53b602b4862b290966a016e27ec404a6bfbb20"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/window_pool.cuh",
+      "start": 7,
+      "end": 42,
+      "sha256": "5e65c44a08c45010a614a94eaa456efed2c75e0a710d40acb1ddb1f826df74a8"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_wide_downsample_fp8.cu",
+      "start": 204,
+      "end": 219,
+      "sha256": "9f29bd16b4c018444482e3945b9e54e13c3877ba73ceb0d59358308ed88bac63"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/common/window_downsample.cuh",
+      "start": 24,
+      "end": 50,
+      "sha256": "d234254f2fb5a1b7638b5aed53c7a6057f738f5e8e253b2679ca23ec4647f1a8"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/common/window_downsample.cuh",
+      "start": 56,
+      "end": 94,
+      "sha256": "dbccc6a9c3d561276479d852ebec9aef536ecb9f94a99ad822ebb4886f1b7955"
+    },
+    {
+      "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_wide_upsample_fp8.cu",
+      "start": 27,
+      "end": 59,
+      "sha256": "7d46c2bcedd3c49621c93dd87390abba69c2016cd614a3405656bd7c492c7e41"
+    },
+    {
+      "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_wide_upsample_fp8.cu",
+      "start": 81,
+      "end": 113,
+      "sha256": "57937d3c4cf72ed69533505f02720ab9bd34412d2c5edbc47334421c474cab6c"
+    },
+    {
+      "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c32_upsample_fp8.cu",
+      "start": 140,
+      "end": 153,
+      "sha256": "a217f27eb169e98ddeb8f2864ee60abcf8cd9589cb0ba1afbfcedcfca555f25a"
+    },
+    {
+      "path": "csrc/kernel_launcher/c512_dispatch.inl",
+      "start": 430,
+      "end": 438,
+      "sha256": "56ed1b336316eb8779fce1200d211e0a43c1b7fcdf7ecb7c849895a8290fc625"
+    },
+    {
+      "path": "csrc/kernel_launcher/c512_dispatch.inl",
+      "start": 461,
+      "end": 465,
+      "sha256": "e8ba69ab7e26212e8a0a94318a075abca87691a28952f6c77fa9604d6f394ae8"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/common/window_ffn.cuh",
+      "start": 11,
+      "end": 20,
+      "sha256": "5860b18728174f0ab34b9e4637d4bf29bce93abd165a58d7a84e3f3f726dccc6"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu",
+      "start": 33,
+      "end": 45,
+      "sha256": "5df511e7239cd87d2ac16143198cfe803f7fb1b7444837d1a3bf09365871b741"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu",
+      "start": 101,
+      "end": 127,
+      "sha256": "8f25819a9e6dc672dc53b2cf2af6bcf5a04497ea86c98b5762cfd50b53121705"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu",
+      "start": 130,
+      "end": 163,
+      "sha256": "9f5295acb94ddd4ada12b61b2130dc099126e388399f792bc26affcd619254f8"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu",
+      "start": 141,
+      "end": 179,
+      "sha256": "5731c2f1bf46b88372e151074f80e2f3e61591410257bfbd13481f8dbb4e7cb8"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/common/window_ffn.cuh",
+      "start": 29,
+      "end": 49,
+      "sha256": "f7ea974a2fa4f237543e6630c1fc9e5aebe4dcbb30e70127145d1d2b26c85397"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+      "start": 101,
+      "end": 146,
+      "sha256": "b79c33d057be61009fe652dc507adbdbdcd6a522d7c0d63fce22c7b7eb684380"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu",
+      "start": 53,
+      "end": 83,
+      "sha256": "8bdad806ec0eda37bb29b57e5e781ece56d231933d43aca7e5a2c992e75f35d9"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/common/spatial_projection.cuh",
+      "start": 36,
+      "end": 51,
+      "sha256": "7a66ee824ca4c747450b12597254d2044c7f98b1e3d7d911b8f3e219243b8f4e"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_qkv_c512_fp16.cu",
+      "start": 13,
+      "end": 27,
+      "sha256": "dd05bfa7ff8f82a128d19174fa2a29da4a2120b221658d1660f6476d8ac96407"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/common/window_qkv.cuh",
+      "start": 10,
+      "end": 24,
+      "sha256": "4bef3d166a929e040790ff7faeea9132d612afda77903584a6c88fe9c43b7549"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_qkv_c512_fp16.cu",
+      "start": 34,
+      "end": 46,
+      "sha256": "85a0cc0b2bdae72ef2c1fe79b435489fd7e3190028aacf13c7935c89a91942b6"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
+      "start": 161,
+      "end": 192,
+      "sha256": "ecfdc8b12d88ed6435df6430103db927b144fcfdca1644c78155b1ccfc4c5323"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_qkv_c512_fp8.cu",
+      "start": 115,
+      "end": 144,
+      "sha256": "9a54f1514423ebbd1aed22936271ca4479ccc106ceddc80c53ad3250b7e3b46e"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window_wide.cuh",
+      "start": 142,
+      "end": 171,
+      "sha256": "cea09d7fb8aed674447d4bb8592553715f2691e812342c2e945a5bc60b3da1d3"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
+      "start": 282,
+      "end": 310,
+      "sha256": "d17b6a80ab119c89b073173958213cdacb08d1645059f28be5ae1d9817259de1"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_qkv_c512_fp8.cu",
+      "start": 151,
+      "end": 188,
+      "sha256": "a39a6ad046481b7b6c833865078d600511924282a2fb3301f61023a47c8daef3"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_attention_projection_output_view_c512_fp16.cu",
+      "start": 183,
+      "end": 212,
+      "sha256": "3fd7a15e7a78f58bb694b222cbb7cf424820cc3bc4619e35b54aaa93247f840a"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/window_pool.cuh",
+      "start": 29,
+      "end": 40,
+      "sha256": "1e37f5f9ba6e626a9a0fe096a0e95d1fed4ef6c2ec3f2e5837a313e275b16602"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/window_attention_projection_pool_c512_fp8.cu",
+      "start": 238,
+      "end": 260,
+      "sha256": "9b036f98467f722464fed7d0fec388f53b1d3c498d774b82abe66963b225bb13"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+      "start": 104,
+      "end": 137,
+      "sha256": "d04a688108c3dcc6974962e7c63a55f948227cf73ff385e38a44820d50af7d26"
+    },
+    {
+      "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp8/decoder_upsample_c1024_to_c512_fp8.cu",
+      "start": 110,
+      "end": 149,
+      "sha256": "d62d4b1089113c9a07b706209144df1926a83af24ac20afa5b2f187a117e9a8f"
+    },
+    {
+      "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp16/decoder_upsample_c1024_to_c512_fp16.cu",
+      "start": 210,
+      "end": 224,
+      "sha256": "a0b09f95727b41608961aaf7b0d2f8b2310f32af5ccc06a49363da770b209889"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+      "start": 15,
+      "end": 29,
+      "sha256": "e0f77e72d328e96a311fc55a76b9084fba86797f98692152cc8513f6d7287835"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+      "start": 20,
+      "end": 40,
+      "sha256": "4bc9fc23366cb44e08b2a30ae06081f003ddfe60048e5842535a5aadb858951a"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "start": 9,
+      "end": 44,
+      "sha256": "35b1a07b6263cd544fc24dcbe344f9385945cfe4602b3d6885101aa47ad916fe"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu",
+      "start": 28,
+      "end": 65,
+      "sha256": "15869f2e4fd065fa94ee027b0c4cb2428c2d70be66be329470f38a5bb7e430e0"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu",
+      "start": 78,
+      "end": 125,
+      "sha256": "435a941ddc1905605d8b06b8dde8cdbefe4c9d66ae20a052140d37affdd70123"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp8/global_ffn_expand_c1024_fp8.cu",
+      "start": 128,
+      "end": 162,
+      "sha256": "f84d75166469dda5e6d2de35406c3431d197925898b13840229c0ab0dfe8f77e"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+      "start": 11,
+      "end": 29,
+      "sha256": "73201fbe7a24d020bb2c541680a72894cd17faab004ae062bc716115f61c3116"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+      "start": 216,
+      "end": 248,
+      "sha256": "e4f46b61406cddfca349c03acf2499ae7ee2992c08b0c6ebcaf297a80130f0e2"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/packed_math.cuh",
+      "start": 58,
+      "end": 82,
+      "sha256": "f2c249accb9054c55d8c41e0525d0bb5ab63efd9f927dd9ffd329ff432281d9c"
+    },
+    {
+      "path": "csrc/kernel_launcher/split_launch.cpp",
+      "start": 40,
+      "end": 66,
+      "sha256": "911995b2206c10ad62149284873db66308a7c8454005d1a62f8a460f8601b7fb"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_qkv_c1024_fp8.cu",
+      "start": 87,
+      "end": 120,
+      "sha256": "510d27235e8e5489f3efc2f799edc0873b9205b0d184b28ec8a5f33fb648c9e8"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_qkv_c1024_fp8.cu",
+      "start": 127,
+      "end": 168,
+      "sha256": "0c69e653a86e6de9752acd640bb36795fca72f35ad45e30a7052e71dfb5db294"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/common/global_qkv.cuh",
+      "start": 18,
+      "end": 39,
+      "sha256": "cccbe73fcfa77ac72b23bbebc54912506b340c01a6895aa00154f7aaac84f736"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/common/global_qkv.cuh",
+      "start": 54,
+      "end": 80,
+      "sha256": "260a10d809c2eae24f339c471e13505e2975e0237c7534eb66de8ff99d3bf716"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_qkv_c1024_fp8.cu",
+      "start": 175,
+      "end": 216,
+      "sha256": "bbacfb93d3e93dc27ff59479e0701dbd01f188b6ed545c16daad2be8118f21c4"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_qkv_c1024_fp16.cu",
+      "start": 203,
+      "end": 228,
+      "sha256": "d0d58e7a0199e4fa9f6cbf981636de17c9c388ebaa3421ca4b6228f3610693cf"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/common/global_attention.cuh",
+      "start": 7,
+      "end": 24,
+      "sha256": "9d531f599b1f4fb68c5665bd3e595418545427b97a84b5879238f18c2fa20a5f"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu",
+      "start": 103,
+      "end": 134,
+      "sha256": "27f02f4fd5d897f4c7c73a5c00fbc5c77a5c68efd376fa8fd1cc346ef1737f03"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu",
+      "start": 32,
+      "end": 87,
+      "sha256": "54cbdd646b857da2c7d242aae61becda08c32335590e39be35d28ae3ad7f9fbc"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu",
+      "start": 149,
+      "end": 175,
+      "sha256": "c60b082572be3d8a15c5fa5a4130beec87ee3a0375bcd767df1ee85fabce8f37"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu",
+      "start": 197,
+      "end": 215,
+      "sha256": "cf48b6bb41e6b7ec4259f5c8150cdd20b37efcbfcfc04ae72c6a086fe379a4bc"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu",
+      "start": 218,
+      "end": 253,
+      "sha256": "615fc0c57059b5144b95235893925de3c1abb93118cb479efea498610057187d"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu",
+      "start": 256,
+      "end": 277,
+      "sha256": "7eef6fcad47b4b86a56301380c42221a46a52bd640f762a392773d10d3b3c508"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu",
+      "start": 280,
+      "end": 310,
+      "sha256": "aee6ee0e1b2f1d440931b098fcf95ac1997bffa9522a766f8403570cf0fe57ee"
+    }
+  ],
+  "pages": [
+    {
+      "slug": "index",
+      "title": "DLSS-NR kernels,\nfrom model to memory."
+    },
+    {
+      "slug": "foundations",
+      "title": "From a tensor to a warp"
+    },
+    {
+      "slug": "frontend",
+      "title": "Input and output C32: pixels, fragments, and composition"
+    },
+    {
+      "slug": "fused-windows",
+      "title": "Fused C32\u2013C256 windows: ownership is the optimization"
+    },
+    {
+      "slug": "local-transitions",
+      "title": "Local encoder and decoder transitions: pool, project, repeat, merge"
+    },
+    {
+      "slug": "c512-ffn",
+      "title": "C512 grouped FFN: from model slices to register panels"
+    },
+    {
+      "slug": "c512-attention",
+      "title": "C512 attention and its C1024 transitions"
+    },
+    {
+      "slug": "bottleneck-linear",
+      "title": "C1024 dense FFN, layouts and output projection"
+    },
+    {
+      "slug": "global-attention",
+      "title": "C1024 global QKV and streaming attention"
+    },
+    {
+      "slug": "runtime",
+      "title": "Launch plans, synchronization & optimization evidence"
+    },
+    {
+      "slug": "architecture",
+      "title": "The network architecture"
+    },
+    {
+      "slug": "source-atlas",
+      "title": "The complete source atlas"
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 .venv/
 .cuda/
 assets/
+!docs/kernel-guide/assets/
+!docs/kernel-guide/assets/*
 third_party/
 build/
 *.egg-info/

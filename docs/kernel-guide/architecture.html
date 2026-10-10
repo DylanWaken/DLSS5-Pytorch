@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="The existing architecture document, rendered as a readable HTML companion with its original tensor-flow diagrams."><meta name="color-scheme" content="light"><title>The network architecture · DLSS-NR Kernel Field Guide</title><link rel="stylesheet" href="assets/site.css"><script defer src="assets/site.js"></script></head>
+<body><a class="skip" href="#main">Skip to content</a><aside class="sidebar"><a class="brand" href="index.html">DLSS<span>NR</span></a><p class="nav-kicker">Kernel field guide / FP16 + FP8</p><nav aria-label="Chapters"><a href="foundations.html"><span>01</span>Tensors, lanes &amp; storage</a><a href="frontend.html"><span>02</span>Input &amp; output C32</a><a href="fused-windows.html"><span>03</span>Fused C32–C256 windows</a><a href="local-transitions.html"><span>04</span>Local down/up transitions</a><a href="c512-ffn.html"><span>05</span>C512 grouped FFN</a><a href="c512-attention.html"><span>06</span>C512 attention &amp; transitions</a><a href="bottleneck-linear.html"><span>07</span>C1024 FFN &amp; layouts</a><a href="global-attention.html"><span>08</span>Global QKV &amp; attention</a><a href="runtime.html"><span>09</span>Launches &amp; optimization</a><a href="architecture.html" aria-current="page"><span>10</span>Architecture companion</a><a href="source-atlas.html"><span>11</span>Complete source atlas</a></nav><hr><div class="meta">Source snapshot<br><a href="https://github.com/DylanWaken/DLSS5-Pytorch/tree/fc3276497f866bdad639cd443e75743f5d19b749">fc3276497f86</a><br>Local CUDA source + architecture docs<br><br><a href="../ARCHITECTURE.md">Original architecture Markdown</a><br><a href="https://github.com/DylanWaken/DLSS5-Pytorch">Repository ↗</a></div></aside>
+<div class="topbar"><span>DLSS-NR / DEPLOYMENT INTERNALS</span><div><button id="toggle-code" type="button">Collapse code</button></div></div><main id="main" class="page"><header><p class="eyebrow">Chapter 10 / Model → tensor → storage → instruction</p><h1>The network architecture</h1><p class="lede">The existing architecture document, rendered as a readable HTML companion with its original tensor-flow diagrams.</p><div class="reading-meta"><span>16 min with source excerpts</span><span>15 diagrams</span><span>FP16 · E4M3 FP8 · Half accumulators</span></div></header><div class="toc"><strong>On this page</strong><a href="#contents">Contents</a><a href="#the-whole-network">The whole network</a><a href="#which-diagram-applies-to-each-block">Which diagram applies to each block?</a><a href="#track-a-tensor-between-levels">Track a tensor between levels</a><a href="#follow-one-block">Follow one block</a><a href="#channel-mixing-inside-a-block">Channel mixing inside a block</a><a href="#how-positions-exchange-information">How positions exchange information</a><a href="#moving-between-resolutions">Moving between resolutions</a><a href="#entering-and-leaving-the-network">Entering and leaving the network</a><a href="#the-operations-behind-the-labels">The operations behind the labels</a><a href="#scope-and-regeneration">Scope and regeneration</a></div><article class="content"><aside class="note">Rendered from <a href="../ARCHITECTURE.md">docs/ARCHITECTURE.md</a>. Model diagrams describe logical computation; the kernel chapters explain the actual deployment allocations and precision boundaries.</aside><p>For the CUDA implementation of these model pieces, read the <a href="index.html">FP16/FP8 kernel field guide</a>: source excerpts, per-token and lane diagrams, physical addresses, storage lifetimes and optimization rationale. The <a href="architecture.html">HTML architecture companion</a> renders this document alongside the walkthroughs.</p>
+<p>Start with the master diagram to identify a stage&#x27;s <strong>FFN variant</strong> and <strong>attention variant</strong>. Then compare variants of that operation together, or follow the complete block to see how they connect. The same variant names appear in the master diagram, comparison views and expanded tensor flows.</p>
+<h2 id="contents">Contents</h2>
+<ul><li><a href="#the-whole-network">The whole network</a>, <a href="#which-diagram-applies-to-each-block">variants by stage</a> and <a href="#track-a-tensor-between-levels">level dimensions</a></li><li><a href="#follow-one-block">An ordinary block and its normalization steps</a></li><li><a href="#channel-mixing-inside-a-block">FFN variants together: dense, branched and grouped</a></li><li><a href="#how-positions-exchange-information">Attention variants together: window and global</a></li><li><a href="#moving-between-resolutions">Encoder and decoder transitions</a></li><li><a href="#entering-and-leaving-the-network">Input, output and composition</a></li><li><a href="#the-operations-behind-the-labels">Numerical operations and precision</a></li><li><a href="#scope-and-regeneration">Scope and regeneration</a></li></ul>
+<h2 id="the-whole-network">The whole network</h2>
+<figure class="diagram"><img src="../figures/architecture/network.svg" alt="Full network with stages and skip connections" loading="lazy"><figcaption>Full network with stages and skip connections</figcaption></figure>
+<p>The encoder saves detailed features at five resolutions. The bottleneck exchanges information across the entire coarse image. The decoder brings that context back to higher resolutions and combines it with the saved encoder features.</p>
+<p>Each stage names the two operations in its ordinary blocks, in execution order: <strong>FFN → attention</strong>. Encoder and decoder stages at the same channel width use the same variants, with different weights. Input/output blocks use <strong>Dense FFN → Window attention</strong>; the bottleneck uses <strong>Dense FFN → Global attention</strong>. Record 39 is only an up-transition.</p>
+<p>The master diagram uses <strong>width × height</strong> at a valid 3840 × 2160 input. Expanded diagrams use <strong>[height, width, channels]</strong>, matching tensor axes; batch is omitted unless written explicitly. Padding belongs to the network geometry, so a level is not always exactly half the preceding field.</p>
+<h2 id="which-diagram-applies-to-each-block">Which diagram applies to each block?</h2>
+<p>Weights differ between records. The operation flow is shared within each family.</p>
+<div class="table-scroll"><table><thead><tr><th>Channels</th><th>Numbered blocks</th><th>FFN variant in the master diagram</th><th>Attention variant in the master diagram</th></tr></thead><tbody>
+<tr><td>32</td><td>0–4, 66–70</td><td><a href="#dense-ffn-c32-and-c1024">Dense FFN</a> · 32 → 128 → 32</td><td><a href="#window-attention-c32-through-c512">Window attention</a> · 1 head</td></tr>
+<tr><td>64</td><td>5–8, 62–65</td><td><a href="#branched-ffn-c64-c128-and-c256">Branched FFN</a> · 2 full-input branches</td><td>Window attention · 2 heads</td></tr>
+<tr><td>128</td><td>9–14, 56–61</td><td><a href="#branched-ffn-c64-c128-and-c256">Branched FFN</a> · 4 full-input branches</td><td>Window attention · 4 heads</td></tr>
+<tr><td>256</td><td>15–22, 48–55</td><td><a href="#branched-ffn-c64-c128-and-c256">Branched FFN</a> · 8 full-input branches</td><td>Window attention · 8 heads</td></tr>
+<tr><td>512</td><td>23–30, 40–47</td><td><a href="#grouped-ffn-c512">Grouped FFN</a> · premix, 8 groups, postmix</td><td>Window attention · 16 heads</td></tr>
+<tr><td>1024</td><td>31–38</td><td><a href="#dense-ffn-c32-and-c1024">Dense FFN</a> · 1024 → 4096 → 1024</td><td><a href="#global-attention-c1024-bottleneck">Global attention</a> · 32 heads</td></tr>
+<tr><td>1024 → 512</td><td>39 only</td><td>None · <a href="#decoder-restore-the-field-and-add-the-skip">projection and up-transition</a></td><td>None</td></tr>
+</tbody></table></div>
+<p>Input block 0 adds an adapter before the ordinary body. Output block 70 adds a merge before it and a head after it. Encoder tails and decoder entry blocks also perform transitions.</p>
+<h2 id="track-a-tensor-between-levels">Track a tensor between levels</h2>
+<p>Padded <strong>width × height × channels</strong> for the same 4K example:</p>
+<div class="table-scroll"><table><thead><tr><th>Stage</th><th>Records</th><th>Field</th><th>Saved skip or incoming merge</th></tr></thead><tbody>
+<tr><td><a href="#input-block-0">Input</a></td><td>0</td><td>3840 × 2176 × 32</td><td>Save for 70; pool to 1</td></tr>
+<tr><td><a href="#encoder-save-detail-and-reduce-the-field">Encoder C32</a></td><td>1–4</td><td>1920 × 1088 × 32</td><td>4 → 66</td></tr>
+<tr><td>Encoder C64</td><td>5–8</td><td>960 × 544 × 64</td><td>8 → 62</td></tr>
+<tr><td>Encoder C128</td><td>9–14</td><td>480 × 272 × 128</td><td>14 → 56</td></tr>
+<tr><td>Encoder C256</td><td>15–22</td><td>240 × 136 × 256</td><td>22 → 48</td></tr>
+<tr><td>Encoder C512</td><td>23–30</td><td>120 × 68 × 512</td><td>30 → 39</td></tr>
+<tr><td><a href="#global-attention-c1024-bottleneck">Global bottleneck</a></td><td>31–38</td><td>60 × 36 × 1024</td><td>All positions exchange information</td></tr>
+<tr><td><a href="#decoder-restore-the-field-and-add-the-skip">Up-transition</a></td><td>39</td><td>120 × 68 × 512</td><td>Merge 30</td></tr>
+<tr><td>Decoder C512</td><td>40–47</td><td>120 × 68 × 512</td><td>Continue from 39</td></tr>
+<tr><td>Decoder C256</td><td>48–55</td><td>240 × 136 × 256</td><td>Merge 22 at 48</td></tr>
+<tr><td>Decoder C128</td><td>56–61</td><td>480 × 272 × 128</td><td>Merge 14 at 56</td></tr>
+<tr><td>Decoder C64</td><td>62–65</td><td>960 × 544 × 64</td><td>Merge 8 at 62</td></tr>
+<tr><td>Decoder C32</td><td>66–69</td><td>1920 × 1088 × 32</td><td>Merge 4 at 66</td></tr>
+<tr><td><a href="#output-block-70">Output</a></td><td>70</td><td>3840 × 2176 × 4</td><td>Merge 0, then produce head</td></tr>
+</tbody></table></div>
+<h2 id="follow-one-block">Follow one block</h2>
+<p>An ordinary block preserves spatial size and channel count. First its FFN mixes channels <strong>at each position independently</strong>. Then attention lets positions exchange information. Each operation has a separate learned, channelwise residual path.</p>
+<figure class="diagram"><img src="../figures/architecture/residual_block.svg" alt="Complete block flow with FFN and attention residuals, Q/K L2 normalization and attention normalization" loading="lazy"><figcaption>Complete block flow with FFN and attention residuals, Q/K L2 normalization and attention normalization</figcaption></figure>
+<p>Green boxes represent tensors, rounded boxes represent operations, and <code>+</code> circles are elementwise additions. Amber dashed arrows carry bypass or side inputs, such as residuals and saved skips. <code>Publish</code> marks a working-precision boundary without changing shape. <code>Raw</code> names the value before that publication, retained for particular residual and transition paths.</p>
+<p>There are <strong>two different normalization steps</strong>, now shown explicitly in the block flow:</p>
+<div class="table-scroll"><table><thead><tr><th>Normalization</th><th>Where it happens</th><th>What is reduced</th></tr></thead><tbody>
+<tr><td><strong>Q/K L2 normalization</strong></td><td>After the QKV projection and head split; Q and K separately, V bypasses it</td><td>The 32 channels of one token in one head</td></tr>
+<tr><td><strong>Attention normalization</strong></td><td>Window attention divides exponential weights before multiplying V; global attention divides the weighted-value result by its corrected denominator</td><td>Key positions available to one query</td></tr>
+</tbody></table></div>
+<p>Q receives a learned scalar per head after L2 normalization; global Q also receives <code>√32</code>. The learned channelwise scales on the two residual paths are multipliers, not normalization operations. The implemented block has <strong>no pre-FFN LayerNorm or RMSNorm</strong>. <a href="#the-operations-behind-the-labels">Numerical details</a> give the exact formulas.</p>
+<h2 id="channel-mixing-inside-a-block">Channel mixing inside a block</h2>
+<p>An FFN reads one position&#x27;s channel vector and returns another vector of the same width. It applies the same learned matrices at every position. <strong>It does not read neighboring pixels.</strong> Attention performs that spatial exchange afterward.</p>
+<figure class="diagram"><img src="../figures/architecture/ffn_variants.svg" alt="Three FFN variants compared side by side: dense, full-input branched and premixed grouped" loading="lazy"><figcaption>Three FFN variants compared side by side: dense, full-input branched and premixed grouped</figcaption></figure>
+<div class="table-scroll"><table><thead><tr><th>Variant</th><th>What reaches each branch</th><th>Transform before the shared residual addition</th><th>Used at</th></tr></thead><tbody>
+<tr><td><strong>Dense FFN</strong></td><td>One complete C-channel vector</td><td><code>C → 4C → C</code></td><td>C32 and C1024</td></tr>
+<tr><td><strong>Branched FFN</strong></td><td>Every branch receives the <strong>same complete input</strong></td><td><code>C → 128 → 32</code> in each of C/32 branches; concatenate, then <code>C → C</code></td><td>C64, C128 and C256</td></tr>
+<tr><td><strong>Grouped FFN</strong></td><td>Each branch receives a <strong>different 64-channel slice</strong> after premixing</td><td><code>512 → 512</code>; eight <code>64 → 256 → 64</code> branches; concatenate, then <code>512 → 512</code></td><td>C512</td></tr>
+</tbody></table></div>
+<p><code>…</code> stands for the unchanged batch and spatial axes. <code>Linear A → B</code> mixes A channels into B channels. <code>φ</code> is the <a href="#activation">recovered piecewise activation</a>. FFN outputs below are <strong>before</strong> the enclosing block adds its residual.</p>
+<h3 id="dense-ffn-c32-and-c1024">Dense FFN: C32 and C1024</h3>
+<figure class="diagram"><img src="../figures/architecture/ffn_dense.svg" alt="Dense feed-forward tensor flow" loading="lazy"><figcaption>Dense feed-forward tensor flow</figcaption></figure>
+<p>The first matrix expands the channel vector by four. The activation changes each expanded value independently. The second matrix combines those values back into the original width.</p>
+<div class="table-scroll"><table><thead><tr><th>Family</th><th>Input</th><th>Expanded tensor</th><th>Output</th><th>Records</th></tr></thead><tbody>
+<tr><td>C32</td><td><code>[…, 32]</code></td><td><code>[…, 128]</code></td><td><code>[…, 32]</code></td><td>0–4, 66–70</td></tr>
+<tr><td>C1024</td><td><code>[…, 1024]</code></td><td><code>[…, 4096]</code></td><td><code>[…, 1024]</code></td><td>31–38</td></tr>
+</tbody></table></div>
+<h3 id="branched-ffn-c64-c128-and-c256">Branched FFN: C64, C128 and C256</h3>
+<figure class="diagram"><img src="../figures/architecture/ffn_branched.svg" alt="Full-input fan-out through parallel branches and concatenation" loading="lazy"><figcaption>Full-input fan-out through parallel branches and concatenation</figcaption></figure>
+<p>The <strong>entire C-channel vector goes to every branch</strong>. Each branch has its own <code>C → 128 → 32</code> matrices. The resulting 32-channel vectors are concatenated, then a final <code>C → C</code> projection mixes all branches.</p>
+<p>For C128, four branches each read the same 128 channels and each produce 32 channels. Concatenation restores 128 channels; it does not sum four vectors.</p>
+<div class="table-scroll"><table><thead><tr><th>Channels C</th><th>Branches E</th><th>Each branch reads</th><th>Each emits</th><th>Concatenated width</th></tr></thead><tbody>
+<tr><td>64</td><td>2</td><td>All 64 channels</td><td>32</td><td>64</td></tr>
+<tr><td>128</td><td>4</td><td>All 128 channels</td><td>32</td><td>128</td></tr>
+<tr><td>256</td><td>8</td><td>All 256 channels</td><td>32</td><td>256</td></tr>
+</tbody></table></div>
+<p>Every branch executes for every position. Some source variables say <code>expert</code>, but there is no router, top-k selection or sparse expert dispatch.</p>
+<h3 id="grouped-ffn-c512">Grouped FFN: C512</h3>
+<figure class="diagram"><img src="../figures/architecture/ffn_grouped.svg" alt="C512 premix, channel split, eight branches and postmix" loading="lazy"><figcaption>C512 premix, channel split, eight branches and postmix</figcaption></figure>
+<p>A <code>512 → 512</code> projection first mixes the full input. Its output is split into <strong>eight different 64-channel slices</strong>. Each branch transforms its slice through <code>64 → 256 → 64</code>. Concatenation restores 512 channels, and a second <code>512 → 512</code> projection mixes the branches again.</p>
+<p>Here branches receive different slices of a premixed tensor. In the C64–C256 family they receive copies of the full input. The matrices before and after the C512 branches provide communication between slices.</p>
+<h3 id="where-the-residual-joins">Where the residual joins</h3>
+<p>The block computes <code>Zraw = FFN(X) + ffn_scale ⊙ R</code>, then publishes <code>Z</code>. The scale has one learned value per channel, broadcast over positions. Usually <code>R = X</code>; blocks 0, 66 and 70 retain a raw adapter/merge for this path. QKV reads <code>Z</code>, after the addition. See the <a href="#follow-one-block">full block diagram</a>.</p>
+<p>The later attention residual uses <code>Zraw</code> for C32 and the published <code>Z</code> for every other width, multiplied by a separate learned <code>attn_scale</code>.</p>
+<p>Sources: <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py#L162">NRBlock.forward</a>, <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py#L62">linear_activate</a>, <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/weights.py#L218">decode_block</a>.</p>
+<h2 id="how-positions-exchange-information">How positions exchange information</h2>
+<p>Attention starts from the FFN result <strong>after its residual addition</strong>. A learned projection produces Q, K and V. Q describes what a position looks for; K describes what each candidate offers; V carries the features to combine. Each head has 32 channels. Head outputs are joined into C channels before the block&#x27;s output projection and second residual.</p>
+<figure class="diagram"><img src="../figures/architecture/attention_variants.svg" alt="Window and global attention compared side by side, including both kinds of normalization" loading="lazy"><figcaption>Window and global attention compared side by side, including both kinds of normalization</figcaption></figure>
+<div class="table-scroll"><table><thead><tr><th>Property</th><th><strong>Window attention</strong></th><th><strong>Global attention</strong></th></tr></thead><tbody>
+<tr><td>Used at</td><td>C32–C512, encoder/decoder and input/output blocks</td><td>C1024, bottleneck blocks 31–38</td></tr>
+<tr><td>Positions read by one query</td><td>64 slots in its 8 × 8 window</td><td>All T = H × W positions in the padded bottleneck field</td></tr>
+<tr><td>Q/K normalization</td><td>Separate L2 norms across 32 channels</td><td>Same</td></tr>
+<tr><td>Q scaling after its norm</td><td>Learned scalar per head</td><td><code>√32</code>, then learned scalar per head</td></tr>
+<tr><td>Bias</td><td>Learned table for each head and window query/key pair</td><td>None</td></tr>
+<tr><td>Attention normalization</td><td>Divide each exponential row by its sum, then multiply V</td><td>Multiply published exponentials by V, then divide by corrected row sum</td></tr>
+<tr><td>Padding treatment</td><td>All 64 window slots participate, including added zeros</td><td>Subtract the padded-key exponential contribution from the denominator</td></tr>
+</tbody></table></div>
+<p>Both variants leave V unnormalized. They use different <a href="#attention-exponential">surrogate exponential constants</a>; neither is a call to standard softmax/SDPA. Their expanded flows follow together below, followed by the window-layout detail.</p>
+<h3 id="window-attention-c32-through-c512">Window attention: C32 through C512</h3>
+<figure class="diagram"><img src="../figures/architecture/window_attention.svg" alt="Q, K, V branches, score normalization and weighted values" loading="lazy"><figcaption>Q, K, V branches, score normalization and weighted values</figcaption></figure>
+<p>For each head, an 8 × 8 window becomes 64 query rows and 64 key/value rows. <code>Q Kᵀ</code> produces a <strong>64 × 64 score matrix</strong>: row i describes what query i reads from all 64 positions. A learned bias adjusts each query/key pair. A recovered exponential makes the scores positive, and division by the row sum normalizes their relative weights.</p>
+<p>Multiplying those weights by V produces a 32-channel result for each query. Window assembly and cropping put results back at their image positions. The output projection then mixes heads, and the block adds its attention residual.</p>
+<div class="table-scroll"><table><thead><tr><th>Tensor, one window and one head</th><th>Shape</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>Q</td><td><code>[64, 32]</code></td><td>Query vector at each position</td></tr>
+<tr><td>K, V</td><td><code>[64, 32]</code> each</td><td>Key and value at each candidate position</td></tr>
+<tr><td>Scores, exponentials, weights</td><td><code>[64, 64]</code> each</td><td>Query rows × key columns</td></tr>
+<tr><td>Row denominator</td><td><code>[64, 1]</code></td><td>Total weight for each query</td></tr>
+<tr><td>Weighted values</td><td><code>[64, 32]</code></td><td>Updated features for all queries</td></tr>
+</tbody></table></div>
+<p>Q and K are separately L2-normalized across 32 channels. Q then receives a learned scalar per head. This graph uses a <a href="#attention-exponential">clamped exponential surrogate</a>, rather than standard softmax/SDPA. Bias is indexed by head, query position and physical key position.</p>
+<h3 id="global-attention-c1024-bottleneck">Global attention: C1024 bottleneck</h3>
+<figure class="diagram"><img src="../figures/architecture/global_attention.svg" alt="Global flow with weighted-value numerator and corrected denominator" loading="lazy"><figcaption>Global flow with weighted-value numerator and corrected denominator</figcaption></figure>
+<p>C1024 flattens the field into <code>T = H × W</code> tokens and uses 32 heads. A query can read <strong>all T positions in the padded bottleneck field</strong>. Q and K are normalized as above; Q additionally receives <code>√32</code> before its learned scale. This branch has no local relative-bias table.</p>
+<p>K and V are zero-padded to <code>P = ceil(T / 64) × 64</code>. Q keeps T rows, giving <code>[T, P]</code> scores per head. The exponential splits into a weighted-value numerator and row-sum denominator. The denominator subtracts <code>(P − T) × Eglobal(0)</code>: a zero-padded key still produces a nonzero exponential. Padded V is zero, so it contributes nothing to the numerator. Division restores one vector per query. This correction removes only the additional P − T traversal slots; the network&#x27;s spatial padding is already part of T.</p>
+<p>At 4K the bottleneck is <code>[36, 60, 1024]</code>: <strong>T = 2160</strong>, <strong>P = 2176</strong>, removing 16 padded-key contributions per query. Reshaping restores <code>[36, 60, 1024]</code> before the output projection and residual.</p>
+<p>These are logical shapes. Eager training materializes large score tensors; CUDA deployment tiles the work. A drawn <code>[T, P]</code> tensor does not imply a full deployment allocation.</p>
+<h3 id="window-layout-how-windows-cover-the-image">Window layout: how windows cover the image</h3>
+<figure class="diagram"><img src="../figures/architecture/window_partition.svg" alt="Window tiling, one query reading 64 keys, and shifted boundaries" loading="lazy"><figcaption>Window tiling, one query reading 64 keys, and shifted boundaries</figcaption></figure>
+<p>This expands the pad/partition step of <strong>Window attention</strong> above. The field is padded on the left/top according to the phase, then on the right/bottom to complete 8 × 8 windows. Changing the phase changes which positions share a window. Successive blocks can therefore carry features across an earlier window boundary.</p>
+<div class="table-scroll"><table><thead><tr><th>Phase</th><th>Left pad</th><th>Top pad</th><th>Window origin relative to the field</th></tr></thead><tbody>
+<tr><td>0</td><td>0</td><td>0</td><td><code>(0, 0)</code></td></tr>
+<tr><td>1</td><td>4</td><td>4</td><td><code>(-4, -4)</code></td></tr>
+<tr><td>2</td><td>4</td><td>0</td><td><code>(-4, 0)</code></td></tr>
+<tr><td>3</td><td>0</td><td>4</td><td><code>(0, -4)</code></td></tr>
+</tbody></table></div>
+<p>Unpartitioning reverses the reshape and crops away padding. This is <strong>positive padding and cropping</strong>, not a cyclic roll. Local padded positions participate in attention; this branch does not add a standard Swin attention mask. Phase counters advance per spatial level and continue when the decoder revisits that level.</p>
+<p>K and V use the same recovered token permutation within each window; bias columns match that order. The permutation changes storage order, not which 64 positions a query can read. Q rows retain natural order.</p>
+<p>Sources: <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py#L128">attend</a>, <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py#L20">_windows / _unwindows</a>, <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/geometry.py#L58">window_shift</a>, <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/weights.py#L208">relative_bias</a>.</p>
+<h2 id="moving-between-resolutions">Moving between resolutions</h2>
+<p>Ordinary blocks keep their dimensions. Transitions change spatial size and channel count. Encoder skips retain features from before downsampling so the decoder can recover detail at the corresponding resolution.</p>
+<h3 id="encoder-save-detail-and-reduce-the-field">Encoder: save detail and reduce the field</h3>
+<figure class="diagram"><img src="../figures/architecture/encoder.svg" alt="Encoder tail splitting into a saved skip and a pooled, projected next-level tensor" loading="lazy"><figcaption>Encoder tail splitting into a saved skip and a pooled, projected next-level tensor</figcaption></figure>
+<p>The last block at a level produces a raw attention result and its published form. The <strong>published form is saved as the skip</strong>. The raw result takes the downward path: average each 2 × 2 group, pad to the next level&#x27;s field, then project <code>C → 2C</code> at each remaining position. The pool reduces spatial size; the projection mixes channels at each position.</p>
+<p>At 4K, block 14 sees <code>[272, 480, 128]</code>. Its skip retains that shape. Pooling gives <code>[136, 240, 128]</code>, and the projection gives <code>[136, 240, 256]</code> for block 15.</p>
+<div class="table-scroll"><table><thead><tr><th>Tail block</th><th>Channels before → after</th><th>Skip is read by</th></tr></thead><tbody>
+<tr><td>4</td><td>32 → 64</td><td>Block 66</td></tr>
+<tr><td>8</td><td>64 → 128</td><td>Block 62</td></tr>
+<tr><td>14</td><td>128 → 256</td><td>Block 56</td></tr>
+<tr><td>22</td><td>256 → 512</td><td>Block 48</td></tr>
+<tr><td>30</td><td>512 → 1024</td><td>Transition 39</td></tr>
+</tbody></table></div>
+<p>Block 0 also forks into a skip and pooled path, but <strong>keeps 32 channels</strong> without an additional down-projection. See the <a href="#input-block-0">input diagram</a>.</p>
+<h3 id="decoder-restore-the-field-and-add-the-skip">Decoder: restore the field and add the skip</h3>
+<figure class="diagram"><img src="../figures/architecture/decoder.svg" alt="Decoder projection, spatial expansion, encoder skip addition and ordinary block flow" loading="lazy"><figcaption>Decoder projection, spatial expansion, encoder skip addition and ordinary block flow</figcaption></figure>
+<p>The lower-resolution tensor is projected <code>2C → C</code> before upsampling. Each resulting position is repeated into a 2 × 2 patch; cropping matches the target field. The corresponding encoder skip is multiplied by a learned channelwise scale and added. This is <strong>addition</strong>, not concatenation. Ordinary FFN/attention processing follows the merge.</p>
+<p>For block 56 at 4K, <code>[136, 240, 256]</code> is projected to 128 channels, expanded to <code>[272, 480, 128]</code>, and added to the block-14 skip of the same shape.</p>
+<div class="table-scroll"><table><thead><tr><th>Transition</th><th>Projection</th><th>Incoming skip</th><th>After merge</th></tr></thead><tbody>
+<tr><td>39</td><td>1024 → 512</td><td>30</td><td>Publish only; ordinary block 40 follows</td></tr>
+<tr><td>48</td><td>512 → 256</td><td>22</td><td>Block 48 body, then 49–55</td></tr>
+<tr><td>56</td><td>256 → 128</td><td>14</td><td>Block 56 body, then 57–61</td></tr>
+<tr><td>62</td><td>128 → 64</td><td>8</td><td>Block 62 body, then 63–65</td></tr>
+<tr><td>66</td><td>64 → 32</td><td>4</td><td>Block 66 body, then 67–69</td></tr>
+</tbody></table></div>
+<p>Block 39 is transition-only. For 48, 56, 62 and 66, transition weights belong to the first ordinary block of the destination level. Block 66 keeps the raw merge for its FFN residual while FFN computation reads the published merge. Block 70 has a separate full-resolution merge with two scales and no <code>2C → C</code> projection.</p>
+<p>Sources: <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py#L243">_encoder_stage</a>, <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py#L249">_decoder_stage</a>, <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py#L269">_bottleneck_stage</a>, <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py#L94">pool / upsample</a>.</p>
+<h2 id="entering-and-leaving-the-network">Entering and leaving the network</h2>
+<h3 id="input-block-0">Input: block 0</h3>
+<figure class="diagram"><img src="../figures/architecture/input_stage.svg" alt="Input adapter, block-0 residual and separate encoder/skip outputs" loading="lazy"><figcaption>Input adapter, block-0 residual and separate encoder/skip outputs</figcaption></figure>
+<p>The caller supplies padded <code>[B, Hfull, Wfull, 16]</code> features. A learned per-position <code>16 → 32</code> adapter produces the block input. The C32 block reads the published adapter output while retaining the raw adapter output for its first residual.</p>
+<p>Block 0&#x27;s published result is saved for the block-70 skip. Its raw result is averaged over 2 × 2 positions and padded to the level-0 field, producing the C32 input to block 1. This path has no channel-doubling projection.</p>
+<p>The adapter learns combinations of the supplied lanes. It does not construct renderer features, motion vectors or reprojected history. The measured deployment trunk begins at the pooled tensor entering block 1.</p>
+<h3 id="output-block-70">Output: block 70</h3>
+<figure class="diagram"><img src="../figures/architecture/output_stage.svg" alt="Full-resolution skip merge, final block and four-channel head" loading="lazy"><figcaption>Full-resolution skip merge, final block and four-channel head</figcaption></figure>
+<p>Block 69&#x27;s C32 output is repeated 2× in height and width and cropped to the full padded field. A learned <code>input_scale</code> multiplies this path. A separate <code>adapter_scale</code> multiplies the saved block-0 tensor. Their sum enters block 70, with the raw merge retained for its first FFN residual.</p>
+<p>The C32 block runs FFN and local attention. A <code>32 → 4</code> head reads its raw attention output and returns FP32. <code>crop=True</code> removes network padding. Channels 0–2 represent an RGB correction; channel 3 controls optional blending during composition.</p>
+<h3 id="optional-composition-after-the-head">Optional composition after the head</h3>
+<p>Training forward ends at the four-channel head. <code>compose()</code> is separate:</p>
+<pre><code>NeuralRGB = clamp(ProxyRGB + HeadRGB / 4, 0, 1)
+
+Without history: return NeuralRGB
+
+With caller-reprojected history:
+    Blend = clamp(sigmoid(HeadAlpha) * blend_scale, 0, 1)
+    return NeuralRGB + Blend * (HistoryRGB - NeuralRGB)</code></pre>
+<p>The proxy is in sRGB code space. Composition does not perform temporal reprojection. The training speed benchmark applies a diagnostic loss to the head; it does not establish a temporal loss or DLSS5 transfer-learning procedure.</p>
+<p>Sources: <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py#L257">_input_block / _input_stage</a>, <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py#L234">_post_head</a>, <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py#L331">compose</a>.</p>
+<h2 id="the-operations-behind-the-labels">The operations behind the labels</h2>
+<p>Tensor-flow diagrams use short names to keep the data paths visible. These formulas describe floating PyTorch training. Deployment additionally preserves its packed FP8/FP16 arithmetic and rounding contracts.</p>
+<figure class="diagram"><img src="../figures/architecture/numerics.svg" alt="Activation, normalization and attention exponential formulas" loading="lazy"><figcaption>Activation, normalization and attention exponential formulas</figcaption></figure>
+<h3 id="activation">Activation</h3>
+<p>The FFN label <code>φ</code> means this recovered pointwise function:</p>
+<pre><code>b = clamp(x, -4, 4)
+φ(x) = x * (b * (-0.055908203125 * abs(b) + 0.447265625) + 0.89453125)</code></pre>
+<p>It changes values without changing shape. The source method is named <code>silu</code>, but its formula differs from standard SiLU. Training evaluates it with FP32 intermediates and casts back to the working dtype.</p>
+<h3 id="q-and-k-normalization">Q and K normalization</h3>
+<p>Each head has a 32-channel vector at every position. Q and K are normalized separately:</p>
+<pre><code>L2Norm(v) = v / max(sqrt(sum(v * v, across 32 channels)), 1e-12)</code></pre>
+<p>The reduction is across channels, not tokens or heads. It does not subtract a mean and is not a LayerNorm. Q subsequently receives the learned head scale; global Q also receives <code>sqrt(32)</code>.</p>
+<h3 id="attention-exponential">Attention exponential</h3>
+<p>Both branches use the same form with different constants:</p>
+<pre><code>z = clamp(a * score + b, lo, hi)
+E(score) = E0 * exp((z - b) * s * ln(2))</code></pre>
+<p>Local attention divides E by its 64-key row sum before multiplying V. Global attention uses E in the numerator, sums in 64-key chunks, subtracts padded-key contributions, then divides the value vector by the corrected denominator. The <a href="#how-positions-exchange-information">attention diagrams</a> show these separate paths.</p>
+<h3 id="publication-and-precision">Publication and precision</h3>
+<p><code>Publish</code> means cast to the selected working precision in training: FP32 or BF16. It preserves shape. <code>Raw</code> marks the value before that explicit publication, <strong>not a promise of wider storage</strong>; many operators already return the working dtype. This distinction identifies the correct residual and pooling sources and connects them to deployment&#x27;s separate numerical boundaries.</p>
+<p>FP32 master parameters are recommended. BF16 changes matrix operands and working tensors, while norms, exponentials, reductions and residual arithmetic use FP32 intermediates. Checkpointing changes what backward stores or recomputes; it does not add a network operation. See <a href="../SETUP.md#training">training</a>.</p>
+<p>Source: <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py#L32">Numerics</a>.</p>
+<h2 id="scope-and-regeneration">Scope and regeneration</h2>
+<p>The diagrams follow <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/model.py">model.py</a>, <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/geometry.py">geometry.py</a> and the dimensions decoded by <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/dlssnr/weights.py">weights.py</a>. They show logical computation. CUDA fuses operations and uses packed FP8/FP16 layouts: an arrow need not be a global-memory write, and a box need not be a kernel launch. The <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/kernel_templates.json">kernel template manifest</a> maps public kernel configurations to CUDA source.</p>
+<p>Training covers all 71 records, 0–70. The measured deployment trunk covers prepared features through 1–69. Renderer feature extraction and temporal reprojection remain external. Actual DLSS5 transfer-learning losses and training procedures still require investigation.</p>
+<p>Regenerate the SVG diagrams:</p>
+<pre><code>python -B tools/render_architecture.py</code></pre>
+<p>These diagrams represent this implementation, not recovered NVIDIA source diagrams.</p></article><nav class="next-prev" aria-label="Reading sequence"><a href="runtime.html">← Launch plans</a><a href="source-atlas.html">The complete source atlas →</a></nav><footer class="footer">DLSS-NR kernel field guide · source fc3276497f86 · Generated from repository sources. <a href="source-atlas.html#provenance">Provenance</a> · <a href="architecture.html">Architecture companion</a></footer></main></body></html>
