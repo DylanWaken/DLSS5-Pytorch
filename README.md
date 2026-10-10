@@ -99,5 +99,5 @@ These measurements use the current build and automatic scheduling on the RTX PRO
 
 - [Setup, deployment and training](docs/SETUP.md)
 - [Network architecture and tensor flow](docs/ARCHITECTURE.md)
-- [Illustrated FP16/FP8 kernel field guide](https://DylanWaken.github.io/DLSS5-Pytorch/kernel-guide/) — step-by-step tensor, lane, address and storage walkthroughs, with [local HTML](docs/kernel-guide/index.html).
+- [81 standalone FP16/FP8 kernel lessons](https://DylanWaken.github.io/DLSS5-Pytorch/kernel-guide/) — one complete reconstruction tutorial per public kernel, with model equations, tensor/lane/address diagrams, source excerpts and [local HTML](docs/kernel-guide/index.html).
 - [Kernel reconstruction workflow](skills/dlssnr-reconstruction/SKILL.md)

@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="A standalone FP16 reconstruction from scalar all-token attention to packed Q/K/V, per-lane scores, two-stage streaming, exact exponentials and corrected normalization."><meta name="color-scheme" content="light"><title>FP16 C1024 streamed global attention · DLSS-NR Kernel Lessons</title><link rel="stylesheet" href="assets/site.css"><script defer src="assets/site.js"></script></head>
+<body class="kernel-lesson"><a class="skip" href="#main">Skip to content</a><aside class="sidebar"><a class="brand" href="index.html">DLSS<span>NR</span></a><p class="nav-kicker">One document per kernel</p><nav aria-label="Guide"><a href="index.html">All 81 kernel lessons</a><a href="architecture.html">Model architecture</a><a href="source-atlas.html">Public entry → source</a><a href="foundations.html">Tensor / lane reference</a><a href="runtime.html">Host scheduling reference</a></nav><hr><nav class="local-nav" aria-label="This lesson"><p class="nav-kicker">Inside this lesson</p><a href="#model">01. Define this kernel’s exact attention problem</a><a href="#baseline">02. Start with a scalar algorithm, including the padding correction</a><a href="#tiling">03. Derive a useful query/key tile from MMA fragments</a><a href="#addresses">04. Derive Q, K, V and output physical addresses</a><a href="#synchronous">05. Construct a synchronous streamed attention kernel</a><a href="#pipeline">06. Build the two-stage K/V ring and predecessor protocol</a><a href="#exponent">07. Convert scores to the exact recovered exponent surrogate</a><a href="#denominator">08. Derive the denominator ownership transpose</a><a href="#numerator">09. Reuse the exponent tile immediately as an MMA operand</a><a href="#padding">10. Correct the artificial-key denominator without masking model tokens</a><a href="#publication">11. Return row scalars to output owners and publish</a><a href="#reconstruction">12. Complete construction with every lifetime and synchronization boundary</a><a href="#checks">13. Validate model behavior, numerical boundaries and pipeline safety</a><a href="#source-appendix">14. Source appendix: the complete implementation and ABI</a></nav><hr><div class="meta">Source snapshot<br><a href="https://github.com/DylanWaken/DLSS5-Pytorch/tree/fc3276497f866bdad639cd443e75743f5d19b749">fc3276497f86</a><br><a href="../ARCHITECTURE.md">Architecture Markdown</a><br><a href="https://github.com/DylanWaken/DLSS5-Pytorch">Repository ↗</a></div></aside>
+<div class="topbar"><a href="index.html#kernels">Browse kernels</a><button id="toggle-code" type="button">Collapse code</button></div><main id="main" class="page"><header><p class="eyebrow">A complete kernel reconstruction</p><h1>FP16 C1024 streamed global attention</h1><p class="kernel-identity"><code>global_attention_chained_c1024_fp16</code></p><p class="lede">A standalone FP16 reconstruction from scalar all-token attention to packed Q/K/V, per-lane scores, two-stage streaming, exact exponentials and corrected normalization.</p><div class="reading-meta"><span>FP16</span><span>~21 min of explanation + source study</span><span>6 diagrams</span></div></header><details class="toc"><summary>Reading sequence · 14 sections</summary><div><a href="#model">01. Define this kernel’s exact attention problem</a><a href="#baseline">02. Start with a scalar algorithm, including the padding correction</a><a href="#tiling">03. Derive a useful query/key tile from MMA fragments</a><a href="#addresses">04. Derive Q, K, V and output physical addresses</a><a href="#synchronous">05. Construct a synchronous streamed attention kernel</a><a href="#pipeline">06. Build the two-stage K/V ring and predecessor protocol</a><a href="#exponent">07. Convert scores to the exact recovered exponent surrogate</a><a href="#denominator">08. Derive the denominator ownership transpose</a><a href="#numerator">09. Reuse the exponent tile immediately as an MMA operand</a><a href="#padding">10. Correct the artificial-key denominator without masking model tokens</a><a href="#publication">11. Return row scalars to output owners and publish</a><a href="#reconstruction">12. Complete construction with every lifetime and synchronization boundary</a><a href="#checks">13. Validate model behavior, numerical boundaries and pipeline safety</a><a href="#source-appendix">14. Source appendix: the complete implementation and ABI</a></div></details><article class="content">
+<h2 id="model">01. Define this kernel’s exact attention problem</h2>
+<p><code>global_attention_chained_c1024_fp16</code> performs global attention inside C1024 bottleneck records 31–38. There are 32 heads of 32 channels. For one head h, the logical inputs are Q[T,32], K[T,32], V[T,32]. Q and K have already been independently normalized across their 32 channels by the upstream QKV kernel, and Q already includes √32 and the learned head scale. This kernel does not repeat those operations. It computes one updated 32-channel vector for every query, then publishes all heads into an output logically [T,1024]. The later output projection and scaled residual are outside this entry.</p>
+<p>Every query reads all T bottleneck positions, with no window restriction or relative-position bias. For the <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/docs/ARCHITECTURE.md">architecture’s 4K example</a>, H=36,W=60,T=2160. The traversal rounds to P=ceil(T/64)·64=2176 keys. Its extra K/V rows are zero. Define <code>s[q,k]=Σd Q[q,d]K[k,d]</code>; the recovered Half surrogate produces E(s). The kernel returns <code>Publish(Σₖ Publish(E(s[q,k]))V[k,:] / max(Σₖ E(s[q,k])−(P−T)E(0), ε))</code>. Publication uses Half; numerator and denominator reduction are Half. This formula deliberately shows a publication inside the numerator.</p>
+<figure class="diagram"><div class="diagram-scroll" tabindex="0" role="region" aria-label="The model equation before deciding where to store it"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 305" role="img" aria-labelledby="figure-1-fig-692c09391393" style="min-width:820px"><title id="figure-1-fig-692c09391393">The model equation before deciding where to store it</title><defs><marker id="figure-1-fig-692c09391393-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#576c83"/></marker></defs><rect class="tensor" x="20" y="25" width="235" height="90" rx="8"/><text x="32" y="50" style="font-size:15px;font-weight:500">Q[h,T,32], K[h,P,32]</text><text x="32" y="73" style="font-size:15px;font-weight:500">already normalized upstream</text><text x="32" y="96" style="font-size:15px;font-weight:500">V[h,P,32] unnormalized</text><path d="M255,70 L295,70" stroke="#527487" stroke-width="2" fill="none"/><polygon points="295,70 286.0,66.0 286.0,74.0" fill="#527487"/><rect class="compute" x="295" y="25" width="260" height="90" rx="8"/><text x="307" y="50" style="font-size:15px;font-weight:500">S[q,k]=dot(Q[q],K[k])</text><text x="307" y="73" style="font-size:15px;font-weight:500">E=clamped Half bit surrogate</text><text x="307" y="96" style="font-size:15px;font-weight:500">all global keys participate</text><path d="M555,70 L600,70" stroke="#527487" stroke-width="2" fill="none"/><polygon points="600,70 591.0,66.0 591.0,74.0" fill="#527487"/><rect class="compute" x="600" y="25" width="440" height="90" rx="8"/><text x="612" y="50" style="font-size:15px;font-weight:500">N[q,:]=Σ Publish_Half(E[q,k])×V[k,:]</text><text x="612" y="73" style="font-size:15px;font-weight:500">D[q]=Σ E[q,k]−(P−T)E(0)</text><text x="612" y="96" style="font-size:15px;font-weight:500">output=Publish(N/max(D,ε))</text><rect class="tensor" x="20" y="175" width="1020" height="82" rx="8"/><text x="32" y="200" style="font-size:15px;font-weight:500">Records 31–38: 32 heads ×32 channels. At 4K: T=2160, traversal P=2176.</text><text x="32" y="223" style="font-size:15px;font-weight:500">This kernel computes attention only. Q/K normalization is already done; output projection and residual occur later.</text></svg></div><figcaption>The full [T,P] score matrix is a useful mathematical object. The implementation below never allocates it globally.</figcaption></figure>
+<h2 id="baseline">02. Start with a scalar algorithm, including the padding correction</h2>
+<figure class="pseudocode"><figcaption>Scalar dependency baseline; subsequent steps derive the exact fragment and Half reduction order — an algorithmic outline, not a compiled replacement</figcaption><pre><code>P = round_up(T,64)
+for head h in 0..31:
+    for real query q in 0..T-1:
+        numerator[32] = 0; denominator = 0
+        for key k in 0..P-1:
+            key_vector   = K[h,k,:] if k&lt;T else zeros(32)
+            value_vector = V[h,k,:] if k&lt;T else zeros(32)
+            score = dot(Q[h,q,:], key_vector)
+            e = global_half_exponent_surrogate(score)
+            denominator += e
+            e_operand = round_to_Half(e)
+            for d in 0..31: numerator[d] += e_operand * value_vector[d]
+        denominator -= (P-T) * global_half_exponent_surrogate(0)
+        output[h,q,:] = round_to_Half(numerator / max(denominator,epsilon))</code></pre></figure>
+<p>This baseline is intentionally explicit about artificial keys. Zero K does not give zero exponential, so simply summing over P would dilute valid attention. Zero V does eliminate their numerator contribution. The mathematical baseline also separates two goals: reproducing which values are used, and reproducing the deployed rounding sequence. A scalar floating loop generally sums in a different order from MMA fragments and warp shuffles. Use it first for dependency/layout tests, then add the exact Half chunk/reduction boundaries for stricter numerical comparison.</p>
+<p>A naive implementation can allocate scores[T,P], exponentials[T,P], and perhaps normalized probabilities[T,P], then launch separate matrix multiplication, transform, normalization and value-product kernels. At T=2160, one head’s score matrix has 4,700,160 entries. This source retains only a 64-key tile per query warp. That removes quadratic <em>storage</em> and intermediate traffic, while preserving the quadratic count of query–key interactions. Do not confuse streamed storage with a linear-time attention approximation.</p>
+<p>One instruction computes a <strong>16-token × 8-output-channel</strong> tile with a reduction of <strong>16</strong> channels. All 32 lanes participate in the same matrix operation. Each lane supplies four 32-bit A words, two 32-bit B words, and two 32-bit C words. Each C word contains two Half accumulators, so a lane owns four output elements. A source loop over output groups or reduction panels repeats this operation; it does not launch a new warp.</p><p>The exact instruction on this path is <code>mma.sync.aligned.m16n8k16.row.col.f16.f16.f16.f16</code>. Both the accumulator input and output are <strong>Half</strong>. Do not replace its numerical contract with FP32 accumulation when constructing an exact oracle. For the FP8 path, packing to E4M3 is a distinct rounding step; for the FP16 path a packed word simply holds two Half values.</p><p>Let lane <code>L</code> run from 0 to 31, <code>g = L // 4</code> and <code>q = L % 4</code>. The matrix coordinates below describe instruction operands <em>after</em> any kernel-specific loads and shuffles. Storage layouts are designed to supply these coordinates cheaply.</p>
+<div class="table-scroll"><table><thead><tr><th>Per-lane operand</th><th>Logical matrix coordinates</th></tr></thead><tbody>
+<tr><td>A word i = 0…3</td><td>token row g + 8(i % 2); reduction channels 2q + 8⌊i/2⌋ + h, h = 0…1</td></tr>
+<tr><td>B word j = 0…1</td><td>output column g; reduction channels 2q + 8j + h, h = 0…1</td></tr>
+<tr><td>C / D word 0</td><td>token g, output columns 2q and 2q + 1</td></tr>
+<tr><td>C / D word 1</td><td>token g + 8, output columns 2q and 2q + 1</td></tr>
+</tbody></table></div><p>The operand and accumulator coordinates follow the <a href="https://docs.nvidia.com/cuda/parallel-thread-execution/#warp-level-matrix-fragment-mma-16816-float">NVIDIA PTX matrix-fragment specification</a>. A kernel may permute model channels before supplying these instruction coordinates; its publication and weight-packing rules must agree.</p><figure class="diagram"><div class="diagram-scroll" tabindex="0" role="region" aria-label="FP16 matrix instruction ownership"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 285" role="img" aria-labelledby="figure-2-fig-44773c64cd72" style="min-width:820px"><title id="figure-2-fig-44773c64cd72">FP16 matrix instruction ownership</title><defs><marker id="figure-2-fig-44773c64cd72-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#576c83"/></marker></defs>
+<rect class="tensor" x="15" y="35" width="245" height="155" rx="8"/><text class="label" x="32" y="64">A: 16 × 16</text><text class="small" x="32" y="94">4 packed words per lane</text><text class="small" x="32" y="120">2 Half values per word</text><text class="small" x="32" y="150">two token rows per lane</text>
+<path class="edge" style="marker-end:url(#figure-2-fig-44773c64cd72-arrow)" d="M265 112 H318"/><rect class="compute" x="325" y="55" width="225" height="125" rx="8"/><text class="label" x="343" y="85">32 lanes: D = A B + C</text><text class="small" x="343" y="115">B: 16 × 8</text><text class="small" x="343" y="141">2 B words per lane</text>
+<path class="edge" style="marker-end:url(#figure-2-fig-44773c64cd72-arrow)" d="M555 112 H610"/><rect class="storage" x="620" y="35" width="280" height="155" rx="8"/><text class="label" x="636" y="64">D: 16 × 8 Half</text><text class="small" x="636" y="96">lane 13: g = 3, q = 1</text><text class="small" x="636" y="124">word 0: D[3,2], D[3,3]</text><text class="small" x="636" y="152">word 1: D[11,2], D[11,3]</text>
+<text class="small" x="20" y="227">For output group n, add 8n to the two output-channel coordinates.</text>
+<text class="small" x="20" y="255">The whole warp owns 32 × 4 = 128 outputs: exactly the 16 × 8 tile.</text></svg></div><figcaption>Instruction fragment map. Lane 13 is one example; the map covers every token and channel exactly once.</figcaption></figure>
+<h2 id="tiling">03. Derive a useful query/key tile from MMA fragments</h2>
+<p>A QKᵀ MMA computes 16 query rows by 8 key columns, reducing 16 head channels. Since the head width is 32, one score fragment needs 2 native K chunk(s). Four M16 query tiles give a warp 64 queries; eight N8 key tiles give it 64 keys. Its score state is <code>Probability[4].Pair[8][2]</code>,64 packed Half2 words per lane. Four warps share one head and K/V tile, so the CTA covers 256 queries×64 keys per iteration.</p>
+<p>Choose <code>head=blockIdx.x</code>, <code>queryBlock256=blockIdx.y</code>, <code>lane=threadIdx.x</code> and <code>warp=threadIdx.y</code>. The warp’s first query is 256·queryBlock+64·warp. For its M16 tile m, row-half r and lane L, the query index is <code>256·queryBlock+64·warp+16m+floor(L/4)+8r</code>. The score fragment’s key pair in N8 tile c is <code>64·keyTile+8c+2·(L mod4)+{0,1}</code>. Those equations explain exactly which query–key interactions one packed score word represents.</p>
+<figure class="diagram"><div class="diagram-scroll" tabindex="0" role="region" aria-label="Derive the CTA tile and keep only the tensors with reuse"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 390" role="img" aria-labelledby="figure-3-fig-9430e2483ece" style="min-width:820px"><title id="figure-3-fig-9430e2483ece">Derive the CTA tile and keep only the tensors with reuse</title><defs><marker id="figure-3-fig-9430e2483ece-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#576c83"/></marker></defs><rect class="compute" x="20" y="25" width="260" height="100" rx="8"/><text x="32" y="50" style="font-size:15px;font-weight:500">CTA: head=block.x</text><text x="32" y="73" style="font-size:15px;font-weight:500">query block=block.y, 256 rows</text><text x="32" y="96" style="font-size:15px;font-weight:500">four warps,64 queries each</text><path d="M280,75 L325,75" stroke="#527487" stroke-width="2" fill="none"/><polygon points="325,75 316.0,71.0 316.0,79.0" fill="#527487"/><rect class="storage" x="325" y="25" width="300" height="100" rx="8"/><text x="337" y="50" style="font-size:15px;font-weight:500">Load Q once into registers</text><text x="337" y="73" style="font-size:15px;font-weight:500">four M16 query tiles per warp</text><text x="337" y="96" style="font-size:15px;font-weight:500">two K16 chunks;32 words/lane</text><path d="M625,75 L665,75" stroke="#527487" stroke-width="2" fill="none"/><polygon points="665,75 656.0,71.0 656.0,79.0" fill="#527487"/><rect class="compute" x="665" y="25" width="375" height="100" rx="8"/><text x="677" y="50" style="font-size:15px;font-weight:500">QKᵀ → four [16,64] score tiles</text><text x="677" y="73" style="font-size:15px;font-weight:500">64 Half2 score words per lane</text><text x="677" y="96" style="font-size:15px;font-weight:500">E tile dies after denominator and PV</text><rect class="storage" x="20" y="185" width="260" height="110" rx="8"/><text x="32" y="210" style="font-size:15px;font-weight:500">Global K/V:64 keys per tile</text><text x="32" y="233" style="font-size:15px;font-weight:500">32 channels per key</text><text x="32" y="256" style="font-size:15px;font-weight:500">.cg copy / SM90+ bulk</text><text x="32" y="279" style="font-size:15px;font-weight:500">same tile serves 256 queries</text><path d="M280,240 L325,240" stroke="#527487" stroke-width="2" fill="none"/><polygon points="325,240 316.0,236.0 316.0,244.0" fill="#527487"/><rect class="storage" x="325" y="170" width="300" height="140" rx="8"/><text x="337" y="195" style="font-size:15px;font-weight:500">Shared K0:0…4095</text><text x="337" y="218" style="font-size:15px;font-weight:500">K1:4096…8191</text><text x="337" y="241" style="font-size:15px;font-weight:500">V0/V1:8192…16383</text><text x="337" y="264" style="font-size:15px;font-weight:500">two barriers:16 bytes</text><path d="M625,240 L665,240" stroke="#527487" stroke-width="2" fill="none"/><polygon points="665,240 656.0,236.0 656.0,244.0" fill="#527487"/><rect class="storage" x="665" y="185" width="375" height="110" rx="8"/><text x="677" y="210" style="font-size:15px;font-weight:500">K/V register fragments → MMA</text><text x="677" y="233" style="font-size:15px;font-weight:500">persistent N:32 words/lane</text><text x="677" y="256" style="font-size:15px;font-weight:500">persistent D:one Half2/lane</text><text x="677" y="279" style="font-size:15px;font-weight:500">D holds query rows L and L+32</text><path d="M855,125 L855,185" stroke="#527487" stroke-width="2" fill="none"/><polygon points="855,185 859.0,176.0 851.0,176.0" fill="#527487"/><text x="25" y="349" style="font-size:15px;font-weight:500">Global buffers live across kernels; shared K/V slots live across two iterations; Q, numerator and denominator span all keys.</text></svg></div><figcaption>L1/L2 are hardware-managed caches on the routes. The byte offsets shown are explicit shared allocations and do not denote cache capacity.</figcaption></figure>
+<p>The output numerator has 32 columns, so it requires four N8 fragments for each M16 query tile: <code>Output[4].Pair[4][2]</code>,32 words per lane. The denominator uses just one Half2 per lane, representing warp query rows L and L+32 after a register-ownership transpose. Q uses four M16×32 fragments, with 2 512-byte native chunks per M16, or 32 register words per lane. These three objects survive all key iterations. Current scores and K/V register fragments have shorter lifetimes and can be replaced after each tile contributes.</p>
+<h2 id="addresses">04. Derive Q, K, V and output physical addresses</h2>
+<p>Inputs are already in their consumer layouts. A16-token group contains all 1024 channels across 32 heads. Let E=2 bytes per working element. A Q lane vector for group g/head h/chunk c is <code>Q+g·16384·E+h·512·E+c·512+L·16</code>. This entry has 2 chunks. Its producer placed Q directly into the MMA A layout, so the consumer uses an aligned uint4 load without transposing. K uses the same group/head byte strides but its producer swapped the middle words, making it ready for the B operand of QKᵀ.</p>
+<p>For key tile j, copySlot=warp+4·Copy with Copy=0…1. The K group is <code>4j+floor(copySlot/2)</code> and its chunk is <code>copySlot mod2</code>. The global base follows K+group·16384·E+h·512·E+chunk·512. Shared destination is <code>(j mod2)·4096+copySlot·512</code>. Each copy writes 512 bytes, covering one native M16×K panel. K groups beyond the kernel’s stored-group count are synthesized as zeros.</p>
+<p>V has been register-transposed upstream for E×V. FP16 retains M16 token groups; valueGroup equals the K group. Its global base is <code>V+valueGroup·32768+h·1024+(copySlot mod2)·512</code>. Its shared destination adds the V region offset 8192 to the matching stage/copy offset. These maps are not dense [T,32] array strides, and V cannot be replaced by a byte-identical copy of the Q layout.</p>
+<figure class="diagram"><div class="diagram-scroll" tabindex="0" role="region" aria-label="FP16 attention: query 355 and key tile 2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 300" role="img" aria-labelledby="figure-4-fig-4c0706fe7abd" style="min-width:820px"><title id="figure-4-fig-4c0706fe7abd">FP16 attention: query 355 and key tile 2</title><defs><marker id="figure-4-fig-4c0706fe7abd-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#576c83"/></marker></defs><rect class="tensor" x="20" y="25" width="495" height="95" rx="8"/><text x="32" y="50" style="font-size:15px;font-weight:500">queryBlock 1; warp 1; M16 tile 2</text><text x="32" y="73" style="font-size:15px;font-weight:500">group=16+4+2=22, base token 352</text><text x="32" y="96" style="font-size:15px;font-weight:500">lane 13 owns query 355 and 363; head 7</text><path d="M515,72 L550,72" stroke="#527487" stroke-width="2" fill="none"/><polygon points="550,72 541.0,68.0 541.0,76.0" fill="#527487"/><rect class="storage" x="550" y="25" width="490" height="95" rx="8"/><text x="562" y="50" style="font-size:15px;font-weight:500">Q chunk 0 vector:22×16384×2</text><text x="562" y="73" style="font-size:15px;font-weight:500">+7×512×2+13×16 = 728272</text><text x="562" y="96" style="font-size:15px;font-weight:500">chunk 1 is 512 bytes later</text><rect class="storage" x="20" y="160" width="495" height="95" rx="8"/><text x="32" y="185" style="font-size:15px;font-weight:500">keyTile 2 covers keys128…191</text><text x="32" y="208" style="font-size:15px;font-weight:500">K group 9 chunk 0, lane 13: 302288 bytes</text><text x="32" y="231" style="font-size:15px;font-weight:500">shared K panel 1, chunk 0: 1232 bytes</text><path d="M515,207 L550,207" stroke="#527487" stroke-width="2" fill="none"/><polygon points="550,207 541.0,203.0 541.0,211.0" fill="#527487"/><rect class="tensor" x="550" y="160" width="490" height="95" rx="8"/><text x="562" y="185" style="font-size:15px;font-weight:500">QueryRow=2×16+floor(13/4)=35</text><text x="562" y="208" style="font-size:15px;font-weight:500">denominator owner lane=35 mod32=3</text><text x="562" y="231" style="font-size:15px;font-weight:500">select high Half; return scalar to all channels</text></svg></div><figcaption>All offsets are bytes relative to the named allocation base. The unit conversions are part of the algorithm.</figcaption></figure>
+<p>The worked Q address identifies a 16-byte operand vector, not a scalar channel. Its output-fragment owner query 355 has local row 35 within the warp. During the final normalization it fetches the high Half of lane 3’s denominator pair. For example, output column tile 0 at lane 13 holds channels 2/3 of that query; column tile 1 holds10/11. The final output uses Q’s group/head/chunk/lane layout, so the next projection can consume it as an ordinary packed token tensor.</p>
+<p>Small-profile branches are explicit and should not be extrapolated from the large-tile diagrams: FP16 remaps Q/K/V group reads to zero when T is between 1 and 16. The ordinary multi-group examples above do not take that path. Storage padding is 16 rows in the kernel’s group bound; the host can allocate a larger common 32-row-rounded buffer. A larger allocation is not permission for unpredicated extra loads.</p>
+<details class="source" open><summary>The exact K/V global-to-shared copy maps for this entry <span>lines 32–91</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu#L32-L91">csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">32</span>	// Both initial fills and ring refills execute this exact K/V copy layout.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">33</span>	const auto StageKeyValue = [&amp;](int g_KeyTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">34</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">35</span>		const int s_Stage = (g_KeyTile &amp; 1) * Profile::s_StageBytes;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">36</span>		const int s_Barrier = Profile::s_BarrierOffset + (g_KeyTile &amp; 1) * 8;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">37</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">38</span>		for (int Copy = 0; Copy &lt; Profile::QueryChunks; ++Copy)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">39</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">40</span>			const int CopySlot = TileCoordinates.Warp + Copy * 4;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">41</span>			int g_KeyGroup = g_KeyTile * 4 + CopySlot / Profile::QueryChunks;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">42</span>			if (uint32_t(TileCoordinates.g_Tokens + 14) &lt; 31)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">43</span>				g_KeyGroup = 0;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">44</span>			const int g_KeyChunk = CopySlot % Profile::QueryChunks;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">45</span>			const uint64_t g_KeyAddress =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">46</span>				Parameters.g_Key + uint64_t(g_KeyGroup) * 16384 * Profile::ElementBytes +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">47</span>				TileCoordinates.g_Head * 512 * Profile::ElementBytes + g_KeyChunk * 512;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">48</span>			const int s_Copy = s_Stage + CopySlot * 512;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">49</span>			if (g_KeyGroup &lt; TileCoordinates.g_Groups16)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">50</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">51</span>				if (IsCopyProducer(0xffffffffu))</span>
+<span class="code-line"><span class="ln" aria-hidden="true">52</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">53</span>					CopyBulk(s_Storage, s_Copy, g_KeyAddress, 512, s_Barrier);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">54</span>					BarrierExpect(s_Storage, s_Barrier, 512);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">55</span>				}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">56</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">57</span>			else</span>
+<span class="code-line"><span class="ln" aria-hidden="true">58</span>				*reinterpret_cast&lt;uint4*&gt;(s_Storage + s_Copy + TileCoordinates.Lane * 16) =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">59</span>					make_uint4(0, 0, 0, 0);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">60</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">61</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">62</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">63</span>		for (int Copy = 0; Copy &lt; Profile::QueryChunks; ++Copy)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">64</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">65</span>			const int CopySlot = TileCoordinates.Warp + Copy * 4;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">66</span>			int g_KeyGroup = g_KeyTile * 4 + CopySlot / Profile::QueryChunks;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">67</span>			if (uint32_t(TileCoordinates.g_Tokens + 14) &lt; 31)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">68</span>				g_KeyGroup = 0;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">69</span>			const int s_Copy = s_Stage + CopySlot * 512;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">70</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">71</span>			// V has transposed fragments. FP8 stores two neighboring M16 tiles</span>
+<span class="code-line"><span class="ln" aria-hidden="true">72</span>			// in one M32 group; Half stores one M16 group with two N16 panels.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">73</span>			int g_ValueGroup = bFp8 ? g_KeyTile * 2 + CopySlot / 2 : g_KeyGroup;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">74</span>			const int g_ValueGroups = bFp8 ? TileCoordinates.g_Groups16 / 2 : TileCoordinates.g_Groups16;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">75</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">76</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">77</span>			const uint64_t g_ValueAddress = Parameters.g_Value + uint64_t(g_ValueGroup) * 32768 +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">78</span>											TileCoordinates.g_Head * 1024 + (CopySlot &amp; 1) * 512;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">79</span>			const int s_ValueCopy = Profile::s_ValueOffset + s_Copy;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">80</span>			if (g_ValueGroup &lt; g_ValueGroups)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">81</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">82</span>				if (IsCopyProducer(0xffffffffu))</span>
+<span class="code-line"><span class="ln" aria-hidden="true">83</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">84</span>					CopyBulk(s_Storage, s_ValueCopy, g_ValueAddress, 512, s_Barrier);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">85</span>					BarrierExpect(s_Storage, s_Barrier, 512);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">86</span>				}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">87</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">88</span>			else</span>
+<span class="code-line"><span class="ln" aria-hidden="true">89</span>				*reinterpret_cast&lt;uint4*&gt;(s_Storage + s_ValueCopy + TileCoordinates.Lane * 16) =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">90</span>					make_uint4(0, 0, 0, 0);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">91</span>		}</span></code></pre></details>
+<h2 id="synchronous">05. Construct a synchronous streamed attention kernel</h2>
+<figure class="pseudocode"><figcaption>A one-slot scaffold already eliminates full score/probability allocations — an algorithmic outline, not a compiled replacement</figcaption><pre><code>load this warp&#x27;s64 Q rows into registers once
+N[64,32] = Half zeros; D[64] = Half zeros
+for j=0 .. ceil(T/64)-1:
+    stage K[j*64:j*64+64,:] and matching transposed V into one shared slot
+    fill missing groups with zero; CTA_barrier()
+    load K/V native fragments into registers
+    Scores[64,64] = Q * transpose(K) via 2 head-channel chunk(s)
+    E = exact Half affine/clamp/encoding transform(Scores)
+    D = HalfAdd(D, fixed_order_64_key_row_sum(E))
+    Eoperand = publish_Half(E)         # a register conversion, not a global store
+    N = N + Eoperand * V via 4 key-reduction chunks
+    CTA_barrier()                       # retire old K/V readers
+correct padding mass in D; compute reciprocal; scale N
+publish valid output groups; clear invalid tail rows</code></pre></figure>
+<p>This scaffold is a useful intermediate implementation because it isolates the attention algebra from asynchronous lifetime bugs. Keep Q and N/D registers across iterations, while reusing the same shared bytes for the next 64-key tile. The next optimization is to give those bytes two alternating slots and permit transfer of the future tile while current arithmetic runs. More stages would consume extra shared memory and require a different schedule; the recovered entry uses exactly two K/V stages.</p>
+<h2 id="pipeline">06. Build the two-stage K/V ring and predecessor protocol</h2>
+<p>The shared allocation is K0,K1,V0,V1, followed by two 8-byte barriers. Each K or V slot is 4096 bytes, so total data storage is 16384 bytes. One barrier belongs to the matched K/V slot pair: all its key and value copies register completion there. A stage is ready only when both operands and all expected arrivals have completed. The source initializes both barriers for 128 threads, synchronizes, then waits for the predecessor token groups containing its Q before loading Q.</p>
+<h3>Make the copy barrier part of the construction</h3>
+<p>Allocate 2 shared data slots and one 8-byte mbarrier per slot. Lane 0 of warp 0 initializes each barrier with 128 expected thread arrivals, then the CTA synchronizes before any producer can issue copies. On SM90+, <code>IsCopyProducer</code> elects one lane per participating warp; it issues an ordinary-address <code>cp.async.bulk</code> and registers the transferred byte count. On SM80/89, every lane issues 16-byte <code>cp.async.cg</code> stripes and attaches its own copies with <code>cp.async.mbarrier.arrive</code>. A 512-byte transfer needs one stripe per lane, a 1024-byte transfer needs two.</p>
+<p><code>ArriveAndWait</code> makes every thread arrive, obtains the current phase token, and polls until that exact phase completes. Reusing the same barrier address next iteration requires a new token; readiness from a previous cycle is insufficient. Completion also accounts for attached asynchronous transfers. Ordinary thread arrival alone cannot establish copy completion. The schedule must separately establish that the previous tile’s readers have finished before a slot is overwritten. No tensor-map descriptor, TMEM allocation, warp-group MMA or shared-to-register <code>ldmatrix</code> operation is used in this path: its shared vectors already have the correct MMA fragment order.</p>
+<details class="source" open><summary>Wait for this arrival phase, not a permanent ready flag <span>lines 9–19</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/memoryops.cuh#L9-L19">csrc/kernel_impl/shared/common/memoryops.cuh ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">9</span>// Arrive once at the caller&#x27;s shared mbarrier and wait for that exact phase.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">10</span>// The pipeline owns initialization and expected-copy byte counts. This helper</span>
+<span class="code-line"><span class="ln" aria-hidden="true">11</span>// preserves the original per-thread arrival and tight polling sequence; it does</span>
+<span class="code-line"><span class="ln" aria-hidden="true">12</span>// not add a CTA barrier, sleep, or another memory-ordering operation.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">13</span>__device__ __forceinline__ void ArriveAndWait(unsigned char* s_Storage, uint32_t s_BarrierByteOffset)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">14</span>{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">15</span>	const uint64_t ArrivalPhaseToken = BarrierArrive(s_Storage, s_BarrierByteOffset, 1);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">16</span>	while (!BarrierReady(s_Storage, s_BarrierByteOffset, ArrivalPhaseToken))</span>
+<span class="code-line"><span class="ln" aria-hidden="true">17</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">18</span>	}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">19</span>}</span></code></pre></details>
+<p>Global storage is backed by device memory; L2 and L1 are hardware-managed caches on relevant load/store paths. The source’s <code>.ca</code> weight loads permit all-level caching. Its pre-SM90 <code>.cg</code> asynchronous copies use the global cache level. <code>L1::no_allocate</code> output stores request no new L1 allocation. None of these hints implies a guaranteed hit rate or replaces synchronization. <a href="https://docs.nvidia.com/cuda/parallel-thread-execution/#cache-operators">NVIDIA’s PTX cache specification</a> defines those distinctions.</p>
+<p><code>WaitPredecessor(first,count)</code> lets lane 0/warp 0 poll counters indexed by <code>(queryBlock128·16+head/2)·4</code> until they are nonnegative, bounded by the real number of 128-token query blocks; it then performs a CTA barrier. Before Q load it covers the two 128-token blocks belonging to this 256-query CTA. Before a K/V tile it covers the 128-token block containing that 64-key tile. The source tests readiness ≥0, not “QKV split index equals 1.” The prepared plan’s full launch ordering supplies the complete QKV-before-attention dependency; the word <em>chained</em> is not evidence that arbitrary overlapping launches are safe.</p>
+<p>The body preloads up to two K/V tiles, then waits for tile 0. After consuming tile j, if j+2 exists it calls WaitPredecessor for that future tile, whose CTA barrier also takes all old readers beyond current consumption, then refills the retired slot. Finally it waits for j+1 before the next iteration. The ring index alone is not synchronization. Removing the predecessor routine’s unconditional CTA barrier because its counter is “already ready” would also remove a point used by this schedule to coordinate readers.</p>
+<details class="source" open><summary>Register Q lifetime and the two-stage prefill <span>lines 107–140</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu#L107-L140">csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">107</span>	WaitPredecessor(TileCoordinates.g_QueryBlock256 * 2, 2);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">108</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">109</span>	// Keep the query tile in registers while successive K/V tiles stream through shared memory.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">110</span>	FWindowAFragment r_Query[4][Profile::QueryChunks];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">111</span>	#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">112</span>	for (int r_QueryTile = 0; r_QueryTile &lt; 4; ++r_QueryTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">113</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">114</span>		for (int r_ReductionChunk = 0; r_ReductionChunk &lt; Profile::QueryChunks; ++r_ReductionChunk)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">115</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">116</span>			int g_Group = TileCoordinates.g_QueryBlock256 * 16 + TileCoordinates.Warp * 4 + r_QueryTile;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">117</span>			if (uint32_t(g_Tokens + 14) &lt; 31)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">118</span>				g_Group = 0;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">119</span>			const uint64_t g_QueryFragmentAddress = Parameters.g_Query +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">120</span>													uint64_t(g_Group) * 16384 * Profile::ElementBytes +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">121</span>													TileCoordinates.g_Head * 512 * Profile::ElementBytes +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">122</span>													r_ReductionChunk * 512 + TileCoordinates.Lane * 16;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">123</span>			r_Query[r_QueryTile][r_ReductionChunk] =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">124</span>				MakeWindowFragment(g_Group &lt; TileCoordinates.g_Groups16</span>
+<span class="code-line"><span class="ln" aria-hidden="true">125</span>									   ? __ldca(reinterpret_cast&lt;const uint4*&gt;(g_QueryFragmentAddress))</span>
+<span class="code-line"><span class="ln" aria-hidden="true">126</span>									   : make_uint4(0, 0, 0, 0));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">127</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">128</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">129</span>	#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">130</span>	for (int g_KeyTile = 0; g_KeyTile &lt; 2; ++g_KeyTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">131</span>		if (g_KeyTile &lt; TileCoordinates.g_KeyTiles)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">132</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">133</span>			WaitPredecessor(g_KeyTile / 2, 1);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">134</span>			StageKeyValue(g_KeyTile);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">135</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">136</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">137</span>	if (TileCoordinates.g_KeyTiles &gt; 0)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">138</span>		WaitStage(0);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">139</span>	FWindowAccumulatorTile&lt;32&gt; r_Output[4]{};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">140</span>	uint32_t r_Denominator = 0;</span></code></pre></details>
+<h2 id="exponent">07. Convert scores to the exact recovered exponent surrogate</h2>
+<p>For each of four query tiles and eight N8 key-column tiles, the kernel initializes two Half2 score words and accumulates 2 MMA head-channel chunk(s). It then applies a packed Half affine transform with slope 0.08953857421875 and intercept 1.708984375. Clamp the result to [1.439453125,1.9775390625]. Finally reinterpret the two Half encodings together: <code>Ebits=(clampedBits&lt;&lt;4)+0x3ffc4000</code> with 32-bit wraparound.</p>
+<p>The final expression is an integer encoding transform, not multiplication by 16 in floating point. It acts on the whole packed word; carries between low/high Half fields are accounted for by the recovered offset. Independently applying a guessed scalar shift to the two components changes the high component. Likewise <code>exp</code>, <code>exp2</code>, conventional stable softmax and row-maximum subtraction are different numerical programs. The clamp bounds the surrogate’s range so this source can accumulate unnormalized weights without an online rescaling scheme.</p>
+<figure class="diagram"><div class="diagram-scroll" tabindex="0" role="region" aria-label="One score tile feeds two precision-distinct reductions"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 335" role="img" aria-labelledby="figure-5-fig-fe8378ef8d9e" style="min-width:820px"><title id="figure-5-fig-fe8378ef8d9e">One score tile feeds two precision-distinct reductions</title><defs><marker id="figure-5-fig-fe8378ef8d9e-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#576c83"/></marker></defs><rect class="compute" x="20" y="25" width="245" height="100" rx="8"/><text x="32" y="50" style="font-size:15px;font-weight:500">Warp view:64 queries ×64 keys</text><text x="32" y="73" style="font-size:15px;font-weight:500">score via QKᵀ Tensor Cores</text><text x="32" y="96" style="font-size:15px;font-weight:500">Half score accumulators</text><path d="M265,75 L305,75" stroke="#527487" stroke-width="2" fill="none"/><polygon points="305,75 296.0,71.0 296.0,79.0" fill="#527487"/><rect class="compute" x="305" y="25" width="270" height="100" rx="8"/><text x="317" y="50" style="font-size:15px;font-weight:500">HalfFma → clamp → bit shift</text><text x="317" y="73" style="font-size:15px;font-weight:500">E in Half2 registers</text><text x="317" y="96" style="font-size:15px;font-weight:500">unnormalized positive weights</text><path d="M575,75 L615,75" stroke="#527487" stroke-width="2" fill="none"/><polygon points="615,75 606.0,71.0 606.0,79.0" fill="#527487"/><rect class="compute" x="615" y="25" width="425" height="100" rx="8"/><text x="627" y="50" style="font-size:15px;font-weight:500">D branch: fixed Half-add tree</text><text x="627" y="73" style="font-size:15px;font-weight:500">local partials → shuffle ownership transpose</text><text x="627" y="96" style="font-size:15px;font-weight:500">one full query sum per lane / row half</text><path d="M440,125 L440,180" stroke="#527487" stroke-width="2" fill="none"/><polygon points="440,180 444.0,171.0 436.0,171.0" fill="#527487"/><rect class="compute" x="305" y="180" width="270" height="100" rx="8"/><text x="317" y="205" style="font-size:15px;font-weight:500">N branch: retain E as Half</text><text x="317" y="228" style="font-size:15px;font-weight:500">four K16 chunks over 64 keys</text><text x="317" y="251" style="font-size:15px;font-weight:500">published E becomes MMA A</text><path d="M575,230 L615,230" stroke="#527487" stroke-width="2" fill="none"/><polygon points="615,230 606.0,226.0 606.0,234.0" fill="#527487"/><rect class="storage" x="615" y="180" width="425" height="100" rx="8"/><text x="627" y="205" style="font-size:15px;font-weight:500">Transposed V supplies MMA B</text><text x="627" y="228" style="font-size:15px;font-weight:500">accumulate N[64,32] in Half registers</text><text x="627" y="251" style="font-size:15px;font-weight:500">the next iteration reuses N and D</text><text x="25" y="317" style="font-size:15px;font-weight:500">Do not normalize E before E×V. The complete numerator is divided after every key tile contributes.</text></svg></div><figcaption>The denominator sees the Half surrogate. Both branches retain Half E, but they still use different reduction structures.</figcaption></figure>
+<details class="source" open><summary>The source-exact score MMA and Half-bit exponent transform <span>lines 155–181</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu#L155-L181">csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">155</span>		// Form Q times K-transpose scores and apply the native packed-Half exponent surrogate.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">156</span>		FWindowAccumulatorTile&lt;64&gt; r_Probability[4]{};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">157</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">158</span>		for (int r_QueryTile = 0; r_QueryTile &lt; 4; ++r_QueryTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">159</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">160</span>			for (int r_ColumnTile = 0; r_ColumnTile &lt; 8; ++r_ColumnTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">161</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">162</span>				#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">163</span>				for (int r_ReductionChunk = 0; r_ReductionChunk &lt; Profile::QueryChunks; ++r_ReductionChunk)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">164</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">165</span>					const uint4 r_KeyVector = r_Key[r_ColumnTile / 2][r_ReductionChunk];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">166</span>					const uint32_t r_KeyFragment[2] = {r_ColumnTile &amp; 1 ? r_KeyVector.z : r_KeyVector.x,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">167</span>													   r_ColumnTile &amp; 1 ? r_KeyVector.w : r_KeyVector.y};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">168</span>					MmaWindowFragment&lt;bFp8&gt;(r_Query[r_QueryTile][r_ReductionChunk], r_KeyFragment,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">169</span>											r_Probability[r_QueryTile].r_Pair[r_ColumnTile]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">170</span>				}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">171</span>				#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">172</span>				for (int r_Half = 0; r_Half &lt; 2; ++r_Half)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">173</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">174</span>					const uint32_t r_Score = r_Probability[r_QueryTile].r_Pair[r_ColumnTile][r_Half];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">175</span>					const uint32_t r_Affine =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">176</span>						HalfFma(r_Score, CONST_GLOBAL_EXP_SLOPE_HALF2, CONST_GLOBAL_EXP_INTERCEPT_HALF2);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">177</span>					const uint32_t r_Clamped = HalfMin(HalfMax(r_Affine, CONST_GLOBAL_EXP_LOWER_HALF2),</span>
+<span class="code-line"><span class="ln" aria-hidden="true">178</span>													   CONST_GLOBAL_EXP_UPPER_HALF2);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">179</span>					r_Probability[r_QueryTile].r_Pair[r_ColumnTile][r_Half] =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">180</span>						(r_Clamped &lt;&lt; CONST_GLOBAL_EXP_ENCODING_SHIFT) + CONST_GLOBAL_EXP_ENCODING_OFFSET;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">181</span>				}</span></code></pre></details>
+<h2 id="denominator">08. Derive the denominator ownership transpose</h2>
+<p>A score tile’s lane L initially owns only part of a query row: two key columns in each N8 tile, for two row halves. Four neighboring lanes jointly cover all eight key columns of an N8 fragment. To form 64-key row sums, first add the eight fragment pairs in the recorded local tree: add pair 0+1 and 2+3, add those results, then add4+5, then 6+7. Each operation is HalfAdd on packed components. The code performs this for four local row fragments at a time.</p>
+<p>Now redistribute those partials so one lane can own a complete query sum. It first permutes the four registers with XOR of <code>lane mod4</code>. The source lane is <code>((lane&amp;7)&lt;&lt;2)+(lane&gt;&gt;3)</code>. Four shuffles read from that source XOR the register index, and a second register permutation uses <code>lane&gt;&gt;3</code>. Adding the resulting registers 0,1,2,3 in order restores the required channel-lane summation sequence. Adding low and high Half components completes the scalar query sum. This is a transpose of <em>who owns partial sums</em>, not a materialized shared-memory matrix transpose.</p>
+<p>The procedure runs for two 32-query halves, then joins their scalar results into one Half2. Consequently lane L owns D for query L in its low Half and query L+32 in its high Half. That pair is Half-added to the running denominator after every 64-key tile. Preserving the order matters: a generic butterfly across all keys or an FP32 accumulator can produce different rounding. Fixed array indices inside the register permutation also avoid requiring dynamically indexed storage for the tiny quartet; confirm actual register/local-memory behavior from compilation rather than assuming the source array never spills.</p>
+<details class="source" open><summary>Follow local sums, the two-way warp transpose, and the persistent denominator <span>lines 184–221</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu#L184-L221">csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">184</span>		// Sum the current score tile with the native two-way warp transpose.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">185</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">186</span>			uint32_t r_QuerySums[2];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">187</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">188</span>			for (int r_QueryHalf = 0; r_QueryHalf &lt; 2; ++r_QueryHalf)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">189</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">190</span>				uint32_t r_LocalProbabilitySums[4], r_GatheredProbabilitySums[4];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">191</span>				#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">192</span>				for (int r_Row = 0; r_Row &lt; 4; ++r_Row)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">193</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">194</span>					const auto&amp; r_Pairs = r_Probability[r_QueryHalf * 2 + r_Row / 2].r_Pair;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">195</span>					const int r_QueryRowHalf = r_Row &amp; 1;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">196</span>					uint32_t r_Sum = HalfAdd(HalfAdd(r_Pairs[0][r_QueryRowHalf], r_Pairs[1][r_QueryRowHalf]),</span>
+<span class="code-line"><span class="ln" aria-hidden="true">197</span>											 HalfAdd(r_Pairs[2][r_QueryRowHalf], r_Pairs[3][r_QueryRowHalf]));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">198</span>					r_Sum = HalfAdd(r_Sum, HalfAdd(r_Pairs[4][r_QueryRowHalf], r_Pairs[5][r_QueryRowHalf]));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">199</span>					r_LocalProbabilitySums[r_Row] =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">200</span>						HalfAdd(r_Sum, HalfAdd(r_Pairs[6][r_QueryRowHalf], r_Pairs[7][r_QueryRowHalf]));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">201</span>				}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">202</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">203</span>				// This warp transpose turns the MMA fragment&#x27;s channel ownership</span>
+<span class="code-line"><span class="ln" aria-hidden="true">204</span>				// into one full query sum per lane, without changing Half add order.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">205</span>				const int r_SourceLane = ((TileCoordinates.Lane &amp; 7) &lt;&lt; 2) + (TileCoordinates.Lane &gt;&gt; 3);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">206</span>				PermuteGlobalAttentionQuad(r_LocalProbabilitySums, TileCoordinates.Lane &amp; 3);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">207</span>				#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">208</span>				for (int r_Row = 0; r_Row &lt; 4; ++r_Row)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">209</span>					r_GatheredProbabilitySums[r_Row] =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">210</span>						ShuffleIdx(r_LocalProbabilitySums[r_Row], r_SourceLane ^ r_Row, 31, 0xffffffffu);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">211</span>				PermuteGlobalAttentionQuad(r_GatheredProbabilitySums, TileCoordinates.Lane &gt;&gt; 3);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">212</span>				uint32_t r_Sum = HalfAdd(r_GatheredProbabilitySums[0], r_GatheredProbabilitySums[1]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">213</span>				r_Sum = HalfAdd(r_Sum, r_GatheredProbabilitySums[2]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">214</span>				r_Sum = HalfAdd(r_Sum, r_GatheredProbabilitySums[3]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">215</span>				r_QuerySums[r_QueryHalf] =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">216</span>					HalfAdd(JoinHalfwords(uint16_t(r_Sum), uint16_t(r_Sum)),</span>
+<span class="code-line"><span class="ln" aria-hidden="true">217</span>							JoinHalfwords(uint16_t(r_Sum &gt;&gt; 16), uint16_t(r_Sum &gt;&gt; 16)));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">218</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">219</span>			const uint32_t r_ProbabilitySum =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">220</span>				JoinHalfwords(uint16_t(r_QuerySums[0]), uint16_t(r_QuerySums[1]));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">221</span>			r_Denominator = HalfAdd(r_Denominator, r_ProbabilitySum);</span></code></pre></details>
+<h2 id="numerator">09. Reuse the exponent tile immediately as an MMA operand</h2>
+<p>After contributing to D, the same unnormalized E tile becomes A for E×V. <code>PublishWindowChunk</code> selects the existing Half words into the four-register A fragment. Both branches retain Half E, but the denominator uses scalar Half-add reductions while the numerator uses Tensor Core MMA. Equivalent real arithmetic does not imply identical finite-precision summation.</p>
+<p>With uniform scores, every key begins with the same Half E. Even then, use the chunked Half denominator and MMA numerator as the exact oracle: dividing an FP32 sum of V by the token count discards the source’s accumulation and reciprocal rounding boundaries.</p>
+<p>The key reduction has 64 elements, so the E×V loop needs 4 chunks of K16. For each query M16 tile, two V column groups supply four N8 result fragments, covering 32 output channels. The V vector’s x/y words form the lower B fragment and z/w the upper. Every MMA accumulates directly into the persistent Half N tile. E is not divided into normalized probabilities first; that would move the rounding point and require repeated denominator work across chunks.</p>
+<p>Once this contribution finishes, the current E, K and V registers are dead. They can be reused for the next tile, while Q/N/D remain live. This is the central lifetime decision behind the kernel’s storage savings. The global inputs Q/K/V still exist and are reread by other query CTAs, so the source does not eliminate all global traffic or guarantee that all repeated data stays in cache.</p>
+<details class="source" open><summary>Consume E×V, retire the stage, issue its two-ahead refill and wait for the next <span>lines 224–259</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu#L224-L259">csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">224</span>		// Multiply the current probability tile by V and accumulate the output numerator.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">225</span>		uint4 r_Value[Profile::ProbabilityChunks][2];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">226</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">227</span>		for (int r_ReductionChunk = 0; r_ReductionChunk &lt; Profile::ProbabilityChunks; ++r_ReductionChunk)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">228</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">229</span>			for (int r_ColumnTile = 0; r_ColumnTile &lt; 2; ++r_ColumnTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">230</span>				r_Value[r_ReductionChunk][r_ColumnTile] =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">231</span>					*reinterpret_cast&lt;const uint4*&gt;(s_Storage + Profile::s_ValueOffset + s_Base +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">232</span>													(r_ReductionChunk * 2 + r_ColumnTile) * 512);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">233</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">234</span>		for (int r_QueryTile = 0; r_QueryTile &lt; 4; ++r_QueryTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">235</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">236</span>			for (int r_ColumnTile = 0; r_ColumnTile &lt; 2; ++r_ColumnTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">237</span>				#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">238</span>				for (int r_ReductionChunk = 0; r_ReductionChunk &lt; Profile::ProbabilityChunks;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">239</span>					 ++r_ReductionChunk)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">240</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">241</span>					const auto r_ProbabilityFragment =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">242</span>						PublishWindowChunk&lt;bFp8&gt;(r_Probability[r_QueryTile], r_ReductionChunk);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">243</span>					const uint4 r_ValueVector = r_Value[r_ReductionChunk][r_ColumnTile];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">244</span>					const uint32_t r_LowerValueFragment[2] = {r_ValueVector.x, r_ValueVector.y},</span>
+<span class="code-line"><span class="ln" aria-hidden="true">245</span>								   r_UpperValueFragment[2] = {r_ValueVector.z, r_ValueVector.w};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">246</span>					MmaWindowFragment&lt;bFp8&gt;(r_ProbabilityFragment, r_LowerValueFragment,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">247</span>											r_Output[r_QueryTile].r_Pair[r_ColumnTile * 2]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">248</span>					MmaWindowFragment&lt;bFp8&gt;(r_ProbabilityFragment, r_UpperValueFragment,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">249</span>											r_Output[r_QueryTile].r_Pair[r_ColumnTile * 2 + 1]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">250</span>				}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">251</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">252</span>		if (g_KeyTile + 2 &lt; TileCoordinates.g_KeyTiles)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">253</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">254</span>			WaitPredecessor((g_KeyTile + 2) / 2, 1);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">255</span>			StageKeyValue(g_KeyTile + 2);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">256</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">257</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">258</span>		if (g_KeyTile + 1 &lt; TileCoordinates.g_KeyTiles)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">259</span>			WaitStage(g_KeyTile + 1);</span></code></pre></details>
+<h2 id="padding">10. Correct the artificial-key denominator without masking model tokens</h2>
+<figure class="diagram"><div class="diagram-scroll" tabindex="0" role="region" aria-label="Separate the stored-token and traversed-key boundaries"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 320" role="img" aria-labelledby="figure-6-fig-31ef9276a39f" style="min-width:820px"><title id="figure-6-fig-31ef9276a39f">Separate the stored-token and traversed-key boundaries</title><defs><marker id="figure-6-fig-31ef9276a39f-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#576c83"/></marker></defs><rect class="tensor" x="20" y="25" width="300" height="95" rx="8"/><text x="32" y="50" style="font-size:15px;font-weight:500">T=2160 real field tokens</text><text x="32" y="73" style="font-size:15px;font-weight:500">36×60 bottleneck positions</text><text x="32" y="96" style="font-size:15px;font-weight:500">includes model spatial padding</text><path d="M320,72 L365,72" stroke="#527487" stroke-width="2" fill="none"/><polygon points="365,72 356.0,68.0 356.0,76.0" fill="#527487"/><rect class="storage" x="365" y="25" width="315" height="95" rx="8"/><text x="377" y="50" style="font-size:15px;font-weight:500">Kernel group bound S=ceil(T/16)×16</text><text x="377" y="73" style="font-size:15px;font-weight:500">S=2160 at this example</text><text x="377" y="96" style="font-size:15px;font-weight:500">host may reserve extra rows</text><path d="M680,72 L725,72" stroke="#527487" stroke-width="2" fill="none"/><polygon points="725,72 716.0,68.0 716.0,76.0" fill="#527487"/><rect class="storage" x="725" y="25" width="315" height="95" rx="8"/><text x="737" y="50" style="font-size:15px;font-weight:500">Traversal P=ceil(T/64)×64</text><text x="737" y="73" style="font-size:15px;font-weight:500">P=2176;34 K/V tiles</text><text x="737" y="96" style="font-size:15px;font-weight:500">out-of-bound groups stage zero</text><rect class="compute" x="20" y="175" width="465" height="95" rx="8"/><text x="32" y="200" style="font-size:15px;font-weight:500">Zero K ⇒ score 0 ⇒ E(0)=0.083984375</text><text x="32" y="223" style="font-size:15px;font-weight:500">Zero V ⇒ no numerator contribution</text><text x="32" y="246" style="font-size:15px;font-weight:500">16 extra keys add1.34375 to denominator</text><path d="M485,222 L535,222" stroke="#527487" stroke-width="2" fill="none"/><polygon points="535,222 526.0,218.0 526.0,226.0" fill="#527487"/><rect class="compute" x="535" y="175" width="505" height="95" rx="8"/><text x="547" y="200" style="font-size:15px;font-weight:500">correction = Half(FP32(E(0))×FP32(P−T))</text><text x="547" y="223" style="font-size:15px;font-weight:500">Dcorrected=HalfSub(D,correction)</text><text x="547" y="246" style="font-size:15px;font-weight:500">floor at ε; approximate reciprocal; scale N</text></svg></div><figcaption>Correct only the extra traversal slots. A spatially padded position already counted in T is part of the model’s attention domain.</figcaption></figure>
+<p>Let S=ceil(T/16)·16 be the kernel’s stored-group bound. The host allocation may round to 32 even for Half. P=ceil(T/64)·64 is a different quantity used by the key traversal. At T=2160, S=2160 while P=2176; the final missing M16 group is staged as zeros. Rows between T and S must have zero K/V from the producer’s padding contract; groups beyond S are zero-filled by this kernel. These are separate mechanisms serving the same logical traversal padding.</p>
+<p>At score zero, the Half affine result is 0x3ed6. The scalar correction path computes <code>((0x3ed6&lt;&lt;4)+0x4000) mod65536=0x2d60</code>, which represents 0.083984375. With 16 artificial keys, that adds1.34375 to the uncorrected denominator. The implementation converts E(0) and the padding count to FP32, multiplies with FTZ, rounds the correction back to Half, and applies one Half subtraction. It does not subtract one value per padded key with a different sequence of Half roundings.</p>
+<p>The correction applies to P−T only. Network spatial padding already included in H×W is part of the model’s token field and remains in attention. After correction, the kernel applies the same Half epsilon floor0x0410, then <code>RcpHalf2</code>: each component widens for an approximate reciprocal and rounds back to Half. This avoids division by zero for a small or zero corrected denominator under the specified rule.</p>
+<details class="source" open><summary>Derive E(0), form one correction and invert the corrected denominator <span>lines 262–283</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu#L262-L283">csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">262</span>	// Remove padded-key probability mass before computing the per-query normalization.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">263</span>	uint32_t r_InverseDenominator;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">264</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">265</span>		const int PaddingKeys = TileCoordinates.g_KeyTiles * 64 - g_Tokens;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">266</span>		uint32_t r_CorrectedDenominator = r_Denominator;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">267</span>		if (PaddingKeys &gt; 0)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">268</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">269</span>			// Padded keys produce the surrogate&#x27;s nonzero value at score zero.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">270</span>			// Remove that mass in FP32 before one Half-rounded subtraction.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">271</span>			const uint32_t r_AffineZero =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">272</span>				HalfFma(0, CONST_GLOBAL_EXP_SLOPE_HALF2, CONST_GLOBAL_EXP_INTERCEPT_HALF2);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">273</span>			const uint32_t r_ClampedZero =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">274</span>				HalfMin(HalfMax(r_AffineZero, CONST_GLOBAL_EXP_LOWER_HALF2), CONST_GLOBAL_EXP_UPPER_HALF2);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">275</span>			const uint16_t r_ZeroScore =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">276</span>				uint16_t((uint16_t(r_ClampedZero) &lt;&lt; CONST_GLOBAL_EXP_ENCODING_SHIFT) +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">277</span>						 CONST_GLOBAL_EXP_SCALAR_OFFSET);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">278</span>			const uint32_t r_Correction =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">279</span>				FloatToHalf2(FloatMulFtzBits(HalfToFloatBits(r_ZeroScore), UintToFloatRnBits(PaddingKeys)));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">280</span>			r_CorrectedDenominator = HalfSub(r_CorrectedDenominator, r_Correction);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">281</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">282</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">283</span>		r_InverseDenominator = RcpHalf2(HalfMax(r_CorrectedDenominator, CONST_NORMALIZATION_EPSILON_HALF2));</span></code></pre></details>
+<h2 id="publication">11. Return row scalars to output owners and publish</h2>
+<p>The numerator still follows MMA output ownership, while denominator D follows one query per lane. For each M16 query tile m and row-half r, compute <code>QueryRow=16m+floor(lane/4)+8r</code>. Shuffle the denominator pair from lane QueryRow mod32, then choose its low/high Half with floor(QueryRow/32). Replicate that scalar in a Half2 and multiply every output column pair belonging to the row. In the worked example query 355 is local row 35, so lane 13 selects lane 3’s high Half. The same reciprocal reaches all 32 channel values through their fragment owners.</p>
+<p>Publication retains the normalized Half fragments through PublishWindowChunk and writes Q’s native group/head/chunk layout with L1 no-allocation stores. Tail group stores can include rows beyond T but below S, so the source performs a CTA barrier and explicitly clears those invalid rows after all vector stores. Only afterward does another CTA barrier precede the optional completion-counter release. The completion index is <code>(queryBlock128·32+head)·4</code>, distinct from the QKV predecessor’s head-pair index.</p>
+<details class="source" open><summary>Select the denominator for each query fragment and publish the final format <span>lines 286–316</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu#L286-L316">csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">286</span>	// Apply row normalization and publish the accumulated attention in its physical layout.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">287</span>	#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">288</span>	for (int r_QueryTile = 0; r_QueryTile &lt; 4; ++r_QueryTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">289</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">290</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">291</span>		for (int r_Half = 0; r_Half &lt; 2; ++r_Half)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">292</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">293</span>			const int QueryRow = r_QueryTile * 16 + TileCoordinates.Lane / 4 + r_Half * 8;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">294</span>			const uint32_t r_InverseDenominatorPair =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">295</span>				ShuffleIdx(r_InverseDenominator, QueryRow % 32, 31, 0xffffffffu);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">296</span>			const uint16_t r_InverseDenominatorHalf =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">297</span>				uint16_t(r_InverseDenominatorPair &gt;&gt; ((QueryRow / 32) * 16));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">298</span>			const uint32_t r_QueryNormalization =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">299</span>				JoinHalfwords(r_InverseDenominatorHalf, r_InverseDenominatorHalf);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">300</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">301</span>			for (int r_ColumnTile = 0; r_ColumnTile &lt; 4; ++r_ColumnTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">302</span>				r_Output[r_QueryTile].r_Pair[r_ColumnTile][r_Half] =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">303</span>					HalfMul(r_Output[r_QueryTile].r_Pair[r_ColumnTile][r_Half], r_QueryNormalization);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">304</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">305</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">306</span>		const int g_Group = TileCoordinates.g_QueryBlock256 * 16 + TileCoordinates.Warp * 4 + r_QueryTile;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">307</span>		if (g_Group &lt; TileCoordinates.g_Groups16)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">308</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">309</span>			for (int r_Chunk = 0; r_Chunk &lt; Profile::QueryChunks; ++r_Chunk)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">310</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">311</span>				const auto r_OutputFragment = PublishWindowChunk&lt;bFp8&gt;(r_Output[r_QueryTile], r_Chunk);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">312</span>				StoreNoAllocate(Parameters.g_Output + uint64_t(g_Group) * 16384 * Profile::ElementBytes +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">313</span>									TileCoordinates.g_Head * 512 * Profile::ElementBytes + r_Chunk * 512 +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">314</span>									TileCoordinates.Lane * 16,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">315</span>								make_uint4(r_OutputFragment.r_Word[0], r_OutputFragment.r_Word[1],</span>
+<span class="code-line"><span class="ln" aria-hidden="true">316</span>										   r_OutputFragment.r_Word[2], r_OutputFragment.r_Word[3]));</span></code></pre></details>
+<h2 id="reconstruction">12. Complete construction with every lifetime and synchronization boundary</h2>
+<figure class="pseudocode"><figcaption>Complete reconstruction: no global score, exponential, denominator or partial-numerator tensor — an algorithmic outline, not a compiled replacement</figcaption><pre><code>derive T, storedRows=round_up(T,16), groups16=storedRows/16
+derive keyTiles=ceil(T/64), queryBlocks128=ceil(T/128), head, queryBlock256, lane, warp
+allocate K0/K1/V0/V1 (16384 bytes) and two 8-byte barriers
+initialize barriers for 128 arrivals; CTA_barrier()
+WaitPredecessor(queryBlock256*2,2)         # poll needed counters; includes CTA barrier
+load four M16 Q tiles, each with 2 chunk(s); predicate missing groups
+apply the source&#x27;s tiny-profile group-broadcast rule where selected
+for j=0..min(2,keyTiles)-1:
+    WaitPredecessor(j//2,1)
+    StageKV(j): issue matched K/V copies or zero fill invalid groups
+if keyTiles&gt;0: arrive_and_wait(stage 0)
+N = Half zero output fragments; D = one Half2 zero per lane
+for j=0..keyTiles-1:
+    load K fragments from shared slot j%2
+    E = zero Half score fragments
+    for each M16 query tile and eight N8 key tiles:
+        for each of 2 head-channel chunk(s): MMA Q×Kᵀ into E
+        E = Half affine → clamp → whole-word encoding shift/add
+    Dchunk = fixed local Half-add tree → register permutations/shuffles → complete row sums
+    D = HalfAdd(D,Dchunk)
+    load transposed V fragments from shared V slot j%2
+    for each query tile, output panel and 4 key chunk(s):
+        publish E chunk to Half register A; MMA E×V into persistent N
+    if j+2&lt;keyTiles: WaitPredecessor((j+2)//2,1); StageKV(j+2)
+    if j+1&lt;keyTiles: arrive_and_wait(stage(j+1))
+padding=keyTiles*64-T
+if padding&gt;0: D=HalfSub(D,Half(FP32(E(0))*FP32(padding)))
+inverse=RcpHalf2(max(D,epsilon))
+for each query row fragment: shuffle/select its inverse; HalfMul all N channel pairs
+publish valid groups in native Half output layout
+if storedRows!=T:
+    CTA_barrier(); clear only invalid output rows T..storedRows-1
+CTA_barrier()
+if completion counter pointer is present:
+    lane 0/warp 0 release-publishes this head&#x27;s valid 128-query block counters</code></pre></figure>
+<h2 id="checks">13. Validate model behavior, numerical boundaries and pipeline safety</h2>
+<ol><li><strong>Zero score:</strong> set Q or K to zero. Verify the exact surrogate produces 0.083984375, including both packed Half lanes. The denominator correction must remove only P−T contributions, and the numerator must use Half E.</li><li><strong>Key/value identity:</strong> give V distinct representable tags by token and channel. Decode using the transposed V map; changing one key’s V should affect all query rows according to that key’s weight, with no head cross-talk.</li><li><strong>Row ownership:</strong> use differing Q rows so denominators vary by query. Trace local rows 3,11,35,43 and verify the shuffle returns the correct inverse to every channel fragment. A constant-input test alone cannot expose a swapped row sum.</li><li><strong>Padding:</strong> exercise T values on both sides of 16,32,64,128 and 256 boundaries where admitted. Compare the valid-row result with a reference using only T model keys and the same rounding conventions; inspect the explicit correction separately. Invalid stored output rows must be zero and allocation guards unchanged.</li><li><strong>Precision:</strong> compare QK Half scores, transformed E bits, per 64-key Half sums, numerator fragments, reciprocal pairs and final output separately. This locates a mismatch at the first wrong boundary instead of masking it with final-output tolerance.</li><li><strong>Pipeline/counters:</strong> compare the one-slot synchronous scaffold with the two-slot entry over more than two key tiles. Verify both K and V have arrived before consumption, and both old readers have retired before refill. Test absent/present completion counters and valid predecessor initialization; do not launch against a producer schedule the host contract does not authorize.</li><li><strong>Tiny profiles:</strong> isolate the recovered 1–16-token Q/K/V broadcast branch from ordinary multi-group padding tests; the normal large-shape address derivation alone does not cover that branch.</li></ol>
+<p>The optimization progression can now be evaluated concretely. Register-resident Q removes repeated query loads within a CTA. Sharing 64-key K/V tiles across 256 queries reduces duplicate input fetches. Short-lived E fragments eliminate quadratic intermediate storage. The row-sum transpose avoids shared reduction storage while preserving add order. The two-slot ring permits asynchronous copies to overlap useful work. The costs are substantial register lifetimes, shared capacity and synchronization, plus repeated K/V reads across different query CTAs. This tutorial reconstructs the mechanisms and their correctness conditions; it does not claim new timings or measured cache residency.</p>
+<h2 id="source-appendix">14. Source appendix: the complete implementation and ABI</h2><p>Public entry: <code>global_attention_chained_c1024_fp16</code>. Owning definition: <code>global_attention_chained_c1024_fp16</code>. The complete translation unit is retained below for reconstruction after the walkthrough. Exact excerpts and local source files use the pinned revision shown in the sidebar.</p><details class="source"><summary>Complete owning CUDA source <span>lines 1–356</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu#L1-L356">csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">1</span>// The exported entry owns its storage, pipeline, computation and publication.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">2</span>// Shared headers contain only profiles, layout maps and reused tensor primitives.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">3</span>#include &quot;../../shared/common/kernel_helpers.cuh&quot;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">4</span>#include &quot;../common/global_attention.cuh&quot;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">5</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">6</span>extern &quot;C&quot; __global__ __maxnreg__(168) void global_attention_chained_c1024_fp16(</span>
+<span class="code-line"><span class="ln" aria-hidden="true">7</span>	FGlobalAttentionChainedC1024Fp16Parameters Parameters)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">8</span>{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">9</span>#if defined(__CUDA_ARCH__) &amp;&amp; __CUDA_ARCH__ &gt;= 800</span>
+<span class="code-line"><span class="ln" aria-hidden="true">10</span>	constexpr bool bFp8 = false;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">11</span>	using Profile = FGlobalAttentionProfile&lt;bFp8&gt;;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">12</span>	__shared__ __align__(512) unsigned char s_Storage[Profile::s_BarrierOffset + 16];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">13</span>	const int g_Tokens = Parameters.BatchCount * Parameters.TokensPerBatch;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">14</span>	const int g_Alignment = bFp8 ? 32 : 16;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">15</span>	const int g_PaddedTokens = ((g_Tokens + g_Alignment - 1) / g_Alignment) * g_Alignment;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">16</span>	const FGlobalAttentionCoordinates TileCoordinates{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">17</span>		g_Tokens,		 g_PaddedTokens,  g_PaddedTokens / 16, (g_Tokens + 63) / 64, (g_Tokens + 127) / 128,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">18</span>		int(blockIdx.x), int(blockIdx.y), int(threadIdx.x),	   int(threadIdx.y)};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">19</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">20</span>	// Wait only for the Q/K/V token groups needed by the next copy.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">21</span>	const auto WaitPredecessor = [&amp;](int g_FirstGroup, int g_Count)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">22</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">23</span>		if (TileCoordinates.Lane == 0 &amp;&amp; TileCoordinates.Warp == 0)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">24</span>			for (int g_Group = g_FirstGroup;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">25</span>				 g_Group &lt; g_FirstGroup + g_Count &amp;&amp; g_Group &lt; TileCoordinates.g_QueryBlocks128; ++g_Group)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">26</span>				while (int32_t(CounterLoadRelaxed(Parameters.g_PredecessorCounters +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">27</span>												  (g_Group * 16 + TileCoordinates.g_Head / 2) * 4)) &lt; 0)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">28</span>					PollSleep(64);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">29</span>		__syncthreads();</span>
+<span class="code-line"><span class="ln" aria-hidden="true">30</span>	};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">31</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">32</span>	// Both initial fills and ring refills execute this exact K/V copy layout.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">33</span>	const auto StageKeyValue = [&amp;](int g_KeyTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">34</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">35</span>		const int s_Stage = (g_KeyTile &amp; 1) * Profile::s_StageBytes;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">36</span>		const int s_Barrier = Profile::s_BarrierOffset + (g_KeyTile &amp; 1) * 8;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">37</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">38</span>		for (int Copy = 0; Copy &lt; Profile::QueryChunks; ++Copy)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">39</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">40</span>			const int CopySlot = TileCoordinates.Warp + Copy * 4;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">41</span>			int g_KeyGroup = g_KeyTile * 4 + CopySlot / Profile::QueryChunks;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">42</span>			if (uint32_t(TileCoordinates.g_Tokens + 14) &lt; 31)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">43</span>				g_KeyGroup = 0;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">44</span>			const int g_KeyChunk = CopySlot % Profile::QueryChunks;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">45</span>			const uint64_t g_KeyAddress =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">46</span>				Parameters.g_Key + uint64_t(g_KeyGroup) * 16384 * Profile::ElementBytes +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">47</span>				TileCoordinates.g_Head * 512 * Profile::ElementBytes + g_KeyChunk * 512;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">48</span>			const int s_Copy = s_Stage + CopySlot * 512;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">49</span>			if (g_KeyGroup &lt; TileCoordinates.g_Groups16)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">50</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">51</span>				if (IsCopyProducer(0xffffffffu))</span>
+<span class="code-line"><span class="ln" aria-hidden="true">52</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">53</span>					CopyBulk(s_Storage, s_Copy, g_KeyAddress, 512, s_Barrier);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">54</span>					BarrierExpect(s_Storage, s_Barrier, 512);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">55</span>				}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">56</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">57</span>			else</span>
+<span class="code-line"><span class="ln" aria-hidden="true">58</span>				*reinterpret_cast&lt;uint4*&gt;(s_Storage + s_Copy + TileCoordinates.Lane * 16) =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">59</span>					make_uint4(0, 0, 0, 0);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">60</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">61</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">62</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">63</span>		for (int Copy = 0; Copy &lt; Profile::QueryChunks; ++Copy)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">64</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">65</span>			const int CopySlot = TileCoordinates.Warp + Copy * 4;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">66</span>			int g_KeyGroup = g_KeyTile * 4 + CopySlot / Profile::QueryChunks;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">67</span>			if (uint32_t(TileCoordinates.g_Tokens + 14) &lt; 31)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">68</span>				g_KeyGroup = 0;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">69</span>			const int s_Copy = s_Stage + CopySlot * 512;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">70</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">71</span>			// V has transposed fragments. FP8 stores two neighboring M16 tiles</span>
+<span class="code-line"><span class="ln" aria-hidden="true">72</span>			// in one M32 group; Half stores one M16 group with two N16 panels.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">73</span>			int g_ValueGroup = bFp8 ? g_KeyTile * 2 + CopySlot / 2 : g_KeyGroup;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">74</span>			const int g_ValueGroups = bFp8 ? TileCoordinates.g_Groups16 / 2 : TileCoordinates.g_Groups16;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">75</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">76</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">77</span>			const uint64_t g_ValueAddress = Parameters.g_Value + uint64_t(g_ValueGroup) * 32768 +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">78</span>											TileCoordinates.g_Head * 1024 + (CopySlot &amp; 1) * 512;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">79</span>			const int s_ValueCopy = Profile::s_ValueOffset + s_Copy;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">80</span>			if (g_ValueGroup &lt; g_ValueGroups)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">81</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">82</span>				if (IsCopyProducer(0xffffffffu))</span>
+<span class="code-line"><span class="ln" aria-hidden="true">83</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">84</span>					CopyBulk(s_Storage, s_ValueCopy, g_ValueAddress, 512, s_Barrier);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">85</span>					BarrierExpect(s_Storage, s_Barrier, 512);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">86</span>				}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">87</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">88</span>			else</span>
+<span class="code-line"><span class="ln" aria-hidden="true">89</span>				*reinterpret_cast&lt;uint4*&gt;(s_Storage + s_ValueCopy + TileCoordinates.Lane * 16) =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">90</span>					make_uint4(0, 0, 0, 0);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">91</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">92</span>	};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">93</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">94</span>	// A ring slot is readable only after its K and V transactions complete.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">95</span>	const auto WaitStage = [&amp;](int g_KeyTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">96</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">97</span>		const int s_Barrier = FGlobalAttentionProfile&lt;bFp8&gt;::s_BarrierOffset + (g_KeyTile &amp; 1) * 8;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">98</span>		ArriveAndWait(s_Storage, s_Barrier);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">99</span>	};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">100</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">101</span>	// Initialize the shared copy barriers before any warp issues input transactions.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">102</span>	if (TileCoordinates.Lane == 0 &amp;&amp; TileCoordinates.Warp == 0)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">103</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">104</span>		for (int s_Stage = 0; s_Stage &lt; 2; ++s_Stage)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">105</span>			BarrierInit(s_Storage, Profile::s_BarrierOffset + s_Stage * 8, blockDim.x * blockDim.y);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">106</span>	__syncthreads();</span>
+<span class="code-line"><span class="ln" aria-hidden="true">107</span>	WaitPredecessor(TileCoordinates.g_QueryBlock256 * 2, 2);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">108</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">109</span>	// Keep the query tile in registers while successive K/V tiles stream through shared memory.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">110</span>	FWindowAFragment r_Query[4][Profile::QueryChunks];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">111</span>	#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">112</span>	for (int r_QueryTile = 0; r_QueryTile &lt; 4; ++r_QueryTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">113</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">114</span>		for (int r_ReductionChunk = 0; r_ReductionChunk &lt; Profile::QueryChunks; ++r_ReductionChunk)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">115</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">116</span>			int g_Group = TileCoordinates.g_QueryBlock256 * 16 + TileCoordinates.Warp * 4 + r_QueryTile;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">117</span>			if (uint32_t(g_Tokens + 14) &lt; 31)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">118</span>				g_Group = 0;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">119</span>			const uint64_t g_QueryFragmentAddress = Parameters.g_Query +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">120</span>													uint64_t(g_Group) * 16384 * Profile::ElementBytes +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">121</span>													TileCoordinates.g_Head * 512 * Profile::ElementBytes +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">122</span>													r_ReductionChunk * 512 + TileCoordinates.Lane * 16;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">123</span>			r_Query[r_QueryTile][r_ReductionChunk] =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">124</span>				MakeWindowFragment(g_Group &lt; TileCoordinates.g_Groups16</span>
+<span class="code-line"><span class="ln" aria-hidden="true">125</span>									   ? __ldca(reinterpret_cast&lt;const uint4*&gt;(g_QueryFragmentAddress))</span>
+<span class="code-line"><span class="ln" aria-hidden="true">126</span>									   : make_uint4(0, 0, 0, 0));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">127</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">128</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">129</span>	#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">130</span>	for (int g_KeyTile = 0; g_KeyTile &lt; 2; ++g_KeyTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">131</span>		if (g_KeyTile &lt; TileCoordinates.g_KeyTiles)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">132</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">133</span>			WaitPredecessor(g_KeyTile / 2, 1);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">134</span>			StageKeyValue(g_KeyTile);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">135</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">136</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">137</span>	if (TileCoordinates.g_KeyTiles &gt; 0)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">138</span>		WaitStage(0);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">139</span>	FWindowAccumulatorTile&lt;32&gt; r_Output[4]{};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">140</span>	uint32_t r_Denominator = 0;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">141</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">142</span>	// Accumulate unnormalized attention and its row sums while rotating the two K/V stages.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">143</span>	#pragma unroll 1</span>
+<span class="code-line"><span class="ln" aria-hidden="true">144</span>	for (int g_KeyTile = 0; g_KeyTile &lt; TileCoordinates.g_KeyTiles; ++g_KeyTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">145</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">146</span>		const int s_Base = (g_KeyTile &amp; 1) * Profile::s_StageBytes + TileCoordinates.Lane * 16;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">147</span>		uint4 r_Key[4][Profile::QueryChunks];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">148</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">149</span>		for (int r_ColumnTile = 0; r_ColumnTile &lt; 4; ++r_ColumnTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">150</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">151</span>			for (int r_ReductionChunk = 0; r_ReductionChunk &lt; Profile::QueryChunks; ++r_ReductionChunk)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">152</span>				r_Key[r_ColumnTile][r_ReductionChunk] = *reinterpret_cast&lt;const uint4*&gt;(</span>
+<span class="code-line"><span class="ln" aria-hidden="true">153</span>					s_Storage + s_Base + (r_ColumnTile * Profile::QueryChunks + r_ReductionChunk) * 512);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">154</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">155</span>		// Form Q times K-transpose scores and apply the native packed-Half exponent surrogate.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">156</span>		FWindowAccumulatorTile&lt;64&gt; r_Probability[4]{};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">157</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">158</span>		for (int r_QueryTile = 0; r_QueryTile &lt; 4; ++r_QueryTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">159</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">160</span>			for (int r_ColumnTile = 0; r_ColumnTile &lt; 8; ++r_ColumnTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">161</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">162</span>				#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">163</span>				for (int r_ReductionChunk = 0; r_ReductionChunk &lt; Profile::QueryChunks; ++r_ReductionChunk)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">164</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">165</span>					const uint4 r_KeyVector = r_Key[r_ColumnTile / 2][r_ReductionChunk];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">166</span>					const uint32_t r_KeyFragment[2] = {r_ColumnTile &amp; 1 ? r_KeyVector.z : r_KeyVector.x,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">167</span>													   r_ColumnTile &amp; 1 ? r_KeyVector.w : r_KeyVector.y};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">168</span>					MmaWindowFragment&lt;bFp8&gt;(r_Query[r_QueryTile][r_ReductionChunk], r_KeyFragment,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">169</span>											r_Probability[r_QueryTile].r_Pair[r_ColumnTile]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">170</span>				}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">171</span>				#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">172</span>				for (int r_Half = 0; r_Half &lt; 2; ++r_Half)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">173</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">174</span>					const uint32_t r_Score = r_Probability[r_QueryTile].r_Pair[r_ColumnTile][r_Half];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">175</span>					const uint32_t r_Affine =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">176</span>						HalfFma(r_Score, CONST_GLOBAL_EXP_SLOPE_HALF2, CONST_GLOBAL_EXP_INTERCEPT_HALF2);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">177</span>					const uint32_t r_Clamped = HalfMin(HalfMax(r_Affine, CONST_GLOBAL_EXP_LOWER_HALF2),</span>
+<span class="code-line"><span class="ln" aria-hidden="true">178</span>													   CONST_GLOBAL_EXP_UPPER_HALF2);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">179</span>					r_Probability[r_QueryTile].r_Pair[r_ColumnTile][r_Half] =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">180</span>						(r_Clamped &lt;&lt; CONST_GLOBAL_EXP_ENCODING_SHIFT) + CONST_GLOBAL_EXP_ENCODING_OFFSET;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">181</span>				}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">182</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">183</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">184</span>		// Sum the current score tile with the native two-way warp transpose.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">185</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">186</span>			uint32_t r_QuerySums[2];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">187</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">188</span>			for (int r_QueryHalf = 0; r_QueryHalf &lt; 2; ++r_QueryHalf)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">189</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">190</span>				uint32_t r_LocalProbabilitySums[4], r_GatheredProbabilitySums[4];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">191</span>				#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">192</span>				for (int r_Row = 0; r_Row &lt; 4; ++r_Row)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">193</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">194</span>					const auto&amp; r_Pairs = r_Probability[r_QueryHalf * 2 + r_Row / 2].r_Pair;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">195</span>					const int r_QueryRowHalf = r_Row &amp; 1;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">196</span>					uint32_t r_Sum = HalfAdd(HalfAdd(r_Pairs[0][r_QueryRowHalf], r_Pairs[1][r_QueryRowHalf]),</span>
+<span class="code-line"><span class="ln" aria-hidden="true">197</span>											 HalfAdd(r_Pairs[2][r_QueryRowHalf], r_Pairs[3][r_QueryRowHalf]));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">198</span>					r_Sum = HalfAdd(r_Sum, HalfAdd(r_Pairs[4][r_QueryRowHalf], r_Pairs[5][r_QueryRowHalf]));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">199</span>					r_LocalProbabilitySums[r_Row] =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">200</span>						HalfAdd(r_Sum, HalfAdd(r_Pairs[6][r_QueryRowHalf], r_Pairs[7][r_QueryRowHalf]));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">201</span>				}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">202</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">203</span>				// This warp transpose turns the MMA fragment&#x27;s channel ownership</span>
+<span class="code-line"><span class="ln" aria-hidden="true">204</span>				// into one full query sum per lane, without changing Half add order.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">205</span>				const int r_SourceLane = ((TileCoordinates.Lane &amp; 7) &lt;&lt; 2) + (TileCoordinates.Lane &gt;&gt; 3);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">206</span>				PermuteGlobalAttentionQuad(r_LocalProbabilitySums, TileCoordinates.Lane &amp; 3);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">207</span>				#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">208</span>				for (int r_Row = 0; r_Row &lt; 4; ++r_Row)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">209</span>					r_GatheredProbabilitySums[r_Row] =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">210</span>						ShuffleIdx(r_LocalProbabilitySums[r_Row], r_SourceLane ^ r_Row, 31, 0xffffffffu);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">211</span>				PermuteGlobalAttentionQuad(r_GatheredProbabilitySums, TileCoordinates.Lane &gt;&gt; 3);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">212</span>				uint32_t r_Sum = HalfAdd(r_GatheredProbabilitySums[0], r_GatheredProbabilitySums[1]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">213</span>				r_Sum = HalfAdd(r_Sum, r_GatheredProbabilitySums[2]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">214</span>				r_Sum = HalfAdd(r_Sum, r_GatheredProbabilitySums[3]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">215</span>				r_QuerySums[r_QueryHalf] =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">216</span>					HalfAdd(JoinHalfwords(uint16_t(r_Sum), uint16_t(r_Sum)),</span>
+<span class="code-line"><span class="ln" aria-hidden="true">217</span>							JoinHalfwords(uint16_t(r_Sum &gt;&gt; 16), uint16_t(r_Sum &gt;&gt; 16)));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">218</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">219</span>			const uint32_t r_ProbabilitySum =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">220</span>				JoinHalfwords(uint16_t(r_QuerySums[0]), uint16_t(r_QuerySums[1]));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">221</span>			r_Denominator = HalfAdd(r_Denominator, r_ProbabilitySum);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">222</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">223</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">224</span>		// Multiply the current probability tile by V and accumulate the output numerator.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">225</span>		uint4 r_Value[Profile::ProbabilityChunks][2];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">226</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">227</span>		for (int r_ReductionChunk = 0; r_ReductionChunk &lt; Profile::ProbabilityChunks; ++r_ReductionChunk)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">228</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">229</span>			for (int r_ColumnTile = 0; r_ColumnTile &lt; 2; ++r_ColumnTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">230</span>				r_Value[r_ReductionChunk][r_ColumnTile] =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">231</span>					*reinterpret_cast&lt;const uint4*&gt;(s_Storage + Profile::s_ValueOffset + s_Base +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">232</span>													(r_ReductionChunk * 2 + r_ColumnTile) * 512);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">233</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">234</span>		for (int r_QueryTile = 0; r_QueryTile &lt; 4; ++r_QueryTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">235</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">236</span>			for (int r_ColumnTile = 0; r_ColumnTile &lt; 2; ++r_ColumnTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">237</span>				#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">238</span>				for (int r_ReductionChunk = 0; r_ReductionChunk &lt; Profile::ProbabilityChunks;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">239</span>					 ++r_ReductionChunk)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">240</span>				{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">241</span>					const auto r_ProbabilityFragment =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">242</span>						PublishWindowChunk&lt;bFp8&gt;(r_Probability[r_QueryTile], r_ReductionChunk);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">243</span>					const uint4 r_ValueVector = r_Value[r_ReductionChunk][r_ColumnTile];</span>
+<span class="code-line"><span class="ln" aria-hidden="true">244</span>					const uint32_t r_LowerValueFragment[2] = {r_ValueVector.x, r_ValueVector.y},</span>
+<span class="code-line"><span class="ln" aria-hidden="true">245</span>								   r_UpperValueFragment[2] = {r_ValueVector.z, r_ValueVector.w};</span>
+<span class="code-line"><span class="ln" aria-hidden="true">246</span>					MmaWindowFragment&lt;bFp8&gt;(r_ProbabilityFragment, r_LowerValueFragment,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">247</span>											r_Output[r_QueryTile].r_Pair[r_ColumnTile * 2]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">248</span>					MmaWindowFragment&lt;bFp8&gt;(r_ProbabilityFragment, r_UpperValueFragment,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">249</span>											r_Output[r_QueryTile].r_Pair[r_ColumnTile * 2 + 1]);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">250</span>				}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">251</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">252</span>		if (g_KeyTile + 2 &lt; TileCoordinates.g_KeyTiles)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">253</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">254</span>			WaitPredecessor((g_KeyTile + 2) / 2, 1);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">255</span>			StageKeyValue(g_KeyTile + 2);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">256</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">257</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">258</span>		if (g_KeyTile + 1 &lt; TileCoordinates.g_KeyTiles)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">259</span>			WaitStage(g_KeyTile + 1);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">260</span>	}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">261</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">262</span>	// Remove padded-key probability mass before computing the per-query normalization.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">263</span>	uint32_t r_InverseDenominator;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">264</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">265</span>		const int PaddingKeys = TileCoordinates.g_KeyTiles * 64 - g_Tokens;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">266</span>		uint32_t r_CorrectedDenominator = r_Denominator;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">267</span>		if (PaddingKeys &gt; 0)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">268</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">269</span>			// Padded keys produce the surrogate&#x27;s nonzero value at score zero.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">270</span>			// Remove that mass in FP32 before one Half-rounded subtraction.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">271</span>			const uint32_t r_AffineZero =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">272</span>				HalfFma(0, CONST_GLOBAL_EXP_SLOPE_HALF2, CONST_GLOBAL_EXP_INTERCEPT_HALF2);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">273</span>			const uint32_t r_ClampedZero =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">274</span>				HalfMin(HalfMax(r_AffineZero, CONST_GLOBAL_EXP_LOWER_HALF2), CONST_GLOBAL_EXP_UPPER_HALF2);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">275</span>			const uint16_t r_ZeroScore =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">276</span>				uint16_t((uint16_t(r_ClampedZero) &lt;&lt; CONST_GLOBAL_EXP_ENCODING_SHIFT) +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">277</span>						 CONST_GLOBAL_EXP_SCALAR_OFFSET);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">278</span>			const uint32_t r_Correction =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">279</span>				FloatToHalf2(FloatMulFtzBits(HalfToFloatBits(r_ZeroScore), UintToFloatRnBits(PaddingKeys)));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">280</span>			r_CorrectedDenominator = HalfSub(r_CorrectedDenominator, r_Correction);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">281</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">282</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">283</span>		r_InverseDenominator = RcpHalf2(HalfMax(r_CorrectedDenominator, CONST_NORMALIZATION_EPSILON_HALF2));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">284</span>	}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">285</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">286</span>	// Apply row normalization and publish the accumulated attention in its physical layout.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">287</span>	#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">288</span>	for (int r_QueryTile = 0; r_QueryTile &lt; 4; ++r_QueryTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">289</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">290</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">291</span>		for (int r_Half = 0; r_Half &lt; 2; ++r_Half)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">292</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">293</span>			const int QueryRow = r_QueryTile * 16 + TileCoordinates.Lane / 4 + r_Half * 8;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">294</span>			const uint32_t r_InverseDenominatorPair =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">295</span>				ShuffleIdx(r_InverseDenominator, QueryRow % 32, 31, 0xffffffffu);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">296</span>			const uint16_t r_InverseDenominatorHalf =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">297</span>				uint16_t(r_InverseDenominatorPair &gt;&gt; ((QueryRow / 32) * 16));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">298</span>			const uint32_t r_QueryNormalization =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">299</span>				JoinHalfwords(r_InverseDenominatorHalf, r_InverseDenominatorHalf);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">300</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">301</span>			for (int r_ColumnTile = 0; r_ColumnTile &lt; 4; ++r_ColumnTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">302</span>				r_Output[r_QueryTile].r_Pair[r_ColumnTile][r_Half] =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">303</span>					HalfMul(r_Output[r_QueryTile].r_Pair[r_ColumnTile][r_Half], r_QueryNormalization);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">304</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">305</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">306</span>		const int g_Group = TileCoordinates.g_QueryBlock256 * 16 + TileCoordinates.Warp * 4 + r_QueryTile;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">307</span>		if (g_Group &lt; TileCoordinates.g_Groups16)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">308</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">309</span>			for (int r_Chunk = 0; r_Chunk &lt; Profile::QueryChunks; ++r_Chunk)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">310</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">311</span>				const auto r_OutputFragment = PublishWindowChunk&lt;bFp8&gt;(r_Output[r_QueryTile], r_Chunk);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">312</span>				StoreNoAllocate(Parameters.g_Output + uint64_t(g_Group) * 16384 * Profile::ElementBytes +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">313</span>									TileCoordinates.g_Head * 512 * Profile::ElementBytes + r_Chunk * 512 +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">314</span>									TileCoordinates.Lane * 16,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">315</span>								make_uint4(r_OutputFragment.r_Word[0], r_OutputFragment.r_Word[1],</span>
+<span class="code-line"><span class="ln" aria-hidden="true">316</span>										   r_OutputFragment.r_Word[2], r_OutputFragment.r_Word[3]));</span>
+<span class="code-line"><span class="ln" aria-hidden="true">317</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">318</span>	}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">319</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">320</span>	// Native outputs include a padded last token group. Clear only its invalid</span>
+<span class="code-line"><span class="ln" aria-hidden="true">321</span>	// rows after all fragment stores, then release the completion counters.</span>
+<span class="code-line"><span class="ln" aria-hidden="true">322</span>	if (g_PaddedTokens != g_Tokens)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">323</span>	{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">324</span>		__syncthreads();</span>
+<span class="code-line"><span class="ln" aria-hidden="true">325</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">326</span>		for (int r_QueryTile = 0; r_QueryTile &lt; 4; ++r_QueryTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">327</span>			#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">328</span>			for (int r_Half = 0; r_Half &lt; 2; ++r_Half)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">329</span>			{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">330</span>				const int g_Group =</span>
+<span class="code-line"><span class="ln" aria-hidden="true">331</span>					TileCoordinates.g_QueryBlock256 * 16 + TileCoordinates.Warp * 4 + r_QueryTile;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">332</span>				const int g_Row = g_Group * 16 + TileCoordinates.Lane / 4 + r_Half * 8;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">333</span>				if (g_Row &gt;= g_Tokens &amp;&amp; g_Row &lt; g_PaddedTokens)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">334</span>					#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">335</span>					for (int r_Chunk = 0; r_Chunk &lt; Profile::QueryChunks; ++r_Chunk)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">336</span>						#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">337</span>						for (int r_ColumnTile = 0; r_ColumnTile &lt; 2; ++r_ColumnTile)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">338</span>							*reinterpret_cast&lt;uint32_t*&gt;(</span>
+<span class="code-line"><span class="ln" aria-hidden="true">339</span>								Parameters.g_Output + uint64_t(g_Group) * 16384 * Profile::ElementBytes +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">340</span>								TileCoordinates.g_Head * 512 * Profile::ElementBytes + r_Chunk * 512 +</span>
+<span class="code-line"><span class="ln" aria-hidden="true">341</span>								TileCoordinates.Lane * 16 + (r_ColumnTile * 2 + r_Half) * 4) = 0;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">342</span>			}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">343</span>	}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">344</span></span>
+<span class="code-line"><span class="ln" aria-hidden="true">345</span>	__syncthreads();</span>
+<span class="code-line"><span class="ln" aria-hidden="true">346</span>	if (Parameters.g_CompletionCounters &amp;&amp; TileCoordinates.Lane == 0 &amp;&amp; TileCoordinates.Warp == 0)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">347</span>		#pragma unroll</span>
+<span class="code-line"><span class="ln" aria-hidden="true">348</span>		for (int g_LocalGroup = 0; g_LocalGroup &lt; 2; ++g_LocalGroup)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">349</span>		{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">350</span>			const int g_Group = TileCoordinates.g_QueryBlock256 * 2 + g_LocalGroup;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">351</span>			if (g_Group &lt; TileCoordinates.g_QueryBlocks128)</span>
+<span class="code-line"><span class="ln" aria-hidden="true">352</span>				CounterStoreRelease(</span>
+<span class="code-line"><span class="ln" aria-hidden="true">353</span>					Parameters.g_CompletionCounters + (g_Group * 32 + TileCoordinates.g_Head) * 4, 0);</span>
+<span class="code-line"><span class="ln" aria-hidden="true">354</span>		}</span>
+<span class="code-line"><span class="ln" aria-hidden="true">355</span>#endif</span>
+<span class="code-line"><span class="ln" aria-hidden="true">356</span>}</span></code></pre></details><details class="source"><summary>Exact launch parameter record <span>lines 1560–1565</span></summary><div class="source-toolbar"><a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/kernel_abi.h#L1560-L1565">csrc/kernel_impl/shared/common/kernel_abi.h ↗</a><button type="button" class="copy-code">Copy code</button></div><pre><code><span class="code-line"><span class="ln" aria-hidden="true">1560</span>struct alignas(8) FGlobalAttentionChainedC1024Fp16Parameters</span>
+<span class="code-line"><span class="ln" aria-hidden="true">1561</span>{</span>
+<span class="code-line"><span class="ln" aria-hidden="true">1562</span>	uint64_t g_Query, g_Key, g_Value, g_Output, ReservedTailPadding, g_PredecessorCounters,</span>
+<span class="code-line"><span class="ln" aria-hidden="true">1563</span>		g_CompletionCounters;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">1564</span>	int32_t BatchCount, TokensPerBatch;</span>
+<span class="code-line"><span class="ln" aria-hidden="true">1565</span>};</span></code></pre></details><details class="dependency-list"><summary>Read or download the implementation and all repository-local included sources</summary><p>Includes are followed transitively; this list may contain declarations unused by this specialization. CUDA SDK headers are provided by your CUDA toolkit and are not bundled here. File links below open plain source files from this documentation site.</p><ul><li><a href="source/csrc/kernel_impl/bottleneck_c1024_attention/common/global_attention.cuh"><code>csrc/kernel_impl/bottleneck_c1024_attention/common/global_attention.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention/common/global_attention.cuh">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/bottleneck_c1024_attention/common/intrinsics.cuh"><code>csrc/kernel_impl/bottleneck_c1024_attention/common/intrinsics.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention/common/intrinsics.cuh">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu"><code>csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/intrinsics.cuh"><code>csrc/kernel_impl/shared/common/intrinsics.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/intrinsics.cuh">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/kernel_abi.h"><code>csrc/kernel_impl/shared/common/kernel_abi.h</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/kernel_abi.h">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/kernel_helpers.cuh"><code>csrc/kernel_impl/shared/common/kernel_helpers.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/kernel_helpers.cuh">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/memoryops.cuh"><code>csrc/kernel_impl/shared/common/memoryops.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/memoryops.cuh">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/mma.cuh"><code>csrc/kernel_impl/shared/common/mma.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/mma.cuh">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/numerical_constants.cuh"><code>csrc/kernel_impl/shared/common/numerical_constants.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/numerical_constants.cuh">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/packed_math.cuh"><code>csrc/kernel_impl/shared/common/packed_math.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/packed_math.cuh">pinned GitHub copy</a></li><li><a href="source/csrc/kernel_impl/shared/common/warp_window32.cuh"><code>csrc/kernel_impl/shared/common/warp_window32.cuh</code></a> · <a href="https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/shared/common/warp_window32.cuh">pinned GitHub copy</a></li></ul></details></article><nav class="next-prev" aria-label="Related reading"><a href="index.html#kernels">← Kernel catalog</a><a href="global_attention_chained_c1024_fp8.html">Read the other precision →</a></nav><footer class="footer">DLSS-NR kernel lessons · source fc3276497f86 · <a href="source-atlas.html#provenance">Provenance</a> · <a href="architecture.html">Architecture companion</a></footer></main></body></html>

@@ -56,6 +56,27 @@ def main():
     entries=manifest['inventory']['entries']
     assert len(entries)==81
     assert len({e['definition'] for e in entries.values()})==56
+    lessons=manifest.get('lessons',[])
+    if len(lessons)!=81 or {p['name'] for p in lessons}!=set(entries):
+        errors.append('Expected exactly one standalone lesson for every public entry')
+    index=(GUIDE/'index.html').read_text(encoding='utf-8')
+    for lesson in lessons:
+        path=GUIDE/(lesson['slug']+'.html')
+        if path not in pages:
+            errors.append(f'Missing lesson {lesson["name"]}');continue
+        text=path.read_text(encoding='utf-8')
+        body=text.split('<article class="content">',1)[-1].split('</article>',1)[0]
+        headings=re.findall(r'<h2 id="([^"]+)">(.*?)</h2>',body,re.S)
+        if not headings or headings[0][0]!='model':errors.append(f'{path.name}: must start with model operation')
+        if 'source-appendix' not in pages[path].ids:errors.append(f'{path.name}: missing complete source appendix')
+        if len(headings)<6:errors.append(f'{path.name}: incomplete reading sequence')
+        if body.count('<svg')<2:errors.append(f'{path.name}: missing reconstruction diagrams')
+        if f'href="{lesson["slug"]}.html"' not in index:errors.append(f'{path.name}: not discoverable in catalog')
+        if 'class="pseudocode"' not in body:errors.append(f'{path.name}: missing teaching algorithm')
+        for dependency in lesson['dependencies']:
+            copy=GUIDE/'source'/dependency
+            if not copy.is_file() or copy.read_text(encoding='utf-8')!=(ROOT/dependency).read_text(encoding='utf-8'):
+                errors.append(f'{path.name}: missing or changed source dependency {dependency}')
     for path,digest in manifest['files'].items():
         if hashlib.sha256((ROOT/path).read_text(encoding='utf-8').encode('utf-8')).hexdigest()!=digest:errors.append(f'Source drift: {path}')
     for snip in manifest['snippets']:
@@ -64,7 +85,7 @@ def main():
         if hashlib.sha256(excerpt.encode()).hexdigest()!=snip['sha256']:errors.append(f'Excerpt drift: {snip}')
     if errors:
         raise SystemExit('\n'.join(errors))
-    print(f'PASS: {len(pages)} pages, {diagrams} inline SVGs, {checked_links} local links, {len(manifest["snippets"])} exact excerpts, 81 entries / 56 bodies.')
+    print(f'PASS: {len(pages)} pages, 81 standalone lessons, {diagrams} inline SVGs, {checked_links} local links, {len(manifest["snippets"])} exact excerpts, 81 entries / 56 bodies.')
 
 
 if __name__=='__main__':main()

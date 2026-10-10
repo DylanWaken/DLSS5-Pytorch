@@ -8,12 +8,13 @@ document.querySelectorAll('.copy-code').forEach(button => button.addEventListene
 const sourceToggle = document.querySelector('#toggle-code');
 if (sourceToggle) sourceToggle.addEventListener('click', () => {
   const blocks = [...document.querySelectorAll('details.source')];
-  const open = blocks.some(d => !d.open);
+  const open = !blocks.some(d => d.open);
   blocks.forEach(d => d.open = open);
   sourceToggle.textContent = open ? 'Collapse code' : 'Expand code';
 });
 const filter = document.querySelector('#kernel-filter');
-if (filter) filter.addEventListener('input', () => {
+if (filter) {
+ const applyFilter = () => {
   const terms = filter.value.toLowerCase().trim().split(/\s+/);
   let shown = 0;
   document.querySelectorAll('.inventory tbody tr').forEach(row => {
@@ -21,8 +22,12 @@ if (filter) filter.addEventListener('input', () => {
     row.hidden = !match;
     if (match) shown++;
   });
-  document.querySelector('#filter-count').textContent = `${shown} of 81 public entries shown`;
-});
+  const total = document.querySelectorAll('.inventory tbody tr').length;
+  document.querySelector('#filter-count').textContent = `${shown} of ${total} ${total === 41 ? 'kernel roles' : 'public entries'} shown`;
+ };
+ filter.addEventListener('input', applyFilter);
+ applyFilter();
+}
 const explorer = document.querySelector('#lane-explorer');
 if (explorer) {
   const laneInput = document.querySelector('#lane-input'), tileInput = document.querySelector('#tile-input'), precisionInput = document.querySelector('#precision-input');
