@@ -103,9 +103,41 @@ def main():
         lines=(ROOT/snip['path']).read_text(encoding='utf-8').splitlines()
         excerpt='\n'.join(lines[snip['start']-1:snip['end']])
         if hashlib.sha256(excerpt.encode()).hexdigest()!=snip['sha256']:errors.append(f'Excerpt drift: {snip}')
+    maps=json.loads((GUIDE/'kernel-map-manifest.json').read_text(encoding='utf-8'))
+    profiles={p['name']:p for p in maps['profiles']}
+    if set(profiles)!=set(entries):errors.append('Per-kernel SVG profiles do not cover the public roster')
+    by_kernel={name:[] for name in entries}
+    for record in maps['diagrams']:
+        target=GUIDE/record['path']
+        if not target.is_file():errors.append(f'Missing standalone SVG: {target}');continue
+        data=target.read_bytes()
+        if hashlib.sha256(data).hexdigest()!=record['sha256']:errors.append(f'SVG hash drift: {target}')
+        root=ET.fromstring(data)
+        if root.get('data-kernel')!=record['kernel']:errors.append(f'SVG identity mismatch: {target}')
+        by_kernel[record['kernel']].append(record['kind'])
+        page=(GUIDE/(record['kernel']+'.html')).read_text(encoding='utf-8')
+        if f'href="{record["path"]}"' not in page:errors.append(f'SVG missing export link: {target}')
+    for name,p in profiles.items():
+        expected={'ownership'} if p['kind'] in ('counter','repack') else {'flow','tiling','storage'}
+        if not expected.issubset(by_kernel[name]):errors.append(f'Incomplete specialized atlas: {name}')
+        if p['source']!='csrc/'+entries[name]['header']:errors.append(f'Incorrect atlas source: {name}')
+        if p['kind'] not in ('counter','repack'):
+            if p['warps']*p['wm']*p['wn']!=p['cm']*p['cn']:errors.append(f'Warp ownership does not cover CTA: {name}')
+            if p['shared_kind'] in ('ring','gather'):
+                if p['slotbytes']!=p['cm']*p['step']*p['e']:errors.append(f'Input staging byte count mismatch: {name}')
+                if p['shared']!=p['slots']*(p['slotbytes']+8):errors.append(f'Barrier allocation mismatch: {name}')
+            if p['splits']>1 and 'split' not in by_kernel[name]:errors.append(f'Missing split diagram: {name}')
+    for path in GUIDE.glob('*.html'):
+        text=path.read_text(encoding='utf-8')
+        for fragment in re.findall(r'<svg\b.*?</svg>',text,re.S):
+            root=ET.fromstring(fragment)
+            ids={n.get('id') for n in root.iter() if n.get('id')}
+            for n in root.iter():
+                for ref in n.get('aria-labelledby','').split():
+                    if ref not in ids:errors.append(f'{path.name}: missing SVG accessibility label {ref}')
     if errors:
         raise SystemExit('\n'.join(errors))
-    print(f'PASS: {len(pages)} pages, 81 standalone lessons, {diagrams} inline SVGs, {checked_links} local links, {len(manifest["snippets"])} exact excerpts, 81 entries / 56 bodies.')
+    print(f'PASS: {len(pages)} pages, 81 standalone lessons, {diagrams} inline SVGs ({len(maps["diagrams"])} specialized exports), {checked_links} local links, {len(manifest["snippets"])} exact excerpts, 81 entries / 56 bodies.')
 
 
 if __name__=='__main__':main()

@@ -1,6 +1,5 @@
 """Repeated *local* prerequisites for independently readable kernel lessons."""
 from html import escape
-from common import svg
 
 
 def pseudo(text, caption='Teaching pseudocode'):
@@ -26,11 +25,4 @@ def mma_primer(fp8):
 </tbody></table></div>'''
     fragment_anchor = 'warp-level-matrix-fragment-mma-16832' if fp8 else 'warp-level-matrix-fragment-mma-16816-float'
     body += f'<p>The operand and accumulator coordinates follow the <a href="https://docs.nvidia.com/cuda/parallel-thread-execution/#{fragment_anchor}">NVIDIA PTX matrix-fragment specification</a>. A kernel may permute model channels before supplying these instruction coordinates; its publication and weight-packing rules must agree.</p>'
-    body += svg(f'{"FP8" if fp8 else "FP16"} matrix instruction ownership', '0 0 920 285', f'''
-<rect class="tensor" x="15" y="35" width="245" height="155" rx="8"/><text class="label" x="32" y="64">A: 16 × {k}</text><text class="small" x="32" y="94">4 packed words per lane</text><text class="small" x="32" y="120">{lanes} {scalar} per word</text><text class="small" x="32" y="150">two token rows per lane</text>
-<path class="edge" d="M265 112 H318"/><rect class="compute" x="325" y="55" width="225" height="125" rx="8"/><text class="label" x="343" y="85">32 lanes: D = A B + C</text><text class="small" x="343" y="115">B: {k} × 8</text><text class="small" x="343" y="141">2 B words per lane</text>
-<path class="edge" d="M555 112 H610"/><rect class="storage" x="620" y="35" width="280" height="155" rx="8"/><text class="label" x="636" y="64">D: 16 × 8 Half</text><text class="small" x="636" y="96">lane 13: g = 3, q = 1</text><text class="small" x="636" y="124">word 0: D[3,2], D[3,3]</text><text class="small" x="636" y="152">word 1: D[11,2], D[11,3]</text>
-<text class="small" x="20" y="227">For output group n, add 8n to the two output-channel coordinates.</text>
-<text class="small" x="20" y="255">The whole warp owns 32 × 4 = 128 outputs: exactly the 16 × 8 tile.</text>''', 'Instruction fragment map. Lane 13 is one example; the map covers every token and channel exactly once.')
-    from token_visuals import mma_cells
-    return body + mma_cells(fp8)
+    return body

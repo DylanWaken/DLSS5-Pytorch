@@ -19,6 +19,7 @@ from kernel_sources import collect, check_roster, check_entry_layout
 from publishing import catalog, render as render_lesson_site, source_appendix, normalize_lesson
 from token_visuals import enrich
 from glossary import glossary_page
+from kernel_maps import enrich as enrich_kernel_maps, write_manifest as write_map_manifest
 
 OUT = ROOT / 'docs/kernel-guide'
 
@@ -56,6 +57,7 @@ def main():
     for lesson in lessons:
         lesson['slug']=lesson['name']
         enrich(lesson, inventory['entries'][lesson['name']])
+        enrich_kernel_maps(lesson, inventory['entries'][lesson['name']])
         if lesson['family']=='Global bottleneck':
             precision='FP8' if lesson['name'].endswith('fp8') else 'FP16'
             roles={'global_ffn_expand':'FFN expansion: 1024 → 4096','global_ffn_contract':'FFN contraction: 4096 → 1024','global_projection':'attention output projection','global_qkv':'QKV projection and normalization','global_attention_chained':'streamed global attention'}
@@ -80,6 +82,7 @@ def main():
     files = {path: hashlib.sha256((ROOT/path).read_text(encoding='utf-8').encode('utf-8')).hexdigest() for path in sorted(source_paths)}
     manifest = dict(source_revision=REVISION,repository=REPOSITORY,file_hash_encoding='UTF-8 with normalized LF newlines',inventory=inventory,files=files,snippets=SNIPPETS,pages=[dict(slug=p['slug'],title=p['title']) for p in pages],lessons=[dict(name=p['name'],slug=p['slug'],family=p['family'],dependencies=p['dependencies']) for p in lessons])
     (OUT/'source-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8',newline='\n')
+    write_map_manifest(lessons)
     (ROOT/'docs/.nojekyll').write_text('',encoding='utf-8')
     (ROOT/'docs/index.html').write_text('''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=kernel-guide/index.html"><title>DLSS-NR Kernel Field Guide</title></head><body><h1>DLSS-NR Kernel Field Guide</h1><p><a href="kernel-guide/index.html">Open the FP16 / FP8 kernel documentation</a></p><p><a href="kernel-guide/architecture.html">Network architecture</a></p></body></html>''',encoding='utf-8',newline='\n')
     print(f'Generated {len(pages)} guide pages; {len(SNIPPETS)} exact excerpts; {inventory["entry_count"]} entries; {inventory["definition_count"]} bodies.')
