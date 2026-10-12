@@ -85,35 +85,11 @@ def isolate_svgs(body):
 
 
 def catalog(lessons,inventory):
-    families={}
-    for lesson in lessons:
-        family=lesson['family'];base=re.sub(r'_fp(?:8|16)$','',lesson['name'])
-        families.setdefault(family,{}).setdefault(base,{})['FP8' if lesson['name'].endswith('fp8') else 'FP16' if lesson['name'].endswith('fp16') else 'Common']=lesson
-    order={'Input frontend':0,'Local windows':1,'C512 and transitions':2,'C1024 layout':3,'Global bottleneck':4,'Output frontend':5,'Scheduling':6}
-    rows=[]
-    for family, groups in sorted(families.items(),key=lambda kv:(order.get(kv[0],2),kv[0])):
-        def lesson_order(item):
-            stem=item[0]
-            if family=='Local windows':
-                channel=int(re.search(r'_c(\d+)',stem)[1])
-                mode=next((i for i,s in enumerate(('input_view','output_view','downsample','upsample'),1) if s in stem),0)
-                return channel,mode
-            if family=='C1024 layout':return (0 if '2d_to_1d' in stem else 1,0)
-            if family=='Global bottleneck':return (next(i for i,s in enumerate(('ffn_expand','ffn_contract','qkv','attention_chained','projection')) if s in stem),0)
-            return (list(groups).index(stem),0)
-        for base,variants in sorted(groups.items(),key=lesson_order):
-            links=[]
-            for precision in ('FP16','FP8','Common'):
-                if precision in variants:
-                    p=variants[precision]
-                    links.append(f'<a class="lesson-link" href="{p["slug"]}.html">{precision} lesson →</a>')
-            example=variants.get('FP16',next(iter(variants.values())))
-            description=re.sub(r'(^FP(?:8|16)\s+|\s+[—·-]\s+FP(?:8|16)$)','',example['title'])
-            rows.append(f'<tr><td><span class="family-label">{escape(family)}</span><br><code>{escape(base)}</code><br><span class="operation-description">{escape(description)}</span></td><td>{" ".join(links)}</td></tr>')
+    from catalog_tree import render_catalog
     body='''<h2 id="model">Begin with one kernel and finish with a reconstruction</h2><p>DLSS-NR is an encoder–decoder with local window attention, a global-attention bottleneck, and residual connections. Choose the model operation below. Each precision-specific entry has its own complete lesson: architecture and equations, a simple correctness oracle, thread and lane ownership, byte-address derivations, incremental implementation, storage lifetimes, numerical details, optimization tradeoffs, reconstruction steps and targeted checks.</p><p>You do not need to read a family chapter first. Prerequisites are repeated inside each lesson so that the entire reasoning fits into one linear reading session. Template specializations get separate pages because width, precision and boundary mode change the contract even when they share a CUDA body.</p><figure class="diagram"><img src="../figures/architecture/network.svg" alt="The DLSS-NR network with frontend, local encoder, global bottleneck, decoder and output records"><figcaption>Locate an operation with the <a href="architecture.html">rendered architecture document</a> or the original <a href="../ARCHITECTURE.md">docs/ARCHITECTURE.md</a>.</figcaption></figure>
 <div class="stats"><div><strong>81</strong><span>standalone kernel lessons</span></div><div><strong>40</strong><span>paired FP16 / FP8 roles</span></div><div><strong>56</strong><span>underlying CUDA definitions</span></div></div>
-<h2 id="kernels">Choose one kernel</h2><p>If you want a small complete transformer first, start with <a href="window_block_c32_fp16.html">the ordinary FP16 C32 window block</a>. For an addressing-only exercise, start with <a href="repack_2d_to_1d_c1024_fp16.html">the FP16 spatial-to-token repack</a>. Every other page stands on its own.</p><label for="kernel-filter">Find an operation or channel width</label><p><input class="filter-input" id="kernel-filter" type="search" placeholder="Try: qkv, input_view, downsample, c1024"></p><p id="filter-count" aria-live="polite"></p>'''
-    body+='<div class="table-scroll"><table class="inventory"><thead><tr><th>Model operation / public entry stem</th><th>Self-contained walkthrough</th></tr></thead><tbody>'+''.join(rows)+'</tbody></table></div>'
+<h2 id="kernels">Choose an operator, variant, and channel width</h2><p>The catalog follows <strong>operator type → variant → channels</strong>. FP16 and FP8 lessons sit together under each role. Fused kernels appear once under their complete operation; downsampling and upsampling entries include any fused transformer work described in their variant.</p><p>If you want a small complete transformer first, start with <a href="window_block_c32_fp16.html">the ordinary FP16 C32 window block</a>. For an addressing-only exercise, start with <a href="repack_2d_to_1d_c1024_fp16.html">the FP16 spatial-to-token repack</a>. Every other page stands on its own.</p><label for="kernel-filter">Find an operation or channel width</label><p><input class="filter-input" id="kernel-filter" type="search" placeholder="Try: grouped ffn, global attn, upsample, c128"></p><p id="filter-count" aria-live="polite"></p>'''
+    body+=render_catalog(lessons)
     body+='''<h2 id="reading">How to use a lesson</h2><p>Read it in order once. Then implement its scalar oracle, check one worked address by hand, reconstruct the lane map, and add each optimized stage while preserving the numerical boundaries. Source excerpts sit beside the relevant derivation; the complete source and launch record are at the end. Diagrams distinguish global allocations, hardware-managed caches, explicitly indexed shared memory, register fragments and compute. Wide figures scroll horizontally rather than shrinking their labels.</p><p>The teaching progression is inspired by <a href="https://www.spatters.ca/mma-matmul">the MMA matmul tutorial at spatters.ca</a>: establish the problem, derive ownership and addressing, then explain why an optimization follows. All kernel details, diagrams, formulas and code excerpts here are based on this repository’s implementation.</p>
 <h2 id="references">Optional references and provenance</h2><p>The <a href="source-atlas.html">source atlas</a> maps all public names to their owning definitions and lessons. The <a href="foundations.html">tensor/lane primer</a>, <a href="runtime.html">host scheduling reference</a> and <a href="architecture.html">architecture companion</a> provide broader context. Existing family overviews remain at their original URLs for reference; the catalog above is the primary reading path.</p><p>This is a source explanation at the pinned revision, not a new GPU benchmark or correctness certification. Hardware cache residence, allocated register counts, spills and speedups require measurement. <a href="source-manifest.json">The manifest</a> records every kernel lesson, source dependency, excerpt range and source-file hash. Regenerate with <code>python tools/build_kernel_docs.py</code>; check with <code>python tools/validate_kernel_docs.py</code>.</p>'''
     return dict(slug='index',title='One kernel.\nFrom first principles to source.',summary='81 self-contained FP16 and FP8 kernel lessons. Start with the model operation, derive the data layout, and build the optimized implementation one step at a time.',body=body)

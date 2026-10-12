@@ -16,6 +16,26 @@ const filter = document.querySelector('#kernel-filter');
 if (filter) {
  const applyFilter = () => {
   const terms = filter.value.toLowerCase().trim().split(/\s+/);
+  const catalog = document.querySelector('.kernel-catalog');
+  if (catalog) {
+    const rows = [...catalog.querySelectorAll('.kernel-role')];
+    let shown = 0, lessons = 0;
+    rows.forEach(row => {
+      const haystack = `${row.dataset.search} ${row.textContent}`.toLowerCase();
+      row.hidden = !terms.every(t => haystack.includes(t));
+      if (!row.hidden) { shown++; lessons += Number(row.dataset.lessons); }
+    });
+    catalog.querySelectorAll('[data-catalog-group]').forEach(group => {
+      group.hidden = ![...group.querySelectorAll('.kernel-role')].some(row => !row.hidden);
+    });
+    document.querySelector('#filter-count').textContent = `${shown} of ${rows.length} kernel roles · ${lessons} of 81 lessons shown`;
+    document.querySelector('#catalog-empty').hidden = shown !== 0;
+    document.querySelectorAll('.operator-jumps a').forEach(link => {
+      const group = document.querySelector(link.getAttribute('href')).closest('.operator-group');
+      link.hidden = group.hidden;
+    });
+    return;
+  }
   let shown = 0;
   document.querySelectorAll('.inventory tbody tr').forEach(row => {
     const match = terms.every(t => row.textContent.toLowerCase().includes(t));
