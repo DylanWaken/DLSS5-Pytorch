@@ -6,7 +6,7 @@ Routes are authored explicitly so fan-out, residuals and joins stay readable.
 from html import escape
 from pathlib import Path
 
-OUT = Path(__file__).resolve().parents[1] / "docs/figures/architecture"
+OUT = Path(__file__).resolve().parents[1] / "docs/kernel-guide/assets/architecture"
 INK = "#172b45"
 MUTED = "#52647c"
 COLORS = {
@@ -110,4 +110,4 @@ class Flow:
                   "Logical tensor flow · shapes omit batch unless shown · operations may be fused in CUDA", 13, MUTED)
         self.parts.append('</svg>')
         OUT.mkdir(parents=True, exist_ok=True)
-        (OUT / f'{self.name}.svg').write_text('\n'.join(self.parts) + '\n', encoding='utf-8')
+        (OUT / f'{self.name}.svg').write_text('\n'.join(self.parts) + '\n', encoding='utf-8', newline='\n')

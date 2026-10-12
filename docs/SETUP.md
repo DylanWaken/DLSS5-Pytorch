@@ -3,7 +3,7 @@
 The CUDA deployment extension supports **batch one with FP16 on SM80+**
 (including RTX 30 series / SM86) and **FP8 on SM89+** (RTX 40 series and newer).
 FP32/BF16 training uses a separate ordinary PyTorch model.
-See the [project overview](../README.md) and [network architecture](ARCHITECTURE.md)
+See the [project overview](../README.md) and [network architecture](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html)
 for coverage and performance scope.
 
 ## Windows environment and build

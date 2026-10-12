@@ -16,7 +16,7 @@ from architecture_stages import render as render_stages
 from architecture_variants import render as render_variants
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "docs/figures/architecture"
+OUT = ROOT / "docs/kernel-guide/assets/architecture"
 spec = importlib.util.spec_from_file_location("architecture_geometry", ROOT / "dlssnr/geometry.py")
 geometry_module = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = geometry_module
@@ -83,7 +83,7 @@ class Diagram:
     def save(self):
         self.text(44, self.height - 20, "DLSSNR-PyTorch · implemented logical graph · model.py / geometry.py / weights.py", 13, MUTED)
         self.parts.append("</svg>")
-        (OUT / (self.name + ".svg")).write_text("\n".join(self.parts) + "\n", encoding="utf-8")
+        (OUT / (self.name + ".svg")).write_text("\n".join(self.parts) + "\n", encoding="utf-8", newline="\n")
 
 
 def field(level):

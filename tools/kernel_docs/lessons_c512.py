@@ -462,7 +462,7 @@ def build_lessons(inventory):
             elif kind=='qkv':body=qkv(name,fp8)
             elif kind=='channel':body=channel(name,fp8)
             else:body=decoder(name,fp8)
-            body=body.replace('</p>', '</p><p>The <a href="architecture.html">network architecture guide</a>, rendered from <a href="../ARCHITECTURE.md">docs/ARCHITECTURE.md</a>, places this operation in the full encoder–bottleneck–decoder. This lesson defines the operation and its physical implementation locally so it can be read independently.</p>', 1)
+            body=body.replace('</p>', '</p><p>The <a href="architecture.html">network architecture guide</a> places this operation in the full encoder–bottleneck–decoder. This lesson defines the operation and its physical implementation locally so it can be read independently.</p>', 1)
             body+=storage_legend()
             results.append(dict(name=name,title=titles[stem]+' — '+precision.upper(),
                 summary='Reconstruct '+name+' from a scalar model baseline through packed tensor ownership, addresses, synchronization and final publication.',

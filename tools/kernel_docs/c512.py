@@ -47,7 +47,7 @@ ffn_arch = svg('The C512 grouped FFN and its two deployment launches', '0 0 1020
     label(22, 296, 'Launch 1: premix + all grouped expand/activate/contract work. Launch 2: postmix + residual.') +
     label(22, 325, 'C64–C256 differ: every branch sees the whole original C-vector; C512 branches see premixed slices.') +
     label(22, 354, 'No routing, top-k choice, neighboring-pixel read, LayerNorm or RMSNorm appears in this FFN.'),
-    'Logical architecture from ARCHITECTURE.md; the global branch-output boundary is established by C512BlockOutEntry.')
+    'Logical architecture from the network architecture guide; the global branch-output boundary is established by C512BlockOutEntry.')
 
 ffn_owners = svg('CTA, warp and lane ownership in the C512 FFN', '0 0 1020 450',
     label(20, 28, 'One CTA: one 8 × 8 region × four groups. grid.z = 0 or 1 selects groups 0–3 or 4–7.') +

@@ -16,9 +16,9 @@ Deployment builds separate binaries per architecture, or one multi-architecture 
 
 A multiscale encoder–decoder combines local window attention, a global-attention bottleneck and skip connections. Different channel widths use different feed-forward blocks.
 
-![Network architecture, stage ranges and skip connections](docs/figures/architecture/network.svg)
+![Network architecture, stage ranges and skip connections](docs/kernel-guide/assets/architecture/network.svg)
 
-The master diagram labels each stage's FFN and attention variants. The [architecture guide](docs/ARCHITECTURE.md) compares [FFN variants](docs/ARCHITECTURE.md#channel-mixing-inside-a-block) and [attention variants](docs/ARCHITECTURE.md#how-positions-exchange-information) side by side, then expands their tensor flows, shapes and normalization steps. It also covers [encoder/decoder transitions](docs/ARCHITECTURE.md#moving-between-resolutions) and [input/output blocks](docs/ARCHITECTURE.md#entering-and-leaving-the-network).
+The master diagram labels each stage's FFN and attention variants. The [architecture guide](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html) compares [FFN variants](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html#channel-mixing-inside-a-block) and [attention variants](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html#how-positions-exchange-information) side by side, then expands their tensor flows, shapes and normalization steps. It also covers [encoder/decoder transitions](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html#moving-between-resolutions) and [input/output blocks](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html#entering-and-leaving-the-network).
 
 ## Getting started
 
@@ -98,6 +98,6 @@ These measurements use the current build and automatic scheduling on the RTX PRO
 `csrc/kernel_impl/<network_stage>/{fp8,fp16,common}` contains **56 complete kernel bodies for 81 public configurations**. Folder names identify shared encoder/decoder levels; repeated blocks retain one implementation. Each global function shows its storage, loops, pipelining and writeback. Stage helpers and intrinsics sit beside their kernels; `shared/common` contains cross-stage primitives and the ABI. `kernel_launcher` owns host dispatch, `torch_api` registers PyTorch interfaces, and `dlssnr` contains entry points and the training model. `tests` and `tuning` hold validation and offline policy tools.
 
 - [Setup, deployment and training](docs/SETUP.md)
-- [Network architecture and tensor flow](docs/ARCHITECTURE.md)
+- [Network architecture and tensor flow](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html) — the complete model guide with 15 SVG diagrams; [local HTML](docs/kernel-guide/architecture.html).
 - [81 standalone FP16/FP8 kernel lessons](https://DylanWaken.github.io/DLSS5-Pytorch/kernel-guide/) — one complete reconstruction tutorial per public kernel, with model equations, tensor/lane/address diagrams, source excerpts and [local HTML](docs/kernel-guide/index.html).
 - [Kernel reconstruction workflow](skills/dlssnr-reconstruction/SKILL.md)

@@ -5,7 +5,7 @@ from lesson_support import pseudo, mma_primer, storage_legend
 
 P = 'csrc/kernel_impl/'
 S = P + 'shared/common/'
-ARCH = source_url('docs/ARCHITECTURE.md')
+ARCH = 'architecture.html'
 
 
 def text(x, y, value, size=15):
