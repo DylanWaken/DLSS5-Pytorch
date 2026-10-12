@@ -10208,6 +10208,10 @@
     {
       "slug": "source-atlas",
       "title": "The complete source atlas"
+    },
+    {
+      "slug": "glossary",
+      "title": "Kernel vocabulary, explained"
     }
   ],
   "lessons": [
