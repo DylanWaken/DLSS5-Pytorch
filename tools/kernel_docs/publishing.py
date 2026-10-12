@@ -4,6 +4,7 @@ from html import escape, unescape
 import re
 from common import ROOT, REVISION, REPOSITORY, code, source_url
 from highlight import highlight_blocks
+from glossary import annotate
 
 
 def dependencies(path):
@@ -99,9 +100,11 @@ def render(page,pages):
     lesson='name' in page
     headings=re.findall(r'<h2 id="([^"]+)">(.*?)</h2>',page['body'],re.S)
     toc_links=''.join(f'<a href="#{ident}">{title}</a>' for ident,title in headings)
-    nav=''.join(f'<a href="{slug}.html"'+(' aria-current="page"' if page['slug']==slug else '')+f'>{label}</a>' for slug,label in [('index','All 81 kernel lessons'),('architecture','Model architecture'),('source-atlas','Public entry → source'),('foundations','Tensor / lane reference'),('runtime','Host scheduling reference')])
+    nav=''.join(f'<a href="{slug}.html"'+(' aria-current="page"' if page['slug']==slug else '')+f'>{label}</a>' for slug,label in [('index','All 81 kernel lessons'),('glossary','Glossary / key terms'),('architecture','Model architecture'),('source-atlas','Public entry → source'),('foundations','Tensor / lane reference'),('runtime','Host scheduling reference')])
     localnav=f'<hr><nav class="local-nav" aria-label="This lesson"><p class="nav-kicker">Inside this lesson</p>{toc_links}</nav>' if lesson else ''
     body=isolate_svgs(highlight_blocks(page['body']))
+    if page['slug'] != 'glossary':
+        body=annotate(body)
     prose=re.sub(r'<(?:pre|details)\b.*?</(?:pre|details)>',' ',body,flags=re.S)
     words=len(re.sub(r'<[^>]+>',' ',prose).split())
     diagrams=body.count('<svg')+body.count('<img')
@@ -109,6 +112,8 @@ def render(page,pages):
     identity=f'<p class="kernel-identity"><code>{escape(page["name"])}</code></p>' if lesson else ''
     bodyclass=' class="kernel-lesson"' if lesson else ''
     toc=f'<details class="toc"><summary>Reading sequence · {len(headings)} sections</summary><div>{toc_links}</div></details>'
+    if page['slug'] != 'glossary':
+        toc+='<p class="glossary-hint">Dotted terms: hover or focus for a definition; follow the link for context in the <a href="glossary.html">glossary</a>.</p>'
     pair=''
     if lesson and re.search('_fp(?:8|16)$',page['slug']):
         other=re.sub('_fp(?:8|16)$','_fp16' if page['slug'].endswith('_fp8') else '_fp8',page['slug'])

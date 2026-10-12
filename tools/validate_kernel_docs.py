@@ -16,9 +16,17 @@ class Page(HTMLParser):
     def __init__(self, path):
         super().__init__(convert_charrefs=True)
         self.ids=[]; self.links=[]; self.h1=0; self.images=0
+        self.stack=[]; self.glossary_terms=0
         self.feed(path.read_text(encoding='utf-8'))
     def handle_starttag(self, tag, attrs):
         attrs=dict(attrs)
+        if 'glossary-term' in attrs.get('class','').split():
+            assert tag=='a' and attrs.get('href','').startswith('glossary.html#'), 'Glossary term must link to its entry'
+            assert attrs.get('data-term') and attrs.get('data-definition'), 'Glossary tooltip needs a label and definition'
+            assert not {'a','pre','code','svg'}.intersection(self.stack), 'Glossary annotation inside protected source, diagram or link'
+            self.glossary_terms+=1
+        if tag not in {'area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'}:
+            self.stack.append(tag)
         if 'id' in attrs:self.ids.append(attrs['id'])
         if tag=='h1':self.h1+=1
         if tag=='img':
@@ -26,6 +34,14 @@ class Page(HTMLParser):
             assert attrs.get('alt'), 'Image needs alt text'
         for attr in ('href','src'):
             if attrs.get(attr):self.links.append(attrs[attr])
+
+    def handle_endtag(self, tag):
+        if tag in self.stack:
+            del self.stack[len(self.stack)-1-self.stack[::-1].index(tag):]
+
+    def handle_startendtag(self, tag, attrs):
+        self.handle_starttag(tag, attrs)
+        self.handle_endtag(tag)
 
 
 def main():
@@ -60,11 +76,15 @@ def main():
     if len(lessons)!=81 or {p['name'] for p in lessons}!=set(entries):
         errors.append('Expected exactly one standalone lesson for every public entry')
     index=(GUIDE/'index.html').read_text(encoding='utf-8')
+    glossary=GUIDE/'glossary.html'
+    if glossary not in pages or 'publish' not in pages[glossary].ids:
+        errors.append('Missing glossary or publish definition')
     for lesson in lessons:
         path=GUIDE/(lesson['slug']+'.html')
         if path not in pages:
             errors.append(f'Missing lesson {lesson["name"]}');continue
         text=path.read_text(encoding='utf-8')
+        if not pages[path].glossary_terms:errors.append(f'{path.name}: missing glossary annotations')
         body=text.split('<article class="content">',1)[-1].split('</article>',1)[0]
         headings=re.findall(r'<h2 id="([^"]+)">(.*?)</h2>',body,re.S)
         if not headings or headings[0][0]!='model':errors.append(f'{path.name}: must start with model operation')

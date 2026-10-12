@@ -1,4 +1,69 @@
 'use strict';
+// One shared tooltip; links remain useful without JavaScript and on touch screens.
+const glossaryTerms = document.querySelectorAll('.glossary-term');
+if (glossaryTerms.length) {
+  const tip = document.createElement('div');
+  tip.id = 'glossary-tooltip';
+  tip.className = 'glossary-tooltip';
+  tip.setAttribute('role', 'tooltip');
+  tip.hidden = true;
+  document.body.append(tip);
+  let active = null, hideTimer = null;
+  const cancelHide = () => { clearTimeout(hideTimer); };
+  const hide = () => {
+    cancelHide();
+    if (active) active.removeAttribute('aria-describedby');
+    active = null;
+    tip.hidden = true;
+  };
+  const position = () => {
+    if (!active) return;
+    const rect = active.getBoundingClientRect();
+    const margin = 12, gap = 8;
+    const width = tip.offsetWidth, height = tip.offsetHeight;
+    tip.style.left = `${Math.max(margin, Math.min(rect.left, window.innerWidth - width - margin))}px`;
+    const below = rect.bottom + gap;
+    const top = below + height <= window.innerHeight - margin ? below : rect.top - height - gap;
+    tip.style.top = `${Math.max(margin, Math.min(top, window.innerHeight - height - margin))}px`;
+  };
+  const show = term => {
+    cancelHide();
+    if (active && active !== term) active.removeAttribute('aria-describedby');
+    active = term;
+    const title = document.createElement('strong');
+    title.textContent = term.dataset.term;
+    const definition = document.createElement('p');
+    definition.textContent = term.dataset.definition;
+    const hint = document.createElement('small');
+    hint.textContent = 'Follow the term link for more context · Esc to dismiss';
+    tip.replaceChildren(title, definition, hint);
+    tip.hidden = false;
+    term.setAttribute('aria-describedby', tip.id);
+    position();
+  };
+  const scheduleHide = () => {
+    cancelHide();
+    hideTimer = setTimeout(() => {
+      if (active && (active.matches(':hover') || document.activeElement === active || tip.matches(':hover'))) return;
+      hide();
+    }, 180);
+  };
+  glossaryTerms.forEach(term => {
+    term.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') show(term); });
+    term.addEventListener('pointerleave', scheduleHide);
+    term.addEventListener('focus', () => show(term));
+    term.addEventListener('blur', scheduleHide);
+    term.addEventListener('click', hide);
+  });
+  tip.addEventListener('pointerenter', cancelHide);
+  tip.addEventListener('pointerleave', scheduleHide);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') hide(); });
+  window.addEventListener('resize', position);
+  document.addEventListener('scroll', event => {
+    if (event.target !== tip && !tip.contains(event.target)) hide();
+  }, true);
+}
+
 document.querySelectorAll('.copy-code').forEach(button => button.addEventListener('click', async () => {
   const block = button.closest('.source').querySelector('code').cloneNode(true);
   block.querySelectorAll('.ln').forEach(n => n.remove());

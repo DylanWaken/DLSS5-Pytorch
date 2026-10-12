@@ -19,6 +19,7 @@ from common import REVISION, REPOSITORY, SNIPPETS, source_url
 from kernel_sources import collect, check_roster, check_entry_layout
 from publishing import catalog, render as render_lesson_site, source_appendix, normalize_lesson
 from token_visuals import enrich
+from glossary import glossary_page
 
 OUT = ROOT / 'docs/kernel-guide'
 
@@ -122,7 +123,7 @@ def main():
     parts = {name: importlib.import_module(name).CHAPTERS for name in ('foundations','windows','c512','bottleneck')}
     chapters = [parts['foundations'][0], *parts['windows'], *parts['c512'], *parts['bottleneck'], parts['foundations'][1]]
     arch = dict(slug='architecture',title='The network architecture',summary='The existing architecture document, rendered as a readable HTML companion with its original tensor-flow diagrams.',body='<aside class="note">Rendered from <a href="../ARCHITECTURE.md">docs/ARCHITECTURE.md</a>. Model diagrams describe logical computation; the standalone kernel lessons explain the actual deployment allocations and precision boundaries.</aside>'+markdown((ROOT/'docs/ARCHITECTURE.md').read_text(encoding='utf-8')))
-    chapters += [arch, atlas(inventory)]
+    chapters += [arch, atlas(inventory), glossary_page()]
     lessons=[]
     for module in ('lessons_frontend','lessons_windows','lessons_c512','lessons_layout','lessons_bottleneck'):
         lessons.extend(importlib.import_module(module).build_lessons(inventory))
