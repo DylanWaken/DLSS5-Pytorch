@@ -266,7 +266,7 @@ def write_vtt(path: Path, cues: list[dict]) -> None:
     for index, cue in enumerate(cues, 1):
         # Escape cue text as WebVTT text, rather than allowing markup-like source.
         blocks.append(f"{index}\n{vtt_time(cue['start'])} --> {vtt_time(cue['end'])}\n{escape(cue['text'])}")
-    path.write_text("\n\n".join(blocks) + "\n", encoding="utf-8")
+    path.write_text("\n\n".join(blocks) + "\n", encoding="utf-8", newline="\n")
 
 
 def write_transcript(path: Path, chapters: list[dict]) -> None:
@@ -307,7 +307,7 @@ document.querySelectorAll('[data-seek]').forEach(link=>link.addEventListener('cl
   film.scrollIntoView({{block:'center'}});film.focus({{preventScroll:true}});
 }}));
 </script></body></html>'''
-    path.write_text(html, encoding="utf-8")
+    path.write_text(html, encoding="utf-8", newline="\n")
 
 
 def assemble(args, specs: list[SceneSpec]) -> None:
@@ -328,7 +328,7 @@ def assemble(args, specs: list[SceneSpec]) -> None:
                     source_revision=REVISION, source_url=f"{GITHUB}/blob/{REVISION}/{KERNEL}",
                     schedule="Source dependency order; not a measured or cycle-accurate trace",
                     chapters=public_chapters)
-    (args.output / "chapters.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    (args.output / "chapters.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     video = args.output / FILENAME
     print(f"Published locally: {video}\n{display_time(manifest['duration'])}; {len(chapters)} chapters; "
           f"{len(cues)} captions; {video.stat().st_size / 1024**2:.2f} MiB", flush=True)

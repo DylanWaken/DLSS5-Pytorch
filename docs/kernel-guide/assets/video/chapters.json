@@ -4,8 +4,8 @@
   "width": 1920,
   "height": 1080,
   "fps": 30,
-  "duration": 621.7666666666668,
-  "caption_count": 70,
+  "duration": 640.3000000000001,
+  "caption_count": 72,
   "source_revision": "fc3276497f866bdad639cd443e75743f5d19b749",
   "source_url": "https://github.com/DylanWaken/DLSS5-Pytorch/blob/fc3276497f866bdad639cd443e75743f5d19b749/csrc/kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu",
   "schedule": "Source dependency order; not a measured or cycle-accurate trace",
@@ -111,84 +111,84 @@
       "scene": "Ch09Weights",
       "title": "B takes a different route and lane map",
       "start": 315.6666666666667,
-      "end": 364.23333333333335,
-      "duration": 48.56666666666667,
+      "end": 372.83333333333337,
+      "duration": 57.166666666666664,
       "source": "global_ffn_expand_c1024_fp16.cu",
       "still": "stills/09-weights.jpg",
-      "metadata_duration": 48.566666666666755,
-      "still_time": 356.1666666666668
+      "metadata_duration": 57.16666666666667,
+      "still_time": 366.0333333333334
     },
     {
       "number": 10,
       "scene": "Ch10MMA",
       "title": "One product inside a warp-wide MMA",
-      "start": 364.23333333333335,
-      "end": 408.53333333333336,
+      "start": 372.83333333333337,
+      "end": 417.1333333333334,
       "duration": 44.3,
       "source": "mma.cuh + tiled_mma.cuh",
       "still": "stills/10-mma.jpg",
       "metadata_duration": 44.30000000000015,
-      "still_time": 400.9666666666668
+      "still_time": 409.56666666666683
     },
     {
       "number": 11,
       "scene": "Ch11Registers",
       "title": "Reuse operands; keep the output live",
-      "start": 408.53333333333336,
-      "end": 456.3666666666667,
+      "start": 417.1333333333334,
+      "end": 464.9666666666667,
       "duration": 47.833333333333336,
       "source": "tiled_mma.cuh AccumulateTile",
       "still": "stills/11-registers.jpg",
       "metadata_duration": 47.83333333333347,
-      "still_time": 447.8333333333335
+      "still_time": 456.4333333333335
     },
     {
       "number": 12,
       "scene": "Ch12Activation",
       "title": "The fused Half activation",
-      "start": 456.3666666666667,
-      "end": 502.06666666666666,
+      "start": 464.9666666666667,
+      "end": 510.6666666666667,
       "duration": 45.7,
       "source": "packed_math.cuh FfnActivation",
       "still": "stills/12-activation.jpg",
       "metadata_duration": 45.70000000000007,
-      "still_time": 495.0333333333334
+      "still_time": 503.63333333333344
     },
     {
       "number": 13,
       "scene": "Ch13Store",
       "title": "Four words become one packed store",
-      "start": 502.06666666666666,
-      "end": 537.8333333333334,
-      "duration": 35.766666666666666,
+      "start": 510.6666666666667,
+      "end": 556.3666666666667,
+      "duration": 45.7,
       "source": "global_ffn_expand_c1024_fp16.cu",
       "still": "stills/13-store.jpg",
-      "metadata_duration": 35.766666666666815,
-      "still_time": 531.0333333333333
+      "metadata_duration": 45.70000000000006,
+      "still_time": 548.2333333333335
     },
     {
       "number": 14,
       "scene": "Ch14Boundaries",
       "title": "Finish the token and handle boundaries",
-      "start": 537.8333333333334,
-      "end": 575.6666666666667,
+      "start": 556.3666666666667,
+      "end": 594.2,
       "duration": 37.833333333333336,
       "source": "global_ffn_expand_c1024_fp16.cu",
       "still": "stills/14-boundaries.jpg",
       "metadata_duration": 37.833333333333485,
-      "still_time": 568.3
+      "still_time": 586.8333333333333
     },
     {
       "number": 15,
       "scene": "Ch15Journey",
       "title": "Reconstruct the complete journey",
-      "start": 575.6666666666667,
-      "end": 621.7666666666668,
+      "start": 594.2,
+      "end": 640.3000000000001,
       "duration": 46.1,
       "source": "global_ffn_expand_c1024_fp16.cu",
       "still": "stills/15-journey.jpg",
       "metadata_duration": 46.10000000000016,
-      "still_time": 613.4666666666668
+      "still_time": 632.0000000000001
     }
   ]
 }

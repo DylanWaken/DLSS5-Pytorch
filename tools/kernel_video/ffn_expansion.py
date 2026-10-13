@@ -421,6 +421,8 @@ class Ch09Weights(LessonScene):
                   Write(eq), FadeIn(words))
         self.beat("The complete weight column spans lanes eight through eleven. The input row spans lanes twelve through fifteen. A Tensor Core instruction combines these distributed operands.",
                   *[w[r*8+2].animate.set_fill(B,.65) for r in range(16) if r not in (2,3,10,11)])
+        bmap=formula(r"g=\lfloor L/4\rfloor,\ q=L\bmod4:\quad k=2q+8(j\bmod2)+h,\ n=g+8\lfloor j/2\rfloor",24,B).move_to([0,-2.8,0])
+        self.beat("For the complete B uint4, word j runs zero to three and half h is zero or one. These local K16 and N16 coordinates generate all four words shown above.",Write(bmap))
         self.finish()
 
 
@@ -538,6 +540,10 @@ class Ch13Store(LessonScene):
         inst=code("mov.b128 v, {w0,w1,w2,w3};\nst.global.L1::no_allocate.b128 [output], v;",23).move_to([0,-2.4,0])
         self.beat("Our selected result is the low Half at output base plus 656592 bytes. StoreNoAllocate writes the sixteen-byte vector with an L1 no-allocation cache hint.",Write(eq),FadeIn(inst))
         self.beat("There is no FP8 conversion, no FP32 postprocessing buffer and no split-K protocol in this entry. The store's cache hint is not a synchronization fence.",Indicate(packed[0],color=TOKEN))
+        dmap=formula(r"row=g+8(j\bmod2),\qquad n=2q+8\lfloor j/2\rfloor+h",31,C).move_to([0,-2.25,0])
+        local=label("g = floor(lane / 4), q = lane % 4; word j = 0…3, half h = 0 or 1",22,MUTED).move_to([0,-2.8,0])
+        self.beat("This final map generates the D uint4 from local M16 and N16 coordinates. For lane thirteen, add token base eighty and channel base thirty-two to recover every labeled output.",
+                  FadeOut(inst),Write(dmap),FadeIn(local))
         self.finish()
 
 
