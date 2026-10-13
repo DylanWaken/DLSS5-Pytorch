@@ -1,7 +1,6 @@
 """Ten standalone, constructive lessons for the C1024 public kernel entries."""
 from html import escape
-import json
-from common import code, svg, note, source_url, REPOSITORY, ROOT
+from common import code, svg, note, source_url
 from lesson_support import pseudo, mma_primer, storage_legend
 
 P = 'csrc/kernel_impl/'
@@ -168,47 +167,6 @@ def split_ordering(fp8, count, family):
 <p>Keep scratch, output, residual and counter allocations live until their final consumers finish. Registers and shared memory belong to one CTA invocation and cannot carry a result into the next split launch. The partial tensor is the explicit storage bridge. Counters govern publication, not the mathematical value of a matrix element.</p>'''
 
 
-def expansion_video():
-    metadata = ROOT / 'docs/kernel-guide/assets/video/chapters.json'
-    video_meta = chapters_html = ''
-    if metadata.is_file():
-        manifest = json.loads(metadata.read_text(encoding='utf-8'))
-        chapters = manifest['chapters']
-
-        def clock(seconds):
-            hours, remainder = divmod(int(seconds), 3600)
-            minutes, seconds = divmod(remainder, 60)
-            return f'{hours}:{minutes:02d}:{seconds:02d}' if hours else f'{minutes}:{seconds:02d}'
-
-        video_meta = (f'<p class="video-meta">{clock(manifest["duration"])} · '
-                      f'{int(manifest["height"])}p at {float(manifest["fps"]):g} fps · '
-                      f'{len(chapters)} chapters</p>')
-        chapter_links = ''.join(
-            f'<li><a href="assets/video/fp16-c1024-ffn-expansion.mp4#t={float(chapter["start"]):.3f}" '
-            f'data-video-target="expansion-video" data-video-seek="{float(chapter["start"]):.3f}">'
-            f'<span class="video-chapter-time">{clock(chapter["start"])}</span>'
-            f'<span>{int(chapter["number"]):02d}. {escape(chapter["title"])}</span></a></li>'
-            for chapter in chapters)
-        chapters_html = ('<nav class="video-chapters" aria-label="Video chapters">'
-                         '<h3>Jump to a chapter</h3><ol>' + chapter_links + '</ol></nav>')
-    return f'''<h2 id="video">Watch the kernel: one token, from input to output</h2>
-<p>Follow token 83 through the FP16 expansion: find its CTA and warp, unpack its lane fragments, calculate its global and shared addresses, follow the three-stage input pipeline, and assemble the activated output. The animation keeps the token visible while zooming between the model, storage and instruction views. Pause on the address calculations, then use the source walkthrough below to reconstruct each step.</p>
-<figure class="kernel-video" aria-labelledby="expansion-video-label">
-<video id="expansion-video" controls playsinline preload="metadata" width="1920" height="1080" poster="assets/video/poster.jpg" aria-label="Animated source walkthrough of the FP16 C1024 FFN expansion" aria-describedby="expansion-video-description">
-<source src="assets/video/fp16-c1024-ffn-expansion.mp4" type="video/mp4">
-<track kind="captions" src="assets/video/captions.vtt" srclang="en" label="English captions">
-Your browser cannot play this video. <a href="assets/video/fp16-c1024-ffn-expansion.mp4">Download the MP4</a> or <a href="assets/video/transcript.html">read the illustrated transcript</a>.
-</video>
-<figcaption id="expansion-video-caption">
-<strong id="expansion-video-label">Token 83 · FP16 · C1024 → C4096</strong>
-{video_meta}
-{chapters_html}
-<p id="expansion-video-description">The schedule shows source dependencies, not measured GPU timing. The written lesson remains the reference for equations, exact source lines and boundary cases.</p>
-<div class="video-resources" aria-label="Video resources"><a href="assets/video/fp16-c1024-ffn-expansion.mp4" download>Download MP4</a><a href="assets/video/transcript.html">Read transcript</a><a href="assets/video/captions.vtt" download>Download captions</a><a href="{REPOSITORY}/tree/main/tools/kernel_video">Manim source &amp; render instructions ↗</a></div>
-</figcaption>
-</figure>'''
-
-
 def expand_lesson(name, fp8):
     fmt='FP8' if fp8 else 'FP16'
     elem=1 if fp8 else 2
@@ -223,7 +181,7 @@ def expand_lesson(name, fp8):
 <h2 id="model">1. Start with the exact model operation</h2>
 <p><code>{name}</code> implements the first matrix and activation of the dense FFN in bottleneck records 31–38. Let T be the token count and X be logically [T,1024]. W₁ is [1024,4096], and the result U is [T,4096]. The equation is <code>U[t,n]=Publish(φ(Σₖ X[t,k]W₁[k,n]))</code>. Its recovered activation uses b=clamp(x,−4,4) and <code>φ(x)=x·(b·(−0.055908203125·abs(b)+0.447265625)+0.89453125)</code>. There is no matrix bias or residual addition in this entry. The second FFN matrix will later contract U and join the residual.</p>
 <p>At the architecture’s 4K example the bottleneck field is 36×60, so T=2160. This entry defines T as <code>BatchCount·TokensPerBatch</code>; its physical processing treats that product as one token extent. The prepared deployment uses batch one. Working inputs and outputs are {fmt}; all Tensor Core accumulators and activation arithmetic here are Half. The <a href="{ARCH}">model architecture</a> supplies the surrounding network, but this page defines everything required for this kernel.</p>
-{graph('expand',fp8)}{'' if fp8 else chr(10)+expansion_video()}
+{graph('expand',fp8)}
 <h2 id="baseline">2. Build a scalar correctness baseline</h2>
 {scalar_matmul('expand',fp8)}
 <p>Use this baseline to check which tensor elements influence an output: token t depends only on X[t,:], never on another position. A literal GPU translation gives each output an independent 1024-element loop, rereading the same input for thousands of output channels. It also leaves the matrix work on scalar instructions. First preserve this dependency graph; then change how groups of outputs share operands. A high-precision scalar sum is a mathematical reference, not an exact oracle for the deployed instruction sequence. Bitwise reproduction also requires the same Half MMA groups, activation rounding and {'E4M3' if fp8 else 'Half'} publication.</p>
