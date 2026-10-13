@@ -1,0 +1,283 @@
+WEBVTT
+
+NOTE Captions follow the source animation. Timings are anchored to encoded chapter durations.
+
+1
+00:00:00.000 --> 00:00:05.767
+The bottleneck dense FFN expands every token from 1024 channels to 4096, then applies its activation.
+
+2
+00:00:05.767 --> 00:00:12.033
+Keep your eye on the gold row: token 83. Its outputs depend on all 1024 input channels, and on no other token.
+
+3
+00:00:12.033 --> 00:00:18.933
+We will follow one contribution, X[83,114] times W[114,34], into output channel 34, then reconnect it to the whole token.
+
+4
+00:00:18.933 --> 00:00:26.033
+This entry has no bias and no residual addition. The later FFN contraction consumes the packed expansion output.
+
+5
+00:00:26.033 --> 00:00:32.933
+For the 4K architecture example, T is 2160. A block covers 128 tokens by 128 output channels, so the grid has 544 blocks.
+
+6
+00:00:32.933 --> 00:00:39.733
+The linear block index changes token tiles first. CTA zero owns tokens 0 through 127 and output channels 0 through 127.
+
+7
+00:00:39.733 --> 00:00:47.133
+Hardware assigns ready CTAs to SMs. These arrows illustrate possible dispatch, not a fixed SM assignment or measured issue timing.
+
+8
+00:00:47.133 --> 00:00:56.233
+Inside one block, 128 threads form four warps. All four produce input copies and all four perform matrix work; there is no dedicated producer warp.
+
+9
+00:00:56.233 --> 00:01:03.033
+Warp parity selects the left or right channel half. Floor of warp divided by two selects the upper or lower token half.
+
+10
+00:01:03.033 --> 00:01:09.867
+Token 83 is in warp 2&#x27;s lower token half. Four M16 fragments and four N16 groups subdivide that warp&#x27;s 64 by 64 outputs.
+
+11
+00:01:09.867 --> 00:01:16.600
+Our output [83,34] lives at M fragment one and N16 group two. An N16 group splits again into channels 32–39 and 40–47.
+
+12
+00:01:16.600 --> 00:01:25.333
+Each native MMA reduces 16 K values for 16 tokens and 8 output channels. Two N8 instructions cover N16; two K16 subtiles cover each K32 step.
+
+13
+00:01:25.333 --> 00:01:31.733
+Zoom into the second K16 panel of reduction step three. Token 83 is local row three; channel 114 is local K two.
+
+14
+00:01:31.733 --> 00:01:38.533
+Lane 13 owns eight Half values in four 32-bit words. Its fragment interleaves two token rows and two separated K pairs.
+
+15
+00:01:38.533 --> 00:01:45.433
+The map is explicit: lane gives g and q; word index j selects the row and K half; h selects the low or high 16-bit value.
+
+16
+00:01:45.433 --> 00:01:54.233
+The whole token row is distributed over lanes 12 through 15. Packing arranges each lane&#x27;s eight values contiguously before this kernel starts.
+
+17
+00:01:54.233 --> 00:02:02.967
+A global token group stores sixteen complete token rows in native panels. Group five contains tokens 80 through 95 and begins at byte 163840.
+
+18
+00:02:02.967 --> 00:02:10.500
+Within that group, each K32 step occupies 1024 bytes. Step three adds 3072 bytes; the second K16 panel adds another 512.
+
+19
+00:02:10.500 --> 00:02:18.500
+Inside the panel, lane 13&#x27;s sixteen-byte vector adds 208 bytes. X[83,114] is the low Half of its first word, so no further offset is needed.
+
+20
+00:02:18.500 --> 00:02:28.100
+This is a packed address, not row times stride plus channel. The host launch uses grid.z equal to one; the source still defines explicit Z base adjustments.
+
+21
+00:02:28.100 --> 00:02:36.700
+Producer warp one copies group five: warp plus four. On SM80 and SM89, every lane issues two sixteen-byte asynchronous stripes for this 1024-byte slab.
+
+22
+00:02:36.700 --> 00:02:44.633
+Our value is in stripe one, lane 13. The .cg copy path uses global-level caching and attaches asynchronous completion to the stage barrier.
+
+23
+00:02:44.633 --> 00:02:53.300
+The shared destination sums the slot, producer warp, second copy group, second stripe and lane vector. The bytes arrive unchanged at shared offset 5840.
+
+24
+00:02:53.300 --> 00:03:02.267
+The compiled SM90-plus branch elects one bulk-copy issuer instead. Both branches populate the same layout, but their copy and completion instructions differ.
+
+25
+00:03:02.267 --> 00:03:11.367
+The SM90 instruction explicitly completes transaction bytes against the shared barrier. elect.sync selects one issuer from the converged full warp.
+
+26
+00:03:11.367 --> 00:03:20.100
+Each shared slot contains eight token groups, each split into two 512-byte native A panels. Three slots plus three eight-byte barriers total 24600 bytes.
+
+27
+00:03:20.100 --> 00:03:27.700
+The highlighted panel holds K112 through 127 for group five. Its 32 lane vectors occupy offsets zero, sixteen, thirty-two, and so on.
+
+28
+00:03:27.700 --> 00:03:36.867
+Consumer warp two reaches the same byte address by its own formula. Warp three reuses this A tile for the other channel half. No XOR swizzle or ldmatrix is used.
+
+29
+00:03:36.867 --> 00:03:45.367
+For this vector, the four 32-bit words address banks 20, 21, 22 and 23. Bank numbers alone do not prove conflicts: transaction grouping also matters.
+
+30
+00:03:45.367 --> 00:03:56.000
+A shared pointer is converted to the CTA shared address space before inline PTX uses it. Lane index selects a vector; word index selects a bank; half index selects two bytes.
+
+31
+00:03:56.000 --> 00:04:04.833
+Lane zero of warp zero initializes each barrier for 128 arrivals, then the CTA synchronizes. The prologue loads B0, issues A0, A1 and A2, and waits for A0.
+
+32
+00:04:04.833 --> 00:04:13.733
+On SM80 and SM89, mbarrier.init sets the arrival count. Every thread obtains a phase token with arrive, then test_wait polls completion of that exact phase.
+
+33
+00:04:13.733 --> 00:04:23.667
+SM90 uses the CTA-scoped arrive and try_wait forms, plus expected transaction bytes for bulk copies. Readiness includes copy completion, not just thread arrivals.
+
+34
+00:04:23.667 --> 00:04:32.067
+Read A0 into registers and perform the MMA work. Then preload B1, wait for A1, and only then refill retired slot zero with A3.
+
+35
+00:04:32.067 --> 00:04:48.133
+Every thread arrives after its preceding consumption. Waiting for the next stage establishes that old readers have advanced before the consumed slot is recycled.
+
+36
+00:04:48.133 --> 00:04:56.133
+After steps one and two, step three revisits slot zero. A fresh arrival phase token distinguishes this use from the earlier completed phase.
+
+37
+00:04:56.133 --> 00:05:07.433
+The same dependency pattern continues through all 32 K32 steps. Animation spacing is explanatory; actual warp interleaving and latency depend on hardware.
+
+38
+00:05:07.433 --> 00:05:15.667
+Step 28 performs the final refill, A31. Steps 29, 30 and 31 drain the ring; step 31 has neither a next-B load nor a next-stage wait.
+
+39
+00:05:15.667 --> 00:05:24.167
+Weights are not staged in shared memory. Cache-all vector loads fetch their prepacked words directly from global memory into each warp&#x27;s B registers.
+
+40
+00:05:24.167 --> 00:05:36.033
+For the lower N8 fragment, lane L has column floor(L/4). Its first K pair starts at twice (L modulo four), and its second starts eight later. W[114,34] belongs to lane nine.
+
+41
+00:05:36.033 --> 00:05:45.100
+The cache-all load permits both L2 and L1 caching. This hierarchy shows eligible storage levels; the actual cache hits, misses and residency were not measured.
+
+42
+00:05:45.100 --> 00:05:53.667
+The K-panel stride is 4096 times 32 bytes, or 131072. N16 group two adds 1024; lane nine adds 144. The selected weight is the low Half at byte 918672.
+
+43
+00:05:53.667 --> 00:06:04.233
+The complete weight column spans lanes eight through eleven. The input row spans lanes twelve through fifteen. A Tensor Core instruction combines these distributed operands.
+
+44
+00:06:04.233 --> 00:06:12.733
+This is a collective operation: all 32 lanes execute the same MMA instruction. A lane does not independently multiply only its own A and B registers.
+
+45
+00:06:12.733 --> 00:06:20.200
+Our selected product uses X[83,114] from A lane thirteen and W[114,34] from B lane nine. The result contributes to D lane thirteen.
+
+46
+00:06:20.200 --> 00:06:29.967
+The hardware operand network brings matching K values together. This highlight explains logical data dependency, not an exposed physical multiplier or register-bank route.
+
+47
+00:06:29.967 --> 00:06:38.467
+Our highlighted product is one of sixteen K contributions. The instruction updates all 128 elements of its M16 by N8 result, using Half accumulation.
+
+48
+00:06:38.467 --> 00:06:48.533
+The PTX shape is m16n8k16, row A and column B, with FP16 operands and accumulator. Treat this grouped operation as the numerical unit, not sixteen scalar additions.
+
+49
+00:06:48.533 --> 00:06:57.533
+Each lane keeps 64 accumulator words alive across the entire reduction. The declared input and weight tiles each add 32 words; compiler allocation may differ.
+
+50
+00:06:57.533 --> 00:07:08.400
+The unrolled issue order is M, then N16, then K subtile, with lower N8 before upper N8. K0 reaches each accumulator before K1, preserving the intended Half ordering.
+
+51
+00:07:08.400 --> 00:07:17.000
+One A fragment is reused across eight N8 column fragments. One B fragment is reused across four M16 token fragments, reducing repeated operand traffic.
+
+52
+00:07:17.000 --> 00:07:25.333
+There are 64 MMA instructions per warp per step, or 2048 across 32 steps. No partial accumulator tensor is written to global memory between steps.
+
+53
+00:07:25.333 --> 00:07:36.367
+The resource tradeoff is deliberate: large register tiles and three shared slots buy reuse and overlap. Their actual performance requires compiled resource reports and measurements.
+
+54
+00:07:36.367 --> 00:07:46.300
+After all 1024 channels have been reduced, the kernel applies its recovered clamped polynomial. The graph shows the real-valued shape; execution uses ordered Half operations.
+
+55
+00:07:46.300 --> 00:07:53.933
+Clamp x to obtain b, take absolute b, then evaluate the first Half fused multiply-add. Its constants are exact values from the source.
+
+56
+00:07:53.933 --> 00:08:03.067
+The clamp evaluates the upper minimum before the lower maximum. Preserve that order, the Half2 intrinsics and their NaN behavior when reconstructing the helper.
+
+57
+00:08:03.067 --> 00:08:12.533
+A second Half fused multiply-add forms the gate. The final Half multiplication uses the original, unclamped x. Replacing this with standard SiLU changes the function.
+
+58
+00:08:12.533 --> 00:08:22.067
+Both halves of every packed word pass through this sequence. Activation stays in registers: no preactivation write and no later activation read are needed.
+
+59
+00:08:22.067 --> 00:08:31.300
+For output group five and N16 group two, lane thirteen assembles four Half2 words directly into a uint4. Token 91 is a packing companion, not an input dependency.
+
+60
+00:08:31.300 --> 00:08:39.800
+The vector interleaves token rows 83 and 91, and channel pairs 34–35 and 42–43. It is already the layout expected by the next native tensor consumer.
+
+61
+00:08:39.800 --> 00:08:48.533
+Our selected result is the low Half at output base plus 656592 bytes. StoreNoAllocate writes the sixteen-byte vector with an L1 no-allocation cache hint.
+
+62
+00:08:48.533 --> 00:08:57.833
+There is no FP8 conversion, no FP32 postprocessing buffer and no split-K protocol in this entry. The store&#x27;s cache hint is not a synchronization fence.
+
+63
+00:08:57.833 --> 00:09:06.167
+Our chosen CTA supplies only channels zero through 127. Thirty-two channel blocks independently finish token 83&#x27;s complete 4096-channel expansion.
+
+64
+00:09:06.167 --> 00:09:15.400
+At T equal to 2160, the final token tile has seven valid groups, or 112 rows. Group 135 is invalid: its input slab is zero-filled and its output store is skipped.
+
+65
+00:09:15.400 --> 00:09:25.800
+For the separate small-Half path, T at most sixteen broadcasts input group zero across virtual positions. Only group-bounded stores are allowed; callers provide padded group storage.
+
+66
+00:09:25.800 --> 00:09:35.667
+There is no CTA-to-CTA rendezvous inside this expansion. The later contraction relies on kernel launch ordering and the lifetime of the packed output allocation.
+
+67
+00:09:35.667 --> 00:09:47.867
+Now follow the single gold contribution once more: packed global X, an asynchronous stage copy, a native shared panel, then the consumer&#x27;s A registers.
+
+68
+00:09:47.867 --> 00:10:00.933
+Weights arrive directly in B registers. Warp-wide MMA combines lanes and accumulates through all 32 steps; the fused Half activation then transforms the final result.
+
+69
+00:10:00.933 --> 00:10:10.967
+To rebuild the kernel, first verify the scalar dependencies and packing maps. Implement a synchronous tiled version before adding the three-slot pipeline and fused publication.
+
+70
+00:10:10.967 --> 00:10:21.767
+Use address enumeration, one-hot inputs, stage-wrap comparisons, Half numerical checkpoints and tail tests. The linked lesson and source retain every formula for reconstruction.
