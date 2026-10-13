@@ -4,6 +4,8 @@ from html import escape
 import re
 from common import code, svg, note
 from lesson_support import pseudo, mma_primer, storage_legend
+from lessons_window_figures import (subordinate, cta_diagram, ownership_diagram,
+    scheduling_diagram, resource_section, trace_intro, trace_checkpoint, instruction_ledger)
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = 'csrc/kernel_impl/shared/common/'
@@ -118,7 +120,7 @@ def transition_picture(mode,c,fp8):
     if mode=='upsample':
         s=box(20,30,300,115,[f'Low tile [4,4,{2*c}]',f'{2*c} → {c} projection','16 tokens computed once','result: Half accumulator pairs'])
         s+=box(380,30,325,115,['low token (0,0), source lane 0','destination lanes 0,4,16,20','high pixels (0,0),(1,0),(0,1),(1,1)','same channel pair four times'],'#e5f4e9')
-        s+=box(765,30,295,115,['Global high-resolution skip','round(skip × learned scale)','HalfAdd(repeated, scaled skip)','mask; publish; ordinary block'])
+        s+=box(765,30,295,115,['Global high-resolution skip','source: scale + repeat merge','SM120 merge: HFMA2','mask; publish; ordinary block'])
         s+=arrow(320,85,380,85)+arrow(705,85,765,85)
         s+=text(20,210,'sourceLane = (L & 3) | ((L >> 1) & 4) | 8(tile & 1) | 16×rowHalf',17)
         s+=text(20,248,'Read projected rowHalf = tile >> 1. No expanded 8 × 8 global projection tensor is needed.',16)
@@ -238,7 +240,8 @@ def build_body(name,entry,c,fp8,mode,core_only=False):
 {excerpt(path,'// Evaluate attention in tile batches',32,0,'Head outputs and residual seeds in this entry') if c>32 else excerpt(path,'// FP8 follows the native two-query-tile',30,0,'Query scheduling and residual-seeded projection in this entry')}
 '''
     if core_only:
-        return ffn+norms
+        return (trace_checkpoint('ffn',c,fp8,mode)+ffn+
+                trace_checkpoint('qkv',c,fp8,mode)+norms)
     out=output_section(c,fp8,mode,path)
     reconstruction=f'''<h2 id="assemble">11. Assemble the complete kernel from the pieces</h2>
 <p>The following schedule is the implementation checklist, not another mathematical graph. Distinguish publication (a conversion or packed-fragment rearrangement) from a global store. They often occur independently. Keep every named accumulator alive until its residual or transition consumer has finished, and place shared barriers according to read lifetimes rather than merely according to loop boundaries. The full owning source appended below supplies the ABI, dispatch specialization and exact syntax after this construction is understood.</p>
@@ -249,7 +252,34 @@ def build_body(name,entry,c,fp8,mode,core_only=False):
 <p>After these identity/shape checks, compare random packed operands against the deployment reference at every publication boundary. Use adversarial values near Half and {'E4M3' if fp8 else 'Half'} rounding boundaries, normalization underflow, and the exponential clamp thresholds. Inspect NaN behavior separately if it belongs to your admitted inputs. For performance, measure the proposed change with identical geometry, weights, clocks and launch sequence. The improvements argued here remove specific intermediate traffic or duplicate work; their benefit must still outweigh register pressure, shared barriers and instruction overhead on the tested GPU.</p>
 {note('You can now rebuild this one entry without opening a companion kernel page: the model, reference loop, ownership map, byte addresses, arithmetic helpers, storage lifetimes, publication path and checks are all specified above. The source and dependencies below are the exact implementation, not a substitute for the construction.')}
 '''
-    return arch+mapping+ownership+layout+input_part+ffn+norms+out+reconstruction
+    # Teach one complete construction in the user's six-part contract. Keep the
+    # source steps as subordinate headings, rather than twelve competing chapters.
+    problem=arch.replace('<h2 id="model">1. Define the model operation and the observable outputs</h2>',
+                         '<h2 id="problem">1. The whole problem</h2>')
+    problem=problem.replace('<h2 id="oracle">2. Write the simple correctness oracle before tiling</h2>',
+                            '<h3 id="oracle">A correctness oracle for the complete operator</h3>')
+    cta=f'''<h2 id="cta">2. One CTA: its concrete subproblem</h2>
+<p>The unit of independent work is one 8 × 8 window: 64 query rows, {c} input/output channels, {heads} attention heads, and a complete FFN for every row. The CTA has {32*heads} threads in <code>(32,{heads},1)</code>. It computes four 16-row instruction tiles, each corresponding to a 4 × 4 image patch. {'It additionally produces a 4 × 4 low patch with '+str(2*c)+' channels and a separate high-resolution skip.' if mode=='downsample' else 'Before its window block it consumes a 4 × 4 low patch with '+str(2*c)+' channels and a high-resolution skip.' if mode=='upsample' else 'Each valid output position belongs to this window alone for the configured origin phase.'}</p>
+{cta_diagram(c,fp8,mode)}
+<p>For the concrete unshifted 16 × 16 field, four CTAs form a 2 × 2 grid and each covers 8 × 8 pixels. CTA (1,0) starts at (8,0). More generally its origin is <code>(8·blockIdx.x+OriginX,8·blockIdx.y+OriginY)</code>. The launcher handles shifted origin phases; a window crossing a boundary keeps all 64 arithmetic slots and substitutes zero for invalid inputs. It predicates final stores independently. A zero padded slot still participates in the 64-key normalization, so it must not be silently removed from the attention problem.</p>
+<p>The source-level arithmetic size is also concrete: a dense C32 FFN performs 64·(32·128+128·32) scalar multiply-accumulate pairs; a wider FFN performs <code>64·[{heads}·({c}·128+128·32)+{c}²]</code>. QKV and output projection add <code>64·4·{c}²</code>, and QKᵀ plus P×V add <code>{heads}·2·64²·32</code>. These are logical operation counts, not measured instruction throughput; publication and Half rounding remain visible in the source.</p>'''
+    warp=mapping.replace('<h2 id="ownership">3. Derive the CTA, warp, tile and lane ownership</h2>',
+                          '<h2 id="warp">3. Warp and thread ownership</h2>')
+    warp=warp.replace(token_map(c,fp8),ownership_diagram(c,fp8)+token_map(c,fp8))+ownership
+    resources=resource_section(c,fp8,path,down=mode=='downsample')
+    schedule=f'''<h2 id="schedule">5. Execution and scheduling</h2>
+<p>The flowchart makes producer/consumer order explicit. Warp count is a work partition, not a guarantee that the SM issues all warps simultaneously. A warp can run ahead until it reaches a required collective or CTA barrier. This kernel has no asynchronous shared-copy ring: ordinary global and shared loads feed register fragments, and the source explicitly synchronizes only the cross-warp tensor lifetimes.</p>
+{scheduling_diagram(c,fp8,mode)}
+<p>{'One warp uses register data dependencies and full-warp shuffles/MMA; there is no cross-warp ownership exchange.' if c==32 else 'Each shared lifetime has two constraints: every old reader must finish before overwrite, and every new writer must finish before readers consume the new tensor. The same byte address therefore names X, a branch result, Z or an attended head at different times, never all of them concurrently.'} {'C32 FP8 pairs query tiles to amortize reciprocal work; the Half path keeps single-query normalization.' if c==32 else 'The attention exchange batch is '+str(querybatch)+' query tiles. The source reader barrier protects the slab before the next batch or lifetime overwrites it.'}</p>
+{pseudo(reconstruct(c,fp8,mode),'Source-order implementation schedule for '+name)}'''
+    # Preserve reconstruction tests without duplicating the schedule in section 6.
+    checks='<h2 id="checks">'+reconstruction.split('<h2 id="checks">',1)[1]
+    trace=(trace_intro(c,fp8,mode)+subordinate(layout+input_part)+
+           trace_checkpoint('ffn',c,fp8,mode)+subordinate(ffn)+
+           trace_checkpoint('qkv',c,fp8,mode)+subordinate(norms)+
+           trace_checkpoint('output',c,fp8,mode)+subordinate(out)+
+           instruction_ledger(c,fp8,mode=mode)+'<!-- NCU_EVIDENCE -->'+subordinate(checks))
+    return problem+cta+warp+resources+schedule+trace
 
 
 def record_layout(c,fp8,mode):
@@ -269,8 +299,9 @@ def upsample(c,fp8,path):
 {('<p>This C32 entry has three distinct extent contracts. Low input planes use Height/2 and Width/2; the raw merged tensor is masked against output Height and Width. The skip uses positive ResidualHeight and ResidualWidth overrides independently, falling back to Height and Width otherwise. Its tile grid is ResidualHeight/4 by ResidualWidth/4, so the skip tile index is tileY·(ResidualWidth/4)+tileX and that residual width determines the byte stride in the packed-tile equation. Singleton skip tile dimensions broadcast tile zero for reads. Do not substitute the output width when a residual override is active.</p>'+code(path,25,31,'C32 skip extent overrides are separate from low and output extents')) if c==32 else '<p>The wider entry uses matching output and residual extents for its packed skip; its low input alone uses the rounded half-resolution extents above.</p>'}
 {excerpt(path,'const auto r_Weights = LoadWindowWeights',32,3,'Gather the low spatial planes and project them before repetition')}
 {transition_picture('upsample',c,fp8)}
-<p>Now load each high skip tile from its own packed allocation. <code>ScaledWindowResidual</code> {'decodes the E4M3 words to Half, then ' if fp8 else ''}multiplies its channel pairs by the learned transition scales in Half. The repetition shuffle selects source lane <code>(L&amp;3)|((L&gt;&gt;1)&amp;4)|8(tile&amp;1)|16·rowHalf</code> from projected row half <code>tile&gt;&gt;1</code>. Destination lanes 0,4,16,20 in tile 0,row-half 0 all read source lane 0; these are high pixels (0,0),(1,0),(0,1),(1,1). Add the repeated projection to the already rounded skip product, then clear positions outside the destination field. {raw}</p>
-{excerpt(path,'// Each low-resolution value repeats',24,2,'Nearest-repeat lane routing, separate Half addition and spatial masking')}
+<p>Now load each high skip tile from its own packed allocation. <code>ScaledWindowResidual</code> {'decodes the E4M3 words to Half, then ' if fp8 else ''}expresses a Half multiplication by the learned transition scales. The repetition shuffle selects source lane <code>(L&amp;3)|((L&gt;&gt;1)&amp;4)|8(tile&amp;1)|16·rowHalf</code> from projected row half <code>tile&gt;&gt;1</code>. Destination lanes 0,4,16,20 in tile 0,row-half 0 all read source lane 0; these are high pixels (0,0),(1,0),(0,1),(1,1). The source then calls <code>HalfAdd(repeated,scaledSkip)</code> and clears positions outside the destination field. {raw}</p>
+<p><strong>Source expression versus emitted rounding.</strong> The helper boundaries do not force separate multiplication and addition instructions. This entry's <a href="evidence/window_block_c{c}_upsample_{'fp8' if fp8 else 'fp16'}.json">measured SM120 SASS</a> contains <code>HFMA2</code> for the transition merge: the compiler contracts the skip multiplication and repeated-value addition. Reconstruct the measured merge as a fused Half multiply-add, <code>HalfFma(skip,scale,repeated)</code>, rather than assuming an independently rounded skip product. The nearby source comment describes the intended separate-rounding graph; the compiled binary is the evidence for the observed rounding boundary. Other compiler/architecture combinations must be inspected independently.</p>
+{excerpt(path,'// Each low-resolution value repeats',24,2,'Nearest-repeat lane routing, source HalfAdd expression and spatial masking')}
 <p>The projection and transition scale live inside this record's weight payload. <code>FWindowUpsampleProfile</code> inserts a 2C×C matrix after the FFN matrices and locates the transition scale between the FFN scale and QKV matrix. Using ordinary-record offsets would point at the wrong values even though most of the block's math is unchanged. The profile excerpt defines those byte boundaries from Channels and ElementBytes; the source specialization fixes both at compile time.</p>
 {code('csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/common/window_upsample.cuh',16,32,'Upsample record offsets include the inserted projection and scale')}
 '''
@@ -326,6 +357,7 @@ def output_section(c,fp8,mode,path):
     return start+ordinary+f'''<p>This downsample entry has a second output. Retain all four raw Half output tiles in <code>r_WindowOutput</code>, independently of the published skip store. <code>PoolWindow</code> calls <code>PoolHorizontalWords</code> for tiles 0/1 then 2/3. Conditional word swaps route tile-X and row-half ownership; a lane-bit permutation exchanges bits 2 and 3; indexed shuffles with XOR offsets 0,4,16,20 collect the 2 × 2 cell. The exact average is <code>HalfMul(HalfAdd(HalfAdd(a,b),HalfAdd(c,d)),¼)</code>. Pooling an already {'E4M3-published' if fp8 else 'rearranged'} skip is not the implemented dataflow; consume the retained raw branch.</p>
 {transition_picture('downsample',c,fp8)}
 {code(BASE+'window_pool.cuh',7,42,'The actual neighbor routing and three-add Half averaging tree')}
+<p>The <a href="evidence/window_block_c{c}_downsample_{'fp8' if fp8 else 'fp16'}.json">SM120 source-correlated evidence</a> maps <code>HADD2</code> and <code>HMUL2</code> instructions to window_pool.cuh:41, supporting the add-tree and final quarter multiplication. Counts at an inlined source line may aggregate several uses; the presence of these instructions does not by itself assign a timing to each helper call.</p>
 <p>Publish the pooled tile to {'E4M3' if fp8 else 'Half'} before the {c} → {2*c} matrix. {pooled} The down-projection matrix begins after the attention-scale array. The output uses spatial channel planes, not the skip's physical-tile layout. The two allocations have different shapes and addresses even though both descend from the same Yraw.</p>
 {excerpt(path,'const auto r_Pooled =',24,0,'Project the pooled working-precision tile into doubled channels')}
 <p>Valid low dimensions are ceil(H/2),ceil(W/2). {'C32 uses compact H/2,W/2 extents for its admitted geometry.' if c==32 else 'This wider entry rounds the low extents up to multiples of four.'} Projected stores immediately zero their own padded cells. The later clear covers caller-provided target padding and assigns uncovered bottom/right borders to CTA zero. It must not race a valid projection write. The documented clear footprint is Half-sized C → 2C even for FP8, so shrinking every workspace in proportion to operand byte width breaks the contract. Preserve both the local producer mask and the auxiliary target dimensions.</p>
@@ -337,7 +369,7 @@ def reconstruct(c,fp8,mode):
     p='true' if fp8 else 'false'
     steps=[f'constexpr Channels={c}, bFp8={p}; launch 32 lanes × {c//32} warps',
            'derive CTA window origin and four physical tile coordinates; keep every lane participating']
-    if mode=='upsample':steps += ['read 4×4 low spatial planes; project 2C→C into Half registers','shuffle-repeat low projection; load/scalewise multiply skip; Half-add; mask','preserve raw merge if C32; publish merge for FFN operands']
+    if mode=='upsample':steps += ['read 4×4 low spatial planes; project 2C→C into Half registers','shuffle-repeat low projection; merge scaled skip (SM120: HFMA2); mask','preserve raw merge if C32; publish merge for FFN operands']
     else:steps+=['gather '+('spatial view words' if mode=='input_view' else 'packed tile uint4s')+'; zero invalid loads; honor singleton read rules']
     if c==32:steps += ['keep four X fragments; seed raw FFN accumulators with scaled input','for hidden panel 0..3: expand, Half activate, publish, contract in K order']
     elif c==64:steps += ['each warp owns two token tiles and both channel panels','seed FFN residual; for branch 0..1: stream hidden panels, publish branch, mix','publish all Z panels into shared; CTA barrier changes ownership to attention heads']

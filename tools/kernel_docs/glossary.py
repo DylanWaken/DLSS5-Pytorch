@@ -5,6 +5,14 @@ import re
 
 # id, label, aliases, short hover definition, additional reading context.
 GROUPS = {
+    'Measurement and evidence': [
+        ('ncu', 'NCU', 'Nsight Compute', 'NVIDIA’s CUDA kernel profiler. It measures compiled launch resources, hardware counters, sampled warp states and source-correlated instructions.', 'A report describes a particular GPU, binary, workload and replay protocol. It does not prove numerical correctness or track a semantic model token.'),
+        ('sass', 'SASS', '', 'The machine instructions executed by NVIDIA GPU hardware after PTX compilation.', 'One PTX operation may lower to multiple SASS instructions. Dynamic opcode totals count executed warp instructions across the measured launch.'),
+        ('wavefront', 'Wavefront', 'wavefronts', 'A unit of shared-memory service used by profiler counters. An instruction can require multiple service wavefronts.', 'Compare actual and ideal wavefronts for the same instrumented accesses; repeated bank numbers alone do not prove excessive service.'),
+        ('replay', 'Replay', 'replays', 'Profiler re-execution used to collect metric groups that cannot all be measured in one pass.', 'Replay and cache control influence traffic and timing. Source sampling and full reports can contain different counts.'),
+        ('source-correlation', 'Source correlation', 'source-correlated', 'Mapping compiled instruction addresses back to source lines using compiler line information.', 'Inlining and optimization can attribute work to a helper instead of the call site. Missing direct attribution does not prove a source step was skipped.'),
+        ('pm-sampling', 'PM sampling', '', 'Periodic sampling of GPU performance counters during a kernel.', 'A timeline shows aggregate activity over sample order. It does not reveal an exact per-warp issue schedule.'),
+    ],
     'Model operations and tensor coordinates': [
         ('tensor', 'Tensor', 'tensors', 'A multidimensional array. Its shape describes logical axes; its layout describes where those elements live.', 'Keep logical coordinates such as token and channel separate from physical byte addresses.'),
         ('token', 'Token', 'tokens', 'One position in the model sequence, carrying a vector of channels. In spatial stages it usually represents one feature-map pixel.', 'A window reorders spatial positions into local token indices; a repack can change their addresses without changing their values.'),
@@ -113,10 +121,19 @@ class Annotator(HTMLParser):
 
 
 def annotate(body):
+    # HTMLParser lowercases end tags, which corrupts case-sensitive SVG/XML
+    # names such as clipPath and rdf:RDF. Preserve whole graphics byte-for-byte.
+    graphics=[]
+    def protect(match):
+        graphics.append(match[0])
+        return f'<!--protected-graphic-{len(graphics)-1}-->'
+    body=re.sub(r'<svg\b.*?</svg>',protect,body,flags=re.S)
     parser = Annotator()
     parser.feed(body)
     parser.close()
-    return ''.join(parser.out)
+    body=''.join(parser.out)
+    for i,graphic in enumerate(graphics):body=body.replace(f'<!--protected-graphic-{i}-->',graphic)
+    return body
 
 
 def glossary_page():

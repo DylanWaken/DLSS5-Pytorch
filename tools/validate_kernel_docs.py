@@ -87,10 +87,14 @@ def main():
         if not pages[path].glossary_terms:errors.append(f'{path.name}: missing glossary annotations')
         body=text.split('<article class="content">',1)[-1].split('</article>',1)[0]
         headings=re.findall(r'<h2 id="([^"]+)">(.*?)</h2>',body,re.S)
-        if not headings or headings[0][0]!='model':errors.append(f'{path.name}: must start with model operation')
+        expected_sections=['problem','cta','warp','resources','schedule','trace']
+        if [h[0] for h in headings]!=expected_sections:errors.append(f'{path.name}: expected the exact six-section learning sequence')
         if 'source-appendix' not in pages[path].ids:errors.append(f'{path.name}: missing complete source appendix')
-        if len(headings)<6:errors.append(f'{path.name}: incomplete reading sequence')
-        if body.count('<svg')<2:errors.append(f'{path.name}: missing reconstruction diagrams')
+        sections=dict((m[1],m[2]) for m in re.finditer(r'<h2 id="([^"]+)">.*?</h2>(.*?)(?=<h2 |\Z)',body,re.S))
+        for section in ('problem','cta','warp','schedule','trace'):
+            if '<svg' not in sections.get(section,''):errors.append(f'{path.name}: {section} needs a specialized SVG')
+        if 'measured-resources' not in pages[path].ids or 'ncu-evidence' not in pages[path].ids:errors.append(f'{path.name}: missing measured evidence')
+        if '<!-- RESOURCE_EVIDENCE -->' in body or '<!-- NCU_EVIDENCE -->' in body:errors.append(f'{path.name}: unfilled evidence placeholder')
         if f'href="{lesson["slug"]}.html"' not in index:errors.append(f'{path.name}: not discoverable in catalog')
         if 'class="pseudocode"' not in body:errors.append(f'{path.name}: missing teaching algorithm')
         for dependency in lesson['dependencies']:
@@ -127,6 +131,24 @@ def main():
                 if p['slotbytes']!=p['cm']*p['step']*p['e']:errors.append(f'Input staging byte count mismatch: {name}')
                 if p['shared']!=p['slots']*(p['slotbytes']+8):errors.append(f'Barrier allocation mismatch: {name}')
             if p['splits']>1 and 'split' not in by_kernel[name]:errors.append(f'Missing split diagram: {name}')
+    evidence=json.loads((GUIDE/'evidence/index.json').read_text(encoding='utf8'))
+    if set(evidence['kernels'])!=set(entries):errors.append('NCU evidence must cover all 81 public entries')
+    for name,relative in evidence['kernels'].items():
+        actions=json.loads((GUIDE/'evidence'/relative).read_text(encoding='utf8'))
+        if not any(a['report'].endswith('-full') for a in actions) or not any(a['report'].endswith('-source') for a in actions):errors.append(f'{name}: requires full and SourceCounters evidence')
+        for action in actions:
+            fixture=evidence['reports'][action['report']]['fixtures'].get(name)
+            if not fixture:errors.append(f'{name}: missing workload receipt')
+            if not action['metrics'].get('launch__registers_per_thread'):errors.append(f'{name}: missing compiled register allocation')
+            samples=action['metrics'].get('smsp__pcsamp_sample_count',{}).get('value')
+            if samples is not None and sum(action['stall_totals'].values())!=samples:errors.append(f'{name}: source sample denominator does not match states')
+            for line in action['lines']:
+                if any(op=='?' or re.fullmatch(r'U?P\d+',op) for op in line['opcodes']):errors.append(f'{name}: invalid parsed SASS opcode')
+        full=next(a for a in actions if a['report'].endswith('-full'))
+        if full['metrics']['launch__shared_mem_per_block_static']['value']!=profiles[name]['shared']:errors.append(f'{name}: declared static shared budget differs from the captured binary')
+    for name,record in evidence['reports'].items():
+        report=GUIDE/'evidence'/(name+'.ncu-repz')
+        if not report.is_file() or hashlib.sha256(report.read_bytes()).hexdigest()!=record['sha256']:errors.append(f'Missing or changed raw NCU report: {name}')
     for path in GUIDE.glob('*.html'):
         text=path.read_text(encoding='utf-8')
         for fragment in re.findall(r'<svg\b.*?</svg>',text,re.S):

@@ -6,8 +6,11 @@ The executable source remains authoritative; these records drive teaching SVGs.
 import re
 
 
-def stage(label, m, k, n, storage, detail):
-    return dict(label=label, m=m, k=k, n=n, storage=storage, detail=detail)
+def stage(label, m, k, n, storage, detail, scope=None):
+    result = dict(label=label, m=m, k=k, n=n, storage=storage, detail=detail)
+    if scope is not None:
+        result['scope'] = scope
+    return result
 
 
 def profile(name, entry):
@@ -40,7 +43,7 @@ def profile(name, entry):
             p['stages'] += [stage('Repeat + learned merge',64,0,32,'registers','low features + record-0 skip')]
         p['stages'] += [stage('Expand + activation',64,c,128 if c>32 else 128,'registers',f'{h} full-input branches' if c>32 else 'one dense 32→128 matrix'),
                         stage('Contract',64,128,32,'registers',f'{h} branch C32 panels' if c>32 else '128→32; scaled X residual')]
-        if c>32:p['stages'] += [stage('Mix + residual',64,c,c,'shared','branch panels → dense mix → published Z')]
+        if c>32:p['stages'] += [stage('Mix + residual',64,c,c,'registers' if c==64 else 'shared','C64: branch publications + mix in registers; final Z → shared' if c==64 else 'shared branch panels → dense mix → published Z')]
         p['stages'] += [stage('Q / K / V',64,c,96,'registers',f'{h} heads; each reads all C{c}; Q/K norm'),
                         stage('Q × Kᵀ',64,32,64,'registers','one score row per query; learned bias'),
                         stage('Normalize; P × V',64,64,32,'registers','row sum over 64 keys; publish P'),
@@ -53,7 +56,7 @@ def profile(name, entry):
             p['stages'] += [stage('Save high; pool raw',16,0,32,'global','2×2 mean; no channel expansion')]
         elif mode=='output':p['stages'] += [stage('Half head + composition',64,32,4,'global','FP16 head; optional history blend')]
         else:p['stages'] += [stage('Publish output',64,0,c,'global',p['output'])]
-        p['notes']=[f'{h} warp'+('' if h==1 else 's')+' per 8×8 window; origin selects shifted phase.',
+        p['notes']=[f'{h} warp'+('' if h==1 else 's')+' per 8×8 window; '+('unshifted physical-image grid.' if mode=='input' else 'origin selects shifted phase.'),
                     'C64: each warp expands every branch on its two token tiles.' if c==64 else f'Warp h owns branch h and then attention head h.' if c>64 else 'All four M16 token tiles stay in one warp.',
                     'C256 retains four query tiles; C64/C128 exchange attended panels in two-tile batches.' if c>32 else 'No shared slab for the C32 transformer body; shuffles move register values.']
         return p
@@ -70,7 +73,7 @@ def profile(name, entry):
                  cm=256,cn=64,wm=64,wn=64,warps=4,focus='Q × Kᵀ for one streamed key tile',
                  matrix='Kᵀ (not learned weights)',slots=2,slotbytes=2048*e,shared=8192*e+16,
                  shared_kind='kv',step=32,input='Q / K / transposed V',output='attended C1024 token layout',n_axis='keys')
-        p['stages']=[stage('Retain Q once',256,0,32,'registers','four M16 query tiles / warp'),stage('Stage K and V',64,0,32,'shared','one head; ping-pong slots; reuse across 256 queries'),stage('Q × Kᵀ',256,32,64,'registers','scores for the current 64-key tile'),stage('Surrogate E + row sum',256,0,64,'registers','denominator uses Half E, before operand packing'),stage('Publish E; E × V',256,64,32,'registers','accumulate numerator across all key tiles'),stage('Tail correction + divide',256,0,32,'global','subtract padded-key denominator contribution; publish')]
+        p['stages']=[stage('Retain Q once',256,0,32,'registers','four M16 query tiles / warp','one CTA / one head'),stage('Stage K and V',64,0,32,'shared','ping-pong slots; reuse across 256 queries','one CTA / one key tile'),stage('Q × Kᵀ',256,32,64,'registers','scores for the current 64-key tile','one CTA / one key tile'),stage('Surrogate E + row sum',256,0,64,'registers','denominator uses Half E, before operand packing','one CTA / one key tile'),stage('Publish E; E × V',256,64,32,'registers','accumulate numerator across all key tiles','one CTA / one key tile'),stage('Tail correction + divide',256,0,32,'global','subtract padded-key mass; publish this query slice','one CTA / final output')]
         p['notes']=['Grid X selects one of 32 heads; Y selects a 256-query block.','At 4K: T=2160; the key traversal has 34 tiles = 2176 positions.','Q, numerator and denominator survive the entire key loop; scores do not.']
         return p
     if name.startswith('global_'):
@@ -84,14 +87,16 @@ def profile(name, entry):
                  wm=64,wn=96 if qkv else 64,warps=4,step=step,slots=slots,slotbytes=sb,
                  shared=slots*(sb+8),shared_kind='ring',splits=1 if expand else 2 if qkv else 4,
                  focus='QKV projection' if qkv else 'FFN expansion' if expand else 'Attention output projection' if proj else 'FFN contraction')
-        p['stages']=[stage('Stage input K slice',128,0,step,'shared',f'{slots} slots; {sb} B / slot'),stage(p['focus'],128,k,n,'registers',f'CTA output: 128×{p["cn"]}; warp: 64×{p["wn"]}')]
-        if p['splits']>1:p['stages'] += [stage('Ordered split handoff',128,0,p['cn'],'global',f'{p["splits"]} K{k//p["splits"]} splits; scratch remains Half')]
-        if expand:p['stages'] += [stage('Recovered activation',128,0,128,'registers','Half polynomial; publish only afterward')]
+        # The overview contains whole-model math and one explicitly labeled
+        # staging/partial example. Never give a CTA all model N columns or K splits.
+        p['stages']=[stage('Stage input K slice',128,0,step,'shared',f'{slots} slots; {sb} B / slot','one CTA / one K step'),stage(p['focus'],p['m'],k,n,'registers',f'Distributed over CTAs: each computes 128×{p["cn"]} over K{k//p["splits"]}.','whole model / distributed')]
+        if p['splits']>1:p['stages'] += [stage('Ordered split handoff',128,0,p['cn'],'global',f'{p["splits"]} K{k//p["splits"]} splits; scratch remains Half','one CTA output slice')]
+        if expand:p['stages'] += [stage('Recovered activation',p['m'],0,n,'registers','Half polynomial per output; values remain with their owning lanes','whole model / distributed')]
         if qkv:
             p.update(output='Q / K native; V transposed', matrix='Wqkv after 128-byte head-scale prefix')
-            p['stages'] += [stage('Normalize Q and K',128,0,32,'registers','one warp head; learned Q scale × √32'),stage('Publish Q, K; transpose V',128,0,96,'global','three separate consumer layouts')]
+            p['stages'] += [stage('Normalize Q and K',p['m'],0,32,'registers','Repeat independently for 32 heads; Q-only scale × √32','one head / one component'),stage('Publish Q, K; transpose V',p['m'],0,3072,'global','Three separate [T,1024] buffers with consumer layouts','whole model / three buffers')]
         else:
-            p['stages'] += [stage('Publish '+('U' if expand else 'Y' if proj else 'Z'),128,0,p['cn'],'global','activation output' if expand else 'scaled residual is seeded once; final split publishes')]
+            p['stages'] += [stage('Publish '+('U' if expand else 'Y' if proj else 'Z'),p['m'],0,n,'global','activation output' if expand else 'scaled residual is seeded once; final split publishes','whole model / final tensor')]
         p['notes']=[f'Warp row = w//2; warp column = w%2. Each warp owns 4×{p["wn"]//16} M16×N16 accumulator tiles.',f'K{k} / {p["splits"]} split(s) / K{step} per stage = {k//p["splits"]//step} stage consumptions per CTA.', 'A tiles are staged; packed B weights load directly into registers and are reused over four M16 tiles.']
         return p
     grouped=name.startswith(('window_ffn_c512','window_ffn_input_view'))

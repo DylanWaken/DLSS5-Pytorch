@@ -90,7 +90,7 @@ def hierarchy(p):
         if i<3:d.path([(x+320,276),(x+348,276)])
     d.text(24,463,f'Focus axes: M = {p["m_axis"]}; N = {p["n_axis"]}; K = {p["k"]} reduction values. B is {p["matrix"]}.',16)
     d.text(24,491,'Each level is rescaled. Macro grids show subtiles; the lower zoom resolves individual scalars. Warp-grid cells are M16×N8 instructions.',14,MUTED)
-    d.panel(24,518,1392,330,'Zoom into the first instruction: token / query 3, reduction channel 2, output / key 2')
+    d.panel(24,518,1392,330,'Independent instruction microscope: panel-relative row 3, model K offset 2, output / key offset 2')
     kval=4 if p['fp8'] else 2
     d.text(46,582,f'A: 16×{p["ik"]} distributed registers',16,bold=True)
     d.grid(46,603,410,192,16,p['ik'],A,selected=(3,kval),colors=lambda r,c:'#dbaee7' if r==3 else A,prefix='A instruction')
@@ -115,13 +115,20 @@ def flow(p):
     stages=p['stages'];rows=math.ceil(len(stages)/3);height=172+rows*292+90
     d=Drawing(p,'Tensor and token route — every fused stage',height)
     d.text(24,111,f'Input: {p["input"]}    →    Output: {p["output"]}',16)
-    d.text(24,139,'Orange follows one selected token within each operation. The spatial-boundary map resolves pooling and repetition where present.',14,MUTED)
+    if p['kind']=='global-linear':
+        d.text(24,139,'Scopes are explicit: whole-model dimensions aggregate all CTAs; CTA dimensions are resident tiles. Orange is panel-relative.',14,MUTED)
+    elif p['kind']=='global-attention':
+        d.text(24,139,'Whole problem: 32 heads × T2160 queries × T2160 real keys. Panels below zoom into one CTA and its 64-key iterations.',14,MUTED)
+    else:
+        d.text(24,139,'Orange follows one selected token within each operation. The spatial-boundary map resolves pooling and repetition where present.',14,MUTED)
     for i,s in enumerate(stages):
         row=i//3;col=i%3 if row%2==0 else 2-i%3;x=24+col*472;y=165+row*292
         d.panel(x,y,448,258,f'{i+1:02}  '+s['label'])
         fill={'shared':SHARED,'registers':D,'global':'#eceff2'}[s['storage']]
         d.rect(x+15,y+44,418,23,fill,stroke='none')
         d.text(x+24,y+61,s['storage'].upper()+' · '+(f'M{s["m"]} × N{s["n"]}' if not s['k'] else f'M{s["m"]} × K{s["k"]} × N{s["n"]}'),13)
+        if s.get('scope'):
+            d.text(x+18,y+82,'Scope: '+s['scope'],12,MUTED)
         d.grid(x+18,y+86,190,100,8,8,fill,colors=lambda r,c:SELECT if r==3 else fill,prefix=s['label'])
         d.text(x+224,y+106,f'{s["m"]} token positions',14)
         d.text(x+224,y+132,f'{s["n"]} columns',14)
@@ -162,7 +169,7 @@ def storage(p):
             x=510+i*222;d.text(x,199,f'{label}: +{i*p["slotbytes"]:,} B',15,bold=True)
             d.grid(x,218,202,112,p['slotbytes']//512,32,SHARED if label[0]=='K' else B,selected=(0,13) if i==0 else None)
             d.text(x,357,f'64×32 {p["fmt"]}',13)
-        d.text(510,393,f'K/V tile has {p["slotbytes"]:,} B; barriers begin at +{4*p["slotbytes"]:,} B. Q remains in registers.',14)
+        d.text(510,393,f'Each K or V slot has {p["slotbytes"]:,} B; barriers start at +{4*p["slotbytes"]:,} B. Q stays in registers.',14)
     elif sk=='exchange':
         h=p['heads'];chunks=1 if p['fp8'] else 2
         d.text(510,190,f's_Tile[4][{h}][{chunks}][32] : uint4',18,bold=True)
@@ -182,7 +189,7 @@ def storage(p):
         d.lines(950,229,'Global native tiles or spatial words load directly into the owning warp’s registers. Shuffle instructions exchange lane values.',width=43,size=15)
         d.text(510,394,'Each of the four physical token tiles has its own live register fragments.',14)
     d.path([(462,285),(489,285)])
-    d.panel(24,451,1392,305,'Follow one address into lane 13 — bases and address spaces stay separate')
+    d.panel(24,451,1392,305,'Independent panel-relative address example — add the walkthrough’s global token and channel bases')
     if sk=='exchange':
         offset=((p['heads']+1)*(1 if p['fp8'] else 2)*32+13)*16
         lines=[f'Physical tile 1, C32 panel 1, chunk 0, lane 13 → shared + {offset} B.',
@@ -214,7 +221,7 @@ def storage(p):
             cw=316/len(values);d.rect(x+j*cw,655,cw-2,54,SELECT if (w,j)==(0,0) else A)
             d.text(x+(j+.5)*cw,688,val,14,anchor='middle')
     d.text(45,737,'Labels are panel-relative; add the model channel base. This is an operand fragment, not a contiguous token vector.',14,MUTED)
-    d.panel(24,785,1392,255,'Address bits, banks, and the next consumer')
+    d.panel(24,785,1392,255,'Shared K/V panel banks — the retained Q registers above have no bank address' if sk=='kv' else 'Address bits, banks, and the next consumer')
     if sk not in ('none','features'):
         for bank in range(32):
             x=44+bank*27;d.text(x+12,848,bank,11,anchor='middle')
@@ -236,7 +243,7 @@ def storage(p):
     d.text(24,1080,'Next consumer: '+p['output'],17,bold=True)
     if p['splits']>1:
         d.text(24,1110,f'{p["splits"]} ordered splits: prior Half scratch → add current partial → publish scratch or final working-format output.',15)
-        d.text(24,1139,'Counter release/acquire or ordered launches establishes readiness; a memory address alone does not.',15)
+        d.text(24,1139,'Use the source counter protocol or ordered launches; an explicit acquire helper is not present in every entry.',15)
     else:
         d.text(24,1110,'Shared reuse requires the source barrier sequence; register publication can stay inside the current warp.',15)
         d.text(24,1139,'The source determines cache policy. No cache residency, issue-cycle schedule, spill count or speedup is assumed.',15)
@@ -348,7 +355,9 @@ def split_map(p):
     if p['splits']==1:return None
     count=p['splits'];width=p['k']//count
     d=Drawing(p,'Split-K reduction — one output token across launches or CTAs',840)
-    d.text(24,115,f'Follow output token 3, channel 2: K{p["k"]} = {count} ordered contributions of K{width}.',20,bold=True)
+    selected=('token 83, head 7, Q channel 18' if p['name'].startswith('global_qkv') else
+              'token 83, channel 34' if p['kind']=='global-linear' else 'token 3, channel 2 (independent example)')
+    d.text(24,115,f'Follow {selected}: K{p["k"]} = {count} ordered contributions of K{width}.',20,bold=True)
     cellwidth=1392/count
     for s in range(count):
         x=24+s*cellwidth;d.panel(x,152,cellwidth-18,292,f'Split {s}: K{s*width}…{(s+1)*width-1}')
@@ -390,16 +399,16 @@ def enrich(lesson,entry):
     p=profile(lesson['name'],entry)
     body=lesson['body']
     if p['kind'] in ('counter','repack'):
-        for kind,xml in layout_maps(p):body=insert(body,['address'],figure_html(p,kind,xml,'The direction, word count, launch ownership and tail behavior are specific to this public entry.'))
+        for kind,xml in layout_maps(p):body=insert(body,['warp'],figure_html(p,kind,xml,'The direction, word count, launch ownership and tail behavior are specific to this public entry.'))
     else:
         assert p['warps']*p['wm']*p['wn']==p['cm']*p['cn'],p['name']
-        body=insert(body,['model'],figure_html(p,'flow',flow(p),'Full fused operation for this entry. Matrices show tensor axes; storage labels identify where the implementation keeps each intermediate.'))
-        body=insert(body,['ownership','tiling','tile','storage'],figure_html(p,'tiling',hierarchy(p),'The CUTLASS-style hierarchy is specialized to the named focus operation; it does not treat this fused kernel as one generic GEMM.'))
-        body=insert(body,['pipeline','layout','address','addresses','storage'],figure_html(p,'storage',storage(p),'Per-kernel allocations and one exact address trace. FP8 and FP16 have independently derived panel, stage and packet layouts.'))
+        body=insert(body,['problem'],figure_html(p,'flow',flow(p),'Full fused operation for this entry. Matrices show tensor axes; storage labels identify where the implementation keeps each intermediate.'))
+        body=insert(body,['cta'],figure_html(p,'tiling',hierarchy(p),'The CUTLASS-style hierarchy is specialized to the named focus operation; it does not treat this fused kernel as one generic GEMM.'))
+        body=insert(body,['trace'],figure_html(p,'storage',storage(p),'Per-kernel allocations and one exact address trace. FP8 and FP16 have independently derived panel, stage and packet layouts.'))
         edge=boundary(p)
-        if edge:body=insert(body,['publication','epilogue','merge','layout','addresses','storage','model'],figure_html(p,'boundary',edge,'Actual spatial/view mapping for this variant; arrows identify the changed coordinate or address, not just a renamed tensor.'))
+        if edge:body=insert(body,['trace'],figure_html(p,'boundary',edge,'Actual spatial/view mapping for this variant; arrows identify the changed coordinate or address, not just a renamed tensor.'))
         splits=split_map(p)
-        if splits:body=insert(body,['split','splits','ordering','pipeline','model'],figure_html(p,'split',splits,'The K ranges, iteration counts and final consumer match this split-reduction entry.'))
+        if splits:body=insert(body,['schedule'],figure_html(p,'split',splits,'The K ranges, iteration counts and final consumer match this split-reduction entry.'))
     lesson['body']=body
     lesson['map_profile']=p
 

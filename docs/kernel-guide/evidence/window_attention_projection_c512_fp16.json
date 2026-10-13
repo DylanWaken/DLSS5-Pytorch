@@ -1,0 +1,4360 @@
+[
+  {
+    "function": "void spatial_projection_fp16<(int)2, FWindowAttentionProjectionC512Fp16Parameters>(T2)",
+    "metrics": {
+      "device__attribute_max_registers_per_multiprocessor": {
+        "value": 65536,
+        "unit": ""
+      },
+      "device__attribute_max_shared_memory_per_multiprocessor": {
+        "value": 102400,
+        "unit": ""
+      },
+      "device__attribute_max_warps_per_multiprocessor": {
+        "value": 48,
+        "unit": ""
+      },
+      "device__attribute_multiprocessor_count": {
+        "value": 188,
+        "unit": ""
+      },
+      "dram__bytes_op_read.sum": {
+        "value": 17357056.0,
+        "unit": "byte"
+      },
+      "dram__bytes_op_write.sum": {
+        "value": 0.0,
+        "unit": "byte"
+      },
+      "gpu__dram_throughput.avg.pct_of_peak_sustained_elapsed": {
+        "value": 39.91675301431801,
+        "unit": "%"
+      },
+      "gpu__time_duration.sum": {
+        "value": 25472.0,
+        "unit": "ns"
+      },
+      "l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_st.sum": {
+        "value": 277.0,
+        "unit": ""
+      },
+      "l1tex__t_sector_hit_rate.pct": {
+        "value": 46.853884590586716,
+        "unit": "%"
+      },
+      "launch__barrier_count": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__block_dim_x": {
+        "value": 32,
+        "unit": "block"
+      },
+      "launch__block_dim_y": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__block_dim_z": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_size": {
+        "value": 256,
+        "unit": ""
+      },
+      "launch__cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_max_active": {
+        "value": 0,
+        "unit": "cluster"
+      },
+      "launch__cluster_max_potential_size": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__cluster_scheduling_policy": {
+        "value": "PolicySpread",
+        "unit": ""
+      },
+      "launch__cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__context_id": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__device_id": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__execution_model": {
+        "value": "SIMT",
+        "unit": ""
+      },
+      "launch__func_cache_config": {
+        "value": "CachePreferNone",
+        "unit": ""
+      },
+      "launch__grid_dim_x": {
+        "value": 30,
+        "unit": ""
+      },
+      "launch__grid_dim_y": {
+        "value": 9,
+        "unit": ""
+      },
+      "launch__grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_size": {
+        "value": 270,
+        "unit": ""
+      },
+      "launch__kernel_name": {
+        "value": "",
+        "unit": ""
+      },
+      "launch__occupancy_cluster_gpu_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_cluster_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_limit_barriers": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_blocks": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_registers": {
+        "value": 2.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_shared_mem": {
+        "value": 4.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_warps": {
+        "value": 6.0,
+        "unit": "block"
+      },
+      "launch__per_block_memory_size": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__persisting_l2_cache_size": {
+        "value": 25165824,
+        "unit": "byte"
+      },
+      "launch__preferred_cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__registers_per_thread": {
+        "value": 100,
+        "unit": "register/thread"
+      },
+      "launch__registers_per_thread_allocated": {
+        "value": 104.0,
+        "unit": "register/thread"
+      },
+      "launch__shared_mem_config_size": {
+        "value": 65536,
+        "unit": "byte"
+      },
+      "launch__shared_mem_per_block": {
+        "value": 13336,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_allocated": {
+        "value": 13440.0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_driver": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_dynamic": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_static": {
+        "value": 12312,
+        "unit": "byte/block"
+      },
+      "launch__sm_count": {
+        "value": 188,
+        "unit": "SM"
+      },
+      "launch__stack_size": {
+        "value": 1024.0,
+        "unit": ""
+      },
+      "launch__stream_id": {
+        "value": 13,
+        "unit": ""
+      },
+      "launch__thread_count": {
+        "value": 69120,
+        "unit": "thread"
+      },
+      "launch__tpc_count": {
+        "value": 94,
+        "unit": ""
+      },
+      "launch__tpc_enabled": {
+        "value": "all",
+        "unit": ""
+      },
+      "launch__user_grid_dim_x": {
+        "value": 30,
+        "unit": ""
+      },
+      "launch__user_grid_dim_y": {
+        "value": 9,
+        "unit": ""
+      },
+      "launch__user_grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_size": {
+        "value": 270,
+        "unit": ""
+      },
+      "launch__uses_blocks_as_clusters": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_cdp": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_green_context": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_nvlink_centric_scheduling": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_vgpu": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__waves_per_multiprocessor": {
+        "value": 0.7180851063829787,
+        "unit": ""
+      },
+      "lts__t_sector_hit_rate.pct": {
+        "value": 75.06597394159658,
+        "unit": "%"
+      },
+      "memory_l1_wavefronts_shared": {
+        "value": 560640,
+        "unit": "sectors"
+      },
+      "memory_l1_wavefronts_shared_ideal": {
+        "value": 560640,
+        "unit": "sectors"
+      },
+      "sass__inst_executed_global_loads": {
+        "value": 310080.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_global_stores": {
+        "value": 16320.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_local_loads": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_local_stores": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_register_spilling": {
+        "value": 0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_shared_loads": {
+        "value": 138240.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_shared_stores": {
+        "value": 1920.0,
+        "unit": "inst"
+      },
+      "sm__cycles_active.avg": {
+        "value": 48467.46276595745,
+        "unit": "cycle"
+      },
+      "sm__cycles_active.max": {
+        "value": 58932.0,
+        "unit": "cycle"
+      },
+      "sm__cycles_active.min": {
+        "value": 42708.0,
+        "unit": "cycle"
+      },
+      "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+        "value": 38.31383378422901,
+        "unit": "%"
+      },
+      "sm__throughput.avg.pct_of_peak_sustained_elapsed": {
+        "value": 38.31383378422901,
+        "unit": "%"
+      },
+      "sm__warps_active.avg.pct_of_peak_sustained_active": {
+        "value": 23.599696224516197,
+        "unit": "%"
+      },
+      "smsp__issue_active.avg.per_cycle_active": {
+        "value": 0.16497906250707775,
+        "unit": ""
+      },
+      "smsp__pcsamp_aggregated_passes": {
+        "value": 2,
+        "unit": "pass"
+      },
+      "smsp__pcsamp_sample_count": {
+        "value": 2242,
+        "unit": ""
+      },
+      "smsp__warps_active.avg.per_cycle_active": {
+        "value": 2.8332973395119634,
+        "unit": "warp"
+      },
+      "smsp__warps_eligible.avg.per_cycle_active": {
+        "value": 0.21891077534879333,
+        "unit": "warp"
+      }
+    },
+    "opcodes": {
+      "HMMA": 1105920.0,
+      "NOP": 1101960.0,
+      "IMAD": 416880.0,
+      "BRA": 313531.0,
+      "LDG": 293760.0,
+      "IADD3": 252000.0,
+      "R2UR": 183600.0,
+      "SYNCS": 157919.0,
+      "MOV": 154080.0,
+      "LDS": 138240.0,
+      "ISETP": 136080.0,
+      "SHF": 131760.0,
+      "BSYNC": 108240.0,
+      "LOP3": 86160.0,
+      "BSSY": 75600.0,
+      "UIADD3": 69600.0,
+      "HMUL2": 69120.0,
+      "IADD": 67200.0,
+      "WARPSYNC": 61080.0,
+      "PRMT": 56160.0,
+      "YIELD": 49679.0,
+      "UMOV": 47160.0,
+      "LEA": 45360.0,
+      "UIMAD": 36960.0,
+      "CS2R": 34560.0,
+      "UBLKCP": 32640.0,
+      "ELECT": 32640.0,
+      "LD": 17280.0,
+      "STG": 16320.0,
+      "S2R": 15120.0,
+      "LDCU": 15120.0,
+      "LDC": 12600.0,
+      "S2UR": 10560.0,
+      "VOTEU": 8640.0,
+      "SEL": 8640.0,
+      "ULEA": 8400.0,
+      "USHF": 6480.0,
+      "IABS": 6480.0,
+      "STS": 6000.0,
+      "EXIT": 4200.0,
+      "MUFU": 2160.0,
+      "I2F": 2160.0,
+      "F2I": 2160.0,
+      "BAR": 2160.0
+    },
+    "instructions": [
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 7,
+        "sass": "LDC R1, c[0x0][0x37c]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "S2R R9, SR_CTAID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 103,
+        "sass": "LDCU.64 UR12, c[0x0][0x398]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "S2UR UR10, SR_CTAID.Z"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 17,
+        "sass": "IADD3 R0, PT, PT, R12, 0x7, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 17,
+        "sass": "SHF.R.S32.HI R3, RZ, 0x1f, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "USHF.L.U32 UR11, UR10, 0x9, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 17,
+        "sass": "LEA.HI R3, R3, R0, RZ, 0x3"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "UIMAD.WIDE.U32 UR8, UR11, 0x400, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "IABS R5, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "IMAD.SHL.U32 R92, R7, 0x10, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "I2F.RP R4, R5"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 28,
+        "sass": "LOP3.LUT P0, RZ, R7, R8, RZ, 0xfc, !PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 28,
+        "sass": "VOTEU.ALL UP0, P0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "MUFU.RCP R4, R4"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 32,
+        "sass": "@!UP0 LDCU UR4, c[0x0][0x360]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 32,
+        "sass": "@!UP0 UMOV UR5, 0x400"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "F2I.FTZ.U32.TRUNC.NTZ R3, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "@!UP0 UIMAD UR4, UR4, UR7, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 ULEA UR6, UR6, UR5, 0x18"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "MOV R2, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 UIADD3 UR4, UPT, UPT, -UR4, 0x100000, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "IMAD R11, R6, R5, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 SYNCS.EXCH.64 URZ, [UR6+0x3000], UR4"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "IMAD.HI.U32 R3, R3, R11, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "ISETP.GT.U32.AND P1, PT, R5, R2, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 35,
+        "sass": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "ISETP.GE.U32.AND P2, PT, R2, R5, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "MOV.64 R4, UR8"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "ISETP.GE.AND P1, PT, R2, RZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "ISETP.NE.AND P2, PT, R0, RZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "IADD.64 R2, R2, UR12"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 53,
+        "sass": "SHF.R.U32.HI R4, RZ, 0x1, R8"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 53,
+        "sass": "LDG.E.128.STRONG.SM R32, desc[UR14][R2.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 53,
+        "sass": "SEL R24, R5, RZ, P1"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "BSSY B0, 0x1c015bfcb0"
+      },
+      {
+        "path": "sm_32_intrinsics.hpp",
+        "line": 222,
+        "sass": "ISETP.LT.AND P0, PT, R28, R5, !P0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 75,
+        "sass": "@!P0  BRA 0x1c015bfc50"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 75,
+        "sass": "BRA.DIV UR4, 0x1c015c1360"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 81,
+        "sass": "ELECT P2, URZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 83,
+        "sass": "LDC.64 R12, c[0x0][0x380]"
+      },
+      {
+        "path": "sm_20_intrinsics.hpp",
+        "line": 151,
+        "sass": "R2UR UR9, R4"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "sass": "UBLKCP.S.G [UR6], [UR4], UR9"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "sass": "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3000], R6"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 90,
+        "sass": "STS.128 [R6], RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 75,
+        "sass": "BSYNC B0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 90,
+        "sass": "@!P0  LEA R13, R13, R6, 0x18"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "sass": "NOP"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "SYNCS.ARRIVE.TRANS64.ART0 R12, [R6+URZ+0x3000], R13"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "SYNCS.PHASECHK.TRANS64.TRYWAIT P2, [R6+URZ+0x3000], R13"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/common/spatial_projection.cuh",
+        "line": 65,
+        "sass": "UIADD3.64 UR4, UPT, UPT, UR12, 0x80000, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 116,
+        "sass": "LD.E R27, desc[UR14][R16.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 137,
+        "sass": "CS2R R20, SRZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 129,
+        "sass": "IMAD.WIDE R94, R95, 0x4000, R16"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 137,
+        "sass": "@P2   LDG.E.128.STRONG.GPU R20, desc[UR14][R94.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 141,
+        "sass": "HMUL2 R24, R20, R31"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 164,
+        "sass": "WARPSYNC.ALL"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 160,
+        "sass": "LDS.128 R64, [R89+0x400]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+        "line": 40,
+        "sass": "HMMA.16816.F16 R84, R64, R32, R30"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "IMAD.WIDE.U32 R64, R65, 0x400, R94"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 172,
+        "sass": "PRMT R64, R64, 0x9910, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 181,
+        "sass": "BSSY.RECONVERGENT B0, 0x1c015c1260"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 181,
+        "sass": "ISETP.GE.OR P0, PT, R2, R5, P0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 194,
+        "sass": "STG.E.NA.128 desc[UR14][R2.64+0x200], R20"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 194,
+        "sass": "BSYNC.RECONVERGENT B0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 181,
+        "sass": "@P1   EXIT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "YIELD"
+      }
+    ],
+    "lines": [
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 22,
+        "executed": 4080,
+        "opcodes": {
+          "ELECT": 4080
+        },
+        "stalls": {
+          "branch_resolving": 2,
+          "drain": 32,
+          "wait": 1
+        },
+        "sass": [
+          "ELECT P2, URZ, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 207,
+        "executed": 12240,
+        "opcodes": {
+          "MOV": 12240
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "MOV R4, R24",
+          "MOV R5, R25",
+          "MOV R4, R30",
+          "MOV R5, R31",
+          "MOV R6, R28",
+          "MOV R7, R29"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 221,
+        "executed": 2039040,
+        "opcodes": {
+          "HMMA": 1036800,
+          "NOP": 1002240
+        },
+        "stalls": {
+          "dispatch_stall": 1,
+          "math_pipe_throttle": 230,
+          "not_selected": 17,
+          "selected": 48,
+          "short_scoreboard": 1,
+          "wait": 365
+        },
+        "sass": [
+          "HMMA.16816.F16 R24, R68, R32, R24",
+          "NOP",
+          "HMMA.16816.F16 R22, R68, R34, R22",
+          "HMMA.16816.F16 R20, R68, R36, R20",
+          "HMMA.16816.F16 R18, R68, R38, R18",
+          "HMMA.16816.F16 R16, R68, R40, R16"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "executed": 17280,
+        "opcodes": {
+          "ULEA": 2160,
+          "UIADD3": 2160,
+          "USHF": 4320,
+          "VOTEU": 2160,
+          "SYNCS": 6480
+        },
+        "stalls": {
+          "selected": 2
+        },
+        "sass": [
+          "@!UP0 ULEA UR6, UR6, UR5, 0x18",
+          "@!UP0 UIADD3 UR4, UPT, UPT, -UR4, 0x100000, URZ",
+          "@!UP0 USHF.L.U32 UR5, UR4, 0xb, URZ",
+          "@!UP0 USHF.L.U32 UR4, UR4, 0x1, URZ",
+          "VOTEU.ALL UP0, P0",
+          "@!UP0 SYNCS.EXCH.64 URZ, [UR6+0x3000], UR4"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "executed": 106080,
+        "opcodes": {
+          "UIADD3": 36720,
+          "UMOV": 32640,
+          "UBLKCP": 32640,
+          "R2UR": 4080
+        },
+        "stalls": {
+          "mio_throttle": 87,
+          "selected": 1,
+          "wait": 11
+        },
+        "sass": [
+          "UIADD3 UR7, UPT, UPT, UR8, 0x3000, URZ",
+          "UMOV UR9, 0x20",
+          "UBLKCP.S.G [UR6], [UR4], UR9",
+          "R2UR UR10, R4",
+          "UIADD3 UR6, UPT, UPT, UR8, 0x1000, UR10",
+          "UIADD3 UR7, UPT, UPT, UR8, 0x3008, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "executed": 42960,
+        "opcodes": {
+          "SYNCS": 32640,
+          "NOP": 4080,
+          "MOV": 2040,
+          "BSYNC": 4200
+        },
+        "stalls": {
+          "long_scoreboard": 36,
+          "selected": 2
+        },
+        "sass": [
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3000], R6",
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3008], R6",
+          "NOP",
+          "MOV R6, 0x200",
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3010], R6",
+          "BSYNC B0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "executed": 187919,
+        "opcodes": {
+          "LEA": 2160,
+          "SYNCS": 69120,
+          "BRA": 34560,
+          "IMAD": 32400,
+          "YIELD": 49679
+        },
+        "stalls": {
+          "branch_resolving": 18,
+          "long_scoreboard": 54,
+          "no_instructions": 7,
+          "selected": 2,
+          "wait": 9
+        },
+        "sass": [
+          "LEA R6, R15, R6, 0x18",
+          "SYNCS.ARRIVE.TRANS64.ART0 R12, [R6+URZ+0x3000], R13",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P2, [R6+URZ+0x3000], R13",
+          "@!P2  BRA 0x1c015c14c0",
+          "IMAD R68, R67, 0x8, R6",
+          "SYNCS.ARRIVE.TRANS64.ART0 R66, [R68+URZ+0x3000], R69"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
+        "line": 16,
+        "executed": 155490,
+        "opcodes": {
+          "BSYNC": 32400,
+          "SYNCS": 49679,
+          "BRA": 73411
+        },
+        "stalls": {
+          "branch_resolving": 211,
+          "long_scoreboard": 159,
+          "misc": 7,
+          "no_instructions": 8,
+          "not_selected": 1,
+          "selected": 25,
+          "wait": 56
+        },
+        "sass": [
+          "BSYNC B1",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P2, [R6+URZ+0x3000], R13",
+          "@!P2  BRA 0x1c015c14c0",
+          "BRA 0x1c015c0180",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P2, [R68+URZ+0x3000], R67",
+          "@!P2  BRA 0x1c015c1500"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+        "line": 40,
+        "executed": 103680,
+        "opcodes": {
+          "HMMA": 69120,
+          "NOP": 34560
+        },
+        "stalls": {
+          "long_scoreboard": 214,
+          "math_pipe_throttle": 61,
+          "not_selected": 5,
+          "selected": 4,
+          "short_scoreboard": 15,
+          "wait": 7
+        },
+        "sass": [
+          "HMMA.16816.F16 R84, R64, R32, R30",
+          "NOP",
+          "HMMA.16816.F16 R86, R64, R34, R28"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/common/spatial_projection.cuh",
+        "line": 65,
+        "executed": 10800,
+        "opcodes": {
+          "IMAD": 2160,
+          "LOP3": 2160,
+          "UIADD3": 2160,
+          "ISETP": 4320
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "IMAD.SHL.U32 R7, R7, 0x4, RZ",
+          "LOP3.LUT R7, R7, 0xc, RZ, 0xc0, !PT",
+          "UIADD3.64 UR4, UPT, UPT, UR12, 0x80000, URZ",
+          "ISETP.GE.AND P2, PT, R30, R3, PT",
+          "ISETP.GE.AND P1, PT, R64, R3, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 7,
+        "executed": 2160,
+        "opcodes": {
+          "LDC": 2160
+        },
+        "stalls": {
+          "mio_throttle": 1,
+          "no_instructions": 20
+        },
+        "sass": [
+          "LDC R1, c[0x0][0x37c]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 17,
+        "executed": 10800,
+        "opcodes": {
+          "LDC": 2160,
+          "IADD3": 2160,
+          "SHF": 4320,
+          "LEA": 2160
+        },
+        "stalls": {
+          "mio_throttle": 1,
+          "selected": 1,
+          "short_scoreboard": 2,
+          "wait": 3
+        },
+        "sass": [
+          "LDC R12, c[0x0][0x3a4]",
+          "IADD3 R0, PT, PT, R12, 0x7, RZ",
+          "SHF.R.S32.HI R3, RZ, 0x1f, R0",
+          "LEA.HI R3, R3, R0, RZ, 0x3",
+          "SHF.R.S32.HI R0, RZ, 0x3, R3"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "executed": 99360,
+        "opcodes": {
+          "S2R": 8640,
+          "LDCU": 4320,
+          "LDC": 2160,
+          "IABS": 6480,
+          "I2F": 2160,
+          "MUFU": 2160,
+          "IADD3": 19440,
+          "F2I": 2160,
+          "UIMAD": 2160,
+          "MOV": 6480,
+          "IMAD": 15120,
+          "ISETP": 8640,
+          "LOP3": 6480,
+          "SHF": 8640,
+          "LEA": 4320
+        },
+        "stalls": {
+          "mio_throttle": 4,
+          "no_instructions": 2,
+          "not_selected": 1,
+          "selected": 3,
+          "short_scoreboard": 3
+        },
+        "sass": [
+          "S2R R9, SR_CTAID.X",
+          "S2R R8, SR_TID.Y",
+          "LDCU.64 UR14, c[0x0][0x358]",
+          "S2R R7, SR_TID.X",
+          "LDCU.64 UR16, c[0x0][0x380]",
+          "S2R R13, SR_CTAID.Y"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 28,
+        "executed": 4320,
+        "opcodes": {
+          "LOP3": 2160,
+          "VOTEU": 2160
+        },
+        "stalls": {
+          "wait": 2
+        },
+        "sass": [
+          "LOP3.LUT P0, RZ, R7, R8, RZ, 0xfc, !PT",
+          "VOTEU.ALL UP0, P0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 32,
+        "executed": 12960,
+        "opcodes": {
+          "VOTEU": 4320,
+          "S2UR": 2160,
+          "LDCU": 4320,
+          "UMOV": 2160
+        },
+        "stalls": {},
+        "sass": [
+          "VOTEU.ALL UP1, P0",
+          "VOTEU.ALL UP2, P0",
+          "@!UP0 S2UR UR6, SR_CgaCtaId",
+          "@!UP0 LDCU UR4, c[0x0][0x360]",
+          "@!UP0 LDCU UR7, c[0x0][0x364]",
+          "@!UP0 UMOV UR5, 0x400"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 35,
+        "executed": 2160,
+        "opcodes": {
+          "BAR": 2160
+        },
+        "stalls": {},
+        "sass": [
+          "BAR.SYNC.DEFER_BLOCKING 0x0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "executed": 60480,
+        "opcodes": {
+          "S2UR": 2160,
+          "USHF": 2160,
+          "UIMAD": 2160,
+          "IMAD": 36720,
+          "MOV": 6480,
+          "LOP3": 2160,
+          "IADD": 4320,
+          "SHF": 2160,
+          "BSSY": 2160
+        },
+        "stalls": {
+          "mio_throttle": 3,
+          "selected": 1
+        },
+        "sass": [
+          "S2UR UR10, SR_CTAID.Z",
+          "USHF.L.U32 UR11, UR10, 0x9, URZ",
+          "UIMAD.WIDE.U32 UR8, UR11, 0x400, URZ",
+          "IMAD.SHL.U32 R92, R7, 0x10, RZ",
+          "MOV.64 R4, UR8",
+          "LOP3.LUT R2, R92, UR8, RZ, 0xfc, !PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 53,
+        "executed": 289440,
+        "opcodes": {
+          "SHF": 4320,
+          "LDG": 276480,
+          "LOP3": 2160,
+          "ISETP": 2160,
+          "IADD3": 2160,
+          "SEL": 2160
+        },
+        "stalls": {
+          "lg_throttle": 3,
+          "not_selected": 1,
+          "selected": 4,
+          "wait": 13
+        },
+        "sass": [
+          "SHF.R.U32.HI R4, RZ, 0x1, R8",
+          "LDG.E.128.STRONG.SM R32, desc[UR14][R2.64]",
+          "LOP3.LUT R5, R4, 0x1, RZ, 0xc0, !PT",
+          "LDG.E.128.STRONG.SM R36, desc[UR14][R2.64+0x200]",
+          "ISETP.NE.AND P1, PT, R6, 0x4, PT",
+          "SHF.R.U32.HI R4, RZ, 0x2, R8"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 61,
+        "executed": 28080,
+        "opcodes": {
+          "IMAD": 28080
+        },
+        "stalls": {},
+        "sass": [
+          "IMAD R64, R65, 0x400, R90"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 73,
+        "executed": 2160,
+        "opcodes": {
+          "SEL": 2160
+        },
+        "stalls": {},
+        "sass": [
+          "SEL R28, R2, RZ, P0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 74,
+        "executed": 30240,
+        "opcodes": {
+          "IMAD": 30240
+        },
+        "stalls": {
+          "selected": 2,
+          "wait": 1
+        },
+        "sass": [
+          "IMAD R4, R4, 0x800, R13",
+          "IMAD R69, R67, 0x1000, R4"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 75,
+        "executed": 42720,
+        "opcodes": {
+          "BRA": 32280,
+          "UMOV": 2040,
+          "BSYNC": 8400
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "long_scoreboard": 20,
+          "no_instructions": 1,
+          "selected": 2
+        },
+        "sass": [
+          "@!P0  BRA 0x1c015bfc50",
+          "UMOV UR4, 0xffffffff",
+          "BRA.DIV UR4, 0x1c015c1360",
+          "BSYNC B0",
+          "@!P0  BRA 0x1c015c1070"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 77,
+        "executed": 163200,
+        "opcodes": {
+          "IMAD": 6120,
+          "R2UR": 124440,
+          "UIMAD": 32640
+        },
+        "stalls": {
+          "dispatch_stall": 1,
+          "math_pipe_throttle": 1,
+          "not_selected": 1,
+          "selected": 5,
+          "wait": 3
+        },
+        "sass": [
+          "IMAD R6, R28, R3, R24",
+          "R2UR UR10, R6",
+          "R2UR UR4, R12",
+          "R2UR UR5, R13",
+          "UIMAD.WIDE.U32 UR4, UR10, 0x4000, UR4",
+          "R2UR UR9, R6"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 81,
+        "executed": 193800,
+        "opcodes": {
+          "ELECT": 28560,
+          "BRA": 32640,
+          "WARPSYNC": 26520,
+          "NOP": 26520,
+          "MOV": 26520,
+          "IADD": 26520,
+          "IMAD": 26520
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "selected": 2,
+          "wait": 10
+        },
+        "sass": [
+          "ELECT P2, URZ, PT",
+          "@!P2  BRA 0x1c015bfca0",
+          "@!P2  BRA 0x1c015bfea0",
+          "@!P2  BRA 0x1c015c00a0",
+          "WARPSYNC.ALL",
+          "NOP"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 83,
+        "executed": 57120,
+        "opcodes": {
+          "LDC": 2040,
+          "MOV": 2040,
+          "R2UR": 53040
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 1
+        },
+        "sass": [
+          "LDC.64 R12, c[0x0][0x380]",
+          "MOV R91, RZ",
+          "R2UR UR7, R69",
+          "R2UR UR6, R6"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 84,
+        "executed": 59160,
+        "opcodes": {
+          "MOV": 30600,
+          "BRA": 28560
+        },
+        "stalls": {
+          "selected": 2
+        },
+        "sass": [
+          "MOV R6, 0x200",
+          "BRA 0x1c015bfca0",
+          "MOV R64, 0x200",
+          "BRA 0x1c015c1090"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 90,
+        "executed": 103200,
+        "opcodes": {
+          "S2UR": 120,
+          "UMOV": 4200,
+          "ULEA": 120,
+          "IADD3": 6000,
+          "STS": 6000,
+          "S2R": 4320,
+          "MOV": 4320,
+          "BSSY": 4320,
+          "LEA": 4320,
+          "BRA": 8400,
+          "BSYNC": 61080
+        },
+        "stalls": {
+          "branch_resolving": 6,
+          "long_scoreboard": 4,
+          "no_instructions": 2,
+          "selected": 1,
+          "short_scoreboard": 2,
+          "wait": 5
+        },
+        "sass": [
+          "S2UR UR5, SR_CgaCtaId",
+          "UMOV UR4, 0x400",
+          "ULEA UR4, UR5, UR4, 0x18",
+          "IADD3 R6, PT, PT, R4, UR4, R92",
+          "STS.128 [R6], RZ",
+          "@!P0  S2R R13, SR_CgaCtaId"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 98,
+        "executed": 64800,
+        "opcodes": {
+          "SHF": 32400,
+          "IMAD": 32400
+        },
+        "stalls": {
+          "dispatch_stall": 6,
+          "selected": 3,
+          "wait": 6
+        },
+        "sass": [
+          "SHF.R.U32.HI R67, RZ, 0x1, R67",
+          "IMAD R67, R67, -0x3, R66"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 99,
+        "executed": 32400,
+        "opcodes": {
+          "MOV": 32400
+        },
+        "stalls": {
+          "dispatch_stall": 3
+        },
+        "sass": [
+          "MOV R69, 0x1"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 103,
+        "executed": 2160,
+        "opcodes": {
+          "LDCU": 2160
+        },
+        "stalls": {},
+        "sass": [
+          "LDCU.64 UR12, c[0x0][0x398]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 106,
+        "executed": 2160,
+        "opcodes": {
+          "IADD3": 2160
+        },
+        "stalls": {},
+        "sass": [
+          "IADD3 R2, PT, PT, R4, R13, R13"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 107,
+        "executed": 6480,
+        "opcodes": {
+          "S2R": 2160,
+          "MOV": 4320
+        },
+        "stalls": {},
+        "sass": [
+          "S2R R15, SR_CgaCtaId",
+          "MOV R6, 0x400",
+          "MOV R13, 0x1"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 116,
+        "executed": 82080,
+        "opcodes": {
+          "IADD3": 17280,
+          "LDCU": 2160,
+          "SHF": 17280,
+          "IADD": 21600,
+          "LD": 17280,
+          "IMAD": 2160,
+          "ISETP": 4320
+        },
+        "stalls": {
+          "math_pipe_throttle": 1,
+          "not_selected": 2,
+          "wait": 2
+        },
+        "sass": [
+          "IADD3 R26, PT, PT, R7, R26, R26",
+          "IADD3 R14, PT, PT, R26, 0x10, RZ",
+          "IADD3 R16, PT, PT, R26, 0x20, RZ",
+          "IADD3 R18, PT, PT, R26, 0x30, RZ",
+          "LDCU.64 UR6, c[0x0][0x388]",
+          "SHF.R.S32.HI R17, RZ, 0x1f, R16"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 127,
+        "executed": 2160,
+        "opcodes": {
+          "IADD3": 2160
+        },
+        "stalls": {},
+        "sass": [
+          "IADD3 R8, PT, PT, R0, 0x1, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 128,
+        "executed": 4320,
+        "opcodes": {
+          "SEL": 4320
+        },
+        "stalls": {},
+        "sass": [
+          "SEL R30, R0, RZ, P1",
+          "SEL R64, R8, RZ, P1"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 129,
+        "executed": 8640,
+        "opcodes": {
+          "IADD3": 4320,
+          "IMAD": 4320
+        },
+        "stalls": {
+          "not_selected": 1
+        },
+        "sass": [
+          "IADD3 R95, PT, PT, R7, R30, RZ",
+          "IADD3 R97, PT, PT, R7, R64, RZ",
+          "IMAD.WIDE R94, R95, 0x4000, R16",
+          "IMAD.WIDE R96, R97, 0x4000, R16"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 137,
+        "executed": 51840,
+        "opcodes": {
+          "CS2R": 34560,
+          "LDG": 17280
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 1
+        },
+        "sass": [
+          "CS2R R20, SRZ",
+          "CS2R R22, SRZ",
+          "CS2R R80, SRZ",
+          "CS2R R82, SRZ",
+          "CS2R R64, SRZ",
+          "CS2R R66, SRZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 141,
+        "executed": 2160,
+        "opcodes": {
+          "HMUL2": 2160
+        },
+        "stalls": {
+          "long_scoreboard": 175
+        },
+        "sass": [
+          "HMUL2 R24, R20, R31"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 142,
+        "executed": 6480,
+        "opcodes": {
+          "HMUL2": 6480
+        },
+        "stalls": {
+          "long_scoreboard": 10
+        },
+        "sass": [
+          "HMUL2 R25, R21, R31",
+          "HMUL2 R30, R80, R31",
+          "HMUL2 R31, R81, R31"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 143,
+        "executed": 101520,
+        "opcodes": {
+          "HMUL2": 60480,
+          "LOP3": 2160,
+          "MOV": 2160,
+          "IADD3": 2160,
+          "IMAD": 34560
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "long_scoreboard": 21,
+          "no_instructions": 2,
+          "selected": 1,
+          "wait": 2
+        },
+        "sass": [
+          "HMUL2 R22, R22, R29",
+          "HMUL2 R81, R65, R85",
+          "LOP3.LUT R65, R9, 0x7f800, RZ, 0xc0, !PT",
+          "HMUL2 R23, R23, R29",
+          "HMUL2 R20, R16, R27",
+          "HMUL2 R21, R17, R27"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 144,
+        "executed": 6480,
+        "opcodes": {
+          "IADD3": 2160,
+          "IADD": 4320
+        },
+        "stalls": {},
+        "sass": [
+          "IADD3 R7, PT, PT, R24, R7, RZ",
+          "IADD.64 R94, R92, UR12",
+          "IADD.64 R94, R10, R94"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 153,
+        "executed": 105840,
+        "opcodes": {
+          "IADD3": 34560,
+          "ISETP": 34560,
+          "BRA": 34560,
+          "LDCU": 2160
+        },
+        "stalls": {
+          "branch_resolving": 12,
+          "math_pipe_throttle": 1,
+          "not_selected": 2,
+          "selected": 6,
+          "wait": 22
+        },
+        "sass": [
+          "IADD3 R9, PT, PT, R9, 0x1, RZ",
+          "ISETP.NE.AND P1, PT, R9, 0x10, PT",
+          "@P1   BRA 0x1c015c0820",
+          "LDCU.64 UR4, c[0x0][0x390]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 160,
+        "executed": 172800,
+        "opcodes": {
+          "IADD3": 34560,
+          "LDS": 138240
+        },
+        "stalls": {
+          "selected": 4,
+          "wait": 10
+        },
+        "sass": [
+          "IADD3 R89, PT, PT, R6, R65, RZ",
+          "LDS.128 R64, [R89+0x400]",
+          "LDS.128 R68, [R89]",
+          "LDS.128 R28, [R89+0x200]",
+          "LDS.128 R68, [R89+0x600]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 164,
+        "executed": 103680,
+        "opcodes": {
+          "WARPSYNC": 34560,
+          "NOP": 34560,
+          "SHF": 34560
+        },
+        "stalls": {
+          "selected": 2,
+          "wait": 6
+        },
+        "sass": [
+          "WARPSYNC.ALL",
+          "NOP",
+          "SHF.R.U32.HI R64, RZ, 0x1, R64"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 165,
+        "executed": 172800,
+        "opcodes": {
+          "BSSY": 34560,
+          "ISETP": 34560,
+          "IMAD": 69120,
+          "BRA": 34560
+        },
+        "stalls": {
+          "not_selected": 2,
+          "selected": 8,
+          "wait": 14
+        },
+        "sass": [
+          "BSSY B0, 0x1c015c10a0",
+          "ISETP.NE.AND P1, PT, R9, 0xf, PT",
+          "IMAD R65, R64, -0x3, R9",
+          "IMAD R65, R65, 0x1000, R88",
+          "@!P1  BRA 0x1c015c1090"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 167,
+        "executed": 64800,
+        "opcodes": {
+          "IADD3": 32400,
+          "LEA": 32400
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 7
+        },
+        "sass": [
+          "IADD3 R66, PT, PT, R9, 0x1, RZ",
+          "LEA R65, R66, UR11, 0x5"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 168,
+        "executed": 32400,
+        "opcodes": {
+          "IMAD": 32400
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "IMAD.HI.U32 R67, R66, -0x55555555, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 171,
+        "executed": 97200,
+        "opcodes": {
+          "BSSY": 32400,
+          "ISETP": 32400,
+          "BRA": 32400
+        },
+        "stalls": {
+          "branch_resolving": 5,
+          "selected": 1,
+          "wait": 1
+        },
+        "sass": [
+          "BSSY B1, 0x1c015c0e40",
+          "ISETP.GT.U32.AND P1, PT, R9, 0xc, PT",
+          "@P1   BRA 0x1c015c1090"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 172,
+        "executed": 280800,
+        "opcodes": {
+          "IADD3": 84240,
+          "LOP3": 56160,
+          "IMAD": 56160,
+          "SHF": 28080,
+          "PRMT": 56160
+        },
+        "stalls": {
+          "not_selected": 3,
+          "selected": 3,
+          "wait": 28
+        },
+        "sass": [
+          "IADD3 R65, PT, PT, R9, 0x3, RZ",
+          "LOP3.LUT R64, R65, 0xff, RZ, 0xc0, !PT",
+          "IMAD R64, R64, 0xab, RZ",
+          "SHF.R.U32.HI R64, RZ, 0x9, R64",
+          "PRMT R64, R64, 0x9910, RZ",
+          "IMAD R64, R64, 0x3, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 181,
+        "executed": 21600,
+        "opcodes": {
+          "ISETP": 8640,
+          "BSSY": 2160,
+          "IMAD": 2160,
+          "IADD": 4320,
+          "BRA": 2160,
+          "EXIT": 2160
+        },
+        "stalls": {
+          "short_scoreboard": 2
+        },
+        "sass": [
+          "ISETP.GE.AND P0, PT, R0, R3, PT",
+          "ISETP.GE.AND P1, PT, R8, R3, PT",
+          "BSSY.RECONVERGENT B0, 0x1c015c1260",
+          "IMAD R9, R2, R3, RZ",
+          "ISETP.GE.OR P0, PT, R2, R5, P0",
+          "ISETP.GE.OR P1, PT, R2, R5, P1"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 184,
+        "executed": 8160,
+        "opcodes": {
+          "IADD3": 4080,
+          "IMAD": 4080
+        },
+        "stalls": {
+          "long_scoreboard": 7,
+          "wait": 1
+        },
+        "sass": [
+          "IADD3 R3, PT, PT, R0, R9, RZ",
+          "IMAD.WIDE.U32 R2, R3, 0x4000, R92",
+          "IADD3 R3, PT, PT, R8, R9, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 194,
+        "executed": 38880,
+        "opcodes": {
+          "MOV": 20400,
+          "STG": 16320,
+          "BSYNC": 2160
+        },
+        "stalls": {
+          "lg_throttle": 2,
+          "selected": 1,
+          "wait": 2
+        },
+        "sass": [
+          "MOV R6, R22",
+          "MOV R7, R23",
+          "MOV R22, R18",
+          "MOV R23, R19",
+          "MOV R18, R14",
+          "MOV R19, R15"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 205,
+        "executed": 2040,
+        "opcodes": {
+          "EXIT": 2040
+        },
+        "stalls": {},
+        "sass": [
+          "EXIT"
+        ]
+      },
+      {
+        "path": "sm_20_intrinsics.hpp",
+        "line": 151,
+        "executed": 67320,
+        "opcodes": {
+          "R2UR": 2040,
+          "UMOV": 6120,
+          "S2UR": 6120,
+          "IADD": 6120,
+          "ULEA": 6120,
+          "UIADD3": 28560,
+          "LDC": 4080,
+          "LOP3": 4080,
+          "MOV": 4080
+        },
+        "stalls": {
+          "not_selected": 1,
+          "selected": 1,
+          "short_scoreboard": 2,
+          "wait": 1
+        },
+        "sass": [
+          "R2UR UR9, R4",
+          "UMOV UR6, 0x400",
+          "S2UR UR7, SR_CgaCtaId",
+          "IADD.64 R12, R90, R12",
+          "ULEA UR8, UR7, UR6, 0x18",
+          "UIADD3 UR6, UPT, UPT, UR8, UR9, URZ"
+        ]
+      },
+      {
+        "path": "sm_32_intrinsics.hpp",
+        "line": 222,
+        "executed": 19440,
+        "opcodes": {
+          "LOP3": 8640,
+          "ISETP": 6480,
+          "IMAD": 2160,
+          "IADD3": 2160
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "LOP3.LUT R6, R12, 0xfffffffc, RZ, 0xc0, !PT",
+          "LOP3.LUT R3, R15, 0xfffffffc, RZ, 0xc0, !PT",
+          "ISETP.NE.AND P0, PT, R3, 0x4, PT",
+          "IMAD.SHL.U32 R9, R8, 0x200, RZ",
+          "ISETP.GE.AND P0, PT, R24, R3, PT",
+          "LOP3.LUT R13, R9, 0x600, RZ, 0xc0, !PT"
+        ]
+      }
+    ],
+    "stall_totals": {
+      "barrier": 0,
+      "branch_resolving": 257,
+      "dispatch_stall": 11,
+      "drain": 32,
+      "lg_throttle": 5,
+      "long_scoreboard": 700,
+      "math_pipe_throttle": 294,
+      "membar": 0,
+      "mio_throttle": 96,
+      "misc": 7,
+      "no_instructions": 42,
+      "not_selected": 37,
+      "selected": 143,
+      "short_scoreboard": 27,
+      "sleeping": 0,
+      "tex_throttle": 0,
+      "wait": 591
+    },
+    "timeline": {
+      "pmsampling:sm__inst_executed_realtime.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 115,
+        "bucket_size": 1,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          10.177838027212081,
+          6.9948805468987185,
+          14.855809407081393,
+          19.628272106960925,
+          20.070723943813533,
+          19.28334104179987,
+          11.731511710533194,
+          5.038373819333086,
+          0.10867585071832851,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "pmsampling:sm__inst_executed_pipe_tensor_subpipe_hmma_realtime.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 115,
+        "bucket_size": 1,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.4403775562743173,
+          15.025042219681348,
+          43.86311263275715,
+          66.71594670473127,
+          68.2536035782195,
+          68.9756369064184,
+          45.36219374543523,
+          20.68686277156197,
+          0.3808191660367376,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "pmsampling:dram__bytes.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 115,
+        "bucket_size": 1,
+        "values": [
+          0.3588516746411483,
+          0.33783783783783783,
+          0.3488835725677831,
+          0.3875198728139905,
+          0.385,
+          0.2033730158730159,
+          0.259170653907496,
+          0.2089968152866242,
+          0.4086921850079745,
+          0.606120826709062,
+          0.5075636942675159,
+          0.40804140127388533,
+          0.20933014354066987,
+          0.28815580286168524,
+          0.4485645933014354,
+          0.5690894568690096,
+          0.3968253968253968,
+          0.388755980861244,
+          0.3582802547770701,
+          0.20402070063694266,
+          0.27325119236883944,
+          0.44928115015974446,
+          0.39745627980922094,
+          0.42862838915470497,
+          0.376984126984127,
+          0.2453926282051282,
+          41.929563492063494,
+          100.13955342902712,
+          78.35390127388536,
+          37.096934713375795,
+          35.82837301587302,
+          32.448083067092654,
+          8.735119047619047,
+          3.2099999999999995,
+          0.2380952380952381,
+          0.16945773524720895,
+          0.20933014354066987,
+          0.24880573248407642,
+          0.4229697452229299,
+          0.4024244833068362,
+          0.29904306220095694,
+          0.17914012738853505,
+          0.11942675159235669,
+          0.18879173290937998,
+          0.08,
+          0.10912698412698413,
+          0.20966453674121405,
+          0.27821939586645467,
+          0.2995207667731629,
+          0.1890923566878981,
+          0.16918789808917198,
+          0.23313492063492064,
+          0.2545926517571885,
+          0.39619651347068147,
+          0.2403846153846154,
+          0.21825396825396826,
+          0.27910685805422647,
+          0.3184713375796179,
+          0.4585326953748007,
+          0.21860095389507153,
+          0.23885350318471338,
+          0.3284235668789809,
+          0.388755980861244,
+          0.3080286168521463,
+          0.22392515923566877,
+          0.325,
+          0.42658730158730157,
+          0.3787878787878788,
+          0.2136327503974563,
+          0.1644736842105263,
+          0.3682324840764331,
+          0.43859649122807015,
+          0.22853736089030208,
+          0.24960063897763576,
+          0.16838351822503964,
+          0.295,
+          0.39745627980922094,
+          0.1893939393939394,
+          0.15923566878980894,
+          0.1246012759170654,
+          0.19345238095238096,
+          0.259170653907496,
+          0.3582802547770701,
+          0.2741228070175438,
+          0.13392857142857142,
+          0.13955342902711323,
+          0.16918789808917198,
+          0.22926634768740034,
+          0.43859649122807015,
+          0.19872813990461047,
+          0.1893939393939394,
+          0.14904610492845788,
+          0.11961722488038277,
+          0.22853736089030208,
+          0.24880573248407642,
+          0.34335191082802546,
+          0.17444178628389154,
+          0.15923566878980894,
+          0.18440988835725677,
+          0.14453748006379585,
+          0.08957006369426752,
+          0.03968253968253968,
+          0.17971246006389777,
+          0.4067460317460318,
+          0.22963258785942492,
+          0.19872813990461047,
+          0.10964912280701754,
+          0.11942675159235669,
+          0.17942583732057416,
+          0.029761904761904764,
+          0.17942583732057416,
+          0.29904306220095694,
+          0.29856687898089174,
+          0.17914012738853505,
+          0.17885532591414946
+        ]
+      }
+    },
+    "rules": [
+      {
+        "rule_identifier": "SOLBottleneck",
+        "name": "Bottleneck",
+        "section_identifier": "SpeedOfLight",
+        "rule_message": {
+          "title": "Small Grid",
+          "message": "This kernel grid is too small to fill the available resources on this device, resulting in only 0.72 full waves across all SMs. Look at @section:LaunchStats:Launch Statistics@ for more details.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "launch__waves_per_multiprocessor",
+            "value": 0.7180851063829787,
+            "severity": 2,
+            "info": "Increase the number of waves per SM towards 1"
+          }
+        ]
+      },
+      {
+        "rule_identifier": "IssueSlotUtilization",
+        "name": "Issue Slot Utilization",
+        "section_identifier": "SchedulerStats",
+        "rule_message": {
+          "title": "",
+          "message": "Every scheduler is capable of issuing one instruction per cycle, but for this workload each scheduler only issues an instruction every 6.1 cycles. This might leave hardware resources underutilized and may lead to less optimal performance. Out of the maximum of 12 warps per scheduler, this workload allocates an average of 2.83 active warps per scheduler, but only an average of 0.22 warps were eligible per cycle. Eligible warps are the subset of active warps that are ready to issue their next instruction. Every cycle with no eligible warp results in no instruction being issued and the issue slot remains unused. To increase the number of eligible warps, reduce the time the active warps are stalled by inspecting the top stall reasons on the @section:WarpStateStats:Warp State Statistics@ and @section:SourceCounters:Source Counters@ sections.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__issue_active.avg.per_cycle_active",
+            "value": 0.16497906250707775,
+            "severity": 0,
+            "info": "Increase the average number of instructions issued per cycle"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 1,
+          "speedup": 57.00697179761407
+        }
+      },
+      {
+        "rule_identifier": "CPIStall",
+        "name": "Warp Stall",
+        "section_identifier": "WarpStateStats",
+        "rule_message": {
+          "title": "Long Scoreboard Stalls",
+          "message": "On average, each warp of this workload spends 5.4 cycles being stalled waiting for a scoreboard dependency on a L1TEX (local, global, surface, texture) operation. Find the instruction producing the data being waited upon to identify the culprit. To reduce the number of cycles waiting on L1TEX data accesses verify the memory access patterns are optimal for the target architecture, attempt to increase cache hit rates by increasing data locality (coalescing), or by changing the cache configuration. Consider moving frequently used data to shared memory. Stall samples are reported on the consumer instruction waiting for the result, not necessarily on the producer. When this reason dominates, the kernel is memory-latency-bound, which is not necessarily memory-bandwidth-bound; prefer latency-hiding changes such as ILP, unrolling, or pipelining when bandwidth is not saturated. This stall type represents about 31.6% of the total average of 17.2 cycles between issuing two instructions.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__issue_active.avg.per_cycle_active",
+            "value": 0.16497906250707775,
+            "severity": 2,
+            "info": "Increase the average number of instructions issued per cycle"
+          },
+          {
+            "name": "smsp_average_long_scoreboard",
+            "value": 5.420395619033845,
+            "severity": 0,
+            "info": "Decrease the number of cycles spent in long scoreboard stalls"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 31.562228756396966
+        }
+      },
+      {
+        "rule_identifier": "CPIStall",
+        "name": "Warp Stall",
+        "section_identifier": "WarpStateStats",
+        "rule_message": {
+          "title": "",
+          "message": "Check the @section:SourceCounters:Warp Stall Sampling (All Samples)@ table for the top stall locations in your source based on sampling data. The @url:Profiling Guide:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-reference@ provides more details on each stall reason.",
+          "type": 1
+        }
+      },
+      {
+        "rule_identifier": "HighPipeUtilization",
+        "name": "High Pipe Utilization",
+        "section_identifier": "ComputeWorkloadAnalysis",
+        "rule_message": {
+          "title": "Balanced",
+          "message": "Tensor is the highest-utilized pipeline (38.3%) based on elapsed cycles in the workload, taking into account the rates of its different instructions. It is the logical aggregation of individual tensor pipelines. It's dominated by its Tensor (FP) sub-pipeline. It is well-utilized, but should not be a bottleneck. Based on the number of executed instructions, the highest utilized pipeline (38.3%) is Tensor (FP). It executes 16-bit floating point tensor operations. Comparing the two, the overall pipeline utilization appears to be caused by frequent, low-latency instructions. See the @url:Profiling Guide:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-decoder@ or hover over the pipeline name to understand the workloads handled by each pipeline. The @section:InstructionStats:Instruction Statistics@ section shows the mix of executed instructions for this workload. Check the @section:WarpStateStats:Warp State Statistics@ section for which reasons cause warps to stall.",
+          "type": 1
+        },
+        "focus_metrics": [
+          {
+            "name": "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed",
+            "value": 38.31383378422901,
+            "severity": 0,
+            "info": "Try to decrease the utilization of the busiest pipeline (currently: Tensor)"
+          }
+        ],
+        "result_tables": [
+          {
+            "title": "Most frequently executed instructions for pipeline Tensor",
+            "description": "Source lines with the highest number of executed instructions on pipeline Tensor (FP).",
+            "headers": [
+              "Location",
+              "Source",
+              "Opcodes",
+              "Executed Instructions"
+            ],
+            "data": [
+              [
+                "@source:intrinsics.cuh:220:intrinsics.cuh, line 221@",
+                "@source:tiled_mma.cuh:39:tiled_mma.cuh, line 40@"
+              ],
+              [
+                "asm volatile(\"mma.sync.aligned.m16n8k16.row.col.f16.f16.f16.f16 {%0,%1},{%2,%3,%4,%5},{%6,%7},{%8,%9};\"",
+                "MMA<Precision>("
+              ],
+              [
+                "HMMA.16816.F16",
+                "HMMA.16816.F16"
+              ],
+              [
+                1036800.0,
+                69120.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "rule_identifier": "LaunchConfiguration",
+        "name": "Launch Configuration",
+        "section_identifier": "LaunchStats",
+        "rule_message": {
+          "title": "Small Grid",
+          "message": "If you execute __syncthreads() to synchronize the threads of a block, it is recommended to have at least two blocks per multiprocessor (compared to the currently executed 1.4 blocks) This way, blocks that aren't waiting for __syncthreads() can keep the hardware busy.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "launch__grid_size",
+            "value": 270.0,
+            "severity": 1,
+            "info": "Increase the grid size towards twice the number of multiprocessors used (376)"
+          }
+        ]
+      },
+      {
+        "rule_identifier": "MemoryCacheAccessPattern",
+        "name": "Memory Cache Access Pattern",
+        "section_identifier": "MemoryWorkloadAnalysis_Tables",
+        "rule_message": {
+          "title": "L1TEX Global Load Access Pattern",
+          "message": "The memory access pattern for global loads from L1TEX might not be optimal. On average, only 31.9 of the 32 bytes transmitted per sector are utilized by each thread. This could possibly be caused by a stride between threads. Check the @section:SourceCounters:Source Counters@ section for uncoalesced global loads.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__sass_average_data_bytes_per_sector_mem_global_op_ld.ratio",
+            "value": 31.941200489995918,
+            "severity": 2,
+            "info": "Increase the average number of bytes utilized per sector towards 32 bytes"
+          },
+          {
+            "name": "l1tex__throughput.avg.pct_of_peak_sustained_elapsed",
+            "value": 25.107319407014156,
+            "severity": 1,
+            "info": "The higher the L1TEX throughput the more severe the issue becomes"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 0.04613431495776294
+        }
+      },
+      {
+        "rule_identifier": "PMSamplingData",
+        "name": "PM Sampling Data",
+        "section_identifier": "PmSampling",
+        "rule_message": {
+          "title": "",
+          "message": "Sampling interval is larger than 10% of the workload duration, which likely results in very few collected samples. For better results, use the --pm-sampling-interval option to reduce the sampling interval. Use --pm-sampling-buffer-size to increase the sampling buffer size for the smaller interval, or don't set a fixed buffer size and let the tool adjust it automatically.",
+          "type": 3
+        }
+      },
+      {
+        "rule_identifier": "SOLFPRoofline",
+        "name": "Roofline Analysis",
+        "section_identifier": "SpeedOfLight_RooflineChart",
+        "rule_message": {
+          "title": "Roofline Analysis",
+          "message": "The ratio of peak float (FP32) to double (FP64) performance on this device is 64:1. The workload achieved 0% of this device's FP32 peak performance and 0% of its FP64 peak performance. See the @url:Profiling Guide:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#roofline@ for more details on roofline analysis.",
+          "type": 1
+        }
+      },
+      {
+        "rule_identifier": "TheoreticalOccupancy",
+        "name": "Theoretical Occupancy",
+        "section_identifier": "Occupancy",
+        "rule_message": {
+          "title": "",
+          "message": "The 4.00 theoretical warps per scheduler this kernel can issue according to its occupancy are below the hardware maximum of 12. This kernel's theoretical occupancy (33.3%) is limited by the number of required registers.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__maximum_warps_avg_per_active_cycle",
+            "value": 4.0,
+            "severity": 2,
+            "info": "Increase the theoretical number of warps per scheduler that can be issued"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 57.00697179761407
+        }
+      },
+      {
+        "rule_identifier": "WorkloadImbalance",
+        "name": "Workload Imbalance",
+        "section_identifier": "WorkloadDistribution",
+        "rule_message": {
+          "title": "SMs Workload Imbalance",
+          "message": "One or more SMs have a much higher number of active cycles than the average number of active cycles. Maximum instance value is 17.76% above the average, while the minimum instance value is 11.88% below the average.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "sm__cycles_active.avg",
+            "value": 48467.46276595745,
+            "severity": 2,
+            "info": "Balancing the number of active cycles across SMs would result in a more optimized workload"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 14.013573296138544
+        }
+      },
+      {
+        "rule_identifier": "WorkloadImbalance",
+        "name": "Workload Imbalance",
+        "section_identifier": "WorkloadDistribution",
+        "rule_message": {
+          "title": "SMSPs Workload Imbalance",
+          "message": "One or more SMSPs have a much higher number of active cycles than the average number of active cycles. Maximum instance value is 17.60% above the average, while the minimum instance value is 14.31% below the average.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__cycles_active.avg",
+            "value": 48262.32180851064,
+            "severity": 2,
+            "info": "Balancing the number of active cycles across SMSPs would result in a more optimized workload"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 13.828939445691486
+        }
+      },
+      {
+        "rule_identifier": "WorkloadImbalance",
+        "name": "Workload Imbalance",
+        "section_identifier": "WorkloadDistribution",
+        "rule_message": {
+          "title": "L1 Slices Workload Imbalance",
+          "message": "One or more L1 Slices have a much higher number of active cycles than the average number of active cycles. Maximum instance value is 17.76% above the average, while the minimum instance value is 11.88% below the average.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "l1tex__cycles_active.avg",
+            "value": 48467.46276595745,
+            "severity": 2,
+            "info": "Balancing the number of active cycles across L1 Slices would result in a more optimized workload"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 14.013573296138544
+        }
+      }
+    ],
+    "report": "fp16-full",
+    "range_index": 0,
+    "action_index": 15
+  },
+  {
+    "function": "void spatial_projection_fp16<(int)2, FWindowAttentionProjectionC512Fp16Parameters>(T2)",
+    "metrics": {
+      "device__attribute_max_registers_per_multiprocessor": {
+        "value": 65536,
+        "unit": ""
+      },
+      "device__attribute_max_shared_memory_per_multiprocessor": {
+        "value": 102400,
+        "unit": ""
+      },
+      "device__attribute_max_warps_per_multiprocessor": {
+        "value": 48,
+        "unit": ""
+      },
+      "device__attribute_multiprocessor_count": {
+        "value": 188,
+        "unit": ""
+      },
+      "gpu__time_duration.sum": {
+        "value": 25920.0,
+        "unit": "ns"
+      },
+      "launch__barrier_count": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__block_dim_x": {
+        "value": 32,
+        "unit": "block"
+      },
+      "launch__block_dim_y": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__block_dim_z": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_size": {
+        "value": 256,
+        "unit": ""
+      },
+      "launch__cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_max_active": {
+        "value": 0,
+        "unit": "cluster"
+      },
+      "launch__cluster_max_potential_size": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__cluster_scheduling_policy": {
+        "value": "PolicySpread",
+        "unit": ""
+      },
+      "launch__cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__context_id": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__device_id": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__execution_model": {
+        "value": "SIMT",
+        "unit": ""
+      },
+      "launch__func_cache_config": {
+        "value": "CachePreferNone",
+        "unit": ""
+      },
+      "launch__grid_dim_x": {
+        "value": 30,
+        "unit": ""
+      },
+      "launch__grid_dim_y": {
+        "value": 9,
+        "unit": ""
+      },
+      "launch__grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_size": {
+        "value": 270,
+        "unit": ""
+      },
+      "launch__kernel_name": {
+        "value": "",
+        "unit": ""
+      },
+      "launch__occupancy_cluster_gpu_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_cluster_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_limit_barriers": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_blocks": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_registers": {
+        "value": 2.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_shared_mem": {
+        "value": 4.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_warps": {
+        "value": 6.0,
+        "unit": "block"
+      },
+      "launch__per_block_memory_size": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__persisting_l2_cache_size": {
+        "value": 25165824,
+        "unit": "byte"
+      },
+      "launch__preferred_cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__registers_per_thread": {
+        "value": 100,
+        "unit": "register/thread"
+      },
+      "launch__registers_per_thread_allocated": {
+        "value": 104.0,
+        "unit": "register/thread"
+      },
+      "launch__shared_mem_config_size": {
+        "value": 65536,
+        "unit": "byte"
+      },
+      "launch__shared_mem_per_block": {
+        "value": 13336,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_allocated": {
+        "value": 13440.0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_driver": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_dynamic": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_static": {
+        "value": 12312,
+        "unit": "byte/block"
+      },
+      "launch__sm_count": {
+        "value": 188,
+        "unit": "SM"
+      },
+      "launch__stack_size": {
+        "value": 1024.0,
+        "unit": ""
+      },
+      "launch__stream_id": {
+        "value": 13,
+        "unit": ""
+      },
+      "launch__thread_count": {
+        "value": 69120,
+        "unit": "thread"
+      },
+      "launch__tpc_count": {
+        "value": 94,
+        "unit": ""
+      },
+      "launch__tpc_enabled": {
+        "value": "all",
+        "unit": ""
+      },
+      "launch__user_grid_dim_x": {
+        "value": 30,
+        "unit": ""
+      },
+      "launch__user_grid_dim_y": {
+        "value": 9,
+        "unit": ""
+      },
+      "launch__user_grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_size": {
+        "value": 270,
+        "unit": ""
+      },
+      "launch__uses_blocks_as_clusters": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_cdp": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_green_context": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_nvlink_centric_scheduling": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_vgpu": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__waves_per_multiprocessor": {
+        "value": 0.7180851063829787,
+        "unit": ""
+      },
+      "memory_l1_wavefronts_shared": {
+        "value": 560640,
+        "unit": "sectors"
+      },
+      "memory_l1_wavefronts_shared_ideal": {
+        "value": 560640,
+        "unit": "sectors"
+      },
+      "sass__inst_executed_register_spilling": {
+        "value": 0,
+        "unit": "inst"
+      },
+      "sm__warps_active.avg.pct_of_peak_sustained_active": {
+        "value": 23.311720610284524,
+        "unit": "%"
+      },
+      "smsp__pcsamp_aggregated_passes": {
+        "value": 2,
+        "unit": "pass"
+      },
+      "smsp__pcsamp_sample_count": {
+        "value": 2223,
+        "unit": ""
+      }
+    },
+    "opcodes": {
+      "HMMA": 1105920.0,
+      "NOP": 1101960.0,
+      "IMAD": 416880.0,
+      "BRA": 316051.0,
+      "LDG": 293760.0,
+      "IADD3": 252000.0,
+      "R2UR": 183600.0,
+      "SYNCS": 160033.0,
+      "MOV": 154080.0,
+      "LDS": 138240.0,
+      "ISETP": 136080.0,
+      "SHF": 131760.0,
+      "BSYNC": 108240.0,
+      "LOP3": 86160.0,
+      "BSSY": 75600.0,
+      "UIADD3": 69600.0,
+      "HMUL2": 69120.0,
+      "IADD": 67200.0,
+      "WARPSYNC": 61080.0,
+      "PRMT": 56160.0,
+      "YIELD": 51793.0,
+      "UMOV": 47160.0,
+      "LEA": 45360.0,
+      "UIMAD": 36960.0,
+      "CS2R": 34560.0,
+      "UBLKCP": 32640.0,
+      "ELECT": 32640.0,
+      "LD": 17280.0,
+      "STG": 16320.0,
+      "S2R": 15120.0,
+      "LDCU": 15120.0,
+      "LDC": 12600.0,
+      "S2UR": 10560.0,
+      "VOTEU": 8640.0,
+      "SEL": 8640.0,
+      "ULEA": 8400.0,
+      "USHF": 6480.0,
+      "IABS": 6480.0,
+      "STS": 6000.0,
+      "EXIT": 4200.0,
+      "MUFU": 2160.0,
+      "I2F": 2160.0,
+      "F2I": 2160.0,
+      "BAR": 2160.0
+    },
+    "instructions": [
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 7,
+        "sass": "LDC R1, c[0x0][0x37c]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "S2R R9, SR_CTAID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 103,
+        "sass": "LDCU.64 UR12, c[0x0][0x398]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "S2UR UR10, SR_CTAID.Z"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 17,
+        "sass": "IADD3 R0, PT, PT, R12, 0x7, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 17,
+        "sass": "SHF.R.S32.HI R3, RZ, 0x1f, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "USHF.L.U32 UR11, UR10, 0x9, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 17,
+        "sass": "LEA.HI R3, R3, R0, RZ, 0x3"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "UIMAD.WIDE.U32 UR8, UR11, 0x400, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "IABS R5, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "IMAD.SHL.U32 R92, R7, 0x10, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "I2F.RP R4, R5"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 28,
+        "sass": "LOP3.LUT P0, RZ, R7, R8, RZ, 0xfc, !PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 28,
+        "sass": "VOTEU.ALL UP0, P0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "MUFU.RCP R4, R4"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 32,
+        "sass": "@!UP0 LDCU UR4, c[0x0][0x360]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 32,
+        "sass": "@!UP0 UMOV UR5, 0x400"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "F2I.FTZ.U32.TRUNC.NTZ R3, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "@!UP0 UIMAD UR4, UR4, UR7, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 ULEA UR6, UR6, UR5, 0x18"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "MOV R2, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 UIADD3 UR4, UPT, UPT, -UR4, 0x100000, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "IMAD R11, R6, R5, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 SYNCS.EXCH.64 URZ, [UR6+0x3000], UR4"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "IMAD.HI.U32 R3, R3, R11, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "ISETP.GT.U32.AND P1, PT, R5, R2, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 35,
+        "sass": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "ISETP.GE.U32.AND P2, PT, R2, R5, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "MOV.64 R4, UR8"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "ISETP.GE.AND P1, PT, R2, RZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "sass": "ISETP.NE.AND P2, PT, R0, RZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "IADD.64 R2, R2, UR12"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 53,
+        "sass": "SHF.R.U32.HI R4, RZ, 0x1, R8"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 53,
+        "sass": "LDG.E.128.STRONG.SM R32, desc[UR14][R2.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 53,
+        "sass": "SEL R24, R5, RZ, P1"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "BSSY B0, 0x12015bfcb0"
+      },
+      {
+        "path": "sm_32_intrinsics.hpp",
+        "line": 222,
+        "sass": "ISETP.LT.AND P0, PT, R28, R5, !P0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 75,
+        "sass": "@!P0  BRA 0x12015bfc50"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 75,
+        "sass": "BRA.DIV UR4, 0x12015c1360"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 81,
+        "sass": "ELECT P2, URZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 83,
+        "sass": "LDC.64 R12, c[0x0][0x380]"
+      },
+      {
+        "path": "sm_20_intrinsics.hpp",
+        "line": 151,
+        "sass": "R2UR UR9, R4"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "sass": "UBLKCP.S.G [UR6], [UR4], UR9"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "sass": "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3000], R6"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 90,
+        "sass": "STS.128 [R6], RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 75,
+        "sass": "BSYNC B0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 90,
+        "sass": "@!P0  LEA R13, R13, R6, 0x18"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "sass": "NOP"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "SYNCS.ARRIVE.TRANS64.ART0 R12, [R6+URZ+0x3000], R13"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "SYNCS.PHASECHK.TRANS64.TRYWAIT P2, [R6+URZ+0x3000], R13"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/common/spatial_projection.cuh",
+        "line": 65,
+        "sass": "UIADD3.64 UR4, UPT, UPT, UR12, 0x80000, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 116,
+        "sass": "LD.E R27, desc[UR14][R16.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 137,
+        "sass": "CS2R R20, SRZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 129,
+        "sass": "IMAD.WIDE R94, R95, 0x4000, R16"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 137,
+        "sass": "@P2   LDG.E.128.STRONG.GPU R20, desc[UR14][R94.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 141,
+        "sass": "HMUL2 R24, R20, R31"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 164,
+        "sass": "WARPSYNC.ALL"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 160,
+        "sass": "LDS.128 R64, [R89+0x400]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+        "line": 40,
+        "sass": "HMMA.16816.F16 R84, R64, R32, R30"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "sass": "IMAD.WIDE.U32 R64, R65, 0x400, R94"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 172,
+        "sass": "PRMT R64, R64, 0x9910, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 181,
+        "sass": "BSSY.RECONVERGENT B0, 0x12015c1260"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 181,
+        "sass": "ISETP.GE.OR P0, PT, R2, R5, P0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 194,
+        "sass": "STG.E.NA.128 desc[UR14][R2.64+0x200], R20"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 194,
+        "sass": "BSYNC.RECONVERGENT B0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 181,
+        "sass": "@P1   EXIT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "YIELD"
+      }
+    ],
+    "lines": [
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 22,
+        "executed": 4080,
+        "opcodes": {
+          "ELECT": 4080
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "drain": 39,
+          "selected": 2
+        },
+        "sass": [
+          "ELECT P2, URZ, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 207,
+        "executed": 12240,
+        "opcodes": {
+          "MOV": 12240
+        },
+        "stalls": {},
+        "sass": [
+          "MOV R4, R24",
+          "MOV R5, R25",
+          "MOV R4, R30",
+          "MOV R5, R31",
+          "MOV R6, R28",
+          "MOV R7, R29"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 221,
+        "executed": 2039040,
+        "opcodes": {
+          "HMMA": 1036800,
+          "NOP": 1002240
+        },
+        "stalls": {
+          "math_pipe_throttle": 220,
+          "not_selected": 13,
+          "selected": 38,
+          "wait": 326
+        },
+        "sass": [
+          "HMMA.16816.F16 R24, R68, R32, R24",
+          "NOP",
+          "HMMA.16816.F16 R22, R68, R34, R22",
+          "HMMA.16816.F16 R20, R68, R36, R20",
+          "HMMA.16816.F16 R18, R68, R38, R18",
+          "HMMA.16816.F16 R16, R68, R40, R16"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "executed": 17280,
+        "opcodes": {
+          "ULEA": 2160,
+          "UIADD3": 2160,
+          "USHF": 4320,
+          "VOTEU": 2160,
+          "SYNCS": 6480
+        },
+        "stalls": {},
+        "sass": [
+          "@!UP0 ULEA UR6, UR6, UR5, 0x18",
+          "@!UP0 UIADD3 UR4, UPT, UPT, -UR4, 0x100000, URZ",
+          "@!UP0 USHF.L.U32 UR5, UR4, 0xb, URZ",
+          "@!UP0 USHF.L.U32 UR4, UR4, 0x1, URZ",
+          "VOTEU.ALL UP0, P0",
+          "@!UP0 SYNCS.EXCH.64 URZ, [UR6+0x3000], UR4"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "executed": 106080,
+        "opcodes": {
+          "UIADD3": 36720,
+          "UMOV": 32640,
+          "UBLKCP": 32640,
+          "R2UR": 4080
+        },
+        "stalls": {
+          "mio_throttle": 53,
+          "selected": 3,
+          "wait": 4
+        },
+        "sass": [
+          "UIADD3 UR7, UPT, UPT, UR8, 0x3000, URZ",
+          "UMOV UR9, 0x20",
+          "UBLKCP.S.G [UR6], [UR4], UR9",
+          "R2UR UR10, R4",
+          "UIADD3 UR6, UPT, UPT, UR8, 0x1000, UR10",
+          "UIADD3 UR7, UPT, UPT, UR8, 0x3008, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "executed": 42960,
+        "opcodes": {
+          "SYNCS": 32640,
+          "NOP": 4080,
+          "MOV": 2040,
+          "BSYNC": 4200
+        },
+        "stalls": {
+          "long_scoreboard": 45,
+          "selected": 1
+        },
+        "sass": [
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3000], R6",
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3008], R6",
+          "NOP",
+          "MOV R6, 0x200",
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3010], R6",
+          "BSYNC B0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "executed": 190033,
+        "opcodes": {
+          "LEA": 2160,
+          "SYNCS": 69120,
+          "BRA": 34560,
+          "IMAD": 32400,
+          "YIELD": 51793
+        },
+        "stalls": {
+          "branch_resolving": 12,
+          "dispatch_stall": 1,
+          "long_scoreboard": 70,
+          "no_instructions": 9,
+          "not_selected": 1,
+          "selected": 6,
+          "short_scoreboard": 1,
+          "wait": 2
+        },
+        "sass": [
+          "LEA R6, R15, R6, 0x18",
+          "SYNCS.ARRIVE.TRANS64.ART0 R12, [R6+URZ+0x3000], R13",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P2, [R6+URZ+0x3000], R13",
+          "@!P2  BRA 0x12015c14c0",
+          "IMAD R68, R67, 0x8, R6",
+          "SYNCS.ARRIVE.TRANS64.ART0 R66, [R68+URZ+0x3000], R69"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
+        "line": 16,
+        "executed": 160124,
+        "opcodes": {
+          "BSYNC": 32400,
+          "SYNCS": 51793,
+          "BRA": 75931
+        },
+        "stalls": {
+          "branch_resolving": 182,
+          "dispatch_stall": 1,
+          "long_scoreboard": 159,
+          "misc": 11,
+          "no_instructions": 8,
+          "not_selected": 1,
+          "selected": 10,
+          "wait": 59
+        },
+        "sass": [
+          "BSYNC B1",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P2, [R6+URZ+0x3000], R13",
+          "@!P2  BRA 0x12015c14c0",
+          "BRA 0x12015c0180",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P2, [R68+URZ+0x3000], R67",
+          "@!P2  BRA 0x12015c1500"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+        "line": 40,
+        "executed": 103680,
+        "opcodes": {
+          "HMMA": 69120,
+          "NOP": 34560
+        },
+        "stalls": {
+          "long_scoreboard": 229,
+          "math_pipe_throttle": 115,
+          "not_selected": 5,
+          "selected": 4,
+          "short_scoreboard": 21,
+          "wait": 7
+        },
+        "sass": [
+          "HMMA.16816.F16 R84, R64, R32, R30",
+          "NOP",
+          "HMMA.16816.F16 R86, R64, R34, R28"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/common/spatial_projection.cuh",
+        "line": 65,
+        "executed": 10800,
+        "opcodes": {
+          "IMAD": 2160,
+          "LOP3": 2160,
+          "UIADD3": 2160,
+          "ISETP": 4320
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "IMAD.SHL.U32 R7, R7, 0x4, RZ",
+          "LOP3.LUT R7, R7, 0xc, RZ, 0xc0, !PT",
+          "UIADD3.64 UR4, UPT, UPT, UR12, 0x80000, URZ",
+          "ISETP.GE.AND P2, PT, R30, R3, PT",
+          "ISETP.GE.AND P1, PT, R64, R3, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 7,
+        "executed": 2160,
+        "opcodes": {
+          "LDC": 2160
+        },
+        "stalls": {
+          "no_instructions": 19
+        },
+        "sass": [
+          "LDC R1, c[0x0][0x37c]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 17,
+        "executed": 10800,
+        "opcodes": {
+          "LDC": 2160,
+          "IADD3": 2160,
+          "SHF": 4320,
+          "LEA": 2160
+        },
+        "stalls": {
+          "mio_throttle": 1,
+          "short_scoreboard": 10
+        },
+        "sass": [
+          "LDC R12, c[0x0][0x3a4]",
+          "IADD3 R0, PT, PT, R12, 0x7, RZ",
+          "SHF.R.S32.HI R3, RZ, 0x1f, R0",
+          "LEA.HI R3, R3, R0, RZ, 0x3",
+          "SHF.R.S32.HI R0, RZ, 0x3, R3"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 18,
+        "executed": 99360,
+        "opcodes": {
+          "S2R": 8640,
+          "LDCU": 4320,
+          "LDC": 2160,
+          "IABS": 6480,
+          "I2F": 2160,
+          "MUFU": 2160,
+          "IADD3": 19440,
+          "F2I": 2160,
+          "UIMAD": 2160,
+          "MOV": 6480,
+          "IMAD": 15120,
+          "ISETP": 8640,
+          "LOP3": 6480,
+          "SHF": 8640,
+          "LEA": 4320
+        },
+        "stalls": {
+          "long_scoreboard": 2,
+          "math_pipe_throttle": 1,
+          "mio_throttle": 1,
+          "not_selected": 3,
+          "selected": 4,
+          "wait": 3
+        },
+        "sass": [
+          "S2R R9, SR_CTAID.X",
+          "S2R R8, SR_TID.Y",
+          "LDCU.64 UR14, c[0x0][0x358]",
+          "S2R R7, SR_TID.X",
+          "LDCU.64 UR16, c[0x0][0x380]",
+          "S2R R13, SR_CTAID.Y"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 28,
+        "executed": 4320,
+        "opcodes": {
+          "LOP3": 2160,
+          "VOTEU": 2160
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "LOP3.LUT P0, RZ, R7, R8, RZ, 0xfc, !PT",
+          "VOTEU.ALL UP0, P0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 32,
+        "executed": 12960,
+        "opcodes": {
+          "VOTEU": 4320,
+          "S2UR": 2160,
+          "LDCU": 4320,
+          "UMOV": 2160
+        },
+        "stalls": {},
+        "sass": [
+          "VOTEU.ALL UP1, P0",
+          "VOTEU.ALL UP2, P0",
+          "@!UP0 S2UR UR6, SR_CgaCtaId",
+          "@!UP0 LDCU UR4, c[0x0][0x360]",
+          "@!UP0 LDCU UR7, c[0x0][0x364]",
+          "@!UP0 UMOV UR5, 0x400"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 35,
+        "executed": 2160,
+        "opcodes": {
+          "BAR": 2160
+        },
+        "stalls": {
+          "long_scoreboard": 2
+        },
+        "sass": [
+          "BAR.SYNC.DEFER_BLOCKING 0x0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 42,
+        "executed": 60480,
+        "opcodes": {
+          "S2UR": 2160,
+          "USHF": 2160,
+          "UIMAD": 2160,
+          "IMAD": 36720,
+          "MOV": 6480,
+          "LOP3": 2160,
+          "IADD": 4320,
+          "SHF": 2160,
+          "BSSY": 2160
+        },
+        "stalls": {
+          "mio_throttle": 4,
+          "not_selected": 1,
+          "selected": 1,
+          "wait": 1
+        },
+        "sass": [
+          "S2UR UR10, SR_CTAID.Z",
+          "USHF.L.U32 UR11, UR10, 0x9, URZ",
+          "UIMAD.WIDE.U32 UR8, UR11, 0x400, URZ",
+          "IMAD.SHL.U32 R92, R7, 0x10, RZ",
+          "MOV.64 R4, UR8",
+          "LOP3.LUT R2, R92, UR8, RZ, 0xfc, !PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 53,
+        "executed": 289440,
+        "opcodes": {
+          "SHF": 4320,
+          "LDG": 276480,
+          "LOP3": 2160,
+          "ISETP": 2160,
+          "IADD3": 2160,
+          "SEL": 2160
+        },
+        "stalls": {
+          "lg_throttle": 2,
+          "not_selected": 1,
+          "selected": 7,
+          "wait": 19
+        },
+        "sass": [
+          "SHF.R.U32.HI R4, RZ, 0x1, R8",
+          "LDG.E.128.STRONG.SM R32, desc[UR14][R2.64]",
+          "LOP3.LUT R5, R4, 0x1, RZ, 0xc0, !PT",
+          "LDG.E.128.STRONG.SM R36, desc[UR14][R2.64+0x200]",
+          "ISETP.NE.AND P1, PT, R6, 0x4, PT",
+          "SHF.R.U32.HI R4, RZ, 0x2, R8"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 61,
+        "executed": 28080,
+        "opcodes": {
+          "IMAD": 28080
+        },
+        "stalls": {},
+        "sass": [
+          "IMAD R64, R65, 0x400, R90"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 73,
+        "executed": 2160,
+        "opcodes": {
+          "SEL": 2160
+        },
+        "stalls": {},
+        "sass": [
+          "SEL R28, R2, RZ, P0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 74,
+        "executed": 30240,
+        "opcodes": {
+          "IMAD": 30240
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "IMAD R4, R4, 0x800, R13",
+          "IMAD R69, R67, 0x1000, R4"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 75,
+        "executed": 42720,
+        "opcodes": {
+          "BRA": 32280,
+          "UMOV": 2040,
+          "BSYNC": 8400
+        },
+        "stalls": {
+          "long_scoreboard": 19,
+          "selected": 1,
+          "wait": 3
+        },
+        "sass": [
+          "@!P0  BRA 0x12015bfc50",
+          "UMOV UR4, 0xffffffff",
+          "BRA.DIV UR4, 0x12015c1360",
+          "BSYNC B0",
+          "@!P0  BRA 0x12015c1070"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 77,
+        "executed": 163200,
+        "opcodes": {
+          "IMAD": 6120,
+          "R2UR": 124440,
+          "UIMAD": 32640
+        },
+        "stalls": {
+          "math_pipe_throttle": 1,
+          "not_selected": 2,
+          "selected": 3,
+          "wait": 8
+        },
+        "sass": [
+          "IMAD R6, R28, R3, R24",
+          "R2UR UR10, R6",
+          "R2UR UR4, R12",
+          "R2UR UR5, R13",
+          "UIMAD.WIDE.U32 UR4, UR10, 0x4000, UR4",
+          "R2UR UR9, R6"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 81,
+        "executed": 193800,
+        "opcodes": {
+          "ELECT": 28560,
+          "BRA": 32640,
+          "WARPSYNC": 26520,
+          "NOP": 26520,
+          "MOV": 26520,
+          "IADD": 26520,
+          "IMAD": 26520
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "selected": 5,
+          "wait": 14
+        },
+        "sass": [
+          "ELECT P2, URZ, PT",
+          "@!P2  BRA 0x12015bfca0",
+          "@!P2  BRA 0x12015bfea0",
+          "@!P2  BRA 0x12015c00a0",
+          "WARPSYNC.ALL",
+          "NOP"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 83,
+        "executed": 57120,
+        "opcodes": {
+          "LDC": 2040,
+          "MOV": 2040,
+          "R2UR": 53040
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "LDC.64 R12, c[0x0][0x380]",
+          "MOV R91, RZ",
+          "R2UR UR7, R69",
+          "R2UR UR6, R6"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 84,
+        "executed": 59160,
+        "opcodes": {
+          "MOV": 30600,
+          "BRA": 28560
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "MOV R6, 0x200",
+          "BRA 0x12015bfca0",
+          "MOV R64, 0x200",
+          "BRA 0x12015c1090"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 90,
+        "executed": 103200,
+        "opcodes": {
+          "S2UR": 120,
+          "UMOV": 4200,
+          "ULEA": 120,
+          "IADD3": 6000,
+          "STS": 6000,
+          "S2R": 4320,
+          "MOV": 4320,
+          "BSSY": 4320,
+          "LEA": 4320,
+          "BRA": 8400,
+          "BSYNC": 61080
+        },
+        "stalls": {
+          "branch_resolving": 3,
+          "long_scoreboard": 2,
+          "no_instructions": 8,
+          "selected": 1,
+          "short_scoreboard": 3,
+          "wait": 3
+        },
+        "sass": [
+          "S2UR UR5, SR_CgaCtaId",
+          "UMOV UR4, 0x400",
+          "ULEA UR4, UR5, UR4, 0x18",
+          "IADD3 R6, PT, PT, R4, UR4, R92",
+          "STS.128 [R6], RZ",
+          "@!P0  S2R R13, SR_CgaCtaId"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 98,
+        "executed": 64800,
+        "opcodes": {
+          "SHF": 32400,
+          "IMAD": 32400
+        },
+        "stalls": {
+          "dispatch_stall": 5,
+          "not_selected": 1,
+          "wait": 5
+        },
+        "sass": [
+          "SHF.R.U32.HI R67, RZ, 0x1, R67",
+          "IMAD R67, R67, -0x3, R66"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 99,
+        "executed": 32400,
+        "opcodes": {
+          "MOV": 32400
+        },
+        "stalls": {
+          "dispatch_stall": 4
+        },
+        "sass": [
+          "MOV R69, 0x1"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 103,
+        "executed": 2160,
+        "opcodes": {
+          "LDCU": 2160
+        },
+        "stalls": {},
+        "sass": [
+          "LDCU.64 UR12, c[0x0][0x398]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 106,
+        "executed": 2160,
+        "opcodes": {
+          "IADD3": 2160
+        },
+        "stalls": {},
+        "sass": [
+          "IADD3 R2, PT, PT, R4, R13, R13"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 107,
+        "executed": 6480,
+        "opcodes": {
+          "S2R": 2160,
+          "MOV": 4320
+        },
+        "stalls": {},
+        "sass": [
+          "S2R R15, SR_CgaCtaId",
+          "MOV R6, 0x400",
+          "MOV R13, 0x1"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 116,
+        "executed": 82080,
+        "opcodes": {
+          "IADD3": 17280,
+          "LDCU": 2160,
+          "SHF": 17280,
+          "IADD": 21600,
+          "LD": 17280,
+          "IMAD": 2160,
+          "ISETP": 4320
+        },
+        "stalls": {
+          "long_scoreboard": 1,
+          "no_instructions": 1,
+          "not_selected": 4,
+          "selected": 1,
+          "wait": 1
+        },
+        "sass": [
+          "IADD3 R26, PT, PT, R7, R26, R26",
+          "IADD3 R14, PT, PT, R26, 0x10, RZ",
+          "IADD3 R16, PT, PT, R26, 0x20, RZ",
+          "IADD3 R18, PT, PT, R26, 0x30, RZ",
+          "LDCU.64 UR6, c[0x0][0x388]",
+          "SHF.R.S32.HI R17, RZ, 0x1f, R16"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 127,
+        "executed": 2160,
+        "opcodes": {
+          "IADD3": 2160
+        },
+        "stalls": {},
+        "sass": [
+          "IADD3 R8, PT, PT, R0, 0x1, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 128,
+        "executed": 4320,
+        "opcodes": {
+          "SEL": 4320
+        },
+        "stalls": {},
+        "sass": [
+          "SEL R30, R0, RZ, P1",
+          "SEL R64, R8, RZ, P1"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 129,
+        "executed": 8640,
+        "opcodes": {
+          "IADD3": 4320,
+          "IMAD": 4320
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "IADD3 R95, PT, PT, R7, R30, RZ",
+          "IADD3 R97, PT, PT, R7, R64, RZ",
+          "IMAD.WIDE R94, R95, 0x4000, R16",
+          "IMAD.WIDE R96, R97, 0x4000, R16"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 137,
+        "executed": 51840,
+        "opcodes": {
+          "CS2R": 34560,
+          "LDG": 17280
+        },
+        "stalls": {
+          "long_scoreboard": 1,
+          "not_selected": 1,
+          "selected": 2
+        },
+        "sass": [
+          "CS2R R20, SRZ",
+          "CS2R R22, SRZ",
+          "CS2R R80, SRZ",
+          "CS2R R82, SRZ",
+          "CS2R R64, SRZ",
+          "CS2R R66, SRZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 141,
+        "executed": 2160,
+        "opcodes": {
+          "HMUL2": 2160
+        },
+        "stalls": {
+          "long_scoreboard": 170
+        },
+        "sass": [
+          "HMUL2 R24, R20, R31"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 142,
+        "executed": 6480,
+        "opcodes": {
+          "HMUL2": 6480
+        },
+        "stalls": {
+          "long_scoreboard": 9
+        },
+        "sass": [
+          "HMUL2 R25, R21, R31",
+          "HMUL2 R30, R80, R31",
+          "HMUL2 R31, R81, R31"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 143,
+        "executed": 101520,
+        "opcodes": {
+          "HMUL2": 60480,
+          "LOP3": 2160,
+          "MOV": 2160,
+          "IADD3": 2160,
+          "IMAD": 34560
+        },
+        "stalls": {
+          "long_scoreboard": 40,
+          "no_instructions": 1,
+          "wait": 3
+        },
+        "sass": [
+          "HMUL2 R22, R22, R29",
+          "HMUL2 R81, R65, R85",
+          "LOP3.LUT R65, R9, 0x7f800, RZ, 0xc0, !PT",
+          "HMUL2 R23, R23, R29",
+          "HMUL2 R20, R16, R27",
+          "HMUL2 R21, R17, R27"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 144,
+        "executed": 6480,
+        "opcodes": {
+          "IADD3": 2160,
+          "IADD": 4320
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "IADD3 R7, PT, PT, R24, R7, RZ",
+          "IADD.64 R94, R92, UR12",
+          "IADD.64 R94, R10, R94"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 153,
+        "executed": 105840,
+        "opcodes": {
+          "IADD3": 34560,
+          "ISETP": 34560,
+          "BRA": 34560,
+          "LDCU": 2160
+        },
+        "stalls": {
+          "branch_resolving": 11,
+          "selected": 3,
+          "wait": 21
+        },
+        "sass": [
+          "IADD3 R9, PT, PT, R9, 0x1, RZ",
+          "ISETP.NE.AND P1, PT, R9, 0x10, PT",
+          "@P1   BRA 0x12015c0820",
+          "LDCU.64 UR4, c[0x0][0x390]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 160,
+        "executed": 172800,
+        "opcodes": {
+          "IADD3": 34560,
+          "LDS": 138240
+        },
+        "stalls": {
+          "selected": 3,
+          "wait": 4
+        },
+        "sass": [
+          "IADD3 R89, PT, PT, R6, R65, RZ",
+          "LDS.128 R64, [R89+0x400]",
+          "LDS.128 R68, [R89]",
+          "LDS.128 R28, [R89+0x200]",
+          "LDS.128 R68, [R89+0x600]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 164,
+        "executed": 103680,
+        "opcodes": {
+          "WARPSYNC": 34560,
+          "NOP": 34560,
+          "SHF": 34560
+        },
+        "stalls": {
+          "wait": 6
+        },
+        "sass": [
+          "WARPSYNC.ALL",
+          "NOP",
+          "SHF.R.U32.HI R64, RZ, 0x1, R64"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 165,
+        "executed": 172800,
+        "opcodes": {
+          "BSSY": 34560,
+          "ISETP": 34560,
+          "IMAD": 69120,
+          "BRA": 34560
+        },
+        "stalls": {
+          "selected": 4,
+          "wait": 12
+        },
+        "sass": [
+          "BSSY B0, 0x12015c10a0",
+          "ISETP.NE.AND P1, PT, R9, 0xf, PT",
+          "IMAD R65, R64, -0x3, R9",
+          "IMAD R65, R65, 0x1000, R88",
+          "@!P1  BRA 0x12015c1090"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 167,
+        "executed": 64800,
+        "opcodes": {
+          "IADD3": 32400,
+          "LEA": 32400
+        },
+        "stalls": {
+          "wait": 10
+        },
+        "sass": [
+          "IADD3 R66, PT, PT, R9, 0x1, RZ",
+          "LEA R65, R66, UR11, 0x5"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 168,
+        "executed": 32400,
+        "opcodes": {
+          "IMAD": 32400
+        },
+        "stalls": {
+          "selected": 3,
+          "wait": 5
+        },
+        "sass": [
+          "IMAD.HI.U32 R67, R66, -0x55555555, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 171,
+        "executed": 97200,
+        "opcodes": {
+          "BSSY": 32400,
+          "ISETP": 32400,
+          "BRA": 32400
+        },
+        "stalls": {
+          "branch_resolving": 7,
+          "wait": 3
+        },
+        "sass": [
+          "BSSY B1, 0x12015c0e40",
+          "ISETP.GT.U32.AND P1, PT, R9, 0xc, PT",
+          "@P1   BRA 0x12015c1090"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 172,
+        "executed": 280800,
+        "opcodes": {
+          "IADD3": 84240,
+          "LOP3": 56160,
+          "IMAD": 56160,
+          "SHF": 28080,
+          "PRMT": 56160
+        },
+        "stalls": {
+          "math_pipe_throttle": 1,
+          "selected": 9,
+          "wait": 21
+        },
+        "sass": [
+          "IADD3 R65, PT, PT, R9, 0x3, RZ",
+          "LOP3.LUT R64, R65, 0xff, RZ, 0xc0, !PT",
+          "IMAD R64, R64, 0xab, RZ",
+          "SHF.R.U32.HI R64, RZ, 0x9, R64",
+          "PRMT R64, R64, 0x9910, RZ",
+          "IMAD R64, R64, 0x3, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 181,
+        "executed": 21600,
+        "opcodes": {
+          "ISETP": 8640,
+          "BSSY": 2160,
+          "IMAD": 2160,
+          "IADD": 4320,
+          "BRA": 2160,
+          "EXIT": 2160
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "short_scoreboard": 1
+        },
+        "sass": [
+          "ISETP.GE.AND P0, PT, R0, R3, PT",
+          "ISETP.GE.AND P1, PT, R8, R3, PT",
+          "BSSY.RECONVERGENT B0, 0x12015c1260",
+          "IMAD R9, R2, R3, RZ",
+          "ISETP.GE.OR P0, PT, R2, R5, P0",
+          "ISETP.GE.OR P1, PT, R2, R5, P1"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 184,
+        "executed": 8160,
+        "opcodes": {
+          "IADD3": 4080,
+          "IMAD": 4080
+        },
+        "stalls": {
+          "long_scoreboard": 10
+        },
+        "sass": [
+          "IADD3 R3, PT, PT, R0, R9, RZ",
+          "IMAD.WIDE.U32 R2, R3, 0x4000, R92",
+          "IADD3 R3, PT, PT, R8, R9, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 194,
+        "executed": 38880,
+        "opcodes": {
+          "MOV": 20400,
+          "STG": 16320,
+          "BSYNC": 2160
+        },
+        "stalls": {
+          "dispatch_stall": 1,
+          "selected": 1,
+          "wait": 3
+        },
+        "sass": [
+          "MOV R6, R22",
+          "MOV R7, R23",
+          "MOV R22, R18",
+          "MOV R23, R19",
+          "MOV R18, R14",
+          "MOV R19, R15"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "line": 205,
+        "executed": 2040,
+        "opcodes": {
+          "EXIT": 2040
+        },
+        "stalls": {},
+        "sass": [
+          "EXIT"
+        ]
+      },
+      {
+        "path": "sm_20_intrinsics.hpp",
+        "line": 151,
+        "executed": 67320,
+        "opcodes": {
+          "R2UR": 2040,
+          "UMOV": 6120,
+          "S2UR": 6120,
+          "IADD": 6120,
+          "ULEA": 6120,
+          "UIADD3": 28560,
+          "LDC": 4080,
+          "LOP3": 4080,
+          "MOV": 4080
+        },
+        "stalls": {
+          "selected": 1,
+          "short_scoreboard": 2,
+          "wait": 3
+        },
+        "sass": [
+          "R2UR UR9, R4",
+          "UMOV UR6, 0x400",
+          "S2UR UR7, SR_CgaCtaId",
+          "IADD.64 R12, R90, R12",
+          "ULEA UR8, UR7, UR6, 0x18",
+          "UIADD3 UR6, UPT, UPT, UR8, UR9, URZ"
+        ]
+      },
+      {
+        "path": "sm_32_intrinsics.hpp",
+        "line": 222,
+        "executed": 19440,
+        "opcodes": {
+          "LOP3": 8640,
+          "ISETP": 6480,
+          "IMAD": 2160,
+          "IADD3": 2160
+        },
+        "stalls": {
+          "math_pipe_throttle": 1,
+          "selected": 1
+        },
+        "sass": [
+          "LOP3.LUT R6, R12, 0xfffffffc, RZ, 0xc0, !PT",
+          "LOP3.LUT R3, R15, 0xfffffffc, RZ, 0xc0, !PT",
+          "ISETP.NE.AND P0, PT, R3, 0x4, PT",
+          "IMAD.SHL.U32 R9, R8, 0x200, RZ",
+          "ISETP.GE.AND P0, PT, R24, R3, PT",
+          "LOP3.LUT R13, R9, 0x600, RZ, 0xc0, !PT"
+        ]
+      }
+    ],
+    "stall_totals": {
+      "barrier": 0,
+      "branch_resolving": 218,
+      "dispatch_stall": 12,
+      "drain": 39,
+      "lg_throttle": 2,
+      "long_scoreboard": 759,
+      "math_pipe_throttle": 339,
+      "membar": 0,
+      "mio_throttle": 59,
+      "misc": 11,
+      "no_instructions": 46,
+      "not_selected": 33,
+      "selected": 117,
+      "short_scoreboard": 38,
+      "sleeping": 0,
+      "tex_throttle": 0,
+      "wait": 550
+    },
+    "timeline": {},
+    "rules": [
+      {
+        "rule_identifier": "LaunchConfiguration",
+        "name": "Launch Configuration",
+        "section_identifier": "LaunchStats",
+        "rule_message": {
+          "title": "Small Grid",
+          "message": "If you execute __syncthreads() to synchronize the threads of a block, it is recommended to have at least two blocks per multiprocessor (compared to the currently executed 1.4 blocks) This way, blocks that aren't waiting for __syncthreads() can keep the hardware busy.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "launch__grid_size",
+            "value": 270.0,
+            "severity": 1,
+            "info": "Increase the grid size towards twice the number of multiprocessors used (376)"
+          }
+        ]
+      }
+    ],
+    "report": "fp16-source",
+    "range_index": 0,
+    "action_index": 15
+  }
+]

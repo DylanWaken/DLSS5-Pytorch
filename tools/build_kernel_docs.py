@@ -8,7 +8,6 @@ from html import escape
 import importlib
 import hashlib
 import json
-import shutil
 import subprocess
 import sys
 
@@ -20,6 +19,7 @@ from publishing import catalog, render as render_lesson_site, source_appendix, n
 from token_visuals import enrich
 from glossary import glossary_page
 from kernel_maps import enrich as enrich_kernel_maps, write_manifest as write_map_manifest
+from evidence import load as load_evidence, enrich as enrich_evidence, method_page
 
 OUT = ROOT / 'docs/kernel-guide'
 
@@ -35,7 +35,7 @@ def atlas(inventory):
     body = '''<h2 id="model">The model piece: all deployment entry families</h2><p>The architecture has 71 numbered records, while the CUDA interface exposes 81 public configurations: 40 paired FP8/FP16 roles plus completion-counter clearing. Many records reuse the same role with different weights, and templates let several public roles share one complete global body. This atlas maps every public configuration to its actual source definition and its self-contained lesson.</p><p>Read the <a href="architecture.html">architecture guide</a> to identify the tensor operation, then use this table to reach the exact implementation and its standalone reconstruction. Entries link to a fixed source revision. The source census finds 56 complete global definitions; it does not establish runtime or performance coverage.</p>
 <h2 id="entries">Find a kernel</h2><label for="kernel-filter">Filter by operation, precision or channel width</label><p><input class="filter-input" id="kernel-filter" type="search" placeholder="For example: qkv fp16, c512, downsample"></p><p id="filter-count" aria-live="polite">81 of 81 public entries shown</p>'''
     body += '<div class="table-scroll"><table class="inventory"><thead><tr><th>Public name / template arguments</th><th>Precision</th><th>Walkthrough / owning definition</th></tr></thead><tbody>' + '\n'.join(rows) + '</tbody></table></div>'
-    body += '''<h2 id="provenance">Provenance and scope</h2><p>The inventory comes from <code>tools/kernel_sources.py</code>; its roster and source-ownership checks run during documentation generation. <a href="source-manifest.json">source-manifest.json</a> records file hashes, excerpt ranges and the public-entry mapping. Source excerpts are copied directly from the checked files. Layout calculations marked as examples are derived from those formulas; optimization mechanisms are explanations of the implementation, not new timing experiments.</p><p>The generated HTML is stored in <code>docs/kernel-guide</code>. Its Python content modules and assets live in <code>tools/kernel_docs</code>. Regenerate with <code>python tools/build_kernel_docs.py</code> and validate with <code>python tools/validate_kernel_docs.py</code>. The <a href="architecture.html">network architecture</a> and its diagrams are maintained in the same HTML guide as the kernel lessons.</p>'''
+    body += '''<h2 id="provenance">Provenance and scope</h2><p>The inventory comes from <code>tools/kernel_sources.py</code>; its roster and source-ownership checks run during documentation generation. <a href="source-manifest.json">source-manifest.json</a> records file hashes, excerpt ranges and the public-entry mapping. Source excerpts are copied directly from the checked files. Layout calculations marked as examples are derived from those formulas; optimization mechanisms are explained from source. <a href="measurement-method.html">Separate measured evidence</a> now accompanies all 81 lessons, including compiled resources and source-correlated instruction counts.</p><p>The generated HTML is stored in <code>docs/kernel-guide</code>. Its Python content modules and assets live in <code>tools/kernel_docs</code>. Regenerate with <code>python tools/build_kernel_docs.py</code> and validate with <code>python tools/validate_kernel_docs.py</code>. The <a href="architecture.html">network architecture</a> and its diagrams are maintained in the same HTML guide as the kernel lessons.</p>'''
     return dict(slug='source-atlas',title='The complete source atlas',summary='Every public FP16/FP8 configuration, its owning global definition and the walkthrough that explains it.',body=body)
 
 
@@ -47,6 +47,11 @@ def main():
     chapters = [parts['foundations'][0], *parts['windows'], *parts['c512'], *parts['bottleneck'], parts['foundations'][1]]
     arch = dict(slug='architecture',title='The network architecture',summary='The complete encoder–decoder: FFN and attention variants, tensor shapes, normalization, resolution transitions and precision boundaries.',body=(ROOT/'tools/kernel_docs/architecture.html').read_text(encoding='utf-8'))
     chapters += [arch, atlas(inventory), glossary_page()]
+    evidence = load_evidence()
+    chapters += [method_page(evidence)]
+    for chapter in chapters:
+        if chapter['slug'] not in ('architecture','source-atlas','glossary','measurement-method'):
+            chapter['body'] = '<aside class="note">This is a family reference. For the six-section learning path and measured source walkthrough, choose an individual entry in the <a href="index.html#kernels">kernel catalog</a>. <a href="measurement-method.html">Read the evidence method</a>.</aside>' + chapter['body']
     lessons=[]
     for module in ('lessons_frontend','lessons_windows','lessons_c512','lessons_layout','lessons_bottleneck'):
         lessons.extend(importlib.import_module(module).build_lessons(inventory))
@@ -58,6 +63,7 @@ def main():
         lesson['slug']=lesson['name']
         enrich(lesson, inventory['entries'][lesson['name']])
         enrich_kernel_maps(lesson, inventory['entries'][lesson['name']])
+        enrich_evidence(lesson, evidence)
         if lesson['family']=='Global bottleneck':
             precision='FP8' if lesson['name'].endswith('fp8') else 'FP16'
             roles={'global_ffn_expand':'FFN expansion: 1024 → 4096','global_ffn_contract':'FFN contraction: 4096 → 1024','global_projection':'attention output projection','global_qkv':'QKV projection and normalization','global_attention_chained':'streamed global attention'}
@@ -77,7 +83,7 @@ def main():
         destination.parent.mkdir(parents=True,exist_ok=True)
         destination.write_text((ROOT/path).read_text(encoding='utf-8'),encoding='utf-8',newline='\n')
     for name in ('site.css','site.js'):
-        shutil.copyfile(ROOT/'tools/kernel_docs'/name,OUT/'assets'/name)
+        (OUT/'assets'/name).write_text((ROOT/'tools/kernel_docs'/name).read_text(encoding='utf8'),encoding='utf8',newline='\n')
     source_paths = {row['path'] for row in SNIPPETS} | source_bundle | {'csrc/'+entry['header'] for entry in inventory['entries'].values()}
     files = {path: hashlib.sha256((ROOT/path).read_text(encoding='utf-8').encode('utf-8')).hexdigest() for path in sorted(source_paths)}
     manifest = dict(source_revision=REVISION,repository=REPOSITORY,file_hash_encoding='UTF-8 with normalized LF newlines',inventory=inventory,files=files,snippets=SNIPPETS,pages=[dict(slug=p['slug'],title=p['title']) for p in pages],lessons=[dict(name=p['name'],slug=p['slug'],family=p['family'],dependencies=p['dependencies']) for p in lessons])

@@ -96,7 +96,7 @@
       "m_axis": "tokens",
       "n_axis": "channels",
       "notes": [
-        "1 warp per 8\u00d78 window; origin selects shifted phase.",
+        "1 warp per 8\u00d78 window; unshifted physical-image grid.",
         "All four M16 token tiles stay in one warp.",
         "No shared slab for the C32 transformer body; shuffles move register values."
       ],
@@ -208,7 +208,7 @@
       "m_axis": "tokens",
       "n_axis": "channels",
       "notes": [
-        "1 warp per 8\u00d78 window; origin selects shifted phase.",
+        "1 warp per 8\u00d78 window; unshifted physical-image grid.",
         "All four M16 token tiles stay in one warp.",
         "No shared slab for the C32 transformer body; shuffles move register values."
       ],
@@ -320,7 +320,7 @@
       "m_axis": "tokens",
       "n_axis": "channels",
       "notes": [
-        "1 warp per 8\u00d78 window; origin selects shifted phase.",
+        "1 warp per 8\u00d78 window; unshifted physical-image grid.",
         "All four M16 token tiles stay in one warp.",
         "No shared slab for the C32 transformer body; shuffles move register values."
       ],
@@ -432,7 +432,7 @@
       "m_axis": "tokens",
       "n_axis": "channels",
       "notes": [
-        "1 warp per 8\u00d78 window; origin selects shifted phase.",
+        "1 warp per 8\u00d78 window; unshifted physical-image grid.",
         "All four M16 token tiles stay in one warp.",
         "No shared slab for the C32 transformer body; shuffles move register values."
       ],
@@ -689,7 +689,7 @@
           "k": 128,
           "n": 128,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -801,7 +801,7 @@
           "k": 128,
           "n": 128,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -913,7 +913,7 @@
           "k": 128,
           "n": 128,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -1017,7 +1017,7 @@
           "k": 128,
           "n": 128,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -1121,7 +1121,7 @@
           "k": 128,
           "n": 128,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -1225,7 +1225,7 @@
           "k": 128,
           "n": 128,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -1329,7 +1329,7 @@
           "k": 128,
           "n": 128,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -1433,7 +1433,7 @@
           "k": 128,
           "n": 128,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -1553,7 +1553,7 @@
           "k": 128,
           "n": 128,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -1673,7 +1673,7 @@
           "k": 128,
           "n": 128,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -1777,7 +1777,7 @@
           "k": 256,
           "n": 256,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -1889,7 +1889,7 @@
           "k": 256,
           "n": 256,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -2001,7 +2001,7 @@
           "k": 256,
           "n": 256,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -2105,7 +2105,7 @@
           "k": 256,
           "n": 256,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -2209,7 +2209,7 @@
           "k": 256,
           "n": 256,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -2313,7 +2313,7 @@
           "k": 256,
           "n": 256,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -2417,7 +2417,7 @@
           "k": 256,
           "n": 256,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -2521,7 +2521,7 @@
           "k": 256,
           "n": 256,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -2641,7 +2641,7 @@
           "k": 256,
           "n": 256,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -2761,7 +2761,7 @@
           "k": 256,
           "n": 256,
           "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "detail": "shared branch panels \u2192 dense mix \u2192 published Z"
         },
         {
           "label": "Q / K / V",
@@ -3872,8 +3872,8 @@
           "m": 64,
           "k": 64,
           "n": 64,
-          "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "storage": "registers",
+          "detail": "C64: branch publications + mix in registers; final Z \u2192 shared"
         },
         {
           "label": "Q / K / V",
@@ -3984,8 +3984,8 @@
           "m": 64,
           "k": 64,
           "n": 64,
-          "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "storage": "registers",
+          "detail": "C64: branch publications + mix in registers; final Z \u2192 shared"
         },
         {
           "label": "Q / K / V",
@@ -4096,8 +4096,8 @@
           "m": 64,
           "k": 64,
           "n": 64,
-          "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "storage": "registers",
+          "detail": "C64: branch publications + mix in registers; final Z \u2192 shared"
         },
         {
           "label": "Q / K / V",
@@ -4200,8 +4200,8 @@
           "m": 64,
           "k": 64,
           "n": 64,
-          "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "storage": "registers",
+          "detail": "C64: branch publications + mix in registers; final Z \u2192 shared"
         },
         {
           "label": "Q / K / V",
@@ -4304,8 +4304,8 @@
           "m": 64,
           "k": 64,
           "n": 64,
-          "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "storage": "registers",
+          "detail": "C64: branch publications + mix in registers; final Z \u2192 shared"
         },
         {
           "label": "Q / K / V",
@@ -4408,8 +4408,8 @@
           "m": 64,
           "k": 64,
           "n": 64,
-          "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "storage": "registers",
+          "detail": "C64: branch publications + mix in registers; final Z \u2192 shared"
         },
         {
           "label": "Q / K / V",
@@ -4512,8 +4512,8 @@
           "m": 64,
           "k": 64,
           "n": 64,
-          "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "storage": "registers",
+          "detail": "C64: branch publications + mix in registers; final Z \u2192 shared"
         },
         {
           "label": "Q / K / V",
@@ -4616,8 +4616,8 @@
           "m": 64,
           "k": 64,
           "n": 64,
-          "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "storage": "registers",
+          "detail": "C64: branch publications + mix in registers; final Z \u2192 shared"
         },
         {
           "label": "Q / K / V",
@@ -4736,8 +4736,8 @@
           "m": 64,
           "k": 64,
           "n": 64,
-          "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "storage": "registers",
+          "detail": "C64: branch publications + mix in registers; final Z \u2192 shared"
         },
         {
           "label": "Q / K / V",
@@ -4856,8 +4856,8 @@
           "m": 64,
           "k": 64,
           "n": 64,
-          "storage": "shared",
-          "detail": "branch panels \u2192 dense mix \u2192 published Z"
+          "storage": "registers",
+          "detail": "C64: branch publications + mix in registers; final Z \u2192 shared"
         },
         {
           "label": "Q / K / V",
@@ -6558,31 +6558,35 @@
           "k": 0,
           "n": 32,
           "storage": "shared",
-          "detail": "3 slots; 8192 B / slot"
+          "detail": "3 slots; 8192 B / slot",
+          "scope": "one CTA / one K step"
         },
         {
           "label": "FFN expansion",
-          "m": 128,
+          "m": 2160,
           "k": 1024,
           "n": 4096,
           "storage": "registers",
-          "detail": "CTA output: 128\u00d7128; warp: 64\u00d764"
+          "detail": "Distributed over CTAs: each computes 128\u00d7128 over K1024.",
+          "scope": "whole model / distributed"
         },
         {
           "label": "Recovered activation",
-          "m": 128,
+          "m": 2160,
           "k": 0,
-          "n": 128,
+          "n": 4096,
           "storage": "registers",
-          "detail": "Half polynomial; publish only afterward"
+          "detail": "Half polynomial per output; values remain with their owning lanes",
+          "scope": "whole model / distributed"
         },
         {
           "label": "Publish U",
-          "m": 128,
+          "m": 2160,
           "k": 0,
-          "n": 128,
+          "n": 4096,
           "storage": "global",
-          "detail": "activation output"
+          "detail": "activation output",
+          "scope": "whole model / final tensor"
         }
       ],
       "splits": 1,
@@ -6628,15 +6632,17 @@
           "k": 0,
           "n": 32,
           "storage": "shared",
-          "detail": "3 slots; 8192 B / slot"
+          "detail": "3 slots; 8192 B / slot",
+          "scope": "one CTA / one K step"
         },
         {
           "label": "FFN contraction",
-          "m": 128,
+          "m": 2160,
           "k": 4096,
           "n": 1024,
           "storage": "registers",
-          "detail": "CTA output: 128\u00d7128; warp: 64\u00d764"
+          "detail": "Distributed over CTAs: each computes 128\u00d7128 over K1024.",
+          "scope": "whole model / distributed"
         },
         {
           "label": "Ordered split handoff",
@@ -6644,15 +6650,17 @@
           "k": 0,
           "n": 128,
           "storage": "global",
-          "detail": "4 K1024 splits; scratch remains Half"
+          "detail": "4 K1024 splits; scratch remains Half",
+          "scope": "one CTA output slice"
         },
         {
           "label": "Publish Z",
-          "m": 128,
+          "m": 2160,
           "k": 0,
-          "n": 128,
+          "n": 1024,
           "storage": "global",
-          "detail": "scaled residual is seeded once; final split publishes"
+          "detail": "scaled residual is seeded once; final split publishes",
+          "scope": "whole model / final tensor"
         }
       ],
       "splits": 4,
@@ -6698,15 +6706,17 @@
           "k": 0,
           "n": 32,
           "storage": "shared",
-          "detail": "2 slots; 8192 B / slot"
+          "detail": "2 slots; 8192 B / slot",
+          "scope": "one CTA / one K step"
         },
         {
           "label": "Attention output projection",
-          "m": 128,
+          "m": 2160,
           "k": 1024,
           "n": 1024,
           "storage": "registers",
-          "detail": "CTA output: 128\u00d7128; warp: 64\u00d764"
+          "detail": "Distributed over CTAs: each computes 128\u00d7128 over K256.",
+          "scope": "whole model / distributed"
         },
         {
           "label": "Ordered split handoff",
@@ -6714,15 +6724,17 @@
           "k": 0,
           "n": 128,
           "storage": "global",
-          "detail": "4 K256 splits; scratch remains Half"
+          "detail": "4 K256 splits; scratch remains Half",
+          "scope": "one CTA output slice"
         },
         {
           "label": "Publish Y",
-          "m": 128,
+          "m": 2160,
           "k": 0,
-          "n": 128,
+          "n": 1024,
           "storage": "global",
-          "detail": "scaled residual is seeded once; final split publishes"
+          "detail": "scaled residual is seeded once; final split publishes",
+          "scope": "whole model / final tensor"
         }
       ],
       "splits": 4,
@@ -6768,15 +6780,17 @@
           "k": 0,
           "n": 32,
           "storage": "shared",
-          "detail": "2 slots; 8192 B / slot"
+          "detail": "2 slots; 8192 B / slot",
+          "scope": "one CTA / one K step"
         },
         {
           "label": "QKV projection",
-          "m": 128,
+          "m": 2160,
           "k": 1024,
           "n": 3072,
           "storage": "registers",
-          "detail": "CTA output: 128\u00d7192; warp: 64\u00d796"
+          "detail": "Distributed over CTAs: each computes 128\u00d7192 over K512.",
+          "scope": "whole model / distributed"
         },
         {
           "label": "Ordered split handoff",
@@ -6784,23 +6798,26 @@
           "k": 0,
           "n": 192,
           "storage": "global",
-          "detail": "2 K512 splits; scratch remains Half"
+          "detail": "2 K512 splits; scratch remains Half",
+          "scope": "one CTA output slice"
         },
         {
           "label": "Normalize Q and K",
-          "m": 128,
+          "m": 2160,
           "k": 0,
           "n": 32,
           "storage": "registers",
-          "detail": "one warp head; learned Q scale \u00d7 \u221a32"
+          "detail": "Repeat independently for 32 heads; Q-only scale \u00d7 \u221a32",
+          "scope": "one head / one component"
         },
         {
           "label": "Publish Q, K; transpose V",
-          "m": 128,
+          "m": 2160,
           "k": 0,
-          "n": 96,
+          "n": 3072,
           "storage": "global",
-          "detail": "three separate consumer layouts"
+          "detail": "Three separate [T,1024] buffers with consumer layouts",
+          "scope": "whole model / three buffers"
         }
       ],
       "splits": 2,
@@ -6846,7 +6863,8 @@
           "k": 0,
           "n": 32,
           "storage": "registers",
-          "detail": "four M16 query tiles / warp"
+          "detail": "four M16 query tiles / warp",
+          "scope": "one CTA / one head"
         },
         {
           "label": "Stage K and V",
@@ -6854,7 +6872,8 @@
           "k": 0,
           "n": 32,
           "storage": "shared",
-          "detail": "one head; ping-pong slots; reuse across 256 queries"
+          "detail": "ping-pong slots; reuse across 256 queries",
+          "scope": "one CTA / one key tile"
         },
         {
           "label": "Q \u00d7 K\u1d40",
@@ -6862,7 +6881,8 @@
           "k": 32,
           "n": 64,
           "storage": "registers",
-          "detail": "scores for the current 64-key tile"
+          "detail": "scores for the current 64-key tile",
+          "scope": "one CTA / one key tile"
         },
         {
           "label": "Surrogate E + row sum",
@@ -6870,7 +6890,8 @@
           "k": 0,
           "n": 64,
           "storage": "registers",
-          "detail": "denominator uses Half E, before operand packing"
+          "detail": "denominator uses Half E, before operand packing",
+          "scope": "one CTA / one key tile"
         },
         {
           "label": "Publish E; E \u00d7 V",
@@ -6878,7 +6899,8 @@
           "k": 64,
           "n": 32,
           "storage": "registers",
-          "detail": "accumulate numerator across all key tiles"
+          "detail": "accumulate numerator across all key tiles",
+          "scope": "one CTA / one key tile"
         },
         {
           "label": "Tail correction + divide",
@@ -6886,7 +6908,8 @@
           "k": 0,
           "n": 32,
           "storage": "global",
-          "detail": "subtract padded-key denominator contribution; publish"
+          "detail": "subtract padded-key mass; publish this query slice",
+          "scope": "one CTA / final output"
         }
       ],
       "splits": 1,
@@ -6933,31 +6956,35 @@
           "k": 0,
           "n": 64,
           "storage": "shared",
-          "detail": "3 slots; 8192 B / slot"
+          "detail": "3 slots; 8192 B / slot",
+          "scope": "one CTA / one K step"
         },
         {
           "label": "FFN expansion",
-          "m": 128,
+          "m": 2160,
           "k": 1024,
           "n": 4096,
           "storage": "registers",
-          "detail": "CTA output: 128\u00d7128; warp: 64\u00d764"
+          "detail": "Distributed over CTAs: each computes 128\u00d7128 over K1024.",
+          "scope": "whole model / distributed"
         },
         {
           "label": "Recovered activation",
-          "m": 128,
+          "m": 2160,
           "k": 0,
-          "n": 128,
+          "n": 4096,
           "storage": "registers",
-          "detail": "Half polynomial; publish only afterward"
+          "detail": "Half polynomial per output; values remain with their owning lanes",
+          "scope": "whole model / distributed"
         },
         {
           "label": "Publish U",
-          "m": 128,
+          "m": 2160,
           "k": 0,
-          "n": 128,
+          "n": 4096,
           "storage": "global",
-          "detail": "activation output"
+          "detail": "activation output",
+          "scope": "whole model / final tensor"
         }
       ],
       "splits": 1,
@@ -7003,15 +7030,17 @@
           "k": 0,
           "n": 64,
           "storage": "shared",
-          "detail": "2 slots; 8192 B / slot"
+          "detail": "2 slots; 8192 B / slot",
+          "scope": "one CTA / one K step"
         },
         {
           "label": "FFN contraction",
-          "m": 128,
+          "m": 2160,
           "k": 4096,
           "n": 1024,
           "storage": "registers",
-          "detail": "CTA output: 128\u00d7128; warp: 64\u00d764"
+          "detail": "Distributed over CTAs: each computes 128\u00d7128 over K1024.",
+          "scope": "whole model / distributed"
         },
         {
           "label": "Ordered split handoff",
@@ -7019,15 +7048,17 @@
           "k": 0,
           "n": 128,
           "storage": "global",
-          "detail": "4 K1024 splits; scratch remains Half"
+          "detail": "4 K1024 splits; scratch remains Half",
+          "scope": "one CTA output slice"
         },
         {
           "label": "Publish Z",
-          "m": 128,
+          "m": 2160,
           "k": 0,
-          "n": 128,
+          "n": 1024,
           "storage": "global",
-          "detail": "scaled residual is seeded once; final split publishes"
+          "detail": "scaled residual is seeded once; final split publishes",
+          "scope": "whole model / final tensor"
         }
       ],
       "splits": 4,
@@ -7073,15 +7104,17 @@
           "k": 0,
           "n": 32,
           "storage": "shared",
-          "detail": "2 slots; 4096 B / slot"
+          "detail": "2 slots; 4096 B / slot",
+          "scope": "one CTA / one K step"
         },
         {
           "label": "Attention output projection",
-          "m": 128,
+          "m": 2160,
           "k": 1024,
           "n": 1024,
           "storage": "registers",
-          "detail": "CTA output: 128\u00d7128; warp: 64\u00d764"
+          "detail": "Distributed over CTAs: each computes 128\u00d7128 over K256.",
+          "scope": "whole model / distributed"
         },
         {
           "label": "Ordered split handoff",
@@ -7089,15 +7122,17 @@
           "k": 0,
           "n": 128,
           "storage": "global",
-          "detail": "4 K256 splits; scratch remains Half"
+          "detail": "4 K256 splits; scratch remains Half",
+          "scope": "one CTA output slice"
         },
         {
           "label": "Publish Y",
-          "m": 128,
+          "m": 2160,
           "k": 0,
-          "n": 128,
+          "n": 1024,
           "storage": "global",
-          "detail": "scaled residual is seeded once; final split publishes"
+          "detail": "scaled residual is seeded once; final split publishes",
+          "scope": "whole model / final tensor"
         }
       ],
       "splits": 4,
@@ -7143,15 +7178,17 @@
           "k": 0,
           "n": 32,
           "storage": "shared",
-          "detail": "2 slots; 4096 B / slot"
+          "detail": "2 slots; 4096 B / slot",
+          "scope": "one CTA / one K step"
         },
         {
           "label": "QKV projection",
-          "m": 128,
+          "m": 2160,
           "k": 1024,
           "n": 3072,
           "storage": "registers",
-          "detail": "CTA output: 128\u00d7192; warp: 64\u00d796"
+          "detail": "Distributed over CTAs: each computes 128\u00d7192 over K512.",
+          "scope": "whole model / distributed"
         },
         {
           "label": "Ordered split handoff",
@@ -7159,23 +7196,26 @@
           "k": 0,
           "n": 192,
           "storage": "global",
-          "detail": "2 K512 splits; scratch remains Half"
+          "detail": "2 K512 splits; scratch remains Half",
+          "scope": "one CTA output slice"
         },
         {
           "label": "Normalize Q and K",
-          "m": 128,
+          "m": 2160,
           "k": 0,
           "n": 32,
           "storage": "registers",
-          "detail": "one warp head; learned Q scale \u00d7 \u221a32"
+          "detail": "Repeat independently for 32 heads; Q-only scale \u00d7 \u221a32",
+          "scope": "one head / one component"
         },
         {
           "label": "Publish Q, K; transpose V",
-          "m": 128,
+          "m": 2160,
           "k": 0,
-          "n": 96,
+          "n": 3072,
           "storage": "global",
-          "detail": "three separate consumer layouts"
+          "detail": "Three separate [T,1024] buffers with consumer layouts",
+          "scope": "whole model / three buffers"
         }
       ],
       "splits": 2,
@@ -7221,7 +7261,8 @@
           "k": 0,
           "n": 32,
           "storage": "registers",
-          "detail": "four M16 query tiles / warp"
+          "detail": "four M16 query tiles / warp",
+          "scope": "one CTA / one head"
         },
         {
           "label": "Stage K and V",
@@ -7229,7 +7270,8 @@
           "k": 0,
           "n": 32,
           "storage": "shared",
-          "detail": "one head; ping-pong slots; reuse across 256 queries"
+          "detail": "ping-pong slots; reuse across 256 queries",
+          "scope": "one CTA / one key tile"
         },
         {
           "label": "Q \u00d7 K\u1d40",
@@ -7237,7 +7279,8 @@
           "k": 32,
           "n": 64,
           "storage": "registers",
-          "detail": "scores for the current 64-key tile"
+          "detail": "scores for the current 64-key tile",
+          "scope": "one CTA / one key tile"
         },
         {
           "label": "Surrogate E + row sum",
@@ -7245,7 +7288,8 @@
           "k": 0,
           "n": 64,
           "storage": "registers",
-          "detail": "denominator uses Half E, before operand packing"
+          "detail": "denominator uses Half E, before operand packing",
+          "scope": "one CTA / one key tile"
         },
         {
           "label": "Publish E; E \u00d7 V",
@@ -7253,7 +7297,8 @@
           "k": 64,
           "n": 32,
           "storage": "registers",
-          "detail": "accumulate numerator across all key tiles"
+          "detail": "accumulate numerator across all key tiles",
+          "scope": "one CTA / one key tile"
         },
         {
           "label": "Tail correction + divide",
@@ -7261,7 +7306,8 @@
           "k": 0,
           "n": 32,
           "storage": "global",
-          "detail": "subtract padded-key denominator contribution; publish"
+          "detail": "subtract padded-key mass; publish this query slice",
+          "scope": "one CTA / final output"
         }
       ],
       "splits": 1,
@@ -7303,13 +7349,13 @@
       "kernel": "input_preprocess_window_c32_fp16",
       "kind": "tiling",
       "path": "assets/kernels/input_preprocess_window_c32_fp16/tiling.svg",
-      "sha256": "d81536af305c5fd12522ff0862a0d2123f3843f7b492f3d9539afddfd3a7861b"
+      "sha256": "c36b58a285428f767f6bee3c0b3de34cdda51c387f6d28511e1860746e79936a"
     },
     {
       "kernel": "input_preprocess_window_c32_fp16",
       "kind": "storage",
       "path": "assets/kernels/input_preprocess_window_c32_fp16/storage.svg",
-      "sha256": "d34d43b13c6ae80501ab8348e95a2cf5e0584283adb4d77ed97bfa73d65e63af"
+      "sha256": "d33f28ea3186b3aaa8c78e9078d893578ac49fca6581cf9d50a4c81bcabf8b67"
     },
     {
       "kernel": "input_preprocess_window_c32_fp8",
@@ -7321,13 +7367,13 @@
       "kernel": "input_preprocess_window_c32_fp8",
       "kind": "tiling",
       "path": "assets/kernels/input_preprocess_window_c32_fp8/tiling.svg",
-      "sha256": "971da134c311d1b284ed8b4341b37ba5169ff71bdc3f9246e65d33713825c96e"
+      "sha256": "f5850e97ec966d2ab59a685a79042f3ecd30de2ff808253f9c5235ea898b82f4"
     },
     {
       "kernel": "input_preprocess_window_c32_fp8",
       "kind": "storage",
       "path": "assets/kernels/input_preprocess_window_c32_fp8/storage.svg",
-      "sha256": "33dd7d3f1b1eb9a0a077b7da3c63b2a4c1830e967c40b01a2f702ef0f0f985b9"
+      "sha256": "eda1799e28617206ac105f80a7525b0f172f522ca3ae873dff686b152711b0cd"
     },
     {
       "kernel": "input_preprocess_window_downsample_c32_fp16",
@@ -7339,13 +7385,13 @@
       "kernel": "input_preprocess_window_downsample_c32_fp16",
       "kind": "tiling",
       "path": "assets/kernels/input_preprocess_window_downsample_c32_fp16/tiling.svg",
-      "sha256": "d6980bcffc58f60863276101288aa0da2942842f380aec44032af350e477e777"
+      "sha256": "60b22d4af3119acb878d41734c6b2a5ebf4fd23142758518967554ecd9fd66c6"
     },
     {
       "kernel": "input_preprocess_window_downsample_c32_fp16",
       "kind": "storage",
       "path": "assets/kernels/input_preprocess_window_downsample_c32_fp16/storage.svg",
-      "sha256": "eb972c2853626f539fbf21fbfc3664249286a92c501d401c994c8a0cff2f79db"
+      "sha256": "c19e94c9e4c25532ce0ab14acdd1a2ed37a0c34ea4455035e5153e8d581d550e"
     },
     {
       "kernel": "input_preprocess_window_downsample_c32_fp16",
@@ -7363,13 +7409,13 @@
       "kernel": "input_preprocess_window_downsample_c32_fp8",
       "kind": "tiling",
       "path": "assets/kernels/input_preprocess_window_downsample_c32_fp8/tiling.svg",
-      "sha256": "968fc4f17e8987f618f01554461c1de3e00ac083c9b95f4698a75f46097974b3"
+      "sha256": "ed88fe2e240763bfb4ed6ac0127bc42da161dc5e47f2b131dad72c048443671e"
     },
     {
       "kernel": "input_preprocess_window_downsample_c32_fp8",
       "kind": "storage",
       "path": "assets/kernels/input_preprocess_window_downsample_c32_fp8/storage.svg",
-      "sha256": "4b6d91088a4f0fdb0a965ab5f12db8ba5103e4eced86d225a2f6ea4d94801a82"
+      "sha256": "75df0f26d720aab2b9f0140208808d2132a3cf7239aec4b2ffb3d12898264af3"
     },
     {
       "kernel": "input_preprocess_window_downsample_c32_fp8",
@@ -7387,13 +7433,13 @@
       "kernel": "output_window_postprocess_c32_fp16",
       "kind": "tiling",
       "path": "assets/kernels/output_window_postprocess_c32_fp16/tiling.svg",
-      "sha256": "4ef854196d5aceeeb7c328fe3058c883b3fb08c2625b361849f614c6cac8d076"
+      "sha256": "1e3d75c514431d4988cd0b2a4d5ac5a12f7e4f6ee2508ef7867f2d057e861def"
     },
     {
       "kernel": "output_window_postprocess_c32_fp16",
       "kind": "storage",
       "path": "assets/kernels/output_window_postprocess_c32_fp16/storage.svg",
-      "sha256": "204278f5f479520bdc95646a5f5e24f5444c928e251195b7ef3d5420743343b2"
+      "sha256": "5d7c2304ee08b35cc117cd9bd2fabf582ad6ad657ca3a4d9cd7db4c798e0e104"
     },
     {
       "kernel": "output_window_postprocess_c32_fp8",
@@ -7405,31 +7451,31 @@
       "kernel": "output_window_postprocess_c32_fp8",
       "kind": "tiling",
       "path": "assets/kernels/output_window_postprocess_c32_fp8/tiling.svg",
-      "sha256": "a57ef4dcf959c720286fa41b711d0ed07489401441ded033e201f5fc68f11fa6"
+      "sha256": "180a3f74586e8376297fadfd6da7c8664018463c38b3a7ec30bd62ac1824f292"
     },
     {
       "kernel": "output_window_postprocess_c32_fp8",
       "kind": "storage",
       "path": "assets/kernels/output_window_postprocess_c32_fp8/storage.svg",
-      "sha256": "f8242d0d98ddf4ee0d6f2e1b4fae52a38fdca2c2e65a9ad6f9107465069e180d"
+      "sha256": "23c423dbf14d9a509b68aa62bf1fb2e15abc378261617f088b572b255bc0bf16"
     },
     {
       "kernel": "window_block_c128_downsample_fp16",
       "kind": "flow",
       "path": "assets/kernels/window_block_c128_downsample_fp16/flow.svg",
-      "sha256": "3e4d1291487fec9df01d71359c08dfc1371c3676e4e726e8b9863631680d7406"
+      "sha256": "7fb354149461f38001646db8ef3b11a63549a123f24859e2fb446da2b316d2f9"
     },
     {
       "kernel": "window_block_c128_downsample_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c128_downsample_fp16/tiling.svg",
-      "sha256": "fd75550ea33efcf7280c1254a40ede3cb4e0b005b79f6ecbb7ad9dfd57e4c135"
+      "sha256": "5a6709d0c475668e1c8f028547a14d441d0ccb64c0841677b3543c0043193652"
     },
     {
       "kernel": "window_block_c128_downsample_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c128_downsample_fp16/storage.svg",
-      "sha256": "69138360186da81bcc7dc97787d99569e1f82be5e062d6c814c348c5f90a5797"
+      "sha256": "9161ca9bfb93e267c1574569a3eb66d66a9697b12f56d29b81e9fab89b76eb55"
     },
     {
       "kernel": "window_block_c128_downsample_fp16",
@@ -7441,19 +7487,19 @@
       "kernel": "window_block_c128_downsample_fp8",
       "kind": "flow",
       "path": "assets/kernels/window_block_c128_downsample_fp8/flow.svg",
-      "sha256": "94e7e453fa0cc5c813103138546318a785a43172502087d4b89e191056ac6291"
+      "sha256": "be363fa80cea05afe4db47d9433763648fd0a79bc1391c495b2a5a850723ad51"
     },
     {
       "kernel": "window_block_c128_downsample_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c128_downsample_fp8/tiling.svg",
-      "sha256": "b8fb3a7519e9fbded575e52bf27a0992ad87eaca27a2642eb77d0326e90c754c"
+      "sha256": "5891c1a424a33674a483c2fb431e6facc8197f32db8a54eae57e274a9dbc874e"
     },
     {
       "kernel": "window_block_c128_downsample_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c128_downsample_fp8/storage.svg",
-      "sha256": "39a4c07df6f753141273762376baf042f051f4f06bbdf1eeb04fa04ee0491e65"
+      "sha256": "20e0a017d234f0c32e06b07f04f575c1fe9ab15dd4c165024a9996104251a682"
     },
     {
       "kernel": "window_block_c128_downsample_fp8",
@@ -7465,55 +7511,55 @@
       "kernel": "window_block_c128_fp16",
       "kind": "flow",
       "path": "assets/kernels/window_block_c128_fp16/flow.svg",
-      "sha256": "07f0798099d0a39319cc3e5c1bc9615475b562574ec81c3671c465a8125e40e1"
+      "sha256": "c059c50d2420fa779c1923aba98707d899078aec98cf1832f57f7105aa7d4939"
     },
     {
       "kernel": "window_block_c128_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c128_fp16/tiling.svg",
-      "sha256": "960198d94f7b6ea83adba01effe1aeffb2c1854dfe73a849396d2f11612f7a22"
+      "sha256": "946eac101ef28d39c83a7241c2866bba9b1b8240818bee67bdc977b86ff8eb2b"
     },
     {
       "kernel": "window_block_c128_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c128_fp16/storage.svg",
-      "sha256": "7afac58f9a62c41198c372d53fe408b80cca611fec1faf596d587c7fcbbbb615"
+      "sha256": "7dac933c09213c7fc0e72b00d2024c927d5fda11a99957917223c35cea1a2f56"
     },
     {
       "kernel": "window_block_c128_fp8",
       "kind": "flow",
       "path": "assets/kernels/window_block_c128_fp8/flow.svg",
-      "sha256": "ab5d0d24b1733e18e3cb12c84fe9231220f9518fc16c2df1dc9015c67ffeb4b6"
+      "sha256": "c4ebd3acae14619b9d3c96c352d21894ac9d4da1fa3d585e8d1523d787f48d32"
     },
     {
       "kernel": "window_block_c128_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c128_fp8/tiling.svg",
-      "sha256": "414bbd6e92f1a075f6218b07f8ca730997db2e06826e26f3caa170b8711264a2"
+      "sha256": "ed27356b2fa90ed0184257abe18976bf006cb4e0a21ceece1ce83c3ab6d81e89"
     },
     {
       "kernel": "window_block_c128_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c128_fp8/storage.svg",
-      "sha256": "4fc59499424aba440332c578112a0f43b7504720fb9edd34c66d74cf870d15a4"
+      "sha256": "2f707a4c501ca5526e88a0b427978cd4de7ca218de8f6180c268bfcbfb54dacd"
     },
     {
       "kernel": "window_block_c128_input_view_fp16",
       "kind": "flow",
       "path": "assets/kernels/window_block_c128_input_view_fp16/flow.svg",
-      "sha256": "95e0874f89096a7ac9227e70dd4559a740b579c199814e0cf25c0990b66acbeb"
+      "sha256": "74132cf00ff022135487a1ad76c47d144c9403c81b39f87cb0d79a86db0fca82"
     },
     {
       "kernel": "window_block_c128_input_view_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c128_input_view_fp16/tiling.svg",
-      "sha256": "01e9c0e4288443385369a33a1afd44490e869e14d28ece5b7edb97d07b189356"
+      "sha256": "1fb18794bbdc82d946b657a9db5c4fe49a1e39ab3d213fe288e164270031ab9f"
     },
     {
       "kernel": "window_block_c128_input_view_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c128_input_view_fp16/storage.svg",
-      "sha256": "a4e80d49ab8c7485c0414ad3bf944477fe33b9c1cc10d2f5c08b92148ca742a1"
+      "sha256": "017f59f775369b54a84ac77f00c0cff2d5d04f88d62bdf2d8342ec5f07c1c2ef"
     },
     {
       "kernel": "window_block_c128_input_view_fp16",
@@ -7525,19 +7571,19 @@
       "kernel": "window_block_c128_input_view_fp8",
       "kind": "flow",
       "path": "assets/kernels/window_block_c128_input_view_fp8/flow.svg",
-      "sha256": "0a83eee5fb25417250834428586dbc1d4d3cadbe3c39aba776ccd9fd5482b5ce"
+      "sha256": "58e25acf6644b5e2914f34d5b635b6540fd86870749f48d32ab143dfc89f4f9c"
     },
     {
       "kernel": "window_block_c128_input_view_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c128_input_view_fp8/tiling.svg",
-      "sha256": "e48f9721710b2017f2cdbaee4abd2460ef2c225af6e15069d23e9f21e7bf0f93"
+      "sha256": "307d9b191271182f0710c93034b672ceff4613c75bb96c10a7b9a91921db1e6a"
     },
     {
       "kernel": "window_block_c128_input_view_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c128_input_view_fp8/storage.svg",
-      "sha256": "fa52a01561bec8fdebca5925aa7ccfc57afae28af43edf2479afd50259129926"
+      "sha256": "b7d2ff4200a293754a8898e6ad4b596da243f1452c959553931dbbe45297983b"
     },
     {
       "kernel": "window_block_c128_input_view_fp8",
@@ -7549,19 +7595,19 @@
       "kernel": "window_block_c128_output_view_fp16",
       "kind": "flow",
       "path": "assets/kernels/window_block_c128_output_view_fp16/flow.svg",
-      "sha256": "1de36d37470a5577834cd4ad46d4e017ae26af1336646e16c5e7656a2b1b21c2"
+      "sha256": "7fa4ca8422fd34b6da64d754a913c9ad90cd34d8c0e2ec06fc0ea348d105829b"
     },
     {
       "kernel": "window_block_c128_output_view_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c128_output_view_fp16/tiling.svg",
-      "sha256": "c11e3b549b71e1ea6fff60a7fcbb609bbe092394c6a90b173181b0b92db521ed"
+      "sha256": "6e6588b731959b1b199454e386f46ae8ce8c74dc1d00ea36971f30740adab759"
     },
     {
       "kernel": "window_block_c128_output_view_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c128_output_view_fp16/storage.svg",
-      "sha256": "36e879b41a22f6d20b32c4e11270ca1f4b0e0d6c27d1473a79bdbb303a15bb55"
+      "sha256": "5f0df713341ee43d49d346dc2527f42edcc4727edc857227078810ca5ea77782"
     },
     {
       "kernel": "window_block_c128_output_view_fp16",
@@ -7573,19 +7619,19 @@
       "kernel": "window_block_c128_output_view_fp8",
       "kind": "flow",
       "path": "assets/kernels/window_block_c128_output_view_fp8/flow.svg",
-      "sha256": "3835950f228872c57f467ba2de04fef22fd939bd0c0b9362596194fadd00d15b"
+      "sha256": "5a70648518c77c08a7afd3052fc66f5ba4fccc2e018a6bd0f7e3daa6d5f70468"
     },
     {
       "kernel": "window_block_c128_output_view_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c128_output_view_fp8/tiling.svg",
-      "sha256": "c3ea71939f4c67c933d5c8c8eb81a5a13324afab3c198a0eacdca0644448171f"
+      "sha256": "698c3ba91ae102ab94dbb7a5aa070edcc683dc345a84a7ab80dbfa24f20d0501"
     },
     {
       "kernel": "window_block_c128_output_view_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c128_output_view_fp8/storage.svg",
-      "sha256": "af8b7f61982d39289481f5e3f7e6391844717c1720df4fb4bd8e35b11d404e91"
+      "sha256": "3eec0c9160874ec8890a45f5b9c998e4747b18d6dd1fb590ca96ecca8210fcc8"
     },
     {
       "kernel": "window_block_c128_output_view_fp8",
@@ -7597,19 +7643,19 @@
       "kernel": "window_block_c128_upsample_fp16",
       "kind": "flow",
       "path": "assets/kernels/window_block_c128_upsample_fp16/flow.svg",
-      "sha256": "22f22706e90be12c1d29213b1644db5b83bdf6ee1a4fa97077b9cf6418e6ca43"
+      "sha256": "0c01ebf881115550fc6023bc49347ee306d90110c959ca7965b382f332a136a5"
     },
     {
       "kernel": "window_block_c128_upsample_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c128_upsample_fp16/tiling.svg",
-      "sha256": "fbd8da97420928a481b5326f36d8d18d0fce9dace4289637f8d03e1725b4e272"
+      "sha256": "04cf659c89504a454ac0bccf1240f44750fe3a4f532ef4e0a9feab5b28a3b7fa"
     },
     {
       "kernel": "window_block_c128_upsample_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c128_upsample_fp16/storage.svg",
-      "sha256": "8644f277ea5e0f31867172ec078c7ca25c1d02a8f5927268670c9a605bcf5d05"
+      "sha256": "cb74e6bad33751e6270fcd06f41d1d5d9aa2e970c9be55a0828953163a2e6345"
     },
     {
       "kernel": "window_block_c128_upsample_fp16",
@@ -7621,19 +7667,19 @@
       "kernel": "window_block_c128_upsample_fp8",
       "kind": "flow",
       "path": "assets/kernels/window_block_c128_upsample_fp8/flow.svg",
-      "sha256": "d22bc679a5429876815e751b0176cd09cd3b55e8b1c358dd994b3a483d333761"
+      "sha256": "f9988375f3a235fe69b82e2c3cc0e41eccf6dd6197bc4c08cd86624193b49a72"
     },
     {
       "kernel": "window_block_c128_upsample_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c128_upsample_fp8/tiling.svg",
-      "sha256": "43ad579e156c301e04b55ece194b95d4ae19fc1823e28ba3830cec086edb7af6"
+      "sha256": "302d5e1e6d26658cbd4b3b25c27c8e4df33d6c0db45d1d700d3b822d7b83e965"
     },
     {
       "kernel": "window_block_c128_upsample_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c128_upsample_fp8/storage.svg",
-      "sha256": "80f22652ee0f45571b966647b87b23259c11dce1bf3f1949ff9c578f42ae0ad4"
+      "sha256": "f10d343ac22921a4db2e4533e48c3b2240b123880a0ecddb1bc3239f5bc5444a"
     },
     {
       "kernel": "window_block_c128_upsample_fp8",
@@ -7645,19 +7691,19 @@
       "kernel": "window_block_c256_downsample_fp16",
       "kind": "flow",
       "path": "assets/kernels/window_block_c256_downsample_fp16/flow.svg",
-      "sha256": "853e5bb44c6635014c1e1e6a73c4ea4b4436df9eb315fe75951da4a980c97095"
+      "sha256": "a7f3b209f377a1d852f4c7b830c131f3cffdf028ef693713a80e5315c67717c4"
     },
     {
       "kernel": "window_block_c256_downsample_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c256_downsample_fp16/tiling.svg",
-      "sha256": "8a6cb5368e3206fc0bea1502a4f568b0607c6a8604baf33d4b3408cfc290ee3b"
+      "sha256": "4d49500edf4a5b16bd2cf8156857f23e39978180747417bc59a62bd1db192341"
     },
     {
       "kernel": "window_block_c256_downsample_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c256_downsample_fp16/storage.svg",
-      "sha256": "78b219ba36defb45d98f54107f3492325b7917324bcbd8b32a4fa3ae58c9ff4a"
+      "sha256": "4897e2452986c3cb168effd12626b95190c04048e3a09e2149d7d2636cee92c3"
     },
     {
       "kernel": "window_block_c256_downsample_fp16",
@@ -7669,19 +7715,19 @@
       "kernel": "window_block_c256_downsample_fp8",
       "kind": "flow",
       "path": "assets/kernels/window_block_c256_downsample_fp8/flow.svg",
-      "sha256": "dd2f02dee839ec1ba6d697c790064e67fd76aaf3b7a89f79e37cb6631cb146d8"
+      "sha256": "3bd4daf63226bff1028ed4c44ba0312fc6424c14f81ec680b0a1d4081c86f5da"
     },
     {
       "kernel": "window_block_c256_downsample_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c256_downsample_fp8/tiling.svg",
-      "sha256": "5ca3385dfe40a941efcd4f7906d41cafd8d35a04aa88932f423b9186767eba31"
+      "sha256": "2909551b815385edb858072fb63b9798079d693be8e64d381de6aa5827b6eda5"
     },
     {
       "kernel": "window_block_c256_downsample_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c256_downsample_fp8/storage.svg",
-      "sha256": "ff5e39fbd11e9b1f7175f0f6dbc6f9cea053cb2d9a5214f602b7605db4e6a2f9"
+      "sha256": "0a9a57601fc4aaf2ca4fb3862d03dbaa5f1433ba5ebb781dff210fe5205b3ec2"
     },
     {
       "kernel": "window_block_c256_downsample_fp8",
@@ -7693,55 +7739,55 @@
       "kernel": "window_block_c256_fp16",
       "kind": "flow",
       "path": "assets/kernels/window_block_c256_fp16/flow.svg",
-      "sha256": "523020fff88748f89cea54c9e4ff52085d77de1d929155b3fa71623748491fc9"
+      "sha256": "66bad3174a0dfeaa4954fd50b540d85362cd46f2385beb4a9e49a4365fab1de4"
     },
     {
       "kernel": "window_block_c256_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c256_fp16/tiling.svg",
-      "sha256": "4471e59bf1c82130c07dcd4ccf64abbbe8e1f5aa26716c9839eb27f1b85bf5ee"
+      "sha256": "7e0e0b155849143c43708f3e626f347f32de3138465f87de6d3ada45b3426ca3"
     },
     {
       "kernel": "window_block_c256_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c256_fp16/storage.svg",
-      "sha256": "f1194c2fcb5cfd356c0d25480a8e5b1d9fa7948d28003c54360ed0d177604784"
+      "sha256": "4d104b6a2da278410a76cc610b35a68fc3b5dc98e736dcdc3e85bb3324a646bc"
     },
     {
       "kernel": "window_block_c256_fp8",
       "kind": "flow",
       "path": "assets/kernels/window_block_c256_fp8/flow.svg",
-      "sha256": "09f759e45e719de60023ff47b94d591b9318c094c6b7380fb77ed20a005558db"
+      "sha256": "8be197c8f426909a78f55b683ac40f4a773fa2610efe155b1b3dc11c4a61d590"
     },
     {
       "kernel": "window_block_c256_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c256_fp8/tiling.svg",
-      "sha256": "ba44abf13c28ac70ec5e98adcae04c8652a62228d9d004ac0974775003a6c1d5"
+      "sha256": "7e76ce0423d2d59a738c525f90fecfec6d778605047b919dbaea6addd5ac2be7"
     },
     {
       "kernel": "window_block_c256_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c256_fp8/storage.svg",
-      "sha256": "1c455755b7a927535dacdfa630d641e271bb36b243e0617102543d878dbe8941"
+      "sha256": "dbab912ad2dffd6cc1d7536cbcef1326e25156184245f975a85a950c44ed25bc"
     },
     {
       "kernel": "window_block_c256_input_view_fp16",
       "kind": "flow",
       "path": "assets/kernels/window_block_c256_input_view_fp16/flow.svg",
-      "sha256": "670fc58f6592788e9a0583310a37af762eea6c9913692a05b3c44862749cc9c3"
+      "sha256": "83b89e3f2f28710a1ac9007b0c2004ee61c34170c2f65653b61e4d7d4f07dd66"
     },
     {
       "kernel": "window_block_c256_input_view_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c256_input_view_fp16/tiling.svg",
-      "sha256": "98c44836f2e1c9132f9dd5a73ef358897164be211c00dbf755d62193515db298"
+      "sha256": "f6a459e826083177c38ab716ee8398ca9ca47f1f9bbb30b29c1826ce897e5b9c"
     },
     {
       "kernel": "window_block_c256_input_view_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c256_input_view_fp16/storage.svg",
-      "sha256": "a083005defbd9c5b891cf907427c61c47b7b73dd81d44282bd6bf7483da7ba20"
+      "sha256": "24ae0872e190d217bfa141f2b141021d554b4084eca2677f13f87d231c9e026d"
     },
     {
       "kernel": "window_block_c256_input_view_fp16",
@@ -7753,19 +7799,19 @@
       "kernel": "window_block_c256_input_view_fp8",
       "kind": "flow",
       "path": "assets/kernels/window_block_c256_input_view_fp8/flow.svg",
-      "sha256": "3f826bf18093cd776299fca49a8dc2eaab658e55412e92d295f9bc105b9be1f5"
+      "sha256": "677a9d15742a4233b29c27524bd7f4659fd724e4f2aed03a56ea1236b9158b94"
     },
     {
       "kernel": "window_block_c256_input_view_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c256_input_view_fp8/tiling.svg",
-      "sha256": "e8e067a99c00a4cf346b903f8d6eff4f584ad987d21d7ba6b509f546680a6ad8"
+      "sha256": "24779ff5211503dbc0e83a4d997b109194e3ec42198091c0e96e56c5270332a4"
     },
     {
       "kernel": "window_block_c256_input_view_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c256_input_view_fp8/storage.svg",
-      "sha256": "79953c9e8e0ee324de9394f5a69b1269cb9c6713b840fd674788c08185da76f5"
+      "sha256": "f67cda2f88970bd9762de508c7bf20d6e53a30433442679d2b2e0f1fb22d554a"
     },
     {
       "kernel": "window_block_c256_input_view_fp8",
@@ -7777,19 +7823,19 @@
       "kernel": "window_block_c256_output_view_fp16",
       "kind": "flow",
       "path": "assets/kernels/window_block_c256_output_view_fp16/flow.svg",
-      "sha256": "3b8bcc3b59af7cd07e907891328ccc553381634477ab769d33686cc53494fb4a"
+      "sha256": "fe028b5d7cb8a6d34c1cf31711321ed9e91cbe6f041bc3114e7173b1f7691d97"
     },
     {
       "kernel": "window_block_c256_output_view_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c256_output_view_fp16/tiling.svg",
-      "sha256": "667ee2f21951134e84ca61886a6cc1b662668c4d611c8dc7359281cc34166ed7"
+      "sha256": "49d64b682f8eb95fdcfd9f90663c55fabbac501fcd99b86840ad2a9d6e75e26b"
     },
     {
       "kernel": "window_block_c256_output_view_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c256_output_view_fp16/storage.svg",
-      "sha256": "302bf5325be9fcdd436e8124e5d9420987aeafc44a749c4bb1843d3e74e461be"
+      "sha256": "07d2b8e62f6cc704ad16dcd25bc79a30234ce693d4e2282ca39a6d81ed023c0c"
     },
     {
       "kernel": "window_block_c256_output_view_fp16",
@@ -7801,19 +7847,19 @@
       "kernel": "window_block_c256_output_view_fp8",
       "kind": "flow",
       "path": "assets/kernels/window_block_c256_output_view_fp8/flow.svg",
-      "sha256": "b388eb3fcf0f5839e94d3465f002d6044bf45f6be347ebcc49b7829be62bc88a"
+      "sha256": "351d06c319ee98283f54f11c0e6d932871267314ff01314ef54eeb4e50e33a67"
     },
     {
       "kernel": "window_block_c256_output_view_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c256_output_view_fp8/tiling.svg",
-      "sha256": "4b37437aa2008a8a50f9c8f5a0214cddc0e974cf1b83635ec6028a0f7c0f743a"
+      "sha256": "83dbbed5fcc6f175ec81277093d7dccd57d4753dad79a448dca948d2a558cf37"
     },
     {
       "kernel": "window_block_c256_output_view_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c256_output_view_fp8/storage.svg",
-      "sha256": "db2ea5b55a2a08d9964ddf60f1630ba8276826ff330cab6f13165462e63d8284"
+      "sha256": "e75526a4dd243cfd06ca00aa913844ed1da30ab40d5d84adefdee34a3de38c63"
     },
     {
       "kernel": "window_block_c256_output_view_fp8",
@@ -7825,19 +7871,19 @@
       "kernel": "window_block_c256_upsample_fp16",
       "kind": "flow",
       "path": "assets/kernels/window_block_c256_upsample_fp16/flow.svg",
-      "sha256": "7e83d6b7f3cb5605d4c299c74cbdf229f820e9b79615345d550d54492015dc88"
+      "sha256": "d4645eb6df9dec50dabcd890e2d56c1c01528e094d4e50920e33b2b076812207"
     },
     {
       "kernel": "window_block_c256_upsample_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c256_upsample_fp16/tiling.svg",
-      "sha256": "994e5256451f888da6da934dbc3cdad192aca8a6dd1d581b8d1c02822fa9eda4"
+      "sha256": "b7f343a17f57858281b68b3799476f2ca7f3d94a74bac94a40ab7b98da933a12"
     },
     {
       "kernel": "window_block_c256_upsample_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c256_upsample_fp16/storage.svg",
-      "sha256": "6d8ca4fbd2ab47f9b4dba6d8489fc4f5542f71a03a3431ab80515815e787c10c"
+      "sha256": "6e786019f7018ad8cee6f15dd88ac2cd30a17546ccc00aa5cde9033318bdb0c7"
     },
     {
       "kernel": "window_block_c256_upsample_fp16",
@@ -7849,19 +7895,19 @@
       "kernel": "window_block_c256_upsample_fp8",
       "kind": "flow",
       "path": "assets/kernels/window_block_c256_upsample_fp8/flow.svg",
-      "sha256": "232ac1404d61b6a0e51011b56104666cfb6e269b03d1c819e155fe7856d4bd48"
+      "sha256": "ffc774e8dbd64af72c0fa0043f06da37aad4141ec14f7071a7d9e52132d187b4"
     },
     {
       "kernel": "window_block_c256_upsample_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c256_upsample_fp8/tiling.svg",
-      "sha256": "c108f44c37b9ea52e9328f2c42e6f9c0136b2276555778ddb12e611fc1809a4a"
+      "sha256": "301e98507c4d9ca5847445f789d8f1185c7b38608817f5a8f2fc64e1e846ee49"
     },
     {
       "kernel": "window_block_c256_upsample_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c256_upsample_fp8/storage.svg",
-      "sha256": "886389d9f803eb4f01e0e70e3f4eabc399bf3bc0ec34af55a5a5e29a0164499b"
+      "sha256": "cd2d653f0fd145889461fe58008adc885b0bad42838296446b0b1fbc673a47ff"
     },
     {
       "kernel": "window_block_c256_upsample_fp8",
@@ -7879,13 +7925,13 @@
       "kernel": "window_block_c32_downsample_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c32_downsample_fp16/tiling.svg",
-      "sha256": "139d72265115728aad7e18d082eec4fddd6e9a9a189cdf57295dba448b43be32"
+      "sha256": "00c41e3ba90180733bf000c1cddc5c8d193f7d853fdd8ee1f4f8018360f42945"
     },
     {
       "kernel": "window_block_c32_downsample_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c32_downsample_fp16/storage.svg",
-      "sha256": "76456ca9ec98fbd4578285ad1e02187ef46c0d66a6bedf41c130d4aee3d3d762"
+      "sha256": "121e2216b0d7d5b5163900127bd1b2e95c2ffffb1c5c041d2f9c4942be6fdb66"
     },
     {
       "kernel": "window_block_c32_downsample_fp16",
@@ -7903,13 +7949,13 @@
       "kernel": "window_block_c32_downsample_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c32_downsample_fp8/tiling.svg",
-      "sha256": "510219027aca7ad0e4ca5c7c94271778cb15ccc0d60ce6a76404f7c8fd1ed7a2"
+      "sha256": "424af4426f95202584e9c95adab76fb7dc11e93bae07d6577d28b2dc3f33bc06"
     },
     {
       "kernel": "window_block_c32_downsample_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c32_downsample_fp8/storage.svg",
-      "sha256": "be4cfaf1e0eb03f04e41cd3f8dd1a9f2d1ee90fe0a480e7ec7b66cfd8ed90865"
+      "sha256": "4ac968d2011579d06fbda41aba2bc719d7fb2e775f7f4b543f1d173c40517010"
     },
     {
       "kernel": "window_block_c32_downsample_fp8",
@@ -7927,13 +7973,13 @@
       "kernel": "window_block_c32_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c32_fp16/tiling.svg",
-      "sha256": "b6219457d75c4bfa19aad6bcc44a439ed4dca31c17c887840a80dc9388ae65b3"
+      "sha256": "c58a001a8df6731be3e9e00feb0ad2f657debc7d1b47e46fc49364bba433450b"
     },
     {
       "kernel": "window_block_c32_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c32_fp16/storage.svg",
-      "sha256": "b8ebad0d8a80ea095bf84a48f7253fea1ae73e34ca0df5cdf6e6b1e1ca7895ac"
+      "sha256": "319423db23ca5f2f731414652898a7c719f5acec38adeae107ec72b012ef5951"
     },
     {
       "kernel": "window_block_c32_fp8",
@@ -7945,13 +7991,13 @@
       "kernel": "window_block_c32_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c32_fp8/tiling.svg",
-      "sha256": "8cc5f49c24c8c66677452da61e8f7f45cf3054b73f75577a4ac007ce091d607e"
+      "sha256": "3be08c518422bff31582716d70e473fa3d5a67b6adf740017ce3f668b22bfe1c"
     },
     {
       "kernel": "window_block_c32_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c32_fp8/storage.svg",
-      "sha256": "c47d73c076b59f1cce6380f85fd11dbdd79a91ab4068f2047cb10f9bc8f4d4b8"
+      "sha256": "b6b9bec868bba82b098df410c7569b1c94eef154ec5fd13e20ae6eb3a37ce8a4"
     },
     {
       "kernel": "window_block_c32_input_view_fp16",
@@ -7963,13 +8009,13 @@
       "kernel": "window_block_c32_input_view_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c32_input_view_fp16/tiling.svg",
-      "sha256": "e0c2954f6ee433dd6c28a64cd5473406d51e7e062a3f1390ea1475c00750e8f8"
+      "sha256": "cfca391842e788c90f15045d8837ccac307d7fd54db1ac1d398e56acea056f2f"
     },
     {
       "kernel": "window_block_c32_input_view_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c32_input_view_fp16/storage.svg",
-      "sha256": "d6c3b48967f44deb78250861ef588dfea9415d71f0f1cfbd325de35d55121335"
+      "sha256": "4e6132348548bb5306fee4b7e7411cf83538e7dfa2e687e559524069ac74f268"
     },
     {
       "kernel": "window_block_c32_input_view_fp16",
@@ -7987,13 +8033,13 @@
       "kernel": "window_block_c32_input_view_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c32_input_view_fp8/tiling.svg",
-      "sha256": "766c68463561a8d30ca1258f7b1d57bf5ba97698b3330f06684975687ecf994b"
+      "sha256": "a8b65af089044bff83bcf8dafb99c07c1ecd39a243a8adc1450d978ea73f6b94"
     },
     {
       "kernel": "window_block_c32_input_view_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c32_input_view_fp8/storage.svg",
-      "sha256": "e208ccfe36e08d5282dc6db138820ce6b20175600a2c426f34d042a61e98d13d"
+      "sha256": "acef5f106b77fb77057f3fbfd66b1f2c830a8c45608aefdd9b3f18a4c01c75f9"
     },
     {
       "kernel": "window_block_c32_input_view_fp8",
@@ -8011,13 +8057,13 @@
       "kernel": "window_block_c32_output_view_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c32_output_view_fp16/tiling.svg",
-      "sha256": "004a00487498e0f4bbd29108cb64b96b7673884d9c93373eb19905d73f8147cf"
+      "sha256": "b62e5254223f9ae075177b8274a49db3da964a14f589d5c3b7f3203efa75bba5"
     },
     {
       "kernel": "window_block_c32_output_view_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c32_output_view_fp16/storage.svg",
-      "sha256": "e6ce7579e2958cbb56f9faef8d6cc414ce793c9585fd31dd4789a22ff8bc41ad"
+      "sha256": "87f470d875379b7b2b54979812aa79025eca62dab05227d40f7000af146566f6"
     },
     {
       "kernel": "window_block_c32_output_view_fp16",
@@ -8035,13 +8081,13 @@
       "kernel": "window_block_c32_output_view_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c32_output_view_fp8/tiling.svg",
-      "sha256": "f337f3d1cde97bc6dc85a0f42fc0c6bbbab08fc60acb8de93fc32cbec5d25632"
+      "sha256": "08591283823c496d2d87c9bbd01e93556467ba4f1304386378a5dd0a448c6e63"
     },
     {
       "kernel": "window_block_c32_output_view_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c32_output_view_fp8/storage.svg",
-      "sha256": "355079d85f68484199b3b9a0fc746ee9065400e9790bd419b89973955dfc3745"
+      "sha256": "e52c14b5799a70cb8eef0adafa5aede046e2bb0d3af4c0d9295f627668748958"
     },
     {
       "kernel": "window_block_c32_output_view_fp8",
@@ -8059,13 +8105,13 @@
       "kernel": "window_block_c32_upsample_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c32_upsample_fp16/tiling.svg",
-      "sha256": "e4db01d8b049dd57cedbbc8ef7ed57931acd3ec51702ed761d95678dad25335d"
+      "sha256": "c02652d1261dcadbc7df43bd3ac096eba4c683e7247a8673a2ca2d450fa23d8a"
     },
     {
       "kernel": "window_block_c32_upsample_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c32_upsample_fp16/storage.svg",
-      "sha256": "65fc8c86f568bb011855a0c5ad83affcfe9090d292c15b410519477d1098a864"
+      "sha256": "79d6b9708d6a2526cb9a16c404b8f279ff54e885c95b34987265567cd29c7710"
     },
     {
       "kernel": "window_block_c32_upsample_fp16",
@@ -8083,13 +8129,13 @@
       "kernel": "window_block_c32_upsample_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c32_upsample_fp8/tiling.svg",
-      "sha256": "5db36176dac4f9bb8f30127a01154ac5325da7ba53b4967ce68199cca6657b61"
+      "sha256": "76363f68cc710507793e5fa13d75feb57cfa452c468f63c8a7762c4496e00cfa"
     },
     {
       "kernel": "window_block_c32_upsample_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c32_upsample_fp8/storage.svg",
-      "sha256": "e239c6fb2bda503219e29d7550199daf40dda2c20f6798814d19ddb1d8fdb310"
+      "sha256": "5c8b1feebecab166e86551b72bfec4d85df5a225091b2c53c0fb89c90d62f4f8"
     },
     {
       "kernel": "window_block_c32_upsample_fp8",
@@ -8101,19 +8147,19 @@
       "kernel": "window_block_c64_downsample_fp16",
       "kind": "flow",
       "path": "assets/kernels/window_block_c64_downsample_fp16/flow.svg",
-      "sha256": "0951cd8f66a2862703624c7fc4368ab4bea558746df5c12ed0c4d2295518d6a0"
+      "sha256": "6ab6091cbb9f680db235899f14c39998faa6b5701d578eec52196253084425f5"
     },
     {
       "kernel": "window_block_c64_downsample_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c64_downsample_fp16/tiling.svg",
-      "sha256": "18de74221115ffe483a47a0548776ba2e864e7b76817c4e8739f2e3fd6ddde78"
+      "sha256": "1812d3ab0575e2bd170c8b66ad61cd2cd1566d7d584b7b20bdff760d3d33ac57"
     },
     {
       "kernel": "window_block_c64_downsample_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c64_downsample_fp16/storage.svg",
-      "sha256": "0a9c70ab4274f39378b7ce056f12fb302e5415c6a02ec752041dcb4cc578c6c9"
+      "sha256": "417a764c13ccb30fc21841f14b917a072c3943f720c90fe8598c97ca2d63e276"
     },
     {
       "kernel": "window_block_c64_downsample_fp16",
@@ -8125,19 +8171,19 @@
       "kernel": "window_block_c64_downsample_fp8",
       "kind": "flow",
       "path": "assets/kernels/window_block_c64_downsample_fp8/flow.svg",
-      "sha256": "bd2ac14749a7c5f89430f6d768d723778c9276f0605eab326fa086719e5abf6d"
+      "sha256": "c2e7bfbb58a9e28633f3a378dab2d40b4803ab33ab35e3850aca6b4134da66fa"
     },
     {
       "kernel": "window_block_c64_downsample_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c64_downsample_fp8/tiling.svg",
-      "sha256": "2a855842ef7ae971b7a1ecf74027f16bec9b4f55353a44fb34a24ec545e530e6"
+      "sha256": "f59fab3c443821969e3e706698db786650a0840e6feae3a3841f032f5f6bb9da"
     },
     {
       "kernel": "window_block_c64_downsample_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c64_downsample_fp8/storage.svg",
-      "sha256": "511b194f4b409524581a925dd9e704e7bc076ec31f7afac3e1469e3f316d5c52"
+      "sha256": "10263b1fa3484d7a95ed7aa186c9b6c12cb68947f7b7f5162a18fe234481670f"
     },
     {
       "kernel": "window_block_c64_downsample_fp8",
@@ -8149,55 +8195,55 @@
       "kernel": "window_block_c64_fp16",
       "kind": "flow",
       "path": "assets/kernels/window_block_c64_fp16/flow.svg",
-      "sha256": "f06e316fe6e27e8308d8d0dfc461a976f67123d22433bbee2eb01146b996c0f1"
+      "sha256": "cfab996bf8d8999fee6bcd9f65dd749f0d85d7fdf2b67fd6ea084b37a4c097dd"
     },
     {
       "kernel": "window_block_c64_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c64_fp16/tiling.svg",
-      "sha256": "d0adfe48d12edecc7ddd9e58b8e5fa6684ae528ebcffdb8a84dabdebd5c60260"
+      "sha256": "df48298c538810e0c219c45ecd1d3a70a5cf385cf32cf6abd2ae778b521a6dd0"
     },
     {
       "kernel": "window_block_c64_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c64_fp16/storage.svg",
-      "sha256": "737935b1ec86517b4b53ab9bf731c90f62a4b9dc8cf92c35e63714859530f844"
+      "sha256": "a5f5ee3b7f742b9c764b66389268770567a1f8d48ed50014d0cd86b2073cb8e8"
     },
     {
       "kernel": "window_block_c64_fp8",
       "kind": "flow",
       "path": "assets/kernels/window_block_c64_fp8/flow.svg",
-      "sha256": "b362653201c68da8fa26e4a30884c0568ae46bafbd679d0068e5a1945d6c3810"
+      "sha256": "d9451099614b19e654c797de28332b9494c931ea28b060b32057d6c584332a9c"
     },
     {
       "kernel": "window_block_c64_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c64_fp8/tiling.svg",
-      "sha256": "5d811b3e9b37a4ef490fccbe287c68a4042b7c516ba24cca2f641d954f56fdd4"
+      "sha256": "1a00e3343827ed4e8782656d375b3c58a921b3ff0511572ef379378978ea1f49"
     },
     {
       "kernel": "window_block_c64_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c64_fp8/storage.svg",
-      "sha256": "cd0be640a1b9e288b953785b542e17d871afa57ac20b15ced0a2052351637902"
+      "sha256": "b9c522048567f19e8551f51f284e2b1363f7032359a1a743ecdb2956119b765b"
     },
     {
       "kernel": "window_block_c64_input_view_fp16",
       "kind": "flow",
       "path": "assets/kernels/window_block_c64_input_view_fp16/flow.svg",
-      "sha256": "cf37e5c930b4ae6d23698491b5cdc70d2a9e93a4334609a3f77387bf64c57a16"
+      "sha256": "2ce873c35b506e14d3c594950a11e069597421004d2aeb984328635055f83e02"
     },
     {
       "kernel": "window_block_c64_input_view_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c64_input_view_fp16/tiling.svg",
-      "sha256": "ef97e406454e8d33a690cd917b54db02aeee560801c8d7a9d1eb9ea8e587ceac"
+      "sha256": "54ce654c43311ca9e1faed6bce9c3ef1d9ebc5a7f912f5b8d7707e42190bd047"
     },
     {
       "kernel": "window_block_c64_input_view_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c64_input_view_fp16/storage.svg",
-      "sha256": "7b1b2043c10cb893969ece55434a28836e6e22065397919671731d5b6e3b0232"
+      "sha256": "9765f515d2118b91dcf7c4d66ce3a06b83a5d057a92c82da9d01b3ecfbb7264a"
     },
     {
       "kernel": "window_block_c64_input_view_fp16",
@@ -8209,19 +8255,19 @@
       "kernel": "window_block_c64_input_view_fp8",
       "kind": "flow",
       "path": "assets/kernels/window_block_c64_input_view_fp8/flow.svg",
-      "sha256": "fadea5a23ad8dcffe5096b2614701db9e407224c6c75cd2b487f4110b3c521b5"
+      "sha256": "691f3ef22929f6f161a04f07797d61844b64ede20756521ebd839e5101d619b7"
     },
     {
       "kernel": "window_block_c64_input_view_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c64_input_view_fp8/tiling.svg",
-      "sha256": "4b86b83ed3f82474cf3be64e7437ccfbe87bfcd914a1b60da60c2cdff84f6517"
+      "sha256": "653324ba2fbda04ca09d592016e46fa25755d6bb23cf678272ac6306836d9e82"
     },
     {
       "kernel": "window_block_c64_input_view_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c64_input_view_fp8/storage.svg",
-      "sha256": "654dd25efce3df930c35c7e8fb6b8ef1cf09c1af78e09fed1750bd27a5438db4"
+      "sha256": "52edebad76fcf9f27a6eb7909a156da495f200f937bc9b224e5876aa38a0667f"
     },
     {
       "kernel": "window_block_c64_input_view_fp8",
@@ -8233,19 +8279,19 @@
       "kernel": "window_block_c64_output_view_fp16",
       "kind": "flow",
       "path": "assets/kernels/window_block_c64_output_view_fp16/flow.svg",
-      "sha256": "0f9fe5f4eab2a08d2e9f5f14651ba92570d8c26ce0adc54cd4aba050854ebf43"
+      "sha256": "0e23cd0ccf0a6ce7a32d3b7058bc8e513e99f9503d113376e0d1460c23a094e9"
     },
     {
       "kernel": "window_block_c64_output_view_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c64_output_view_fp16/tiling.svg",
-      "sha256": "b9103d75ca735477b6bd0b6392153df8e2707d03d4c972192b9dedac6f7a12d6"
+      "sha256": "37b386fdfb85c213377e3429b5544fb2221f85695e81f3d750a4e3a7e337a3d9"
     },
     {
       "kernel": "window_block_c64_output_view_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c64_output_view_fp16/storage.svg",
-      "sha256": "75f38e9eec8af78a02cd1bbdc2818725ba4edb84969e59adcd2e7ee228e779df"
+      "sha256": "7b695468b0957d1e095dc95a9fca0dc755ceba3970a79382b21195d10b218d64"
     },
     {
       "kernel": "window_block_c64_output_view_fp16",
@@ -8257,19 +8303,19 @@
       "kernel": "window_block_c64_output_view_fp8",
       "kind": "flow",
       "path": "assets/kernels/window_block_c64_output_view_fp8/flow.svg",
-      "sha256": "60834e79fdf48cd76791ea4873b0e5f4515e315ce699b613afc2e90ce6f18604"
+      "sha256": "baa01acb9e1fae538b0391e925e6abfce297023f71044725a3ec413a8ba5eda2"
     },
     {
       "kernel": "window_block_c64_output_view_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c64_output_view_fp8/tiling.svg",
-      "sha256": "6bd211ae144b98214628c59a627d4079e84d5fa3adcb3a00e66f709e2142a443"
+      "sha256": "4552d8c31f73c964a5ea76dc061ddb6e7d09c905589db9231e46ed2ed560fb1a"
     },
     {
       "kernel": "window_block_c64_output_view_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c64_output_view_fp8/storage.svg",
-      "sha256": "44eef6ad7b992ff543f0c82d9202c342a820886386bd6a02f18ca3dd4cf463e7"
+      "sha256": "9369ddf5ba66410baedf54ab0e63cb5036dfcbb2ee227245275b0f1da989dc75"
     },
     {
       "kernel": "window_block_c64_output_view_fp8",
@@ -8281,19 +8327,19 @@
       "kernel": "window_block_c64_upsample_fp16",
       "kind": "flow",
       "path": "assets/kernels/window_block_c64_upsample_fp16/flow.svg",
-      "sha256": "918b45b227bf7e466d3adb2b6165fe1df7583d4375af194b178de0d203e28935"
+      "sha256": "32f1fdfb948648deb8a11c0d74e5d4d934664a7330fcb4fdb2ee9aa6a02fd4fa"
     },
     {
       "kernel": "window_block_c64_upsample_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c64_upsample_fp16/tiling.svg",
-      "sha256": "4d3e806accc808cf36061b7990833c2bb76dfc6897d4911a4b77f56fd53d53ba"
+      "sha256": "0125b9c5d582939bc2e51863c52dba284e507798e03c9cd5c52a3bc927e3ec68"
     },
     {
       "kernel": "window_block_c64_upsample_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_block_c64_upsample_fp16/storage.svg",
-      "sha256": "248dfeaecd62974e7a2dc1107b7880461263da7ea3a44582dce71d9e1c563b85"
+      "sha256": "26d373c49737028f13a4302385593f24f54d87fd79e7d9e02a042dcc0fe3936b"
     },
     {
       "kernel": "window_block_c64_upsample_fp16",
@@ -8305,19 +8351,19 @@
       "kernel": "window_block_c64_upsample_fp8",
       "kind": "flow",
       "path": "assets/kernels/window_block_c64_upsample_fp8/flow.svg",
-      "sha256": "4a81f7775bf1d50d1e0635c7542b845c09ad30e58dfd242479ea0f55b7936b9d"
+      "sha256": "0a5e6ca6dda965bf3b2e08d853408edc0712832aac6edcf238bb4958b8d99428"
     },
     {
       "kernel": "window_block_c64_upsample_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_block_c64_upsample_fp8/tiling.svg",
-      "sha256": "d73a4002f4c2c63a67ddea37bb89ba0524f139f0374ecab7b10821140e725cd9"
+      "sha256": "d0f10c51e34379d1d547b5afc6eea7f4fcfddbd4b4cf83daa2f0136b02c167bf"
     },
     {
       "kernel": "window_block_c64_upsample_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_block_c64_upsample_fp8/storage.svg",
-      "sha256": "8598be43a8e54f0d74fc929a0405e4270625a0e23103e986a2bd58e53e1f3a97"
+      "sha256": "aa54da1a717039765f67ca79f803a697b45904ba9074e9030da1a98283c5ef3b"
     },
     {
       "kernel": "window_block_c64_upsample_fp8",
@@ -8335,13 +8381,13 @@
       "kernel": "window_ffn_c512_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_ffn_c512_fp16/tiling.svg",
-      "sha256": "397b81ed569eb6933cc482bf3725b13839cad088c85f157a1adf518a70618756"
+      "sha256": "d5386b05645c69128fa7aa75b18089ac1989b0b119f9463d825a1a00ed2d2435"
     },
     {
       "kernel": "window_ffn_c512_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_ffn_c512_fp16/storage.svg",
-      "sha256": "be80c66009a42b1ff554245b26ca61fe77d0975b7df531ed02085bbf4e280886"
+      "sha256": "97555e4fb70808651330a5aaa52184c83355b6655a1b04e4880537d36f2a1e5b"
     },
     {
       "kernel": "window_ffn_c512_fp8",
@@ -8353,13 +8399,13 @@
       "kernel": "window_ffn_c512_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_ffn_c512_fp8/tiling.svg",
-      "sha256": "48689486ea0002d16217e61c3510cf446e5e85053c4ffb0540fb7dceb4239b69"
+      "sha256": "8c680517fb7774a1be8d024f20d926f5e7316b78be3b122051b399aace2856f0"
     },
     {
       "kernel": "window_ffn_c512_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_ffn_c512_fp8/storage.svg",
-      "sha256": "a8349393d4bbdfd9044782bf2ca9434cf7a6e4149a4de9bb8c0941cd9e66afd4"
+      "sha256": "a405c861d98760805c9c23aad43e9ac3e56c62adbca7112c14da7072bb157996"
     },
     {
       "kernel": "window_ffn_input_view_c512_fp16",
@@ -8371,13 +8417,13 @@
       "kernel": "window_ffn_input_view_c512_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_ffn_input_view_c512_fp16/tiling.svg",
-      "sha256": "222e4f0cc3400d151f270dd66ed28ba8eb9c3e48aa755e6228f77e376b4ff173"
+      "sha256": "b7b696a8667615041656b8923734893dbc2ac94bb0f32fbe9bdc4a127e271e46"
     },
     {
       "kernel": "window_ffn_input_view_c512_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_ffn_input_view_c512_fp16/storage.svg",
-      "sha256": "547fedd0e0402987f85129c8142602bd86eb5745b32ade2aecb34ee8721b48bc"
+      "sha256": "0b65ff65b77b292faa3a1a1d7604d65fbefb5a963e121a3c9502bee5c0714db0"
     },
     {
       "kernel": "window_ffn_input_view_c512_fp16",
@@ -8395,13 +8441,13 @@
       "kernel": "window_ffn_input_view_c512_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_ffn_input_view_c512_fp8/tiling.svg",
-      "sha256": "a7a0bc6fd411011dcb9faab8e9698509613520dd5d4aba4891a88192046cf2c4"
+      "sha256": "95b0b71d63546fa7987f60dde352c3d20565da200ff2a37edd075e5f4f47f726"
     },
     {
       "kernel": "window_ffn_input_view_c512_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_ffn_input_view_c512_fp8/storage.svg",
-      "sha256": "7196070d693abecfa759699c5efe468a3a98cb325b5dad5330427dc345af5897"
+      "sha256": "4b51a99d811acb8384237876958fbb9e9017bf69c0b3182d5345c8ce8c322720"
     },
     {
       "kernel": "window_ffn_input_view_c512_fp8",
@@ -8419,13 +8465,13 @@
       "kernel": "window_ffn_projection_c512_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_ffn_projection_c512_fp16/tiling.svg",
-      "sha256": "5e18a2ce5ef8c29f5ae50be7c2eca3da7ab6128d15381246e5367bd7f3826bc7"
+      "sha256": "1ec9b6df12635959b774533dfc1eb5941102c1a2493ebc849d7d17b3244ef42e"
     },
     {
       "kernel": "window_ffn_projection_c512_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_ffn_projection_c512_fp16/storage.svg",
-      "sha256": "95acfcd570d1014477fe0347d7f6ba580dbcf1331f08de1b7379e69091c176eb"
+      "sha256": "f80bbcbe640b5078da5056e2c18871b9ed38c4d17238d2660653cbeeafecb99c"
     },
     {
       "kernel": "window_ffn_projection_c512_fp8",
@@ -8437,13 +8483,13 @@
       "kernel": "window_ffn_projection_c512_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_ffn_projection_c512_fp8/tiling.svg",
-      "sha256": "b50c50125767fa02689ea46c51aa0fd93e087d5f772ade9485922acee8417705"
+      "sha256": "46bef694b83730f2033c9e210cebc3e21c6b4da8171d1096f93e73c3a4f821f5"
     },
     {
       "kernel": "window_ffn_projection_c512_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_ffn_projection_c512_fp8/storage.svg",
-      "sha256": "88afbd469c8acb02121937001588fba83412e485e4ce13c59b2cad35be9dec4b"
+      "sha256": "444eda6e02c04a6f62853aac293ccb46a08545808a92ae2fc6336a14b6b68d09"
     },
     {
       "kernel": "window_ffn_projection_input_view_c512_fp16",
@@ -8455,13 +8501,13 @@
       "kernel": "window_ffn_projection_input_view_c512_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_ffn_projection_input_view_c512_fp16/tiling.svg",
-      "sha256": "03f92cad7e6bb33b3f462589962d69db309e155f5c68595daf3a8e2992578c75"
+      "sha256": "eb576c0f4fbb983c5ea0eb8039bdce6311664acb30f9b1d05d5290b16c17da90"
     },
     {
       "kernel": "window_ffn_projection_input_view_c512_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_ffn_projection_input_view_c512_fp16/storage.svg",
-      "sha256": "304a3d8174d4edf3d9d055d81c64bf7db1c1ac981b2035e829e96586b3927c4d"
+      "sha256": "9ed607ba2fd8e4ff721013f23f4af7c41484261fea9c4ea643037e68cd0ab4ce"
     },
     {
       "kernel": "window_ffn_projection_input_view_c512_fp16",
@@ -8479,13 +8525,13 @@
       "kernel": "window_ffn_projection_input_view_c512_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_ffn_projection_input_view_c512_fp8/tiling.svg",
-      "sha256": "5a2ad40b04d8783fb133468dc4b5b28f3e616c327e25aefb822d12a63f7c6faf"
+      "sha256": "6a4a32030a4f83056b217d72d15e606b30610ac1a2fadd3079fbfd1d39e913a8"
     },
     {
       "kernel": "window_ffn_projection_input_view_c512_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_ffn_projection_input_view_c512_fp8/storage.svg",
-      "sha256": "103c2434c3798121d161ac7512cde52a4d46039e4bc77363d09d688dcf0dccfe"
+      "sha256": "0ff1b8cff0f78f0198c43f0795fde3de08e9bf4c1b54dd05a70001cc0e2a872f"
     },
     {
       "kernel": "window_ffn_projection_input_view_c512_fp8",
@@ -8503,13 +8549,13 @@
       "kernel": "window_qkv_c512_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_qkv_c512_fp16/tiling.svg",
-      "sha256": "f8cb6106e7304e86a6a3f868dc7024bb49e2494eb4d09170a89fbc4ff581d9d0"
+      "sha256": "6e151c7eea6980badf10f938395e4464673829df4f4a20621ddfa466a78d89a1"
     },
     {
       "kernel": "window_qkv_c512_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_qkv_c512_fp16/storage.svg",
-      "sha256": "44a99d6bcad547410691ab963e1de132a0d73afff6f56dedfbb08bda37dad514"
+      "sha256": "b2a57b55ec7c808ae1c9095532f98df54dcb885dfbe49ac359134f677b9177c5"
     },
     {
       "kernel": "window_qkv_c512_fp8",
@@ -8521,13 +8567,13 @@
       "kernel": "window_qkv_c512_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_qkv_c512_fp8/tiling.svg",
-      "sha256": "8512c43560a4424ebdee56feb6f120ffb982d9ca63fe0fffc618b8920f505c08"
+      "sha256": "f90a832f0aab8c1c774a781a9a8e881e4c49676ee8ec58e7946a3600ba45195b"
     },
     {
       "kernel": "window_qkv_c512_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_qkv_c512_fp8/storage.svg",
-      "sha256": "797b1d94d3d3838f3d3c3f7f30be8f8fa799476142ecf40cf7a9d3c8ccb6cca7"
+      "sha256": "a39cd4bb5caa2174291cbdc3efcf80f85fefe2252c67641c7db7b3c452a6d186"
     },
     {
       "kernel": "window_attention_projection_c512_fp16",
@@ -8539,13 +8585,13 @@
       "kernel": "window_attention_projection_c512_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_attention_projection_c512_fp16/tiling.svg",
-      "sha256": "e1730c8e92e4e6bd6f14d2e82528c3c098c2ff9f36cedc2c7658b730e3587c00"
+      "sha256": "e1f87686b7a2747d831233038ce3c65a17b9b419409bfccc0cb6a323638bada8"
     },
     {
       "kernel": "window_attention_projection_c512_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_attention_projection_c512_fp16/storage.svg",
-      "sha256": "8f0dd37e488c5eedf0efa707d43e4122a4f14bfc3a119bdc0f5e66f91d5e1679"
+      "sha256": "3281f606ce1acf1aaf7cc06fd0024065a55a72e3ebf131f217867e56d78e2f62"
     },
     {
       "kernel": "window_attention_projection_c512_fp8",
@@ -8557,13 +8603,13 @@
       "kernel": "window_attention_projection_c512_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_attention_projection_c512_fp8/tiling.svg",
-      "sha256": "1abda452bf5ce6eecddb7c770527bbab2d0ff2eacbeadee899f8a86af8dcd789"
+      "sha256": "605ea773230e2da85df6d09766e86f60ca58f4f2e6fea250087298c3a905612c"
     },
     {
       "kernel": "window_attention_projection_c512_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_attention_projection_c512_fp8/storage.svg",
-      "sha256": "00fdf77e86c1b339c4c5f6647442fe0e871d1b926c8e8df145ea842a81f456c8"
+      "sha256": "02e7157c2a0417a0e2868168774bbdd390ed5ff41a91869e86c96ef86abecba4"
     },
     {
       "kernel": "window_attention_projection_output_view_c512_fp16",
@@ -8575,13 +8621,13 @@
       "kernel": "window_attention_projection_output_view_c512_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_attention_projection_output_view_c512_fp16/tiling.svg",
-      "sha256": "865f68b46a82b15d8c355e59747f3b5d91d1febc36b19eb47ce8aa57f3f11e07"
+      "sha256": "93dec25c454c55d712628c72b83381b743a925d1704d578100d35f0f89319f02"
     },
     {
       "kernel": "window_attention_projection_output_view_c512_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_attention_projection_output_view_c512_fp16/storage.svg",
-      "sha256": "81c5cca7c26fcd22319e41e549e40d0e80e1002683e6812a12672825c55f233c"
+      "sha256": "0dce51bbb40e5f263e445c47a57f0eaa87ac40d13af825d084ff4a221bed574b"
     },
     {
       "kernel": "window_attention_projection_output_view_c512_fp16",
@@ -8599,13 +8645,13 @@
       "kernel": "window_attention_projection_output_view_c512_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_attention_projection_output_view_c512_fp8/tiling.svg",
-      "sha256": "79259651a19afcc590753064a0feb0b63f06d598a6ffb417e147e861e8cdca4b"
+      "sha256": "86d3baf29529fc606b899d25c1079962101326853ac4db2f70a5acaf7b2869f6"
     },
     {
       "kernel": "window_attention_projection_output_view_c512_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_attention_projection_output_view_c512_fp8/storage.svg",
-      "sha256": "41bff295cfb1e1678345c454243b925f8f87370ad6f4fd5769b0542a7d26765b"
+      "sha256": "756b91f30589477adeb5eb1cc7f9ae33c8cc4f1a8d92a7229b0e746280fad09b"
     },
     {
       "kernel": "window_attention_projection_output_view_c512_fp8",
@@ -8623,13 +8669,13 @@
       "kernel": "window_attention_projection_pool_c512_fp16",
       "kind": "tiling",
       "path": "assets/kernels/window_attention_projection_pool_c512_fp16/tiling.svg",
-      "sha256": "9668870afa6fe68c210d4d50fb8e8f3300909f77a948a49f0c0829fd402e6176"
+      "sha256": "74acbacc51343900ba8fbe6e30e1d1b20173d6dc437ed2d76766fac02db6ab35"
     },
     {
       "kernel": "window_attention_projection_pool_c512_fp16",
       "kind": "storage",
       "path": "assets/kernels/window_attention_projection_pool_c512_fp16/storage.svg",
-      "sha256": "db335a652132da9a973c409286bd676fa96c5af6c1111fac9050945052862cd8"
+      "sha256": "c6bb78d96acc6366acc69bd9fc7748e6203c4a8f089cbb7a1f90201601a919e6"
     },
     {
       "kernel": "window_attention_projection_pool_c512_fp16",
@@ -8647,13 +8693,13 @@
       "kernel": "window_attention_projection_pool_c512_fp8",
       "kind": "tiling",
       "path": "assets/kernels/window_attention_projection_pool_c512_fp8/tiling.svg",
-      "sha256": "cd0f2c2666ecb6b9c91a6249311ee7ace4263372461d81a05c2739011ca02068"
+      "sha256": "8529750430f7525725ab9fd922b467a806d554047db69c6e922fe247b4646ab5"
     },
     {
       "kernel": "window_attention_projection_pool_c512_fp8",
       "kind": "storage",
       "path": "assets/kernels/window_attention_projection_pool_c512_fp8/storage.svg",
-      "sha256": "c80842fe4b6f3593af2c53c18608894cd86fe7557d835b2e842a581b48f6f020"
+      "sha256": "422f9660000f171f4bb0f60c94e5b7e3e9fbd14e5104c04d772e29c2768276f3"
     },
     {
       "kernel": "window_attention_projection_pool_c512_fp8",
@@ -8671,13 +8717,13 @@
       "kernel": "channel_projection_c512_to_c1024_fp16",
       "kind": "tiling",
       "path": "assets/kernels/channel_projection_c512_to_c1024_fp16/tiling.svg",
-      "sha256": "fc8e5c3f90a817770ba2a34b0f6f4c87f71e07a0b669fcbf511cde68df36938c"
+      "sha256": "a6a645fd4bdb01e8f8bd2e49ae653d9de3a07dc1bb5e2ec83324e8f990aebee2"
     },
     {
       "kernel": "channel_projection_c512_to_c1024_fp16",
       "kind": "storage",
       "path": "assets/kernels/channel_projection_c512_to_c1024_fp16/storage.svg",
-      "sha256": "c2cb844c99924bb40f9c9384a2238b1d3dc204b48acf0c33679900f264611f7a"
+      "sha256": "bcb9f91ac46a7b52778ebc4fd9c137cb90fe968aae55d0942dc9e7860496e382"
     },
     {
       "kernel": "channel_projection_c512_to_c1024_fp8",
@@ -8689,13 +8735,13 @@
       "kernel": "channel_projection_c512_to_c1024_fp8",
       "kind": "tiling",
       "path": "assets/kernels/channel_projection_c512_to_c1024_fp8/tiling.svg",
-      "sha256": "4cb0c77238d2a0942f7f73029a2d47897d3f6e59de47487351a3b2d227bd5978"
+      "sha256": "4f0abe3e59df4df8a978567dbe66ffacda585ecf9166f88af1e3830f0ab6e162"
     },
     {
       "kernel": "channel_projection_c512_to_c1024_fp8",
       "kind": "storage",
       "path": "assets/kernels/channel_projection_c512_to_c1024_fp8/storage.svg",
-      "sha256": "6a846cb8a9be7e08d19f339d91a8c0290175d5e699f34cdb9589fe7b20c22a23"
+      "sha256": "15926e98e84f8a00f7ad41734ab714c887ba1f265f4201aa31d25ac96a0cf55b"
     },
     {
       "kernel": "decoder_upsample_c1024_to_c512_fp16",
@@ -8707,13 +8753,13 @@
       "kernel": "decoder_upsample_c1024_to_c512_fp16",
       "kind": "tiling",
       "path": "assets/kernels/decoder_upsample_c1024_to_c512_fp16/tiling.svg",
-      "sha256": "2db39084047d118026c0a68b11bff4a681cb819b060d80a7cfd91ea797557402"
+      "sha256": "f423ebab54fd8ab7a877defcd77724d6561723d5e2db3607f9a4e6788db7414a"
     },
     {
       "kernel": "decoder_upsample_c1024_to_c512_fp16",
       "kind": "storage",
       "path": "assets/kernels/decoder_upsample_c1024_to_c512_fp16/storage.svg",
-      "sha256": "7e77e92fd0c77303b175e1166f38eff40d6f8b0306c1b096b45d0feef83d1c8e"
+      "sha256": "bef55e53dfcba874e9b7390e30dbe934f446b08dea6b801bcf38fc166d71659a"
     },
     {
       "kernel": "decoder_upsample_c1024_to_c512_fp16",
@@ -8725,7 +8771,7 @@
       "kernel": "decoder_upsample_c1024_to_c512_fp16",
       "kind": "split",
       "path": "assets/kernels/decoder_upsample_c1024_to_c512_fp16/split.svg",
-      "sha256": "3351678bb5413592d8811112f73e11e172dfee18e29f2450d79d540497e9e358"
+      "sha256": "61446793c106d7d7c2eb98f9de3ce11381272e7d06e82f1ccf3832a45d5ecf55"
     },
     {
       "kernel": "decoder_upsample_c1024_to_c512_fp8",
@@ -8737,13 +8783,13 @@
       "kernel": "decoder_upsample_c1024_to_c512_fp8",
       "kind": "tiling",
       "path": "assets/kernels/decoder_upsample_c1024_to_c512_fp8/tiling.svg",
-      "sha256": "ae4a6ffa8193d5f2eca1e7347a881db756c60f7cf873095669dd1c285d98db97"
+      "sha256": "5fd62ca509c11527eb15e4c928178320eeeaa642f6fec7e2182a8cf54a68cedd"
     },
     {
       "kernel": "decoder_upsample_c1024_to_c512_fp8",
       "kind": "storage",
       "path": "assets/kernels/decoder_upsample_c1024_to_c512_fp8/storage.svg",
-      "sha256": "b8a6a6d668c419aac07e5ba2f37598a71fd898fb26f1ba0e7725b3d045d205da"
+      "sha256": "9c36de0a81c0635b2a01e057744e56182178577b7f2fcf36a720083a5f4af3de"
     },
     {
       "kernel": "decoder_upsample_c1024_to_c512_fp8",
@@ -8755,7 +8801,7 @@
       "kernel": "decoder_upsample_c1024_to_c512_fp8",
       "kind": "split",
       "path": "assets/kernels/decoder_upsample_c1024_to_c512_fp8/split.svg",
-      "sha256": "dff543ff49c83831ac2fd818ccdf837aa0f02d9bbb41651fd6d09b0738a60e56"
+      "sha256": "835e13f74fc1d5b02b1d3eeecd758ddcb963020f99c2fd5b487bbab13e437579"
     },
     {
       "kernel": "completion_counter_clear",
@@ -8791,217 +8837,217 @@
       "kernel": "global_ffn_expand_c1024_fp16",
       "kind": "flow",
       "path": "assets/kernels/global_ffn_expand_c1024_fp16/flow.svg",
-      "sha256": "1793f0634b3078f95ea3bf28d71cf091cc76187a08a2baf73ac83df349a11fe3"
+      "sha256": "01161b12b159ee5d30e79f726901db46f3c1db65b386106c87620ec5858a99be"
     },
     {
       "kernel": "global_ffn_expand_c1024_fp16",
       "kind": "tiling",
       "path": "assets/kernels/global_ffn_expand_c1024_fp16/tiling.svg",
-      "sha256": "c6462ecb1a6ac14ff541fdb7bf7a48c893d2379d6e00f869bd7820a962134c83"
+      "sha256": "31b3639baf329d587bfe78f0d34ff1d639192bc678a5fc438fbcaf1c9f18932e"
     },
     {
       "kernel": "global_ffn_expand_c1024_fp16",
       "kind": "storage",
       "path": "assets/kernels/global_ffn_expand_c1024_fp16/storage.svg",
-      "sha256": "d271d678083172a38926399f774ba2beabe6dafff4d891c89a97a2de4ae6f109"
+      "sha256": "dae12495264bf3d82ffe9d05695d0f02c23995b5f60a90875cd4840b5978cf43"
     },
     {
       "kernel": "global_ffn_contract_c1024_fp16",
       "kind": "flow",
       "path": "assets/kernels/global_ffn_contract_c1024_fp16/flow.svg",
-      "sha256": "2bf1ad73d10fc8b3bd9d60bc70f2eba612ff07213c2589a394338df108448c86"
+      "sha256": "19b130ba51d2f829d6727bb704ce1d54de9a6597387b9d34628659712454d030"
     },
     {
       "kernel": "global_ffn_contract_c1024_fp16",
       "kind": "tiling",
       "path": "assets/kernels/global_ffn_contract_c1024_fp16/tiling.svg",
-      "sha256": "252a79f27de8dd03ad0b118da49da0ed9b2fe478aba86c9eca1e211e7946dc2c"
+      "sha256": "0c96576535415e202f4100d438fadfa0f50eb0f1e02fe0134b7ca5e73f81d5de"
     },
     {
       "kernel": "global_ffn_contract_c1024_fp16",
       "kind": "storage",
       "path": "assets/kernels/global_ffn_contract_c1024_fp16/storage.svg",
-      "sha256": "0091bd6e35f8b11a6f2af1e19b46f2d7ccca6d2b23328054583c064e4d6a7813"
+      "sha256": "c91194a6f76236bb6949d6543c79b806b20bda162d4ff4aa692d077d95b9c0c1"
     },
     {
       "kernel": "global_ffn_contract_c1024_fp16",
       "kind": "split",
       "path": "assets/kernels/global_ffn_contract_c1024_fp16/split.svg",
-      "sha256": "c83e8d894da620f21e576fdfa119b53412810be8e46ae3cfb2877b7cfae5cb1a"
+      "sha256": "b43a5127c6764224648d05361af5d23d2bd33d0f1f1367651c43b59fc2e3a13a"
     },
     {
       "kernel": "global_projection_c1024_fp16",
       "kind": "flow",
       "path": "assets/kernels/global_projection_c1024_fp16/flow.svg",
-      "sha256": "7ffef32167508d4951baf7f03f24cdb11511c07a9261b3ff900e78e7721746d0"
+      "sha256": "05cc26caee75656d4af1ba41c45eca19c922a65d753d8f2a4a352df672dd8aa7"
     },
     {
       "kernel": "global_projection_c1024_fp16",
       "kind": "tiling",
       "path": "assets/kernels/global_projection_c1024_fp16/tiling.svg",
-      "sha256": "7ace9578e2c136d4cb50f7b7223ad3f2c68ed37aadf48e402532435630b16d0e"
+      "sha256": "c9b21b699c4d645be22f7698140ec10c75184c45f1bfca75f96d9313e0a22542"
     },
     {
       "kernel": "global_projection_c1024_fp16",
       "kind": "storage",
       "path": "assets/kernels/global_projection_c1024_fp16/storage.svg",
-      "sha256": "5b1db54e0e4e900d0d9e7372e917d2ecdccbb7b81aeb470e6875b84fa2dfa698"
+      "sha256": "5954736ab536b42c08c30ea3daf022a0b4acace304ec2913467b656c3bc0d628"
     },
     {
       "kernel": "global_projection_c1024_fp16",
       "kind": "split",
       "path": "assets/kernels/global_projection_c1024_fp16/split.svg",
-      "sha256": "34f7c1561b6dba06aa0249d2c325410f27a5d1091bd6d20b159a840fe1f63df0"
+      "sha256": "4aab63521b6cf7ab37ce2bd17ba46961f7395e3fd5ef3a987017f80f81d4afca"
     },
     {
       "kernel": "global_qkv_c1024_fp16",
       "kind": "flow",
       "path": "assets/kernels/global_qkv_c1024_fp16/flow.svg",
-      "sha256": "e6d03b9fed163603a358c6572ab55e804b6650fb5327a35e48e4f9f66390e9ca"
+      "sha256": "6e7d54f600c5d415ba9c864682c8623040ac1f9a6664bb1cfdbf03b12803ffd7"
     },
     {
       "kernel": "global_qkv_c1024_fp16",
       "kind": "tiling",
       "path": "assets/kernels/global_qkv_c1024_fp16/tiling.svg",
-      "sha256": "f67c9c0754b39f9550fdebbe30f866ad154f9be72d3924fd4224f261a4e6e8fa"
+      "sha256": "459ccf479be05320f3f46aa05017108133f7e8c9283793a6ee24b0aa40b1cf80"
     },
     {
       "kernel": "global_qkv_c1024_fp16",
       "kind": "storage",
       "path": "assets/kernels/global_qkv_c1024_fp16/storage.svg",
-      "sha256": "b9661aacd1fba6e42e8ce2540b61c1dcb8a9b0286560feedda4683e19df1401e"
+      "sha256": "d786ece0fd8ece904edad8c2b08564a7c497f09d35df3112f2a620360637c56e"
     },
     {
       "kernel": "global_qkv_c1024_fp16",
       "kind": "split",
       "path": "assets/kernels/global_qkv_c1024_fp16/split.svg",
-      "sha256": "296580edfc48a38037faa9f87046eb0c5514b1429bf4752239eb34acab7e89e4"
+      "sha256": "182b00ffe6677062b691ab45b66bd5f9a32753ffa4edcc545c10a1740dc7d4b9"
     },
     {
       "kernel": "global_attention_chained_c1024_fp16",
       "kind": "flow",
       "path": "assets/kernels/global_attention_chained_c1024_fp16/flow.svg",
-      "sha256": "3016a3295f4ac80a0103cde9160c54d9f519bd3cddc29de2840ccd0c230d8b65"
+      "sha256": "5bcc83d9ca04c7018fbd053ee27827a31ba4dd7e6b6be19601e8f483c25e6c8d"
     },
     {
       "kernel": "global_attention_chained_c1024_fp16",
       "kind": "tiling",
       "path": "assets/kernels/global_attention_chained_c1024_fp16/tiling.svg",
-      "sha256": "dc2c981da250dc20212140866fd8b80d67635e5ac6f77b5fdacf8914e9e68332"
+      "sha256": "1cb829cf9cf13e9a10f8d02855578398aedd0ff05bdd2b562fe1f473f2590a46"
     },
     {
       "kernel": "global_attention_chained_c1024_fp16",
       "kind": "storage",
       "path": "assets/kernels/global_attention_chained_c1024_fp16/storage.svg",
-      "sha256": "c97b112fcf3651fb70aca88e9ee2b320cec9c6e7311c7df2e43d5611331e67d2"
+      "sha256": "284d8598de1f1be29425be793552b5b121dbccc98b51d20cb3ca984cfae205fb"
     },
     {
       "kernel": "global_ffn_expand_c1024_fp8",
       "kind": "flow",
       "path": "assets/kernels/global_ffn_expand_c1024_fp8/flow.svg",
-      "sha256": "3adb36ee6b2f71cdb61229acb3ba1b6111715d50c02597b46609ce3ff486095b"
+      "sha256": "aa59a5a170e0d0a602dcac41275bc03bfbd2d9b0f3eaff3318128ce48b407094"
     },
     {
       "kernel": "global_ffn_expand_c1024_fp8",
       "kind": "tiling",
       "path": "assets/kernels/global_ffn_expand_c1024_fp8/tiling.svg",
-      "sha256": "00d3db79473fa29fcf9dbdf7f3ef6c355803e4c3a05630be8f9d2be4f3a5e24e"
+      "sha256": "54cbf92c140b6712507509df55ab2f0d788c4f134aa29b1586b86ed690520da8"
     },
     {
       "kernel": "global_ffn_expand_c1024_fp8",
       "kind": "storage",
       "path": "assets/kernels/global_ffn_expand_c1024_fp8/storage.svg",
-      "sha256": "93297e74a83fd3f2f8efed7e0f1dc07292c584bee6d674da2d104edd5e19921d"
+      "sha256": "a58f66d1fcfe9aba47e7394b33a4d9d592be641e8ccee9e92328360b85041ee2"
     },
     {
       "kernel": "global_ffn_contract_c1024_fp8",
       "kind": "flow",
       "path": "assets/kernels/global_ffn_contract_c1024_fp8/flow.svg",
-      "sha256": "1420cdfb7e43cc41c3f6236bd74acdefc9ff587c2e6155f3a9e42de65b758e94"
+      "sha256": "5beab5e93f677d58f6fb588b5d193dca3ab64e6e509dd3d3a338b666db0ec7ea"
     },
     {
       "kernel": "global_ffn_contract_c1024_fp8",
       "kind": "tiling",
       "path": "assets/kernels/global_ffn_contract_c1024_fp8/tiling.svg",
-      "sha256": "8142905abe84391c1e33b7f3e1c61d73a02ee08ffa8a7bfc92ea911389dd0698"
+      "sha256": "c66c0eaf30fe7e5deb66d63ce88548bd973d0b8ea3483a92169596ff846e5661"
     },
     {
       "kernel": "global_ffn_contract_c1024_fp8",
       "kind": "storage",
       "path": "assets/kernels/global_ffn_contract_c1024_fp8/storage.svg",
-      "sha256": "44ac04f48da6ffeb264e6d09a3389b53215711e793517d1abf1b617022b39f4c"
+      "sha256": "c6e39e898fa52148e8f3a211c13affd1a2462ea1a02a32ba7cd304184ce9e25a"
     },
     {
       "kernel": "global_ffn_contract_c1024_fp8",
       "kind": "split",
       "path": "assets/kernels/global_ffn_contract_c1024_fp8/split.svg",
-      "sha256": "5e821e748a82565b49f100f0686f4d29f2cf9ea567cb909c4e2c7e5dc1e9f1de"
+      "sha256": "9835fad3cd2488b448aa330b0e981488a390245deee90eec47173d7f573ba986"
     },
     {
       "kernel": "global_projection_c1024_fp8",
       "kind": "flow",
       "path": "assets/kernels/global_projection_c1024_fp8/flow.svg",
-      "sha256": "8611f739f4cef333a7a359a61b0a0bb1cfdc13f0e2990d29319eab931715c885"
+      "sha256": "2dc93e8886c2f03ec9d2b498cee93cd8f27cc9c32e93ae709adad725a91ba517"
     },
     {
       "kernel": "global_projection_c1024_fp8",
       "kind": "tiling",
       "path": "assets/kernels/global_projection_c1024_fp8/tiling.svg",
-      "sha256": "5f536c067e3737e97398698cdae611565d98c1473f024a52f73b90c52a1cd598"
+      "sha256": "4a57f5edadad4376d82796b9c4911d8d676239eda387c95451489b53aa23e142"
     },
     {
       "kernel": "global_projection_c1024_fp8",
       "kind": "storage",
       "path": "assets/kernels/global_projection_c1024_fp8/storage.svg",
-      "sha256": "90f38ce2726eba74e3ecf597a2f1a3a2d5b825b81f5ef31c01708210406d7d92"
+      "sha256": "f2920ec057e0dcea5f663933c24a2c57fb6298bd2b05c8a7360028509b3670ae"
     },
     {
       "kernel": "global_projection_c1024_fp8",
       "kind": "split",
       "path": "assets/kernels/global_projection_c1024_fp8/split.svg",
-      "sha256": "fb8b4542c9124bf3a1058b684c7ef458242dffbaf597cbf6a06eac2e8af4a48c"
+      "sha256": "e4bb8aca7d98a6ee7bd1cd713c760bcefcb9fbc3710ef348add2856d83674bda"
     },
     {
       "kernel": "global_qkv_c1024_fp8",
       "kind": "flow",
       "path": "assets/kernels/global_qkv_c1024_fp8/flow.svg",
-      "sha256": "467b2bffa4b33c1f402a8c97b842be6a549a965949c0de41adb2ffdc79f2d2a3"
+      "sha256": "027f8f4a4ea740e0240e1c6f93f8dd868f28ce6a6b2c2462e062f6fbf041989f"
     },
     {
       "kernel": "global_qkv_c1024_fp8",
       "kind": "tiling",
       "path": "assets/kernels/global_qkv_c1024_fp8/tiling.svg",
-      "sha256": "f03ce081aaa0025f4e67bb32d4a01bc960b8c90aa340d102c404db4bcc57aec0"
+      "sha256": "4ed1c72a2adaf8d1a6e360c5b74c8cb1ab4f0298a0cf72aab2597f8792320051"
     },
     {
       "kernel": "global_qkv_c1024_fp8",
       "kind": "storage",
       "path": "assets/kernels/global_qkv_c1024_fp8/storage.svg",
-      "sha256": "23a23c67d630d21b23b67f78330a796577194bc12e27974698d30f7f1b87dfdb"
+      "sha256": "05b09ddb41b94ddc02654af6b218e6873d0dc96c6de0015047eda1a616cce291"
     },
     {
       "kernel": "global_qkv_c1024_fp8",
       "kind": "split",
       "path": "assets/kernels/global_qkv_c1024_fp8/split.svg",
-      "sha256": "23a402ae10449de6f1e267162bd3c1e378fe905817124fb7e77cc25f53aa55dc"
+      "sha256": "f9eb1dfd49d85afbf88bef15446f3037b1034e5f20cfb0ea153955a40ac71092"
     },
     {
       "kernel": "global_attention_chained_c1024_fp8",
       "kind": "flow",
       "path": "assets/kernels/global_attention_chained_c1024_fp8/flow.svg",
-      "sha256": "1d0bb24fceef4c2ee4d9a981d8cad7b194f2f1c507218eca7d123db90225f30d"
+      "sha256": "320e8599ebcfc3c8cc5defdc2c1e6d2d6a3e7451791e65bc920b6a9ec30b131c"
     },
     {
       "kernel": "global_attention_chained_c1024_fp8",
       "kind": "tiling",
       "path": "assets/kernels/global_attention_chained_c1024_fp8/tiling.svg",
-      "sha256": "7623e2754cf8db5d7d96e1500404027f5c1a634ffb88d5d71fae71e383fdb5c1"
+      "sha256": "2c8e13a5b66cba99324d61409b079bb822cc3f6134975893271f1f278c6bcf61"
     },
     {
       "kernel": "global_attention_chained_c1024_fp8",
       "kind": "storage",
       "path": "assets/kernels/global_attention_chained_c1024_fp8/storage.svg",
-      "sha256": "4a30e2ce9c9cf756688fe197b3c0543c11a5ea6cd6401eddb9ddc3ab1bd03fa0"
+      "sha256": "4fb5178511abcce21788a19e602988657740077cd2a0b3ee021b536b75dcf263"
     }
   ]
 }

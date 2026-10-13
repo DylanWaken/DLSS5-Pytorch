@@ -2336,6 +2336,12 @@
       "sha256": "4345fb2585da9aa968092aa4aafd61319941c8bed0d269039fa5639272a6a7c6"
     },
     {
+      "path": "csrc/kernel_impl/input_c32/fp16/input_preprocess_window_c32_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "96444e5be2c417aa21ef578c121a94ae2a7daf22ec5abf0123c34efdf0bfddc8"
+    },
+    {
       "path": "csrc/kernel_impl/input_c32/fp8/input_preprocess_window_c32_fp8.cu",
       "start": 15,
       "end": 40,
@@ -2472,6 +2478,12 @@
       "start": 329,
       "end": 347,
       "sha256": "4345fb2585da9aa968092aa4aafd61319941c8bed0d269039fa5639272a6a7c6"
+    },
+    {
+      "path": "csrc/kernel_impl/input_c32/fp8/input_preprocess_window_c32_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "447f1077ba9c1719031ea49703e6652fe4839a0ae4e848e559837ec3921b90b0"
     },
     {
       "path": "csrc/kernel_impl/input_c32/fp16/input_preprocess_window_downsample_c32_fp16.cu",
@@ -2616,6 +2628,12 @@
       "start": 17,
       "end": 54,
       "sha256": "b83d40b4186fcb42f24220a5372a8035ed3eaf8cba6038a2f588f084c26c6c30"
+    },
+    {
+      "path": "csrc/kernel_impl/input_c32/fp16/input_preprocess_window_downsample_c32_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "a208dcb2f53dc532a4165f307c78d66ef619f5fe1aa33df49b04a22339cc8690"
     },
     {
       "path": "csrc/kernel_impl/input_c32/fp8/input_preprocess_window_downsample_c32_fp8.cu",
@@ -2768,6 +2786,12 @@
       "sha256": "b83d40b4186fcb42f24220a5372a8035ed3eaf8cba6038a2f588f084c26c6c30"
     },
     {
+      "path": "csrc/kernel_impl/input_c32/fp8/input_preprocess_window_downsample_c32_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "02acddb9200768f00ce69ad6b49a8b2db244c167188f7d2a099cdfd0cd4f1bfe"
+    },
+    {
       "path": "csrc/kernel_impl/output_c32/fp16/output_window_postprocess_c32_fp16.cu",
       "start": 26,
       "end": 95,
@@ -2886,6 +2910,12 @@
       "start": 143,
       "end": 194,
       "sha256": "22a9fc1b58c2b321aa869e0944b29d3c229e40eae3174c6e78fec5b2dc66c269"
+    },
+    {
+      "path": "csrc/kernel_impl/output_c32/fp16/output_window_postprocess_c32_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "a521c6b69fcad1b2565ec0cdf436e8869ce6184b091f824c31f27305de47d1e9"
     },
     {
       "path": "csrc/kernel_impl/output_c32/fp8/output_window_postprocess_c32_fp8.cu",
@@ -3014,6 +3044,12 @@
       "sha256": "22a9fc1b58c2b321aa869e0944b29d3c229e40eae3174c6e78fec5b2dc66c269"
     },
     {
+      "path": "csrc/kernel_impl/output_c32/fp8/output_window_postprocess_c32_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "1575db7102eb870ab49eebcbdd4769bde107de0c76e904f4c64b1e2684fa9cfe"
+    },
+    {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
       "start": 10,
       "end": 33,
@@ -3132,6 +3168,12 @@
       "start": 265,
       "end": 293,
       "sha256": "b5b1f0e4289647ab5111277b2daa2e8264ab47a77e2b753e3c844e72d4335075"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_wide_downsample_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "fdfbc4dce1054ae2a0f58ce3f838039f1647054ebbce32fbfd3048cddb23ec29"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -3260,6 +3302,12 @@
       "sha256": "b5b1f0e4289647ab5111277b2daa2e8264ab47a77e2b753e3c844e72d4335075"
     },
     {
+      "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_wide_downsample_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "4d43cae1caed33043ca2b9f211ac0901c850f25352fe652ba29299467e5d173b"
+    },
+    {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
       "start": 10,
       "end": 33,
@@ -3360,6 +3408,12 @@
       "start": 233,
       "end": 247,
       "sha256": "7e5799b93668e6a83e5005d8585d51e51746dd4c58aa2fa3d4cbfef07e14ad47"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "52765242a324a69a21aa61989af3575833c4a140e07d7b4fd0ab915a6055e885"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -3470,6 +3524,12 @@
       "sha256": "7e5799b93668e6a83e5005d8585d51e51746dd4c58aa2fa3d4cbfef07e14ad47"
     },
     {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "e1430c4ee8b4f5468a93e815ec12683ffe0611d3892b307d88fde2f973bcccce"
+    },
+    {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
       "start": 10,
       "end": 33,
@@ -3570,6 +3630,12 @@
       "start": 233,
       "end": 247,
       "sha256": "7e5799b93668e6a83e5005d8585d51e51746dd4c58aa2fa3d4cbfef07e14ad47"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "52765242a324a69a21aa61989af3575833c4a140e07d7b4fd0ab915a6055e885"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -3678,6 +3744,12 @@
       "start": 230,
       "end": 244,
       "sha256": "7e5799b93668e6a83e5005d8585d51e51746dd4c58aa2fa3d4cbfef07e14ad47"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "e1430c4ee8b4f5468a93e815ec12683ffe0611d3892b307d88fde2f973bcccce"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -3780,6 +3852,12 @@
       "start": 195,
       "end": 227,
       "sha256": "591ed96c131dcff53fcbea51e268086384a85d99e4793ba20fa35dcfc7d3b5ce"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "52765242a324a69a21aa61989af3575833c4a140e07d7b4fd0ab915a6055e885"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -3888,6 +3966,12 @@
       "start": 192,
       "end": 224,
       "sha256": "591ed96c131dcff53fcbea51e268086384a85d99e4793ba20fa35dcfc7d3b5ce"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "e1430c4ee8b4f5468a93e815ec12683ffe0611d3892b307d88fde2f973bcccce"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -4002,6 +4086,12 @@
       "start": 253,
       "end": 267,
       "sha256": "25ab735703f1fb0024d237cc339949ed37a5588d11fbfd71a5f8ea688862d1a5"
+    },
+    {
+      "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_wide_upsample_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "f738fe324f86f2edbcc4f7e421b5652ab3fac5eb3b4d31ed791a0688d204f9b9"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -4124,6 +4214,12 @@
       "sha256": "25ab735703f1fb0024d237cc339949ed37a5588d11fbfd71a5f8ea688862d1a5"
     },
     {
+      "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_wide_upsample_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "af7d88df554f7d6a785a205edf3e726f42382515288318f741baa4c5d4368f4d"
+    },
+    {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
       "start": 10,
       "end": 33,
@@ -4242,6 +4338,12 @@
       "start": 265,
       "end": 293,
       "sha256": "b5b1f0e4289647ab5111277b2daa2e8264ab47a77e2b753e3c844e72d4335075"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_wide_downsample_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "fdfbc4dce1054ae2a0f58ce3f838039f1647054ebbce32fbfd3048cddb23ec29"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -4370,6 +4472,12 @@
       "sha256": "b5b1f0e4289647ab5111277b2daa2e8264ab47a77e2b753e3c844e72d4335075"
     },
     {
+      "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_wide_downsample_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "4d43cae1caed33043ca2b9f211ac0901c850f25352fe652ba29299467e5d173b"
+    },
+    {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
       "start": 10,
       "end": 33,
@@ -4470,6 +4578,12 @@
       "start": 233,
       "end": 247,
       "sha256": "7e5799b93668e6a83e5005d8585d51e51746dd4c58aa2fa3d4cbfef07e14ad47"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "52765242a324a69a21aa61989af3575833c4a140e07d7b4fd0ab915a6055e885"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -4580,6 +4694,12 @@
       "sha256": "7e5799b93668e6a83e5005d8585d51e51746dd4c58aa2fa3d4cbfef07e14ad47"
     },
     {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "e1430c4ee8b4f5468a93e815ec12683ffe0611d3892b307d88fde2f973bcccce"
+    },
+    {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
       "start": 10,
       "end": 33,
@@ -4680,6 +4800,12 @@
       "start": 233,
       "end": 247,
       "sha256": "7e5799b93668e6a83e5005d8585d51e51746dd4c58aa2fa3d4cbfef07e14ad47"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "52765242a324a69a21aa61989af3575833c4a140e07d7b4fd0ab915a6055e885"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -4788,6 +4914,12 @@
       "start": 230,
       "end": 244,
       "sha256": "7e5799b93668e6a83e5005d8585d51e51746dd4c58aa2fa3d4cbfef07e14ad47"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "e1430c4ee8b4f5468a93e815ec12683ffe0611d3892b307d88fde2f973bcccce"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -4890,6 +5022,12 @@
       "start": 195,
       "end": 227,
       "sha256": "591ed96c131dcff53fcbea51e268086384a85d99e4793ba20fa35dcfc7d3b5ce"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "52765242a324a69a21aa61989af3575833c4a140e07d7b4fd0ab915a6055e885"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -4998,6 +5136,12 @@
       "start": 192,
       "end": 224,
       "sha256": "591ed96c131dcff53fcbea51e268086384a85d99e4793ba20fa35dcfc7d3b5ce"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "e1430c4ee8b4f5468a93e815ec12683ffe0611d3892b307d88fde2f973bcccce"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -5112,6 +5256,12 @@
       "start": 253,
       "end": 267,
       "sha256": "25ab735703f1fb0024d237cc339949ed37a5588d11fbfd71a5f8ea688862d1a5"
+    },
+    {
+      "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_wide_upsample_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "f738fe324f86f2edbcc4f7e421b5652ab3fac5eb3b4d31ed791a0688d204f9b9"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -5232,6 +5382,12 @@
       "start": 250,
       "end": 264,
       "sha256": "25ab735703f1fb0024d237cc339949ed37a5588d11fbfd71a5f8ea688862d1a5"
+    },
+    {
+      "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_wide_upsample_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "af7d88df554f7d6a785a205edf3e726f42382515288318f741baa4c5d4368f4d"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -5340,6 +5496,12 @@
       "start": 253,
       "end": 281,
       "sha256": "b5b1f0e4289647ab5111277b2daa2e8264ab47a77e2b753e3c844e72d4335075"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_c32_downsample_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "b9d3d20c97c279f64dc2d55ced53ae083e89da8232c6dd9caac2ed737efc05ec"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -5456,6 +5618,12 @@
       "sha256": "b5b1f0e4289647ab5111277b2daa2e8264ab47a77e2b753e3c844e72d4335075"
     },
     {
+      "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_c32_downsample_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "8487ba2c39b0132e5632aee87f2edf78e0c0d60d0cd76a6031509e8b9b19026d"
+    },
+    {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
       "start": 10,
       "end": 33,
@@ -5544,6 +5712,12 @@
       "start": 198,
       "end": 212,
       "sha256": "19edc35417eb418ac7692aab5e8bbde9fd21ca451ba722c5bc8ba767502afa4f"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_compact_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "987abe4206941179eb997798c157982a432da499f3aa9c3b5a983d859d02ef2b"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -5642,6 +5816,12 @@
       "sha256": "19edc35417eb418ac7692aab5e8bbde9fd21ca451ba722c5bc8ba767502afa4f"
     },
     {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_compact_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "203dfa8499f473d4e70d3686dfd29002735cb6c84215258f95d7cc22b9641815"
+    },
+    {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
       "start": 10,
       "end": 33,
@@ -5730,6 +5910,12 @@
       "start": 198,
       "end": 212,
       "sha256": "19edc35417eb418ac7692aab5e8bbde9fd21ca451ba722c5bc8ba767502afa4f"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_compact_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "987abe4206941179eb997798c157982a432da499f3aa9c3b5a983d859d02ef2b"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -5826,6 +6012,12 @@
       "start": 196,
       "end": 210,
       "sha256": "19edc35417eb418ac7692aab5e8bbde9fd21ca451ba722c5bc8ba767502afa4f"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_compact_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "203dfa8499f473d4e70d3686dfd29002735cb6c84215258f95d7cc22b9641815"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -5916,6 +6108,12 @@
       "start": 164,
       "end": 194,
       "sha256": "a8e5a99916600ec501e821e86d5b68db6bcbda404bc817bf8f7ff28f8667c7bc"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_c32_output_view_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "507b9ce56496fbae11c4a7911d7b55fc42d533a4648e8b7e0395982a590eaa2e"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -6012,6 +6210,12 @@
       "start": 162,
       "end": 194,
       "sha256": "00cb38a2e8b56963c0c6d418c29a14d494316ce1ec8a651a8f5a8b240175ee13"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_c32_output_view_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "324db7cdb85c29da61da6e86f8b151ee76951968a0fef2cf00da9743ea89c2e5"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -6120,6 +6324,12 @@
       "start": 259,
       "end": 273,
       "sha256": "bac2e54301cf16ef780a76adf2acf41caaa8876c809f7b1425df0a9e5981a18a"
+    },
+    {
+      "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_c32_upsample_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "74535f8b7b979816566a86580ba2eb288050c7187e6458acbda415b5ccd2a8e0"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -6234,6 +6444,12 @@
       "start": 256,
       "end": 270,
       "sha256": "bac2e54301cf16ef780a76adf2acf41caaa8876c809f7b1425df0a9e5981a18a"
+    },
+    {
+      "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c32_upsample_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "940407ab7b9493764cf544a4345d1732056fc2bbfae02290b58d87b3040fe40e"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -6354,6 +6570,12 @@
       "start": 273,
       "end": 301,
       "sha256": "b5b1f0e4289647ab5111277b2daa2e8264ab47a77e2b753e3c844e72d4335075"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_c64_downsample_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "425c7a4bf1b44083522f2c83d4def3697b233abe6ca844b90152aa68df7d645b"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -6482,6 +6704,12 @@
       "sha256": "b5b1f0e4289647ab5111277b2daa2e8264ab47a77e2b753e3c844e72d4335075"
     },
     {
+      "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_c64_downsample_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "dc03545b16b7bb4bb14f8cb671d5b78ff2f132c7b57102b7b45854ff643af1a9"
+    },
+    {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
       "start": 10,
       "end": 33,
@@ -6582,6 +6810,12 @@
       "start": 242,
       "end": 256,
       "sha256": "7e5799b93668e6a83e5005d8585d51e51746dd4c58aa2fa3d4cbfef07e14ad47"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "44c50d81169cd6a63a8d7c446b8947dffec593c760ceb4007ebbd4aaffc7b07b"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -6692,6 +6926,12 @@
       "sha256": "7e5799b93668e6a83e5005d8585d51e51746dd4c58aa2fa3d4cbfef07e14ad47"
     },
     {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "8fe065db65aeac5f2a77a3f760b5db5fd5c14f077dece51d703699924cb66150"
+    },
+    {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
       "start": 10,
       "end": 33,
@@ -6792,6 +7032,12 @@
       "start": 242,
       "end": 256,
       "sha256": "7e5799b93668e6a83e5005d8585d51e51746dd4c58aa2fa3d4cbfef07e14ad47"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "44c50d81169cd6a63a8d7c446b8947dffec593c760ceb4007ebbd4aaffc7b07b"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -6900,6 +7146,12 @@
       "start": 239,
       "end": 253,
       "sha256": "7e5799b93668e6a83e5005d8585d51e51746dd4c58aa2fa3d4cbfef07e14ad47"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "8fe065db65aeac5f2a77a3f760b5db5fd5c14f077dece51d703699924cb66150"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -7002,6 +7254,12 @@
       "start": 204,
       "end": 236,
       "sha256": "591ed96c131dcff53fcbea51e268086384a85d99e4793ba20fa35dcfc7d3b5ce"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "44c50d81169cd6a63a8d7c446b8947dffec593c760ceb4007ebbd4aaffc7b07b"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -7110,6 +7368,12 @@
       "start": 201,
       "end": 233,
       "sha256": "591ed96c131dcff53fcbea51e268086384a85d99e4793ba20fa35dcfc7d3b5ce"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "8fe065db65aeac5f2a77a3f760b5db5fd5c14f077dece51d703699924cb66150"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -7224,6 +7488,12 @@
       "start": 259,
       "end": 273,
       "sha256": "25ab735703f1fb0024d237cc339949ed37a5588d11fbfd71a5f8ea688862d1a5"
+    },
+    {
+      "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_c64_upsample_fp16.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "bc6d67da40fa0b22f5b2fad3f1d83d54867e7f6a4cd4a5870757e81f14472f53"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -7346,6 +7616,48 @@
       "sha256": "25ab735703f1fb0024d237cc339949ed37a5588d11fbfd71a5f8ea688862d1a5"
     },
     {
+      "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c64_upsample_fp8.cu",
+      "start": 1,
+      "end": 17,
+      "sha256": "f8b048e5bc8e1d05dbed6c322c02cc80432d485679b031f49eb1dd584ffc965c"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 216,
+      "end": 228,
+      "sha256": "85319d7de2e0ea35d2aedc3bded3751171aba336a1f6ca5a604f118630cb4de6"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu",
+      "start": 12,
+      "end": 17,
+      "sha256": "f6bbf0624bc76c7df214989b87c0b377b0df5ca8b2efc3a2bfe324671d6c1dd1"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
+      "start": 9,
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu",
+      "start": 95,
+      "end": 124,
+      "sha256": "9be7e459bcc5e0bc8f663f32a6b026bf8bb781c174daa9b739309c8969fe86c3"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu",
+      "start": 53,
+      "end": 84,
+      "sha256": "92412099528afdd0b9f3b9b4afcf4bf98fe09a25c2750340203f573d0f49be2f"
+    },
+    {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu",
       "start": 35,
       "end": 47,
@@ -7353,21 +7665,21 @@
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu",
-      "start": 99,
-      "end": 127,
-      "sha256": "71b40476e5c90a0a6914dbedd44743fcdaa37b77d79851bb8c656281d96cdca7"
-    },
-    {
-      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu",
-      "start": 131,
-      "end": 143,
-      "sha256": "ba2fd658571de83849dca737a3ddc8c4cb222339ca34e47734431ac532d06fcd"
+      "start": 111,
+      "end": 123,
+      "sha256": "124f8c70891831d3e744006e4f4fae9f9ff14c5006cdc16855af3e1c82bcfb85"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu",
       "start": 141,
-      "end": 186,
-      "sha256": "887254d3c8c25b3258bdd551cdec46202aff4e7a200284aa723709fbcfdc5754"
+      "end": 188,
+      "sha256": "c20556ae18447bb47a38136df8f227f150f7361f24b1bc6355bc3d7eb2046b16"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/common/window_ffn.cuh",
+      "start": 28,
+      "end": 48,
+      "sha256": "4370c38c7f2b88a3879ff239612c497029c92ac00381879d1823cf9a02de8b89"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu",
@@ -7376,10 +7688,40 @@
       "sha256": "c1f3b6a37d5811b3f7827ad068db8d3550f4ee9cae6089e361f94c1e617d0173"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 189,
+      "end": 201,
+      "sha256": "17bee69927dfc785e216f784b2612e6bc011f111744d3ea69f31b3dddf08d675"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu",
+      "start": 12,
+      "end": 17,
+      "sha256": "f6bbf0624bc76c7df214989b87c0b377b0df5ca8b2efc3a2bfe324671d6c1dd1"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu",
+      "start": 95,
+      "end": 124,
+      "sha256": "9be7e459bcc5e0bc8f663f32a6b026bf8bb781c174daa9b739309c8969fe86c3"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu",
+      "start": 53,
+      "end": 84,
+      "sha256": "92412099528afdd0b9f3b9b4afcf4bf98fe09a25c2750340203f573d0f49be2f"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu",
@@ -7389,21 +7731,21 @@
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu",
-      "start": 99,
-      "end": 127,
-      "sha256": "71b40476e5c90a0a6914dbedd44743fcdaa37b77d79851bb8c656281d96cdca7"
-    },
-    {
-      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu",
-      "start": 131,
-      "end": 143,
-      "sha256": "ba2fd658571de83849dca737a3ddc8c4cb222339ca34e47734431ac532d06fcd"
+      "start": 111,
+      "end": 123,
+      "sha256": "124f8c70891831d3e744006e4f4fae9f9ff14c5006cdc16855af3e1c82bcfb85"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu",
       "start": 141,
-      "end": 186,
-      "sha256": "1737d3813b6c93358e81776c22d373a2eb3a31ab8b4c361cadae912e1fd1c65b"
+      "end": 188,
+      "sha256": "1f6853119915eb573424ed4d4b08db11288dc1573dee148c8f14c805b2787e10"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/common/window_ffn.cuh",
+      "start": 28,
+      "end": 48,
+      "sha256": "4370c38c7f2b88a3879ff239612c497029c92ac00381879d1823cf9a02de8b89"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu",
@@ -7412,34 +7754,64 @@
       "sha256": "5195827281d0625b5114e2b124e940d58ef9bb29a535d491797b0582da25679b"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 216,
+      "end": 228,
+      "sha256": "85319d7de2e0ea35d2aedc3bded3751171aba336a1f6ca5a604f118630cb4de6"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_input_view_c512_fp16.cu",
+      "start": 13,
+      "end": 18,
+      "sha256": "f6bbf0624bc76c7df214989b87c0b377b0df5ca8b2efc3a2bfe324671d6c1dd1"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/common/intrinsics.cuh",
+      "start": 8,
+      "end": 29,
+      "sha256": "9508851596dec0ee7fb18abc2f7449af475704c76943d491c4e387cef5c5e07a"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_input_view_c512_fp16.cu",
+      "start": 86,
+      "end": 115,
+      "sha256": "9be7e459bcc5e0bc8f663f32a6b026bf8bb781c174daa9b739309c8969fe86c3"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_input_view_c512_fp16.cu",
       "start": 55,
-      "end": 78,
-      "sha256": "b6dbe10acae20a10bd7633cebd8662d30200b162d31ea9ca91e3ee8a3d6a463a"
+      "end": 79,
+      "sha256": "4e64af8605744c07f7638a4e7ddf8727e00d2ec7196694b190b18ea336a6fc46"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_input_view_c512_fp16.cu",
-      "start": 90,
-      "end": 118,
-      "sha256": "71b40476e5c90a0a6914dbedd44743fcdaa37b77d79851bb8c656281d96cdca7"
+      "start": 36,
+      "end": 48,
+      "sha256": "a3432886507efb9d412430f716e64191ac2fe35b907002097c26a27f60148af5"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_input_view_c512_fp16.cu",
-      "start": 122,
-      "end": 134,
-      "sha256": "ba2fd658571de83849dca737a3ddc8c4cb222339ca34e47734431ac532d06fcd"
+      "start": 102,
+      "end": 114,
+      "sha256": "124f8c70891831d3e744006e4f4fae9f9ff14c5006cdc16855af3e1c82bcfb85"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_input_view_c512_fp16.cu",
       "start": 132,
-      "end": 177,
-      "sha256": "887254d3c8c25b3258bdd551cdec46202aff4e7a200284aa723709fbcfdc5754"
+      "end": 179,
+      "sha256": "c20556ae18447bb47a38136df8f227f150f7361f24b1bc6355bc3d7eb2046b16"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/common/window_ffn.cuh",
+      "start": 28,
+      "end": 48,
+      "sha256": "4370c38c7f2b88a3879ff239612c497029c92ac00381879d1823cf9a02de8b89"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_input_view_c512_fp16.cu",
@@ -7448,34 +7820,64 @@
       "sha256": "c1f3b6a37d5811b3f7827ad068db8d3550f4ee9cae6089e361f94c1e617d0173"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 189,
+      "end": 201,
+      "sha256": "17bee69927dfc785e216f784b2612e6bc011f111744d3ea69f31b3dddf08d675"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu",
+      "start": 13,
+      "end": 18,
+      "sha256": "f6bbf0624bc76c7df214989b87c0b377b0df5ca8b2efc3a2bfe324671d6c1dd1"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/common/intrinsics.cuh",
+      "start": 8,
+      "end": 29,
+      "sha256": "9508851596dec0ee7fb18abc2f7449af475704c76943d491c4e387cef5c5e07a"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu",
+      "start": 86,
+      "end": 115,
+      "sha256": "9be7e459bcc5e0bc8f663f32a6b026bf8bb781c174daa9b739309c8969fe86c3"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu",
       "start": 55,
-      "end": 78,
-      "sha256": "b6dbe10acae20a10bd7633cebd8662d30200b162d31ea9ca91e3ee8a3d6a463a"
+      "end": 79,
+      "sha256": "4e64af8605744c07f7638a4e7ddf8727e00d2ec7196694b190b18ea336a6fc46"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu",
-      "start": 90,
-      "end": 118,
-      "sha256": "71b40476e5c90a0a6914dbedd44743fcdaa37b77d79851bb8c656281d96cdca7"
+      "start": 36,
+      "end": 48,
+      "sha256": "a3432886507efb9d412430f716e64191ac2fe35b907002097c26a27f60148af5"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu",
-      "start": 122,
-      "end": 134,
-      "sha256": "ba2fd658571de83849dca737a3ddc8c4cb222339ca34e47734431ac532d06fcd"
+      "start": 102,
+      "end": 114,
+      "sha256": "124f8c70891831d3e744006e4f4fae9f9ff14c5006cdc16855af3e1c82bcfb85"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu",
       "start": 132,
-      "end": 177,
-      "sha256": "1737d3813b6c93358e81776c22d373a2eb3a31ab8b4c361cadae912e1fd1c65b"
+      "end": 179,
+      "sha256": "1f6853119915eb573424ed4d4b08db11288dc1573dee148c8f14c805b2787e10"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/common/window_ffn.cuh",
+      "start": 28,
+      "end": 48,
+      "sha256": "4370c38c7f2b88a3879ff239612c497029c92ac00381879d1823cf9a02de8b89"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu",
@@ -7484,10 +7886,34 @@
       "sha256": "5195827281d0625b5114e2b124e940d58ef9bb29a535d491797b0582da25679b"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 216,
+      "end": 228,
+      "sha256": "85319d7de2e0ea35d2aedc3bded3751171aba336a1f6ca5a604f118630cb4de6"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+      "start": 16,
+      "end": 21,
+      "sha256": "5099ec984b951322b09c104fcba17571704a95def947ac9743dd08fce68ca096"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+      "start": 150,
+      "end": 175,
+      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
@@ -7503,9 +7929,15 @@
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
-      "start": 150,
-      "end": 175,
-      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
+      "start": 42,
+      "end": 58,
+      "sha256": "6e50d00a5df8a8abbc8881629598ea57c455b1770d385de2b8e106d8fde1cb61"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+      "start": 155,
+      "end": 168,
+      "sha256": "5279c4f7789b27909f046d209d7e74e2874fd6a5c36d1c6cf8a6ca6ba2654555"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
@@ -7514,10 +7946,34 @@
       "sha256": "ee9e629c429d79dc6c56bd066269b57cd93c527b136f67f37cba3f8bb658f561"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 189,
+      "end": 201,
+      "sha256": "17bee69927dfc785e216f784b2612e6bc011f111744d3ea69f31b3dddf08d675"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
+      "start": 16,
+      "end": 21,
+      "sha256": "5099ec984b951322b09c104fcba17571704a95def947ac9743dd08fce68ca096"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
+      "start": 169,
+      "end": 194,
+      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
@@ -7533,9 +7989,15 @@
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
-      "start": 169,
-      "end": 194,
-      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
+      "start": 42,
+      "end": 58,
+      "sha256": "6e50d00a5df8a8abbc8881629598ea57c455b1770d385de2b8e106d8fde1cb61"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
+      "start": 174,
+      "end": 187,
+      "sha256": "5279c4f7789b27909f046d209d7e74e2874fd6a5c36d1c6cf8a6ca6ba2654555"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
@@ -7544,10 +8006,34 @@
       "sha256": "a7351d4dd3f3549d53f35c67c2bb74416f5e702d59182568358fc45410fb0d23"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 216,
+      "end": 228,
+      "sha256": "85319d7de2e0ea35d2aedc3bded3751171aba336a1f6ca5a604f118630cb4de6"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_projection_input_view_c512_fp16.cu",
+      "start": 17,
+      "end": 22,
+      "sha256": "5099ec984b951322b09c104fcba17571704a95def947ac9743dd08fce68ca096"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_projection_input_view_c512_fp16.cu",
+      "start": 158,
+      "end": 183,
+      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_projection_input_view_c512_fp16.cu",
@@ -7563,9 +8049,15 @@
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_projection_input_view_c512_fp16.cu",
-      "start": 158,
-      "end": 183,
-      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
+      "start": 43,
+      "end": 59,
+      "sha256": "6e50d00a5df8a8abbc8881629598ea57c455b1770d385de2b8e106d8fde1cb61"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_projection_input_view_c512_fp16.cu",
+      "start": 163,
+      "end": 176,
+      "sha256": "5279c4f7789b27909f046d209d7e74e2874fd6a5c36d1c6cf8a6ca6ba2654555"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_projection_input_view_c512_fp16.cu",
@@ -7574,10 +8066,34 @@
       "sha256": "ee9e629c429d79dc6c56bd066269b57cd93c527b136f67f37cba3f8bb658f561"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 189,
+      "end": 201,
+      "sha256": "17bee69927dfc785e216f784b2612e6bc011f111744d3ea69f31b3dddf08d675"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_projection_input_view_c512_fp8.cu",
+      "start": 17,
+      "end": 22,
+      "sha256": "5099ec984b951322b09c104fcba17571704a95def947ac9743dd08fce68ca096"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_projection_input_view_c512_fp8.cu",
+      "start": 157,
+      "end": 182,
+      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_projection_input_view_c512_fp8.cu",
@@ -7593,9 +8109,15 @@
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_projection_input_view_c512_fp8.cu",
-      "start": 157,
-      "end": 182,
-      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
+      "start": 43,
+      "end": 59,
+      "sha256": "6e50d00a5df8a8abbc8881629598ea57c455b1770d385de2b8e106d8fde1cb61"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_projection_input_view_c512_fp8.cu",
+      "start": 162,
+      "end": 175,
+      "sha256": "5279c4f7789b27909f046d209d7e74e2874fd6a5c36d1c6cf8a6ca6ba2654555"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_projection_input_view_c512_fp8.cu",
@@ -7604,22 +8126,46 @@
       "sha256": "a7351d4dd3f3549d53f35c67c2bb74416f5e702d59182568358fc45410fb0d23"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 216,
+      "end": 228,
+      "sha256": "85319d7de2e0ea35d2aedc3bded3751171aba336a1f6ca5a604f118630cb4de6"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_qkv_c512_fp16.cu",
+      "start": 11,
+      "end": 16,
+      "sha256": "a6c5e93124bd66ba427ee302bb8851e60629fa49755b4ebf54fa45eeb915e6d9"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_qkv_c512_fp16.cu",
+      "start": 91,
+      "end": 112,
+      "sha256": "f3d42355aba7dee6e6f14797f6ddccd1459513618bab3391ee610496900d9fb2"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_qkv_c512_fp16.cu",
+      "start": 53,
+      "end": 77,
+      "sha256": "3cf821a6f31f4afc3ebbccb88f93917a8f1cd628f40c2cb7a356e1c247f356a1"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_qkv_c512_fp16.cu",
       "start": 34,
       "end": 46,
       "sha256": "85a0cc0b2bdae72ef2c1fe79b435489fd7e3190028aacf13c7935c89a91942b6"
-    },
-    {
-      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_qkv_c512_fp16.cu",
-      "start": 91,
-      "end": 110,
-      "sha256": "9e6f1d0f83cf8450ee7039fa0bd1bb4b074faec77f1b25b0a4564aeaab59a14a"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -7652,22 +8198,46 @@
       "sha256": "a326b078f55e04d5b253727d01412af6640c1741369cfc6c0dfaeeca6eb89bc7"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 189,
+      "end": 201,
+      "sha256": "17bee69927dfc785e216f784b2612e6bc011f111744d3ea69f31b3dddf08d675"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_qkv_c512_fp8.cu",
+      "start": 11,
+      "end": 16,
+      "sha256": "a6c5e93124bd66ba427ee302bb8851e60629fa49755b4ebf54fa45eeb915e6d9"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_qkv_c512_fp8.cu",
+      "start": 91,
+      "end": 112,
+      "sha256": "1f1ead3c8d0f2f06b9bdf1822f1bf702331d85c25c4416f1d600953646f193db"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_qkv_c512_fp8.cu",
+      "start": 53,
+      "end": 77,
+      "sha256": "3cf821a6f31f4afc3ebbccb88f93917a8f1cd628f40c2cb7a356e1c247f356a1"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_qkv_c512_fp8.cu",
       "start": 34,
       "end": 46,
       "sha256": "85a0cc0b2bdae72ef2c1fe79b435489fd7e3190028aacf13c7935c89a91942b6"
-    },
-    {
-      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_qkv_c512_fp8.cu",
-      "start": 91,
-      "end": 110,
-      "sha256": "6c0e705e888a71a80fd5dea8fe8068372a32cdd53a8a3e1d6a9c1ca383a2f507"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -7700,10 +8270,34 @@
       "sha256": "8cf93f2d3ac096fd8eba0262f8095328e45168e8cf366019a80bfcd020e53c7e"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 216,
+      "end": 228,
+      "sha256": "85319d7de2e0ea35d2aedc3bded3751171aba336a1f6ca5a604f118630cb4de6"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+      "start": 16,
+      "end": 21,
+      "sha256": "5099ec984b951322b09c104fcba17571704a95def947ac9743dd08fce68ca096"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+      "start": 150,
+      "end": 175,
+      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
@@ -7719,9 +8313,15 @@
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
-      "start": 150,
-      "end": 175,
-      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
+      "start": 42,
+      "end": 58,
+      "sha256": "6e50d00a5df8a8abbc8881629598ea57c455b1770d385de2b8e106d8fde1cb61"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+      "start": 155,
+      "end": 168,
+      "sha256": "5279c4f7789b27909f046d209d7e74e2874fd6a5c36d1c6cf8a6ca6ba2654555"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
@@ -7730,10 +8330,34 @@
       "sha256": "ee9e629c429d79dc6c56bd066269b57cd93c527b136f67f37cba3f8bb658f561"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 189,
+      "end": 201,
+      "sha256": "17bee69927dfc785e216f784b2612e6bc011f111744d3ea69f31b3dddf08d675"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
+      "start": 16,
+      "end": 21,
+      "sha256": "5099ec984b951322b09c104fcba17571704a95def947ac9743dd08fce68ca096"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
+      "start": 169,
+      "end": 194,
+      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
@@ -7749,9 +8373,15 @@
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
-      "start": 169,
-      "end": 194,
-      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
+      "start": 42,
+      "end": 58,
+      "sha256": "6e50d00a5df8a8abbc8881629598ea57c455b1770d385de2b8e106d8fde1cb61"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
+      "start": 174,
+      "end": 187,
+      "sha256": "5279c4f7789b27909f046d209d7e74e2874fd6a5c36d1c6cf8a6ca6ba2654555"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
@@ -7760,10 +8390,34 @@
       "sha256": "a7351d4dd3f3549d53f35c67c2bb74416f5e702d59182568358fc45410fb0d23"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 216,
+      "end": 228,
+      "sha256": "85319d7de2e0ea35d2aedc3bded3751171aba336a1f6ca5a604f118630cb4de6"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_attention_projection_output_view_c512_fp16.cu",
+      "start": 21,
+      "end": 26,
+      "sha256": "5c5c4b40595547a6868f6139a8a405c9d4b94dd5fdb888a0b325cccbc080d361"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_attention_projection_output_view_c512_fp16.cu",
+      "start": 155,
+      "end": 180,
+      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_attention_projection_output_view_c512_fp16.cu",
@@ -7779,9 +8433,15 @@
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_attention_projection_output_view_c512_fp16.cu",
-      "start": 155,
-      "end": 180,
-      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
+      "start": 47,
+      "end": 63,
+      "sha256": "2dff56543dd5f8be491391ca645b51a2fbd95557aa6498f05236145065f94a9c"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_attention_projection_output_view_c512_fp16.cu",
+      "start": 160,
+      "end": 173,
+      "sha256": "5279c4f7789b27909f046d209d7e74e2874fd6a5c36d1c6cf8a6ca6ba2654555"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_attention_projection_output_view_c512_fp16.cu",
@@ -7790,10 +8450,34 @@
       "sha256": "474a43189c27f76885a2a807a0cb1a14be1e2947df1eeba8eadea0c27a27dcc6"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 189,
+      "end": 201,
+      "sha256": "17bee69927dfc785e216f784b2612e6bc011f111744d3ea69f31b3dddf08d675"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_attention_projection_output_view_c512_fp8.cu",
+      "start": 21,
+      "end": 26,
+      "sha256": "5c5c4b40595547a6868f6139a8a405c9d4b94dd5fdb888a0b325cccbc080d361"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_attention_projection_output_view_c512_fp8.cu",
+      "start": 174,
+      "end": 199,
+      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_attention_projection_output_view_c512_fp8.cu",
@@ -7809,9 +8493,15 @@
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_attention_projection_output_view_c512_fp8.cu",
-      "start": 174,
-      "end": 199,
-      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
+      "start": 47,
+      "end": 63,
+      "sha256": "2dff56543dd5f8be491391ca645b51a2fbd95557aa6498f05236145065f94a9c"
+    },
+    {
+      "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_attention_projection_output_view_c512_fp8.cu",
+      "start": 179,
+      "end": 192,
+      "sha256": "5279c4f7789b27909f046d209d7e74e2874fd6a5c36d1c6cf8a6ca6ba2654555"
     },
     {
       "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_attention_projection_output_view_c512_fp8.cu",
@@ -7820,10 +8510,34 @@
       "sha256": "474a43189c27f76885a2a807a0cb1a14be1e2947df1eeba8eadea0c27a27dcc6"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 216,
+      "end": 228,
+      "sha256": "85319d7de2e0ea35d2aedc3bded3751171aba336a1f6ca5a604f118630cb4de6"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/window_attention_projection_pool_c512_fp16.cu",
+      "start": 27,
+      "end": 32,
+      "sha256": "5c5c4b40595547a6868f6139a8a405c9d4b94dd5fdb888a0b325cccbc080d361"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/window_attention_projection_pool_c512_fp16.cu",
+      "start": 161,
+      "end": 186,
+      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
     },
     {
       "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/window_attention_projection_pool_c512_fp16.cu",
@@ -7839,9 +8553,15 @@
     },
     {
       "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/window_attention_projection_pool_c512_fp16.cu",
-      "start": 161,
-      "end": 186,
-      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
+      "start": 53,
+      "end": 69,
+      "sha256": "2dff56543dd5f8be491391ca645b51a2fbd95557aa6498f05236145065f94a9c"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/window_attention_projection_pool_c512_fp16.cu",
+      "start": 166,
+      "end": 179,
+      "sha256": "5279c4f7789b27909f046d209d7e74e2874fd6a5c36d1c6cf8a6ca6ba2654555"
     },
     {
       "path": "csrc/kernel_impl/shared/common/window_pool.cuh",
@@ -7856,10 +8576,34 @@
       "sha256": "e4ae69c206a925c9216058b4decb4eea200b646da977e30bc527f5803575e88b"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 189,
+      "end": 201,
+      "sha256": "17bee69927dfc785e216f784b2612e6bc011f111744d3ea69f31b3dddf08d675"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/window_attention_projection_pool_c512_fp8.cu",
+      "start": 27,
+      "end": 32,
+      "sha256": "5c5c4b40595547a6868f6139a8a405c9d4b94dd5fdb888a0b325cccbc080d361"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/window_attention_projection_pool_c512_fp8.cu",
+      "start": 180,
+      "end": 205,
+      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
     },
     {
       "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/window_attention_projection_pool_c512_fp8.cu",
@@ -7875,9 +8619,15 @@
     },
     {
       "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/window_attention_projection_pool_c512_fp8.cu",
-      "start": 180,
-      "end": 205,
-      "sha256": "59687e2a728c33b460f34ad109e55e2604cc3d634728e9b240966d14a38ee514"
+      "start": 53,
+      "end": 69,
+      "sha256": "2dff56543dd5f8be491391ca645b51a2fbd95557aa6498f05236145065f94a9c"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/window_attention_projection_pool_c512_fp8.cu",
+      "start": 185,
+      "end": 198,
+      "sha256": "5279c4f7789b27909f046d209d7e74e2874fd6a5c36d1c6cf8a6ca6ba2654555"
     },
     {
       "path": "csrc/kernel_impl/shared/common/window_pool.cuh",
@@ -7892,34 +8642,52 @@
       "sha256": "e4ae69c206a925c9216058b4decb4eea200b646da977e30bc527f5803575e88b"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 216,
+      "end": 228,
+      "sha256": "85319d7de2e0ea35d2aedc3bded3751171aba336a1f6ca5a604f118630cb4de6"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+      "start": 12,
+      "end": 17,
+      "sha256": "fddb00490350d3c1396ae4be71a3247c30bb5c503a149cf3dabc6a001977c707"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
-    },
-    {
-      "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
-      "start": 19,
-      "end": 27,
-      "sha256": "22a9b4ab01214f4fc38018bad58fb954c1cbd0d9c3703b43f6a8c51204084bc8"
-    },
-    {
-      "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
-      "start": 32,
-      "end": 51,
-      "sha256": "2614a0a0fabc5dd7564f98619313daa708fa91511751520ba50d404a8a1ae70c"
-    },
-    {
-      "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
-      "start": 77,
-      "end": 96,
-      "sha256": "4a7f23657204b5f7cd4a72bc5a0f57e92ce31bd686cf6b47ddf8037c610607bc"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
     },
     {
       "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
       "start": 104,
-      "end": 137,
-      "sha256": "d04a688108c3dcc6974962e7c63a55f948227cf73ff385e38a44820d50af7d26"
+      "end": 139,
+      "sha256": "ac667d6e663a49c30eb7fd05f6d79441d574763a68e7064296964247d2a403ee"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+      "start": 32,
+      "end": 53,
+      "sha256": "c7d89aa9ab8cfc577a56bc286dfe08053698003c950f39f77481c39dd82f2147"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+      "start": 77,
+      "end": 98,
+      "sha256": "fee11e8875459ef84e710a819b686a2e962e5ff0601c44d5cf6f59cbb32549ae"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "start": 9,
+      "end": 47,
+      "sha256": "b664ddc92f3d10e4156786963350d1f66104ab0fd23dfc0421c37878465da4c4"
     },
     {
       "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
@@ -7928,34 +8696,52 @@
       "sha256": "5d0782902f770ea5e6ca746cf4b62e3a970f90692a6a39067f0259ca0852a458"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 189,
+      "end": 201,
+      "sha256": "17bee69927dfc785e216f784b2612e6bc011f111744d3ea69f31b3dddf08d675"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/channel_projection_c512_to_c1024_fp8.cu",
+      "start": 12,
+      "end": 17,
+      "sha256": "fddb00490350d3c1396ae4be71a3247c30bb5c503a149cf3dabc6a001977c707"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
       "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
-    },
-    {
-      "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/channel_projection_c512_to_c1024_fp8.cu",
-      "start": 19,
-      "end": 27,
-      "sha256": "22a9b4ab01214f4fc38018bad58fb954c1cbd0d9c3703b43f6a8c51204084bc8"
-    },
-    {
-      "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/channel_projection_c512_to_c1024_fp8.cu",
-      "start": 32,
-      "end": 51,
-      "sha256": "2614a0a0fabc5dd7564f98619313daa708fa91511751520ba50d404a8a1ae70c"
-    },
-    {
-      "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/channel_projection_c512_to_c1024_fp8.cu",
-      "start": 77,
-      "end": 96,
-      "sha256": "4a7f23657204b5f7cd4a72bc5a0f57e92ce31bd686cf6b47ddf8037c610607bc"
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
     },
     {
       "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/channel_projection_c512_to_c1024_fp8.cu",
       "start": 104,
-      "end": 137,
-      "sha256": "d04a688108c3dcc6974962e7c63a55f948227cf73ff385e38a44820d50af7d26"
+      "end": 139,
+      "sha256": "ac667d6e663a49c30eb7fd05f6d79441d574763a68e7064296964247d2a403ee"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/channel_projection_c512_to_c1024_fp8.cu",
+      "start": 32,
+      "end": 53,
+      "sha256": "c7d89aa9ab8cfc577a56bc286dfe08053698003c950f39f77481c39dd82f2147"
+    },
+    {
+      "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/channel_projection_c512_to_c1024_fp8.cu",
+      "start": 77,
+      "end": 98,
+      "sha256": "fee11e8875459ef84e710a819b686a2e962e5ff0601c44d5cf6f59cbb32549ae"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "start": 9,
+      "end": 47,
+      "sha256": "b664ddc92f3d10e4156786963350d1f66104ab0fd23dfc0421c37878465da4c4"
     },
     {
       "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/channel_projection_c512_to_c1024_fp8.cu",
@@ -7964,16 +8750,34 @@
       "sha256": "1f3999d4ffdb961a93346078b05424fc5540eecbf5af52e3f11cf656c6f97813"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
-      "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 216,
+      "end": 228,
+      "sha256": "85319d7de2e0ea35d2aedc3bded3751171aba336a1f6ca5a604f118630cb4de6"
     },
     {
       "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp16/decoder_upsample_c1024_to_c512_fp16.cu",
-      "start": 51,
-      "end": 64,
-      "sha256": "7e2a2b9bcf0c229f1edfcd96cd3bb135a5349cff6da6373a0fe4dcb8b9605558"
+      "start": 12,
+      "end": 17,
+      "sha256": "73f7f66d475a67ba155bb93f47bd49a14021bebf6810296d1dfd2e0be6eba437"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
+      "start": 9,
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp16/decoder_upsample_c1024_to_c512_fp16.cu",
+      "start": 119,
+      "end": 162,
+      "sha256": "93814c6dc70836d95d468200cc6956a488a3da1c1f4c41838c366fd9ed2e606f"
     },
     {
       "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp16/decoder_upsample_c1024_to_c512_fp16.cu",
@@ -7983,9 +8787,15 @@
     },
     {
       "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp16/decoder_upsample_c1024_to_c512_fp16.cu",
-      "start": 119,
-      "end": 163,
-      "sha256": "03f7af757c4ec006e99fd265b652184fb603021ae81292cb0013947dbfe494fb"
+      "start": 51,
+      "end": 64,
+      "sha256": "7e2a2b9bcf0c229f1edfcd96cd3bb135a5349cff6da6373a0fe4dcb8b9605558"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 77,
+      "end": 104,
+      "sha256": "4d8be0a4f8884a1721e93574b8b6c1b6ecd059b6706c5f459ecf0aba0cc7a41a"
     },
     {
       "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp16/decoder_upsample_c1024_to_c512_fp16.cu",
@@ -8002,20 +8812,38 @@
     {
       "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp16/decoder_upsample_c1024_to_c512_fp16.cu",
       "start": 214,
-      "end": 224,
-      "sha256": "d766c788868eb15564a1299f45d45b60f759e2be7b26899617a258fbeebf5b7e"
+      "end": 231,
+      "sha256": "aa0fbc7a25dea9e81a360139a277c7e26930e5bdfdc9ae6e905ba0506321332b"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
-      "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 189,
+      "end": 201,
+      "sha256": "17bee69927dfc785e216f784b2612e6bc011f111744d3ea69f31b3dddf08d675"
     },
     {
       "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp8/decoder_upsample_c1024_to_c512_fp8.cu",
-      "start": 51,
-      "end": 64,
-      "sha256": "7e2a2b9bcf0c229f1edfcd96cd3bb135a5349cff6da6373a0fe4dcb8b9605558"
+      "start": 12,
+      "end": 17,
+      "sha256": "73f7f66d475a67ba155bb93f47bd49a14021bebf6810296d1dfd2e0be6eba437"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 236,
+      "end": 271,
+      "sha256": "b5712fb51c09998d6dcff1ac0712e1ec601adcb8f9fb710ffe16ed9485273f34"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
+      "start": 9,
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp8/decoder_upsample_c1024_to_c512_fp8.cu",
+      "start": 120,
+      "end": 163,
+      "sha256": "93814c6dc70836d95d468200cc6956a488a3da1c1f4c41838c366fd9ed2e606f"
     },
     {
       "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp8/decoder_upsample_c1024_to_c512_fp8.cu",
@@ -8025,9 +8853,15 @@
     },
     {
       "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp8/decoder_upsample_c1024_to_c512_fp8.cu",
-      "start": 120,
-      "end": 164,
-      "sha256": "03f7af757c4ec006e99fd265b652184fb603021ae81292cb0013947dbfe494fb"
+      "start": 51,
+      "end": 64,
+      "sha256": "7e2a2b9bcf0c229f1edfcd96cd3bb135a5349cff6da6373a0fe4dcb8b9605558"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 77,
+      "end": 104,
+      "sha256": "4d8be0a4f8884a1721e93574b8b6c1b6ecd059b6706c5f459ecf0aba0cc7a41a"
     },
     {
       "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp8/decoder_upsample_c1024_to_c512_fp8.cu",
@@ -8044,14 +8878,8 @@
     {
       "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp8/decoder_upsample_c1024_to_c512_fp8.cu",
       "start": 219,
-      "end": 229,
-      "sha256": "d766c788868eb15564a1299f45d45b60f759e2be7b26899617a258fbeebf5b7e"
-    },
-    {
-      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
-      "start": 9,
-      "end": 13,
-      "sha256": "345e757fedf9641a9c67d46eb61d57c971f983ad75ac292c934b1c0a919a6b60"
+      "end": 236,
+      "sha256": "aa0fbc7a25dea9e81a360139a277c7e26930e5bdfdc9ae6e905ba0506321332b"
     },
     {
       "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
@@ -8108,16 +8936,16 @@
       "sha256": "2af7f14dc7cedb6ddacb3221011af73333c6591ec43a5aed48e68189387a2e15"
     },
     {
-      "path": "dlssnr/weights.py",
-      "start": 54,
-      "end": 77,
-      "sha256": "d4f97a81283127ba043fa6a541bdd5452e5d9e4013f9aa13824bf6501713c3a3"
+      "path": "csrc/kernel_impl/bottleneck_c1024_ffn/common/global_ffn_expand.cuh",
+      "start": 11,
+      "end": 21,
+      "sha256": "5f2207ccc08bf730bb718dfc42a0687fa5753e21ed5c631dc91b3f839813b9ff"
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu",
-      "start": 78,
-      "end": 89,
-      "sha256": "55ee4b71faf714eaf18ccfb7d796844de77db44db78f53dea9155c9172d46af1"
+      "start": 6,
+      "end": 12,
+      "sha256": "ea81fc2b1297c2a9a5d28261ff63cc4b00b5b3509f16565665123567e7d21e42"
     },
     {
       "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
@@ -8132,22 +8960,52 @@
       "sha256": "a404d3d6b9a8bb11b40160b9a3c7f9a2f948ff21f475e7f9811268eb012ae527"
     },
     {
-      "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu",
-      "start": 128,
-      "end": 160,
-      "sha256": "49b6e4fd1256445357f9b5e105439d5b66615e6d428b732d5b051c9a20130030"
-    },
-    {
       "path": "dlssnr/weights.py",
       "start": 54,
       "end": 77,
       "sha256": "d4f97a81283127ba043fa6a541bdd5452e5d9e4013f9aa13824bf6501713c3a3"
     },
     {
+      "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu",
+      "start": 78,
+      "end": 89,
+      "sha256": "55ee4b71faf714eaf18ccfb7d796844de77db44db78f53dea9155c9172d46af1"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu",
+      "start": 26,
+      "end": 61,
+      "sha256": "87fbf9995c4cb75f73a370c71b610d0c4215896a5507b2efe98b61313c65452e"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "start": 24,
+      "end": 46,
+      "sha256": "a57d96d1b5875684f6edcd3a8a018c9c797e09e4dad6fc9b53111634e337fad7"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 216,
+      "end": 229,
+      "sha256": "04c5d471be08f3b88e701d4284a3458674c86d7429299315834c0e1d1ca0ef5a"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu",
+      "start": 128,
+      "end": 160,
+      "sha256": "49b6e4fd1256445357f9b5e105439d5b66615e6d428b732d5b051c9a20130030"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+      "start": 12,
+      "end": 29,
+      "sha256": "bcab2fd079d376c6bee3eb29910977cc64ebcf95a07cc2f78ae8a30edfdafe7d"
+    },
+    {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu",
-      "start": 90,
-      "end": 103,
-      "sha256": "8a7f449d9167834942365e42efa14318cf1aa1aea2e1f0d52da0192903cec732"
+      "start": 6,
+      "end": 18,
+      "sha256": "6a414aca8d7ec2f8b12e0f9a3327f8a2428595a631708d560673a5d6d89caeab"
     },
     {
       "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
@@ -8162,6 +9020,36 @@
       "sha256": "3810c2e0b98f35372edaa5e5827cccc51d35e108f1a3205fff06cea050ba9c89"
     },
     {
+      "path": "dlssnr/weights.py",
+      "start": 54,
+      "end": 77,
+      "sha256": "d4f97a81283127ba043fa6a541bdd5452e5d9e4013f9aa13824bf6501713c3a3"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu",
+      "start": 90,
+      "end": 103,
+      "sha256": "8a7f449d9167834942365e42efa14318cf1aa1aea2e1f0d52da0192903cec732"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu",
+      "start": 30,
+      "end": 69,
+      "sha256": "dec08b4e66620f65485544689f7015918ab2be9a2f607e114f72cdfc5526032c"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "start": 24,
+      "end": 46,
+      "sha256": "a57d96d1b5875684f6edcd3a8a018c9c797e09e4dad6fc9b53111634e337fad7"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 216,
+      "end": 229,
+      "sha256": "04c5d471be08f3b88e701d4284a3458674c86d7429299315834c0e1d1ca0ef5a"
+    },
+    {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu",
       "start": 192,
       "end": 229,
@@ -8174,16 +9062,16 @@
       "sha256": "a5427e7167658536140bbbdd23a291da1fca6fc63c96465358d3afc7797dc4cf"
     },
     {
-      "path": "dlssnr/weights.py",
-      "start": 54,
-      "end": 77,
-      "sha256": "d4f97a81283127ba043fa6a541bdd5452e5d9e4013f9aa13824bf6501713c3a3"
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+      "start": 12,
+      "end": 29,
+      "sha256": "bcab2fd079d376c6bee3eb29910977cc64ebcf95a07cc2f78ae8a30edfdafe7d"
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_projection_c1024_fp16.cu",
-      "start": 96,
-      "end": 109,
-      "sha256": "8a7f449d9167834942365e42efa14318cf1aa1aea2e1f0d52da0192903cec732"
+      "start": 6,
+      "end": 18,
+      "sha256": "b38e375a17f8cb7352d6d7e36249b61f3ab4b0d8d5b69f4e7e2e0ae110177a0e"
     },
     {
       "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
@@ -8198,6 +9086,36 @@
       "sha256": "1d0bae78283d819a313a95429bea967132c7686c84e7205e7852b54b6029f10c"
     },
     {
+      "path": "dlssnr/weights.py",
+      "start": 54,
+      "end": 77,
+      "sha256": "d4f97a81283127ba043fa6a541bdd5452e5d9e4013f9aa13824bf6501713c3a3"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_projection_c1024_fp16.cu",
+      "start": 96,
+      "end": 109,
+      "sha256": "8a7f449d9167834942365e42efa14318cf1aa1aea2e1f0d52da0192903cec732"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_projection_c1024_fp16.cu",
+      "start": 36,
+      "end": 75,
+      "sha256": "dec08b4e66620f65485544689f7015918ab2be9a2f607e114f72cdfc5526032c"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "start": 24,
+      "end": 46,
+      "sha256": "a57d96d1b5875684f6edcd3a8a018c9c797e09e4dad6fc9b53111634e337fad7"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 216,
+      "end": 229,
+      "sha256": "04c5d471be08f3b88e701d4284a3458674c86d7429299315834c0e1d1ca0ef5a"
+    },
+    {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_projection_c1024_fp16.cu",
       "start": 202,
       "end": 239,
@@ -8208,6 +9126,30 @@
       "start": 51,
       "end": 66,
       "sha256": "a5427e7167658536140bbbdd23a291da1fca6fc63c96465358d3afc7797dc4cf"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+      "start": 12,
+      "end": 29,
+      "sha256": "bcab2fd079d376c6bee3eb29910977cc64ebcf95a07cc2f78ae8a30edfdafe7d"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_qkv_c1024_fp16.cu",
+      "start": 6,
+      "end": 12,
+      "sha256": "df6ff311ca25092db792a3059f6499066031b898f6b0218d5d53ffbc70114aa8"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
+      "start": 9,
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_qkv_c1024_fp16.cu",
+      "start": 104,
+      "end": 120,
+      "sha256": "722e3cb8a73cabec8dc9c9ab48e49970effe6aa59b354a5cc99754bb237cec9e"
     },
     {
       "path": "dlssnr/weights.py",
@@ -8222,16 +9164,22 @@
       "sha256": "b6d9d7388d15836d995e798f6edbbf240548c17a2c41fe4e47d2d09d66a09b4b"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
-      "start": 9,
-      "end": 19,
-      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_qkv_c1024_fp16.cu",
+      "start": 32,
+      "end": 70,
+      "sha256": "7db2bc10ccb0a08385e946597eb61ccea7302c054c9af8ace1940f44b89efca2"
     },
     {
-      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_qkv_c1024_fp16.cu",
-      "start": 104,
-      "end": 120,
-      "sha256": "722e3cb8a73cabec8dc9c9ab48e49970effe6aa59b354a5cc99754bb237cec9e"
+      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "start": 24,
+      "end": 46,
+      "sha256": "a57d96d1b5875684f6edcd3a8a018c9c797e09e4dad6fc9b53111634e337fad7"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 216,
+      "end": 229,
+      "sha256": "04c5d471be08f3b88e701d4284a3458674c86d7429299315834c0e1d1ca0ef5a"
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention/common/global_qkv.cuh",
@@ -8258,10 +9206,16 @@
       "sha256": "a5427e7167658536140bbbdd23a291da1fca6fc63c96465358d3afc7797dc4cf"
     },
     {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/common/global_attention.cuh",
+      "start": 12,
+      "end": 21,
+      "sha256": "9442e2154a9a274b89bd9fb0540345d1513fb953ae4cb90da95aff2ec678152c"
+    },
+    {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu",
-      "start": 32,
-      "end": 91,
-      "sha256": "fa095f4f8a0deba17babeca6a86d0ef7f6e626d76ad8fd5a4a591966fa8b145f"
+      "start": 6,
+      "end": 12,
+      "sha256": "0c5c7ca0acbff194dd58f284bf5be567820bee0eb9051e079b3ebce14678ee4f"
     },
     {
       "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
@@ -8274,6 +9228,12 @@
       "start": 107,
       "end": 140,
       "sha256": "3887118c55c467cb8d2661eee9b3dc45ab37392fae352cd0fc5090a0ad947c80"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu",
+      "start": 32,
+      "end": 91,
+      "sha256": "fa095f4f8a0deba17babeca6a86d0ef7f6e626d76ad8fd5a4a591966fa8b145f"
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu",
@@ -8306,16 +9266,16 @@
       "sha256": "aee6ee0e1b2f1d440931b098fcf95ac1997bffa9522a766f8403570cf0fe57ee"
     },
     {
-      "path": "dlssnr/weights.py",
-      "start": 54,
-      "end": 77,
-      "sha256": "d4f97a81283127ba043fa6a541bdd5452e5d9e4013f9aa13824bf6501713c3a3"
+      "path": "csrc/kernel_impl/bottleneck_c1024_ffn/common/global_ffn_expand.cuh",
+      "start": 11,
+      "end": 21,
+      "sha256": "5f2207ccc08bf730bb718dfc42a0687fa5753e21ed5c631dc91b3f839813b9ff"
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp8/global_ffn_expand_c1024_fp8.cu",
-      "start": 78,
-      "end": 89,
-      "sha256": "55ee4b71faf714eaf18ccfb7d796844de77db44db78f53dea9155c9172d46af1"
+      "start": 6,
+      "end": 12,
+      "sha256": "7f64638d6bfefa4f578e4f7cde3dcfe23f178a753e5f758d703556d35ce6c098"
     },
     {
       "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
@@ -8330,22 +9290,52 @@
       "sha256": "a404d3d6b9a8bb11b40160b9a3c7f9a2f948ff21f475e7f9811268eb012ae527"
     },
     {
+      "path": "dlssnr/weights.py",
+      "start": 54,
+      "end": 77,
+      "sha256": "d4f97a81283127ba043fa6a541bdd5452e5d9e4013f9aa13824bf6501713c3a3"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp8/global_ffn_expand_c1024_fp8.cu",
+      "start": 78,
+      "end": 89,
+      "sha256": "55ee4b71faf714eaf18ccfb7d796844de77db44db78f53dea9155c9172d46af1"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp8/global_ffn_expand_c1024_fp8.cu",
+      "start": 26,
+      "end": 61,
+      "sha256": "87fbf9995c4cb75f73a370c71b610d0c4215896a5507b2efe98b61313c65452e"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "start": 24,
+      "end": 46,
+      "sha256": "a57d96d1b5875684f6edcd3a8a018c9c797e09e4dad6fc9b53111634e337fad7"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 189,
+      "end": 202,
+      "sha256": "7b70e2ee1983a20ee400410d86d038af78c95b44a04070a2449b6b260284f717"
+    },
+    {
       "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp8/global_ffn_expand_c1024_fp8.cu",
       "start": 128,
       "end": 162,
       "sha256": "f84d75166469dda5e6d2de35406c3431d197925898b13840229c0ab0dfe8f77e"
     },
     {
-      "path": "dlssnr/weights.py",
-      "start": 54,
-      "end": 77,
-      "sha256": "d4f97a81283127ba043fa6a541bdd5452e5d9e4013f9aa13824bf6501713c3a3"
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+      "start": 12,
+      "end": 29,
+      "sha256": "bcab2fd079d376c6bee3eb29910977cc64ebcf95a07cc2f78ae8a30edfdafe7d"
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
-      "start": 94,
-      "end": 107,
-      "sha256": "8a7f449d9167834942365e42efa14318cf1aa1aea2e1f0d52da0192903cec732"
+      "start": 6,
+      "end": 18,
+      "sha256": "1fc0cdb0ce4257e1668bedd80419af7db4c058e73dd9b74096a0abe38aa7d564"
     },
     {
       "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
@@ -8360,6 +9350,36 @@
       "sha256": "7c1fbb6b80efbfbee0444700ceda807b825a1884ede37f63217d9eb7c5eed228"
     },
     {
+      "path": "dlssnr/weights.py",
+      "start": 54,
+      "end": 77,
+      "sha256": "d4f97a81283127ba043fa6a541bdd5452e5d9e4013f9aa13824bf6501713c3a3"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+      "start": 94,
+      "end": 107,
+      "sha256": "8a7f449d9167834942365e42efa14318cf1aa1aea2e1f0d52da0192903cec732"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+      "start": 32,
+      "end": 73,
+      "sha256": "b25ec4db4f0db596065bcdda5c88fdf6392a575129ecd44ef1b7f0a42d1c2f41"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "start": 24,
+      "end": 46,
+      "sha256": "a57d96d1b5875684f6edcd3a8a018c9c797e09e4dad6fc9b53111634e337fad7"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 189,
+      "end": 202,
+      "sha256": "7b70e2ee1983a20ee400410d86d038af78c95b44a04070a2449b6b260284f717"
+    },
+    {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
       "start": 216,
       "end": 248,
@@ -8372,16 +9392,16 @@
       "sha256": "a5427e7167658536140bbbdd23a291da1fca6fc63c96465358d3afc7797dc4cf"
     },
     {
-      "path": "dlssnr/weights.py",
-      "start": 54,
-      "end": 77,
-      "sha256": "d4f97a81283127ba043fa6a541bdd5452e5d9e4013f9aa13824bf6501713c3a3"
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+      "start": 12,
+      "end": 29,
+      "sha256": "bcab2fd079d376c6bee3eb29910977cc64ebcf95a07cc2f78ae8a30edfdafe7d"
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
-      "start": 94,
-      "end": 107,
-      "sha256": "8a7f449d9167834942365e42efa14318cf1aa1aea2e1f0d52da0192903cec732"
+      "start": 6,
+      "end": 18,
+      "sha256": "1fc0cdb0ce4257e1668bedd80419af7db4c058e73dd9b74096a0abe38aa7d564"
     },
     {
       "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
@@ -8396,6 +9416,36 @@
       "sha256": "7c1fbb6b80efbfbee0444700ceda807b825a1884ede37f63217d9eb7c5eed228"
     },
     {
+      "path": "dlssnr/weights.py",
+      "start": 54,
+      "end": 77,
+      "sha256": "d4f97a81283127ba043fa6a541bdd5452e5d9e4013f9aa13824bf6501713c3a3"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+      "start": 94,
+      "end": 107,
+      "sha256": "8a7f449d9167834942365e42efa14318cf1aa1aea2e1f0d52da0192903cec732"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+      "start": 32,
+      "end": 73,
+      "sha256": "b25ec4db4f0db596065bcdda5c88fdf6392a575129ecd44ef1b7f0a42d1c2f41"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "start": 24,
+      "end": 46,
+      "sha256": "a57d96d1b5875684f6edcd3a8a018c9c797e09e4dad6fc9b53111634e337fad7"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 189,
+      "end": 202,
+      "sha256": "7b70e2ee1983a20ee400410d86d038af78c95b44a04070a2449b6b260284f717"
+    },
+    {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
       "start": 216,
       "end": 248,
@@ -8406,6 +9456,30 @@
       "start": 51,
       "end": 66,
       "sha256": "a5427e7167658536140bbbdd23a291da1fca6fc63c96465358d3afc7797dc4cf"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+      "start": 12,
+      "end": 29,
+      "sha256": "bcab2fd079d376c6bee3eb29910977cc64ebcf95a07cc2f78ae8a30edfdafe7d"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_qkv_c1024_fp8.cu",
+      "start": 6,
+      "end": 12,
+      "sha256": "3f0c26d710302c896fec99c3b6091431b407512563f101a6fc4ffcd8fe05d349"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
+      "start": 9,
+      "end": 19,
+      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_qkv_c1024_fp8.cu",
+      "start": 104,
+      "end": 120,
+      "sha256": "722e3cb8a73cabec8dc9c9ab48e49970effe6aa59b354a5cc99754bb237cec9e"
     },
     {
       "path": "dlssnr/weights.py",
@@ -8420,16 +9494,22 @@
       "sha256": "b6d9d7388d15836d995e798f6edbbf240548c17a2c41fe4e47d2d09d66a09b4b"
     },
     {
-      "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
-      "start": 9,
-      "end": 19,
-      "sha256": "ad08abd555985d863e9ca73a86736b57289784324658ab18b11370f5c7cd554d"
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_qkv_c1024_fp8.cu",
+      "start": 32,
+      "end": 70,
+      "sha256": "7db2bc10ccb0a08385e946597eb61ccea7302c054c9af8ace1940f44b89efca2"
     },
     {
-      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_qkv_c1024_fp8.cu",
-      "start": 104,
-      "end": 120,
-      "sha256": "722e3cb8a73cabec8dc9c9ab48e49970effe6aa59b354a5cc99754bb237cec9e"
+      "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+      "start": 24,
+      "end": 46,
+      "sha256": "a57d96d1b5875684f6edcd3a8a018c9c797e09e4dad6fc9b53111634e337fad7"
+    },
+    {
+      "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+      "start": 189,
+      "end": 202,
+      "sha256": "7b70e2ee1983a20ee400410d86d038af78c95b44a04070a2449b6b260284f717"
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention/common/global_qkv.cuh",
@@ -8456,10 +9536,16 @@
       "sha256": "a5427e7167658536140bbbdd23a291da1fca6fc63c96465358d3afc7797dc4cf"
     },
     {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/common/global_attention.cuh",
+      "start": 12,
+      "end": 21,
+      "sha256": "9442e2154a9a274b89bd9fb0540345d1513fb953ae4cb90da95aff2ec678152c"
+    },
+    {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu",
-      "start": 32,
-      "end": 87,
-      "sha256": "54cbdd646b857da2c7d242aae61becda08c32335590e39be35d28ae3ad7f9fbc"
+      "start": 6,
+      "end": 12,
+      "sha256": "3a9eb80dd4c9ad52e6f16692a4494b09842d11f3060a0df97d586ed6dd2d0f44"
     },
     {
       "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
@@ -8472,6 +9558,12 @@
       "start": 103,
       "end": 134,
       "sha256": "27f02f4fd5d897f4c7c73a5c00fbc5c77a5c68efd376fa8fd1cc346ef1737f03"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu",
+      "start": 32,
+      "end": 87,
+      "sha256": "54cbdd646b857da2c7d242aae61becda08c32335590e39be35d28ae3ad7f9fbc"
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu",
@@ -10027,11 +11119,11 @@
     },
     {
       "slug": "c512-ffn",
-      "title": "C512 grouped FFN: from model slices to register panels"
+      "title": "C512 grouped FFN: optional family reference"
     },
     {
       "slug": "c512-attention",
-      "title": "C512 attention and its C1024 transitions"
+      "title": "C512 attention and transitions: optional reference"
     },
     {
       "slug": "bottleneck-linear",
@@ -10056,6 +11148,10 @@
     {
       "slug": "glossary",
       "title": "Kernel vocabulary, explained"
+    },
+    {
+      "slug": "measurement-method",
+      "title": "How the lessons are built and measured"
     }
   ],
   "lessons": [

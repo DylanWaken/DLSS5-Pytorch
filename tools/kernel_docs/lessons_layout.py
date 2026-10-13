@@ -1,6 +1,105 @@
 """Standalone lessons for four C1024 permutations and counter initialization."""
 from common import code, svg, note
 from lesson_support import pseudo
+import re
+from html import escape
+
+
+TITLES = ['The whole problem', 'One CTA: its concrete subproblem', 'Warp and thread ownership',
+          'Resource budget', 'Execution and scheduling', 'Trace one token through the source']
+
+
+def chapter(ident, number, content):
+    return f'<h2 id="{ident}">{number}. {TITLES[number-1]}</h2>' + content
+
+
+def pieces(body):
+    return {m[1]:(m[2],m[3]) for m in re.finditer(r'<h2 id="([^"]+)">(.*?)</h2>(.*?)(?=<h2 |\Z)',body,re.S)}
+
+
+def sub(parts, key):
+    title,body=parts[key]
+    return '<h3 id="'+key+'">'+re.sub(r'^\d+\. ','',title)+'</h3>'+body
+
+
+def take_source(fragment):
+    """Move the owning instruction loop from ownership prose into the trace."""
+    excerpts=re.findall(r'<details class="source".*?</details>',fragment,re.S)
+    return re.sub(r'<details class="source".*?</details>','',fragment,flags=re.S),''.join(excerpts)
+
+
+def stripmap(title, labels, caption):
+    markup=''
+    for i,(heading,detail) in enumerate(labels):
+        x=20+230*i
+        markup+=f'<rect class="{"compute" if i%2 else "storage"}" x="{x}" y="32" width="205" height="110" rx="8"/><text class="label" x="{x+12}" y="64">{escape(heading)}</text><text class="small" x="{x+12}" y="103">{escape(detail)}</text>'
+        if i+1<len(labels):markup+=f'<path class="edge" d="M{x+206} 85 H{x+229}"/>'
+    markup+=f'<text class="small" x="20" y="188">{escape(caption)}</text>'
+    return svg(title, f'0 0 {230*len(labels)+20} 215', markup)
+
+
+def revise_repack(body,fp8,forward):
+    old=pieces(body); words=256 if fp8 else 512; blocks=2176 if fp8 else 4352
+    extent=2176 if fp8 and forward else 2160
+    result=chapter('problem',1,old['model'][1]+sub(old,'baseline'))
+    result+=chapter('cta',2,f'''<p>For the 3840×2160 image, the bottleneck is H=36, W=60, T=2160. The deployment launcher submits <strong>{blocks} CTAs × 256 threads</strong>. One CTA owns 256 logical uint32 work items on its first iteration: {'one complete token (1024 bytes)' if fp8 else 'half of a token (1024 bytes); two CTAs cover a 2048-byte token'}. Logical ownership is contiguous even though physical addresses are interleaved. There is no matrix subproblem or reuse across threads.</p><p>The launcher sizes for 2176 allocated tokens. This kernel actually covers {extent} tokens × {words} words. Thus {'the final 16 token CTAs write zeros' if fp8 and forward else f'the final {blocks-(extent*words//256)} CTAs have no valid loop iteration'}. A larger allocation or grid does not enlarge the source loop bound. The measured launch table below independently checks the submitted geometry.</p>''')
+    result+=stripmap('One repack CTA covers a 1024-byte logical slice',[
+        ('CTA b', 'i₀ = 256 × b'),('256 word owners','i = i₀ + thread'),
+        ('Token / channel',f't = i/{words}; cw=i%{words}'),('Physical copy','4F(src) → 4F(dst)')],
+        'Each word has one writer. The spatial permutation changes token bits; it never mixes values.')
+    ownership,loop_source=take_source(old['threads'][1])
+    result+=chapter('warp',3,ownership)
+    result+=stripmap('Eight independent warps inside a repack CTA',[
+        ('Warp 0','threads 0…31'),('Warp w','threads 32w…32w+31'),
+        ('Lane ℓ','one uint32 word'),('Next iteration',f'i += {blocks*256:,} at 4K')],
+        '32 lanes copy 128 useful bytes per warp iteration; transaction count depends on the permuted addresses.')
+    result+=chapter('resources',4,'''<p>Application shared memory: <strong>0 bytes</strong>. Shared barriers, tensor fragments, and persistent register arrays: <strong>none</strong>. Each active thread needs a 32-bit word plus integer address/control temporaries; pointer and multiply lowering can consume more than one register. The source has no register cap. Do not infer allocated registers by counting C++ variables.</p><p>No staging buffer exists, so there is no shared-memory bank map or XOR swizzle to invent. L1/L2 cache residency is managed by hardware and varies with replay; the source only specifies global-memory addresses. The profiler's driver reservation is distinct from source-declared shared bytes.</p><!-- RESOURCE_EVIDENCE -->''')
+    result+=chapter('schedule',5,'''<p>The SM schedules independent CTAs in any order; nothing in this permutation depends on that order. Within each thread, calculate a work index, test the loop bound, derive token and word coordinates, then execute the direction-specific copy. Increment by the grid stride and repeat. The next kernel observes completion through stream ordering.</p>''')
+    result+=stripmap('Repack control flow',[
+        ('Index + bound','i < logical extent?'),('Coordinates','t, cw → y,x → S(t)'),
+        ('Input operand','zero if padded' if forward else 'load one uint32'),('Output + loop','store; i += grid stride')],
+        'False loop predicate → exit. Forward valid rows load input; forward padded rows bypass that read entirely.')
+    result+=chapter('trace',6,'''<p>Keep one colored payload in mind: <strong>token 309, channel word 13</strong>. It is owned by thread 13, warp 0, lane 13 in CTA '''+str((309*words+13)//256)+'''. The following derivation follows its spatial index, packed-word address, global load, register value, and global store without changing the example midway.</p>''')
+    for key in ('spatial','address'):result+=sub(old,key)
+    def packed(t,cw):
+        return (t//16)*(16*words)+(cw//8)*128+(t%8)*16+(cw%4)*4+((cw%8)//4)*2+(t%16)//8
+    src,dst=(4*packed(277,13),4*packed(309,13)) if forward else (4*packed(309,13),4*packed(277,13))
+    result+=stripmap(f'{"FP8" if fp8 else "FP16"}: token309 word13 through actual storage',[
+        ('Global input',f'base + {src:,} bytes'),('Ordinary 32-bit load','hardware-managed L1/L2'),
+        ('Register payload','bits copied unchanged'),('Global output',f'base + {dst:,} bytes')],
+        'One uint32 carries '+('[50,51,58,59] model channels.' if fp8 else 'Half channels26/27.')+' Cache hits and transactions require profiler evidence.')
+    result+='<h3 id="copy-source">Execute the address derivation in the owning loop</h3><p>The selected logical work item is <code>i='+str(309*words+13)+'</code>. Its bound succeeds, integer decomposition gives token309 and word13, and the layout helpers produce the two byte offsets above. The source expresses an ordinary uint32 global load followed by a global store; there is no explicit cache operator, vector copy, shared stage or collective. The compiler selects machine instruction details, which the SASS evidence below can verify. On the documented covering grid the next grid-stride index exceeds the loop limit, so this thread executes one copy.</p>'+loop_source
+    for key in ('bounds','rebuild','tests'):result+=sub(old,key)
+    result+='<!-- NCU_EVIDENCE -->'
+    return result.replace('This source tour supplies no new bandwidth result; measure effective read-plus-write bytes and memory transactions on the target GPU before changing the access width or introducing a tiled staging algorithm.','The measured evidence below checks traffic and instructions for the documented workload; an optimization still needs a controlled before/after experiment.')
+
+
+def revise_counter(body):
+    old=pieces(body)
+    result=chapter('problem',1,old['model'][1]+sub(old,'baseline'))
+    result+=chapter('cta',2,'''<p>A CTA initializes at most 256 adjacent int32 counters, or 1024 useful bytes. The first counter-clear call in the 4K deployment initializes 136 counters with one 256-thread CTA: threads 0…135 store, threads 136…255 return. Other calls use counts 272, 544 and 270, so their covering grids differ. The NCU case below profiles that first 136-counter call, while the teaching trace uses 300 counters to expose a partially occupied second CTA.</p>''')
+    result+=stripmap('Counter CTA geometry: measured case and tail example',[
+        ('4K first call','N=136; grid=1'),('CTA 0','256 threads'),
+        ('Live stores','indices 0…135'),('Guarded tail','136…255 → exit')],
+        'One writer per live int32; no grid-stride iteration and no inter-CTA communication inside this launch.')
+    ownership,store_source=take_source(old['address'][1])
+    ownership=re.sub(r'(block 1,? )lanes? (0…43|43|44)',lambda m:m[1]+('threads ' if m[2]=='0…43' else 'thread ')+m[2],ownership,flags=re.I)
+    result+=chapter('warp',3,ownership)
+    result+='''<p>Convert the flat thread index into warp and lane explicitly: thread 43 is <strong>warp 1, lane 11</strong>; thread 44 is warp 1, lane 12. A hardware warp has only 32 lanes. In the measured N=136 case, four warps are fully active, warp 4 has eight valid lanes, and warps 5–7 perform no stores.</p>'''
+    result+=chapter('resources',4,'''<p>Application shared memory: <strong>0 B</strong>. No input payload, tensor-core fragments, shared barriers, or arrays are declared. Index arithmetic and the int32 −1 store operand need compiler-selected registers; the source specifies no max-register cap. The NCU table separates compiled allocation from any driver-managed shared reservation.</p><!-- RESOURCE_EVIDENCE -->''')
+    result+=chapter('schedule',5,old['ordering'][1])
+    result+=stripmap('Counter execution and stream dependency',[
+        ('Prior work done','enqueue clear on stream'),('Index + guard','i = 256b + thread'),
+        ('Store sentinel','counter[i] = −1'),('Next stream work','split producer may run')],
+        'Rejected indices exit before dereference. No atomic or intra-block barrier is required for the independent stores.')
+    result+=chapter('trace',6,'''<p>This kernel moves a <strong>control word</strong>, not an activation token. Trace the illustrative N=300 case: CTA 1, thread 43 (warp 1, lane 11) computes i=299, passes 299&lt;300, forms base+1196, and stores the four bytes FF FF FF FF. Thread 44 computes 300 and exits. A normal global store may be buffered/cached; the next ordered launch establishes when its users can proceed.</p>''')
+    result+=stripmap('Trace control word299 to the global counter allocation',[
+        ('CTA1 / thread43','warp1 / lane11'),('Predicate','299 < 300: write'),
+        ('Register / immediate','int32 −1 = 0xFFFFFFFF'),('Global address','base + 1196 bytes')],
+        'No input-memory load: the source supplies a literal sentinel. The following stream-ordered launch consumes it.')
+    result+='<h3 id="store-source">The complete source at the write boundary</h3><p>The index expression uses the actual blockDim.x, which is256 in this plan. The signed int32 guard rejects the tail before pointer dereference; launcher validation supplies the admitted count/index domain. The ordinary int32 assignment is the only memory operation. Cache transaction count and the compiled store opcode come from the measured report, not from the number of source statements.</p>'+store_source
+    result+=sub(old,'rebuild')+sub(old,'tests')+'<!-- NCU_EVIDENCE -->'
+    return result.replace('No new launch-overhead measurement is claimed here.','The NCU duration below is one instrumented launch, not an end-to-end estimate of host launch overhead.')
 
 
 def repack(name, entry):
@@ -49,7 +148,7 @@ for i = block.x * blockDim.x + thread.x; i < limit; i += gridDim.x * blockDim.x:
     {'if t < T: word = input[F(S(t),cw)];' if forward else '// Ignore all padded input tokens.'}
     output[{'F(t,cw)' if forward else 'F(S(t),cw)'}] = word;''')
     body += '''<h2 id="tests">8. Validate addresses before measuring bandwidth</h2><ol><li>Enumerate every <code>(token%16,cw%8)</code> pair on CPU. Verify 128 unique offsets from 0 through 127. Then check the full geometry has no destination collisions.</li><li>Fill packed words with an index-derived integer pattern. Compare this direction against the scalar baseline word for word; also run forward then inverse and compare every original bit.</li><li>Use widths with more than one tile column and heights with more than one tile row. Include a token such as the worked example that moves between tile indices; a single 4×4 tile can hide permutation mistakes.</li><li>Test a forward extent that requires padding where the geometry permits it, poison the destination first, and check only the specified aligned tail becomes zero. For inverse, poison padding in the input and put canaries after the spatial output.</li><li>Repeat with an intentionally smaller grid to exercise a second grid-stride iteration. Test both precisions separately, because their word counts differ.</li></ol><p>The optimization here is avoiding computation: copy packed bits, derive addresses with power-of-two divisions and remainders, and let independent threads stream through the permutation. This source tour supplies no new bandwidth result; measure effective read-plus-write bytes and memory transactions on the target GPU before changing the access width or introducing a tiled staging algorithm.</p>'''
-    return dict(name=name,title=f'{precision} C1024 repack: {direction}',summary='Build a bit-exact layout permutation from pixel coordinates to packed words, with a numerical address trace, thread ownership and precise padding rules.',family='C1024 layout',body=body)
+    return dict(name=name,title=f'{precision} C1024 repack: {direction}',summary='Build a bit-exact layout permutation from pixel coordinates to packed words, with a numerical address trace, thread ownership and precise padding rules.',family='C1024 layout',body=revise_repack(body,fp8,forward))
 
 
 def counter(entry):
@@ -65,7 +164,7 @@ def counter(entry):
 <h2 id="rebuild">5. Reconstruct and integrate the kernel</h2><p>Use the exact ABI record in the appendix: a 64-bit device address, a 32-bit count, and reserved padding, totaling 16 bytes. Zero-initialize the record, bind a suitably aligned allocation large enough for <code>4×CounterCount</code> bytes, select the covering grid, and enqueue before its users. Do not substitute an 8-bit count or write floating-point negative one. The desired 32-bit bit pattern is all ones.</p>'''
     body+=pseudo('i = block.x * blockDim.x + thread.x\nif i >= CounterCount: return\nreinterpret_int32(g_Counters)[i] = -1', 'Final parallel algorithm')
     body+='''<h2 id="tests">6. Validate the sentinel and launch coverage</h2><ol><li>Use counts 1, 255, 256, 257 and 300. Fill the allocation with a different pattern, launch a covering grid, and check every live value is signed <code>-1</code>.</li><li>Put canaries after the live range. Verify the final partial block does not touch them.</li><li>Repeat after a simulated completed invocation has left nonnegative values. A fresh reset must remove all stale progress.</li><li>Check host launch ordering alongside the real consumer. A correct isolated reset cannot fix a cross-stream race or a consumer using the wrong counter array.</li></ol><p>The kernel is intentionally small. Its useful optimizations are coalesced stores, no unnecessary reads, and one guard at the tail. Combining it with another launch is only valid if the full dependency protocol still guarantees that every counter is initialized before any consumer can poll it. No new launch-overhead measurement is claimed here.</p>'''
-    return dict(name=name,title='Completion-counter clear: initialize split progress',summary='Derive the sentinel, byte address, launch coverage and stream dependency of the small kernel that resets bottleneck scheduling state.',family='Scheduling',body=body)
+    return dict(name=name,title='Completion-counter clear: initialize split progress',summary='Derive the sentinel, byte address, launch coverage and stream dependency of the small kernel that resets bottleneck scheduling state.',family='Scheduling',body=revise_counter(body))
 
 
 def build_lessons(inventory):

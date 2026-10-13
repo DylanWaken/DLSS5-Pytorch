@@ -182,29 +182,29 @@ def enrich(lesson,entry):
     name=lesson['name'];body=lesson['body'];fp8=name.endswith('fp8')
     path='csrc/'+entry['header']
     if name.startswith('repack_'):
-        lesson['body']=append_section(body,['address'],repack_bits(name));return
+        lesson['body']=append_section(body,['trace'],repack_bits(name));return
     if name=='completion_counter_clear':
         s=text(20,28,'Counter 299 follows one thread’s store path',20)
         for i,(heading,detail) in enumerate([('block 1 / 256 threads','thread 43 = warp 1, lane 11'),('register/immediate −1','32 bits: 0xFFFFFFFF'),('global counter[299]','base + 4·299 = base +1196')]):
             s+=box(20+i*350,85,320,[heading,detail],SELECT if i==2 else TOKEN)
             if i<2:s+=arrow(340+i*350,125,365+i*350,125)
         s+=text(20,220,'thread 44 → counter 300 → guard rejects it. No activation token, shared-memory traffic or MMA.')
-        lesson['body']=append_section(body,['address'],figure('Counter element through lane and global store',255,s,'This scheduling kernel owns control words rather than model tokens. The same launch/lane/address reasoning applies.'));return
+        lesson['body']=append_section(body,['trace'],figure('Counter element through lane and global store',255,s,'This scheduling kernel owns control words rather than model tokens. The same launch/lane/address reasoning applies.'));return
 
     local=re.search(r'window_block_c(32|64|128|256)',name)
     if local:
         c=int(local[1])
-        if c>32:body=append_section(body,['ffn'],local_exchange(c,fp8))
+        if c>32:body=append_section(body,['trace'],local_exchange(c,fp8))
         elif 'upsample' not in name:
-            body=append_section(body,['input'],local_scalar(fp8,'input_view' in name))
+            body=append_section(body,['trace'],local_scalar(fp8,'input_view' in name))
 
 
     elif name.startswith(('input_preprocess','output_window')):
         pass
     elif name.startswith('global_attention'):
-        body=append_section(body,['pipeline'],kv_trace(fp8,path))
+        body=append_section(body,['trace'],kv_trace(fp8,path))
 
     else:
         gather=name.startswith('window_ffn_input_view_')
-        if gather:body=append_section(body,['layout'],gather_trace(fp8,path))
+        if gather:body=append_section(body,['trace'],gather_trace(fp8,path))
     lesson['body']=body
