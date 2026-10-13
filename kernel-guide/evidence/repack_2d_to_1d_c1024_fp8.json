@@ -1,0 +1,2379 @@
+[
+  {
+    "function": "void repack_spatial_to_token<(bool)1>(FGlobalRepackParameters)",
+    "metrics": {
+      "device__attribute_max_registers_per_multiprocessor": {
+        "value": 65536,
+        "unit": ""
+      },
+      "device__attribute_max_shared_memory_per_multiprocessor": {
+        "value": 102400,
+        "unit": ""
+      },
+      "device__attribute_max_warps_per_multiprocessor": {
+        "value": 48,
+        "unit": ""
+      },
+      "device__attribute_multiprocessor_count": {
+        "value": 188,
+        "unit": ""
+      },
+      "dram__bytes_op_read.sum": {
+        "value": 2226176.0,
+        "unit": "byte"
+      },
+      "dram__bytes_op_write.sum": {
+        "value": 0.0,
+        "unit": "byte"
+      },
+      "gpu__dram_throughput.avg.pct_of_peak_sustained_elapsed": {
+        "value": 37.690707350901526,
+        "unit": "%"
+      },
+      "gpu__time_duration.sum": {
+        "value": 3520.0,
+        "unit": "ns"
+      },
+      "l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_st.sum": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "l1tex__t_sector_hit_rate.pct": {
+        "value": 0.11531365313653136,
+        "unit": "%"
+      },
+      "launch__barrier_count": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__block_dim_x": {
+        "value": 256,
+        "unit": "block"
+      },
+      "launch__block_dim_y": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_dim_z": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_size": {
+        "value": 256,
+        "unit": ""
+      },
+      "launch__cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_max_active": {
+        "value": 0,
+        "unit": "cluster"
+      },
+      "launch__cluster_max_potential_size": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__cluster_scheduling_policy": {
+        "value": "PolicySpread",
+        "unit": ""
+      },
+      "launch__cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__context_id": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__device_id": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__execution_model": {
+        "value": "SIMT",
+        "unit": ""
+      },
+      "launch__func_cache_config": {
+        "value": "CachePreferNone",
+        "unit": ""
+      },
+      "launch__grid_dim_x": {
+        "value": 2176,
+        "unit": ""
+      },
+      "launch__grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_size": {
+        "value": 2176,
+        "unit": ""
+      },
+      "launch__kernel_name": {
+        "value": "",
+        "unit": ""
+      },
+      "launch__occupancy_cluster_gpu_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_cluster_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_limit_barriers": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_blocks": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_registers": {
+        "value": 10.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_shared_mem": {
+        "value": 16.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_warps": {
+        "value": 6.0,
+        "unit": "block"
+      },
+      "launch__per_block_memory_size": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__persisting_l2_cache_size": {
+        "value": 25165824,
+        "unit": "byte"
+      },
+      "launch__preferred_cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__registers_per_thread": {
+        "value": 20,
+        "unit": "register/thread"
+      },
+      "launch__registers_per_thread_allocated": {
+        "value": 24.0,
+        "unit": "register/thread"
+      },
+      "launch__shared_mem_config_size": {
+        "value": 16384,
+        "unit": "byte"
+      },
+      "launch__shared_mem_per_block": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_allocated": {
+        "value": 1024.0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_driver": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_dynamic": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_static": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__sm_count": {
+        "value": 188,
+        "unit": "SM"
+      },
+      "launch__stack_size": {
+        "value": 1024.0,
+        "unit": ""
+      },
+      "launch__stream_id": {
+        "value": 13,
+        "unit": ""
+      },
+      "launch__thread_count": {
+        "value": 557056,
+        "unit": "thread"
+      },
+      "launch__tpc_count": {
+        "value": 94,
+        "unit": ""
+      },
+      "launch__tpc_enabled": {
+        "value": "all",
+        "unit": ""
+      },
+      "launch__user_grid_dim_x": {
+        "value": 2176,
+        "unit": ""
+      },
+      "launch__user_grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_size": {
+        "value": 2176,
+        "unit": ""
+      },
+      "launch__uses_blocks_as_clusters": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_cdp": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_green_context": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_nvlink_centric_scheduling": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_vgpu": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__waves_per_multiprocessor": {
+        "value": 1.9290780141843973,
+        "unit": ""
+      },
+      "lts__t_sector_hit_rate.pct": {
+        "value": 63.01283165837883,
+        "unit": "%"
+      },
+      "memory_l1_wavefronts_shared": {
+        "value": 0,
+        "unit": "sectors"
+      },
+      "memory_l1_wavefronts_shared_ideal": {
+        "value": 0,
+        "unit": "sectors"
+      },
+      "sass__inst_executed_global_loads": {
+        "value": 17280.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_global_stores": {
+        "value": 17408.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_local_loads": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_local_stores": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_register_spilling": {
+        "value": 0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_shared_loads": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_shared_stores": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sm__cycles_active.avg": {
+        "value": 5252.718085106383,
+        "unit": "cycle"
+      },
+      "sm__cycles_active.max": {
+        "value": 5518.0,
+        "unit": "cycle"
+      },
+      "sm__cycles_active.min": {
+        "value": 4603.0,
+        "unit": "cycle"
+      },
+      "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "sm__throughput.avg.pct_of_peak_sustained_elapsed": {
+        "value": 20.66894880534248,
+        "unit": "%"
+      },
+      "sm__warps_active.avg.pct_of_peak_sustained_active": {
+        "value": 84.60310188949794,
+        "unit": "%"
+      },
+      "smsp__issue_active.avg.per_cycle_active": {
+        "value": 0.3340842367053471,
+        "unit": ""
+      },
+      "smsp__pcsamp_aggregated_passes": {
+        "value": 2,
+        "unit": "pass"
+      },
+      "smsp__pcsamp_sample_count": {
+        "value": 240,
+        "unit": ""
+      },
+      "smsp__warps_active.avg.per_cycle_active": {
+        "value": 9.326131112279683,
+        "unit": "warp"
+      },
+      "smsp__warps_eligible.avg.per_cycle_active": {
+        "value": 1.0552217790483707,
+        "unit": "warp"
+      }
+    },
+    "opcodes": {
+      "IMAD": 259840.0,
+      "IADD3": 207744.0,
+      "LOP3": 173568.0,
+      "SHF": 104064.0,
+      "ISETP": 104064.0,
+      "LDCU": 87040.0,
+      "LDC": 52224.0,
+      "UIMAD": 34816.0,
+      "S2R": 34816.0,
+      "EXIT": 34816.0,
+      "BRA": 34816.0,
+      "USHF": 17408.0,
+      "ULOP3": 17408.0,
+      "ULEA": 17408.0,
+      "STG": 17408.0,
+      "HFMA2": 17408.0,
+      "BSYNC": 17408.0,
+      "BSSY": 17408.0,
+      "UI2F": 17280.0,
+      "MUFU": 17280.0,
+      "MOV": 17280.0,
+      "LDG": 17280.0,
+      "F2I": 17280.0
+    },
+    "instructions": [
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 7,
+        "sass": "LDC R1, c[0x0][0x37c]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 21,
+        "sass": "S2R R0, SR_CTAID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 12,
+        "sass": "LDCU.64 UR8, c[0x0][0x390]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 18,
+        "sass": "LDCU UR7, c[0x0][0x360]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 12,
+        "sass": "UIMAD UR4, UR8, UR9, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 12,
+        "sass": "ULEA UR5, UR4, 0x1f00, 0x8"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 15,
+        "sass": "ULOP3.LUT UR5, UR5, 0xffffe000, URZ, 0xc0, !UPT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 21,
+        "sass": "IMAD R0, R0, UR7, R3"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 21,
+        "sass": "ISETP.GE.U32.AND P0, PT, R0, UR5, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 21,
+        "sass": "@P0   EXIT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 37,
+        "sass": "LDC.64 R2, c[0x0][0x380]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 35,
+        "sass": "USHF.R.U32.HI UR6, URZ, 0x2, UR9"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 27,
+        "sass": "IMAD.SHL.U32 R9, R0, 0x10, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 24,
+        "sass": "SHF.R.U32.HI R17, RZ, 0x8, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 32,
+        "sass": "BSSY.RECONVERGENT B0, 0x12015cd680"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 20,
+        "sass": "LOP3.LUT R9, R9, 0xf80, RZ, 0xc0, !PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 32,
+        "sass": "HFMA2 R13, -RZ, RZ, 0, 0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 20,
+        "sass": "IADD3 R6, PT, PT, R11, R6, R8"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 39,
+        "sass": "IMAD.WIDE.U32 R6, R7, 0x4, R4"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 32,
+        "sass": "@P0   BRA 0x12015cd670"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 27,
+        "sass": "UI2F.U32.RP UR8, UR12"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 27,
+        "sass": "MOV R12, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 27,
+        "sass": "ISETP.NE.U32.AND P2, PT, RZ, UR12, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 27,
+        "sass": "MUFU.RCP R10, UR8"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 27,
+        "sass": "F2I.FTZ.U32.TRUNC.NTZ R13, R10"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 27,
+        "sass": "IMAD.HI.U32 R12, R13, R15, R12"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 37,
+        "sass": "LDG.E R13, desc[UR10][R8.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 37,
+        "sass": "BSYNC.RECONVERGENT B0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 39,
+        "sass": "STG.E desc[UR10][R6.64], R13"
+      }
+    ],
+    "lines": [
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 20,
+        "executed": 312576,
+        "opcodes": {
+          "IMAD": 69376,
+          "SHF": 52096,
+          "LOP3": 139008,
+          "IADD3": 52096
+        },
+        "stalls": {
+          "dispatch_stall": 1,
+          "math_pipe_throttle": 4,
+          "no_instructions": 1,
+          "not_selected": 6,
+          "selected": 2,
+          "wait": 3
+        },
+        "sass": [
+          "IMAD.SHL.U32 R8, R0, 0x4, RZ",
+          "SHF.R.U32.HI R11, RZ, 0x1, R0",
+          "LOP3.LUT R9, R9, 0xf80, RZ, 0xc0, !PT",
+          "IMAD.SHL.U32 R10, R17, 0x10, RZ",
+          "SHF.R.U32.HI R7, RZ, 0xb, R0",
+          "LOP3.LUT R8, R8, 0xc, RZ, 0xc0, !PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 27,
+        "executed": 345600,
+        "opcodes": {
+          "UI2F": 17280,
+          "MOV": 17280,
+          "ISETP": 51840,
+          "MUFU": 17280,
+          "IADD3": 120960,
+          "F2I": 17280,
+          "IMAD": 86400,
+          "LOP3": 17280
+        },
+        "stalls": {
+          "dispatch_stall": 3,
+          "math_pipe_throttle": 4,
+          "not_selected": 2,
+          "selected": 2,
+          "short_scoreboard": 3,
+          "wait": 11
+        },
+        "sass": [
+          "UI2F.U32.RP UR8, UR12",
+          "MOV R12, RZ",
+          "ISETP.NE.U32.AND P2, PT, RZ, UR12, PT",
+          "MUFU.RCP R10, UR8",
+          "IADD3 R10, PT, PT, R10, 0xffffffe, RZ",
+          "F2I.FTZ.U32.TRUNC.NTZ R13, R10"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 28,
+        "executed": 86400,
+        "opcodes": {
+          "SHF": 34560,
+          "LOP3": 17280,
+          "IMAD": 34560
+        },
+        "stalls": {
+          "dispatch_stall": 1,
+          "not_selected": 1,
+          "selected": 1,
+          "wait": 2
+        },
+        "sass": [
+          "SHF.R.U32.HI R13, RZ, 0x2, R12",
+          "LOP3.LUT R15, R10, 0x3, RZ, 0xc0, !PT",
+          "SHF.R.U32.HI R10, RZ, 0x2, R10",
+          "IMAD R15, R12, 0x4, R15",
+          "IMAD R10, R13, UR6, R10"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 7,
+        "executed": 17408,
+        "opcodes": {
+          "LDC": 17408
+        },
+        "stalls": {
+          "mio_throttle": 2,
+          "no_instructions": 15,
+          "not_selected": 2
+        },
+        "sass": [
+          "LDC R1, c[0x0][0x37c]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 12,
+        "executed": 52224,
+        "opcodes": {
+          "LDCU": 17408,
+          "UIMAD": 17408,
+          "ULEA": 17408
+        },
+        "stalls": {
+          "short_scoreboard": 3,
+          "wait": 1
+        },
+        "sass": [
+          "LDCU.64 UR8, c[0x0][0x390]",
+          "UIMAD UR4, UR8, UR9, URZ",
+          "ULEA UR5, UR4, 0x1f00, 0x8"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 15,
+        "executed": 17408,
+        "opcodes": {
+          "ULOP3": 17408
+        },
+        "stalls": {},
+        "sass": [
+          "ULOP3.LUT UR5, UR5, 0xffffe000, URZ, 0xc0, !UPT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 18,
+        "executed": 69632,
+        "opcodes": {
+          "LDCU": 52224,
+          "UIMAD": 17408
+        },
+        "stalls": {
+          "short_scoreboard": 2
+        },
+        "sass": [
+          "LDCU UR7, c[0x0][0x360]",
+          "LDCU UR8, c[0x0][0x370]",
+          "LDCU.64 UR10, c[0x0][0x358]",
+          "UIMAD UR7, UR7, UR8, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 21,
+        "executed": 121856,
+        "opcodes": {
+          "S2R": 34816,
+          "IMAD": 17408,
+          "ISETP": 34816,
+          "EXIT": 17408,
+          "BRA": 17408
+        },
+        "stalls": {
+          "dispatch_stall": 1,
+          "mio_throttle": 1,
+          "short_scoreboard": 1,
+          "wait": 7
+        },
+        "sass": [
+          "S2R R0, SR_CTAID.X",
+          "S2R R3, SR_TID.X",
+          "IMAD R0, R0, UR7, R3",
+          "ISETP.GE.U32.AND P0, PT, R0, UR5, PT",
+          "@P0   EXIT",
+          "@!P0  BRA 0x12015cd320"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 22,
+        "executed": 17408,
+        "opcodes": {
+          "IADD3": 17408
+        },
+        "stalls": {
+          "selected": 2
+        },
+        "sass": [
+          "IADD3 R0, PT, PT, R0, UR7, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 24,
+        "executed": 17408,
+        "opcodes": {
+          "SHF": 17408
+        },
+        "stalls": {},
+        "sass": [
+          "SHF.R.U32.HI R17, RZ, 0x8, R0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 27,
+        "executed": 17408,
+        "opcodes": {
+          "IMAD": 17408
+        },
+        "stalls": {
+          "math_pipe_throttle": 1,
+          "wait": 1
+        },
+        "sass": [
+          "IMAD.SHL.U32 R9, R0, 0x10, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 32,
+        "executed": 69632,
+        "opcodes": {
+          "BSSY": 17408,
+          "ISETP": 17408,
+          "HFMA2": 17408,
+          "BRA": 17408
+        },
+        "stalls": {},
+        "sass": [
+          "BSSY.RECONVERGENT B0, 0x12015cd680",
+          "ISETP.GE.U32.AND P0, PT, R17, UR4, PT",
+          "HFMA2 R13, -RZ, RZ, 0, 0",
+          "@P0   BRA 0x12015cd670"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 35,
+        "executed": 34816,
+        "opcodes": {
+          "LDCU": 17408,
+          "USHF": 17408
+        },
+        "stalls": {},
+        "sass": [
+          "LDCU UR12, c[0x0][0x394]",
+          "USHF.R.U32.HI UR6, URZ, 0x2, UR9"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 37,
+        "executed": 86656,
+        "opcodes": {
+          "LDC": 17408,
+          "IADD3": 17280,
+          "IMAD": 17280,
+          "LDG": 17280,
+          "BSYNC": 17408
+        },
+        "stalls": {
+          "dispatch_stall": 1,
+          "mio_throttle": 1,
+          "selected": 1
+        },
+        "sass": [
+          "LDC.64 R2, c[0x0][0x380]",
+          "IADD3 R9, PT, PT, R11, R8, R9",
+          "IMAD.WIDE.U32 R8, R9, 0x4, R2",
+          "LDG.E R13, desc[UR10][R8.64]",
+          "BSYNC.RECONVERGENT B0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 39,
+        "executed": 52224,
+        "opcodes": {
+          "LDC": 17408,
+          "IMAD": 17408,
+          "STG": 17408
+        },
+        "stalls": {
+          "long_scoreboard": 134,
+          "math_pipe_throttle": 1,
+          "wait": 2
+        },
+        "sass": [
+          "LDC.64 R4, c[0x0][0x388]",
+          "IMAD.WIDE.U32 R6, R7, 0x4, R4",
+          "STG.E desc[UR10][R6.64], R13"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 42,
+        "executed": 17408,
+        "opcodes": {
+          "EXIT": 17408
+        },
+        "stalls": {
+          "branch_resolving": 2,
+          "drain": 5,
+          "selected": 1,
+          "wait": 6
+        },
+        "sass": [
+          "EXIT"
+        ]
+      }
+    ],
+    "stall_totals": {
+      "barrier": 0,
+      "branch_resolving": 2,
+      "dispatch_stall": 7,
+      "drain": 5,
+      "lg_throttle": 0,
+      "long_scoreboard": 134,
+      "math_pipe_throttle": 10,
+      "membar": 0,
+      "mio_throttle": 4,
+      "misc": 0,
+      "no_instructions": 16,
+      "not_selected": 11,
+      "selected": 9,
+      "short_scoreboard": 9,
+      "sleeping": 0,
+      "tex_throttle": 0,
+      "wait": 33
+    },
+    "timeline": {
+      "pmsampling:sm__inst_executed_realtime.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 121,
+        "bucket_size": 1,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          23.680111618647633,
+          0.00028296481096771607,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "pmsampling:sm__inst_executed_pipe_tensor_subpipe_hmma_realtime.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 121,
+        "bucket_size": 1,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "pmsampling:dram__bytes.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 121,
+        "bucket_size": 1,
+        "values": [
+          0.36940894568690097,
+          0.3787878787878788,
+          0.3676470588235294,
+          0.3373015873015873,
+          0.17971246006389777,
+          0.18969648562300317,
+          0.26871019108280253,
+          0.2380952380952381,
+          0.17444178628389154,
+          0.2242822966507177,
+          0.23923444976076555,
+          0.17885532591414946,
+          0.22853736089030208,
+          0.20933014354066987,
+          0.3189792663476874,
+          0.3070522979397781,
+          0.3588516746411483,
+          0.44,
+          0.21894904458598727,
+          0.2289012738853503,
+          0.22781299524564183,
+          0.23961661341853036,
+          0.22464057507987223,
+          43.15381558028617,
+          0.2971473851030111,
+          0.215,
+          0.2840909090909091,
+          0.3781847133757962,
+          0.3924880763116057,
+          0.42862838915470497,
+          0.3588516746411483,
+          0.16918789808917198,
+          0.2179080824088748,
+          0.3090111642743221,
+          0.3090111642743221,
+          0.14453748006379585,
+          0.19345238095238096,
+          0.2492025518341308,
+          0.19,
+          0.26871019108280253,
+          0.3184713375796179,
+          0.3070522979397781,
+          0.27456070287539935,
+          0.2945287539936102,
+          0.39619651347068147,
+          0.19872813990461047,
+          0.22499999999999998,
+          0.21397292993630573,
+          0.23885350318471338,
+          0.21860095389507153,
+          0.23923444976076555,
+          0.3090111642743221,
+          0.3682324840764331,
+          0.3070522979397781,
+          0.2595846645367412,
+          0.259170653907496,
+          0.3781847133757962,
+          0.3179650238473768,
+          0.2492025518341308,
+          0.30950479233226835,
+          0.3090111642743221,
+          0.33783783783783783,
+          0.34226190476190477,
+          0.4136762360446571,
+          0.4784688995215311,
+          0.47694753577106513,
+          0.3875198728139905,
+          0.22999999999999998,
+          0.3184713375796179,
+          0.29856687898089174,
+          0.36648177496038037,
+          0.29,
+          0.2342503987240829,
+          0.303060413354531,
+          0.31695721077654515,
+          0.29,
+          0.26913875598086123,
+          0.2786624203821656,
+          0.2777777777777778,
+          0.39436900958466453,
+          0.388755980861244,
+          0.43859649122807015,
+          0.4952456418383518,
+          0.5283094098883573,
+          0.4179936305732484,
+          0.24960063897763576,
+          0.28724247226624405,
+          0.3189792663476874,
+          0.33999999999999997,
+          0.26871019108280253,
+          0.2380952380952381,
+          0.3875198728139905,
+          0.455,
+          0.4136762360446571,
+          0.4471383147853736,
+          0.47048335974643424,
+          0.5349999999999999,
+          0.3389154704944179,
+          0.2484101748807631,
+          0.2777777777777778,
+          0.31,
+          0.3438995215311005,
+          0.2533783783783784,
+          0.27821939586645467,
+          0.3582802547770701,
+          0.43859649122807015,
+          0.5075636942675159,
+          0.4563492063492064,
+          0.44928115015974446,
+          0.4692492012779553,
+          0.33837579617834396,
+          0.31746031746031744,
+          0.3284235668789809,
+          0.3294728434504792,
+          0.45926517571884984,
+          0.4166666666666667,
+          0.43154761904761907,
+          0.455,
+          0.4179936305732484,
+          0.4179936305732484,
+          0.248015873015873
+        ]
+      }
+    },
+    "rules": [
+      {
+        "rule_identifier": "SOLBottleneck",
+        "name": "Bottleneck",
+        "section_identifier": "SpeedOfLight",
+        "rule_message": {
+          "title": "Latency Issue",
+          "message": "This workload exhibits low compute throughput and memory bandwidth utilization relative to the peak performance of this device. Achieved compute throughput and/or memory bandwidth below 60.0% of peak typically indicate latency issues. Look at @section:SchedulerStats:Scheduler Statistics@ and @section:WarpStateStats:Warp State Statistics@ for potential reasons.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "sm__throughput.avg.pct_of_peak_sustained_elapsed",
+            "value": 20.66894880534248,
+            "severity": 2,
+            "info": "20.669 < 80.000"
+          },
+          {
+            "name": "gpu__compute_memory_throughput.avg.pct_of_peak_sustained_elapsed",
+            "value": 38.929749127117546,
+            "severity": 2,
+            "info": "38.930 < 80.000"
+          }
+        ]
+      },
+      {
+        "rule_identifier": "IssueSlotUtilization",
+        "name": "Issue Slot Utilization",
+        "section_identifier": "SchedulerStats",
+        "rule_message": {
+          "title": "",
+          "message": "Every scheduler is capable of issuing one instruction per cycle, but for this workload each scheduler only issues an instruction every 3.0 cycles. This might leave hardware resources underutilized and may lead to less optimal performance. Out of the maximum of 12 warps per scheduler, this workload allocates an average of 9.33 active warps per scheduler, but only an average of 1.06 warps were eligible per cycle. Eligible warps are the subset of active warps that are ready to issue their next instruction. Every cycle with no eligible warp results in no instruction being issued and the issue slot remains unused. To increase the number of eligible warps, reduce the time the active warps are stalled by inspecting the top stall reasons on the @section:WarpStateStats:Warp State Statistics@ and @section:SourceCounters:Source Counters@ sections.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__issue_active.avg.per_cycle_active",
+            "value": 0.3340842367053471,
+            "severity": 0,
+            "info": "Increase the average number of instructions issued per cycle"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 1,
+          "speedup": 61.07025087288245
+        }
+      },
+      {
+        "rule_identifier": "AchievedOccupancy",
+        "name": "Achieved Occupancy",
+        "section_identifier": "Occupancy",
+        "rule_message": {
+          "title": "",
+          "message": "The difference between calculated theoretical (100.0%) and measured achieved occupancy (84.6%) can be the result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can occur between warps within a block as well as across blocks of the same kernel. See the @url:CUDA Best Practices Guide:https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy@ for more details on optimizing occupancy.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "sm__warps_active.avg.pct_of_peak_sustained_active",
+            "value": 84.60310188949794,
+            "severity": 0,
+            "info": "Increase the achieved occupancy towards the theoretical limit (100.0%)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 15.396898110502063
+        }
+      },
+      {
+        "rule_identifier": "CPIStall",
+        "name": "Warp Stall",
+        "section_identifier": "WarpStateStats",
+        "rule_message": {
+          "title": "Long Scoreboard Stalls",
+          "message": "On average, each warp of this workload spends 15.0 cycles being stalled waiting for a scoreboard dependency on a L1TEX (local, global, surface, texture) operation. Find the instruction producing the data being waited upon to identify the culprit. To reduce the number of cycles waiting on L1TEX data accesses verify the memory access patterns are optimal for the target architecture, attempt to increase cache hit rates by increasing data locality (coalescing), or by changing the cache configuration. Consider moving frequently used data to shared memory. Stall samples are reported on the consumer instruction waiting for the result, not necessarily on the producer. When this reason dominates, the kernel is memory-latency-bound, which is not necessarily memory-bandwidth-bound; prefer latency-hiding changes such as ILP, unrolling, or pipelining when bandwidth is not saturated. This stall type represents about 53.9% of the total average of 27.9 cycles between issuing two instructions.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__issue_active.avg.per_cycle_active",
+            "value": 0.3340842367053471,
+            "severity": 2,
+            "info": "Increase the average number of instructions issued per cycle"
+          },
+          {
+            "name": "smsp_average_long_scoreboard",
+            "value": 15.042004724324585,
+            "severity": 0,
+            "info": "Decrease the number of cycles spent in long scoreboard stalls"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 53.884044802108924
+        }
+      },
+      {
+        "rule_identifier": "CPIStall",
+        "name": "Warp Stall",
+        "section_identifier": "WarpStateStats",
+        "rule_message": {
+          "title": "",
+          "message": "Check the @section:SourceCounters:Warp Stall Sampling (All Samples)@ table for the top stall locations in your source based on sampling data. The @url:Profiling Guide:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-reference@ provides more details on each stall reason.",
+          "type": 1
+        }
+      },
+      {
+        "rule_identifier": "HighPipeUtilization",
+        "name": "High Pipe Utilization",
+        "section_identifier": "ComputeWorkloadAnalysis",
+        "rule_message": {
+          "title": "Low Utilization",
+          "message": "All compute pipelines are under-utilized. Either this workload is very small or it doesn't issue enough warps per scheduler. Check the @section:LaunchStats:Launch Statistics@ and @section:SchedulerStats:Scheduler Statistics@ sections for further details.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "sm__pipe_fmaheavy_cycles_active.avg.pct_of_peak_sustained_elapsed",
+            "value": 14.005574160843748,
+            "severity": 2,
+            "info": "Increase the utilization of the busiest pipeline (currently: Shared FMA Heavy)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 1,
+          "speedup": 85.99442583915625
+        }
+      },
+      {
+        "rule_identifier": "LaunchConfiguration",
+        "name": "Launch Configuration",
+        "section_identifier": "LaunchStats",
+        "rule_message": {
+          "title": "Tail Effect",
+          "message": "A wave of thread blocks is defined as the maximum number of blocks that can be executed in parallel on the target GPU. The number of blocks in a wave depends on the number of multiprocessors and the theoretical occupancy of the kernel. This kernel launch results in 1 full waves and a partial wave of 1048 thread blocks. Under the assumption of a uniform execution duration of all thread blocks, this partial wave may account for up to 50.0% of the total runtime of this kernel. Try launching a grid with no partial wave. The overall impact of this tail effect also lessens with the number of full waves executed for a grid. See the @url:Hardware Model:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-hw-model@ description for more details on launch configurations.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "launch__waves_per_multiprocessor",
+            "value": 1.9290780141843973,
+            "severity": 0,
+            "info": "Decrease the number of partial waves (the fractional part of the number of waves)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 50.0
+        }
+      },
+      {
+        "rule_identifier": "MemoryCacheAccessPattern",
+        "name": "Memory Cache Access Pattern",
+        "section_identifier": "MemoryWorkloadAnalysis_Tables",
+        "rule_message": {
+          "title": "L2 Global Load Access Pattern",
+          "message": "The memory access pattern for global loads from L2 might not be optimal. On average, only 16.0 of the 32 bytes transmitted per sector are utilized by each thread. This applies to the 99.9% of sectors missed in L1TEX. This could possibly be caused by a stride between threads. Check the @section:SourceCounters:Source Counters@ section for uncoalesced global loads.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__sass_average_data_bytes_per_sector_mem_global_op_ld.ratio",
+            "value": 16.0,
+            "severity": 2,
+            "info": "Increase the average number of bytes utilized per sector towards 32 bytes"
+          },
+          {
+            "name": "l1tex__t_sector_pipe_lsu_mem_global_op_ld_hit_rate.pct",
+            "value": 0.09259259259259259,
+            "severity": 0,
+            "info": "Try to increase the hit rate in L1TEX to benefit from its higher bandwidth"
+          },
+          {
+            "name": "lts__throughput.avg.pct_of_peak_sustained_elapsed",
+            "value": 38.929749127117546,
+            "severity": 1,
+            "info": "The higher the L2 throughput the more severe the issue becomes"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 19.446851531555478
+        }
+      },
+      {
+        "rule_identifier": "MemoryCacheAccessPattern",
+        "name": "Memory Cache Access Pattern",
+        "section_identifier": "MemoryWorkloadAnalysis_Tables",
+        "rule_message": {
+          "title": "L2 Global Store Access Pattern",
+          "message": "The memory access pattern for global stores to L2 might not be optimal. On average, only 16.0 of the 32 bytes transmitted per sector are utilized by each thread. This applies to the 100.0% of sectors missed in L1TEX. This could possibly be caused by a stride between threads. Check the @section:SourceCounters:Source Counters@ section for uncoalesced global stores.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__sass_average_data_bytes_per_sector_mem_global_op_st.ratio",
+            "value": 16.0,
+            "severity": 2,
+            "info": "Increase the average number of bytes utilized per sector towards 32 bytes"
+          },
+          {
+            "name": "l1tex__t_sector_pipe_lsu_mem_global_op_st_hit_rate.pct",
+            "value": 0.04595588235294117,
+            "severity": 0,
+            "info": "Try to increase the hit rate in L1TEX to benefit from its higher bandwidth"
+          },
+          {
+            "name": "lts__throughput.avg.pct_of_peak_sustained_elapsed",
+            "value": 38.929749127117546,
+            "severity": 1,
+            "info": "The higher the L2 throughput the more severe the issue becomes"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 19.455929308704196
+        }
+      },
+      {
+        "rule_identifier": "PMSamplingData",
+        "name": "PM Sampling Data",
+        "section_identifier": "PmSampling",
+        "rule_message": {
+          "title": "",
+          "message": "Sampling interval is larger than 10% of the workload duration, which likely results in very few collected samples. For better results, use the --pm-sampling-interval option to reduce the sampling interval. Use --pm-sampling-buffer-size to increase the sampling buffer size for the smaller interval, or don't set a fixed buffer size and let the tool adjust it automatically.",
+          "type": 3
+        }
+      },
+      {
+        "rule_identifier": "SOLFPRoofline",
+        "name": "Roofline Analysis",
+        "section_identifier": "SpeedOfLight_RooflineChart",
+        "rule_message": {
+          "title": "Roofline Analysis",
+          "message": "The ratio of peak float (FP32) to double (FP64) performance on this device is 64:1. The workload achieved 0% of this device's FP32 peak performance and 0% of its FP64 peak performance. See the @url:Profiling Guide:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#roofline@ for more details on roofline analysis.",
+          "type": 1
+        }
+      },
+      {
+        "rule_identifier": "UncoalescedGlobalAccess",
+        "name": "Uncoalesced Global Accesses",
+        "section_identifier": "SourceCounters",
+        "rule_message": {
+          "title": "",
+          "message": "This workload has uncoalesced global accesses resulting in a total of 138752 excessive sectors (50% of the total 277504 sectors). Check the L2 Theoretical Sectors Global Excessive table for the primary source locations. The @url:CUDA Programming Guide:https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#device-memory-accesses@ has additional information on reducing uncoalesced device memory accesses.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "derived__memory_l2_theoretical_sectors_global_excessive",
+            "value": 138752.0,
+            "severity": 0,
+            "info": "Reduce the number of excessive wavefronts in L2"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 29.033949469804732
+        }
+      },
+      {
+        "rule_identifier": "UncoalescedGlobalAccess",
+        "name": "Uncoalesced Global Accesses",
+        "section_identifier": "SourceCounters",
+        "rule_message": {
+          "title": "",
+          "message": "",
+          "type": 0
+        }
+      },
+      {
+        "rule_identifier": "WorkloadImbalance",
+        "name": "Workload Imbalance",
+        "section_identifier": "WorkloadDistribution",
+        "rule_message": {
+          "title": "L2 Slices Workload Imbalance",
+          "message": "One or more L2 Slices have a much higher number of active cycles than the average number of active cycles. Maximum instance value is 15.42% above the average, while the minimum instance value is 5.62% below the average.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "lts__cycles_active.avg",
+            "value": 4490.390625,
+            "severity": 2,
+            "info": "Balancing the number of active cycles across L2 Slices would result in a more optimized workload"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 8.953649737901088
+        }
+      }
+    ],
+    "report": "fp8-full",
+    "range_index": 0,
+    "action_index": 20
+  },
+  {
+    "function": "void repack_spatial_to_token<(bool)1>(FGlobalRepackParameters)",
+    "metrics": {
+      "device__attribute_max_registers_per_multiprocessor": {
+        "value": 65536,
+        "unit": ""
+      },
+      "device__attribute_max_shared_memory_per_multiprocessor": {
+        "value": 102400,
+        "unit": ""
+      },
+      "device__attribute_max_warps_per_multiprocessor": {
+        "value": 48,
+        "unit": ""
+      },
+      "device__attribute_multiprocessor_count": {
+        "value": 188,
+        "unit": ""
+      },
+      "gpu__time_duration.sum": {
+        "value": 3424.0,
+        "unit": "ns"
+      },
+      "launch__barrier_count": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__block_dim_x": {
+        "value": 256,
+        "unit": "block"
+      },
+      "launch__block_dim_y": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_dim_z": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_size": {
+        "value": 256,
+        "unit": ""
+      },
+      "launch__cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_max_active": {
+        "value": 0,
+        "unit": "cluster"
+      },
+      "launch__cluster_max_potential_size": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__cluster_scheduling_policy": {
+        "value": "PolicySpread",
+        "unit": ""
+      },
+      "launch__cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__context_id": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__device_id": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__execution_model": {
+        "value": "SIMT",
+        "unit": ""
+      },
+      "launch__func_cache_config": {
+        "value": "CachePreferNone",
+        "unit": ""
+      },
+      "launch__grid_dim_x": {
+        "value": 2176,
+        "unit": ""
+      },
+      "launch__grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_size": {
+        "value": 2176,
+        "unit": ""
+      },
+      "launch__kernel_name": {
+        "value": "",
+        "unit": ""
+      },
+      "launch__occupancy_cluster_gpu_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_cluster_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_limit_barriers": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_blocks": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_registers": {
+        "value": 10.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_shared_mem": {
+        "value": 16.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_warps": {
+        "value": 6.0,
+        "unit": "block"
+      },
+      "launch__per_block_memory_size": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__persisting_l2_cache_size": {
+        "value": 25165824,
+        "unit": "byte"
+      },
+      "launch__preferred_cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__registers_per_thread": {
+        "value": 20,
+        "unit": "register/thread"
+      },
+      "launch__registers_per_thread_allocated": {
+        "value": 24.0,
+        "unit": "register/thread"
+      },
+      "launch__shared_mem_config_size": {
+        "value": 16384,
+        "unit": "byte"
+      },
+      "launch__shared_mem_per_block": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_allocated": {
+        "value": 1024.0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_driver": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_dynamic": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_static": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__sm_count": {
+        "value": 188,
+        "unit": "SM"
+      },
+      "launch__stack_size": {
+        "value": 1024.0,
+        "unit": ""
+      },
+      "launch__stream_id": {
+        "value": 13,
+        "unit": ""
+      },
+      "launch__thread_count": {
+        "value": 557056,
+        "unit": "thread"
+      },
+      "launch__tpc_count": {
+        "value": 94,
+        "unit": ""
+      },
+      "launch__tpc_enabled": {
+        "value": "all",
+        "unit": ""
+      },
+      "launch__user_grid_dim_x": {
+        "value": 2176,
+        "unit": ""
+      },
+      "launch__user_grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_size": {
+        "value": 2176,
+        "unit": ""
+      },
+      "launch__uses_blocks_as_clusters": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_cdp": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_green_context": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_nvlink_centric_scheduling": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_vgpu": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__waves_per_multiprocessor": {
+        "value": 1.9290780141843973,
+        "unit": ""
+      },
+      "memory_l1_wavefronts_shared": {
+        "value": 0,
+        "unit": "sectors"
+      },
+      "memory_l1_wavefronts_shared_ideal": {
+        "value": 0,
+        "unit": "sectors"
+      },
+      "sass__inst_executed_register_spilling": {
+        "value": 0,
+        "unit": "inst"
+      },
+      "sm__warps_active.avg.pct_of_peak_sustained_active": {
+        "value": 75.67318460630479,
+        "unit": "%"
+      },
+      "smsp__pcsamp_aggregated_passes": {
+        "value": 2,
+        "unit": "pass"
+      },
+      "smsp__pcsamp_sample_count": {
+        "value": 243,
+        "unit": ""
+      }
+    },
+    "opcodes": {
+      "IMAD": 259840.0,
+      "IADD3": 207744.0,
+      "LOP3": 173568.0,
+      "SHF": 104064.0,
+      "ISETP": 104064.0,
+      "LDCU": 87040.0,
+      "LDC": 52224.0,
+      "UIMAD": 34816.0,
+      "S2R": 34816.0,
+      "EXIT": 34816.0,
+      "BRA": 34816.0,
+      "USHF": 17408.0,
+      "ULOP3": 17408.0,
+      "ULEA": 17408.0,
+      "STG": 17408.0,
+      "HFMA2": 17408.0,
+      "BSYNC": 17408.0,
+      "BSSY": 17408.0,
+      "UI2F": 17280.0,
+      "MUFU": 17280.0,
+      "MOV": 17280.0,
+      "LDG": 17280.0,
+      "F2I": 17280.0
+    },
+    "instructions": [
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 7,
+        "sass": "LDC R1, c[0x0][0x37c]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 21,
+        "sass": "S2R R0, SR_CTAID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 12,
+        "sass": "LDCU.64 UR8, c[0x0][0x390]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 18,
+        "sass": "LDCU UR7, c[0x0][0x360]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 12,
+        "sass": "UIMAD UR4, UR8, UR9, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 12,
+        "sass": "ULEA UR5, UR4, 0x1f00, 0x8"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 15,
+        "sass": "ULOP3.LUT UR5, UR5, 0xffffe000, URZ, 0xc0, !UPT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 21,
+        "sass": "IMAD R0, R0, UR7, R3"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 21,
+        "sass": "ISETP.GE.U32.AND P0, PT, R0, UR5, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 21,
+        "sass": "@P0   EXIT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 37,
+        "sass": "LDC.64 R2, c[0x0][0x380]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 35,
+        "sass": "USHF.R.U32.HI UR6, URZ, 0x2, UR9"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 27,
+        "sass": "IMAD.SHL.U32 R9, R0, 0x10, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 24,
+        "sass": "SHF.R.U32.HI R17, RZ, 0x8, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 32,
+        "sass": "BSSY.RECONVERGENT B0, 0x12015cd680"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 20,
+        "sass": "LOP3.LUT R9, R9, 0xf80, RZ, 0xc0, !PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 32,
+        "sass": "HFMA2 R13, -RZ, RZ, 0, 0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 20,
+        "sass": "IADD3 R6, PT, PT, R11, R6, R8"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 39,
+        "sass": "IMAD.WIDE.U32 R6, R7, 0x4, R4"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 32,
+        "sass": "@P0   BRA 0x12015cd670"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 27,
+        "sass": "UI2F.U32.RP UR8, UR12"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 27,
+        "sass": "MOV R12, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 27,
+        "sass": "ISETP.NE.U32.AND P2, PT, RZ, UR12, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 27,
+        "sass": "MUFU.RCP R10, UR8"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 27,
+        "sass": "F2I.FTZ.U32.TRUNC.NTZ R13, R10"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 27,
+        "sass": "IMAD.HI.U32 R12, R13, R15, R12"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 37,
+        "sass": "LDG.E R13, desc[UR10][R8.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 37,
+        "sass": "BSYNC.RECONVERGENT B0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 39,
+        "sass": "STG.E desc[UR10][R6.64], R13"
+      }
+    ],
+    "lines": [
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 20,
+        "executed": 312576,
+        "opcodes": {
+          "IMAD": 69376,
+          "SHF": 52096,
+          "LOP3": 139008,
+          "IADD3": 52096
+        },
+        "stalls": {
+          "math_pipe_throttle": 4,
+          "not_selected": 1,
+          "selected": 3,
+          "wait": 1
+        },
+        "sass": [
+          "IMAD.SHL.U32 R8, R0, 0x4, RZ",
+          "SHF.R.U32.HI R11, RZ, 0x1, R0",
+          "LOP3.LUT R9, R9, 0xf80, RZ, 0xc0, !PT",
+          "IMAD.SHL.U32 R10, R17, 0x10, RZ",
+          "SHF.R.U32.HI R7, RZ, 0xb, R0",
+          "LOP3.LUT R8, R8, 0xc, RZ, 0xc0, !PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 27,
+        "executed": 345600,
+        "opcodes": {
+          "UI2F": 17280,
+          "MOV": 17280,
+          "ISETP": 51840,
+          "MUFU": 17280,
+          "IADD3": 120960,
+          "F2I": 17280,
+          "IMAD": 86400,
+          "LOP3": 17280
+        },
+        "stalls": {
+          "math_pipe_throttle": 1,
+          "not_selected": 2,
+          "selected": 1,
+          "short_scoreboard": 1,
+          "wait": 8
+        },
+        "sass": [
+          "UI2F.U32.RP UR8, UR12",
+          "MOV R12, RZ",
+          "ISETP.NE.U32.AND P2, PT, RZ, UR12, PT",
+          "MUFU.RCP R10, UR8",
+          "IADD3 R10, PT, PT, R10, 0xffffffe, RZ",
+          "F2I.FTZ.U32.TRUNC.NTZ R13, R10"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/global_repack_layout.cuh",
+        "line": 28,
+        "executed": 86400,
+        "opcodes": {
+          "SHF": 34560,
+          "LOP3": 17280,
+          "IMAD": 34560
+        },
+        "stalls": {
+          "not_selected": 1,
+          "selected": 1,
+          "wait": 1
+        },
+        "sass": [
+          "SHF.R.U32.HI R13, RZ, 0x2, R12",
+          "LOP3.LUT R15, R10, 0x3, RZ, 0xc0, !PT",
+          "SHF.R.U32.HI R10, RZ, 0x2, R10",
+          "IMAD R15, R12, 0x4, R15",
+          "IMAD R10, R13, UR6, R10"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 7,
+        "executed": 17408,
+        "opcodes": {
+          "LDC": 17408
+        },
+        "stalls": {
+          "no_instructions": 18,
+          "not_selected": 1
+        },
+        "sass": [
+          "LDC R1, c[0x0][0x37c]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 12,
+        "executed": 52224,
+        "opcodes": {
+          "LDCU": 17408,
+          "UIMAD": 17408,
+          "ULEA": 17408
+        },
+        "stalls": {
+          "not_selected": 2,
+          "short_scoreboard": 2,
+          "wait": 1
+        },
+        "sass": [
+          "LDCU.64 UR8, c[0x0][0x390]",
+          "UIMAD UR4, UR8, UR9, URZ",
+          "ULEA UR5, UR4, 0x1f00, 0x8"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 15,
+        "executed": 17408,
+        "opcodes": {
+          "ULOP3": 17408
+        },
+        "stalls": {},
+        "sass": [
+          "ULOP3.LUT UR5, UR5, 0xffffe000, URZ, 0xc0, !UPT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 18,
+        "executed": 69632,
+        "opcodes": {
+          "LDCU": 52224,
+          "UIMAD": 17408
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "LDCU UR7, c[0x0][0x360]",
+          "LDCU UR8, c[0x0][0x370]",
+          "LDCU.64 UR10, c[0x0][0x358]",
+          "UIMAD UR7, UR7, UR8, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 21,
+        "executed": 121856,
+        "opcodes": {
+          "S2R": 34816,
+          "IMAD": 17408,
+          "ISETP": 34816,
+          "EXIT": 17408,
+          "BRA": 17408
+        },
+        "stalls": {
+          "wait": 14
+        },
+        "sass": [
+          "S2R R0, SR_CTAID.X",
+          "S2R R3, SR_TID.X",
+          "IMAD R0, R0, UR7, R3",
+          "ISETP.GE.U32.AND P0, PT, R0, UR5, PT",
+          "@P0   EXIT",
+          "@!P0  BRA 0x12015cd320"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 22,
+        "executed": 17408,
+        "opcodes": {
+          "IADD3": 17408
+        },
+        "stalls": {},
+        "sass": [
+          "IADD3 R0, PT, PT, R0, UR7, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 24,
+        "executed": 17408,
+        "opcodes": {
+          "SHF": 17408
+        },
+        "stalls": {},
+        "sass": [
+          "SHF.R.U32.HI R17, RZ, 0x8, R0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 27,
+        "executed": 17408,
+        "opcodes": {
+          "IMAD": 17408
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "IMAD.SHL.U32 R9, R0, 0x10, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 32,
+        "executed": 69632,
+        "opcodes": {
+          "BSSY": 17408,
+          "ISETP": 17408,
+          "HFMA2": 17408,
+          "BRA": 17408
+        },
+        "stalls": {},
+        "sass": [
+          "BSSY.RECONVERGENT B0, 0x12015cd680",
+          "ISETP.GE.U32.AND P0, PT, R17, UR4, PT",
+          "HFMA2 R13, -RZ, RZ, 0, 0",
+          "@P0   BRA 0x12015cd670"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 35,
+        "executed": 34816,
+        "opcodes": {
+          "LDCU": 17408,
+          "USHF": 17408
+        },
+        "stalls": {},
+        "sass": [
+          "LDCU UR12, c[0x0][0x394]",
+          "USHF.R.U32.HI UR6, URZ, 0x2, UR9"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 37,
+        "executed": 86656,
+        "opcodes": {
+          "LDC": 17408,
+          "IADD3": 17280,
+          "IMAD": 17280,
+          "LDG": 17280,
+          "BSYNC": 17408
+        },
+        "stalls": {
+          "dispatch_stall": 2,
+          "mio_throttle": 3,
+          "not_selected": 1,
+          "selected": 1,
+          "wait": 4
+        },
+        "sass": [
+          "LDC.64 R2, c[0x0][0x380]",
+          "IADD3 R9, PT, PT, R11, R8, R9",
+          "IMAD.WIDE.U32 R8, R9, 0x4, R2",
+          "LDG.E R13, desc[UR10][R8.64]",
+          "BSYNC.RECONVERGENT B0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 39,
+        "executed": 52224,
+        "opcodes": {
+          "LDC": 17408,
+          "IMAD": 17408,
+          "STG": 17408
+        },
+        "stalls": {
+          "branch_resolving": 2,
+          "long_scoreboard": 139,
+          "not_selected": 1,
+          "short_scoreboard": 2
+        },
+        "sass": [
+          "LDC.64 R4, c[0x0][0x388]",
+          "IMAD.WIDE.U32 R6, R7, 0x4, R4",
+          "STG.E desc[UR10][R6.64], R13"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "line": 42,
+        "executed": 17408,
+        "opcodes": {
+          "EXIT": 17408
+        },
+        "stalls": {
+          "branch_resolving": 3,
+          "drain": 6,
+          "selected": 3,
+          "wait": 11
+        },
+        "sass": [
+          "EXIT"
+        ]
+      }
+    ],
+    "stall_totals": {
+      "barrier": 0,
+      "branch_resolving": 5,
+      "dispatch_stall": 2,
+      "drain": 6,
+      "lg_throttle": 0,
+      "long_scoreboard": 139,
+      "math_pipe_throttle": 5,
+      "membar": 0,
+      "mio_throttle": 3,
+      "misc": 0,
+      "no_instructions": 18,
+      "not_selected": 9,
+      "selected": 10,
+      "short_scoreboard": 5,
+      "sleeping": 0,
+      "tex_throttle": 0,
+      "wait": 41
+    },
+    "timeline": {},
+    "rules": [
+      {
+        "rule_identifier": "LaunchConfiguration",
+        "name": "Launch Configuration",
+        "section_identifier": "LaunchStats",
+        "rule_message": {
+          "title": "Tail Effect",
+          "message": "A wave of thread blocks is defined as the maximum number of blocks that can be executed in parallel on the target GPU. The number of blocks in a wave depends on the number of multiprocessors and the theoretical occupancy of the kernel. This kernel launch results in 1 full waves and a partial wave of 1048 thread blocks. Under the assumption of a uniform execution duration of all thread blocks, this partial wave may account for up to 50.0% of the total runtime of this kernel. Try launching a grid with no partial wave. The overall impact of this tail effect also lessens with the number of full waves executed for a grid. See the @url:Hardware Model:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-hw-model@ description for more details on launch configurations.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "launch__waves_per_multiprocessor",
+            "value": 1.9290780141843973,
+            "severity": 0,
+            "info": "Decrease the number of partial waves (the fractional part of the number of waves)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 50.0
+        }
+      },
+      {
+        "rule_identifier": "UncoalescedGlobalAccess",
+        "name": "Uncoalesced Global Accesses",
+        "section_identifier": "SourceCounters",
+        "rule_message": {
+          "title": "",
+          "message": "This workload has uncoalesced global accesses resulting in a total of 138752 excessive sectors (50% of the total 277504 sectors). Check the L2 Theoretical Sectors Global Excessive table for the primary source locations. The @url:CUDA Programming Guide:https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#device-memory-accesses@ has additional information on reducing uncoalesced device memory accesses.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "derived__memory_l2_theoretical_sectors_global_excessive",
+            "value": 138752.0,
+            "severity": 0,
+            "info": "Reduce the number of excessive wavefronts in L2"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 29.70013588757789
+        }
+      },
+      {
+        "rule_identifier": "UncoalescedGlobalAccess",
+        "name": "Uncoalesced Global Accesses",
+        "section_identifier": "SourceCounters",
+        "rule_message": {
+          "title": "",
+          "message": "",
+          "type": 0
+        }
+      }
+    ],
+    "report": "fp8-source",
+    "range_index": 0,
+    "action_index": 20
+  }
+]

@@ -1,0 +1,5670 @@
+[
+  {
+    "function": "void global_contract_fp8<(bool)1, FGlobalProjectionC1024Fp8Parameters>(T2)",
+    "metrics": {
+      "device__attribute_max_registers_per_multiprocessor": {
+        "value": 65536,
+        "unit": ""
+      },
+      "device__attribute_max_shared_memory_per_multiprocessor": {
+        "value": 102400,
+        "unit": ""
+      },
+      "device__attribute_max_warps_per_multiprocessor": {
+        "value": 48,
+        "unit": ""
+      },
+      "device__attribute_multiprocessor_count": {
+        "value": 188,
+        "unit": ""
+      },
+      "dram__bytes_op_read.sum": {
+        "value": 5694720.0,
+        "unit": "byte"
+      },
+      "dram__bytes_op_write.sum": {
+        "value": 312320.0,
+        "unit": "byte"
+      },
+      "gpu__dram_throughput.avg.pct_of_peak_sustained_elapsed": {
+        "value": 19.6379552758436,
+        "unit": "%"
+      },
+      "gpu__time_duration.sum": {
+        "value": 17920.0,
+        "unit": "ns"
+      },
+      "l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_st.sum": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "l1tex__t_sector_hit_rate.pct": {
+        "value": 30.609026872131405,
+        "unit": "%"
+      },
+      "launch__barrier_count": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__block_dim_x": {
+        "value": 32,
+        "unit": "block"
+      },
+      "launch__block_dim_y": {
+        "value": 4,
+        "unit": "block"
+      },
+      "launch__block_dim_z": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_size": {
+        "value": 128,
+        "unit": ""
+      },
+      "launch__cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_max_active": {
+        "value": 0,
+        "unit": "cluster"
+      },
+      "launch__cluster_max_potential_size": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__cluster_scheduling_policy": {
+        "value": "PolicySpread",
+        "unit": ""
+      },
+      "launch__cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__context_id": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__device_id": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__execution_model": {
+        "value": "SIMT",
+        "unit": ""
+      },
+      "launch__func_cache_config": {
+        "value": "CachePreferNone",
+        "unit": ""
+      },
+      "launch__grid_dim_x": {
+        "value": 136,
+        "unit": ""
+      },
+      "launch__grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_dim_z": {
+        "value": 4,
+        "unit": ""
+      },
+      "launch__grid_size": {
+        "value": 544,
+        "unit": ""
+      },
+      "launch__kernel_name": {
+        "value": "",
+        "unit": ""
+      },
+      "launch__occupancy_cluster_gpu_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_cluster_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_limit_barriers": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_blocks": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_registers": {
+        "value": 4.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_shared_mem": {
+        "value": 10.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_warps": {
+        "value": 12.0,
+        "unit": "block"
+      },
+      "launch__per_block_memory_size": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__persisting_l2_cache_size": {
+        "value": 25165824,
+        "unit": "byte"
+      },
+      "launch__preferred_cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__registers_per_thread": {
+        "value": 116,
+        "unit": "register/thread"
+      },
+      "launch__registers_per_thread_allocated": {
+        "value": 120.0,
+        "unit": "register/thread"
+      },
+      "launch__shared_mem_config_size": {
+        "value": 102400,
+        "unit": "byte"
+      },
+      "launch__shared_mem_per_block": {
+        "value": 9232,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_allocated": {
+        "value": 9344.0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_driver": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_dynamic": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_static": {
+        "value": 8208,
+        "unit": "byte/block"
+      },
+      "launch__sm_count": {
+        "value": 188,
+        "unit": "SM"
+      },
+      "launch__stack_size": {
+        "value": 1024.0,
+        "unit": ""
+      },
+      "launch__stream_id": {
+        "value": 13,
+        "unit": ""
+      },
+      "launch__thread_count": {
+        "value": 69632,
+        "unit": "thread"
+      },
+      "launch__tpc_count": {
+        "value": 94,
+        "unit": ""
+      },
+      "launch__tpc_enabled": {
+        "value": "all",
+        "unit": ""
+      },
+      "launch__user_grid_dim_x": {
+        "value": 136,
+        "unit": ""
+      },
+      "launch__user_grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_dim_z": {
+        "value": 4,
+        "unit": ""
+      },
+      "launch__user_grid_size": {
+        "value": 544,
+        "unit": ""
+      },
+      "launch__uses_blocks_as_clusters": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_cdp": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_green_context": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_nvlink_centric_scheduling": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_vgpu": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__waves_per_multiprocessor": {
+        "value": 0.723404255319149,
+        "unit": ""
+      },
+      "lts__t_sector_hit_rate.pct": {
+        "value": 79.31573287121805,
+        "unit": "%"
+      },
+      "memory_l1_wavefronts_shared": {
+        "value": 278528,
+        "unit": "sectors"
+      },
+      "memory_l1_wavefronts_shared_ideal": {
+        "value": 278528,
+        "unit": "sectors"
+      },
+      "sass__inst_executed_global_loads": {
+        "value": 101514.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_global_stores": {
+        "value": 13600.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_local_loads": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_local_stores": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_register_spilling": {
+        "value": 0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_shared_loads": {
+        "value": 69632.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_shared_stores": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sm__cycles_active.avg": {
+        "value": 36109.744680851065,
+        "unit": "cycle"
+      },
+      "sm__cycles_active.max": {
+        "value": 41677.0,
+        "unit": "cycle"
+      },
+      "sm__cycles_active.min": {
+        "value": 27874.0,
+        "unit": "cycle"
+      },
+      "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+        "value": 27.52087077755195,
+        "unit": "%"
+      },
+      "sm__throughput.avg.pct_of_peak_sustained_elapsed": {
+        "value": 27.52087077755195,
+        "unit": "%"
+      },
+      "sm__warps_active.avg.pct_of_peak_sustained_active": {
+        "value": 19.879756026938367,
+        "unit": "%"
+      },
+      "smsp__issue_active.avg.per_cycle_active": {
+        "value": 0.14074345322787943,
+        "unit": ""
+      },
+      "smsp__pcsamp_aggregated_passes": {
+        "value": 2,
+        "unit": "pass"
+      },
+      "smsp__pcsamp_sample_count": {
+        "value": 1647,
+        "unit": ""
+      },
+      "smsp__warps_active.avg.per_cycle_active": {
+        "value": 2.443197761490505,
+        "unit": "warp"
+      },
+      "smsp__warps_eligible.avg.per_cycle_active": {
+        "value": 0.16955080512053264,
+        "unit": "warp"
+      }
+    },
+    "opcodes": {
+      "QMMA": 557056.0,
+      "NOP": 539104.0,
+      "BRA": 272605.0,
+      "MOV": 165376.0,
+      "SYNCS": 154866.0,
+      "IMAD": 108256.0,
+      "LDG": 104704.0,
+      "R2UR": 102272.0,
+      "IADD3": 91256.0,
+      "UIADD3": 85408.0,
+      "ISETP": 84576.0,
+      "YIELD": 80882.0,
+      "CS2R": 78336.0,
+      "UMOV": 71808.0,
+      "LDS": 69632.0,
+      "F2FP": 69632.0,
+      "BSYNC": 60928.0,
+      "BSSY": 43520.0,
+      "VOTEU": 41344.0,
+      "LEA": 39168.0,
+      "USHF": 36992.0,
+      "ULEA": 34816.0,
+      "UBLKCP": 34816.0,
+      "HMUL2": 34816.0,
+      "HADD2": 34816.0,
+      "ELECT": 34816.0,
+      "ULOP3": 30464.0,
+      "LOP3": 29376.0,
+      "LDCU": 25024.0,
+      "UISETP": 23392.0,
+      "LDC": 21760.0,
+      "NANOSLEEP": 21608.0,
+      "UIMAD": 19584.0,
+      "WARPSYNC": 19448.0,
+      "PLOP3": 19040.0,
+      "STS": 17408.0,
+      "SHF": 17408.0,
+      "REDG": 17408.0,
+      "IADD": 16320.0,
+      "STG": 13600.0,
+      "S2R": 6936.0,
+      "IABS": 6528.0,
+      "BAR": 5984.0,
+      "S2UR": 4352.0,
+      "LD": 4352.0,
+      "EXIT": 2720.0,
+      "USEL": 2176.0,
+      "MUFU": 2176.0,
+      "I2F": 2176.0,
+      "F2I": 2176.0,
+      "MEMBAR": 1088.0,
+      "ERRBAR": 544.0,
+      "CGAERRBAR": 544.0
+    },
+    "instructions": [
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 7,
+        "sass": "LDC R1, c[0x0][0x37c]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 18,
+        "sass": "LDC.64 R12, c[0x0][0x3c0]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "S2R R15, SR_CTAID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 24,
+        "sass": "LDCU.64 UR10, c[0x0][0x3b0]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 110,
+        "sass": "MOV R113, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 24,
+        "sass": "LDCU UR4, c[0x0][0x3b0]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 24,
+        "sass": "S2UR UR19, SR_CTAID.Z"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 88,
+        "sass": "UMOV UR5, 0x400"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 24,
+        "sass": "UISETP.NE.S64.AND UP0, UPT, UR10, URZ, UPT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 18,
+        "sass": "IMAD R0, R12, R13, 0x7f"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 24,
+        "sass": "UIADD3 UR4, UPT, UPT, UR4, -0x1, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 18,
+        "sass": "SHF.R.S32.HI R3, RZ, 0x1f, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 24,
+        "sass": "USEL UR6, UR19, UR4, !UP0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 18,
+        "sass": "LEA.HI R3, R3, R0, RZ, 0x7"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 96,
+        "sass": "USHF.L.U32 UR18, UR6, 0x8, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "ULEA UR7, UR7, UR5, 0x18"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "IABS R9, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 96,
+        "sass": "IMAD.SHL.U32 R112, R6, 0x10, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "I2F.RP R4, R9"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 96,
+        "sass": "IADD.64 R60, R112, UR14"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "MUFU.RCP R4, R4"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "IADD3 R2, PT, PT, R4, 0xffffffe, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "F2I.FTZ.U32.TRUNC.NTZ R3, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "IMAD.HI.U32 R3, R3, R5, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 85,
+        "sass": "LOP3.LUT P0, R4, R6, RZ, R7, 0xfa, !PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "ISETP.GT.U32.AND P2, PT, R9, R2, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "VOTEU.ALL UP1, P0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "ISETP.GE.U32.AND P1, PT, R2, R9, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "ISETP.GE.AND P2, PT, R2, RZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 96,
+        "sass": "IMAD.WIDE R8, R9, 0x400, R60"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "ISETP.NE.AND P1, PT, R0, RZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "@!UP1 UIMAD UR4, UR8, UR9, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 SYNCS.EXCH.64 URZ, [UR7+0x2000], UR4"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 89,
+        "sass": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 105,
+        "sass": "LDG.E.128.STRONG.SM R32, desc[UR12][R8.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 113,
+        "sass": "BSSY B0, 0x12015e4990"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 113,
+        "sass": "LEA R77, R7, UR7, 0x9"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 52,
+        "sass": "@P0   BRA 0x12015e4960"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 52,
+        "sass": "BRA.DIV UR4, 0x12015e7d20"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 54,
+        "sass": "ELECT P0, URZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 56,
+        "sass": "R2UR UR8, R79"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 56,
+        "sass": "UIMAD.WIDE UR4, UR8, 0x10, UR4"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "sass": "UBLKCP.S.G [UR10], [UR4], UR8"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "sass": "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR7+0x2000], R8"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 72,
+        "sass": "BSYNC B0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 72,
+        "sass": "@P0   STS.128 [R8+0x800], RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "sass": "VOTEU.ANY UP0, P0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "sass": "@P0   R2UR.BROADCAST UR10, R12"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "sass": "NOP"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "SYNCS.ARRIVE.TRANS64.ART0 R8, [UR7+0x2000], R8"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR7+0x2000], R9"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 118,
+        "sass": "CS2R R94, SRZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 136,
+        "sass": "UIADD3.64 UR4, UPT, UPT, UR14, 0x100000, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 127,
+        "sass": "LD.E R62, desc[UR12][R38.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 150,
+        "sass": "@!P1  LDG.E.128.STRONG.GPU R56, desc[UR12][R72.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 161,
+        "sass": "F2FP.F16.E4M3.UNPACK_B R102, R56"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/packed_math.cuh",
+        "line": 88,
+        "sass": "HMUL2 R110, R110, R64"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+        "line": 58,
+        "sass": "WARPSYNC.ALL"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+        "line": 56,
+        "sass": "LDS.128 R36, [R62]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 195,
+        "sass": "QMMA.16832.F16.E4M3.E4M3 R110, R36, R32, R110"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 39,
+        "sass": "ULOP3.LUT UR8, UR5, 0x8, URZ, 0xc0, !UPT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 182,
+        "sass": "UISETP.NE.AND UP0, UPT, UR4, 0x7, UPT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 182,
+        "sass": "PLOP3.LUT P0, PT, PT, PT, UP0, 0x80, 0x8"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 288,
+        "sass": "UISETP.GE.AND UP0, UPT, UR6, 0x1, UPT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 283,
+        "sass": "UISETP.NE.S64.OR UP0, UPT, UR8, URZ, !UP0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 292,
+        "sass": "LDG.E.NA.STRONG.GPU R6, desc[UR12][R24.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 293,
+        "sass": "NANOSLEEP 0x40"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 118,
+        "sass": "BSSY.RECONVERGENT B0, 0x12015e7c80"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 235,
+        "sass": "STG.E.NA.128 desc[UR12][R6.64], R44"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 235,
+        "sass": "BSYNC.RECONVERGENT B1"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 247,
+        "sass": "HADD2 R38, R38, R46"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 272,
+        "sass": "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R45, R38, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 239,
+        "sass": "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64], R44"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 318,
+        "sass": "@P0   EXIT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 319,
+        "sass": "MEMBAR.ALL.CTA"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 319,
+        "sass": "MEMBAR.ALL.GPU"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 319,
+        "sass": "ERRBAR"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 319,
+        "sass": "CGAERRBAR"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 319,
+        "sass": "STG.E.NA.STRONG.GPU desc[UR12][R24.64], R3"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "YIELD"
+      }
+    ],
+    "lines": [
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+        "line": 49,
+        "executed": 15232,
+        "opcodes": {
+          "LOP3": 15232
+        },
+        "stalls": {},
+        "sass": [
+          "LOP3.LUT R37, R36, 0x1000, RZ, 0xc0, !PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+        "line": 56,
+        "executed": 84864,
+        "opcodes": {
+          "IADD3": 15232,
+          "LDS": 67456,
+          "LDCU": 2176
+        },
+        "stalls": {
+          "mio_throttle": 1,
+          "selected": 3,
+          "wait": 5
+        },
+        "sass": [
+          "IADD3 R62, PT, PT, R6, UR7, R37",
+          "LDS.128 R36, [R62]",
+          "LDS.128 R40, [R62+0x200]",
+          "LDS.128 R44, [R62+0x400]",
+          "LDS.128 R48, [R62+0x600]",
+          "LDS.128 R76, [R6+UR7+0x1200]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+        "line": 58,
+        "executed": 34816,
+        "opcodes": {
+          "WARPSYNC": 17408,
+          "NOP": 17408
+        },
+        "stalls": {},
+        "sass": [
+          "WARPSYNC.ALL",
+          "NOP"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 7,
+        "executed": 2176,
+        "opcodes": {
+          "LDC": 2176
+        },
+        "stalls": {
+          "no_instructions": 20
+        },
+        "sass": [
+          "LDC R1, c[0x0][0x37c]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 18,
+        "executed": 10880,
+        "opcodes": {
+          "LDC": 2176,
+          "IMAD": 2176,
+          "SHF": 4352,
+          "LEA": 2176
+        },
+        "stalls": {
+          "selected": 1,
+          "short_scoreboard": 2
+        },
+        "sass": [
+          "LDC.64 R12, c[0x0][0x3c0]",
+          "IMAD R0, R12, R13, 0x7f",
+          "SHF.R.S32.HI R3, RZ, 0x1f, R0",
+          "LEA.HI R3, R3, R0, RZ, 0x7",
+          "SHF.R.S32.HI R0, RZ, 0x7, R3"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "executed": 65280,
+        "opcodes": {
+          "S2R": 2176,
+          "IABS": 6528,
+          "I2F": 2176,
+          "MUFU": 2176,
+          "IADD3": 15232,
+          "F2I": 2176,
+          "MOV": 4352,
+          "IMAD": 8704,
+          "ISETP": 8704,
+          "VOTEU": 2176,
+          "LDCU": 4352,
+          "LOP3": 4352,
+          "UIMAD": 2176
+        },
+        "stalls": {
+          "mio_throttle": 1,
+          "no_instructions": 1,
+          "short_scoreboard": 2,
+          "wait": 5
+        },
+        "sass": [
+          "S2R R15, SR_CTAID.X",
+          "IABS R9, R0",
+          "IABS R10, R0",
+          "I2F.RP R4, R9",
+          "MUFU.RCP R4, R4",
+          "IADD3 R2, PT, PT, R4, 0xffffffe, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 20,
+        "executed": 4352,
+        "opcodes": {
+          "S2R": 4352
+        },
+        "stalls": {},
+        "sass": [
+          "S2R R7, SR_TID.Y",
+          "S2R R6, SR_TID.X"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 24,
+        "executed": 13056,
+        "opcodes": {
+          "LDCU": 4352,
+          "S2UR": 2176,
+          "UISETP": 2176,
+          "UIADD3": 2176,
+          "USEL": 2176
+        },
+        "stalls": {
+          "short_scoreboard": 4
+        },
+        "sass": [
+          "LDCU.64 UR10, c[0x0][0x3b0]",
+          "LDCU UR4, c[0x0][0x3b0]",
+          "S2UR UR19, SR_CTAID.Z",
+          "UISETP.NE.S64.AND UP0, UPT, UR10, URZ, UPT",
+          "UIADD3 UR4, UPT, UPT, UR4, -0x1, URZ",
+          "USEL UR6, UR19, UR4, !UP0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 25,
+        "executed": 21760,
+        "opcodes": {
+          "IMAD": 8704,
+          "LOP3": 2176,
+          "SHF": 4352,
+          "LEA": 2176,
+          "IADD3": 4352
+        },
+        "stalls": {
+          "dispatch_stall": 1
+        },
+        "sass": [
+          "IMAD.SHL.U32 R2, R7, 0x40, RZ",
+          "LOP3.LUT R2, R2, 0x40, RZ, 0xc0, !PT",
+          "IMAD R3, R5, 0x80, R2",
+          "IMAD R2, R12, R13, 0x1f",
+          "SHF.R.S32.HI R13, RZ, 0x1f, R2",
+          "LEA.HI R13, R13, R2, RZ, 0x5"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 39,
+        "executed": 121856,
+        "opcodes": {
+          "BSSY": 15232,
+          "USHF": 30464,
+          "ULEA": 15232,
+          "ULOP3": 30464,
+          "UIADD3": 15232,
+          "LEA": 15232
+        },
+        "stalls": {
+          "selected": 3,
+          "wait": 2
+        },
+        "sass": [
+          "BSSY B0, 0x12015e6130",
+          "USHF.L.U32 UR5, UR4, 0x3, URZ",
+          "USHF.L.U32 UR9, UR4, 0xc, URZ",
+          "ULEA UR20, UR4, UR18, 0x5",
+          "ULOP3.LUT UR8, UR5, 0x8, URZ, 0xc0, !UPT",
+          "ULOP3.LUT UR9, UR9, 0x1000, URZ, 0xc0, !UPT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 46,
+        "executed": 2176,
+        "opcodes": {
+          "IADD3": 2176
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "wait": 4
+        },
+        "sass": [
+          "IADD3 R63, PT, PT, R79, 0x4, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 52,
+        "executed": 102272,
+        "opcodes": {
+          "ISETP": 34816,
+          "BRA": 34816,
+          "UMOV": 17408,
+          "MOV": 15232
+        },
+        "stalls": {
+          "branch_resolving": 4,
+          "dispatch_stall": 1,
+          "selected": 5,
+          "wait": 18
+        },
+        "sass": [
+          "ISETP.GE.AND P0, PT, R79, R0, PT",
+          "@P0   BRA 0x12015e4960",
+          "UMOV UR4, 0xffffffff",
+          "BRA.DIV UR4, 0x12015e7d20",
+          "ISETP.GE.AND P0, PT, R63, R0, PT",
+          "MOV R76, UR4"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 54,
+        "executed": 34816,
+        "opcodes": {
+          "ELECT": 17408,
+          "BRA": 17408
+        },
+        "stalls": {
+          "wait": 4
+        },
+        "sass": [
+          "ELECT P0, URZ, PT",
+          "@!P0  BRA 0x12015e4980",
+          "@!P0  BRA 0x12015e6120"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 56,
+        "executed": 106624,
+        "opcodes": {
+          "LDCU": 2176,
+          "R2UR": 17408,
+          "ULEA": 17408,
+          "UIMAD": 17408,
+          "LDC": 17408,
+          "LEA": 17408,
+          "IMAD": 17408
+        },
+        "stalls": {
+          "selected": 1,
+          "short_scoreboard": 8,
+          "wait": 15
+        },
+        "sass": [
+          "LDCU.64 UR4, c[0x0][0x380]",
+          "R2UR UR8, R79",
+          "ULEA UR8, UR8, UR18, 0xa",
+          "UIMAD.WIDE UR4, UR8, 0x10, UR4",
+          "@P0   LDC.64 R8, c[0x0][0x380]",
+          "@P0   LEA R13, R63, UR18, 0xa"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 63,
+        "executed": 15232,
+        "opcodes": {
+          "UIADD3": 15232
+        },
+        "stalls": {},
+        "sass": [
+          "UIADD3 UR11, UPT, UPT, UR21, 0x2000, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 64,
+        "executed": 82688,
+        "opcodes": {
+          "MOV": 65280,
+          "BRA": 17408
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "MOV R8, 0x200",
+          "BRA 0x12015e4980",
+          "@P0   MOV R8, 0x200",
+          "MOV R20, 0x200",
+          "MOV R23, UR8",
+          "BRA 0x12015e6120"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 70,
+        "executed": 52224,
+        "opcodes": {
+          "BRA": 34816,
+          "UMOV": 17408
+        },
+        "stalls": {
+          "wait": 2
+        },
+        "sass": [
+          "@P0   BRA 0x12015e4b10",
+          "UMOV UR4, 0xffffffff",
+          "BRA.DIV UR4, 0x12015e7d80",
+          "@P0   BRA 0x12015e62c0",
+          "BRA.DIV UR4, 0x12015e7ea0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 72,
+        "executed": 87040,
+        "opcodes": {
+          "BSYNC": 34816,
+          "BSSY": 17408,
+          "IADD3": 17408,
+          "STS": 17408
+        },
+        "stalls": {
+          "branch_resolving": 3,
+          "long_scoreboard": 6,
+          "selected": 2,
+          "wait": 5
+        },
+        "sass": [
+          "BSYNC B0",
+          "BSSY B0, 0x12015e4b20",
+          "@P0   IADD3 R8, PT, PT, R112, R77, RZ",
+          "@P0   STS.128 [R8+0x800], RZ",
+          "BSSY B0, 0x12015e62d0",
+          "@P0   IADD3 R21, PT, PT, R21, UR7, R112"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 85,
+        "executed": 5984,
+        "opcodes": {
+          "LOP3": 2176,
+          "ISETP": 3808
+        },
+        "stalls": {
+          "dispatch_stall": 1
+        },
+        "sass": [
+          "LOP3.LUT P0, R4, R6, RZ, R7, 0xfa, !PT",
+          "ISETP.NE.AND P0, PT, R4, RZ, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 88,
+        "executed": 2176,
+        "opcodes": {
+          "UMOV": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "UMOV UR5, 0x400"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 89,
+        "executed": 2176,
+        "opcodes": {
+          "BAR": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "BAR.SYNC.DEFER_BLOCKING 0x0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 96,
+        "executed": 36992,
+        "opcodes": {
+          "LDCU": 4352,
+          "USHF": 2176,
+          "IMAD": 21760,
+          "IADD": 4352,
+          "MOV": 2176,
+          "SHF": 2176
+        },
+        "stalls": {
+          "no_instructions": 1,
+          "selected": 1,
+          "wait": 2
+        },
+        "sass": [
+          "LDCU.64 UR14, c[0x0][0x398]",
+          "LDCU.64 UR12, c[0x0][0x358]",
+          "USHF.L.U32 UR18, UR6, 0x8, URZ",
+          "IMAD.SHL.U32 R112, R6, 0x10, RZ",
+          "IADD.64 R60, R112, UR14",
+          "MOV R9, UR18"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 105,
+        "executed": 69632,
+        "opcodes": {
+          "LDG": 69632
+        },
+        "stalls": {
+          "lg_throttle": 1,
+          "selected": 1,
+          "wait": 5
+        },
+        "sass": [
+          "LDG.E.128.STRONG.SM R32, desc[UR12][R8.64]",
+          "LDG.E.128.STRONG.SM R28, desc[UR12][R8.64+0x200]",
+          "LDG.E.128.STRONG.SM R24, desc[UR12][R8.64+0x400]",
+          "LDG.E.128.STRONG.SM R20, desc[UR12][R8.64+0x600]",
+          "LDG.E.128.STRONG.SM R32, desc[UR12][R36.64]",
+          "LDG.E.128.STRONG.SM R28, desc[UR12][R36.64+0x200]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 110,
+        "executed": 2176,
+        "opcodes": {
+          "MOV": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "MOV R113, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 113,
+        "executed": 4352,
+        "opcodes": {
+          "BSSY": 2176,
+          "LEA": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "BSSY B0, 0x12015e4990",
+          "LEA R77, R7, UR7, 0x9"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 114,
+        "executed": 4352,
+        "opcodes": {
+          "MOV": 2176,
+          "IADD": 2176
+        },
+        "stalls": {
+          "branch_resolving": 1
+        },
+        "sass": [
+          "MOV R8, 0x1",
+          "IADD.64 R60, R10, R60"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 118,
+        "executed": 80512,
+        "opcodes": {
+          "ISETP": 4352,
+          "CS2R": 69632,
+          "LOP3": 2176,
+          "BRA": 2176,
+          "BSSY": 2176
+        },
+        "stalls": {
+          "barrier": 224,
+          "selected": 1
+        },
+        "sass": [
+          "ISETP.NE.AND P1, PT, RZ, UR6, PT",
+          "CS2R R94, SRZ",
+          "CS2R R92, SRZ",
+          "CS2R R18, SRZ",
+          "CS2R R16, SRZ",
+          "CS2R R14, SRZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 127,
+        "executed": 21216,
+        "opcodes": {
+          "LDCU": 544,
+          "IADD3": 4896,
+          "IMAD": 1088,
+          "LOP3": 1088,
+          "IADD": 4896,
+          "SHF": 4352,
+          "LD": 4352
+        },
+        "stalls": {
+          "selected": 2
+        },
+        "sass": [
+          "LDCU.64 UR4, c[0x0][0x388]",
+          "IADD3 R8, PT, PT, R7, R7, RZ",
+          "IMAD.SHL.U32 R6, R6, 0x4, RZ",
+          "LOP3.LUT R9, R8, 0x7fc, RZ, 0xc0, !PT",
+          "IMAD R9, R2, 0x8, R9",
+          "LOP3.LUT R6, R6, 0xc, RZ, 0xc0, !PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 136,
+        "executed": 2176,
+        "opcodes": {
+          "IADD3": 1632,
+          "UIADD3": 544
+        },
+        "stalls": {},
+        "sass": [
+          "IADD3 R11, PT, PT, R9, 0x1, RZ",
+          "IADD3 R13, PT, PT, R9, 0x2, RZ",
+          "IADD3 R15, PT, PT, R9, 0x3, RZ",
+          "UIADD3.64 UR4, UPT, UPT, UR14, 0x100000, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 140,
+        "executed": 6528,
+        "opcodes": {
+          "IMAD": 2720,
+          "IADD3": 1632,
+          "ISETP": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "IMAD R81, R9, 0x400, R3",
+          "IADD3 R73, PT, PT, R81, 0x400, RZ",
+          "IADD3 R75, PT, PT, R81, 0x800, RZ",
+          "IMAD.WIDE R44, R81, 0x10, R16",
+          "IADD3 R81, PT, PT, R81, 0xc00, RZ",
+          "IMAD.WIDE R72, R73, 0x10, R16"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 148,
+        "executed": 8704,
+        "opcodes": {
+          "CS2R": 8704
+        },
+        "stalls": {},
+        "sass": [
+          "CS2R R56, SRZ",
+          "CS2R R58, SRZ",
+          "CS2R R36, SRZ",
+          "CS2R R10, SRZ",
+          "CS2R R12, SRZ",
+          "CS2R R14, SRZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 150,
+        "executed": 544,
+        "opcodes": {
+          "LDG": 544
+        },
+        "stalls": {},
+        "sass": [
+          "@!P1  LDG.E.128.STRONG.GPU R56, desc[UR12][R72.64]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 161,
+        "executed": 1088,
+        "opcodes": {
+          "F2FP": 1088
+        },
+        "stalls": {
+          "long_scoreboard": 38
+        },
+        "sass": [
+          "F2FP.F16.E4M3.UNPACK_B R102, R56",
+          "F2FP.F16.E4M3.UNPACK_B R110, R12"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 164,
+        "executed": 2720,
+        "opcodes": {
+          "F2FP": 2720
+        },
+        "stalls": {
+          "long_scoreboard": 1
+        },
+        "sass": [
+          "F2FP.F16.E4M3.UNPACK_B R103, R57",
+          "F2FP.F16.E4M3.UNPACK_B R98, R8",
+          "F2FP.F16.E4M3.UNPACK_B R111, R13",
+          "F2FP.F16.E4M3.UNPACK_B R8, R52",
+          "F2FP.F16.E4M3.UNPACK_B R9, R53"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 167,
+        "executed": 1632,
+        "opcodes": {
+          "F2FP": 1632
+        },
+        "stalls": {},
+        "sass": [
+          "F2FP.F16.E4M3.UNPACK_B R96, R8.H1",
+          "F2FP.F16.E4M3.UNPACK_B R99, R9",
+          "F2FP.F16.E4M3.UNPACK_B R108, R12.H1"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 170,
+        "executed": 3808,
+        "opcodes": {
+          "F2FP": 3808
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "F2FP.F16.E4M3.UNPACK_B R97, R9.H1",
+          "F2FP.F16.E4M3.UNPACK_B R109, R13.H1",
+          "F2FP.F16.E4M3.UNPACK_B R12, R58",
+          "F2FP.F16.E4M3.UNPACK_B R106, R14",
+          "F2FP.F16.E4M3.UNPACK_B R104, R14.H1",
+          "F2FP.F16.E4M3.UNPACK_B R13, R54"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 182,
+        "executed": 45696,
+        "opcodes": {
+          "UISETP": 15232,
+          "PLOP3": 15232,
+          "BRA": 15232
+        },
+        "stalls": {
+          "wait": 11
+        },
+        "sass": [
+          "UISETP.NE.AND UP0, UPT, UR4, 0x7, UPT",
+          "PLOP3.LUT P0, PT, PT, PT, UP0, 0x80, 0x8",
+          "@P0   BRA 0x12015e5ac0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 191,
+        "executed": 15232,
+        "opcodes": {
+          "IMAD": 15232
+        },
+        "stalls": {
+          "not_selected": 1
+        },
+        "sass": [
+          "IMAD.SHL.U32 R36, R76, 0x1000, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 195,
+        "executed": 47872,
+        "opcodes": {
+          "LDCU": 2176,
+          "R2UR": 15232,
+          "QMMA": 15232,
+          "UIADD3": 15232
+        },
+        "stalls": {
+          "long_scoreboard": 6,
+          "math_pipe_throttle": 25,
+          "not_selected": 1,
+          "selected": 3,
+          "short_scoreboard": 5,
+          "wait": 7
+        },
+        "sass": [
+          "LDCU.64 UR16, c[0x0][0x380]",
+          "R2UR UR4, R76",
+          "QMMA.16832.F16.E4M3.E4M3 R110, R36, R32, R110",
+          "UIADD3 UR4, UPT, UPT, UR4, 0x1, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 197,
+        "executed": 15232,
+        "opcodes": {
+          "MOV": 15232
+        },
+        "stalls": {
+          "branch_resolving": 3,
+          "selected": 1,
+          "wait": 1
+        },
+        "sass": [
+          "MOV R37, UR20"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 198,
+        "executed": 30464,
+        "opcodes": {
+          "MOV": 30464
+        },
+        "stalls": {},
+        "sass": [
+          "MOV R38, 0x1",
+          "MOV R40, UR8"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 202,
+        "executed": 2176,
+        "opcodes": {
+          "LDS": 2176
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "LDS.128 R60, [R6+UR7+0x1000]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 220,
+        "executed": 544,
+        "opcodes": {
+          "BRA": 544
+        },
+        "stalls": {},
+        "sass": [
+          "BRA 0x12015e7c70"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 222,
+        "executed": 8704,
+        "opcodes": {
+          "IADD3": 6528,
+          "IADD": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "IADD3 R5, PT, PT, R7, 0x1, RZ",
+          "IADD3 R26, PT, PT, R7, 0x2, RZ",
+          "IADD3 R2, PT, PT, R7, 0x3, RZ",
+          "IADD.64 R112, R112, UR4",
+          "IADD3 R26, PT, PT, R27, 0x1, RZ",
+          "IADD3 R5, PT, PT, R27, 0x2, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 224,
+        "executed": 15776,
+        "opcodes": {
+          "ISETP": 6528,
+          "BRA": 8704,
+          "IADD": 544
+        },
+        "stalls": {},
+        "sass": [
+          "ISETP.GE.AND P1, PT, R5, R0, PT",
+          "ISETP.GE.AND P2, PT, R26, R0, PT",
+          "ISETP.GE.AND P3, PT, R2, R0, PT",
+          "@P0   BRA 0x12015e6ab0",
+          "@P1   BRA 0x12015e6b40",
+          "@P2   BRA 0x12015e6bd0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 226,
+        "executed": 17408,
+        "opcodes": {
+          "IMAD": 17408
+        },
+        "stalls": {
+          "long_scoreboard": 18,
+          "selected": 2,
+          "wait": 1
+        },
+        "sass": [
+          "IMAD R7, R7, 0x400, R3",
+          "IMAD.WIDE R6, R7, 0x20, R112",
+          "IMAD R7, R5, 0x400, R3",
+          "IMAD R7, R26, 0x400, R3",
+          "IMAD R3, R2, 0x400, R3",
+          "IMAD.WIDE R112, R3, 0x20, R112"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 235,
+        "executed": 3264,
+        "opcodes": {
+          "STG": 2176,
+          "BSYNC": 544,
+          "BSSY": 544
+        },
+        "stalls": {},
+        "sass": [
+          "STG.E.NA.128 desc[UR12][R6.64], R44",
+          "STG.E.NA.128 desc[UR12][R6.64+0x200], R48",
+          "STG.E.NA.128 desc[UR12][R6.64+0x400], R52",
+          "STG.E.NA.128 desc[UR12][R6.64+0x600], R56",
+          "BSYNC.RECONVERGENT B1",
+          "BSSY.RECONVERGENT B1, 0x12015e6b50"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 239,
+        "executed": 6528,
+        "opcodes": {
+          "REDG": 4352,
+          "BSYNC": 1088,
+          "BSSY": 1088
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "wait": 2
+        },
+        "sass": [
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64], R44",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x200], R48",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x400], R52",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x600], R56",
+          "BSYNC.RECONVERGENT B1",
+          "BSSY.RECONVERGENT B1, 0x12015e7b70"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 244,
+        "executed": 2176,
+        "opcodes": {
+          "LDG": 2176
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "LDG.E.128.STRONG.SM R36, desc[UR12][R92.64]",
+          "LDG.E.128.STRONG.SM R32, desc[UR12][R92.64+0x200]",
+          "LDG.E.128.STRONG.SM R28, desc[UR12][R92.64+0x400]",
+          "LDG.E.128.STRONG.SM R40, desc[UR12][R92.64+0x600]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 245,
+        "executed": 544,
+        "opcodes": {
+          "HADD2": 544
+        },
+        "stalls": {},
+        "sass": [
+          "HADD2 R36, R36, R44"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 246,
+        "executed": 544,
+        "opcodes": {
+          "HADD2": 544
+        },
+        "stalls": {},
+        "sass": [
+          "HADD2 R37, R37, R45"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 247,
+        "executed": 544,
+        "opcodes": {
+          "HADD2": 544
+        },
+        "stalls": {
+          "long_scoreboard": 12
+        },
+        "sass": [
+          "HADD2 R38, R38, R46"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 248,
+        "executed": 1088,
+        "opcodes": {
+          "HADD2": 1088
+        },
+        "stalls": {
+          "long_scoreboard": 1
+        },
+        "sass": [
+          "HADD2 R39, R39, R47",
+          "HADD2 R35, R35, R51"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 259,
+        "executed": 2176,
+        "opcodes": {
+          "IMAD": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "IMAD.WIDE R28, R27, 0x10, R112",
+          "IMAD.WIDE R26, R41, 0x10, R112",
+          "IMAD.WIDE R26, R5, 0x10, R112",
+          "IMAD.WIDE R112, R3, 0x10, R112"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 270,
+        "executed": 22848,
+        "opcodes": {
+          "MOV": 10336,
+          "STG": 3808,
+          "BSYNC": 1632,
+          "BSSY": 2176,
+          "BRA": 544,
+          "IADD3": 1088,
+          "LDCU": 1088,
+          "LOP3": 1088,
+          "IMAD": 1088
+        },
+        "stalls": {
+          "no_instructions": 2,
+          "selected": 3,
+          "wait": 3
+        },
+        "sass": [
+          "MOV R32, R36",
+          "MOV R33, R37",
+          "MOV R36, R0",
+          "MOV R37, R31",
+          "STG.E.NA.128 desc[UR12][R28.64], R32",
+          "STG.E.NA.128 desc[UR12][R28.64+0x200], R36"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 272,
+        "executed": 544,
+        "opcodes": {
+          "F2FP": 544
+        },
+        "stalls": {},
+        "sass": [
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R45, R38, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 273,
+        "executed": 544,
+        "opcodes": {
+          "F2FP": 544
+        },
+        "stalls": {},
+        "sass": [
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R0, R39, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 274,
+        "executed": 544,
+        "opcodes": {
+          "F2FP": 544
+        },
+        "stalls": {},
+        "sass": [
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R39, R34, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 275,
+        "executed": 544,
+        "opcodes": {
+          "F2FP": 544
+        },
+        "stalls": {},
+        "sass": [
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R38, R35, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 283,
+        "executed": 13056,
+        "opcodes": {
+          "IMAD": 4352,
+          "LDCU": 2176,
+          "UISETP": 2176,
+          "SHF": 2176,
+          "IADD": 2176
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "IMAD R5, R2, 0x8, R5",
+          "LDCU.64 UR4, c[0x0][0x3a0]",
+          "UISETP.NE.S64.OR UP0, UPT, UR8, URZ, !UP0",
+          "IMAD.SHL.U32 R24, R5, 0x4, RZ",
+          "SHF.R.S32.HI R25, RZ, 0x1f, R24",
+          "IADD.64 R24, R24, UR4"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 288,
+        "executed": 6528,
+        "opcodes": {
+          "UISETP": 2176,
+          "PLOP3": 2176,
+          "BRA": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "UISETP.GE.AND UP0, UPT, UR6, 0x1, UPT",
+          "PLOP3.LUT P0, PT, PT, PT, UP0, 0x80, 0x8",
+          "@P0   BRA 0x12015e6940"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 290,
+        "executed": 1632,
+        "opcodes": {
+          "BRA": 1632
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "@P0   BRA 0x12015e6910"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 292,
+        "executed": 45256,
+        "opcodes": {
+          "LDG": 408,
+          "S2R": 408,
+          "IADD3": 408,
+          "ISETP": 22016,
+          "BRA": 22016
+        },
+        "stalls": {
+          "lg_throttle": 1,
+          "long_scoreboard": 104,
+          "short_scoreboard": 1,
+          "wait": 3
+        },
+        "sass": [
+          "LDG.E.NA.STRONG.GPU R6, desc[UR12][R24.64]",
+          "S2R R5, SR_CTAID.Z",
+          "IADD3 R5, PT, PT, R5, -0x1, RZ",
+          "ISETP.GE.AND P0, PT, R6, R5, PT",
+          "@P0   BRA 0x12015e6910",
+          "@!P0  BRA 0x12015e68d0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 293,
+        "executed": 21608,
+        "opcodes": {
+          "NANOSLEEP": 21608
+        },
+        "stalls": {
+          "branch_resolving": 1
+        },
+        "sass": [
+          "NANOSLEEP 0x40"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 300,
+        "executed": 5304,
+        "opcodes": {
+          "WARPSYNC": 2040,
+          "NOP": 1632,
+          "BAR": 1632
+        },
+        "stalls": {
+          "branch_resolving": 9,
+          "selected": 1,
+          "sleeping": 20,
+          "wait": 2
+        },
+        "sass": [
+          "WARPSYNC.ALL",
+          "NOP",
+          "BAR.SYNC.DEFER_BLOCKING 0x0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 306,
+        "executed": 4896,
+        "opcodes": {
+          "BRA": 2176,
+          "IADD3": 544,
+          "LDCU": 544,
+          "BSSY": 544,
+          "LOP3": 544,
+          "IMAD": 544
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "@P0   BRA 0x12015e6c60",
+          "IADD3 R7, PT, PT, R7, R7, RZ",
+          "LDCU.64 UR4, c[0x0][0x3a8]",
+          "BSSY.RECONVERGENT B1, 0x12015e6ac0",
+          "LOP3.LUT R7, R7, 0x7fc, RZ, 0xc0, !PT",
+          "IMAD R7, R2, 0x8, R7"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 307,
+        "executed": 544,
+        "opcodes": {
+          "ISETP": 544
+        },
+        "stalls": {},
+        "sass": [
+          "ISETP.GE.AND P0, PT, R7, R0, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 309,
+        "executed": 8160,
+        "opcodes": {
+          "UISETP": 1632,
+          "PLOP3": 1632,
+          "BRA": 1632,
+          "IADD3": 544,
+          "LDCU": 1088,
+          "BSSY": 544,
+          "LOP3": 544,
+          "IMAD": 544
+        },
+        "stalls": {
+          "no_instructions": 3,
+          "selected": 1,
+          "wait": 3
+        },
+        "sass": [
+          "UISETP.GE.AND UP0, UPT, UR6, 0x3, UPT",
+          "PLOP3.LUT P0, PT, PT, PT, UP0, 0x80, 0x8",
+          "@!P0  BRA 0x12015e7990",
+          "IADD3 R7, PT, PT, R7, R7, RZ",
+          "LDCU.64 UR8, c[0x0][0x3a8]",
+          "BSSY.RECONVERGENT B1, 0x12015e7070"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 310,
+        "executed": 1088,
+        "opcodes": {
+          "ISETP": 1088
+        },
+        "stalls": {},
+        "sass": [
+          "ISETP.GE.AND P0, PT, R7, R0, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 313,
+        "executed": 544,
+        "opcodes": {
+          "ISETP": 544
+        },
+        "stalls": {},
+        "sass": [
+          "ISETP.GE.AND P0, PT, R27, R0, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 317,
+        "executed": 2176,
+        "opcodes": {
+          "BAR": 2176
+        },
+        "stalls": {
+          "branch_resolving": 2
+        },
+        "sass": [
+          "BAR.SYNC.DEFER_BLOCKING 0x0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 318,
+        "executed": 2176,
+        "opcodes": {
+          "EXIT": 2176
+        },
+        "stalls": {
+          "barrier": 16
+        },
+        "sass": [
+          "@P0   EXIT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 319,
+        "executed": 3264,
+        "opcodes": {
+          "MOV": 544,
+          "MEMBAR": 1088,
+          "ERRBAR": 544,
+          "CGAERRBAR": 544,
+          "STG": 544
+        },
+        "stalls": {
+          "drain": 67,
+          "long_scoreboard": 17,
+          "membar": 48,
+          "misc": 6,
+          "wait": 9
+        },
+        "sass": [
+          "MOV R3, UR6",
+          "MEMBAR.ALL.CTA",
+          "MEMBAR.ALL.GPU",
+          "ERRBAR",
+          "CGAERRBAR",
+          "STG.E.NA.STRONG.GPU desc[UR12][R24.64], R3"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 324,
+        "executed": 544,
+        "opcodes": {
+          "EXIT": 544
+        },
+        "stalls": {},
+        "sass": [
+          "EXIT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 22,
+        "executed": 17408,
+        "opcodes": {
+          "ELECT": 17408
+        },
+        "stalls": {
+          "drain": 2,
+          "selected": 4
+        },
+        "sass": [
+          "ELECT P0, URZ, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 53,
+        "executed": 21608,
+        "opcodes": {
+          "LDG": 21608
+        },
+        "stalls": {
+          "branch_resolving": 3,
+          "lg_throttle": 1,
+          "no_instructions": 1,
+          "sleeping": 4,
+          "wait": 1
+        },
+        "sass": [
+          "LDG.E.NA.STRONG.GPU R6, desc[UR12][R24.64]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 81,
+        "executed": 11968,
+        "opcodes": {
+          "REDG": 8704,
+          "BSYNC": 3264
+        },
+        "stalls": {
+          "lg_throttle": 26,
+          "no_instructions": 2,
+          "wait": 1
+        },
+        "sass": [
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64], R76",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x200], R80",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x400], R84",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x600], R88",
+          "BSYNC.RECONVERGENT B1",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R2.64], R8"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 112,
+        "executed": 32640,
+        "opcodes": {
+          "F2FP": 32640
+        },
+        "stalls": {},
+        "sass": [
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R35, R33, R38",
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R33, R30, RZ",
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R30, R31, RZ",
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R34, R32, R39",
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R39, R42, RZ",
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R36, R36, R45"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 132,
+        "executed": 25568,
+        "opcodes": {
+          "F2FP": 25568
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "F2FP.F16.E4M3.UNPACK_B R54, R54.H1",
+          "F2FP.F16.E4M3.UNPACK_B R107, R15",
+          "F2FP.F16.E4M3.UNPACK_B R105, R15.H1",
+          "F2FP.F16.E4M3.UNPACK_B R80, R10",
+          "F2FP.F16.E4M3.UNPACK_B R82, R10.H1",
+          "F2FP.F16.E4M3.UNPACK_B R81, R11"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 195,
+        "executed": 1027072,
+        "opcodes": {
+          "QMMA": 524416,
+          "NOP": 502656
+        },
+        "stalls": {
+          "math_pipe_throttle": 9,
+          "not_selected": 1,
+          "selected": 18,
+          "wait": 135
+        },
+        "sass": [
+          "QMMA.16832.F16.E4M3.E4M3 R106, R36, R28, R106",
+          "NOP",
+          "QMMA.16832.F16.E4M3.E4M3 R104, R36, R30, R104",
+          "QMMA.16832.F16.E4M3.E4M3 R52, R36, R24, R52",
+          "QMMA.16832.F16.E4M3.E4M3 R54, R36, R26, R54",
+          "QMMA.16832.F16.E4M3.E4M3 R56, R36, R20, R56"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 207,
+        "executed": 8704,
+        "opcodes": {
+          "STG": 7072,
+          "BSYNC": 1088,
+          "BSSY": 544
+        },
+        "stalls": {
+          "dispatch_stall": 1,
+          "lg_throttle": 5,
+          "mio_throttle": 1
+        },
+        "sass": [
+          "STG.E.NA.128 desc[UR12][R6.64], R60",
+          "STG.E.NA.128 desc[UR12][R6.64+0x200], R64",
+          "STG.E.NA.128 desc[UR12][R6.64+0x400], R68",
+          "STG.E.NA.128 desc[UR12][R6.64+0x600], R72",
+          "BSYNC.RECONVERGENT B1",
+          "BSSY.RECONVERGENT B1, 0x12015e6be0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "executed": 19584,
+        "opcodes": {
+          "S2UR": 2176,
+          "ULEA": 2176,
+          "VOTEU": 4352,
+          "UIADD3": 2176,
+          "USHF": 4352,
+          "SYNCS": 4352
+        },
+        "stalls": {
+          "mio_throttle": 2,
+          "selected": 1
+        },
+        "sass": [
+          "S2UR UR7, SR_CgaCtaId",
+          "ULEA UR7, UR7, UR5, 0x18",
+          "VOTEU.ALL UP0, P0",
+          "@!UP1 UIADD3 UR4, UPT, UPT, -UR4, 0x100000, URZ",
+          "@!UP1 USHF.L.U32 UR5, UR4, 0xb, URZ",
+          "@!UP1 USHF.L.U32 UR4, UR4, 0x1, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 246,
+        "executed": 15232,
+        "opcodes": {
+          "R2UR": 15232
+        },
+        "stalls": {},
+        "sass": [
+          "R2UR UR10, R77"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "executed": 211072,
+        "opcodes": {
+          "R2UR": 54400,
+          "UIADD3": 19584,
+          "UMOV": 34816,
+          "UBLKCP": 34816,
+          "VOTEU": 34816,
+          "IADD3": 17408,
+          "MOV": 15232
+        },
+        "stalls": {
+          "dispatch_stall": 3,
+          "mio_throttle": 17,
+          "selected": 5,
+          "wait": 11
+        },
+        "sass": [
+          "R2UR UR10, R77",
+          "UIADD3 UR11, UPT, UPT, UR7, 0x2000, URZ",
+          "UMOV UR8, 0x20",
+          "UBLKCP.S.G [UR10], [UR4], UR8",
+          "VOTEU.ANY UP0, P0",
+          "@P0   IADD3 R12, PT, PT, R77, 0x800, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "executed": 69632,
+        "opcodes": {
+          "SYNCS": 34816,
+          "NOP": 17408,
+          "BSYNC": 17408
+        },
+        "stalls": {
+          "long_scoreboard": 26,
+          "selected": 3
+        },
+        "sass": [
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR7+0x2000], R8",
+          "@P0   SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR7+0x2000], R8",
+          "NOP",
+          "BSYNC B0",
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [R23+UR7+0x2000], R20",
+          "@P0   SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [R21+UR7+0x2000], R20"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "executed": 135282,
+        "opcodes": {
+          "SYNCS": 34816,
+          "BRA": 17408,
+          "IMAD": 2176,
+          "YIELD": 80882
+        },
+        "stalls": {
+          "branch_resolving": 11,
+          "long_scoreboard": 40,
+          "no_instructions": 12,
+          "selected": 2
+        },
+        "sass": [
+          "SYNCS.ARRIVE.TRANS64.ART0 R8, [UR7+0x2000], R8",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR7+0x2000], R9",
+          "@!P0  BRA 0x12015e7e00",
+          "IMAD.SHL.U32 R49, R7, 0x400, RZ",
+          "SYNCS.ARRIVE.TRANS64.ART0 R38, [R40+UR7+0x2000], R38",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [R40+UR7+0x2000], R39"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
+        "line": 16,
+        "executed": 174799,
+        "opcodes": {
+          "SYNCS": 80882,
+          "BRA": 93917
+        },
+        "stalls": {
+          "branch_resolving": 159,
+          "long_scoreboard": 146,
+          "misc": 6,
+          "no_instructions": 8,
+          "not_selected": 3,
+          "selected": 12,
+          "wait": 32
+        },
+        "sass": [
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR7+0x2000], R9",
+          "@!P0  BRA 0x12015e7e00",
+          "BRA 0x12015e4b80",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [R40+UR7+0x2000], R39",
+          "@!P0  BRA 0x12015e7f20",
+          "BRA 0x12015e6380"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/packed_math.cuh",
+        "line": 81,
+        "executed": 6528,
+        "opcodes": {
+          "REDG": 4352,
+          "BSYNC": 1088,
+          "BSSY": 1088
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "wait": 2
+        },
+        "sass": [
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64], R60",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x200], R64",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x400], R68",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x600], R72",
+          "BSYNC.RECONVERGENT B1",
+          "BSSY.RECONVERGENT B1, 0x12015e7c00"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/packed_math.cuh",
+        "line": 88,
+        "executed": 29920,
+        "opcodes": {
+          "HMUL2": 25568,
+          "MOV": 2176,
+          "IADD3": 2176
+        },
+        "stalls": {
+          "no_instructions": 1,
+          "selected": 1,
+          "wait": 3
+        },
+        "sass": [
+          "HMUL2 R110, R110, R64",
+          "HMUL2 R111, R111, R64",
+          "HMUL2 R102, R102, R64",
+          "HMUL2 R103, R103, R64",
+          "HMUL2 R98, R98, R64",
+          "HMUL2 R99, R99, R64"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+        "line": 40,
+        "executed": 17408,
+        "opcodes": {
+          "QMMA": 17408
+        },
+        "stalls": {
+          "long_scoreboard": 2,
+          "math_pipe_throttle": 7
+        },
+        "sass": [
+          "QMMA.16832.F16.E4M3.E4M3 R108, R36, R34, R108",
+          "QMMA.16832.F16.E4M3.E4M3 R52, R60, R24, R52"
+        ]
+      },
+      {
+        "path": "cuda_fp16.hpp",
+        "line": 2504,
+        "executed": 32096,
+        "opcodes": {
+          "HADD2": 32096
+        },
+        "stalls": {
+          "long_scoreboard": 66,
+          "selected": 3,
+          "wait": 2
+        },
+        "sass": [
+          "HADD2 R34, R34, R50",
+          "HADD2 R33, R33, R49",
+          "HADD2 R30, R30, R54",
+          "HADD2 R31, R31, R55",
+          "HADD2 R32, R32, R48",
+          "HADD2 R42, R42, R58"
+        ]
+      },
+      {
+        "path": "cuda_fp16.hpp",
+        "line": 2526,
+        "executed": 9248,
+        "opcodes": {
+          "HMUL2": 9248
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "HMUL2 R12, R13, R51",
+          "HMUL2 R13, R14, R51",
+          "HMUL2 R14, R54, R50",
+          "HMUL2 R56, R56, R93",
+          "HMUL2 R57, R57, R93",
+          "HMUL2 R72, R72, R93"
+        ]
+      },
+      {
+        "path": "sm_20_intrinsics.hpp",
+        "line": 151,
+        "executed": 15232,
+        "opcodes": {
+          "UIADD3": 15232
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 1
+        },
+        "sass": [
+          "UIADD3 UR10, UPT, UPT, UR10, UR9, URZ"
+        ]
+      },
+      {
+        "path": "sm_32_intrinsics.hpp",
+        "line": 177,
+        "executed": 3808,
+        "opcodes": {
+          "LDG": 3808
+        },
+        "stalls": {},
+        "sass": [
+          "@!P2  LDG.E.128.STRONG.GPU R8, desc[UR12][R74.64]",
+          "@!P0  LDG.E.128.STRONG.GPU R12, desc[UR12][R44.64]",
+          "@!P1  LDG.E.128.STRONG.GPU R36, desc[UR12][R72.64+0x200]",
+          "@!P3  LDG.E.128.STRONG.GPU R52, desc[UR12][R80.64]",
+          "@!P0  LDG.E.128.STRONG.GPU R16, desc[UR12][R44.64+0x200]",
+          "@!P2  LDG.E.128.STRONG.GPU R40, desc[UR12][R74.64+0x200]"
+        ]
+      },
+      {
+        "path": "sm_32_intrinsics.hpp",
+        "line": 222,
+        "executed": 8704,
+        "opcodes": {
+          "IMAD": 2176,
+          "LDG": 6528
+        },
+        "stalls": {
+          "wait": 2
+        },
+        "sass": [
+          "IMAD R79, R2, 0x8, R7",
+          "LDG.E.128.STRONG.SM R36, desc[UR12][R26.64+0x200]",
+          "LDG.E.128.STRONG.SM R28, desc[UR12][R26.64+0x400]",
+          "LDG.E.128.STRONG.SM R44, desc[UR12][R26.64]",
+          "LDG.E.128.STRONG.SM R32, desc[UR12][R26.64+0x600]",
+          "LDG.E.128.STRONG.SM R40, desc[UR12][R26.64+0x200]"
+        ]
+      }
+    ],
+    "stall_totals": {
+      "barrier": 240,
+      "branch_resolving": 199,
+      "dispatch_stall": 7,
+      "drain": 69,
+      "lg_throttle": 34,
+      "long_scoreboard": 483,
+      "math_pipe_throttle": 41,
+      "membar": 48,
+      "mio_throttle": 22,
+      "misc": 12,
+      "no_instructions": 51,
+      "not_selected": 6,
+      "selected": 84,
+      "short_scoreboard": 22,
+      "sleeping": 24,
+      "tex_throttle": 0,
+      "wait": 305
+    },
+    "timeline": {
+      "pmsampling:sm__inst_executed_realtime.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 173,
+        "bucket_size": 2,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          2.5925385718683103,
+          19.492677987349037,
+          11.781428639331747,
+          1.3196497105885234,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "pmsampling:sm__inst_executed_pipe_tensor_subpipe_hmma_realtime.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 173,
+        "bucket_size": 2,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          51.628340650533616,
+          38.456260320124976,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "pmsampling:dram__bytes.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 173,
+        "bucket_size": 2,
+        "values": [
+          0.28409958079811154,
+          0.3032913723703198,
+          0.14453748006379585,
+          0.05465023847376788,
+          0.08472886762360447,
+          0.16907859982761975,
+          0.21935509554140126,
+          0.19371359786810946,
+          0.15974440894568687,
+          0.08422325327098329,
+          0.13480861244019138,
+          0.1491568610573856,
+          0.16945773524720892,
+          2.801099098337489,
+          41.350179425837325,
+          10.032609933925722,
+          0.17715709728867624,
+          0.10947452229299365,
+          0.11945229945874239,
+          0.18389356743948193,
+          0.1744753577106518,
+          0.08957006369426751,
+          0.02980922098569157,
+          0.1294662811487317,
+          0.19399626208209497,
+          0.21907999497150515,
+          0.0696499342010178,
+          0.024960063897763576,
+          0.1141661619602796,
+          0.1893939393939394,
+          0.17885532591414943,
+          0.05988057324840764,
+          0.05473726114649682,
+          0.2967105263157895,
+          0.6772464468290422,
+          0.5391228070175438,
+          0.4620677888989991,
+          0.3491781570539768,
+          0.4766680062784826,
+          0.38351796544052663,
+          0.35289020926264414,
+          0.39437799043062205,
+          0.3850327949651198,
+          0.6104650238473768,
+          0.4827081162220481,
+          0.4427179080824089,
+          0.3433131625856084,
+          0.48345238095238097,
+          0.5325644741279416,
+          0.4524704312780371,
+          0.5033891547049442,
+          0.3976600988339418,
+          0.5582151360371177,
+          0.45460361692447676,
+          0.47673722044728434,
+          0.4861111111111111,
+          0.48868630573248406,
+          0.5516220554039026,
+          0.4888430504812714,
+          0.49645221163455033,
+          0.42399465480430676,
+          0.5707953226335579,
+          0.46462060702875396,
+          0.4939523251940606,
+          0.4759768740031898,
+          0.4378516568919046,
+          0.6271602955144583,
+          0.5117143366267564,
+          0.45878184713375797,
+          0.44038330125791425,
+          0.6252892234548336,
+          0.5175330833225571,
+          0.4427360667376642,
+          0.35890028184204636,
+          0.4425599984810511,
+          0.6323633798596084,
+          0.4923896725619358,
+          0.4286612757168149,
+          0.3179682385621163,
+          0.5513915470494418,
+          0.4339934403966752,
+          0.4917132587859425,
+          0.5287390857243799,
+          0.42900657194103464,
+          0.6066785629297338,
+          0.4980003479312061,
+          0.5083732057416268
+        ]
+      }
+    },
+    "rules": [
+      {
+        "rule_identifier": "SOLBottleneck",
+        "name": "Bottleneck",
+        "section_identifier": "SpeedOfLight",
+        "rule_message": {
+          "title": "Small Grid",
+          "message": "This kernel grid is too small to fill the available resources on this device, resulting in only 0.72 full waves across all SMs. Look at @section:LaunchStats:Launch Statistics@ for more details.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "launch__waves_per_multiprocessor",
+            "value": 0.723404255319149,
+            "severity": 2,
+            "info": "Increase the number of waves per SM towards 1"
+          }
+        ]
+      },
+      {
+        "rule_identifier": "IssueSlotUtilization",
+        "name": "Issue Slot Utilization",
+        "section_identifier": "SchedulerStats",
+        "rule_message": {
+          "title": "",
+          "message": "Every scheduler is capable of issuing one instruction per cycle, but for this workload each scheduler only issues an instruction every 7.1 cycles. This might leave hardware resources underutilized and may lead to less optimal performance. Out of the maximum of 12 warps per scheduler, this workload allocates an average of 2.44 active warps per scheduler, but only an average of 0.17 warps were eligible per cycle. Eligible warps are the subset of active warps that are ready to issue their next instruction. Every cycle with no eligible warp results in no instruction being issued and the issue slot remains unused. To increase the number of eligible warps, reduce the time the active warps are stalled by inspecting the top stall reasons on the @section:WarpStateStats:Warp State Statistics@ and @section:SourceCounters:Source Counters@ sections.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__issue_active.avg.per_cycle_active",
+            "value": 0.14074345322787943,
+            "severity": 0,
+            "info": "Increase the average number of instructions issued per cycle"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 1,
+          "speedup": 63.88035349312522
+        }
+      },
+      {
+        "rule_identifier": "AchievedOccupancy",
+        "name": "Achieved Occupancy",
+        "section_identifier": "Occupancy",
+        "rule_message": {
+          "title": "",
+          "message": "The difference between calculated theoretical (33.3%) and measured achieved occupancy (19.9%) can be the result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can occur between warps within a block as well as across blocks of the same kernel. See the @url:CUDA Best Practices Guide:https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy@ for more details on optimizing occupancy.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "sm__warps_active.avg.pct_of_peak_sustained_active",
+            "value": 19.879756026938367,
+            "severity": 0,
+            "info": "Increase the achieved occupancy towards the theoretical limit (33.3%)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 40.360731919184886
+        }
+      },
+      {
+        "rule_identifier": "HighPipeUtilization",
+        "name": "High Pipe Utilization",
+        "section_identifier": "ComputeWorkloadAnalysis",
+        "rule_message": {
+          "title": "Balanced",
+          "message": "Tensor is the highest-utilized pipeline (27.5%) based on elapsed cycles in the workload, taking into account the rates of its different instructions. It is the logical aggregation of individual tensor pipelines. It's dominated by its Tensor (FP) sub-pipeline. It is well-utilized, but should not be a bottleneck. Based on the number of executed instructions, the highest utilized pipeline (27.5%) is Tensor (FP). It executes 16-bit floating point tensor operations. Comparing the two, the overall pipeline utilization appears to be caused by frequent, low-latency instructions. See the @url:Profiling Guide:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-decoder@ or hover over the pipeline name to understand the workloads handled by each pipeline. The @section:InstructionStats:Instruction Statistics@ section shows the mix of executed instructions for this workload. Check the @section:WarpStateStats:Warp State Statistics@ section for which reasons cause warps to stall.",
+          "type": 1
+        },
+        "focus_metrics": [
+          {
+            "name": "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed",
+            "value": 27.52087077755195,
+            "severity": 0,
+            "info": "Try to decrease the utilization of the busiest pipeline (currently: Tensor)"
+          }
+        ],
+        "result_tables": [
+          {
+            "title": "Most frequently executed instructions for pipeline Tensor",
+            "description": "Source lines with the highest number of executed instructions on pipeline Tensor (FP).",
+            "headers": [
+              "Location",
+              "Source",
+              "Opcodes",
+              "Executed Instructions"
+            ],
+            "data": [
+              [
+                "@source:intrinsics.cuh:194:intrinsics.cuh, line 195@",
+                "@source:tiled_mma.cuh:39:tiled_mma.cuh, line 40@",
+                "@source:global_contract_fp8.cu:194:global_contract_fp8.cu, line 195@"
+              ],
+              [
+                "asm volatile(\"mma.sync.aligned.m16n8k32.row.col.f16.e4m3.e4m3.f16 {%0,%1},{%2,%3,%4,%5},{%6,%7},{%8,%9};\"",
+                "MMA<Precision>(",
+                "StageInput(ReductionTile + 1);"
+              ],
+              [
+                "QMMA.16832.F16.E4M3.E4M3",
+                "QMMA.16832.F16.E4M3.E4M3",
+                "QMMA.16832.F16.E4M3.E4M3"
+              ],
+              [
+                524416.0,
+                17408.0,
+                15232.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "rule_identifier": "MemoryCacheAccessPattern",
+        "name": "Memory Cache Access Pattern",
+        "section_identifier": "MemoryWorkloadAnalysis_Tables",
+        "rule_message": {
+          "title": "L2 Global Load Access Pattern",
+          "message": "The memory access pattern for global loads from L2 might not be optimal. On average, only 31.6 of the 32 bytes transmitted per sector are utilized by each thread. This applies to the 58.1% of sectors missed in L1TEX. This could possibly be caused by a stride between threads. Check the @section:SourceCounters:Source Counters@ section for uncoalesced global loads.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__sass_average_data_bytes_per_sector_mem_global_op_ld.ratio",
+            "value": 31.646078426988733,
+            "severity": 2,
+            "info": "Increase the average number of bytes utilized per sector towards 32 bytes"
+          },
+          {
+            "name": "l1tex__t_sector_pipe_lsu_mem_global_op_ld_hit_rate.pct",
+            "value": 41.85146831832125,
+            "severity": 0,
+            "info": "Try to increase the hit rate in L1TEX to benefit from its higher bandwidth"
+          },
+          {
+            "name": "lts__throughput.avg.pct_of_peak_sustained_elapsed",
+            "value": 36.11964650687477,
+            "severity": 1,
+            "info": "The higher the L2 throughput the more severe the issue becomes"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 0.2322947000997875
+        }
+      },
+      {
+        "rule_identifier": "MemoryCacheAccessPattern",
+        "name": "Memory Cache Access Pattern",
+        "section_identifier": "MemoryWorkloadAnalysis_Tables",
+        "rule_message": {
+          "title": "L2 Global Store Access Pattern",
+          "message": "The memory access pattern for global stores to L2 might not be optimal. On average, only 31.9 of the 32 bytes transmitted per sector are utilized by each thread. This applies to the 100.0% of sectors missed in L1TEX. This could possibly be caused by a stride between threads. Check the @section:SourceCounters:Source Counters@ section for uncoalesced global stores.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__sass_average_data_bytes_per_sector_mem_global_op_st.ratio",
+            "value": 31.927272727272726,
+            "severity": 2,
+            "info": "Increase the average number of bytes utilized per sector towards 32 bytes"
+          },
+          {
+            "name": "l1tex__t_sector_pipe_lsu_mem_global_op_st_hit_rate.pct",
+            "value": 0.0,
+            "severity": 0,
+            "info": "Try to increase the hit rate in L1TEX to benefit from its higher bandwidth"
+          },
+          {
+            "name": "lts__throughput.avg.pct_of_peak_sustained_elapsed",
+            "value": 36.11964650687477,
+            "severity": 1,
+            "info": "The higher the L2 throughput the more severe the issue becomes"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 0.08209010569744421
+        }
+      },
+      {
+        "rule_identifier": "PMSamplingData",
+        "name": "PM Sampling Data",
+        "section_identifier": "PmSampling",
+        "rule_message": {
+          "title": "",
+          "message": "Sampling interval is larger than 10% of the workload duration, which likely results in very few collected samples. For better results, use the --pm-sampling-interval option to reduce the sampling interval. Use --pm-sampling-buffer-size to increase the sampling buffer size for the smaller interval, or don't set a fixed buffer size and let the tool adjust it automatically.",
+          "type": 3
+        }
+      },
+      {
+        "rule_identifier": "SOLFPRoofline",
+        "name": "Roofline Analysis",
+        "section_identifier": "SpeedOfLight_RooflineChart",
+        "rule_message": {
+          "title": "Roofline Analysis",
+          "message": "The ratio of peak float (FP32) to double (FP64) performance on this device is 64:1. The workload achieved 0% of this device's FP32 peak performance and 0% of its FP64 peak performance. See the @url:Profiling Guide:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#roofline@ for more details on roofline analysis.",
+          "type": 1
+        }
+      },
+      {
+        "rule_identifier": "TheoreticalOccupancy",
+        "name": "Theoretical Occupancy",
+        "section_identifier": "Occupancy",
+        "rule_message": {
+          "title": "",
+          "message": "The 4.00 theoretical warps per scheduler this kernel can issue according to its occupancy are below the hardware maximum of 12. This kernel's theoretical occupancy (33.3%) is limited by the number of required registers.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__maximum_warps_avg_per_active_cycle",
+            "value": 4.0,
+            "severity": 2,
+            "info": "Increase the theoretical number of warps per scheduler that can be issued"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 63.88035349312522
+        }
+      },
+      {
+        "rule_identifier": "WorkloadImbalance",
+        "name": "Workload Imbalance",
+        "section_identifier": "WorkloadDistribution",
+        "rule_message": {
+          "title": "SMs Workload Imbalance",
+          "message": "One or more SMs have a much lower number of active cycles than the average number of active cycles. Maximum instance value is 13.36% above the average, while the minimum instance value is 22.81% below the average.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "sm__cycles_active.avg",
+            "value": 36109.744680851065,
+            "severity": 2,
+            "info": "Balancing the number of active cycles across SMs would result in a more optimized workload"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 11.200316091178024
+        }
+      },
+      {
+        "rule_identifier": "WorkloadImbalance",
+        "name": "Workload Imbalance",
+        "section_identifier": "WorkloadDistribution",
+        "rule_message": {
+          "title": "SMSPs Workload Imbalance",
+          "message": "One or more SMSPs have a much lower number of active cycles than the average number of active cycles. Maximum instance value is 13.55% above the average, while the minimum instance value is 27.33% below the average.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__cycles_active.avg",
+            "value": 35413.95212765958,
+            "severity": 2,
+            "info": "Balancing the number of active cycles across SMSPs would result in a more optimized workload"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 11.141147918890654
+        }
+      },
+      {
+        "rule_identifier": "WorkloadImbalance",
+        "name": "Workload Imbalance",
+        "section_identifier": "WorkloadDistribution",
+        "rule_message": {
+          "title": "L1 Slices Workload Imbalance",
+          "message": "One or more L1 Slices have a much lower number of active cycles than the average number of active cycles. Maximum instance value is 13.36% above the average, while the minimum instance value is 22.81% below the average.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "l1tex__cycles_active.avg",
+            "value": 36109.744680851065,
+            "severity": 2,
+            "info": "Balancing the number of active cycles across L1 Slices would result in a more optimized workload"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 11.200316091178024
+        }
+      }
+    ],
+    "report": "fp8-full",
+    "range_index": 0,
+    "action_index": 26
+  },
+  {
+    "function": "void global_contract_fp8<(bool)1, FGlobalProjectionC1024Fp8Parameters>(T2)",
+    "metrics": {
+      "device__attribute_max_registers_per_multiprocessor": {
+        "value": 65536,
+        "unit": ""
+      },
+      "device__attribute_max_shared_memory_per_multiprocessor": {
+        "value": 102400,
+        "unit": ""
+      },
+      "device__attribute_max_warps_per_multiprocessor": {
+        "value": 48,
+        "unit": ""
+      },
+      "device__attribute_multiprocessor_count": {
+        "value": 188,
+        "unit": ""
+      },
+      "gpu__time_duration.sum": {
+        "value": 17824.0,
+        "unit": "ns"
+      },
+      "launch__barrier_count": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__block_dim_x": {
+        "value": 32,
+        "unit": "block"
+      },
+      "launch__block_dim_y": {
+        "value": 4,
+        "unit": "block"
+      },
+      "launch__block_dim_z": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_size": {
+        "value": 128,
+        "unit": ""
+      },
+      "launch__cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_max_active": {
+        "value": 0,
+        "unit": "cluster"
+      },
+      "launch__cluster_max_potential_size": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__cluster_scheduling_policy": {
+        "value": "PolicySpread",
+        "unit": ""
+      },
+      "launch__cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__context_id": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__device_id": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__execution_model": {
+        "value": "SIMT",
+        "unit": ""
+      },
+      "launch__func_cache_config": {
+        "value": "CachePreferNone",
+        "unit": ""
+      },
+      "launch__grid_dim_x": {
+        "value": 136,
+        "unit": ""
+      },
+      "launch__grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_dim_z": {
+        "value": 4,
+        "unit": ""
+      },
+      "launch__grid_size": {
+        "value": 544,
+        "unit": ""
+      },
+      "launch__kernel_name": {
+        "value": "",
+        "unit": ""
+      },
+      "launch__occupancy_cluster_gpu_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_cluster_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_limit_barriers": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_blocks": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_registers": {
+        "value": 4.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_shared_mem": {
+        "value": 10.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_warps": {
+        "value": 12.0,
+        "unit": "block"
+      },
+      "launch__per_block_memory_size": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__persisting_l2_cache_size": {
+        "value": 25165824,
+        "unit": "byte"
+      },
+      "launch__preferred_cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__registers_per_thread": {
+        "value": 116,
+        "unit": "register/thread"
+      },
+      "launch__registers_per_thread_allocated": {
+        "value": 120.0,
+        "unit": "register/thread"
+      },
+      "launch__shared_mem_config_size": {
+        "value": 102400,
+        "unit": "byte"
+      },
+      "launch__shared_mem_per_block": {
+        "value": 9232,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_allocated": {
+        "value": 9344.0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_driver": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_dynamic": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_static": {
+        "value": 8208,
+        "unit": "byte/block"
+      },
+      "launch__sm_count": {
+        "value": 188,
+        "unit": "SM"
+      },
+      "launch__stack_size": {
+        "value": 1024.0,
+        "unit": ""
+      },
+      "launch__stream_id": {
+        "value": 13,
+        "unit": ""
+      },
+      "launch__thread_count": {
+        "value": 69632,
+        "unit": "thread"
+      },
+      "launch__tpc_count": {
+        "value": 94,
+        "unit": ""
+      },
+      "launch__tpc_enabled": {
+        "value": "all",
+        "unit": ""
+      },
+      "launch__user_grid_dim_x": {
+        "value": 136,
+        "unit": ""
+      },
+      "launch__user_grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_dim_z": {
+        "value": 4,
+        "unit": ""
+      },
+      "launch__user_grid_size": {
+        "value": 544,
+        "unit": ""
+      },
+      "launch__uses_blocks_as_clusters": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_cdp": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_green_context": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_nvlink_centric_scheduling": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_vgpu": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__waves_per_multiprocessor": {
+        "value": 0.723404255319149,
+        "unit": ""
+      },
+      "memory_l1_wavefronts_shared": {
+        "value": 278528,
+        "unit": "sectors"
+      },
+      "memory_l1_wavefronts_shared_ideal": {
+        "value": 278528,
+        "unit": "sectors"
+      },
+      "sass__inst_executed_register_spilling": {
+        "value": 0,
+        "unit": "inst"
+      },
+      "sm__warps_active.avg.pct_of_peak_sustained_active": {
+        "value": 19.90878494491748,
+        "unit": "%"
+      },
+      "smsp__pcsamp_aggregated_passes": {
+        "value": 2,
+        "unit": "pass"
+      },
+      "smsp__pcsamp_sample_count": {
+        "value": 1642,
+        "unit": ""
+      }
+    },
+    "opcodes": {
+      "QMMA": 557056.0,
+      "NOP": 539104.0,
+      "BRA": 272309.0,
+      "MOV": 165376.0,
+      "SYNCS": 156325.0,
+      "IMAD": 108256.0,
+      "LDG": 102946.0,
+      "R2UR": 102272.0,
+      "IADD3": 91256.0,
+      "UIADD3": 85408.0,
+      "ISETP": 82818.0,
+      "YIELD": 82341.0,
+      "CS2R": 78336.0,
+      "UMOV": 71808.0,
+      "LDS": 69632.0,
+      "F2FP": 69632.0,
+      "BSYNC": 60928.0,
+      "BSSY": 43520.0,
+      "VOTEU": 41344.0,
+      "LEA": 39168.0,
+      "USHF": 36992.0,
+      "ULEA": 34816.0,
+      "UBLKCP": 34816.0,
+      "HMUL2": 34816.0,
+      "HADD2": 34816.0,
+      "ELECT": 34816.0,
+      "ULOP3": 30464.0,
+      "LOP3": 29376.0,
+      "LDCU": 25024.0,
+      "UISETP": 23392.0,
+      "LDC": 21760.0,
+      "NANOSLEEP": 19850.0,
+      "UIMAD": 19584.0,
+      "WARPSYNC": 19448.0,
+      "PLOP3": 19040.0,
+      "STS": 17408.0,
+      "SHF": 17408.0,
+      "REDG": 17408.0,
+      "IADD": 16320.0,
+      "STG": 13600.0,
+      "S2R": 6936.0,
+      "IABS": 6528.0,
+      "BAR": 5984.0,
+      "S2UR": 4352.0,
+      "LD": 4352.0,
+      "EXIT": 2720.0,
+      "USEL": 2176.0,
+      "MUFU": 2176.0,
+      "I2F": 2176.0,
+      "F2I": 2176.0,
+      "MEMBAR": 1088.0,
+      "ERRBAR": 544.0,
+      "CGAERRBAR": 544.0
+    },
+    "instructions": [
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 7,
+        "sass": "LDC R1, c[0x0][0x37c]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 18,
+        "sass": "LDC.64 R12, c[0x0][0x3c0]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "S2R R15, SR_CTAID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 24,
+        "sass": "LDCU.64 UR10, c[0x0][0x3b0]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 110,
+        "sass": "MOV R113, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 24,
+        "sass": "LDCU UR4, c[0x0][0x3b0]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 24,
+        "sass": "S2UR UR19, SR_CTAID.Z"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 88,
+        "sass": "UMOV UR5, 0x400"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 24,
+        "sass": "UISETP.NE.S64.AND UP0, UPT, UR10, URZ, UPT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 18,
+        "sass": "IMAD R0, R12, R13, 0x7f"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 24,
+        "sass": "UIADD3 UR4, UPT, UPT, UR4, -0x1, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 18,
+        "sass": "SHF.R.S32.HI R3, RZ, 0x1f, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 24,
+        "sass": "USEL UR6, UR19, UR4, !UP0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 18,
+        "sass": "LEA.HI R3, R3, R0, RZ, 0x7"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 96,
+        "sass": "USHF.L.U32 UR18, UR6, 0x8, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "ULEA UR7, UR7, UR5, 0x18"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "IABS R9, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 96,
+        "sass": "IMAD.SHL.U32 R112, R6, 0x10, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "I2F.RP R4, R9"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 96,
+        "sass": "IADD.64 R60, R112, UR14"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "MUFU.RCP R4, R4"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "IADD3 R2, PT, PT, R4, 0xffffffe, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "F2I.FTZ.U32.TRUNC.NTZ R3, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "IMAD.HI.U32 R3, R3, R5, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 85,
+        "sass": "LOP3.LUT P0, R4, R6, RZ, R7, 0xfa, !PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "ISETP.GT.U32.AND P2, PT, R9, R2, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "VOTEU.ALL UP1, P0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "ISETP.GE.U32.AND P1, PT, R2, R9, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "ISETP.GE.AND P2, PT, R2, RZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 96,
+        "sass": "IMAD.WIDE R8, R9, 0x400, R60"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "ISETP.NE.AND P1, PT, R0, RZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "sass": "@!UP1 UIMAD UR4, UR8, UR9, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 SYNCS.EXCH.64 URZ, [UR7+0x2000], UR4"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 89,
+        "sass": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 105,
+        "sass": "LDG.E.128.STRONG.SM R32, desc[UR12][R8.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 113,
+        "sass": "BSSY B0, 0x12015e4990"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 113,
+        "sass": "LEA R77, R7, UR7, 0x9"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 52,
+        "sass": "@P0   BRA 0x12015e4960"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 52,
+        "sass": "BRA.DIV UR4, 0x12015e7d20"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 54,
+        "sass": "ELECT P0, URZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 56,
+        "sass": "R2UR UR8, R79"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 56,
+        "sass": "UIMAD.WIDE UR4, UR8, 0x10, UR4"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "sass": "UBLKCP.S.G [UR10], [UR4], UR8"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "sass": "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR7+0x2000], R8"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 72,
+        "sass": "BSYNC B0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 72,
+        "sass": "@P0   STS.128 [R8+0x800], RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "sass": "VOTEU.ANY UP0, P0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "sass": "@P0   R2UR.BROADCAST UR10, R12"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "sass": "NOP"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "SYNCS.ARRIVE.TRANS64.ART0 R8, [UR7+0x2000], R8"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR7+0x2000], R9"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 118,
+        "sass": "CS2R R94, SRZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 136,
+        "sass": "UIADD3.64 UR4, UPT, UPT, UR14, 0x100000, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 127,
+        "sass": "LD.E R62, desc[UR12][R38.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 150,
+        "sass": "@!P1  LDG.E.128.STRONG.GPU R56, desc[UR12][R72.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 161,
+        "sass": "F2FP.F16.E4M3.UNPACK_B R102, R56"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/packed_math.cuh",
+        "line": 88,
+        "sass": "HMUL2 R110, R110, R64"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+        "line": 58,
+        "sass": "WARPSYNC.ALL"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+        "line": 56,
+        "sass": "LDS.128 R36, [R62]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 195,
+        "sass": "QMMA.16832.F16.E4M3.E4M3 R110, R36, R32, R110"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 39,
+        "sass": "ULOP3.LUT UR8, UR5, 0x8, URZ, 0xc0, !UPT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 182,
+        "sass": "UISETP.NE.AND UP0, UPT, UR4, 0x7, UPT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 182,
+        "sass": "PLOP3.LUT P0, PT, PT, PT, UP0, 0x80, 0x8"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 288,
+        "sass": "UISETP.GE.AND UP0, UPT, UR6, 0x1, UPT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 283,
+        "sass": "UISETP.NE.S64.OR UP0, UPT, UR8, URZ, !UP0"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 292,
+        "sass": "LDG.E.NA.STRONG.GPU R6, desc[UR12][R24.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 293,
+        "sass": "NANOSLEEP 0x40"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 118,
+        "sass": "BSSY.RECONVERGENT B0, 0x12015e7c80"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 235,
+        "sass": "STG.E.NA.128 desc[UR12][R6.64], R44"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 235,
+        "sass": "BSYNC.RECONVERGENT B1"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 247,
+        "sass": "HADD2 R38, R38, R46"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 272,
+        "sass": "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R45, R38, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 239,
+        "sass": "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64], R44"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 318,
+        "sass": "@P0   EXIT"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 319,
+        "sass": "MEMBAR.ALL.CTA"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 319,
+        "sass": "MEMBAR.ALL.GPU"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 319,
+        "sass": "ERRBAR"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 319,
+        "sass": "CGAERRBAR"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 319,
+        "sass": "STG.E.NA.STRONG.GPU desc[UR12][R24.64], R3"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "YIELD"
+      }
+    ],
+    "lines": [
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+        "line": 49,
+        "executed": 15232,
+        "opcodes": {
+          "LOP3": 15232
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "LOP3.LUT R37, R36, 0x1000, RZ, 0xc0, !PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+        "line": 56,
+        "executed": 84864,
+        "opcodes": {
+          "IADD3": 15232,
+          "LDS": 67456,
+          "LDCU": 2176
+        },
+        "stalls": {
+          "wait": 6
+        },
+        "sass": [
+          "IADD3 R62, PT, PT, R6, UR7, R37",
+          "LDS.128 R36, [R62]",
+          "LDS.128 R40, [R62+0x200]",
+          "LDS.128 R44, [R62+0x400]",
+          "LDS.128 R48, [R62+0x600]",
+          "LDS.128 R76, [R6+UR7+0x1200]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/common/global_contract.cuh",
+        "line": 58,
+        "executed": 34816,
+        "opcodes": {
+          "WARPSYNC": 17408,
+          "NOP": 17408
+        },
+        "stalls": {
+          "dispatch_stall": 1,
+          "not_selected": 1,
+          "selected": 1,
+          "wait": 3
+        },
+        "sass": [
+          "WARPSYNC.ALL",
+          "NOP"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 7,
+        "executed": 2176,
+        "opcodes": {
+          "LDC": 2176
+        },
+        "stalls": {
+          "no_instructions": 14
+        },
+        "sass": [
+          "LDC R1, c[0x0][0x37c]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 18,
+        "executed": 10880,
+        "opcodes": {
+          "LDC": 2176,
+          "IMAD": 2176,
+          "SHF": 4352,
+          "LEA": 2176
+        },
+        "stalls": {
+          "math_pipe_throttle": 1,
+          "short_scoreboard": 1
+        },
+        "sass": [
+          "LDC.64 R12, c[0x0][0x3c0]",
+          "IMAD R0, R12, R13, 0x7f",
+          "SHF.R.S32.HI R3, RZ, 0x1f, R0",
+          "LEA.HI R3, R3, R0, RZ, 0x7",
+          "SHF.R.S32.HI R0, RZ, 0x7, R3"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 19,
+        "executed": 65280,
+        "opcodes": {
+          "S2R": 2176,
+          "IABS": 6528,
+          "I2F": 2176,
+          "MUFU": 2176,
+          "IADD3": 15232,
+          "F2I": 2176,
+          "MOV": 4352,
+          "IMAD": 8704,
+          "ISETP": 8704,
+          "VOTEU": 2176,
+          "LDCU": 4352,
+          "LOP3": 4352,
+          "UIMAD": 2176
+        },
+        "stalls": {
+          "math_pipe_throttle": 1,
+          "no_instructions": 2,
+          "not_selected": 1,
+          "selected": 2,
+          "wait": 2
+        },
+        "sass": [
+          "S2R R15, SR_CTAID.X",
+          "IABS R9, R0",
+          "IABS R10, R0",
+          "I2F.RP R4, R9",
+          "MUFU.RCP R4, R4",
+          "IADD3 R2, PT, PT, R4, 0xffffffe, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 20,
+        "executed": 4352,
+        "opcodes": {
+          "S2R": 4352
+        },
+        "stalls": {},
+        "sass": [
+          "S2R R7, SR_TID.Y",
+          "S2R R6, SR_TID.X"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 24,
+        "executed": 13056,
+        "opcodes": {
+          "LDCU": 4352,
+          "S2UR": 2176,
+          "UISETP": 2176,
+          "UIADD3": 2176,
+          "USEL": 2176
+        },
+        "stalls": {
+          "mio_throttle": 2,
+          "selected": 1,
+          "short_scoreboard": 1
+        },
+        "sass": [
+          "LDCU.64 UR10, c[0x0][0x3b0]",
+          "LDCU UR4, c[0x0][0x3b0]",
+          "S2UR UR19, SR_CTAID.Z",
+          "UISETP.NE.S64.AND UP0, UPT, UR10, URZ, UPT",
+          "UIADD3 UR4, UPT, UPT, UR4, -0x1, URZ",
+          "USEL UR6, UR19, UR4, !UP0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 25,
+        "executed": 21760,
+        "opcodes": {
+          "IMAD": 8704,
+          "LOP3": 2176,
+          "SHF": 4352,
+          "LEA": 2176,
+          "IADD3": 4352
+        },
+        "stalls": {},
+        "sass": [
+          "IMAD.SHL.U32 R2, R7, 0x40, RZ",
+          "LOP3.LUT R2, R2, 0x40, RZ, 0xc0, !PT",
+          "IMAD R3, R5, 0x80, R2",
+          "IMAD R2, R12, R13, 0x1f",
+          "SHF.R.S32.HI R13, RZ, 0x1f, R2",
+          "LEA.HI R13, R13, R2, RZ, 0x5"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 39,
+        "executed": 121856,
+        "opcodes": {
+          "BSSY": 15232,
+          "USHF": 30464,
+          "ULEA": 15232,
+          "ULOP3": 30464,
+          "UIADD3": 15232,
+          "LEA": 15232
+        },
+        "stalls": {
+          "selected": 2,
+          "wait": 7
+        },
+        "sass": [
+          "BSSY B0, 0x12015e6130",
+          "USHF.L.U32 UR5, UR4, 0x3, URZ",
+          "USHF.L.U32 UR9, UR4, 0xc, URZ",
+          "ULEA UR20, UR4, UR18, 0x5",
+          "ULOP3.LUT UR8, UR5, 0x8, URZ, 0xc0, !UPT",
+          "ULOP3.LUT UR9, UR9, 0x1000, URZ, 0xc0, !UPT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 46,
+        "executed": 2176,
+        "opcodes": {
+          "IADD3": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "IADD3 R63, PT, PT, R79, 0x4, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 52,
+        "executed": 102272,
+        "opcodes": {
+          "ISETP": 34816,
+          "BRA": 34816,
+          "UMOV": 17408,
+          "MOV": 15232
+        },
+        "stalls": {
+          "branch_resolving": 4,
+          "selected": 2,
+          "wait": 12
+        },
+        "sass": [
+          "ISETP.GE.AND P0, PT, R79, R0, PT",
+          "@P0   BRA 0x12015e4960",
+          "UMOV UR4, 0xffffffff",
+          "BRA.DIV UR4, 0x12015e7d20",
+          "ISETP.GE.AND P0, PT, R63, R0, PT",
+          "MOV R76, UR4"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 54,
+        "executed": 34816,
+        "opcodes": {
+          "ELECT": 17408,
+          "BRA": 17408
+        },
+        "stalls": {
+          "not_selected": 1,
+          "wait": 8
+        },
+        "sass": [
+          "ELECT P0, URZ, PT",
+          "@!P0  BRA 0x12015e4980",
+          "@!P0  BRA 0x12015e6120"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 56,
+        "executed": 106624,
+        "opcodes": {
+          "LDCU": 2176,
+          "R2UR": 17408,
+          "ULEA": 17408,
+          "UIMAD": 17408,
+          "LDC": 17408,
+          "LEA": 17408,
+          "IMAD": 17408
+        },
+        "stalls": {
+          "not_selected": 1,
+          "selected": 1,
+          "short_scoreboard": 10,
+          "wait": 10
+        },
+        "sass": [
+          "LDCU.64 UR4, c[0x0][0x380]",
+          "R2UR UR8, R79",
+          "ULEA UR8, UR8, UR18, 0xa",
+          "UIMAD.WIDE UR4, UR8, 0x10, UR4",
+          "@P0   LDC.64 R8, c[0x0][0x380]",
+          "@P0   LEA R13, R63, UR18, 0xa"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 63,
+        "executed": 15232,
+        "opcodes": {
+          "UIADD3": 15232
+        },
+        "stalls": {},
+        "sass": [
+          "UIADD3 UR11, UPT, UPT, UR21, 0x2000, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 64,
+        "executed": 82688,
+        "opcodes": {
+          "MOV": 65280,
+          "BRA": 17408
+        },
+        "stalls": {},
+        "sass": [
+          "MOV R8, 0x200",
+          "BRA 0x12015e4980",
+          "@P0   MOV R8, 0x200",
+          "MOV R20, 0x200",
+          "MOV R23, UR8",
+          "BRA 0x12015e6120"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 70,
+        "executed": 52224,
+        "opcodes": {
+          "BRA": 34816,
+          "UMOV": 17408
+        },
+        "stalls": {
+          "not_selected": 1
+        },
+        "sass": [
+          "@P0   BRA 0x12015e4b10",
+          "UMOV UR4, 0xffffffff",
+          "BRA.DIV UR4, 0x12015e7d80",
+          "@P0   BRA 0x12015e62c0",
+          "BRA.DIV UR4, 0x12015e7ea0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 72,
+        "executed": 87040,
+        "opcodes": {
+          "BSYNC": 34816,
+          "BSSY": 17408,
+          "IADD3": 17408,
+          "STS": 17408
+        },
+        "stalls": {
+          "branch_resolving": 4,
+          "long_scoreboard": 3,
+          "mio_throttle": 1,
+          "no_instructions": 1,
+          "not_selected": 2,
+          "selected": 2,
+          "wait": 7
+        },
+        "sass": [
+          "BSYNC B0",
+          "BSSY B0, 0x12015e4b20",
+          "@P0   IADD3 R8, PT, PT, R112, R77, RZ",
+          "@P0   STS.128 [R8+0x800], RZ",
+          "BSSY B0, 0x12015e62d0",
+          "@P0   IADD3 R21, PT, PT, R21, UR7, R112"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 85,
+        "executed": 5984,
+        "opcodes": {
+          "LOP3": 2176,
+          "ISETP": 3808
+        },
+        "stalls": {},
+        "sass": [
+          "LOP3.LUT P0, R4, R6, RZ, R7, 0xfa, !PT",
+          "ISETP.NE.AND P0, PT, R4, RZ, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 88,
+        "executed": 2176,
+        "opcodes": {
+          "UMOV": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "UMOV UR5, 0x400"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 89,
+        "executed": 2176,
+        "opcodes": {
+          "BAR": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "BAR.SYNC.DEFER_BLOCKING 0x0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 96,
+        "executed": 36992,
+        "opcodes": {
+          "LDCU": 4352,
+          "USHF": 2176,
+          "IMAD": 21760,
+          "IADD": 4352,
+          "MOV": 2176,
+          "SHF": 2176
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "LDCU.64 UR14, c[0x0][0x398]",
+          "LDCU.64 UR12, c[0x0][0x358]",
+          "USHF.L.U32 UR18, UR6, 0x8, URZ",
+          "IMAD.SHL.U32 R112, R6, 0x10, RZ",
+          "IADD.64 R60, R112, UR14",
+          "MOV R9, UR18"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 105,
+        "executed": 69632,
+        "opcodes": {
+          "LDG": 69632
+        },
+        "stalls": {
+          "dispatch_stall": 1,
+          "lg_throttle": 5,
+          "wait": 6
+        },
+        "sass": [
+          "LDG.E.128.STRONG.SM R32, desc[UR12][R8.64]",
+          "LDG.E.128.STRONG.SM R28, desc[UR12][R8.64+0x200]",
+          "LDG.E.128.STRONG.SM R24, desc[UR12][R8.64+0x400]",
+          "LDG.E.128.STRONG.SM R20, desc[UR12][R8.64+0x600]",
+          "LDG.E.128.STRONG.SM R32, desc[UR12][R36.64]",
+          "LDG.E.128.STRONG.SM R28, desc[UR12][R36.64+0x200]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 110,
+        "executed": 2176,
+        "opcodes": {
+          "MOV": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "MOV R113, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 113,
+        "executed": 4352,
+        "opcodes": {
+          "BSSY": 2176,
+          "LEA": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "BSSY B0, 0x12015e4990",
+          "LEA R77, R7, UR7, 0x9"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 114,
+        "executed": 4352,
+        "opcodes": {
+          "MOV": 2176,
+          "IADD": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "MOV R8, 0x1",
+          "IADD.64 R60, R10, R60"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 118,
+        "executed": 80512,
+        "opcodes": {
+          "ISETP": 4352,
+          "CS2R": 69632,
+          "LOP3": 2176,
+          "BRA": 2176,
+          "BSSY": 2176
+        },
+        "stalls": {
+          "barrier": 316,
+          "selected": 2
+        },
+        "sass": [
+          "ISETP.NE.AND P1, PT, RZ, UR6, PT",
+          "CS2R R94, SRZ",
+          "CS2R R92, SRZ",
+          "CS2R R18, SRZ",
+          "CS2R R16, SRZ",
+          "CS2R R14, SRZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 127,
+        "executed": 21216,
+        "opcodes": {
+          "LDCU": 544,
+          "IADD3": 4896,
+          "IMAD": 1088,
+          "LOP3": 1088,
+          "IADD": 4896,
+          "SHF": 4352,
+          "LD": 4352
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 1
+        },
+        "sass": [
+          "LDCU.64 UR4, c[0x0][0x388]",
+          "IADD3 R8, PT, PT, R7, R7, RZ",
+          "IMAD.SHL.U32 R6, R6, 0x4, RZ",
+          "LOP3.LUT R9, R8, 0x7fc, RZ, 0xc0, !PT",
+          "IMAD R9, R2, 0x8, R9",
+          "LOP3.LUT R6, R6, 0xc, RZ, 0xc0, !PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 136,
+        "executed": 2176,
+        "opcodes": {
+          "IADD3": 1632,
+          "UIADD3": 544
+        },
+        "stalls": {},
+        "sass": [
+          "IADD3 R11, PT, PT, R9, 0x1, RZ",
+          "IADD3 R13, PT, PT, R9, 0x2, RZ",
+          "IADD3 R15, PT, PT, R9, 0x3, RZ",
+          "UIADD3.64 UR4, UPT, UPT, UR14, 0x100000, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 140,
+        "executed": 6528,
+        "opcodes": {
+          "IMAD": 2720,
+          "IADD3": 1632,
+          "ISETP": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "IMAD R81, R9, 0x400, R3",
+          "IADD3 R73, PT, PT, R81, 0x400, RZ",
+          "IADD3 R75, PT, PT, R81, 0x800, RZ",
+          "IMAD.WIDE R44, R81, 0x10, R16",
+          "IADD3 R81, PT, PT, R81, 0xc00, RZ",
+          "IMAD.WIDE R72, R73, 0x10, R16"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 148,
+        "executed": 8704,
+        "opcodes": {
+          "CS2R": 8704
+        },
+        "stalls": {},
+        "sass": [
+          "CS2R R56, SRZ",
+          "CS2R R58, SRZ",
+          "CS2R R36, SRZ",
+          "CS2R R10, SRZ",
+          "CS2R R12, SRZ",
+          "CS2R R14, SRZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 150,
+        "executed": 544,
+        "opcodes": {
+          "LDG": 544
+        },
+        "stalls": {},
+        "sass": [
+          "@!P1  LDG.E.128.STRONG.GPU R56, desc[UR12][R72.64]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 161,
+        "executed": 1088,
+        "opcodes": {
+          "F2FP": 1088
+        },
+        "stalls": {
+          "long_scoreboard": 61
+        },
+        "sass": [
+          "F2FP.F16.E4M3.UNPACK_B R102, R56",
+          "F2FP.F16.E4M3.UNPACK_B R110, R12"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 164,
+        "executed": 2720,
+        "opcodes": {
+          "F2FP": 2720
+        },
+        "stalls": {
+          "long_scoreboard": 5,
+          "selected": 1
+        },
+        "sass": [
+          "F2FP.F16.E4M3.UNPACK_B R103, R57",
+          "F2FP.F16.E4M3.UNPACK_B R98, R8",
+          "F2FP.F16.E4M3.UNPACK_B R111, R13",
+          "F2FP.F16.E4M3.UNPACK_B R8, R52",
+          "F2FP.F16.E4M3.UNPACK_B R9, R53"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 167,
+        "executed": 1632,
+        "opcodes": {
+          "F2FP": 1632
+        },
+        "stalls": {},
+        "sass": [
+          "F2FP.F16.E4M3.UNPACK_B R96, R8.H1",
+          "F2FP.F16.E4M3.UNPACK_B R99, R9",
+          "F2FP.F16.E4M3.UNPACK_B R108, R12.H1"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 170,
+        "executed": 3808,
+        "opcodes": {
+          "F2FP": 3808
+        },
+        "stalls": {},
+        "sass": [
+          "F2FP.F16.E4M3.UNPACK_B R97, R9.H1",
+          "F2FP.F16.E4M3.UNPACK_B R109, R13.H1",
+          "F2FP.F16.E4M3.UNPACK_B R12, R58",
+          "F2FP.F16.E4M3.UNPACK_B R106, R14",
+          "F2FP.F16.E4M3.UNPACK_B R104, R14.H1",
+          "F2FP.F16.E4M3.UNPACK_B R13, R54"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 182,
+        "executed": 45696,
+        "opcodes": {
+          "UISETP": 15232,
+          "PLOP3": 15232,
+          "BRA": 15232
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 9
+        },
+        "sass": [
+          "UISETP.NE.AND UP0, UPT, UR4, 0x7, UPT",
+          "PLOP3.LUT P0, PT, PT, PT, UP0, 0x80, 0x8",
+          "@P0   BRA 0x12015e5ac0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 191,
+        "executed": 15232,
+        "opcodes": {
+          "IMAD": 15232
+        },
+        "stalls": {
+          "branch_resolving": 2,
+          "no_instructions": 1
+        },
+        "sass": [
+          "IMAD.SHL.U32 R36, R76, 0x1000, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 195,
+        "executed": 47872,
+        "opcodes": {
+          "LDCU": 2176,
+          "R2UR": 15232,
+          "QMMA": 15232,
+          "UIADD3": 15232
+        },
+        "stalls": {
+          "long_scoreboard": 11,
+          "math_pipe_throttle": 25,
+          "not_selected": 2,
+          "short_scoreboard": 11,
+          "wait": 2
+        },
+        "sass": [
+          "LDCU.64 UR16, c[0x0][0x380]",
+          "R2UR UR4, R76",
+          "QMMA.16832.F16.E4M3.E4M3 R110, R36, R32, R110",
+          "UIADD3 UR4, UPT, UPT, UR4, 0x1, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 197,
+        "executed": 15232,
+        "opcodes": {
+          "MOV": 15232
+        },
+        "stalls": {
+          "branch_resolving": 3,
+          "wait": 2
+        },
+        "sass": [
+          "MOV R37, UR20"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 198,
+        "executed": 30464,
+        "opcodes": {
+          "MOV": 30464
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "MOV R38, 0x1",
+          "MOV R40, UR8"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 202,
+        "executed": 2176,
+        "opcodes": {
+          "LDS": 2176
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "LDS.128 R60, [R6+UR7+0x1000]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 220,
+        "executed": 544,
+        "opcodes": {
+          "BRA": 544
+        },
+        "stalls": {},
+        "sass": [
+          "BRA 0x12015e7c70"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 222,
+        "executed": 8704,
+        "opcodes": {
+          "IADD3": 6528,
+          "IADD": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "IADD3 R5, PT, PT, R7, 0x1, RZ",
+          "IADD3 R26, PT, PT, R7, 0x2, RZ",
+          "IADD3 R2, PT, PT, R7, 0x3, RZ",
+          "IADD.64 R112, R112, UR4",
+          "IADD3 R26, PT, PT, R27, 0x1, RZ",
+          "IADD3 R5, PT, PT, R27, 0x2, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 224,
+        "executed": 15776,
+        "opcodes": {
+          "ISETP": 6528,
+          "BRA": 8704,
+          "IADD": 544
+        },
+        "stalls": {
+          "wait": 2
+        },
+        "sass": [
+          "ISETP.GE.AND P1, PT, R5, R0, PT",
+          "ISETP.GE.AND P2, PT, R26, R0, PT",
+          "ISETP.GE.AND P3, PT, R2, R0, PT",
+          "@P0   BRA 0x12015e6ab0",
+          "@P1   BRA 0x12015e6b40",
+          "@P2   BRA 0x12015e6bd0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 226,
+        "executed": 17408,
+        "opcodes": {
+          "IMAD": 17408
+        },
+        "stalls": {
+          "long_scoreboard": 24,
+          "wait": 2
+        },
+        "sass": [
+          "IMAD R7, R7, 0x400, R3",
+          "IMAD.WIDE R6, R7, 0x20, R112",
+          "IMAD R7, R5, 0x400, R3",
+          "IMAD R7, R26, 0x400, R3",
+          "IMAD R3, R2, 0x400, R3",
+          "IMAD.WIDE R112, R3, 0x20, R112"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 235,
+        "executed": 3264,
+        "opcodes": {
+          "STG": 2176,
+          "BSYNC": 544,
+          "BSSY": 544
+        },
+        "stalls": {},
+        "sass": [
+          "STG.E.NA.128 desc[UR12][R6.64], R44",
+          "STG.E.NA.128 desc[UR12][R6.64+0x200], R48",
+          "STG.E.NA.128 desc[UR12][R6.64+0x400], R52",
+          "STG.E.NA.128 desc[UR12][R6.64+0x600], R56",
+          "BSYNC.RECONVERGENT B1",
+          "BSSY.RECONVERGENT B1, 0x12015e6b50"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 239,
+        "executed": 6528,
+        "opcodes": {
+          "REDG": 4352,
+          "BSYNC": 1088,
+          "BSSY": 1088
+        },
+        "stalls": {
+          "selected": 2,
+          "wait": 1
+        },
+        "sass": [
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64], R44",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x200], R48",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x400], R52",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x600], R56",
+          "BSYNC.RECONVERGENT B1",
+          "BSSY.RECONVERGENT B1, 0x12015e7b70"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 244,
+        "executed": 2176,
+        "opcodes": {
+          "LDG": 2176
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "LDG.E.128.STRONG.SM R36, desc[UR12][R92.64]",
+          "LDG.E.128.STRONG.SM R32, desc[UR12][R92.64+0x200]",
+          "LDG.E.128.STRONG.SM R28, desc[UR12][R92.64+0x400]",
+          "LDG.E.128.STRONG.SM R40, desc[UR12][R92.64+0x600]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 245,
+        "executed": 544,
+        "opcodes": {
+          "HADD2": 544
+        },
+        "stalls": {},
+        "sass": [
+          "HADD2 R36, R36, R44"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 246,
+        "executed": 544,
+        "opcodes": {
+          "HADD2": 544
+        },
+        "stalls": {},
+        "sass": [
+          "HADD2 R37, R37, R45"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 247,
+        "executed": 544,
+        "opcodes": {
+          "HADD2": 544
+        },
+        "stalls": {
+          "long_scoreboard": 10
+        },
+        "sass": [
+          "HADD2 R38, R38, R46"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 248,
+        "executed": 1088,
+        "opcodes": {
+          "HADD2": 1088
+        },
+        "stalls": {},
+        "sass": [
+          "HADD2 R39, R39, R47",
+          "HADD2 R35, R35, R51"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 259,
+        "executed": 2176,
+        "opcodes": {
+          "IMAD": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "IMAD.WIDE R28, R27, 0x10, R112",
+          "IMAD.WIDE R26, R41, 0x10, R112",
+          "IMAD.WIDE R26, R5, 0x10, R112",
+          "IMAD.WIDE R112, R3, 0x10, R112"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 270,
+        "executed": 22848,
+        "opcodes": {
+          "MOV": 10336,
+          "STG": 3808,
+          "BSYNC": 1632,
+          "BSSY": 2176,
+          "BRA": 544,
+          "IADD3": 1088,
+          "LDCU": 1088,
+          "LOP3": 1088,
+          "IMAD": 1088
+        },
+        "stalls": {
+          "no_instructions": 1,
+          "selected": 1,
+          "wait": 1
+        },
+        "sass": [
+          "MOV R32, R36",
+          "MOV R33, R37",
+          "MOV R36, R0",
+          "MOV R37, R31",
+          "STG.E.NA.128 desc[UR12][R28.64], R32",
+          "STG.E.NA.128 desc[UR12][R28.64+0x200], R36"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 272,
+        "executed": 544,
+        "opcodes": {
+          "F2FP": 544
+        },
+        "stalls": {},
+        "sass": [
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R45, R38, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 273,
+        "executed": 544,
+        "opcodes": {
+          "F2FP": 544
+        },
+        "stalls": {},
+        "sass": [
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R0, R39, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 274,
+        "executed": 544,
+        "opcodes": {
+          "F2FP": 544
+        },
+        "stalls": {},
+        "sass": [
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R39, R34, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 275,
+        "executed": 544,
+        "opcodes": {
+          "F2FP": 544
+        },
+        "stalls": {},
+        "sass": [
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R38, R35, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 283,
+        "executed": 13056,
+        "opcodes": {
+          "IMAD": 4352,
+          "LDCU": 2176,
+          "UISETP": 2176,
+          "SHF": 2176,
+          "IADD": 2176
+        },
+        "stalls": {},
+        "sass": [
+          "IMAD R5, R2, 0x8, R5",
+          "LDCU.64 UR4, c[0x0][0x3a0]",
+          "UISETP.NE.S64.OR UP0, UPT, UR8, URZ, !UP0",
+          "IMAD.SHL.U32 R24, R5, 0x4, RZ",
+          "SHF.R.S32.HI R25, RZ, 0x1f, R24",
+          "IADD.64 R24, R24, UR4"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 288,
+        "executed": 6528,
+        "opcodes": {
+          "UISETP": 2176,
+          "PLOP3": 2176,
+          "BRA": 2176
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "UISETP.GE.AND UP0, UPT, UR6, 0x1, UPT",
+          "PLOP3.LUT P0, PT, PT, PT, UP0, 0x80, 0x8",
+          "@P0   BRA 0x12015e6940"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 290,
+        "executed": 1632,
+        "opcodes": {
+          "BRA": 1632
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "@P0   BRA 0x12015e6910"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 292,
+        "executed": 41740,
+        "opcodes": {
+          "LDG": 408,
+          "S2R": 408,
+          "IADD3": 408,
+          "ISETP": 20258,
+          "BRA": 20258
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "long_scoreboard": 74,
+          "wait": 1
+        },
+        "sass": [
+          "LDG.E.NA.STRONG.GPU R6, desc[UR12][R24.64]",
+          "S2R R5, SR_CTAID.Z",
+          "IADD3 R5, PT, PT, R5, -0x1, RZ",
+          "ISETP.GE.AND P0, PT, R6, R5, PT",
+          "@P0   BRA 0x12015e6910",
+          "@!P0  BRA 0x12015e68d0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 293,
+        "executed": 19850,
+        "opcodes": {
+          "NANOSLEEP": 19850
+        },
+        "stalls": {
+          "branch_resolving": 1
+        },
+        "sass": [
+          "NANOSLEEP 0x40"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 300,
+        "executed": 5304,
+        "opcodes": {
+          "WARPSYNC": 2040,
+          "NOP": 1632,
+          "BAR": 1632
+        },
+        "stalls": {
+          "branch_resolving": 7,
+          "sleeping": 14,
+          "wait": 2
+        },
+        "sass": [
+          "WARPSYNC.ALL",
+          "NOP",
+          "BAR.SYNC.DEFER_BLOCKING 0x0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 306,
+        "executed": 4896,
+        "opcodes": {
+          "BRA": 2176,
+          "IADD3": 544,
+          "LDCU": 544,
+          "BSSY": 544,
+          "LOP3": 544,
+          "IMAD": 544
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "@P0   BRA 0x12015e6c60",
+          "IADD3 R7, PT, PT, R7, R7, RZ",
+          "LDCU.64 UR4, c[0x0][0x3a8]",
+          "BSSY.RECONVERGENT B1, 0x12015e6ac0",
+          "LOP3.LUT R7, R7, 0x7fc, RZ, 0xc0, !PT",
+          "IMAD R7, R2, 0x8, R7"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 307,
+        "executed": 544,
+        "opcodes": {
+          "ISETP": 544
+        },
+        "stalls": {},
+        "sass": [
+          "ISETP.GE.AND P0, PT, R7, R0, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 309,
+        "executed": 8160,
+        "opcodes": {
+          "UISETP": 1632,
+          "PLOP3": 1632,
+          "BRA": 1632,
+          "IADD3": 544,
+          "LDCU": 1088,
+          "BSSY": 544,
+          "LOP3": 544,
+          "IMAD": 544
+        },
+        "stalls": {
+          "no_instructions": 2,
+          "selected": 1,
+          "wait": 1
+        },
+        "sass": [
+          "UISETP.GE.AND UP0, UPT, UR6, 0x3, UPT",
+          "PLOP3.LUT P0, PT, PT, PT, UP0, 0x80, 0x8",
+          "@!P0  BRA 0x12015e7990",
+          "IADD3 R7, PT, PT, R7, R7, RZ",
+          "LDCU.64 UR8, c[0x0][0x3a8]",
+          "BSSY.RECONVERGENT B1, 0x12015e7070"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 310,
+        "executed": 1088,
+        "opcodes": {
+          "ISETP": 1088
+        },
+        "stalls": {},
+        "sass": [
+          "ISETP.GE.AND P0, PT, R7, R0, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 313,
+        "executed": 544,
+        "opcodes": {
+          "ISETP": 544
+        },
+        "stalls": {},
+        "sass": [
+          "ISETP.GE.AND P0, PT, R27, R0, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 317,
+        "executed": 2176,
+        "opcodes": {
+          "BAR": 2176
+        },
+        "stalls": {
+          "branch_resolving": 1
+        },
+        "sass": [
+          "BAR.SYNC.DEFER_BLOCKING 0x0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 318,
+        "executed": 2176,
+        "opcodes": {
+          "EXIT": 2176
+        },
+        "stalls": {
+          "barrier": 11,
+          "wait": 1
+        },
+        "sass": [
+          "@P0   EXIT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 319,
+        "executed": 3264,
+        "opcodes": {
+          "MOV": 544,
+          "MEMBAR": 1088,
+          "ERRBAR": 544,
+          "CGAERRBAR": 544,
+          "STG": 544
+        },
+        "stalls": {
+          "drain": 30,
+          "long_scoreboard": 12,
+          "membar": 45,
+          "misc": 2,
+          "selected": 1,
+          "wait": 7
+        },
+        "sass": [
+          "MOV R3, UR6",
+          "MEMBAR.ALL.CTA",
+          "MEMBAR.ALL.GPU",
+          "ERRBAR",
+          "CGAERRBAR",
+          "STG.E.NA.STRONG.GPU desc[UR12][R24.64], R3"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "line": 324,
+        "executed": 544,
+        "opcodes": {
+          "EXIT": 544
+        },
+        "stalls": {},
+        "sass": [
+          "EXIT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 22,
+        "executed": 17408,
+        "opcodes": {
+          "ELECT": 17408
+        },
+        "stalls": {
+          "drain": 3,
+          "selected": 1,
+          "wait": 5
+        },
+        "sass": [
+          "ELECT P0, URZ, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 53,
+        "executed": 19850,
+        "opcodes": {
+          "LDG": 19850
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "sleeping": 8,
+          "wait": 1
+        },
+        "sass": [
+          "LDG.E.NA.STRONG.GPU R6, desc[UR12][R24.64]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 81,
+        "executed": 11968,
+        "opcodes": {
+          "REDG": 8704,
+          "BSYNC": 3264
+        },
+        "stalls": {
+          "lg_throttle": 19,
+          "no_instructions": 1,
+          "wait": 2
+        },
+        "sass": [
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64], R76",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x200], R80",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x400], R84",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x600], R88",
+          "BSYNC.RECONVERGENT B1",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R2.64], R8"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 112,
+        "executed": 32640,
+        "opcodes": {
+          "F2FP": 32640
+        },
+        "stalls": {
+          "selected": 5,
+          "wait": 1
+        },
+        "sass": [
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R35, R33, R38",
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R33, R30, RZ",
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R30, R31, RZ",
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R34, R32, R39",
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R39, R42, RZ",
+          "F2FP.SATFINITE.E4M3.F16.UNPACK_B_MERGE_C R36, R36, R45"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 132,
+        "executed": 25568,
+        "opcodes": {
+          "F2FP": 25568
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 2
+        },
+        "sass": [
+          "F2FP.F16.E4M3.UNPACK_B R54, R54.H1",
+          "F2FP.F16.E4M3.UNPACK_B R107, R15",
+          "F2FP.F16.E4M3.UNPACK_B R105, R15.H1",
+          "F2FP.F16.E4M3.UNPACK_B R80, R10",
+          "F2FP.F16.E4M3.UNPACK_B R82, R10.H1",
+          "F2FP.F16.E4M3.UNPACK_B R81, R11"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 195,
+        "executed": 1027072,
+        "opcodes": {
+          "QMMA": 524416,
+          "NOP": 502656
+        },
+        "stalls": {
+          "math_pipe_throttle": 14,
+          "not_selected": 1,
+          "selected": 31,
+          "wait": 149
+        },
+        "sass": [
+          "QMMA.16832.F16.E4M3.E4M3 R106, R36, R28, R106",
+          "NOP",
+          "QMMA.16832.F16.E4M3.E4M3 R104, R36, R30, R104",
+          "QMMA.16832.F16.E4M3.E4M3 R52, R36, R24, R52",
+          "QMMA.16832.F16.E4M3.E4M3 R54, R36, R26, R54",
+          "QMMA.16832.F16.E4M3.E4M3 R56, R36, R20, R56"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 207,
+        "executed": 8704,
+        "opcodes": {
+          "STG": 7072,
+          "BSYNC": 1088,
+          "BSSY": 544
+        },
+        "stalls": {
+          "lg_throttle": 2,
+          "wait": 3
+        },
+        "sass": [
+          "STG.E.NA.128 desc[UR12][R6.64], R60",
+          "STG.E.NA.128 desc[UR12][R6.64+0x200], R64",
+          "STG.E.NA.128 desc[UR12][R6.64+0x400], R68",
+          "STG.E.NA.128 desc[UR12][R6.64+0x600], R72",
+          "BSYNC.RECONVERGENT B1",
+          "BSSY.RECONVERGENT B1, 0x12015e6be0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "executed": 19584,
+        "opcodes": {
+          "S2UR": 2176,
+          "ULEA": 2176,
+          "VOTEU": 4352,
+          "UIADD3": 2176,
+          "USHF": 4352,
+          "SYNCS": 4352
+        },
+        "stalls": {
+          "not_selected": 1,
+          "wait": 1
+        },
+        "sass": [
+          "S2UR UR7, SR_CgaCtaId",
+          "ULEA UR7, UR7, UR5, 0x18",
+          "VOTEU.ALL UP0, P0",
+          "@!UP1 UIADD3 UR4, UPT, UPT, -UR4, 0x100000, URZ",
+          "@!UP1 USHF.L.U32 UR5, UR4, 0xb, URZ",
+          "@!UP1 USHF.L.U32 UR4, UR4, 0x1, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 246,
+        "executed": 15232,
+        "opcodes": {
+          "R2UR": 15232
+        },
+        "stalls": {},
+        "sass": [
+          "R2UR UR10, R77"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "executed": 211072,
+        "opcodes": {
+          "R2UR": 54400,
+          "UIADD3": 19584,
+          "UMOV": 34816,
+          "UBLKCP": 34816,
+          "VOTEU": 34816,
+          "IADD3": 17408,
+          "MOV": 15232
+        },
+        "stalls": {
+          "dispatch_stall": 2,
+          "mio_throttle": 6,
+          "selected": 4,
+          "wait": 7
+        },
+        "sass": [
+          "R2UR UR10, R77",
+          "UIADD3 UR11, UPT, UPT, UR7, 0x2000, URZ",
+          "UMOV UR8, 0x20",
+          "UBLKCP.S.G [UR10], [UR4], UR8",
+          "VOTEU.ANY UP0, P0",
+          "@P0   IADD3 R12, PT, PT, R77, 0x800, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "executed": 69632,
+        "opcodes": {
+          "SYNCS": 34816,
+          "NOP": 17408,
+          "BSYNC": 17408
+        },
+        "stalls": {
+          "long_scoreboard": 28
+        },
+        "sass": [
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR7+0x2000], R8",
+          "@P0   SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR7+0x2000], R8",
+          "NOP",
+          "BSYNC B0",
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [R23+UR7+0x2000], R20",
+          "@P0   SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [R21+UR7+0x2000], R20"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "executed": 136741,
+        "opcodes": {
+          "SYNCS": 34816,
+          "BRA": 17408,
+          "IMAD": 2176,
+          "YIELD": 82341
+        },
+        "stalls": {
+          "branch_resolving": 13,
+          "long_scoreboard": 35,
+          "no_instructions": 9,
+          "not_selected": 2,
+          "selected": 3,
+          "wait": 1
+        },
+        "sass": [
+          "SYNCS.ARRIVE.TRANS64.ART0 R8, [UR7+0x2000], R8",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR7+0x2000], R9",
+          "@!P0  BRA 0x12015e7e00",
+          "IMAD.SHL.U32 R49, R7, 0x400, RZ",
+          "SYNCS.ARRIVE.TRANS64.ART0 R38, [R40+UR7+0x2000], R38",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [R40+UR7+0x2000], R39"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
+        "line": 16,
+        "executed": 177720,
+        "opcodes": {
+          "SYNCS": 82341,
+          "BRA": 95379
+        },
+        "stalls": {
+          "branch_resolving": 146,
+          "long_scoreboard": 132,
+          "misc": 11,
+          "no_instructions": 8,
+          "selected": 13,
+          "wait": 32
+        },
+        "sass": [
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [UR7+0x2000], R9",
+          "@!P0  BRA 0x12015e7e00",
+          "BRA 0x12015e4b80",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [R40+UR7+0x2000], R39",
+          "@!P0  BRA 0x12015e7f20",
+          "BRA 0x12015e6380"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/packed_math.cuh",
+        "line": 81,
+        "executed": 6528,
+        "opcodes": {
+          "REDG": 4352,
+          "BSYNC": 1088,
+          "BSSY": 1088
+        },
+        "stalls": {
+          "dispatch_stall": 1
+        },
+        "sass": [
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64], R60",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x200], R64",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x400], R68",
+          "REDG.E.ADD.F16x8.RN.STRONG.GPU desc[UR12][R6.64+0x600], R72",
+          "BSYNC.RECONVERGENT B1",
+          "BSSY.RECONVERGENT B1, 0x12015e7c00"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/packed_math.cuh",
+        "line": 88,
+        "executed": 29920,
+        "opcodes": {
+          "HMUL2": 25568,
+          "MOV": 2176,
+          "IADD3": 2176
+        },
+        "stalls": {
+          "no_instructions": 1,
+          "not_selected": 2,
+          "selected": 1,
+          "wait": 2
+        },
+        "sass": [
+          "HMUL2 R110, R110, R64",
+          "HMUL2 R111, R111, R64",
+          "HMUL2 R102, R102, R64",
+          "HMUL2 R103, R103, R64",
+          "HMUL2 R98, R98, R64",
+          "HMUL2 R99, R99, R64"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+        "line": 40,
+        "executed": 17408,
+        "opcodes": {
+          "QMMA": 17408
+        },
+        "stalls": {
+          "long_scoreboard": 1,
+          "math_pipe_throttle": 8,
+          "not_selected": 2,
+          "short_scoreboard": 1
+        },
+        "sass": [
+          "QMMA.16832.F16.E4M3.E4M3 R108, R36, R34, R108",
+          "QMMA.16832.F16.E4M3.E4M3 R52, R60, R24, R52"
+        ]
+      },
+      {
+        "path": "cuda_fp16.hpp",
+        "line": 2504,
+        "executed": 32096,
+        "opcodes": {
+          "HADD2": 32096
+        },
+        "stalls": {
+          "long_scoreboard": 59,
+          "selected": 1
+        },
+        "sass": [
+          "HADD2 R34, R34, R50",
+          "HADD2 R33, R33, R49",
+          "HADD2 R30, R30, R54",
+          "HADD2 R31, R31, R55",
+          "HADD2 R32, R32, R48",
+          "HADD2 R42, R42, R58"
+        ]
+      },
+      {
+        "path": "cuda_fp16.hpp",
+        "line": 2526,
+        "executed": 9248,
+        "opcodes": {
+          "HMUL2": 9248
+        },
+        "stalls": {
+          "wait": 2
+        },
+        "sass": [
+          "HMUL2 R12, R13, R51",
+          "HMUL2 R13, R14, R51",
+          "HMUL2 R14, R54, R50",
+          "HMUL2 R56, R56, R93",
+          "HMUL2 R57, R57, R93",
+          "HMUL2 R72, R72, R93"
+        ]
+      },
+      {
+        "path": "sm_20_intrinsics.hpp",
+        "line": 151,
+        "executed": 15232,
+        "opcodes": {
+          "UIADD3": 15232
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "UIADD3 UR10, UPT, UPT, UR10, UR9, URZ"
+        ]
+      },
+      {
+        "path": "sm_32_intrinsics.hpp",
+        "line": 177,
+        "executed": 3808,
+        "opcodes": {
+          "LDG": 3808
+        },
+        "stalls": {},
+        "sass": [
+          "@!P2  LDG.E.128.STRONG.GPU R8, desc[UR12][R74.64]",
+          "@!P0  LDG.E.128.STRONG.GPU R12, desc[UR12][R44.64]",
+          "@!P1  LDG.E.128.STRONG.GPU R36, desc[UR12][R72.64+0x200]",
+          "@!P3  LDG.E.128.STRONG.GPU R52, desc[UR12][R80.64]",
+          "@!P0  LDG.E.128.STRONG.GPU R16, desc[UR12][R44.64+0x200]",
+          "@!P2  LDG.E.128.STRONG.GPU R40, desc[UR12][R74.64+0x200]"
+        ]
+      },
+      {
+        "path": "sm_32_intrinsics.hpp",
+        "line": 222,
+        "executed": 8704,
+        "opcodes": {
+          "IMAD": 2176,
+          "LDG": 6528
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 2
+        },
+        "sass": [
+          "IMAD R79, R2, 0x8, R7",
+          "LDG.E.128.STRONG.SM R36, desc[UR12][R26.64+0x200]",
+          "LDG.E.128.STRONG.SM R28, desc[UR12][R26.64+0x400]",
+          "LDG.E.128.STRONG.SM R44, desc[UR12][R26.64]",
+          "LDG.E.128.STRONG.SM R32, desc[UR12][R26.64+0x600]",
+          "LDG.E.128.STRONG.SM R40, desc[UR12][R26.64+0x200]"
+        ]
+      }
+    ],
+    "stall_totals": {
+      "barrier": 327,
+      "branch_resolving": 183,
+      "dispatch_stall": 5,
+      "drain": 33,
+      "lg_throttle": 26,
+      "long_scoreboard": 455,
+      "math_pipe_throttle": 49,
+      "membar": 45,
+      "mio_throttle": 9,
+      "misc": 13,
+      "no_instructions": 40,
+      "not_selected": 17,
+      "selected": 87,
+      "short_scoreboard": 24,
+      "sleeping": 22,
+      "tex_throttle": 0,
+      "wait": 307
+    },
+    "timeline": {},
+    "rules": [],
+    "report": "fp8-source",
+    "range_index": 0,
+    "action_index": 26
+  }
+]

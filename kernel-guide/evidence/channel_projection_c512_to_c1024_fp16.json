@@ -1,0 +1,4005 @@
+[
+  {
+    "function": "channel_projection_c512_to_c1024_fp16",
+    "metrics": {
+      "device__attribute_max_registers_per_multiprocessor": {
+        "value": 65536,
+        "unit": ""
+      },
+      "device__attribute_max_shared_memory_per_multiprocessor": {
+        "value": 102400,
+        "unit": ""
+      },
+      "device__attribute_max_warps_per_multiprocessor": {
+        "value": 48,
+        "unit": ""
+      },
+      "device__attribute_multiprocessor_count": {
+        "value": 188,
+        "unit": ""
+      },
+      "dram__bytes_op_read.sum": {
+        "value": 3395328.0,
+        "unit": "byte"
+      },
+      "dram__bytes_op_write.sum": {
+        "value": 0.0,
+        "unit": "byte"
+      },
+      "gpu__dram_throughput.avg.pct_of_peak_sustained_elapsed": {
+        "value": 13.305577849117176,
+        "unit": "%"
+      },
+      "gpu__time_duration.sum": {
+        "value": 14976.0,
+        "unit": "ns"
+      },
+      "l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_st.sum": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "l1tex__t_sector_hit_rate.pct": {
+        "value": 47.486085343228204,
+        "unit": "%"
+      },
+      "launch__barrier_count": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__block_dim_x": {
+        "value": 32,
+        "unit": "block"
+      },
+      "launch__block_dim_y": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__block_dim_z": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_size": {
+        "value": 256,
+        "unit": ""
+      },
+      "launch__cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_max_active": {
+        "value": 0,
+        "unit": "cluster"
+      },
+      "launch__cluster_max_potential_size": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__cluster_scheduling_policy": {
+        "value": "PolicySpread",
+        "unit": ""
+      },
+      "launch__cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__context_id": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__device_id": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__execution_model": {
+        "value": "SIMT",
+        "unit": ""
+      },
+      "launch__func_cache_config": {
+        "value": "CachePreferNone",
+        "unit": ""
+      },
+      "launch__grid_dim_x": {
+        "value": 32,
+        "unit": ""
+      },
+      "launch__grid_dim_y": {
+        "value": 5,
+        "unit": ""
+      },
+      "launch__grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_size": {
+        "value": 160,
+        "unit": ""
+      },
+      "launch__kernel_name": {
+        "value": "",
+        "unit": ""
+      },
+      "launch__occupancy_cluster_gpu_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_cluster_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_limit_barriers": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_blocks": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_registers": {
+        "value": 2.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_shared_mem": {
+        "value": 4.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_warps": {
+        "value": 6.0,
+        "unit": "block"
+      },
+      "launch__per_block_memory_size": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__persisting_l2_cache_size": {
+        "value": 25165824,
+        "unit": "byte"
+      },
+      "launch__preferred_cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__registers_per_thread": {
+        "value": 96,
+        "unit": "register/thread"
+      },
+      "launch__registers_per_thread_allocated": {
+        "value": 96.0,
+        "unit": "register/thread"
+      },
+      "launch__shared_mem_config_size": {
+        "value": 65536,
+        "unit": "byte"
+      },
+      "launch__shared_mem_per_block": {
+        "value": 13336,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_allocated": {
+        "value": 13440.0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_driver": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_dynamic": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_static": {
+        "value": 12312,
+        "unit": "byte/block"
+      },
+      "launch__sm_count": {
+        "value": 188,
+        "unit": "SM"
+      },
+      "launch__stack_size": {
+        "value": 1024.0,
+        "unit": ""
+      },
+      "launch__stream_id": {
+        "value": 13,
+        "unit": ""
+      },
+      "launch__thread_count": {
+        "value": 40960,
+        "unit": "thread"
+      },
+      "launch__tpc_count": {
+        "value": 94,
+        "unit": ""
+      },
+      "launch__tpc_enabled": {
+        "value": "all",
+        "unit": ""
+      },
+      "launch__user_grid_dim_x": {
+        "value": 32,
+        "unit": ""
+      },
+      "launch__user_grid_dim_y": {
+        "value": 5,
+        "unit": ""
+      },
+      "launch__user_grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_size": {
+        "value": 160,
+        "unit": ""
+      },
+      "launch__uses_blocks_as_clusters": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_cdp": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_green_context": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_nvlink_centric_scheduling": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_vgpu": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__waves_per_multiprocessor": {
+        "value": 0.425531914893617,
+        "unit": ""
+      },
+      "lts__t_sector_hit_rate.pct": {
+        "value": 85.9671650373778,
+        "unit": "%"
+      },
+      "memory_l1_wavefronts_shared": {
+        "value": 340480,
+        "unit": "sectors"
+      },
+      "memory_l1_wavefronts_shared_ideal": {
+        "value": 340480,
+        "unit": "sectors"
+      },
+      "sass__inst_executed_global_loads": {
+        "value": 163840.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_global_stores": {
+        "value": 8640.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_local_loads": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_local_stores": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_register_spilling": {
+        "value": 0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_shared_loads": {
+        "value": 81920.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_shared_stores": {
+        "value": 3200.0,
+        "unit": "inst"
+      },
+      "sm__cycles_active.avg": {
+        "value": 27054.297872340427,
+        "unit": "cycle"
+      },
+      "sm__cycles_active.max": {
+        "value": 33268.0,
+        "unit": "cycle"
+      },
+      "sm__cycles_active.min": {
+        "value": 0.0,
+        "unit": "cycle"
+      },
+      "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+        "value": 38.12326012743626,
+        "unit": "%"
+      },
+      "sm__throughput.avg.pct_of_peak_sustained_elapsed": {
+        "value": 38.12326012743626,
+        "unit": "%"
+      },
+      "sm__warps_active.avg.pct_of_peak_sustained_active": {
+        "value": 16.688871732470766,
+        "unit": "%"
+      },
+      "smsp__issue_active.avg.per_cycle_active": {
+        "value": 0.15968699372087708,
+        "unit": ""
+      },
+      "smsp__pcsamp_aggregated_passes": {
+        "value": 2,
+        "unit": "pass"
+      },
+      "smsp__pcsamp_sample_count": {
+        "value": 1262,
+        "unit": ""
+      },
+      "smsp__warps_active.avg.per_cycle_active": {
+        "value": 2.0126407745563086,
+        "unit": "warp"
+      },
+      "smsp__warps_eligible.avg.per_cycle_active": {
+        "value": 0.1845041466477573,
+        "unit": "warp"
+      }
+    },
+    "opcodes": {
+      "NOP": 671560.0,
+      "HMMA": 655360.0,
+      "BRA": 175213.0,
+      "IMAD": 171760.0,
+      "LDG": 163840.0,
+      "IADD3": 124768.0,
+      "SYNCS": 86508.0,
+      "LDS": 81920.0,
+      "ISETP": 75520.0,
+      "LOP3": 72960.0,
+      "SHF": 71280.0,
+      "MOV": 68512.0,
+      "R2UR": 62640.0,
+      "BSYNC": 62080.0,
+      "UIADD3": 55480.0,
+      "BSSY": 44800.0,
+      "PRMT": 40960.0,
+      "WARPSYNC": 34520.0,
+      "ULEA": 29360.0,
+      "YIELD": 24428.0,
+      "LEA": 24320.0,
+      "IADD": 22640.0,
+      "UMOV": 21800.0,
+      "CS2R": 20480.0,
+      "USHF": 19840.0,
+      "UBLKCP": 17280.0,
+      "ELECT": 17280.0,
+      "LDCU": 13080.0,
+      "STG": 8640.0,
+      "STS": 5360.0,
+      "VOTEU": 5120.0,
+      "S2R": 5120.0,
+      "LDC": 3840.0,
+      "IABS": 3840.0,
+      "SEL": 2560.0,
+      "S2UR": 2560.0,
+      "EXIT": 2288.0,
+      "UIMAD": 1280.0,
+      "MUFU": 1280.0,
+      "I2F": 1280.0,
+      "F2I": 1280.0,
+      "BAR": 1280.0
+    },
+    "instructions": [
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 6,
+        "sass": "LDC R1, c[0x0][0x37c]"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "S2R R5, SR_CTAID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 96,
+        "sass": "LDCU.64 UR6, c[0x0][0x390]"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 67,
+        "sass": "S2UR UR8, SR_CgaCtaId"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 18,
+        "sass": "IADD3 R0, PT, PT, R7, 0x7, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 18,
+        "sass": "SHF.R.S32.HI R3, RZ, 0x1f, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 18,
+        "sass": "LEA.HI R3, R3, R0, RZ, 0x3"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "IABS R9, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "I2F.RP R4, R9"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 63,
+        "sass": "LOP3.LUT P0, RZ, R90, R87, RZ, 0xfc, !PT"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 77,
+        "sass": "IMAD.SHL.U32 R90, R90, 0x10, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 77,
+        "sass": "VOTEU.ALL UP0, P0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "MUFU.RCP R4, R4"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 LDCU UR4, c[0x0][0x360]"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "F2I.FTZ.U32.TRUNC.NTZ R3, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "@!UP0 UIMAD UR4, UR4, UR5, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "UMOV UR5, 0x400"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "MOV R2, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "ULEA UR8, UR8, UR5, 0x18"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 UIADD3 UR4, UPT, UPT, -UR4, 0x100000, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 USHF.L.U32 UR5, UR4, 0xb, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "IMAD R11, R6, R9, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 SYNCS.EXCH.64 URZ, [UR8+0x3000], UR4"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "IMAD.HI.U32 R3, R3, R11, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "ISETP.GT.U32.AND P1, PT, R9, R2, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 70,
+        "sass": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "ISETP.GE.U32.AND P2, PT, R2, R9, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "ISETP.GE.AND P1, PT, R2, RZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "ISETP.NE.AND P2, PT, R0, RZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 90,
+        "sass": "IADD.64 R2, R92, UR6"
+      },
+      {
+        "path": "sm_32_intrinsics.hpp",
+        "line": 222,
+        "sass": "LDG.E.128.STRONG.SM R52, desc[UR12][R2.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 99,
+        "sass": "BSSY B0, 0x1c015d1fe0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 23,
+        "sass": "SHF.R.U32.HI R6, RZ, 0x1, R87"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 23,
+        "sass": "SEL R7, R7, RZ, P1"
+      },
+      {
+        "path": "sm_20_intrinsics.hpp",
+        "line": 151,
+        "sass": "ISETP.LT.AND P0, PT, R78, R89, !P0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 33,
+        "sass": "@!P0  BRA 0x1c015d1fb0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 33,
+        "sass": "BRA.DIV UR4, 0x1c015d3030"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 35,
+        "sass": "ELECT P1, URZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 42,
+        "sass": "R2UR UR10, R84"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 42,
+        "sass": "USHF.R.S32.HI UR5, URZ, 0x1f, UR4"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 42,
+        "sass": "UIADD3.64 UR4, UPT, UPT, UR4, UR6, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "sass": "UBLKCP.S.G [UR10], [UR4], UR6"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "sass": "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3000], R0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 51,
+        "sass": "STS.128 [R0], RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 33,
+        "sass": "BSYNC B0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "sass": "NOP"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 101,
+        "sass": "SYNCS.ARRIVE.TRANS64.ART0 R2, [UR8+0x3000], R2"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 101,
+        "sass": "SYNCS.PHASECHK.TRANS64.TRYWAIT P1, [UR8+0x3000], R3"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 101,
+        "sass": "CS2R R2, SRZ"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 122,
+        "sass": "WARPSYNC.ALL"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 109,
+        "sass": "PRMT R0, R0, 0x9910, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 118,
+        "sass": "LDS.128 R60, [R64+UR8]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 221,
+        "sass": "HMMA.16816.F16 R68, R60, R52, R68"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "LEA R60, R56, UR8, 0x3"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 144,
+        "sass": "BSSY.RECONVERGENT B0, 0x1c015d2ea0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 144,
+        "sass": "ISETP.GE.OR P0, PT, R91, R89, P0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 207,
+        "sass": "STG.E.NA.128 desc[UR12][R24.64], R28"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 207,
+        "sass": "BSYNC.RECONVERGENT B0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 144,
+        "sass": "@P1   EXIT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "YIELD"
+      }
+    ],
+    "lines": [
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 6,
+        "executed": 1280,
+        "opcodes": {
+          "LDC": 1280
+        },
+        "stalls": {
+          "no_instructions": 5
+        },
+        "sass": [
+          "LDC R1, c[0x0][0x37c]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 17,
+        "executed": 3840,
+        "opcodes": {
+          "S2R": 2560,
+          "LDCU": 1280
+        },
+        "stalls": {},
+        "sass": [
+          "S2R R90, SR_TID.X",
+          "LDCU.64 UR12, c[0x0][0x358]",
+          "S2R R87, SR_TID.Y"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 18,
+        "executed": 6400,
+        "opcodes": {
+          "LDC": 1280,
+          "IADD3": 1280,
+          "SHF": 2560,
+          "LEA": 1280
+        },
+        "stalls": {
+          "short_scoreboard": 1
+        },
+        "sass": [
+          "LDC R7, c[0x0][0x3a4]",
+          "IADD3 R0, PT, PT, R7, 0x7, RZ",
+          "SHF.R.S32.HI R3, RZ, 0x1f, R0",
+          "LEA.HI R3, R3, R0, RZ, 0x3",
+          "SHF.R.S32.HI R0, RZ, 0x3, R3"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "executed": 38400,
+        "opcodes": {
+          "S2R": 1280,
+          "IABS": 3840,
+          "I2F": 1280,
+          "MUFU": 1280,
+          "IADD3": 8960,
+          "F2I": 1280,
+          "UIMAD": 1280,
+          "MOV": 3840,
+          "IMAD": 6400,
+          "ISETP": 5120,
+          "LOP3": 3840
+        },
+        "stalls": {
+          "selected": 2,
+          "short_scoreboard": 1,
+          "wait": 2
+        },
+        "sass": [
+          "S2R R5, SR_CTAID.X",
+          "IABS R9, R0",
+          "IABS R8, R0",
+          "I2F.RP R4, R9",
+          "MUFU.RCP R4, R4",
+          "IADD3 R2, PT, PT, R4, 0xffffffe, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 21,
+        "executed": 3840,
+        "opcodes": {
+          "IADD3": 2560,
+          "IMAD": 1280
+        },
+        "stalls": {},
+        "sass": [
+          "IADD3 R6, PT, PT, -R11, RZ, RZ",
+          "IMAD R0, R0, R6, R5",
+          "IADD3 R80, PT, PT, R0, R0, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 22,
+        "executed": 3840,
+        "opcodes": {
+          "S2UR": 1280,
+          "UIADD3": 1280,
+          "LEA": 1280
+        },
+        "stalls": {
+          "barrier": 1
+        },
+        "sass": [
+          "S2UR UR4, SR_CTAID.Y",
+          "UIADD3 UR4, UPT, UPT, UR4, UR4, URZ",
+          "LEA.HI R91, R87, UR4, RZ, 0x1e"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 23,
+        "executed": 11520,
+        "opcodes": {
+          "IMAD": 3840,
+          "SHF": 1280,
+          "LOP3": 2560,
+          "IADD3": 1280,
+          "SEL": 1280,
+          "ISETP": 1280
+        },
+        "stalls": {},
+        "sass": [
+          "IMAD.SHL.U32 R86, R86, 0x4000, RZ",
+          "SHF.R.U32.HI R6, RZ, 0x1, R87",
+          "LOP3.LUT R7, R6, 0x1, RZ, 0xc0, !PT",
+          "IADD3 R7, PT, PT, R80, R7, RZ",
+          "IMAD.SHL.U32 R87, R87, 0x200, RZ",
+          "SEL R7, R7, RZ, P1"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 24,
+        "executed": 1280,
+        "opcodes": {
+          "S2R": 1280
+        },
+        "stalls": {},
+        "sass": [
+          "S2R R86, SR_CTAID.Z"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 32,
+        "executed": 2600,
+        "opcodes": {
+          "IMAD": 2600
+        },
+        "stalls": {
+          "wait": 3
+        },
+        "sass": [
+          "IMAD R57, R0, 0x1000, R87"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 33,
+        "executed": 8160,
+        "opcodes": {
+          "BRA": 2360,
+          "UMOV": 1080,
+          "BSYNC": 4720
+        },
+        "stalls": {
+          "long_scoreboard": 5,
+          "wait": 2
+        },
+        "sass": [
+          "@!P0  BRA 0x1c015d1fb0",
+          "UMOV UR4, 0xffffffff",
+          "BRA.DIV UR4, 0x1c015d3030",
+          "BSYNC B0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 35,
+        "executed": 60480,
+        "opcodes": {
+          "ELECT": 15120,
+          "BRA": 17280,
+          "WARPSYNC": 14040,
+          "NOP": 14040
+        },
+        "stalls": {
+          "not_selected": 1,
+          "selected": 2,
+          "wait": 11
+        },
+        "sass": [
+          "ELECT P1, URZ, PT",
+          "@!P1  BRA 0x1c015d1fd0",
+          "@!P1  BRA 0x1c015d2150",
+          "@!P1  BRA 0x1c015d22d0",
+          "WARPSYNC.ALL",
+          "NOP"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 39,
+        "executed": 82080,
+        "opcodes": {
+          "IADD3": 17280,
+          "IMAD": 31320,
+          "R2UR": 17280,
+          "UIADD3": 16200
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "selected": 2,
+          "wait": 6
+        },
+        "sass": [
+          "IADD3 R3, PT, PT, R86, R85, RZ",
+          "IMAD R3, R78, 0x4000, R3",
+          "R2UR UR4, R3",
+          "UIADD3 UR4, UPT, UPT, UR4, 0x400, URZ",
+          "UIADD3 UR4, UPT, UPT, UR4, 0x800, URZ",
+          "IMAD R56, R82, 0x400, R86"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 42,
+        "executed": 55080,
+        "opcodes": {
+          "LDCU": 3240,
+          "R2UR": 17280,
+          "USHF": 17280,
+          "UIADD3": 17280
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 2
+        },
+        "sass": [
+          "LDCU.64 UR6, c[0x0][0x380]",
+          "R2UR UR10, R84",
+          "USHF.R.S32.HI UR5, URZ, 0x1f, UR4",
+          "UIADD3.64 UR4, UPT, UPT, UR4, UR6, URZ",
+          "R2UR UR9, R81",
+          "UIADD3.64 UR4, UPT, UPT, UR4, UR14, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 44,
+        "executed": 31320,
+        "opcodes": {
+          "MOV": 16200,
+          "BRA": 15120
+        },
+        "stalls": {},
+        "sass": [
+          "MOV R0, 0x200",
+          "BRA 0x1c015d1fd0",
+          "BRA 0x1c015d2ca0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 51,
+        "executed": 54680,
+        "opcodes": {
+          "IADD3": 5360,
+          "STS": 5360,
+          "BSSY": 2560,
+          "BRA": 4720,
+          "UMOV": 2160,
+          "BSYNC": 34520
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "no_instructions": 1,
+          "selected": 2,
+          "wait": 2
+        },
+        "sass": [
+          "IADD3 R0, PT, PT, R90, R84, RZ",
+          "STS.128 [R0], RZ",
+          "@!P0  IADD3 R0, PT, PT, R90, R84, RZ",
+          "BSSY B0, 0x1c015d2160",
+          "@!P0  STS.128 [R0+0x1000], RZ",
+          "@!P0  BRA 0x1c015d2150"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 63,
+        "executed": 1280,
+        "opcodes": {
+          "LOP3": 1280
+        },
+        "stalls": {},
+        "sass": [
+          "LOP3.LUT P0, RZ, R90, R87, RZ, 0xfc, !PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 67,
+        "executed": 1280,
+        "opcodes": {
+          "S2UR": 1280
+        },
+        "stalls": {},
+        "sass": [
+          "S2UR UR8, SR_CgaCtaId"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 70,
+        "executed": 1280,
+        "opcodes": {
+          "BAR": 1280
+        },
+        "stalls": {
+          "long_scoreboard": 1
+        },
+        "sass": [
+          "BAR.SYNC.DEFER_BLOCKING 0x0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 77,
+        "executed": 26880,
+        "opcodes": {
+          "IMAD": 23040,
+          "VOTEU": 1280,
+          "LOP3": 1280,
+          "IADD3": 1280
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 4
+        },
+        "sass": [
+          "IMAD.SHL.U32 R90, R90, 0x10, RZ",
+          "VOTEU.ALL UP0, P0",
+          "IMAD.SHL.U32 R3, R86, 0x100000, RZ",
+          "LOP3.LUT R92, R90, R3, RZ, 0xfc, !PT",
+          "IMAD R79, R11, 0x2000, R2",
+          "IADD3 R92, PT, PT, R79, R92, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 90,
+        "executed": 40960,
+        "opcodes": {
+          "SHF": 20480,
+          "IADD": 20480
+        },
+        "stalls": {
+          "dispatch_stall": 1,
+          "not_selected": 3,
+          "selected": 1,
+          "wait": 2
+        },
+        "sass": [
+          "SHF.R.S32.HI R93, RZ, 0x1f, R92",
+          "IADD.64 R2, R92, UR6",
+          "SHF.R.S32.HI R59, RZ, 0x1f, R58",
+          "IADD.64 R58, R58, UR16"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 91,
+        "executed": 154880,
+        "opcodes": {
+          "LDC": 1280,
+          "LDG": 153600
+        },
+        "stalls": {
+          "selected": 6,
+          "wait": 10
+        },
+        "sass": [
+          "LDC R9, c[0x0][0x3a0]",
+          "LDG.E.128.STRONG.SM R52, desc[UR12][R58.64]",
+          "LDG.E.128.STRONG.SM R48, desc[UR12][R58.64+0x200]",
+          "LDG.E.128.STRONG.SM R44, desc[UR12][R58.64+0x400]",
+          "LDG.E.128.STRONG.SM R40, desc[UR12][R58.64+0x600]",
+          "LDG.E.128.STRONG.SM R36, desc[UR12][R58.64+0x8000]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 96,
+        "executed": 1280,
+        "opcodes": {
+          "LDCU": 1280
+        },
+        "stalls": {},
+        "sass": [
+          "LDCU.64 UR6, c[0x0][0x390]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 99,
+        "executed": 1280,
+        "opcodes": {
+          "BSSY": 1280
+        },
+        "stalls": {},
+        "sass": [
+          "BSSY B0, 0x1c015d1fe0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 101,
+        "executed": 29440,
+        "opcodes": {
+          "MOV": 2560,
+          "LOP3": 1280,
+          "SYNCS": 2560,
+          "BRA": 1280,
+          "CS2R": 20480,
+          "IADD3": 1280
+        },
+        "stalls": {
+          "long_scoreboard": 2,
+          "selected": 1,
+          "wait": 2
+        },
+        "sass": [
+          "MOV R2, 0x1",
+          "LOP3.LUT R83, R87, 0x7f800, RZ, 0xc0, !PT",
+          "MOV R82, RZ",
+          "SYNCS.ARRIVE.TRANS64.ART0 R2, [UR8+0x3000], R2",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P1, [UR8+0x3000], R3",
+          "@!P1  BRA 0x1c015d3190"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 107,
+        "executed": 61440,
+        "opcodes": {
+          "IADD3": 20480,
+          "ISETP": 20480,
+          "BRA": 20480
+        },
+        "stalls": {
+          "branch_resolving": 5,
+          "math_pipe_throttle": 1,
+          "selected": 1,
+          "wait": 15
+        },
+        "sass": [
+          "IADD3 R82, PT, PT, R82, 0x1, RZ",
+          "ISETP.NE.AND P1, PT, R82, 0x10, PT",
+          "@P1   BRA 0x1c015d2450"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 109,
+        "executed": 183040,
+        "opcodes": {
+          "LOP3": 39680,
+          "IMAD": 40960,
+          "SHF": 20480,
+          "PRMT": 40960,
+          "IADD3": 40960
+        },
+        "stalls": {
+          "branch_resolving": 7,
+          "no_instructions": 1,
+          "not_selected": 2,
+          "selected": 5,
+          "wait": 16
+        },
+        "sass": [
+          "LOP3.LUT R0, R82, 0xff, RZ, 0xc0, !PT",
+          "IMAD R0, R0, 0xab, RZ",
+          "SHF.R.U32.HI R0, RZ, 0x9, R0",
+          "PRMT R0, R0, 0x9910, RZ",
+          "IMAD R0, R0, 0x3, RZ",
+          "IADD3 R0, PT, PT, RZ, -R0, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 110,
+        "executed": 40960,
+        "opcodes": {
+          "LOP3": 20480,
+          "IMAD": 20480
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 4
+        },
+        "sass": [
+          "LOP3.LUT R0, R81, 0xff, RZ, 0xc0, !PT",
+          "IMAD R64, R0, 0x1000, R83"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 118,
+        "executed": 81920,
+        "opcodes": {
+          "LDS": 81920
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 7
+        },
+        "sass": [
+          "LDS.128 R60, [R64+UR8]",
+          "LDS.128 R56, [R64+UR8+0x400]",
+          "LDS.128 R60, [R64+UR8+0x200]",
+          "LDS.128 R64, [R64+UR8+0x600]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 122,
+        "executed": 40960,
+        "opcodes": {
+          "WARPSYNC": 20480,
+          "NOP": 20480
+        },
+        "stalls": {
+          "selected": 2,
+          "wait": 4
+        },
+        "sass": [
+          "WARPSYNC.ALL",
+          "NOP"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 126,
+        "executed": 61440,
+        "opcodes": {
+          "ISETP": 20480,
+          "BSSY": 20480,
+          "BRA": 20480
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 5
+        },
+        "sass": [
+          "ISETP.NE.AND P1, PT, R82, 0xf, PT",
+          "BSSY B0, 0x1c015d2cb0",
+          "@!P1  BRA 0x1c015d2ca0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 128,
+        "executed": 20480,
+        "opcodes": {
+          "LDCU": 1280,
+          "IADD3": 19200
+        },
+        "stalls": {
+          "wait": 5
+        },
+        "sass": [
+          "LDCU.64 UR16, c[0x0][0x390]",
+          "IADD3 R57, PT, PT, R82, 0x1, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 129,
+        "executed": 76800,
+        "opcodes": {
+          "IMAD": 38400,
+          "SHF": 19200,
+          "MOV": 19200
+        },
+        "stalls": {
+          "dispatch_stall": 2,
+          "selected": 3,
+          "wait": 2
+        },
+        "sass": [
+          "IMAD.HI.U32 R56, R57, -0x55555555, RZ",
+          "SHF.R.U32.HI R56, RZ, 0x1, R56",
+          "IMAD R56, R56, -0x3, R57",
+          "MOV R57, 0x1"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 132,
+        "executed": 57600,
+        "opcodes": {
+          "BSSY": 19200,
+          "ISETP": 19200,
+          "BRA": 19200
+        },
+        "stalls": {},
+        "sass": [
+          "BSSY B1, 0x1c015d2ae0",
+          "ISETP.GT.U32.AND P1, PT, R82, 0xc, PT",
+          "@P1   BRA 0x1c015d2ca0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 133,
+        "executed": 17920,
+        "opcodes": {
+          "LDCU": 1280,
+          "BRA": 16640
+        },
+        "stalls": {
+          "wait": 1
+        },
+        "sass": [
+          "LDCU.64 UR14, c[0x0][0x380]",
+          "@!P0  BRA 0x1c015d2c70"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 144,
+        "executed": 12800,
+        "opcodes": {
+          "ISETP": 5120,
+          "IADD3": 2560,
+          "BSSY": 1280,
+          "IMAD": 1280,
+          "BRA": 1280,
+          "EXIT": 1280
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "selected": 1,
+          "wait": 2
+        },
+        "sass": [
+          "ISETP.GE.AND P0, PT, R80, R88, PT",
+          "IADD3 R25, PT, PT, R80, 0x1, RZ",
+          "BSSY.RECONVERGENT B0, 0x1c015d2ea0",
+          "IMAD R80, R91, R88, R80",
+          "IADD3 R79, PT, PT, R79, R90, RZ",
+          "ISETP.GE.OR P0, PT, R91, R89, P0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 147,
+        "executed": 9648,
+        "opcodes": {
+          "LDCU": 2160,
+          "IMAD": 2160,
+          "SHF": 2160,
+          "IADD": 2160,
+          "IADD3": 1008
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "long_scoreboard": 4,
+          "short_scoreboard": 1
+        },
+        "sass": [
+          "LDCU.64 UR4, c[0x0][0x388]",
+          "IMAD R24, R80, 0x8000, R79",
+          "SHF.R.S32.HI R25, RZ, 0x1f, R24",
+          "IADD.64 R24, R24, UR4",
+          "IMAD R12, R80, 0x8000, R79",
+          "IADD3 R12, PT, PT, R12, 0x8000, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 156,
+        "executed": 16560,
+        "opcodes": {
+          "MOV": 16560
+        },
+        "stalls": {},
+        "sass": [
+          "MOV R30, R22",
+          "MOV R31, R23",
+          "MOV R22, R18",
+          "MOV R23, R19",
+          "MOV R18, R14",
+          "MOV R19, R15"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 165,
+        "executed": 1008,
+        "opcodes": {
+          "EXIT": 1008
+        },
+        "stalls": {},
+        "sass": [
+          "EXIT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 22,
+        "executed": 2160,
+        "opcodes": {
+          "ELECT": 2160
+        },
+        "stalls": {
+          "drain": 17
+        },
+        "sass": [
+          "ELECT P1, URZ, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 207,
+        "executed": 18992,
+        "opcodes": {
+          "STG": 8640,
+          "BSYNC": 1280,
+          "MOV": 9072
+        },
+        "stalls": {
+          "dispatch_stall": 1
+        },
+        "sass": [
+          "STG.E.NA.128 desc[UR12][R24.64], R28",
+          "STG.E.NA.128 desc[UR12][R24.64+0x200], R20",
+          "STG.E.NA.128 desc[UR12][R24.64+0x400], R16",
+          "STG.E.NA.128 desc[UR12][R24.64+0x600], R12",
+          "BSYNC.RECONVERGENT B0",
+          "MOV R10, R6"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 221,
+        "executed": 1024000,
+        "opcodes": {
+          "HMMA": 512000,
+          "NOP": 512000
+        },
+        "stalls": {
+          "long_scoreboard": 155,
+          "math_pipe_throttle": 171,
+          "not_selected": 9,
+          "selected": 17,
+          "short_scoreboard": 18,
+          "wait": 230
+        },
+        "sass": [
+          "HMMA.16816.F16 R68, R60, R52, R68",
+          "NOP",
+          "HMMA.16816.F16 R74, R56, R52, R74",
+          "HMMA.16816.F16 R72, R56, R54, R72",
+          "HMMA.16816.F16 R70, R56, R48, R70",
+          "HMMA.16816.F16 R8, R56, R50, R8"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "executed": 16640,
+        "opcodes": {
+          "VOTEU": 3840,
+          "LDCU": 2560,
+          "UMOV": 1280,
+          "ULEA": 1280,
+          "UIADD3": 1280,
+          "USHF": 2560,
+          "SYNCS": 3840
+        },
+        "stalls": {
+          "no_instructions": 2,
+          "selected": 1
+        },
+        "sass": [
+          "VOTEU.ALL UP1, P0",
+          "VOTEU.ALL UP2, P0",
+          "@!UP0 LDCU UR4, c[0x0][0x360]",
+          "@!UP0 LDCU UR5, c[0x0][0x364]",
+          "UMOV UR5, 0x400",
+          "ULEA UR8, UR8, UR5, 0x18"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 246,
+        "executed": 14040,
+        "opcodes": {
+          "R2UR": 14040
+        },
+        "stalls": {},
+        "sass": [
+          "R2UR UR6, R0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "executed": 54000,
+        "opcodes": {
+          "UIADD3": 19440,
+          "UMOV": 17280,
+          "UBLKCP": 17280
+        },
+        "stalls": {
+          "mio_throttle": 14,
+          "wait": 3
+        },
+        "sass": [
+          "UIADD3 UR11, UPT, UPT, UR8, 0x3000, URZ",
+          "UMOV UR6, 0x20",
+          "UBLKCP.S.G [UR10], [UR4], UR6",
+          "UIADD3 UR11, UPT, UPT, UR8, 0x3008, URZ",
+          "UIADD3 UR10, UPT, UPT, UR10, 0x1000, URZ",
+          "UIADD3 UR11, UPT, UPT, UR8, 0x3010, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "executed": 22880,
+        "opcodes": {
+          "SYNCS": 17280,
+          "NOP": 2160,
+          "MOV": 1080,
+          "BSYNC": 2360
+        },
+        "stalls": {
+          "long_scoreboard": 19,
+          "no_instructions": 1
+        },
+        "sass": [
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3000], R0",
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3008], R0",
+          "NOP",
+          "MOV R0, 0x200",
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3010], R0",
+          "BSYNC B0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "executed": 101228,
+        "opcodes": {
+          "LEA": 19200,
+          "SYNCS": 38400,
+          "BRA": 19200,
+          "YIELD": 24428
+        },
+        "stalls": {
+          "branch_resolving": 7,
+          "long_scoreboard": 58,
+          "no_instructions": 6,
+          "selected": 2,
+          "wait": 1
+        },
+        "sass": [
+          "LEA R60, R56, UR8, 0x3",
+          "SYNCS.ARRIVE.TRANS64.ART0 R56, [R60+URZ+0x3000], R57",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P2, [R60+URZ+0x3000], R57",
+          "@!P2  BRA 0x1c015d31d0",
+          "YIELD"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
+        "line": 16,
+        "executed": 80801,
+        "opcodes": {
+          "BSYNC": 19200,
+          "SYNCS": 24428,
+          "BRA": 37173
+        },
+        "stalls": {
+          "branch_resolving": 113,
+          "long_scoreboard": 76,
+          "misc": 7,
+          "no_instructions": 3,
+          "not_selected": 2,
+          "selected": 10,
+          "wait": 52
+        },
+        "sass": [
+          "BSYNC B1",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P1, [UR8+0x3000], R3",
+          "@!P1  BRA 0x1c015d3190",
+          "BRA 0x1c015d2340",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P2, [R60+URZ+0x3000], R57",
+          "@!P2  BRA 0x1c015d31d0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+        "line": 40,
+        "executed": 266240,
+        "opcodes": {
+          "HMMA": 143360,
+          "NOP": 122880
+        },
+        "stalls": {
+          "selected": 11,
+          "wait": 59
+        },
+        "sass": [
+          "HMMA.16816.F16 R22, R60, R54, R22",
+          "NOP",
+          "HMMA.16816.F16 R20, R60, R48, R20",
+          "HMMA.16816.F16 R18, R60, R50, R18",
+          "HMMA.16816.F16 R16, R60, R44, R16",
+          "HMMA.16816.F16 R14, R60, R46, R14"
+        ]
+      },
+      {
+        "path": "sm_20_intrinsics.hpp",
+        "line": 151,
+        "executed": 44680,
+        "opcodes": {
+          "IADD3": 1280,
+          "ISETP": 1280,
+          "R2UR": 14040,
+          "ULEA": 28080
+        },
+        "stalls": {
+          "selected": 3,
+          "wait": 1
+        },
+        "sass": [
+          "IADD3 R84, PT, PT, R87, UR8, RZ",
+          "ISETP.LT.AND P0, PT, R78, R89, !P0",
+          "R2UR UR7, R84",
+          "ULEA UR9, UR9, UR8, 0x3",
+          "ULEA UR6, UR6, UR7, 0xc"
+        ]
+      },
+      {
+        "path": "sm_32_intrinsics.hpp",
+        "line": 222,
+        "executed": 24320,
+        "opcodes": {
+          "LDG": 10240,
+          "SHF": 5120,
+          "LEA": 2560,
+          "LOP3": 2560,
+          "ISETP": 2560,
+          "SEL": 1280
+        },
+        "stalls": {
+          "lg_throttle": 2,
+          "not_selected": 1,
+          "wait": 1
+        },
+        "sass": [
+          "LDG.E.128.STRONG.SM R52, desc[UR12][R2.64]",
+          "LDG.E.128.STRONG.SM R48, desc[UR12][R2.64+0x200]",
+          "LDG.E.128.STRONG.SM R44, desc[UR12][R2.64+0x400]",
+          "LDG.E.128.STRONG.SM R40, desc[UR12][R2.64+0x600]",
+          "LDG.E.128.STRONG.SM R36, desc[UR12][R2.64+0x8000]",
+          "LDG.E.128.STRONG.SM R32, desc[UR12][R2.64+0x8200]"
+        ]
+      }
+    ],
+    "stall_totals": {
+      "barrier": 1,
+      "branch_resolving": 136,
+      "dispatch_stall": 4,
+      "drain": 17,
+      "lg_throttle": 2,
+      "long_scoreboard": 320,
+      "math_pipe_throttle": 172,
+      "membar": 0,
+      "mio_throttle": 14,
+      "misc": 7,
+      "no_instructions": 19,
+      "not_selected": 18,
+      "selected": 77,
+      "short_scoreboard": 21,
+      "sleeping": 0,
+      "tex_throttle": 0,
+      "wait": 454
+    },
+    "timeline": {
+      "pmsampling:sm__inst_executed_realtime.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 108,
+        "bucket_size": 1,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          4.826049914234759,
+          13.846560153722336,
+          13.296817252792966,
+          13.381800218442757,
+          11.77804131336573,
+          0.13064091820261253,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "pmsampling:sm__inst_executed_pipe_tensor_subpipe_hmma_realtime.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 108,
+        "bucket_size": 1,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.3544319614681193,
+          47.994091224084734,
+          48.57020553107082,
+          47.72465159931995,
+          45.26671074832308,
+          0.12620005492530403,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "pmsampling:dram__bytes.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 108,
+        "bucket_size": 1,
+        "values": [
+          0.129585326953748,
+          0.18879173290937998,
+          0.26871019108280253,
+          0.29,
+          0.17857142857142858,
+          0.04984051036682615,
+          0.009936406995230525,
+          0.1,
+          0.15873015873015872,
+          0.22926634768740034,
+          0.29809220985691576,
+          0.2695686900958466,
+          0.1089540412044374,
+          0.1201923076923077,
+          0.1388888888888889,
+          0.26913875598086123,
+          0.3085191082802548,
+          0.2890749601275917,
+          0.09936406995230523,
+          0.10947452229299363,
+          0.21894904458598727,
+          0.23923444976076555,
+          0.34280604133545306,
+          7.807523885350319,
+          17.55075636942675,
+          14.762759170653908,
+          17.324561403508774,
+          7.27841812400636,
+          0.3194888178913738,
+          0.09936406995230523,
+          0.1993620414673046,
+          0.25834658187599363,
+          0.3184713375796179,
+          0.3179650238473768,
+          0.04992012779552715,
+          0.0696656050955414,
+          0.10947452229299363,
+          0.21929824561403508,
+          0.3488835725677831,
+          0.3373015873015873,
+          0.13955342902711323,
+          0.0696656050955414,
+          0.16945773524720895,
+          0.31746031746031744,
+          0.3588516746411483,
+          0.24880573248407642,
+          0.03987240829346093,
+          0.1393312101910828,
+          0.26871019108280253,
+          0.3289473684210526,
+          0.3577106518282989,
+          0.16945773524720895,
+          0.27821939586645467,
+          0.44785031847133755,
+          0.3184713375796179,
+          0.3937400318979266,
+          0.44785031847133755,
+          0.4136762360446571,
+          0.43859649122807015,
+          0.4677547770700637,
+          0.376984126984127,
+          0.4243210862619808,
+          0.46130952380952384,
+          0.26913875598086123,
+          0.3284235668789809,
+          0.43859649122807015,
+          0.25875796178343946,
+          0.1993620414673046,
+          0.2579365079365079,
+          0.3389154704944179,
+          0.29904306220095694,
+          0.12937898089171973,
+          0.12917329093799682,
+          0.21894904458598727,
+          0.25875796178343946,
+          0.36881977671451355,
+          0.16918789808917198,
+          0.07961783439490447,
+          0.10982428115015974,
+          0.16395071542130366,
+          0.24460862619808307,
+          0.31746031746031744,
+          0.259170653907496,
+          0.07936507936507936,
+          0.07987220447284345,
+          0.14928343949044587,
+          0.18411624203821655,
+          0.27325119236883944,
+          0.31,
+          0.12896825396825395,
+          0.07974481658692185,
+          0.07961783439490447,
+          0.17942583732057416,
+          0.23847376788553257,
+          0.3184713375796179,
+          0.2786624203821656,
+          0.08971291866028708,
+          0.12917329093799682,
+          0.20933014354066987,
+          0.24960063897763576,
+          0.3472222222222222,
+          0.1996805111821086,
+          0.13910969793322733,
+          0.1542595541401274,
+          0.1838235294117647,
+          0.30950479233226835,
+          0.3080286168521463,
+          0.17942583732057416
+        ]
+      }
+    },
+    "rules": [
+      {
+        "rule_identifier": "SOLBottleneck",
+        "name": "Bottleneck",
+        "section_identifier": "SpeedOfLight",
+        "rule_message": {
+          "title": "Small Grid",
+          "message": "This kernel grid is too small to fill the available resources on this device, resulting in only 0.43 full waves across all SMs. Look at @section:LaunchStats:Launch Statistics@ for more details.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "launch__waves_per_multiprocessor",
+            "value": 0.425531914893617,
+            "severity": 2,
+            "info": "Increase the number of waves per SM towards 1"
+          }
+        ]
+      },
+      {
+        "rule_identifier": "IssueSlotUtilization",
+        "name": "Issue Slot Utilization",
+        "section_identifier": "SchedulerStats",
+        "rule_message": {
+          "title": "",
+          "message": "Every scheduler is capable of issuing one instruction per cycle, but for this workload each scheduler only issues an instruction every 6.3 cycles. This might leave hardware resources underutilized and may lead to less optimal performance. Out of the maximum of 12 warps per scheduler, this workload allocates an average of 2.01 active warps per scheduler, but only an average of 0.18 warps were eligible per cycle. Eligible warps are the subset of active warps that are ready to issue their next instruction. Every cycle with no eligible warp results in no instruction being issued and the issue slot remains unused. To increase the number of eligible warps, reduce the time the active warps are stalled by inspecting the top stall reasons on the @section:WarpStateStats:Warp State Statistics@ and @section:SourceCounters:Source Counters@ sections.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__issue_active.avg.per_cycle_active",
+            "value": 0.15968699372087708,
+            "severity": 0,
+            "info": "Increase the average number of instructions issued per cycle"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 1,
+          "speedup": 59.68205626613645
+        }
+      },
+      {
+        "rule_identifier": "AchievedOccupancy",
+        "name": "Achieved Occupancy",
+        "section_identifier": "Occupancy",
+        "rule_message": {
+          "title": "",
+          "message": "The difference between calculated theoretical (33.3%) and measured achieved occupancy (16.7%) can be the result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can occur between warps within a block as well as across blocks of the same kernel. See the @url:CUDA Best Practices Guide:https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy@ for more details on optimizing occupancy.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "sm__warps_active.avg.pct_of_peak_sustained_active",
+            "value": 16.688871732470766,
+            "severity": 0,
+            "info": "Increase the achieved occupancy towards the theoretical limit (33.3%)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 49.933384802587696
+        }
+      },
+      {
+        "rule_identifier": "CPIStall",
+        "name": "Warp Stall",
+        "section_identifier": "WarpStateStats",
+        "rule_message": {
+          "title": "Wait Stalls",
+          "message": "On average, each warp of this workload spends 4.4 cycles being stalled waiting on a fixed latency execution dependency. Typically, this stall reason should be very low and only shows up as a top contributor in already highly optimized kernels. Try to hide the corresponding instruction latencies by increasing the number of active warps, restructuring the code or unrolling loops. Furthermore, consider switching to lower-latency instructions, e.g. by making use of fast math compiler options. For example, FFMA-to-FFMA dependency latency is 4 cycles. This stall type represents about 35.0% of the total average of 12.6 cycles between issuing two instructions.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__issue_active.avg.per_cycle_active",
+            "value": 0.15968699372087708,
+            "severity": 2,
+            "info": "Increase the average number of instructions issued per cycle"
+          },
+          {
+            "name": "smsp_average_wait",
+            "value": 4.4166067929759985,
+            "severity": 0,
+            "info": "Decrease the number of cycles spent in wait stalls"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 35.04225245426725
+        }
+      },
+      {
+        "rule_identifier": "CPIStall",
+        "name": "Warp Stall",
+        "section_identifier": "WarpStateStats",
+        "rule_message": {
+          "title": "",
+          "message": "Check the @section:SourceCounters:Warp Stall Sampling (All Samples)@ table for the top stall locations in your source based on sampling data. The @url:Profiling Guide:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-reference@ provides more details on each stall reason.",
+          "type": 1
+        }
+      },
+      {
+        "rule_identifier": "HighPipeUtilization",
+        "name": "High Pipe Utilization",
+        "section_identifier": "ComputeWorkloadAnalysis",
+        "rule_message": {
+          "title": "Balanced",
+          "message": "Tensor is the highest-utilized pipeline (38.1%) based on elapsed cycles in the workload, taking into account the rates of its different instructions. It is the logical aggregation of individual tensor pipelines. It's dominated by its Tensor (FP) sub-pipeline. It is well-utilized, but should not be a bottleneck. Based on the number of executed instructions, the highest utilized pipeline (38.1%) is Tensor (FP). It executes 16-bit floating point tensor operations. Comparing the two, the overall pipeline utilization appears to be caused by frequent, low-latency instructions. See the @url:Profiling Guide:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-decoder@ or hover over the pipeline name to understand the workloads handled by each pipeline. The @section:InstructionStats:Instruction Statistics@ section shows the mix of executed instructions for this workload. Check the @section:WarpStateStats:Warp State Statistics@ section for which reasons cause warps to stall.",
+          "type": 1
+        },
+        "focus_metrics": [
+          {
+            "name": "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed",
+            "value": 38.12326012743626,
+            "severity": 0,
+            "info": "Try to decrease the utilization of the busiest pipeline (currently: Tensor)"
+          }
+        ],
+        "result_tables": [
+          {
+            "title": "Most frequently executed instructions for pipeline Tensor",
+            "description": "Source lines with the highest number of executed instructions on pipeline Tensor (FP).",
+            "headers": [
+              "Location",
+              "Source",
+              "Opcodes",
+              "Executed Instructions"
+            ],
+            "data": [
+              [
+                "@source:intrinsics.cuh:220:intrinsics.cuh, line 221@",
+                "@source:tiled_mma.cuh:39:tiled_mma.cuh, line 40@"
+              ],
+              [
+                "asm volatile(\"mma.sync.aligned.m16n8k16.row.col.f16.f16.f16.f16 {%0,%1},{%2,%3,%4,%5},{%6,%7},{%8,%9};\"",
+                "MMA<Precision>("
+              ],
+              [
+                "HMMA.16816.F16",
+                "HMMA.16816.F16"
+              ],
+              [
+                512000.0,
+                143360.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "rule_identifier": "LaunchConfiguration",
+        "name": "Launch Configuration",
+        "section_identifier": "LaunchStats",
+        "rule_message": {
+          "title": "Small Grid",
+          "message": "The grid for this launch is configured to execute only 160 blocks, which is less than the 188 multiprocessors used. This can underutilize some multiprocessors. If you do not intend to execute this kernel concurrently with other workloads, consider reducing the block size to have at least one block per multiprocessor or increase the size of the grid to fully utilize the available hardware resources. See the @url:Hardware Model:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-hw-model@ description for more details on launch configurations.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "launch__grid_size",
+            "value": 160.0,
+            "severity": 2,
+            "info": "Increase the grid size towards the number of multiprocessors used (188)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 14.893617021276595
+        }
+      },
+      {
+        "rule_identifier": "PMSamplingData",
+        "name": "PM Sampling Data",
+        "section_identifier": "PmSampling",
+        "rule_message": {
+          "title": "",
+          "message": "Sampling interval is larger than 10% of the workload duration, which likely results in very few collected samples. For better results, use the --pm-sampling-interval option to reduce the sampling interval. Use --pm-sampling-buffer-size to increase the sampling buffer size for the smaller interval, or don't set a fixed buffer size and let the tool adjust it automatically.",
+          "type": 3
+        }
+      },
+      {
+        "rule_identifier": "SOLFPRoofline",
+        "name": "Roofline Analysis",
+        "section_identifier": "SpeedOfLight_RooflineChart",
+        "rule_message": {
+          "title": "Roofline Analysis",
+          "message": "The ratio of peak float (FP32) to double (FP64) performance on this device is 64:1. The workload achieved 0% of this device's FP32 peak performance and 0% of its FP64 peak performance. See the @url:Profiling Guide:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#roofline@ for more details on roofline analysis.",
+          "type": 1
+        }
+      },
+      {
+        "rule_identifier": "TheoreticalOccupancy",
+        "name": "Theoretical Occupancy",
+        "section_identifier": "Occupancy",
+        "rule_message": {
+          "title": "",
+          "message": "The 4.00 theoretical warps per scheduler this kernel can issue according to its occupancy are below the hardware maximum of 12. This kernel's theoretical occupancy (33.3%) is limited by the number of required registers.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__maximum_warps_avg_per_active_cycle",
+            "value": 4.0,
+            "severity": 2,
+            "info": "Increase the theoretical number of warps per scheduler that can be issued"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 59.68205626613645
+        }
+      },
+      {
+        "rule_identifier": "WorkloadImbalance",
+        "name": "Workload Imbalance",
+        "section_identifier": "WorkloadDistribution",
+        "rule_message": {
+          "title": "SMs Workload Imbalance",
+          "message": "One or more SMs have a much lower number of active cycles than the average number of active cycles. Maximum instance value is 18.68% above the average, while the minimum instance value is 100.00% below the average.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "sm__cycles_active.avg",
+            "value": 27054.297872340427,
+            "severity": 2,
+            "info": "Balancing the number of active cycles across SMs would result in a more optimized workload"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 13.815543178823468
+        }
+      },
+      {
+        "rule_identifier": "WorkloadImbalance",
+        "name": "Workload Imbalance",
+        "section_identifier": "WorkloadDistribution",
+        "rule_message": {
+          "title": "SMSPs Workload Imbalance",
+          "message": "One or more SMSPs have a much lower number of active cycles than the average number of active cycles. Maximum instance value is 18.78% above the average, while the minimum instance value is 100.00% below the average.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__cycles_active.avg",
+            "value": 27005.440159574468,
+            "severity": 2,
+            "info": "Balancing the number of active cycles across SMSPs would result in a more optimized workload"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 13.866581292620157
+        }
+      },
+      {
+        "rule_identifier": "WorkloadImbalance",
+        "name": "Workload Imbalance",
+        "section_identifier": "WorkloadDistribution",
+        "rule_message": {
+          "title": "L1 Slices Workload Imbalance",
+          "message": "One or more L1 Slices have a much lower number of active cycles than the average number of active cycles. Maximum instance value is 18.68% above the average, while the minimum instance value is 100.00% below the average.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "l1tex__cycles_active.avg",
+            "value": 27054.297872340427,
+            "severity": 2,
+            "info": "Balancing the number of active cycles across L1 Slices would result in a more optimized workload"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 13.815543178823468
+        }
+      }
+    ],
+    "report": "fp16-full",
+    "range_index": 0,
+    "action_index": 19
+  },
+  {
+    "function": "channel_projection_c512_to_c1024_fp16",
+    "metrics": {
+      "device__attribute_max_registers_per_multiprocessor": {
+        "value": 65536,
+        "unit": ""
+      },
+      "device__attribute_max_shared_memory_per_multiprocessor": {
+        "value": 102400,
+        "unit": ""
+      },
+      "device__attribute_max_warps_per_multiprocessor": {
+        "value": 48,
+        "unit": ""
+      },
+      "device__attribute_multiprocessor_count": {
+        "value": 188,
+        "unit": ""
+      },
+      "gpu__time_duration.sum": {
+        "value": 14848.0,
+        "unit": "ns"
+      },
+      "launch__barrier_count": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__block_dim_x": {
+        "value": 32,
+        "unit": "block"
+      },
+      "launch__block_dim_y": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__block_dim_z": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_size": {
+        "value": 256,
+        "unit": ""
+      },
+      "launch__cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_max_active": {
+        "value": 0,
+        "unit": "cluster"
+      },
+      "launch__cluster_max_potential_size": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__cluster_scheduling_policy": {
+        "value": "PolicySpread",
+        "unit": ""
+      },
+      "launch__cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__context_id": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__device_id": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__execution_model": {
+        "value": "SIMT",
+        "unit": ""
+      },
+      "launch__func_cache_config": {
+        "value": "CachePreferNone",
+        "unit": ""
+      },
+      "launch__grid_dim_x": {
+        "value": 32,
+        "unit": ""
+      },
+      "launch__grid_dim_y": {
+        "value": 5,
+        "unit": ""
+      },
+      "launch__grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_size": {
+        "value": 160,
+        "unit": ""
+      },
+      "launch__kernel_name": {
+        "value": "",
+        "unit": ""
+      },
+      "launch__occupancy_cluster_gpu_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_cluster_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_limit_barriers": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_blocks": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_registers": {
+        "value": 2.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_shared_mem": {
+        "value": 4.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_warps": {
+        "value": 6.0,
+        "unit": "block"
+      },
+      "launch__per_block_memory_size": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__persisting_l2_cache_size": {
+        "value": 25165824,
+        "unit": "byte"
+      },
+      "launch__preferred_cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__registers_per_thread": {
+        "value": 96,
+        "unit": "register/thread"
+      },
+      "launch__registers_per_thread_allocated": {
+        "value": 96.0,
+        "unit": "register/thread"
+      },
+      "launch__shared_mem_config_size": {
+        "value": 65536,
+        "unit": "byte"
+      },
+      "launch__shared_mem_per_block": {
+        "value": 13336,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_allocated": {
+        "value": 13440.0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_driver": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_dynamic": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_static": {
+        "value": 12312,
+        "unit": "byte/block"
+      },
+      "launch__sm_count": {
+        "value": 188,
+        "unit": "SM"
+      },
+      "launch__stack_size": {
+        "value": 1024.0,
+        "unit": ""
+      },
+      "launch__stream_id": {
+        "value": 13,
+        "unit": ""
+      },
+      "launch__thread_count": {
+        "value": 40960,
+        "unit": "thread"
+      },
+      "launch__tpc_count": {
+        "value": 94,
+        "unit": ""
+      },
+      "launch__tpc_enabled": {
+        "value": "all",
+        "unit": ""
+      },
+      "launch__user_grid_dim_x": {
+        "value": 32,
+        "unit": ""
+      },
+      "launch__user_grid_dim_y": {
+        "value": 5,
+        "unit": ""
+      },
+      "launch__user_grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_size": {
+        "value": 160,
+        "unit": ""
+      },
+      "launch__uses_blocks_as_clusters": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_cdp": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_green_context": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_nvlink_centric_scheduling": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_vgpu": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__waves_per_multiprocessor": {
+        "value": 0.425531914893617,
+        "unit": ""
+      },
+      "memory_l1_wavefronts_shared": {
+        "value": 340480,
+        "unit": "sectors"
+      },
+      "memory_l1_wavefronts_shared_ideal": {
+        "value": 340480,
+        "unit": "sectors"
+      },
+      "sass__inst_executed_register_spilling": {
+        "value": 0,
+        "unit": "inst"
+      },
+      "sm__warps_active.avg.pct_of_peak_sustained_active": {
+        "value": 16.35894721771864,
+        "unit": "%"
+      },
+      "smsp__pcsamp_aggregated_passes": {
+        "value": 2,
+        "unit": "pass"
+      },
+      "smsp__pcsamp_sample_count": {
+        "value": 1251,
+        "unit": ""
+      }
+    },
+    "opcodes": {
+      "NOP": 671560.0,
+      "HMMA": 655360.0,
+      "BRA": 175962.0,
+      "IMAD": 171760.0,
+      "LDG": 163840.0,
+      "IADD3": 124768.0,
+      "SYNCS": 86915.0,
+      "LDS": 81920.0,
+      "ISETP": 75520.0,
+      "LOP3": 72960.0,
+      "SHF": 71280.0,
+      "MOV": 68512.0,
+      "R2UR": 62640.0,
+      "BSYNC": 62080.0,
+      "UIADD3": 55480.0,
+      "BSSY": 44800.0,
+      "PRMT": 40960.0,
+      "WARPSYNC": 34520.0,
+      "ULEA": 29360.0,
+      "YIELD": 24835.0,
+      "LEA": 24320.0,
+      "IADD": 22640.0,
+      "UMOV": 21800.0,
+      "CS2R": 20480.0,
+      "USHF": 19840.0,
+      "UBLKCP": 17280.0,
+      "ELECT": 17280.0,
+      "LDCU": 13080.0,
+      "STG": 8640.0,
+      "STS": 5360.0,
+      "VOTEU": 5120.0,
+      "S2R": 5120.0,
+      "LDC": 3840.0,
+      "IABS": 3840.0,
+      "SEL": 2560.0,
+      "S2UR": 2560.0,
+      "EXIT": 2288.0,
+      "UIMAD": 1280.0,
+      "MUFU": 1280.0,
+      "I2F": 1280.0,
+      "F2I": 1280.0,
+      "BAR": 1280.0
+    },
+    "instructions": [
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 6,
+        "sass": "LDC R1, c[0x0][0x37c]"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "S2R R5, SR_CTAID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 96,
+        "sass": "LDCU.64 UR6, c[0x0][0x390]"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 67,
+        "sass": "S2UR UR8, SR_CgaCtaId"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 18,
+        "sass": "IADD3 R0, PT, PT, R7, 0x7, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 18,
+        "sass": "SHF.R.S32.HI R3, RZ, 0x1f, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 18,
+        "sass": "LEA.HI R3, R3, R0, RZ, 0x3"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "IABS R9, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "I2F.RP R4, R9"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 63,
+        "sass": "LOP3.LUT P0, RZ, R90, R87, RZ, 0xfc, !PT"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 77,
+        "sass": "IMAD.SHL.U32 R90, R90, 0x10, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 77,
+        "sass": "VOTEU.ALL UP0, P0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "MUFU.RCP R4, R4"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 LDCU UR4, c[0x0][0x360]"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "F2I.FTZ.U32.TRUNC.NTZ R3, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "@!UP0 UIMAD UR4, UR4, UR5, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "UMOV UR5, 0x400"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "MOV R2, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "ULEA UR8, UR8, UR5, 0x18"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 UIADD3 UR4, UPT, UPT, -UR4, 0x100000, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 USHF.L.U32 UR5, UR4, 0xb, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "IMAD R11, R6, R9, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "sass": "@!UP0 SYNCS.EXCH.64 URZ, [UR8+0x3000], UR4"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "IMAD.HI.U32 R3, R3, R11, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "ISETP.GT.U32.AND P1, PT, R9, R2, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 70,
+        "sass": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "ISETP.GE.U32.AND P2, PT, R2, R9, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "ISETP.GE.AND P1, PT, R2, RZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "sass": "ISETP.NE.AND P2, PT, R0, RZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 90,
+        "sass": "IADD.64 R2, R92, UR6"
+      },
+      {
+        "path": "sm_32_intrinsics.hpp",
+        "line": 222,
+        "sass": "LDG.E.128.STRONG.SM R52, desc[UR12][R2.64]"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 99,
+        "sass": "BSSY B0, 0x12015d1fe0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 23,
+        "sass": "SHF.R.U32.HI R6, RZ, 0x1, R87"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 23,
+        "sass": "SEL R7, R7, RZ, P1"
+      },
+      {
+        "path": "sm_20_intrinsics.hpp",
+        "line": 151,
+        "sass": "ISETP.LT.AND P0, PT, R78, R89, !P0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 33,
+        "sass": "@!P0  BRA 0x12015d1fb0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 33,
+        "sass": "BRA.DIV UR4, 0x12015d3030"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 35,
+        "sass": "ELECT P1, URZ, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 42,
+        "sass": "R2UR UR10, R84"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 42,
+        "sass": "USHF.R.S32.HI UR5, URZ, 0x1f, UR4"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 42,
+        "sass": "UIADD3.64 UR4, UPT, UPT, UR4, UR6, URZ"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "sass": "UBLKCP.S.G [UR10], [UR4], UR6"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "sass": "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3000], R0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 51,
+        "sass": "STS.128 [R0], RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 33,
+        "sass": "BSYNC B0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "sass": "NOP"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 101,
+        "sass": "SYNCS.ARRIVE.TRANS64.ART0 R2, [UR8+0x3000], R2"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 101,
+        "sass": "SYNCS.PHASECHK.TRANS64.TRYWAIT P1, [UR8+0x3000], R3"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 101,
+        "sass": "CS2R R2, SRZ"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 122,
+        "sass": "WARPSYNC.ALL"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 109,
+        "sass": "PRMT R0, R0, 0x9910, RZ"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 118,
+        "sass": "LDS.128 R60, [R64+UR8]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 221,
+        "sass": "HMMA.16816.F16 R68, R60, R52, R68"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "LEA R60, R56, UR8, 0x3"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 144,
+        "sass": "BSSY.RECONVERGENT B0, 0x12015d2ea0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 144,
+        "sass": "ISETP.GE.OR P0, PT, R91, R89, P0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 207,
+        "sass": "STG.E.NA.128 desc[UR12][R24.64], R28"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 207,
+        "sass": "BSYNC.RECONVERGENT B0"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 144,
+        "sass": "@P1   EXIT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "sass": "YIELD"
+      }
+    ],
+    "lines": [
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 6,
+        "executed": 1280,
+        "opcodes": {
+          "LDC": 1280
+        },
+        "stalls": {
+          "no_instructions": 13
+        },
+        "sass": [
+          "LDC R1, c[0x0][0x37c]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 17,
+        "executed": 3840,
+        "opcodes": {
+          "S2R": 2560,
+          "LDCU": 1280
+        },
+        "stalls": {},
+        "sass": [
+          "S2R R90, SR_TID.X",
+          "LDCU.64 UR12, c[0x0][0x358]",
+          "S2R R87, SR_TID.Y"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 18,
+        "executed": 6400,
+        "opcodes": {
+          "LDC": 1280,
+          "IADD3": 1280,
+          "SHF": 2560,
+          "LEA": 1280
+        },
+        "stalls": {
+          "short_scoreboard": 4,
+          "wait": 1
+        },
+        "sass": [
+          "LDC R7, c[0x0][0x3a4]",
+          "IADD3 R0, PT, PT, R7, 0x7, RZ",
+          "SHF.R.S32.HI R3, RZ, 0x1f, R0",
+          "LEA.HI R3, R3, R0, RZ, 0x3",
+          "SHF.R.S32.HI R0, RZ, 0x3, R3"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 19,
+        "executed": 38400,
+        "opcodes": {
+          "S2R": 1280,
+          "IABS": 3840,
+          "I2F": 1280,
+          "MUFU": 1280,
+          "IADD3": 8960,
+          "F2I": 1280,
+          "UIMAD": 1280,
+          "MOV": 3840,
+          "IMAD": 6400,
+          "ISETP": 5120,
+          "LOP3": 3840
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 3
+        },
+        "sass": [
+          "S2R R5, SR_CTAID.X",
+          "IABS R9, R0",
+          "IABS R8, R0",
+          "I2F.RP R4, R9",
+          "MUFU.RCP R4, R4",
+          "IADD3 R2, PT, PT, R4, 0xffffffe, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 21,
+        "executed": 3840,
+        "opcodes": {
+          "IADD3": 2560,
+          "IMAD": 1280
+        },
+        "stalls": {
+          "selected": 2,
+          "wait": 1
+        },
+        "sass": [
+          "IADD3 R6, PT, PT, -R11, RZ, RZ",
+          "IMAD R0, R0, R6, R5",
+          "IADD3 R80, PT, PT, R0, R0, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 22,
+        "executed": 3840,
+        "opcodes": {
+          "S2UR": 1280,
+          "UIADD3": 1280,
+          "LEA": 1280
+        },
+        "stalls": {
+          "barrier": 1
+        },
+        "sass": [
+          "S2UR UR4, SR_CTAID.Y",
+          "UIADD3 UR4, UPT, UPT, UR4, UR4, URZ",
+          "LEA.HI R91, R87, UR4, RZ, 0x1e"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 23,
+        "executed": 11520,
+        "opcodes": {
+          "IMAD": 3840,
+          "SHF": 1280,
+          "LOP3": 2560,
+          "IADD3": 1280,
+          "SEL": 1280,
+          "ISETP": 1280
+        },
+        "stalls": {},
+        "sass": [
+          "IMAD.SHL.U32 R86, R86, 0x4000, RZ",
+          "SHF.R.U32.HI R6, RZ, 0x1, R87",
+          "LOP3.LUT R7, R6, 0x1, RZ, 0xc0, !PT",
+          "IADD3 R7, PT, PT, R80, R7, RZ",
+          "IMAD.SHL.U32 R87, R87, 0x200, RZ",
+          "SEL R7, R7, RZ, P1"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 24,
+        "executed": 1280,
+        "opcodes": {
+          "S2R": 1280
+        },
+        "stalls": {
+          "mio_throttle": 1
+        },
+        "sass": [
+          "S2R R86, SR_CTAID.Z"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 32,
+        "executed": 2600,
+        "opcodes": {
+          "IMAD": 2600
+        },
+        "stalls": {},
+        "sass": [
+          "IMAD R57, R0, 0x1000, R87"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 33,
+        "executed": 8160,
+        "opcodes": {
+          "BRA": 2360,
+          "UMOV": 1080,
+          "BSYNC": 4720
+        },
+        "stalls": {
+          "long_scoreboard": 1
+        },
+        "sass": [
+          "@!P0  BRA 0x12015d1fb0",
+          "UMOV UR4, 0xffffffff",
+          "BRA.DIV UR4, 0x12015d3030",
+          "BSYNC B0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 35,
+        "executed": 60480,
+        "opcodes": {
+          "ELECT": 15120,
+          "BRA": 17280,
+          "WARPSYNC": 14040,
+          "NOP": 14040
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 10
+        },
+        "sass": [
+          "ELECT P1, URZ, PT",
+          "@!P1  BRA 0x12015d1fd0",
+          "@!P1  BRA 0x12015d2150",
+          "@!P1  BRA 0x12015d22d0",
+          "WARPSYNC.ALL",
+          "NOP"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 39,
+        "executed": 82080,
+        "opcodes": {
+          "IADD3": 17280,
+          "IMAD": 31320,
+          "R2UR": 17280,
+          "UIADD3": 16200
+        },
+        "stalls": {
+          "branch_resolving": 2,
+          "selected": 2,
+          "wait": 5
+        },
+        "sass": [
+          "IADD3 R3, PT, PT, R86, R85, RZ",
+          "IMAD R3, R78, 0x4000, R3",
+          "R2UR UR4, R3",
+          "UIADD3 UR4, UPT, UPT, UR4, 0x400, URZ",
+          "UIADD3 UR4, UPT, UPT, UR4, 0x800, URZ",
+          "IMAD R56, R82, 0x400, R86"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 42,
+        "executed": 55080,
+        "opcodes": {
+          "LDCU": 3240,
+          "R2UR": 17280,
+          "USHF": 17280,
+          "UIADD3": 17280
+        },
+        "stalls": {
+          "not_selected": 1,
+          "selected": 1,
+          "wait": 6
+        },
+        "sass": [
+          "LDCU.64 UR6, c[0x0][0x380]",
+          "R2UR UR10, R84",
+          "USHF.R.S32.HI UR5, URZ, 0x1f, UR4",
+          "UIADD3.64 UR4, UPT, UPT, UR4, UR6, URZ",
+          "R2UR UR9, R81",
+          "UIADD3.64 UR4, UPT, UPT, UR4, UR14, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 44,
+        "executed": 31320,
+        "opcodes": {
+          "MOV": 16200,
+          "BRA": 15120
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "MOV R0, 0x200",
+          "BRA 0x12015d1fd0",
+          "BRA 0x12015d2ca0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 51,
+        "executed": 54680,
+        "opcodes": {
+          "IADD3": 5360,
+          "STS": 5360,
+          "BSSY": 2560,
+          "BRA": 4720,
+          "UMOV": 2160,
+          "BSYNC": 34520
+        },
+        "stalls": {
+          "branch_resolving": 3,
+          "no_instructions": 3,
+          "not_selected": 1,
+          "selected": 1,
+          "wait": 3
+        },
+        "sass": [
+          "IADD3 R0, PT, PT, R90, R84, RZ",
+          "STS.128 [R0], RZ",
+          "@!P0  IADD3 R0, PT, PT, R90, R84, RZ",
+          "BSSY B0, 0x12015d2160",
+          "@!P0  STS.128 [R0+0x1000], RZ",
+          "@!P0  BRA 0x12015d2150"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 63,
+        "executed": 1280,
+        "opcodes": {
+          "LOP3": 1280
+        },
+        "stalls": {},
+        "sass": [
+          "LOP3.LUT P0, RZ, R90, R87, RZ, 0xfc, !PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 67,
+        "executed": 1280,
+        "opcodes": {
+          "S2UR": 1280
+        },
+        "stalls": {},
+        "sass": [
+          "S2UR UR8, SR_CgaCtaId"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 70,
+        "executed": 1280,
+        "opcodes": {
+          "BAR": 1280
+        },
+        "stalls": {
+          "long_scoreboard": 2
+        },
+        "sass": [
+          "BAR.SYNC.DEFER_BLOCKING 0x0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 77,
+        "executed": 26880,
+        "opcodes": {
+          "IMAD": 23040,
+          "VOTEU": 1280,
+          "LOP3": 1280,
+          "IADD3": 1280
+        },
+        "stalls": {
+          "selected": 2,
+          "wait": 3
+        },
+        "sass": [
+          "IMAD.SHL.U32 R90, R90, 0x10, RZ",
+          "VOTEU.ALL UP0, P0",
+          "IMAD.SHL.U32 R3, R86, 0x100000, RZ",
+          "LOP3.LUT R92, R90, R3, RZ, 0xfc, !PT",
+          "IMAD R79, R11, 0x2000, R2",
+          "IADD3 R92, PT, PT, R79, R92, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 90,
+        "executed": 40960,
+        "opcodes": {
+          "SHF": 20480,
+          "IADD": 20480
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 2
+        },
+        "sass": [
+          "SHF.R.S32.HI R93, RZ, 0x1f, R92",
+          "IADD.64 R2, R92, UR6",
+          "SHF.R.S32.HI R59, RZ, 0x1f, R58",
+          "IADD.64 R58, R58, UR16"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 91,
+        "executed": 154880,
+        "opcodes": {
+          "LDC": 1280,
+          "LDG": 153600
+        },
+        "stalls": {
+          "selected": 7,
+          "wait": 9
+        },
+        "sass": [
+          "LDC R9, c[0x0][0x3a0]",
+          "LDG.E.128.STRONG.SM R52, desc[UR12][R58.64]",
+          "LDG.E.128.STRONG.SM R48, desc[UR12][R58.64+0x200]",
+          "LDG.E.128.STRONG.SM R44, desc[UR12][R58.64+0x400]",
+          "LDG.E.128.STRONG.SM R40, desc[UR12][R58.64+0x600]",
+          "LDG.E.128.STRONG.SM R36, desc[UR12][R58.64+0x8000]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 96,
+        "executed": 1280,
+        "opcodes": {
+          "LDCU": 1280
+        },
+        "stalls": {},
+        "sass": [
+          "LDCU.64 UR6, c[0x0][0x390]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 99,
+        "executed": 1280,
+        "opcodes": {
+          "BSSY": 1280
+        },
+        "stalls": {},
+        "sass": [
+          "BSSY B0, 0x12015d1fe0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 101,
+        "executed": 29440,
+        "opcodes": {
+          "MOV": 2560,
+          "LOP3": 1280,
+          "SYNCS": 2560,
+          "BRA": 1280,
+          "CS2R": 20480,
+          "IADD3": 1280
+        },
+        "stalls": {
+          "long_scoreboard": 1,
+          "selected": 2
+        },
+        "sass": [
+          "MOV R2, 0x1",
+          "LOP3.LUT R83, R87, 0x7f800, RZ, 0xc0, !PT",
+          "MOV R82, RZ",
+          "SYNCS.ARRIVE.TRANS64.ART0 R2, [UR8+0x3000], R2",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P1, [UR8+0x3000], R3",
+          "@!P1  BRA 0x12015d3190"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 107,
+        "executed": 61440,
+        "opcodes": {
+          "IADD3": 20480,
+          "ISETP": 20480,
+          "BRA": 20480
+        },
+        "stalls": {
+          "branch_resolving": 10,
+          "not_selected": 1,
+          "selected": 1,
+          "wait": 10
+        },
+        "sass": [
+          "IADD3 R82, PT, PT, R82, 0x1, RZ",
+          "ISETP.NE.AND P1, PT, R82, 0x10, PT",
+          "@P1   BRA 0x12015d2450"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 109,
+        "executed": 183040,
+        "opcodes": {
+          "LOP3": 39680,
+          "IMAD": 40960,
+          "SHF": 20480,
+          "PRMT": 40960,
+          "IADD3": 40960
+        },
+        "stalls": {
+          "branch_resolving": 9,
+          "math_pipe_throttle": 1,
+          "selected": 3,
+          "wait": 11
+        },
+        "sass": [
+          "LOP3.LUT R0, R82, 0xff, RZ, 0xc0, !PT",
+          "IMAD R0, R0, 0xab, RZ",
+          "SHF.R.U32.HI R0, RZ, 0x9, R0",
+          "PRMT R0, R0, 0x9910, RZ",
+          "IMAD R0, R0, 0x3, RZ",
+          "IADD3 R0, PT, PT, RZ, -R0, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 110,
+        "executed": 40960,
+        "opcodes": {
+          "LOP3": 20480,
+          "IMAD": 20480
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 9
+        },
+        "sass": [
+          "LOP3.LUT R0, R81, 0xff, RZ, 0xc0, !PT",
+          "IMAD R64, R0, 0x1000, R83"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 118,
+        "executed": 81920,
+        "opcodes": {
+          "LDS": 81920
+        },
+        "stalls": {
+          "selected": 5,
+          "wait": 2
+        },
+        "sass": [
+          "LDS.128 R60, [R64+UR8]",
+          "LDS.128 R56, [R64+UR8+0x400]",
+          "LDS.128 R60, [R64+UR8+0x200]",
+          "LDS.128 R64, [R64+UR8+0x600]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 122,
+        "executed": 40960,
+        "opcodes": {
+          "WARPSYNC": 20480,
+          "NOP": 20480
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 2
+        },
+        "sass": [
+          "WARPSYNC.ALL",
+          "NOP"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 126,
+        "executed": 61440,
+        "opcodes": {
+          "ISETP": 20480,
+          "BSSY": 20480,
+          "BRA": 20480
+        },
+        "stalls": {
+          "selected": 1,
+          "wait": 4
+        },
+        "sass": [
+          "ISETP.NE.AND P1, PT, R82, 0xf, PT",
+          "BSSY B0, 0x12015d2cb0",
+          "@!P1  BRA 0x12015d2ca0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 128,
+        "executed": 20480,
+        "opcodes": {
+          "LDCU": 1280,
+          "IADD3": 19200
+        },
+        "stalls": {
+          "wait": 7
+        },
+        "sass": [
+          "LDCU.64 UR16, c[0x0][0x390]",
+          "IADD3 R57, PT, PT, R82, 0x1, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 129,
+        "executed": 76800,
+        "opcodes": {
+          "IMAD": 38400,
+          "SHF": 19200,
+          "MOV": 19200
+        },
+        "stalls": {
+          "dispatch_stall": 6,
+          "selected": 4,
+          "wait": 1
+        },
+        "sass": [
+          "IMAD.HI.U32 R56, R57, -0x55555555, RZ",
+          "SHF.R.U32.HI R56, RZ, 0x1, R56",
+          "IMAD R56, R56, -0x3, R57",
+          "MOV R57, 0x1"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 132,
+        "executed": 57600,
+        "opcodes": {
+          "BSSY": 19200,
+          "ISETP": 19200,
+          "BRA": 19200
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "BSSY B1, 0x12015d2ae0",
+          "ISETP.GT.U32.AND P1, PT, R82, 0xc, PT",
+          "@P1   BRA 0x12015d2ca0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 133,
+        "executed": 17920,
+        "opcodes": {
+          "LDCU": 1280,
+          "BRA": 16640
+        },
+        "stalls": {
+          "selected": 2,
+          "wait": 4
+        },
+        "sass": [
+          "LDCU.64 UR14, c[0x0][0x380]",
+          "@!P0  BRA 0x12015d2c70"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 144,
+        "executed": 12800,
+        "opcodes": {
+          "ISETP": 5120,
+          "IADD3": 2560,
+          "BSSY": 1280,
+          "IMAD": 1280,
+          "BRA": 1280,
+          "EXIT": 1280
+        },
+        "stalls": {
+          "branch_resolving": 1,
+          "selected": 2
+        },
+        "sass": [
+          "ISETP.GE.AND P0, PT, R80, R88, PT",
+          "IADD3 R25, PT, PT, R80, 0x1, RZ",
+          "BSSY.RECONVERGENT B0, 0x12015d2ea0",
+          "IMAD R80, R91, R88, R80",
+          "IADD3 R79, PT, PT, R79, R90, RZ",
+          "ISETP.GE.OR P0, PT, R91, R89, P0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 147,
+        "executed": 9648,
+        "opcodes": {
+          "LDCU": 2160,
+          "IMAD": 2160,
+          "SHF": 2160,
+          "IADD": 2160,
+          "IADD3": 1008
+        },
+        "stalls": {
+          "drain": 1,
+          "long_scoreboard": 3,
+          "selected": 1,
+          "wait": 1
+        },
+        "sass": [
+          "LDCU.64 UR4, c[0x0][0x388]",
+          "IMAD R24, R80, 0x8000, R79",
+          "SHF.R.S32.HI R25, RZ, 0x1f, R24",
+          "IADD.64 R24, R24, UR4",
+          "IMAD R12, R80, 0x8000, R79",
+          "IADD3 R12, PT, PT, R12, 0x8000, RZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 156,
+        "executed": 16560,
+        "opcodes": {
+          "MOV": 16560
+        },
+        "stalls": {
+          "selected": 1
+        },
+        "sass": [
+          "MOV R30, R22",
+          "MOV R31, R23",
+          "MOV R22, R18",
+          "MOV R23, R19",
+          "MOV R18, R14",
+          "MOV R19, R15"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "line": 165,
+        "executed": 1008,
+        "opcodes": {
+          "EXIT": 1008
+        },
+        "stalls": {},
+        "sass": [
+          "EXIT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 22,
+        "executed": 2160,
+        "opcodes": {
+          "ELECT": 2160
+        },
+        "stalls": {
+          "drain": 22
+        },
+        "sass": [
+          "ELECT P1, URZ, PT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 207,
+        "executed": 18992,
+        "opcodes": {
+          "STG": 8640,
+          "BSYNC": 1280,
+          "MOV": 9072
+        },
+        "stalls": {
+          "selected": 3,
+          "wait": 2
+        },
+        "sass": [
+          "STG.E.NA.128 desc[UR12][R24.64], R28",
+          "STG.E.NA.128 desc[UR12][R24.64+0x200], R20",
+          "STG.E.NA.128 desc[UR12][R24.64+0x400], R16",
+          "STG.E.NA.128 desc[UR12][R24.64+0x600], R12",
+          "BSYNC.RECONVERGENT B0",
+          "MOV R10, R6"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 221,
+        "executed": 1024000,
+        "opcodes": {
+          "HMMA": 512000,
+          "NOP": 512000
+        },
+        "stalls": {
+          "long_scoreboard": 139,
+          "math_pipe_throttle": 125,
+          "not_selected": 15,
+          "selected": 31,
+          "short_scoreboard": 8,
+          "wait": 230
+        },
+        "sass": [
+          "HMMA.16816.F16 R68, R60, R52, R68",
+          "NOP",
+          "HMMA.16816.F16 R74, R56, R52, R74",
+          "HMMA.16816.F16 R72, R56, R54, R72",
+          "HMMA.16816.F16 R70, R56, R48, R70",
+          "HMMA.16816.F16 R8, R56, R50, R8"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 233,
+        "executed": 16640,
+        "opcodes": {
+          "VOTEU": 3840,
+          "LDCU": 2560,
+          "UMOV": 1280,
+          "ULEA": 1280,
+          "UIADD3": 1280,
+          "USHF": 2560,
+          "SYNCS": 3840
+        },
+        "stalls": {
+          "no_instructions": 4
+        },
+        "sass": [
+          "VOTEU.ALL UP1, P0",
+          "VOTEU.ALL UP2, P0",
+          "@!UP0 LDCU UR4, c[0x0][0x360]",
+          "@!UP0 LDCU UR5, c[0x0][0x364]",
+          "UMOV UR5, 0x400",
+          "ULEA UR8, UR8, UR5, 0x18"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 246,
+        "executed": 14040,
+        "opcodes": {
+          "R2UR": 14040
+        },
+        "stalls": {},
+        "sass": [
+          "R2UR UR6, R0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 247,
+        "executed": 54000,
+        "opcodes": {
+          "UIADD3": 19440,
+          "UMOV": 17280,
+          "UBLKCP": 17280
+        },
+        "stalls": {
+          "mio_throttle": 12,
+          "selected": 1,
+          "wait": 6
+        },
+        "sass": [
+          "UIADD3 UR11, UPT, UPT, UR8, 0x3000, URZ",
+          "UMOV UR6, 0x20",
+          "UBLKCP.S.G [UR10], [UR4], UR6",
+          "UIADD3 UR11, UPT, UPT, UR8, 0x3008, URZ",
+          "UIADD3 UR10, UPT, UPT, UR10, 0x1000, URZ",
+          "UIADD3 UR11, UPT, UPT, UR8, 0x3010, URZ"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 279,
+        "executed": 22880,
+        "opcodes": {
+          "SYNCS": 17280,
+          "NOP": 2160,
+          "MOV": 1080,
+          "BSYNC": 2360
+        },
+        "stalls": {
+          "long_scoreboard": 16,
+          "selected": 1
+        },
+        "sass": [
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3000], R0",
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3008], R0",
+          "NOP",
+          "MOV R0, 0x200",
+          "SYNCS.ARRIVE.TRANS64.RED.A0TR RZ, [UR8+0x3010], R0",
+          "BSYNC B0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "line": 298,
+        "executed": 101635,
+        "opcodes": {
+          "LEA": 19200,
+          "SYNCS": 38400,
+          "BRA": 19200,
+          "YIELD": 24835
+        },
+        "stalls": {
+          "branch_resolving": 5,
+          "long_scoreboard": 54,
+          "no_instructions": 8,
+          "selected": 3,
+          "wait": 6
+        },
+        "sass": [
+          "LEA R60, R56, UR8, 0x3",
+          "SYNCS.ARRIVE.TRANS64.ART0 R56, [R60+URZ+0x3000], R57",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P2, [R60+URZ+0x3000], R57",
+          "@!P2  BRA 0x12015d31d0",
+          "YIELD"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
+        "line": 16,
+        "executed": 81957,
+        "opcodes": {
+          "BSYNC": 19200,
+          "SYNCS": 24835,
+          "BRA": 37922
+        },
+        "stalls": {
+          "branch_resolving": 121,
+          "long_scoreboard": 103,
+          "misc": 5,
+          "no_instructions": 4,
+          "not_selected": 1,
+          "selected": 8,
+          "wait": 38
+        },
+        "sass": [
+          "BSYNC B1",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P1, [UR8+0x3000], R3",
+          "@!P1  BRA 0x12015d3190",
+          "BRA 0x12015d2340",
+          "SYNCS.PHASECHK.TRANS64.TRYWAIT P2, [R60+URZ+0x3000], R57",
+          "@!P2  BRA 0x12015d31d0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/tiled_mma.cuh",
+        "line": 40,
+        "executed": 266240,
+        "opcodes": {
+          "HMMA": 143360,
+          "NOP": 122880
+        },
+        "stalls": {
+          "not_selected": 3,
+          "selected": 5,
+          "wait": 59
+        },
+        "sass": [
+          "HMMA.16816.F16 R22, R60, R54, R22",
+          "NOP",
+          "HMMA.16816.F16 R20, R60, R48, R20",
+          "HMMA.16816.F16 R18, R60, R50, R18",
+          "HMMA.16816.F16 R16, R60, R44, R16",
+          "HMMA.16816.F16 R14, R60, R46, R14"
+        ]
+      },
+      {
+        "path": "sm_20_intrinsics.hpp",
+        "line": 151,
+        "executed": 44680,
+        "opcodes": {
+          "IADD3": 1280,
+          "ISETP": 1280,
+          "R2UR": 14040,
+          "ULEA": 28080
+        },
+        "stalls": {
+          "selected": 2,
+          "wait": 4
+        },
+        "sass": [
+          "IADD3 R84, PT, PT, R87, UR8, RZ",
+          "ISETP.LT.AND P0, PT, R78, R89, !P0",
+          "R2UR UR7, R84",
+          "ULEA UR9, UR9, UR8, 0x3",
+          "ULEA UR6, UR6, UR7, 0xc"
+        ]
+      },
+      {
+        "path": "sm_32_intrinsics.hpp",
+        "line": 222,
+        "executed": 24320,
+        "opcodes": {
+          "LDG": 10240,
+          "SHF": 5120,
+          "LEA": 2560,
+          "LOP3": 2560,
+          "ISETP": 2560,
+          "SEL": 1280
+        },
+        "stalls": {
+          "lg_throttle": 1,
+          "math_pipe_throttle": 1,
+          "selected": 2
+        },
+        "sass": [
+          "LDG.E.128.STRONG.SM R52, desc[UR12][R2.64]",
+          "LDG.E.128.STRONG.SM R48, desc[UR12][R2.64+0x200]",
+          "LDG.E.128.STRONG.SM R44, desc[UR12][R2.64+0x400]",
+          "LDG.E.128.STRONG.SM R40, desc[UR12][R2.64+0x600]",
+          "LDG.E.128.STRONG.SM R36, desc[UR12][R2.64+0x8000]",
+          "LDG.E.128.STRONG.SM R32, desc[UR12][R2.64+0x8200]"
+        ]
+      }
+    ],
+    "stall_totals": {
+      "barrier": 1,
+      "branch_resolving": 151,
+      "dispatch_stall": 6,
+      "drain": 23,
+      "lg_throttle": 1,
+      "long_scoreboard": 319,
+      "math_pipe_throttle": 127,
+      "membar": 0,
+      "mio_throttle": 13,
+      "misc": 5,
+      "no_instructions": 32,
+      "not_selected": 22,
+      "selected": 100,
+      "short_scoreboard": 12,
+      "sleeping": 0,
+      "tex_throttle": 0,
+      "wait": 439
+    },
+    "timeline": {},
+    "rules": [
+      {
+        "rule_identifier": "LaunchConfiguration",
+        "name": "Launch Configuration",
+        "section_identifier": "LaunchStats",
+        "rule_message": {
+          "title": "Small Grid",
+          "message": "The grid for this launch is configured to execute only 160 blocks, which is less than the 188 multiprocessors used. This can underutilize some multiprocessors. If you do not intend to execute this kernel concurrently with other workloads, consider reducing the block size to have at least one block per multiprocessor or increase the size of the grid to fully utilize the available hardware resources. See the @url:Hardware Model:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-hw-model@ description for more details on launch configurations.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "launch__grid_size",
+            "value": 160.0,
+            "severity": 2,
+            "info": "Increase the grid size towards the number of multiprocessors used (188)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 14.893617021276595
+        }
+      }
+    ],
+    "report": "fp16-source",
+    "range_index": 0,
+    "action_index": 19
+  }
+]

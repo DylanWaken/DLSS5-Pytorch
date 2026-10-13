@@ -1,0 +1,3170 @@
+[
+  {
+    "function": "completion_counter_clear",
+    "metrics": {
+      "device__attribute_max_registers_per_multiprocessor": {
+        "value": 65536,
+        "unit": ""
+      },
+      "device__attribute_max_shared_memory_per_multiprocessor": {
+        "value": 102400,
+        "unit": ""
+      },
+      "device__attribute_max_warps_per_multiprocessor": {
+        "value": 48,
+        "unit": ""
+      },
+      "device__attribute_multiprocessor_count": {
+        "value": 188,
+        "unit": ""
+      },
+      "dram__bytes_op_read.sum": {
+        "value": 4608.0,
+        "unit": "byte"
+      },
+      "dram__bytes_op_write.sum": {
+        "value": 0.0,
+        "unit": "byte"
+      },
+      "gpu__dram_throughput.avg.pct_of_peak_sustained_elapsed": {
+        "value": 0.19946808510638298,
+        "unit": "%"
+      },
+      "gpu__time_duration.sum": {
+        "value": 1408.0,
+        "unit": "ns"
+      },
+      "l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_st.sum": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "l1tex__t_sector_hit_rate.pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__barrier_count": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__block_dim_x": {
+        "value": 256,
+        "unit": "block"
+      },
+      "launch__block_dim_y": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_dim_z": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_size": {
+        "value": 256,
+        "unit": ""
+      },
+      "launch__cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_max_active": {
+        "value": 0,
+        "unit": "cluster"
+      },
+      "launch__cluster_max_potential_size": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__cluster_scheduling_policy": {
+        "value": "PolicySpread",
+        "unit": ""
+      },
+      "launch__cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__context_id": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__device_id": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__execution_model": {
+        "value": "SIMT",
+        "unit": ""
+      },
+      "launch__func_cache_config": {
+        "value": "CachePreferNone",
+        "unit": ""
+      },
+      "launch__grid_dim_x": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_size": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__kernel_name": {
+        "value": "",
+        "unit": ""
+      },
+      "launch__occupancy_cluster_gpu_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_cluster_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_limit_barriers": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_blocks": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_registers": {
+        "value": 16.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_shared_mem": {
+        "value": 16.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_warps": {
+        "value": 6.0,
+        "unit": "block"
+      },
+      "launch__per_block_memory_size": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__persisting_l2_cache_size": {
+        "value": 25165824,
+        "unit": "byte"
+      },
+      "launch__preferred_cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__registers_per_thread": {
+        "value": 16,
+        "unit": "register/thread"
+      },
+      "launch__registers_per_thread_allocated": {
+        "value": 16.0,
+        "unit": "register/thread"
+      },
+      "launch__shared_mem_config_size": {
+        "value": 16384,
+        "unit": "byte"
+      },
+      "launch__shared_mem_per_block": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_allocated": {
+        "value": 1024.0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_driver": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_dynamic": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_static": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__sm_count": {
+        "value": 188,
+        "unit": "SM"
+      },
+      "launch__stack_size": {
+        "value": 1024.0,
+        "unit": ""
+      },
+      "launch__stream_id": {
+        "value": 13,
+        "unit": ""
+      },
+      "launch__thread_count": {
+        "value": 256,
+        "unit": "thread"
+      },
+      "launch__tpc_count": {
+        "value": 94,
+        "unit": ""
+      },
+      "launch__tpc_enabled": {
+        "value": "all",
+        "unit": ""
+      },
+      "launch__user_grid_dim_x": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_size": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__uses_blocks_as_clusters": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_cdp": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_green_context": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_nvlink_centric_scheduling": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_vgpu": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__waves_per_multiprocessor": {
+        "value": 0.0008865248226950354,
+        "unit": ""
+      },
+      "lts__t_sector_hit_rate.pct": {
+        "value": 46.22222222222222,
+        "unit": "%"
+      },
+      "memory_l1_wavefronts_shared": {
+        "value": 0,
+        "unit": "sectors"
+      },
+      "memory_l1_wavefronts_shared_ideal": {
+        "value": 0,
+        "unit": "sectors"
+      },
+      "sass__inst_executed_global_loads": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_global_stores": {
+        "value": 5.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_local_loads": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_local_stores": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_register_spilling": {
+        "value": 0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_shared_loads": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_shared_stores": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sm__cycles_active.avg": {
+        "value": 3.2606382978723403,
+        "unit": "cycle"
+      },
+      "sm__cycles_active.max": {
+        "value": 613.0,
+        "unit": "cycle"
+      },
+      "sm__cycles_active.min": {
+        "value": 0.0,
+        "unit": "cycle"
+      },
+      "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "sm__throughput.avg.pct_of_peak_sustained_elapsed": {
+        "value": 0.015123925445097126,
+        "unit": "%"
+      },
+      "sm__warps_active.avg.pct_of_peak_sustained_active": {
+        "value": 15.779635671560632,
+        "unit": "%"
+      },
+      "smsp__issue_active.avg.per_cycle_active": {
+        "value": 0.03646237393328161,
+        "unit": ""
+      },
+      "smsp__pcsamp_aggregated_passes": {
+        "value": 5,
+        "unit": "pass"
+      },
+      "smsp__pcsamp_sample_count": {
+        "value": 0,
+        "unit": ""
+      },
+      "smsp__warps_active.avg.per_cycle_active": {
+        "value": 1.699379363847944,
+        "unit": "warp"
+      },
+      "smsp__warps_eligible.avg.per_cycle_active": {
+        "value": 0.03917765709852599,
+        "unit": "warp"
+      }
+    },
+    "opcodes": {
+      "LDC": 21.0,
+      "LDCU": 13.0,
+      "IMAD": 13.0,
+      "EXIT": 13.0,
+      "S2UR": 8.0,
+      "S2R": 8.0,
+      "ISETP": 8.0,
+      "STG": 5.0,
+      "MOV": 5.0
+    },
+    "instructions": [
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 5,
+        "sass": "LDC R1, c[0x0][0x37c]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "sass": "S2R R0, SR_TID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "sass": "S2UR UR4, SR_CTAID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "sass": "LDCU UR5, c[0x0][0x388]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "sass": "IMAD R5, R5, UR4, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "sass": "ISETP.GE.AND P0, PT, R5, UR5, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "sass": "@P0   EXIT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "LDC.64 R2, c[0x0][0x380]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "LDCU.64 UR4, c[0x0][0x358]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "MOV R7, 0xffffffff"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "IMAD.WIDE R2, R5, 0x4, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "STG.E desc[UR4][R2.64], R7"
+      }
+    ],
+    "lines": [
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 5,
+        "executed": 8,
+        "opcodes": {
+          "LDC": 8
+        },
+        "stalls": {},
+        "sass": [
+          "LDC R1, c[0x0][0x37c]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "executed": 32,
+        "opcodes": {
+          "S2R": 8,
+          "S2UR": 8,
+          "LDC": 8,
+          "IMAD": 8
+        },
+        "stalls": {},
+        "sass": [
+          "S2R R0, SR_TID.X",
+          "S2UR UR4, SR_CTAID.X",
+          "LDC R5, c[0x0][0x360]",
+          "IMAD R5, R5, UR4, R0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "executed": 24,
+        "opcodes": {
+          "LDCU": 8,
+          "ISETP": 8,
+          "EXIT": 8
+        },
+        "stalls": {},
+        "sass": [
+          "LDCU UR5, c[0x0][0x388]",
+          "ISETP.GE.AND P0, PT, R5, UR5, PT",
+          "@P0   EXIT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "executed": 25,
+        "opcodes": {
+          "LDC": 5,
+          "LDCU": 5,
+          "MOV": 5,
+          "IMAD": 5,
+          "STG": 5
+        },
+        "stalls": {},
+        "sass": [
+          "LDC.64 R2, c[0x0][0x380]",
+          "LDCU.64 UR4, c[0x0][0x358]",
+          "MOV R7, 0xffffffff",
+          "IMAD.WIDE R2, R5, 0x4, R2",
+          "STG.E desc[UR4][R2.64], R7"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 12,
+        "executed": 5,
+        "opcodes": {
+          "EXIT": 5
+        },
+        "stalls": {},
+        "sass": [
+          "EXIT"
+        ]
+      }
+    ],
+    "stall_totals": {
+      "barrier": 0,
+      "branch_resolving": 0,
+      "dispatch_stall": 0,
+      "drain": 0,
+      "lg_throttle": 0,
+      "long_scoreboard": 0,
+      "math_pipe_throttle": 0,
+      "membar": 0,
+      "mio_throttle": 0,
+      "misc": 0,
+      "no_instructions": 0,
+      "not_selected": 0,
+      "selected": 0,
+      "short_scoreboard": 0,
+      "sleeping": 0,
+      "tex_throttle": 0,
+      "wait": 0
+    },
+    "timeline": {
+      "pmsampling:sm__inst_executed_realtime.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 176,
+        "bucket_size": 2,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0007786019423523123,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "pmsampling:sm__inst_executed_pipe_tensor_subpipe_hmma_realtime.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 176,
+        "bucket_size": 2,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "pmsampling:dram__bytes.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 176,
+        "bucket_size": 2,
+        "values": [
+          0.5025650826734418,
+          0.46270852191904827,
+          0.3987809065934066,
+          0.46774132300448085,
+          0.4179936305732484,
+          0.5075636942675159,
+          0.5079367044565669,
+          0.4276135914858283,
+          0.5129987568380258,
+          0.3187253019636527,
+          0.38782840774457483,
+          0.4382018976315161,
+          0.5492305574542417,
+          0.5337599364069952,
+          0.3286775312630157,
+          0.39000890961480134,
+          0.3484266443531619,
+          0.4977976190476191,
+          0.33393141945773525,
+          0.3333996815286624,
+          0.3828602042469596,
+          0.4999858956902301,
+          0.5609355095541402,
+          0.4325206956785904,
+          0.32871094642848075,
+          0.3881379268376173,
+          0.523078019524881,
+          0.3686484746434231,
+          0.39782220703273335,
+          0.453183570536068,
+          0.5021999331665873,
+          0.5476741941710095,
+          0.42767904610009877,
+          0.4730880291347941,
+          0.49266037075634594,
+          0.6522599020713336,
+          0.48762877710246133,
+          0.5245726712099885,
+          0.4805952380952381,
+          0.4784688995215311,
+          0.6715890104047999,
+          0.5179444884649377,
+          0.48231373889268625,
+          0.4780879529454789,
+          0.6422997363849694,
+          0.5374203821656051,
+          0.49301629689452353,
+          0.477327271070246,
+          0.4780879529454789,
+          0.6871998458436189,
+          0.507980354585073,
+          0.4777118515137685,
+          0.47732968785600366,
+          0.600197203344203,
+          0.5950663291480003,
+          0.47732968785600366,
+          0.4780879529454789,
+          0.477327271070246,
+          0.6922354833958085,
+          0.5075636942675159,
+          0.4780903813040629,
+          0.4801920102439272,
+          0.5591749259512417,
+          0.6081670600923872,
+          0.5075636942675159,
+          0.4802078579035448,
+          0.4283268064486636,
+          0.5996114500371466,
+          0.47770700636942676,
+          0.5000889046941679,
+          0.39400276941263995,
+          0.3608432856635732,
+          0.46962814232551076,
+          0.3561670167160207,
+          0.3981249049140423,
+          0.4535691573926868,
+          0.6540973646236804,
+          0.4478503184713376,
+          0.33092434891970496,
+          0.3287301587301587,
+          0.3931219778742998,
+          0.584849467395907,
+          0.4926353503184713,
+          0.5026443203687786,
+          0.380672770700637,
+          0.5568075206653481,
+          0.46317460317460324,
+          0.48512063238500935
+        ]
+      }
+    },
+    "rules": [
+      {
+        "rule_identifier": "SOLBottleneck",
+        "name": "Bottleneck",
+        "section_identifier": "SpeedOfLight",
+        "rule_message": {
+          "title": "Small Grid",
+          "message": "This kernel grid is too small to fill the available resources on this device, resulting in only 0.00 full waves across all SMs. Look at @section:LaunchStats:Launch Statistics@ for more details.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "launch__waves_per_multiprocessor",
+            "value": 0.0008865248226950354,
+            "severity": 2,
+            "info": "Increase the number of waves per SM towards 1"
+          }
+        ]
+      },
+      {
+        "rule_identifier": "IssueSlotUtilization",
+        "name": "Issue Slot Utilization",
+        "section_identifier": "SchedulerStats",
+        "rule_message": {
+          "title": "",
+          "message": "Every scheduler is capable of issuing one instruction per cycle, but for this workload each scheduler only issues an instruction every 27.4 cycles. This might leave hardware resources underutilized and may lead to less optimal performance. Out of the maximum of 12 warps per scheduler, this workload allocates an average of 1.70 active warps per scheduler, but only an average of 0.04 warps were eligible per cycle. Eligible warps are the subset of active warps that are ready to issue their next instruction. Every cycle with no eligible warp results in no instruction being issued and the issue slot remains unused. To increase the number of eligible warps, reduce the time the active warps are stalled by inspecting the top stall reasons on the @section:WarpStateStats:Warp State Statistics@ and @section:SourceCounters:Source Counters@ sections.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__issue_active.avg.per_cycle_active",
+            "value": 0.03646237393328161,
+            "severity": 0,
+            "info": "Increase the average number of instructions issued per cycle"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 1,
+          "speedup": 81.44644002565748
+        }
+      },
+      {
+        "rule_identifier": "AchievedOccupancy",
+        "name": "Achieved Occupancy",
+        "section_identifier": "Occupancy",
+        "rule_message": {
+          "title": "",
+          "message": "The difference between calculated theoretical (100.0%) and measured achieved occupancy (15.8%) can be the result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can occur between warps within a block as well as across blocks of the same kernel. See the @url:CUDA Best Practices Guide:https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy@ for more details on optimizing occupancy.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "sm__warps_active.avg.pct_of_peak_sustained_active",
+            "value": 15.779635671560632,
+            "severity": 0,
+            "info": "Increase the achieved occupancy towards the theoretical limit (100.0%)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 81.44644002565748
+        }
+      },
+      {
+        "rule_identifier": "CPIStall",
+        "name": "Warp Stall",
+        "section_identifier": "WarpStateStats",
+        "rule_message": {
+          "title": "No Instruction Stalls",
+          "message": "On average, each warp of this workload spends 25.7 cycles being stalled waiting to be selected to fetch an instruction or waiting on an instruction cache miss. A high number of warps not having an instruction fetched is typical for very short kernels with less than one full wave of work in the grid. Excessively jumping across large blocks of assembly code can also lead to more warps stalled for this reason, if this causes misses in the instruction cache. See also the related Branch Resolving state. This stall type represents about 55.2% of the total average of 46.6 cycles between issuing two instructions.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__issue_active.avg.per_cycle_active",
+            "value": 0.03646237393328161,
+            "severity": 2,
+            "info": "Increase the average number of instructions issued per cycle"
+          },
+          {
+            "name": "smsp_average_no_instruction",
+            "value": 25.74468085106383,
+            "severity": 0,
+            "info": "Decrease the number of cycles spent in no instruction stalls"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 55.23853001597809
+        }
+      },
+      {
+        "rule_identifier": "CPIStall",
+        "name": "Warp Stall",
+        "section_identifier": "WarpStateStats",
+        "rule_message": {
+          "title": "Short Scoreboard Stalls",
+          "message": "On average, each warp of this workload spends 16.1 cycles being stalled waiting for a scoreboard dependency on a MIO (memory input/output) operation (not to L1TEX). The primary reason for a high number of stalls due to short scoreboards is typically memory operations to shared memory. Other reasons include frequent execution of special math instructions (e.g. MUFU) or dynamic branching (e.g. BRX, JMX). Consult the Memory Workload Analysis section to verify if there are shared memory operations and reduce bank conflicts, if reported. Assigning frequently accessed values to variables can assist the compiler in using low-latency registers instead of direct memory accesses. This stall type represents about 34.5% of the total average of 46.6 cycles between issuing two instructions.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__issue_active.avg.per_cycle_active",
+            "value": 0.03646237393328161,
+            "severity": 2,
+            "info": "Increase the average number of instructions issued per cycle"
+          },
+          {
+            "name": "smsp_average_short_scoreboard",
+            "value": 16.085106382978722,
+            "severity": 0,
+            "info": "Decrease the number of cycles spent in short scoreboard stalls"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 34.51266834056151
+        }
+      },
+      {
+        "rule_identifier": "CPIStall",
+        "name": "Warp Stall",
+        "section_identifier": "WarpStateStats",
+        "rule_message": {
+          "title": "",
+          "message": "Check the @section:SourceCounters:Warp Stall Sampling (All Samples)@ table for the top stall locations in your source based on sampling data. The @url:Profiling Guide:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-reference@ provides more details on each stall reason.",
+          "type": 1
+        }
+      },
+      {
+        "rule_identifier": "HighPipeUtilization",
+        "name": "High Pipe Utilization",
+        "section_identifier": "ComputeWorkloadAnalysis",
+        "rule_message": {
+          "title": "Low Utilization",
+          "message": "All compute pipelines are under-utilized. Either this workload is very small or it doesn't issue enough warps per scheduler. Check the @section:LaunchStats:Launch Statistics@ and @section:SchedulerStats:Scheduler Statistics@ sections for further details.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "sm__pipe_fmaheavy_cycles_active.avg.pct_of_peak_sustained_elapsed",
+            "value": 0.002003920121475369,
+            "severity": 2,
+            "info": "Increase the utilization of the busiest pipeline (currently: Shared FMA Heavy)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 1,
+          "speedup": 99.99799607987853
+        }
+      },
+      {
+        "rule_identifier": "LaunchConfiguration",
+        "name": "Launch Configuration",
+        "section_identifier": "LaunchStats",
+        "rule_message": {
+          "title": "Small Grid",
+          "message": "The grid for this launch is configured to execute only 1 block, which is less than the 188 multiprocessors used. This can underutilize some multiprocessors. If you do not intend to execute this kernel concurrently with other workloads, consider reducing the block size to have at least one block per multiprocessor or increase the size of the grid to fully utilize the available hardware resources. See the @url:Hardware Model:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-hw-model@ description for more details on launch configurations.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "launch__grid_size",
+            "value": 1.0,
+            "severity": 2,
+            "info": "Increase the grid size towards the number of multiprocessors used (188)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 99.46808510638297
+        }
+      },
+      {
+        "rule_identifier": "PCSamplingData",
+        "name": "PC sampling data",
+        "section_identifier": "SourceCounters",
+        "rule_message": {
+          "title": "No Samples",
+          "message": "Sampling metrics were enabled, but no samples could be collected for this kernel.",
+          "type": 3
+        }
+      },
+      {
+        "rule_identifier": "PMSamplingData",
+        "name": "PM Sampling Data",
+        "section_identifier": "PmSampling",
+        "rule_message": {
+          "title": "",
+          "message": "Sampling interval is 2.1x of the workload duration, which likely results in no or very few collected samples. For better results, use the --pm-sampling-interval option to reduce the sampling interval. Use --pm-sampling-buffer-size to increase the sampling buffer size for the smaller interval, or don't set a fixed buffer size and let the tool adjust it automatically.",
+          "type": 3
+        }
+      },
+      {
+        "rule_identifier": "SOLFPRoofline",
+        "name": "Roofline Analysis",
+        "section_identifier": "SpeedOfLight_RooflineChart",
+        "rule_message": {
+          "title": "Roofline Analysis",
+          "message": "The ratio of peak float (FP32) to double (FP64) performance on this device is 64:1. The workload achieved 0% of this device's FP32 peak performance and 0% of its FP64 peak performance. See the @url:Profiling Guide:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#roofline@ for more details on roofline analysis.",
+          "type": 1
+        }
+      }
+    ],
+    "report": "fp16-full",
+    "range_index": 0,
+    "action_index": 21
+  },
+  {
+    "function": "completion_counter_clear",
+    "metrics": {
+      "device__attribute_max_registers_per_multiprocessor": {
+        "value": 65536,
+        "unit": ""
+      },
+      "device__attribute_max_shared_memory_per_multiprocessor": {
+        "value": 102400,
+        "unit": ""
+      },
+      "device__attribute_max_warps_per_multiprocessor": {
+        "value": 48,
+        "unit": ""
+      },
+      "device__attribute_multiprocessor_count": {
+        "value": 188,
+        "unit": ""
+      },
+      "gpu__time_duration.sum": {
+        "value": 1376.0,
+        "unit": "ns"
+      },
+      "launch__barrier_count": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__block_dim_x": {
+        "value": 256,
+        "unit": "block"
+      },
+      "launch__block_dim_y": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_dim_z": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_size": {
+        "value": 256,
+        "unit": ""
+      },
+      "launch__cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_max_active": {
+        "value": 0,
+        "unit": "cluster"
+      },
+      "launch__cluster_max_potential_size": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__cluster_scheduling_policy": {
+        "value": "PolicySpread",
+        "unit": ""
+      },
+      "launch__cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__context_id": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__device_id": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__execution_model": {
+        "value": "SIMT",
+        "unit": ""
+      },
+      "launch__func_cache_config": {
+        "value": "CachePreferNone",
+        "unit": ""
+      },
+      "launch__grid_dim_x": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_size": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__kernel_name": {
+        "value": "",
+        "unit": ""
+      },
+      "launch__occupancy_cluster_gpu_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_cluster_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_limit_barriers": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_blocks": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_registers": {
+        "value": 16.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_shared_mem": {
+        "value": 16.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_warps": {
+        "value": 6.0,
+        "unit": "block"
+      },
+      "launch__per_block_memory_size": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__persisting_l2_cache_size": {
+        "value": 25165824,
+        "unit": "byte"
+      },
+      "launch__preferred_cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__registers_per_thread": {
+        "value": 16,
+        "unit": "register/thread"
+      },
+      "launch__registers_per_thread_allocated": {
+        "value": 16.0,
+        "unit": "register/thread"
+      },
+      "launch__shared_mem_config_size": {
+        "value": 16384,
+        "unit": "byte"
+      },
+      "launch__shared_mem_per_block": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_allocated": {
+        "value": 1024.0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_driver": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_dynamic": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_static": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__sm_count": {
+        "value": 188,
+        "unit": "SM"
+      },
+      "launch__stack_size": {
+        "value": 1024.0,
+        "unit": ""
+      },
+      "launch__stream_id": {
+        "value": 13,
+        "unit": ""
+      },
+      "launch__thread_count": {
+        "value": 256,
+        "unit": "thread"
+      },
+      "launch__tpc_count": {
+        "value": 94,
+        "unit": ""
+      },
+      "launch__tpc_enabled": {
+        "value": "all",
+        "unit": ""
+      },
+      "launch__user_grid_dim_x": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_size": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__uses_blocks_as_clusters": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_cdp": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_green_context": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_nvlink_centric_scheduling": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_vgpu": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__waves_per_multiprocessor": {
+        "value": 0.0008865248226950354,
+        "unit": ""
+      },
+      "memory_l1_wavefronts_shared": {
+        "value": 0,
+        "unit": "sectors"
+      },
+      "memory_l1_wavefronts_shared_ideal": {
+        "value": 0,
+        "unit": "sectors"
+      },
+      "sass__inst_executed_register_spilling": {
+        "value": 0,
+        "unit": "inst"
+      },
+      "sm__warps_active.avg.pct_of_peak_sustained_active": {
+        "value": 14.743327886710238,
+        "unit": "%"
+      },
+      "smsp__pcsamp_aggregated_passes": {
+        "value": 5,
+        "unit": "pass"
+      },
+      "smsp__pcsamp_sample_count": {
+        "value": 0,
+        "unit": ""
+      }
+    },
+    "opcodes": {
+      "LDC": 21.0,
+      "LDCU": 13.0,
+      "IMAD": 13.0,
+      "EXIT": 13.0,
+      "S2UR": 8.0,
+      "S2R": 8.0,
+      "ISETP": 8.0,
+      "STG": 5.0,
+      "MOV": 5.0
+    },
+    "instructions": [
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 5,
+        "sass": "LDC R1, c[0x0][0x37c]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "sass": "S2R R0, SR_TID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "sass": "S2UR UR4, SR_CTAID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "sass": "LDCU UR5, c[0x0][0x388]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "sass": "IMAD R5, R5, UR4, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "sass": "ISETP.GE.AND P0, PT, R5, UR5, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "sass": "@P0   EXIT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "LDC.64 R2, c[0x0][0x380]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "LDCU.64 UR4, c[0x0][0x358]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "MOV R7, 0xffffffff"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "IMAD.WIDE R2, R5, 0x4, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "STG.E desc[UR4][R2.64], R7"
+      }
+    ],
+    "lines": [
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 5,
+        "executed": 8,
+        "opcodes": {
+          "LDC": 8
+        },
+        "stalls": {},
+        "sass": [
+          "LDC R1, c[0x0][0x37c]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "executed": 32,
+        "opcodes": {
+          "S2R": 8,
+          "S2UR": 8,
+          "LDC": 8,
+          "IMAD": 8
+        },
+        "stalls": {},
+        "sass": [
+          "S2R R0, SR_TID.X",
+          "S2UR UR4, SR_CTAID.X",
+          "LDC R5, c[0x0][0x360]",
+          "IMAD R5, R5, UR4, R0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "executed": 24,
+        "opcodes": {
+          "LDCU": 8,
+          "ISETP": 8,
+          "EXIT": 8
+        },
+        "stalls": {},
+        "sass": [
+          "LDCU UR5, c[0x0][0x388]",
+          "ISETP.GE.AND P0, PT, R5, UR5, PT",
+          "@P0   EXIT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "executed": 25,
+        "opcodes": {
+          "LDC": 5,
+          "LDCU": 5,
+          "MOV": 5,
+          "IMAD": 5,
+          "STG": 5
+        },
+        "stalls": {},
+        "sass": [
+          "LDC.64 R2, c[0x0][0x380]",
+          "LDCU.64 UR4, c[0x0][0x358]",
+          "MOV R7, 0xffffffff",
+          "IMAD.WIDE R2, R5, 0x4, R2",
+          "STG.E desc[UR4][R2.64], R7"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 12,
+        "executed": 5,
+        "opcodes": {
+          "EXIT": 5
+        },
+        "stalls": {},
+        "sass": [
+          "EXIT"
+        ]
+      }
+    ],
+    "stall_totals": {
+      "barrier": 0,
+      "branch_resolving": 0,
+      "dispatch_stall": 0,
+      "drain": 0,
+      "lg_throttle": 0,
+      "long_scoreboard": 0,
+      "math_pipe_throttle": 0,
+      "membar": 0,
+      "mio_throttle": 0,
+      "misc": 0,
+      "no_instructions": 0,
+      "not_selected": 0,
+      "selected": 0,
+      "short_scoreboard": 0,
+      "sleeping": 0,
+      "tex_throttle": 0,
+      "wait": 0
+    },
+    "timeline": {},
+    "rules": [
+      {
+        "rule_identifier": "LaunchConfiguration",
+        "name": "Launch Configuration",
+        "section_identifier": "LaunchStats",
+        "rule_message": {
+          "title": "Small Grid",
+          "message": "The grid for this launch is configured to execute only 1 block, which is less than the 188 multiprocessors used. This can underutilize some multiprocessors. If you do not intend to execute this kernel concurrently with other workloads, consider reducing the block size to have at least one block per multiprocessor or increase the size of the grid to fully utilize the available hardware resources. See the @url:Hardware Model:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-hw-model@ description for more details on launch configurations.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "launch__grid_size",
+            "value": 1.0,
+            "severity": 2,
+            "info": "Increase the grid size towards the number of multiprocessors used (188)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 99.46808510638297
+        }
+      },
+      {
+        "rule_identifier": "PCSamplingData",
+        "name": "PC sampling data",
+        "section_identifier": "SourceCounters",
+        "rule_message": {
+          "title": "No Samples",
+          "message": "Sampling metrics were enabled, but no samples could be collected for this kernel.",
+          "type": 3
+        }
+      }
+    ],
+    "report": "fp16-source",
+    "range_index": 0,
+    "action_index": 21
+  },
+  {
+    "function": "completion_counter_clear",
+    "metrics": {
+      "device__attribute_max_registers_per_multiprocessor": {
+        "value": 65536,
+        "unit": ""
+      },
+      "device__attribute_max_shared_memory_per_multiprocessor": {
+        "value": 102400,
+        "unit": ""
+      },
+      "device__attribute_max_warps_per_multiprocessor": {
+        "value": 48,
+        "unit": ""
+      },
+      "device__attribute_multiprocessor_count": {
+        "value": 188,
+        "unit": ""
+      },
+      "dram__bytes_op_read.sum": {
+        "value": 8704.0,
+        "unit": "byte"
+      },
+      "dram__bytes_op_write.sum": {
+        "value": 0.0,
+        "unit": "byte"
+      },
+      "gpu__dram_throughput.avg.pct_of_peak_sustained_elapsed": {
+        "value": 0.38777372262773724,
+        "unit": "%"
+      },
+      "gpu__time_duration.sum": {
+        "value": 1344.0,
+        "unit": "ns"
+      },
+      "l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_st.sum": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "l1tex__t_sector_hit_rate.pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__barrier_count": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__block_dim_x": {
+        "value": 256,
+        "unit": "block"
+      },
+      "launch__block_dim_y": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_dim_z": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_size": {
+        "value": 256,
+        "unit": ""
+      },
+      "launch__cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_max_active": {
+        "value": 0,
+        "unit": "cluster"
+      },
+      "launch__cluster_max_potential_size": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__cluster_scheduling_policy": {
+        "value": "PolicySpread",
+        "unit": ""
+      },
+      "launch__cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__context_id": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__device_id": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__execution_model": {
+        "value": "SIMT",
+        "unit": ""
+      },
+      "launch__func_cache_config": {
+        "value": "CachePreferNone",
+        "unit": ""
+      },
+      "launch__grid_dim_x": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_size": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__kernel_name": {
+        "value": "",
+        "unit": ""
+      },
+      "launch__occupancy_cluster_gpu_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_cluster_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_limit_barriers": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_blocks": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_registers": {
+        "value": 16.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_shared_mem": {
+        "value": 16.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_warps": {
+        "value": 6.0,
+        "unit": "block"
+      },
+      "launch__per_block_memory_size": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__persisting_l2_cache_size": {
+        "value": 25165824,
+        "unit": "byte"
+      },
+      "launch__preferred_cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__registers_per_thread": {
+        "value": 16,
+        "unit": "register/thread"
+      },
+      "launch__registers_per_thread_allocated": {
+        "value": 16.0,
+        "unit": "register/thread"
+      },
+      "launch__shared_mem_config_size": {
+        "value": 16384,
+        "unit": "byte"
+      },
+      "launch__shared_mem_per_block": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_allocated": {
+        "value": 1024.0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_driver": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_dynamic": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_static": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__sm_count": {
+        "value": 188,
+        "unit": "SM"
+      },
+      "launch__stack_size": {
+        "value": 1024.0,
+        "unit": ""
+      },
+      "launch__stream_id": {
+        "value": 13,
+        "unit": ""
+      },
+      "launch__thread_count": {
+        "value": 256,
+        "unit": "thread"
+      },
+      "launch__tpc_count": {
+        "value": 94,
+        "unit": ""
+      },
+      "launch__tpc_enabled": {
+        "value": "all",
+        "unit": ""
+      },
+      "launch__user_grid_dim_x": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_size": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__uses_blocks_as_clusters": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_cdp": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_green_context": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_nvlink_centric_scheduling": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_vgpu": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__waves_per_multiprocessor": {
+        "value": 0.0008865248226950354,
+        "unit": ""
+      },
+      "lts__t_sector_hit_rate.pct": {
+        "value": 15.412572351595099,
+        "unit": "%"
+      },
+      "memory_l1_wavefronts_shared": {
+        "value": 0,
+        "unit": "sectors"
+      },
+      "memory_l1_wavefronts_shared_ideal": {
+        "value": 0,
+        "unit": "sectors"
+      },
+      "sass__inst_executed_global_loads": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_global_stores": {
+        "value": 5.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_local_loads": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_local_stores": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_register_spilling": {
+        "value": 0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_shared_loads": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sass__inst_executed_shared_stores": {
+        "value": 0.0,
+        "unit": "inst"
+      },
+      "sm__cycles_active.avg": {
+        "value": 3.728723404255319,
+        "unit": "cycle"
+      },
+      "sm__cycles_active.max": {
+        "value": 701.0,
+        "unit": "cycle"
+      },
+      "sm__cycles_active.min": {
+        "value": 0.0,
+        "unit": "cycle"
+      },
+      "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "sm__throughput.avg.pct_of_peak_sustained_elapsed": {
+        "value": 0.015387834993167801,
+        "unit": "%"
+      },
+      "sm__warps_active.avg.pct_of_peak_sustained_active": {
+        "value": 13.546124583927725,
+        "unit": "%"
+      },
+      "smsp__issue_active.avg.per_cycle_active": {
+        "value": 0.03952901597981497,
+        "unit": ""
+      },
+      "smsp__pcsamp_aggregated_passes": {
+        "value": 5,
+        "unit": "pass"
+      },
+      "smsp__pcsamp_sample_count": {
+        "value": 0,
+        "unit": ""
+      },
+      "smsp__warps_active.avg.per_cycle_active": {
+        "value": 1.9112699747687134,
+        "unit": "warp"
+      },
+      "smsp__warps_eligible.avg.per_cycle_active": {
+        "value": 0.04163162321278385,
+        "unit": "warp"
+      }
+    },
+    "opcodes": {
+      "LDC": 21.0,
+      "LDCU": 13.0,
+      "IMAD": 13.0,
+      "EXIT": 13.0,
+      "S2UR": 8.0,
+      "S2R": 8.0,
+      "ISETP": 8.0,
+      "STG": 5.0,
+      "MOV": 5.0
+    },
+    "instructions": [
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 5,
+        "sass": "LDC R1, c[0x0][0x37c]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "sass": "S2R R0, SR_TID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "sass": "S2UR UR4, SR_CTAID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "sass": "LDCU UR5, c[0x0][0x388]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "sass": "IMAD R5, R5, UR4, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "sass": "ISETP.GE.AND P0, PT, R5, UR5, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "sass": "@P0   EXIT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "LDC.64 R2, c[0x0][0x380]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "LDCU.64 UR4, c[0x0][0x358]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "MOV R7, 0xffffffff"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "IMAD.WIDE R2, R5, 0x4, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "STG.E desc[UR4][R2.64], R7"
+      }
+    ],
+    "lines": [
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 5,
+        "executed": 8,
+        "opcodes": {
+          "LDC": 8
+        },
+        "stalls": {},
+        "sass": [
+          "LDC R1, c[0x0][0x37c]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "executed": 32,
+        "opcodes": {
+          "S2R": 8,
+          "S2UR": 8,
+          "LDC": 8,
+          "IMAD": 8
+        },
+        "stalls": {},
+        "sass": [
+          "S2R R0, SR_TID.X",
+          "S2UR UR4, SR_CTAID.X",
+          "LDC R5, c[0x0][0x360]",
+          "IMAD R5, R5, UR4, R0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "executed": 24,
+        "opcodes": {
+          "LDCU": 8,
+          "ISETP": 8,
+          "EXIT": 8
+        },
+        "stalls": {},
+        "sass": [
+          "LDCU UR5, c[0x0][0x388]",
+          "ISETP.GE.AND P0, PT, R5, UR5, PT",
+          "@P0   EXIT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "executed": 25,
+        "opcodes": {
+          "LDC": 5,
+          "LDCU": 5,
+          "MOV": 5,
+          "IMAD": 5,
+          "STG": 5
+        },
+        "stalls": {},
+        "sass": [
+          "LDC.64 R2, c[0x0][0x380]",
+          "LDCU.64 UR4, c[0x0][0x358]",
+          "MOV R7, 0xffffffff",
+          "IMAD.WIDE R2, R5, 0x4, R2",
+          "STG.E desc[UR4][R2.64], R7"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 12,
+        "executed": 5,
+        "opcodes": {
+          "EXIT": 5
+        },
+        "stalls": {},
+        "sass": [
+          "EXIT"
+        ]
+      }
+    ],
+    "stall_totals": {
+      "barrier": 0,
+      "branch_resolving": 0,
+      "dispatch_stall": 0,
+      "drain": 0,
+      "lg_throttle": 0,
+      "long_scoreboard": 0,
+      "math_pipe_throttle": 0,
+      "membar": 0,
+      "mio_throttle": 0,
+      "misc": 0,
+      "no_instructions": 0,
+      "not_selected": 0,
+      "selected": 0,
+      "short_scoreboard": 0,
+      "sleeping": 0,
+      "tex_throttle": 0,
+      "wait": 0
+    },
+    "timeline": {
+      "pmsampling:sm__inst_executed_realtime.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 124,
+        "bucket_size": 1,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0015544668280158176,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "pmsampling:sm__inst_executed_pipe_tensor_subpipe_hmma_realtime.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 124,
+        "bucket_size": 1,
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "pmsampling:dram__bytes.avg.pct_of_peak_sustained_elapsed": {
+        "instances": 124,
+        "bucket_size": 1,
+        "values": [
+          0.0,
+          0.0397456279809221,
+          0.0,
+          0.05990415335463259,
+          0.05980861244019139,
+          0.01987281399046105,
+          0.5456349206349206,
+          0.14476837060702874,
+          0.04992012779552715,
+          0.019904458598726117,
+          0.0,
+          0.064792663476874,
+          0.05482456140350877,
+          0.024880573248407645,
+          0.07936507936507936,
+          0.07476076555023924,
+          0.09484824281150159,
+          0.26913875598086123,
+          0.28678797468354433,
+          0.3937400318979266,
+          0.08,
+          0.019936204146730464,
+          0.004968203497615262,
+          0.09904912836767037,
+          0.08985623003194888,
+          0.009984025559105431,
+          0.029761904761904764,
+          0.01987281399046105,
+          0.009984025559105431,
+          0.05990415335463259,
+          0.0,
+          0.05952380952380953,
+          0.009968102073365232,
+          0.019904458598726117,
+          0.029904306220095694,
+          0.0,
+          0.04984051036682615,
+          0.08,
+          0.08942766295707473,
+          0.2579365079365079,
+          0.29904306220095694,
+          0.44928115015974446,
+          0.2342503987240829,
+          0.029856687898089172,
+          0.07923930269413629,
+          0.0,
+          0.05990415335463259,
+          0.0,
+          0.02980922098569157,
+          0.11,
+          0.08472886762360447,
+          0.13910969793322733,
+          0.33783783783783783,
+          0.43859649122807015,
+          0.5332934609250398,
+          0.02980922098569157,
+          0.19345238095238096,
+          0.16972843450479233,
+          0.17942583732057416,
+          0.48843700159489634,
+          0.5257936507936508,
+          0.3738038277511962,
+          0.15475239616613418,
+          0.15450558213716106,
+          0.41170634920634924,
+          0.5465023847376789,
+          0.4086921850079745,
+          0.06977671451355662,
+          0.11885895404120445,
+          0.2342503987240829,
+          0.385,
+          0.6419187898089173,
+          0.4130175159235669,
+          0.17857142857142858,
+          0.4792332268370607,
+          0.6778309409888358,
+          0.4272655007949126,
+          0.23276545166402537,
+          0.4,
+          0.7974481658692184,
+          0.33339968152866245,
+          0.208664546899841,
+          0.2840909090909091,
+          0.4585326953748007,
+          0.6468949044585988,
+          0.12896825396825395,
+          0.18411624203821655,
+          0.259170653907496,
+          0.43929712460063897,
+          0.658676703645008,
+          0.21431419457735248,
+          0.13,
+          0.15923566878980894,
+          0.24880573248407642,
+          0.5249603803486529,
+          0.5491214057507987,
+          0.18969648562300317,
+          0.15376984126984128,
+          0.1884920634920635,
+          0.525,
+          0.5423964968152866,
+          0.34335191082802546,
+          0.14904610492845788,
+          0.14976038338658146,
+          0.33393141945773525,
+          0.4222972972972973,
+          0.6091521394611727,
+          0.16972843450479233,
+          0.1246012759170654,
+          0.2836385350318471,
+          0.2777777777777778,
+          0.2995207667731629,
+          0.27955271565495204,
+          0.15450558213716106,
+          0.039808917197452234,
+          0.019809825673534072,
+          0.04984051036682615,
+          0.135,
+          0.1881933438985737,
+          0.3179650238473768,
+          0.23500000000000001,
+          0.3134952229299363,
+          0.15923566878980894,
+          0.0496031746031746
+        ]
+      }
+    },
+    "rules": [
+      {
+        "rule_identifier": "SOLBottleneck",
+        "name": "Bottleneck",
+        "section_identifier": "SpeedOfLight",
+        "rule_message": {
+          "title": "Small Grid",
+          "message": "This kernel grid is too small to fill the available resources on this device, resulting in only 0.00 full waves across all SMs. Look at @section:LaunchStats:Launch Statistics@ for more details.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "launch__waves_per_multiprocessor",
+            "value": 0.0008865248226950354,
+            "severity": 2,
+            "info": "Increase the number of waves per SM towards 1"
+          }
+        ]
+      },
+      {
+        "rule_identifier": "IssueSlotUtilization",
+        "name": "Issue Slot Utilization",
+        "section_identifier": "SchedulerStats",
+        "rule_message": {
+          "title": "",
+          "message": "Every scheduler is capable of issuing one instruction per cycle, but for this workload each scheduler only issues an instruction every 25.3 cycles. This might leave hardware resources underutilized and may lead to less optimal performance. Out of the maximum of 12 warps per scheduler, this workload allocates an average of 1.91 active warps per scheduler, but only an average of 0.04 warps were eligible per cycle. Eligible warps are the subset of active warps that are ready to issue their next instruction. Every cycle with no eligible warp results in no instruction being issued and the issue slot remains unused. To increase the number of eligible warps, reduce the time the active warps are stalled by inspecting the top stall reasons on the @section:WarpStateStats:Warp State Statistics@ and @section:SourceCounters:Source Counters@ sections.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__issue_active.avg.per_cycle_active",
+            "value": 0.03952901597981497,
+            "severity": 0,
+            "info": "Increase the average number of instructions issued per cycle"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 1,
+          "speedup": 81.06382978723404
+        }
+      },
+      {
+        "rule_identifier": "AchievedOccupancy",
+        "name": "Achieved Occupancy",
+        "section_identifier": "Occupancy",
+        "rule_message": {
+          "title": "",
+          "message": "The difference between calculated theoretical (100.0%) and measured achieved occupancy (13.5%) can be the result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can occur between warps within a block as well as across blocks of the same kernel. See the @url:CUDA Best Practices Guide:https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy@ for more details on optimizing occupancy.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "sm__warps_active.avg.pct_of_peak_sustained_active",
+            "value": 13.546124583927725,
+            "severity": 0,
+            "info": "Increase the achieved occupancy towards the theoretical limit (100.0%)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 81.06382978723404
+        }
+      },
+      {
+        "rule_identifier": "CPIStall",
+        "name": "Warp Stall",
+        "section_identifier": "WarpStateStats",
+        "rule_message": {
+          "title": "No Instruction Stalls",
+          "message": "On average, each warp of this workload spends 26.4 cycles being stalled waiting to be selected to fetch an instruction or waiting on an instruction cache miss. A high number of warps not having an instruction fetched is typical for very short kernels with less than one full wave of work in the grid. Excessively jumping across large blocks of assembly code can also lead to more warps stalled for this reason, if this causes misses in the instruction cache. See also the related Branch Resolving state. This stall type represents about 54.7% of the total average of 48.4 cycles between issuing two instructions.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__issue_active.avg.per_cycle_active",
+            "value": 0.03952901597981497,
+            "severity": 2,
+            "info": "Increase the average number of instructions issued per cycle"
+          },
+          {
+            "name": "smsp_average_no_instruction",
+            "value": 26.425531914893618,
+            "severity": 0,
+            "info": "Decrease the number of cycles spent in no instruction stalls"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 54.65346534653466
+        }
+      },
+      {
+        "rule_identifier": "CPIStall",
+        "name": "Warp Stall",
+        "section_identifier": "WarpStateStats",
+        "rule_message": {
+          "title": "Short Scoreboard Stalls",
+          "message": "On average, each warp of this workload spends 16.1 cycles being stalled waiting for a scoreboard dependency on a MIO (memory input/output) operation (not to L1TEX). The primary reason for a high number of stalls due to short scoreboards is typically memory operations to shared memory. Other reasons include frequent execution of special math instructions (e.g. MUFU) or dynamic branching (e.g. BRX, JMX). Consult the Memory Workload Analysis section to verify if there are shared memory operations and reduce bank conflicts, if reported. Assigning frequently accessed values to variables can assist the compiler in using low-latency registers instead of direct memory accesses. This stall type represents about 33.3% of the total average of 48.4 cycles between issuing two instructions.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "smsp__issue_active.avg.per_cycle_active",
+            "value": 0.03952901597981497,
+            "severity": 2,
+            "info": "Increase the average number of instructions issued per cycle"
+          },
+          {
+            "name": "smsp_average_short_scoreboard",
+            "value": 16.085106382978722,
+            "severity": 0,
+            "info": "Decrease the number of cycles spent in short scoreboard stalls"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 33.26732673267326
+        }
+      },
+      {
+        "rule_identifier": "CPIStall",
+        "name": "Warp Stall",
+        "section_identifier": "WarpStateStats",
+        "rule_message": {
+          "title": "",
+          "message": "Check the @section:SourceCounters:Warp Stall Sampling (All Samples)@ table for the top stall locations in your source based on sampling data. The @url:Profiling Guide:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-reference@ provides more details on each stall reason.",
+          "type": 1
+        }
+      },
+      {
+        "rule_identifier": "HighPipeUtilization",
+        "name": "High Pipe Utilization",
+        "section_identifier": "ComputeWorkloadAnalysis",
+        "rule_message": {
+          "title": "Low Utilization",
+          "message": "All compute pipelines are under-utilized. Either this workload is very small or it doesn't issue enough warps per scheduler. Check the @section:LaunchStats:Launch Statistics@ and @section:SchedulerStats:Scheduler Statistics@ sections for further details.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "sm__pipe_fmaheavy_cycles_active.avg.pct_of_peak_sustained_elapsed",
+            "value": 0.0020388881365947338,
+            "severity": 2,
+            "info": "Increase the utilization of the busiest pipeline (currently: Shared FMA Heavy)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 1,
+          "speedup": 99.9979611118634
+        }
+      },
+      {
+        "rule_identifier": "LaunchConfiguration",
+        "name": "Launch Configuration",
+        "section_identifier": "LaunchStats",
+        "rule_message": {
+          "title": "Small Grid",
+          "message": "The grid for this launch is configured to execute only 1 block, which is less than the 188 multiprocessors used. This can underutilize some multiprocessors. If you do not intend to execute this kernel concurrently with other workloads, consider reducing the block size to have at least one block per multiprocessor or increase the size of the grid to fully utilize the available hardware resources. See the @url:Hardware Model:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-hw-model@ description for more details on launch configurations.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "launch__grid_size",
+            "value": 1.0,
+            "severity": 2,
+            "info": "Increase the grid size towards the number of multiprocessors used (188)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 99.46808510638297
+        }
+      },
+      {
+        "rule_identifier": "PCSamplingData",
+        "name": "PC sampling data",
+        "section_identifier": "SourceCounters",
+        "rule_message": {
+          "title": "No Samples",
+          "message": "Sampling metrics were enabled, but no samples could be collected for this kernel.",
+          "type": 3
+        }
+      },
+      {
+        "rule_identifier": "PMSamplingData",
+        "name": "PM Sampling Data",
+        "section_identifier": "PmSampling",
+        "rule_message": {
+          "title": "",
+          "message": "Sampling interval is 2.2x of the workload duration, which likely results in no or very few collected samples. For better results, use the --pm-sampling-interval option to reduce the sampling interval. Use --pm-sampling-buffer-size to increase the sampling buffer size for the smaller interval, or don't set a fixed buffer size and let the tool adjust it automatically.",
+          "type": 3
+        }
+      },
+      {
+        "rule_identifier": "SOLFPRoofline",
+        "name": "Roofline Analysis",
+        "section_identifier": "SpeedOfLight_RooflineChart",
+        "rule_message": {
+          "title": "Roofline Analysis",
+          "message": "The ratio of peak float (FP32) to double (FP64) performance on this device is 64:1. The workload achieved 0% of this device's FP32 peak performance and 0% of its FP64 peak performance. See the @url:Profiling Guide:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#roofline@ for more details on roofline analysis.",
+          "type": 1
+        }
+      },
+      {
+        "rule_identifier": "WorkloadImbalance",
+        "name": "Workload Imbalance",
+        "section_identifier": "WorkloadDistribution",
+        "rule_message": {
+          "title": "L2 Slices Workload Imbalance",
+          "message": "One or more L2 Slices have a much higher number of active cycles than the average number of active cycles. Maximum instance value is 53.58% above the average, while the minimum instance value is 37.41% below the average.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "lts__cycles_active.avg",
+            "value": 506.4375,
+            "severity": 2,
+            "info": "Balancing the number of active cycles across L2 Slices would result in a more optimized workload"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 8.970294023793473
+        }
+      }
+    ],
+    "report": "fp8-full",
+    "range_index": 0,
+    "action_index": 21
+  },
+  {
+    "function": "completion_counter_clear",
+    "metrics": {
+      "device__attribute_max_registers_per_multiprocessor": {
+        "value": 65536,
+        "unit": ""
+      },
+      "device__attribute_max_shared_memory_per_multiprocessor": {
+        "value": 102400,
+        "unit": ""
+      },
+      "device__attribute_max_warps_per_multiprocessor": {
+        "value": 48,
+        "unit": ""
+      },
+      "device__attribute_multiprocessor_count": {
+        "value": 188,
+        "unit": ""
+      },
+      "gpu__time_duration.sum": {
+        "value": 1376.0,
+        "unit": "ns"
+      },
+      "launch__barrier_count": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__block_dim_x": {
+        "value": 256,
+        "unit": "block"
+      },
+      "launch__block_dim_y": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_dim_z": {
+        "value": 1,
+        "unit": "block"
+      },
+      "launch__block_size": {
+        "value": 256,
+        "unit": ""
+      },
+      "launch__cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__cluster_max_active": {
+        "value": 0,
+        "unit": "cluster"
+      },
+      "launch__cluster_max_potential_size": {
+        "value": 8,
+        "unit": "block"
+      },
+      "launch__cluster_scheduling_policy": {
+        "value": "PolicySpread",
+        "unit": ""
+      },
+      "launch__cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__context_id": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__device_id": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__execution_model": {
+        "value": "SIMT",
+        "unit": ""
+      },
+      "launch__func_cache_config": {
+        "value": "CachePreferNone",
+        "unit": ""
+      },
+      "launch__grid_dim_x": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__grid_size": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__kernel_name": {
+        "value": "",
+        "unit": ""
+      },
+      "launch__occupancy_cluster_gpu_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_cluster_pct": {
+        "value": 0.0,
+        "unit": "%"
+      },
+      "launch__occupancy_limit_barriers": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_blocks": {
+        "value": 24.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_registers": {
+        "value": 16.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_shared_mem": {
+        "value": 16.0,
+        "unit": "block"
+      },
+      "launch__occupancy_limit_warps": {
+        "value": 6.0,
+        "unit": "block"
+      },
+      "launch__per_block_memory_size": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__persisting_l2_cache_size": {
+        "value": 25165824,
+        "unit": "byte"
+      },
+      "launch__preferred_cluster_dim_x": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_y": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_dim_z": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__preferred_cluster_size": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__registers_per_thread": {
+        "value": 16,
+        "unit": "register/thread"
+      },
+      "launch__registers_per_thread_allocated": {
+        "value": 16.0,
+        "unit": "register/thread"
+      },
+      "launch__shared_mem_config_size": {
+        "value": 16384,
+        "unit": "byte"
+      },
+      "launch__shared_mem_per_block": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_allocated": {
+        "value": 1024.0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_driver": {
+        "value": 1024,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_dynamic": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__shared_mem_per_block_static": {
+        "value": 0,
+        "unit": "byte/block"
+      },
+      "launch__sm_count": {
+        "value": 188,
+        "unit": "SM"
+      },
+      "launch__stack_size": {
+        "value": 1024.0,
+        "unit": ""
+      },
+      "launch__stream_id": {
+        "value": 13,
+        "unit": ""
+      },
+      "launch__thread_count": {
+        "value": 256,
+        "unit": "thread"
+      },
+      "launch__tpc_count": {
+        "value": 94,
+        "unit": ""
+      },
+      "launch__tpc_enabled": {
+        "value": "all",
+        "unit": ""
+      },
+      "launch__user_grid_dim_x": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_dim_y": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_dim_z": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__user_grid_size": {
+        "value": 1,
+        "unit": ""
+      },
+      "launch__uses_blocks_as_clusters": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_cdp": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_green_context": {
+        "value": 0.0,
+        "unit": ""
+      },
+      "launch__uses_nvlink_centric_scheduling": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__uses_vgpu": {
+        "value": 0,
+        "unit": ""
+      },
+      "launch__waves_per_multiprocessor": {
+        "value": 0.0008865248226950354,
+        "unit": ""
+      },
+      "memory_l1_wavefronts_shared": {
+        "value": 0,
+        "unit": "sectors"
+      },
+      "memory_l1_wavefronts_shared_ideal": {
+        "value": 0,
+        "unit": "sectors"
+      },
+      "sass__inst_executed_register_spilling": {
+        "value": 0,
+        "unit": "inst"
+      },
+      "sm__warps_active.avg.pct_of_peak_sustained_active": {
+        "value": 14.801241415742208,
+        "unit": "%"
+      },
+      "smsp__pcsamp_aggregated_passes": {
+        "value": 5,
+        "unit": "pass"
+      },
+      "smsp__pcsamp_sample_count": {
+        "value": 0,
+        "unit": ""
+      }
+    },
+    "opcodes": {
+      "LDC": 21.0,
+      "LDCU": 13.0,
+      "IMAD": 13.0,
+      "EXIT": 13.0,
+      "S2UR": 8.0,
+      "S2R": 8.0,
+      "ISETP": 8.0,
+      "STG": 5.0,
+      "MOV": 5.0
+    },
+    "instructions": [
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 5,
+        "sass": "LDC R1, c[0x0][0x37c]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "sass": "S2R R0, SR_TID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "sass": "S2UR UR4, SR_CTAID.X"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "sass": "LDCU UR5, c[0x0][0x388]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "sass": "IMAD R5, R5, UR4, R0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "sass": "ISETP.GE.AND P0, PT, R5, UR5, PT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "sass": "@P0   EXIT"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "LDC.64 R2, c[0x0][0x380]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "LDCU.64 UR4, c[0x0][0x358]"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "MOV R7, 0xffffffff"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "IMAD.WIDE R2, R5, 0x4, R2"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "sass": "STG.E desc[UR4][R2.64], R7"
+      }
+    ],
+    "lines": [
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 5,
+        "executed": 8,
+        "opcodes": {
+          "LDC": 8
+        },
+        "stalls": {},
+        "sass": [
+          "LDC R1, c[0x0][0x37c]"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 8,
+        "executed": 32,
+        "opcodes": {
+          "S2R": 8,
+          "S2UR": 8,
+          "LDC": 8,
+          "IMAD": 8
+        },
+        "stalls": {},
+        "sass": [
+          "S2R R0, SR_TID.X",
+          "S2UR UR4, SR_CTAID.X",
+          "LDC R5, c[0x0][0x360]",
+          "IMAD R5, R5, UR4, R0"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 9,
+        "executed": 24,
+        "opcodes": {
+          "LDCU": 8,
+          "ISETP": 8,
+          "EXIT": 8
+        },
+        "stalls": {},
+        "sass": [
+          "LDCU UR5, c[0x0][0x388]",
+          "ISETP.GE.AND P0, PT, R5, UR5, PT",
+          "@P0   EXIT"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 11,
+        "executed": 25,
+        "opcodes": {
+          "LDC": 5,
+          "LDCU": 5,
+          "MOV": 5,
+          "IMAD": 5,
+          "STG": 5
+        },
+        "stalls": {},
+        "sass": [
+          "LDC.64 R2, c[0x0][0x380]",
+          "LDCU.64 UR4, c[0x0][0x358]",
+          "MOV R7, 0xffffffff",
+          "IMAD.WIDE R2, R5, 0x4, R2",
+          "STG.E desc[UR4][R2.64], R7"
+        ]
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "line": 12,
+        "executed": 5,
+        "opcodes": {
+          "EXIT": 5
+        },
+        "stalls": {},
+        "sass": [
+          "EXIT"
+        ]
+      }
+    ],
+    "stall_totals": {
+      "barrier": 0,
+      "branch_resolving": 0,
+      "dispatch_stall": 0,
+      "drain": 0,
+      "lg_throttle": 0,
+      "long_scoreboard": 0,
+      "math_pipe_throttle": 0,
+      "membar": 0,
+      "mio_throttle": 0,
+      "misc": 0,
+      "no_instructions": 0,
+      "not_selected": 0,
+      "selected": 0,
+      "short_scoreboard": 0,
+      "sleeping": 0,
+      "tex_throttle": 0,
+      "wait": 0
+    },
+    "timeline": {},
+    "rules": [
+      {
+        "rule_identifier": "LaunchConfiguration",
+        "name": "Launch Configuration",
+        "section_identifier": "LaunchStats",
+        "rule_message": {
+          "title": "Small Grid",
+          "message": "The grid for this launch is configured to execute only 1 block, which is less than the 188 multiprocessors used. This can underutilize some multiprocessors. If you do not intend to execute this kernel concurrently with other workloads, consider reducing the block size to have at least one block per multiprocessor or increase the size of the grid to fully utilize the available hardware resources. See the @url:Hardware Model:https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-hw-model@ description for more details on launch configurations.",
+          "type": 2
+        },
+        "focus_metrics": [
+          {
+            "name": "launch__grid_size",
+            "value": 1.0,
+            "severity": 2,
+            "info": "Increase the grid size towards the number of multiprocessors used (188)"
+          }
+        ],
+        "speedup_estimation": {
+          "type": 2,
+          "speedup": 99.46808510638297
+        }
+      },
+      {
+        "rule_identifier": "PCSamplingData",
+        "name": "PC sampling data",
+        "section_identifier": "SourceCounters",
+        "rule_message": {
+          "title": "No Samples",
+          "message": "Sampling metrics were enabled, but no samples could be collected for this kernel.",
+          "type": 3
+        }
+      }
+    ],
+    "report": "fp8-source",
+    "range_index": 0,
+    "action_index": 21
+  }
+]
