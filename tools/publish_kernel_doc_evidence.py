@@ -54,7 +54,7 @@ def main():
         source=ROOT/report['path']
         shutil.copyfile(source,target/(key+'.ncu-repz'))
     for filename in ('build-receipt.json','commands.json'):
-        shutil.copyfile(args.run/'harness'/filename,target/filename)
+        (target/filename).write_text((args.run/'harness'/filename).read_text(encoding='utf8'),encoding='utf8',newline='\n')
     write(target/'index.json',data)
     print('Published extracted evidence and four raw reports for 81 entries')
 
