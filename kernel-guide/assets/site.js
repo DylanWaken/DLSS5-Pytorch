@@ -1,33 +1,4 @@
 'use strict';
-// Chapter links retain direct MP4 media-fragment destinations without JavaScript.
-const pendingVideoSeeks = new WeakMap();
-document.querySelectorAll('[data-video-seek]').forEach(link => {
-  link.addEventListener('click', event => {
-    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    const video = document.getElementById(link.dataset.videoTarget);
-    const seconds = Number(link.dataset.videoSeek);
-    if (!video || video.tagName !== 'VIDEO' || video.error || !Number.isFinite(seconds) || seconds < 0) return;
-    event.preventDefault();
-    const pending = pendingVideoSeeks.get(video);
-    if (pending) video.removeEventListener('loadedmetadata', pending);
-    const seek = () => {
-      pendingVideoSeeks.delete(video);
-      video.currentTime = Number.isFinite(video.duration) ? Math.min(seconds, video.duration) : seconds;
-      const playback = video.play();
-      if (playback) playback.catch(() => {}); // Native controls remain available if playback is blocked.
-    };
-    if (video.readyState >= 1) seek();
-    else {
-      pendingVideoSeeks.set(video, seek);
-      video.addEventListener('loadedmetadata', seek, { once: true });
-      video.load();
-    }
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    video.scrollIntoView({ block: 'center', behavior: reducedMotion ? 'auto' : 'smooth' });
-    video.focus({ preventScroll: true });
-  });
-});
-
 // One shared tooltip; links remain useful without JavaScript and on touch screens.
 const glossaryTerms = document.querySelectorAll('.glossary-term');
 if (glossaryTerms.length) {
