@@ -1,0 +1,794 @@
+{
+  "source_revision": "fc3276497f866bdad639cd443e75743f5d19b749",
+  "scope": "CPU arithmetic experiments and independent comparison with recorded NCU; no CUDA candidate execution or performance sweep.",
+  "checks": [
+    {
+      "model": "repack",
+      "words_per_token": 256,
+      "height": 4,
+      "width": 4,
+      "checked_payload_words": 4096,
+      "padded_tokens": 32,
+      "result": "Spatial bijection and packed-address encode/decode round trip passed."
+    },
+    {
+      "model": "repack",
+      "words_per_token": 256,
+      "height": 8,
+      "width": 12,
+      "checked_payload_words": 24576,
+      "padded_tokens": 96,
+      "result": "Spatial bijection and packed-address encode/decode round trip passed."
+    },
+    {
+      "model": "repack",
+      "words_per_token": 256,
+      "height": 36,
+      "width": 60,
+      "checked_payload_words": 552960,
+      "padded_tokens": 2176,
+      "result": "Spatial bijection and packed-address encode/decode round trip passed."
+    },
+    {
+      "model": "repack",
+      "words_per_token": 512,
+      "height": 4,
+      "width": 4,
+      "checked_payload_words": 8192,
+      "padded_tokens": 16,
+      "result": "Spatial bijection and packed-address encode/decode round trip passed."
+    },
+    {
+      "model": "repack",
+      "words_per_token": 512,
+      "height": 8,
+      "width": 12,
+      "checked_payload_words": 49152,
+      "padded_tokens": 96,
+      "result": "Spatial bijection and packed-address encode/decode round trip passed."
+    },
+    {
+      "model": "repack",
+      "words_per_token": 512,
+      "height": 36,
+      "width": 60,
+      "checked_payload_words": 1105920,
+      "padded_tokens": 2160,
+      "result": "Spatial bijection and packed-address encode/decode round trip passed."
+    },
+    {
+      "model": "counter",
+      "count": 1,
+      "threads": 128,
+      "grid": 1,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 1,
+      "threads": 256,
+      "grid": 1,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 1,
+      "threads": 512,
+      "grid": 1,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 136,
+      "threads": 128,
+      "grid": 2,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 136,
+      "threads": 256,
+      "grid": 1,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 136,
+      "threads": 512,
+      "grid": 1,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 255,
+      "threads": 128,
+      "grid": 2,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 255,
+      "threads": 256,
+      "grid": 1,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 255,
+      "threads": 512,
+      "grid": 1,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 256,
+      "threads": 128,
+      "grid": 2,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 256,
+      "threads": 256,
+      "grid": 1,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 256,
+      "threads": 512,
+      "grid": 1,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 257,
+      "threads": 128,
+      "grid": 3,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 257,
+      "threads": 256,
+      "grid": 2,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 257,
+      "threads": 512,
+      "grid": 1,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 272,
+      "threads": 128,
+      "grid": 3,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 272,
+      "threads": 256,
+      "grid": 2,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 272,
+      "threads": 512,
+      "grid": 1,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 300,
+      "threads": 128,
+      "grid": 3,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 300,
+      "threads": 256,
+      "grid": 2,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 300,
+      "threads": 512,
+      "grid": 1,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 544,
+      "threads": 128,
+      "grid": 5,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 544,
+      "threads": 256,
+      "grid": 3,
+      "result": "Exactly one writer per live word; no tail writer."
+    },
+    {
+      "model": "counter",
+      "count": 544,
+      "threads": 512,
+      "grid": 2,
+      "result": "Exactly one writer per live word; no tail writer."
+    }
+  ],
+  "kernels": {
+    "channel_projection_c512_to_c1024_fp16": {
+      "source_shared_bytes": 12312,
+      "measured_static_shared_bytes": 12312,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "channel_projection_c512_to_c1024_fp8": {
+      "source_shared_bytes": 12312,
+      "measured_static_shared_bytes": 12312,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "completion_counter_clear": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "counter"
+    },
+    "decoder_upsample_c1024_to_c512_fp16": {
+      "source_shared_bytes": 2064,
+      "measured_static_shared_bytes": 2064,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "decoder_upsample_c1024_to_c512_fp8": {
+      "source_shared_bytes": 2064,
+      "measured_static_shared_bytes": 2064,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "global_attention_chained_c1024_fp16": {
+      "source_shared_bytes": 16400,
+      "measured_static_shared_bytes": 16400,
+      "resource_prediction": "matched",
+      "kind": "global-attention"
+    },
+    "global_attention_chained_c1024_fp8": {
+      "source_shared_bytes": 8208,
+      "measured_static_shared_bytes": 8208,
+      "resource_prediction": "matched",
+      "kind": "global-attention"
+    },
+    "global_ffn_contract_c1024_fp16": {
+      "source_shared_bytes": 24600,
+      "measured_static_shared_bytes": 24600,
+      "resource_prediction": "matched",
+      "kind": "global-linear",
+      "warp_output_partition": "complete, no overlap",
+      "tensor_instruction_counts": [
+        {
+          "report": "fp16-full",
+          "action": 23,
+          "predicted": 4456448,
+          "observed": 4456448.0
+        }
+      ]
+    },
+    "global_ffn_contract_c1024_fp8": {
+      "source_shared_bytes": 16400,
+      "measured_static_shared_bytes": 16400,
+      "resource_prediction": "matched",
+      "kind": "global-linear",
+      "warp_output_partition": "complete, no overlap",
+      "tensor_instruction_counts": [
+        {
+          "report": "fp8-full",
+          "action": 23,
+          "predicted": 2228224,
+          "observed": 2228224.0
+        }
+      ]
+    },
+    "global_ffn_expand_c1024_fp16": {
+      "source_shared_bytes": 24600,
+      "measured_static_shared_bytes": 24600,
+      "resource_prediction": "matched",
+      "kind": "global-linear",
+      "warp_output_partition": "complete, no overlap",
+      "tensor_instruction_counts": [
+        {
+          "report": "fp16-full",
+          "action": 22,
+          "predicted": 4456448,
+          "observed": 4456448.0
+        }
+      ]
+    },
+    "global_ffn_expand_c1024_fp8": {
+      "source_shared_bytes": 24600,
+      "measured_static_shared_bytes": 24600,
+      "resource_prediction": "matched",
+      "kind": "global-linear",
+      "warp_output_partition": "complete, no overlap",
+      "tensor_instruction_counts": [
+        {
+          "report": "fp8-full",
+          "action": 22,
+          "predicted": 2228224,
+          "observed": 2228224.0
+        }
+      ]
+    },
+    "global_projection_c1024_fp16": {
+      "source_shared_bytes": 16400,
+      "measured_static_shared_bytes": 16400,
+      "resource_prediction": "matched",
+      "kind": "global-linear",
+      "warp_output_partition": "complete, no overlap",
+      "tensor_instruction_counts": [
+        {
+          "report": "fp16-full",
+          "action": 27,
+          "predicted": 1114112,
+          "observed": 1114112.0
+        }
+      ]
+    },
+    "global_projection_c1024_fp8": {
+      "source_shared_bytes": 8208,
+      "measured_static_shared_bytes": 8208,
+      "resource_prediction": "matched",
+      "kind": "global-linear",
+      "warp_output_partition": "complete, no overlap",
+      "tensor_instruction_counts": [
+        {
+          "report": "fp8-full",
+          "action": 26,
+          "predicted": 557056,
+          "observed": 557056.0
+        }
+      ]
+    },
+    "global_qkv_c1024_fp16": {
+      "source_shared_bytes": 16400,
+      "measured_static_shared_bytes": 16400,
+      "resource_prediction": "matched",
+      "kind": "global-linear",
+      "warp_output_partition": "complete, no overlap",
+      "tensor_instruction_counts": [
+        {
+          "report": "fp16-full",
+          "action": 24,
+          "predicted": 1671168,
+          "observed": 1671168.0
+        },
+        {
+          "report": "fp16-full",
+          "action": 25,
+          "predicted": 1671168,
+          "observed": 1671168.0
+        }
+      ]
+    },
+    "global_qkv_c1024_fp8": {
+      "source_shared_bytes": 8208,
+      "measured_static_shared_bytes": 8208,
+      "resource_prediction": "matched",
+      "kind": "global-linear",
+      "warp_output_partition": "complete, no overlap",
+      "tensor_instruction_counts": [
+        {
+          "report": "fp8-full",
+          "action": 24,
+          "predicted": 1671168,
+          "observed": 1671168.0
+        }
+      ]
+    },
+    "input_preprocess_window_c32_fp16": {
+      "source_shared_bytes": 2048,
+      "measured_static_shared_bytes": 2048,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "input_preprocess_window_c32_fp8": {
+      "source_shared_bytes": 2048,
+      "measured_static_shared_bytes": 2048,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "input_preprocess_window_downsample_c32_fp16": {
+      "source_shared_bytes": 2048,
+      "measured_static_shared_bytes": 2048,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "input_preprocess_window_downsample_c32_fp8": {
+      "source_shared_bytes": 2048,
+      "measured_static_shared_bytes": 2048,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "output_window_postprocess_c32_fp16": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "output_window_postprocess_c32_fp8": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "repack_1d_to_2d_c1024_fp16": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "repack"
+    },
+    "repack_1d_to_2d_c1024_fp8": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "repack"
+    },
+    "repack_2d_to_1d_c1024_fp16": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "repack"
+    },
+    "repack_2d_to_1d_c1024_fp8": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "repack"
+    },
+    "window_attention_projection_c512_fp16": {
+      "source_shared_bytes": 12312,
+      "measured_static_shared_bytes": 12312,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "window_attention_projection_c512_fp8": {
+      "source_shared_bytes": 12312,
+      "measured_static_shared_bytes": 12312,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "window_attention_projection_output_view_c512_fp16": {
+      "source_shared_bytes": 12312,
+      "measured_static_shared_bytes": 12312,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "window_attention_projection_output_view_c512_fp8": {
+      "source_shared_bytes": 12312,
+      "measured_static_shared_bytes": 12312,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "window_attention_projection_pool_c512_fp16": {
+      "source_shared_bytes": 8208,
+      "measured_static_shared_bytes": 8208,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "window_attention_projection_pool_c512_fp8": {
+      "source_shared_bytes": 8208,
+      "measured_static_shared_bytes": 8208,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "window_block_c128_downsample_fp16": {
+      "source_shared_bytes": 16384,
+      "measured_static_shared_bytes": 16384,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c128_downsample_fp8": {
+      "source_shared_bytes": 8192,
+      "measured_static_shared_bytes": 8192,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c128_fp16": {
+      "source_shared_bytes": 16384,
+      "measured_static_shared_bytes": 16384,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c128_fp8": {
+      "source_shared_bytes": 8192,
+      "measured_static_shared_bytes": 8192,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c128_input_view_fp16": {
+      "source_shared_bytes": 16384,
+      "measured_static_shared_bytes": 16384,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c128_input_view_fp8": {
+      "source_shared_bytes": 8192,
+      "measured_static_shared_bytes": 8192,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c128_output_view_fp16": {
+      "source_shared_bytes": 16384,
+      "measured_static_shared_bytes": 16384,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c128_output_view_fp8": {
+      "source_shared_bytes": 8192,
+      "measured_static_shared_bytes": 8192,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c128_upsample_fp16": {
+      "source_shared_bytes": 16384,
+      "measured_static_shared_bytes": 16384,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c128_upsample_fp8": {
+      "source_shared_bytes": 8192,
+      "measured_static_shared_bytes": 8192,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c256_downsample_fp16": {
+      "source_shared_bytes": 32768,
+      "measured_static_shared_bytes": 32768,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c256_downsample_fp8": {
+      "source_shared_bytes": 16384,
+      "measured_static_shared_bytes": 16384,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c256_fp16": {
+      "source_shared_bytes": 32768,
+      "measured_static_shared_bytes": 32768,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c256_fp8": {
+      "source_shared_bytes": 16384,
+      "measured_static_shared_bytes": 16384,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c256_input_view_fp16": {
+      "source_shared_bytes": 32768,
+      "measured_static_shared_bytes": 32768,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c256_input_view_fp8": {
+      "source_shared_bytes": 16384,
+      "measured_static_shared_bytes": 16384,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c256_output_view_fp16": {
+      "source_shared_bytes": 32768,
+      "measured_static_shared_bytes": 32768,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c256_output_view_fp8": {
+      "source_shared_bytes": 16384,
+      "measured_static_shared_bytes": 16384,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c256_upsample_fp16": {
+      "source_shared_bytes": 32768,
+      "measured_static_shared_bytes": 32768,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c256_upsample_fp8": {
+      "source_shared_bytes": 16384,
+      "measured_static_shared_bytes": 16384,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c32_downsample_fp16": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c32_downsample_fp8": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c32_fp16": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c32_fp8": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c32_input_view_fp16": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c32_input_view_fp8": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c32_output_view_fp16": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c32_output_view_fp8": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c32_upsample_fp16": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c32_upsample_fp8": {
+      "source_shared_bytes": 0,
+      "measured_static_shared_bytes": 0,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c64_downsample_fp16": {
+      "source_shared_bytes": 8192,
+      "measured_static_shared_bytes": 8192,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c64_downsample_fp8": {
+      "source_shared_bytes": 4096,
+      "measured_static_shared_bytes": 4096,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c64_fp16": {
+      "source_shared_bytes": 8192,
+      "measured_static_shared_bytes": 8192,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c64_fp8": {
+      "source_shared_bytes": 4096,
+      "measured_static_shared_bytes": 4096,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c64_input_view_fp16": {
+      "source_shared_bytes": 8192,
+      "measured_static_shared_bytes": 8192,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c64_input_view_fp8": {
+      "source_shared_bytes": 4096,
+      "measured_static_shared_bytes": 4096,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c64_output_view_fp16": {
+      "source_shared_bytes": 8192,
+      "measured_static_shared_bytes": 8192,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c64_output_view_fp8": {
+      "source_shared_bytes": 4096,
+      "measured_static_shared_bytes": 4096,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c64_upsample_fp16": {
+      "source_shared_bytes": 8192,
+      "measured_static_shared_bytes": 8192,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_block_c64_upsample_fp8": {
+      "source_shared_bytes": 4096,
+      "measured_static_shared_bytes": 4096,
+      "resource_prediction": "matched",
+      "kind": "window"
+    },
+    "window_ffn_c512_fp16": {
+      "source_shared_bytes": 8208,
+      "measured_static_shared_bytes": 8208,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "window_ffn_c512_fp8": {
+      "source_shared_bytes": 8208,
+      "measured_static_shared_bytes": 8208,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "window_ffn_input_view_c512_fp16": {
+      "source_shared_bytes": 8208,
+      "measured_static_shared_bytes": 8208,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "window_ffn_input_view_c512_fp8": {
+      "source_shared_bytes": 8208,
+      "measured_static_shared_bytes": 8208,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "window_ffn_projection_c512_fp16": {
+      "source_shared_bytes": 12312,
+      "measured_static_shared_bytes": 12312,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "window_ffn_projection_c512_fp8": {
+      "source_shared_bytes": 12312,
+      "measured_static_shared_bytes": 12312,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "window_ffn_projection_input_view_c512_fp16": {
+      "source_shared_bytes": 12312,
+      "measured_static_shared_bytes": 12312,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "window_ffn_projection_input_view_c512_fp8": {
+      "source_shared_bytes": 12312,
+      "measured_static_shared_bytes": 12312,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "window_qkv_c512_fp16": {
+      "source_shared_bytes": 4112,
+      "measured_static_shared_bytes": 4112,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    },
+    "window_qkv_c512_fp8": {
+      "source_shared_bytes": 8208,
+      "measured_static_shared_bytes": 8208,
+      "resource_prediction": "matched",
+      "kind": "c512"
+    }
+  }
+}

@@ -2253,12 +2253,6 @@
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
-      "start": 10,
-      "end": 33,
-      "sha256": "3831470365b184369bfd5aa7fbecb1c42a75dd2da0185e5a743eeb3bc75c0ed4"
-    },
-    {
-      "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
       "start": 105,
       "end": 128,
       "sha256": "930e154d4c1c7188857afa9cbd29f15e8f802b9a2a53a2876af8cc46a292dd42"
@@ -2388,12 +2382,6 @@
       "start": 6,
       "end": 19,
       "sha256": "7c924e62526240ab377ab9b8b551411bed57f683670dd2444fbda0613aec3aad"
-    },
-    {
-      "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
-      "start": 10,
-      "end": 33,
-      "sha256": "3831470365b184369bfd5aa7fbecb1c42a75dd2da0185e5a743eeb3bc75c0ed4"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -2532,12 +2520,6 @@
       "start": 6,
       "end": 19,
       "sha256": "7c924e62526240ab377ab9b8b551411bed57f683670dd2444fbda0613aec3aad"
-    },
-    {
-      "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
-      "start": 10,
-      "end": 33,
-      "sha256": "3831470365b184369bfd5aa7fbecb1c42a75dd2da0185e5a743eeb3bc75c0ed4"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -2685,12 +2667,6 @@
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
-      "start": 10,
-      "end": 33,
-      "sha256": "3831470365b184369bfd5aa7fbecb1c42a75dd2da0185e5a743eeb3bc75c0ed4"
-    },
-    {
-      "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
       "start": 105,
       "end": 128,
       "sha256": "930e154d4c1c7188857afa9cbd29f15e8f802b9a2a53a2876af8cc46a292dd42"
@@ -2802,12 +2778,6 @@
       "start": 31,
       "end": 42,
       "sha256": "e7940e10b46176de9bc85cf43a9df5c8c5db65b78cb9415cac3304e78a6b4e1b"
-    },
-    {
-      "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
-      "start": 10,
-      "end": 33,
-      "sha256": "3831470365b184369bfd5aa7fbecb1c42a75dd2da0185e5a743eeb3bc75c0ed4"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -2931,12 +2901,6 @@
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
-      "start": 10,
-      "end": 33,
-      "sha256": "3831470365b184369bfd5aa7fbecb1c42a75dd2da0185e5a743eeb3bc75c0ed4"
-    },
-    {
-      "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
       "start": 105,
       "end": 128,
       "sha256": "930e154d4c1c7188857afa9cbd29f15e8f802b9a2a53a2876af8cc46a292dd42"
@@ -3048,12 +3012,6 @@
       "start": 1,
       "end": 17,
       "sha256": "1575db7102eb870ab49eebcbdd4769bde107de0c76e904f4c64b1e2684fa9cfe"
-    },
-    {
-      "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
-      "start": 10,
-      "end": 33,
-      "sha256": "3831470365b184369bfd5aa7fbecb1c42a75dd2da0185e5a743eeb3bc75c0ed4"
     },
     {
       "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
@@ -7622,6 +7580,12 @@
       "sha256": "f8b048e5bc8e1d05dbed6c322c02cc80432d485679b031f49eb1dd584ffc965c"
     },
     {
+      "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
+      "start": 10,
+      "end": 33,
+      "sha256": "3831470365b184369bfd5aa7fbecb1c42a75dd2da0185e5a743eeb3bc75c0ed4"
+    },
+    {
       "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
       "start": 216,
       "end": 228,
@@ -9134,6 +9098,12 @@
       "sha256": "bcab2fd079d376c6bee3eb29910977cc64ebcf95a07cc2f78ae8a30edfdafe7d"
     },
     {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/common/global_qkv.cuh",
+      "start": 7,
+      "end": 16,
+      "sha256": "c5b098131071e471d0ef1008bd024c82365de25650cb25b5e19095ee39a5cf14"
+    },
+    {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_qkv_c1024_fp16.cu",
       "start": 6,
       "end": 12,
@@ -9462,6 +9432,12 @@
       "start": 12,
       "end": 29,
       "sha256": "bcab2fd079d376c6bee3eb29910977cc64ebcf95a07cc2f78ae8a30edfdafe7d"
+    },
+    {
+      "path": "csrc/kernel_impl/bottleneck_c1024_attention/common/global_qkv.cuh",
+      "start": 7,
+      "end": 16,
+      "sha256": "c5b098131071e471d0ef1008bd024c82365de25650cb25b5e19095ee39a5cf14"
     },
     {
       "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_qkv_c1024_fp8.cu",
@@ -10775,7 +10751,7 @@
   "pages": [
     {
       "slug": "index",
-      "title": "One kernel.\nFrom first principles to source."
+      "title": "One kernel.\nDesign it from first principles."
     },
     {
       "slug": "input_preprocess_window_c32_fp16",
@@ -11151,7 +11127,7 @@
     },
     {
       "slug": "measurement-method",
-      "title": "How the lessons are built and measured"
+      "title": "Design, implement, test, revise"
     }
   ],
   "lessons": [
