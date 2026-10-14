@@ -28,6 +28,65 @@ def fig(title, height, body, caption):
     return svg(title, f'0 0 1060 {height}', body, caption)
 
 
+def design_choices(kind, fp8):
+    """Calculate candidate geometry before introducing the source's chosen ownership."""
+    E=1 if fp8 else 2
+    if kind=='attention':
+        rows=[('32 keys / step','68','32',f'{4096*E+16:,}'),
+              ('64 keys / step: source','34','64',f'{8192*E+16:,}'),
+              ('128 keys / step','17','128',f'{16384*E+16:,}')]
+        heading=('Candidate (64 queries/warp)','Key iterations','Score words/lane','Two K/V stages + barriers, bytes')
+        prose='''<p>Start with one head and assign a set of query rows to a CTA for the entire reduction. Splitting keys between CTAs would require a second global reduction of both numerator and denominator, and would change their Half accumulation order. Instead, share each fetched K/V panel across several query warps. Four warps ×64 queries gives 256 query rows; at T=2160 this makes 32·ceil(2160/256)=288 CTAs, while 128-query CTAs would make 544. The smaller candidate supplies more blocks but rereads each head’s K/V in 17 query tiles instead of nine. A 512-query candidate reduces those reloads to five tiles, but doubles each warp’s persistent query/numerator and score state if the block still has four warps.</p>
+<p>Next choose how many keys to keep temporarily. For a 64-query warp, a Q×K score tile needs 64·K/64=K packed 32-bit words per lane. The table holds query ownership fixed and changes only the key tile. Larger K reduces loop/barrier iterations but increases score registers and shared capacity. The source’s 64-key panel sits between these alternatives; no comparative timings establish it as the unique optimum.</p>'''
+        nodes=[('Materialize whole head','2160² Half scores','9,331,200 bytes/head'),('Stream 64-key panels','64×64 scores/warp','64 score words/lane'),('Retain only reused state','Q, N and D survive','K/V and E retire each step')]
+    elif kind=='qkv':
+        rows=[('1 head / CTA; 128×96','544','48','4 warps: 32 rows ×96 columns each'),
+              ('2 heads / CTA; 128×192: source','272','96','4 warps: 64 rows ×96 columns each'),
+              ('4 heads / CTA; 128×384','136','192','4 warps: 128 rows ×96 columns each')]
+        heading=('Candidate output tile','XY CTAs at T=2160','Accumulator words/lane','One complete head per warp')
+        prose='''<p>A generic 128-column GEMM tile cuts through 96-column head records. It can leave Q or K’s 32-channel norm spread across ownership regions that must exchange data. Derive N from the epilogue instead: give each warp complete Q32/K32/V32 channel sets. One head is 96 columns, so consider one, two or four heads per CTA, keeping 128 token rows and four warps. The table counts Half accumulators as M·N/(128 threads·2 Half/word).</p>
+<p>Two heads produce a 128×192 tile with 96 accumulator words per lane. One head halves accumulator pressure but doubles XY blocks and repeated input-panel reads. Four heads halve XY blocks but use 192 accumulator words before operands, addresses and norm temporaries. The source chooses two heads, then halves the 1024-channel reduction: two K512 partials give 544 logical CTAs instead of 272. This creates another result-sized Half write/read path and ordering dependency. It supplies more independent matrix work only when the launch protocol allows useful concurrency; it does not remove accumulator registers.</p>'''
+        nodes=[('Ordinary GEMM partition','128 output columns','can cut a 96-column head'),('Make norm warp-local','warp owns Q32/K32/V32','CTA owns two complete heads'),('Expose more K work','two K512 partials','combine before norm / transpose')]
+    else:
+        N=4096 if kind=='expand' else 1024
+        rows=[('64×64','16',str(34*(N//64)),'32×32 per warp'),
+              ('128×128: source','64',str(17*(N//128)),'64×64 per warp'),
+              ('128×256','128',str(17*(N//256)),'64×128 per warp')]
+        heading=('Candidate output tile','Accumulator words/lane','XY CTAs at T=2160','Four warps, 2×2 arrangement')
+        prose=f'''<p>First give one CTA a rectangle of complete outputs, with no K split. For M rows and N columns, each A value can serve N outputs and each B value can serve M. Under an ideal once-per-CTA operand-load model the reduction consumes (M+N)·K·{E} operand bytes for 2·M·N·K operations. For a square tile this is M/{E} operations per operand byte: a 64×64 tile gives {64//E}, while 128×128 gives {128//E}. These are reuse calculations, not measured DRAM intensity; padding, caching, duplicate warp loads and publication traffic are omitted.</p>
+<p>Do not maximize that ratio without counting registers. With 128 threads and two Half results per word, the accumulator requirement is M·N/256 words per lane. Increasing 128×128 to 128×256 doubles C from 64 to 128 words; a 256×256 tile would need 256 words for C alone. Smaller tiles leave more operand/address capacity and more CTAs, but reload panels more often. The middle candidate is the source’s concrete compromise.</p>'''
+        if kind=='expand':
+            prose+='''<p>The selected 128×128 expansion already creates 17·32=544 independent output CTAs. Keep the entire K1024 reduction in each CTA: a K split would add global partial traffic and delay the nonlinear activation until all partials arrive. There is no existing split boundary to preserve for this entry. This is a reason to begin without splitting, not an A/B result proving split-K is slower.</p>'''
+            nodes=[('One scalar dot / output','A reread across 4096 columns','W reread across 2160 tokens'),('128×128 shared work','64 C words per lane','A reused over 128 columns'),('Keep complete reduction','K1024 in one CTA','activate before first publication')]
+        else:
+            K=1024 if kind=='projection' else 4096
+            prose+=f'''<p>For this narrower N1024 output, the same tile yields only 17·8=136 XY CTAs. A two-way K split would expose 272 logical CTAs; four slices expose 544, with {K//4} reduction channels per slice. This explains a plausible motivation for the source’s four-way decomposition, but the source does not record its tuning history. Splitting does not shrink C: each partial still has 128×128 results. It exchanges a shorter dot loop and more schedulable work for global Half partial updates, counters and a changed summation order. Once reproducing this deployed kernel, that four-part order becomes a numerical requirement.</p>'''
+            nodes=[('Whole-K candidate','136 independent XY tiles',f'each reduces K{K}'),('Keep the 128×128 result','64 C words per lane','split count does not shrink C'),('Four K slices','544 logical partial CTAs',f'K{K//4} each; ordered Half merge')]
+    table='<div class="table-scroll"><table><thead><tr>'+''.join('<th>'+escape(x)+'</th>' for x in heading)+'</tr></thead><tbody>'
+    table+=''.join('<tr>'+''.join('<td>'+escape(x)+'</td>' for x in row)+'</tr>' for row in rows)+'</tbody></table></div>'
+    inner=''
+    for i,(title,a,b) in enumerate(nodes):
+        x=20+i*350
+        inner+=rect(x,35,320,105,title+'|'+a+'|'+b,'tensor' if i==0 else 'compute')
+        if i<2:inner+=edge(x+320,87,x+344,87)
+    inner+=label(25,190,'Calculated candidates → ownership constraint → source implementation. Alternatives have not been benchmarked here.',14)
+    return prose+table+fig(f'Derive the {kind} work decomposition',220,inner,'This is a reconstruction of design reasoning from the operation and final source, not a claim about the original tuning history.')
+
+
+def budget_tradeoffs(kind, fp8):
+    E=1 if fp8 else 2
+    if kind=='attention':
+        return f'''<p>Allocate by lifetime before choosing a pipeline depth. Q ({16*E} words/lane), numerator (32) and denominator (1) must survive all key tiles. A current score/exponent needs 64 words, but K and V fragments are phase-local. A single K/V stage costs 2·64·32·{E}={4096*E:,} data bytes; two stages cost {8192*E:,}, and the two completion barriers add 16. A third matched stage would cost another {4096*E+8:,} bytes and require a new retirement schedule. Holding all 2176 keys would instead require {2*2176*32*E:,} K/V bytes per CTA before scores. The bounded ring is what makes storage independent of T.</p>
+<p>A 128-key score candidate alone would add 64 register words per lane. Keeping 512 queries per four-warp CTA would double Q/N/score arrays. Either can reduce global reloads or loop overhead, but neither is a free replacement inside the present 168-register cap. Start with the table below as a static feasibility calculation; the final measured allocation will test how the compiler overlaps lifetimes.</p>'''
+    step=64 if fp8 and kind in ('expand','contract') else 32
+    stage=128*step*E
+    stages=3 if kind=='expand' or kind=='contract' and not fp8 else 2
+    N=192 if kind=='qkv' else 128
+    bstage=N*step*E
+    return f'''<p>Choose the reduction step and storage role together. K{step} gives one A stage of 128·{step}·{E}={stage:,} bytes. {'FP8 doubles the channel step relative to Half while retaining the same 8192-byte A stage.' if fp8 and kind in ('expand','contract') else 'The step is a whole number of native MMA K panels, so producer copies need no partial-panel rearrangement.'} A synchronous one-stage candidate needs {stage+8:,} bytes including its barrier; two need {2*(stage+8):,}; three need {3*(stage+8):,}. Each added slot buys a possible future operand, not an automatic amount of latency hiding.</p>
+<p>Staging B as well is a plausible alternative: its CTA panel is {N}·{step}·{E}={bstage:,} bytes, so a {stages}-stage B ring would add {stages*bstage:,} data bytes to the allocation below. The source instead loads packed B directly into registers and reuses it over four M16 fragments. That avoids B shared copies and shared capacity, but the two token warps load the same B panel separately and depend on hardware caching. Keep both costs in the design ledger; a cache hint is not evidence that those duplicate loads are free.</p>'''
+
+
 def cta_geometry(kind, fp8):
     """Show one actual output tile inside the whole tensor and its K slice."""
     if kind == 'attention':
@@ -37,7 +96,7 @@ def cta_geometry(kind, fp8):
             edge(695,82,735,82)+rect(735,25,305,115,'Iteration j=2|queries 256…511 × keys 128…191|QKᵀ reduces 32 head channels|E×V reduces these 64 keys','compute')+
             rect(20,190,485,105,'Grid = (32 heads, ceil(2160/256), 1)|= (32, 9, 1): 288 CTA invocations|block = (32 lanes, 4 warps, 1) = 128 threads|last query CTA has 112 real queries','storage')+
             rect(545,190,495,105,'One CTA reuses a key/value panel across 256 queries|Q and output states remain private to that CTA|No inter-CTA numerator or denominator reduction|The 16 traversal-only keys contribute zero V','storage')+
-            label(25,345,'This is a concrete 4K workload calculation. Profiler launch evidence is separately labeled in the resource section.'),
+            label(25,345,'This is a concrete 4K workload calculation. Compare the predicted launch with the measured check in section 6.'),
             'The selected query 355 lies inside this CTA. The key axis is streamed; the query axis stays assigned to the CTA for the whole kernel.')
     k = 4096 if kind == 'contract' else 1024
     n = 4096 if kind == 'expand' else 3072 if kind == 'qkv' else 1024
@@ -118,9 +177,11 @@ def resource_budget(kind, fp8, path):
     table+=''.join(f'<tr><td>{escape(a)}</td><td>{escape(b)}</td></tr>' for a,b in rows)
     table+=f'<tr><td>Total declared shared allocation</td><td><strong>{shared:,} bytes/CTA</strong>, aligned to 512 bytes</td></tr>'
     table+=f'<tr><td>Register directive</td><td>__maxnreg__({cap}): compiler cap, not a measured count</td></tr></tbody></table></div>'
-    return (f'<p>The budget starts from the actual arrays. A uint4 is four 32-bit words; a Half2 word holds two values. This entry declares exactly <strong>{shared:,} shared bytes</strong> per CTA, including every 8-byte barrier. Alignment constrains the base address; it does not add 512 bytes to the declared size.</p>'+table+
-        '<p>Do not sum the rows into a claimed hardware register count. Inlining, scheduling, temporary values, lifetime overlap and spilling determine the compiled allocation. The source cap can force different code generation and does not establish occupancy. A resource report must identify this entry, precision, target GPU and binary; achieved occupancy additionally depends on the launch and runtime behavior.</p>'+
-        code(profile,*lines,'The profile expressions behind the budget')+code(path,6,18 if kind in ('contract','projection') else 12,'Public entry: register directive and shared storage declaration')+
+    return (budget_tradeoffs(kind,fp8)+f'<p>Now express the chosen candidate as actual source objects. A uint4 is four 32-bit words; a Half2 word holds two values. The resulting declaration is exactly <strong>{shared:,} shared bytes</strong> per CTA, including every 8-byte barrier. Alignment constrains the base address; it does not add 512 bytes to the declared size.</p>'+table+
+        '<p>Treat this table as a compile-time prediction. Do not add every register-array row into a hardware register count: phase-local arrays may share registers, while address arithmetic and conversions add temporaries. A cap can also cause spills. After implementing the trace, compare compiled registers, local-memory instructions and allocated shared bytes in <a href="#measured-resources">the measured resource checkpoint</a>. If C fits on paper but local stores appear, revise the live-range plan before increasing tile or stage size.</p>'+
+        code(profile,*lines,'The profile expressions behind the budget')+
+        (code('csrc/kernel_impl/bottleneck_c1024_attention/common/global_qkv.cuh',7,16,'QKV inherits the storage profile, then overrides its K split and accumulator shape') if kind=='qkv' else '')+
+        code(path,6,18 if kind in ('contract','projection') else 12,'Public entry: register directive and shared storage declaration')+
         '<!-- RESOURCE_EVIDENCE -->')
 
 

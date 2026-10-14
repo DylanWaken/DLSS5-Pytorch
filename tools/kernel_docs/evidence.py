@@ -167,6 +167,47 @@ def annotate_excerpts(body,actions):
     return re.sub(r'<details class="source"[^>]*>.*?</details>',augment,body,flags=re.S)
 
 
+def design_review(full, all_full, p):
+    """Close the design loop without manufacturing a historical tuning sweep."""
+    shared=value(full,'launch__shared_mem_per_block_static')
+    opcodes={}
+    for action in all_full:
+        for op,n in action['opcodes'].items():opcodes[op]=opcodes.get(op,0)+n
+    tensor=sum(opcodes.get(k,0) for k in ('HMMA','QMMA'))
+    local=sum(opcodes.get(k,0) for k in ('LDL','STL'))
+    actual=value(full,'memory_l1_wavefronts_shared')
+    ideal=value(full,'memory_l1_wavefronts_shared_ideal')
+    rows=[('Does the storage plan fit its declared budget?',
+           f'{p["shared"]:,} application shared bytes per CTA; compiler allocation is a later constraint.',
+           f'LaunchStats reports {number(shared)} static shared bytes. Compiled registers: {number(value(full,"launch__registers_per_thread"))} per thread.',
+           'The source shared-byte prediction matches. Use the allocation table below to account for rounding and driver bytes; then revisit tile size if residency is insufficient.')]
+    if p['kind'] in ('repack','counter'):
+        rows.append(('Is the minimal algorithm still minimal after compilation?',
+                     'Independent word stores/copies need no tensor instructions or application shared staging.',
+                     f'{number(tensor)} HMMA/QMMA instructions; {number(shared)} static shared bytes.',
+                     'Retain the direct path as the baseline. A wider copy or fused reset still requires correctness and controlled timing against it.'))
+    else:
+        rows.append(('Did the matrix formulation reach the intended execution engine?',
+                     'Lower the matrix contractions to warp-level tensor instructions while keeping the numerical boundary operations explicit.',
+                     f'{number(opcodes.get("HMMA",0))} HMMA and {number(opcodes.get("QMMA",0))} QMMA instructions across the captured physical launches.',
+                     'The engine is observed. Check source-mapped instructions and reduction counts below; a tensor opcode alone does not establish accuracy or speed.'))
+    rows.append(('Did the live-value plan stay entirely in registers?',
+                 'Try to keep the hot fragments in registers; do not assume C++ locals or a register cap guarantee this.',
+                 f'{number(local)} LDL/STL instructions across captured launches; first launch has {number(value(full,"sass__inst_executed_register_spilling",0))} instructions classified as spilling.',
+                 'Local traffic was observed: inspect explicit arrays and spill classification before reducing tile size or changing lifetimes.' if local else 'No executed local traffic was recorded for this fixture. Keep the compiler check when changing fusion, width or unrolling.'))
+    if actual is not None and ideal is not None and actual:
+        excess=actual-ideal
+        rows.append(('Did the shared addressing achieve ideal service?',
+                     'A candidate bank/lane mapping should avoid excess service; enumerate addresses before introducing a swizzle.',
+                     f'Instrumented shared service: actual {number(actual)}, ideal {number(ideal)}, excess {number(excess)}.',
+                     'This candidate does not achieve ideal service over the instrumented accesses. Attribute the excess to source before testing a different layout.' if excess else 'The instrumented accesses match ideal in this fixture. This supports the mapping without proving every access in every workload conflict-free.'))
+    rows.append(('Is the more complicated candidate faster?',
+                 'The proposed reuse, fusion or overlap should reduce total elapsed time without changing the operator contract.',
+                 'Only the final implementation was profiled here. Intermediate candidates in the lesson have no measured A/B timings.',
+                 'Open experiment: retain a correctness-checked baseline, change one mechanism, benchmark outside NCU, then profile the pair to explain the result.'))
+    return '<div class="design-review" id="design-review"><h3>Close the design loop: predictions, tests, decisions</h3><p>We have now assembled a candidate implementation. The following recorded experiments test its resource and instruction predictions. They validate parts of the design; they do not establish that the chosen tile or pipeline is optimal. Read a failed prediction as a reason to revise the candidate.</p>'+table(['Design question','Prediction before profiling','Recorded test / result','Engineering decision'],rows)+'</div>'
+
+
 def enrich(lesson,data):
     actions=data['kernels'][lesson['name']]
     full=next(a for a in actions if a['report'].endswith('-full'))
@@ -174,11 +215,15 @@ def enrich(lesson,data):
     all_full=[a for a in actions if a['report']==full['report']]
     all_source=[a for a in actions if a['report']==src['report']]
     fixture=data['reports'][full['report']]['fixtures'][lesson['name']]
-    body=annotate_excerpts(lesson['body'],all_full)
-    body=body.replace('<!-- RESOURCE_EVIDENCE -->',resource(full)).replace('<!-- NCU_EVIDENCE -->',trace(full,src,lesson['name'],all_full,all_source,lesson['map_profile']))
-    match=re.search(r'<h2 id="cta">.*?(?=<h2 )',body,re.S)
-    if not match:raise ValueError('Missing CTA section '+lesson['name'])
-    body=body[:match.end()]+launch(full,fixture)+body[match.end():]
+    body=lesson['body']
+    split=body.index('<h2 id="trace">')
+    body=body[:split]+annotate_excerpts(body[split:],all_full)
+    budget='<p class="design-checkpoint"><strong>Budget checkpoint.</strong> Treat the bytes and live values above as a design estimate. Compile the candidate before accepting it: registers, local traffic, allocation rounding and residency can overturn this choice. We will <a href="#measured-resources">compare the budget with the compiled allocation</a> after constructing the implementation.</p>'
+    validation=design_review(full,all_full,lesson['map_profile'])+launch(full,fixture)+resource(full)+trace(full,src,lesson['name'],all_full,all_source,lesson['map_profile'])
+    # The address/atlas enrichers can append teaching material after the marker.
+    # Finish that construction before the final prediction-versus-observation review.
+    if body.count('<!-- NCU_EVIDENCE -->')!=1:raise ValueError('Expected one validation marker: '+lesson['name'])
+    body=body.replace('<!-- RESOURCE_EVIDENCE -->',budget).replace('<!-- NCU_EVIDENCE -->','')+validation
     lesson['body']=body
 
 
@@ -187,7 +232,7 @@ def method_page(data):
     for name,actions in data['kernels'].items():
         full=next(a for a in actions if a['report'].endswith('-full'))
         rows.append((f'<a href="{name}.html#ncu-evidence"><code>{name}</code></a>',metric(full,'launch__registers_per_thread'),metric(full,'launch__shared_mem_per_block_static'),metric(full,'gpu__time_duration.sum'),f'<a href="evidence/{name}.json">JSON</a>'))
-    body='''<h2 id="standard">One lesson, six questions</h2><ol><li><strong>The whole problem:</strong> locate the model operation, name every tensor and define the equation. Follow a diagram before reading code.</li><li><strong>One CTA:</strong> use a concrete 4K field, block/grid dimensions, the exact output tile, reduction range and tail. Compare source derivation with the measured launch.</li><li><strong>Warp and thread:</strong> subdivide the CTA and identify the lane's register words, MMA operands, producer/consumer handoffs and address units.</li><li><strong>Resource budget:</strong> count source buffers and barriers, then compare compiled registers, shared allocation, occupancy limits and local traffic.</li><li><strong>Execution and scheduling:</strong> follow the control-flow diagram through prologue, steady state, drain and publication. Dependency arrows are not a prediction of hardware issue order.</li><li><strong>One token:</strong> carry one numerical coordinate through global memory, hardware caches, shared addresses/banks, lane registers and output. Read exact colored excerpts, check mapped SASS/NCU evidence, then reconstruct and validate.</li></ol>
+    body=(ROOT/'tools/kernel_docs/design-method.html').read_text(encoding='utf8')+'''
 <h2 id="method">What was actually measured</h2><p>Collected 13 October 2026 on NVIDIA RTX PRO 6000 Blackwell Workstation Edition, SM120, using Nsight Compute 2026.3.0 and CUDA 12.8.93. A fresh native SM120 library was built with <code>-O3 -lineinfo</code>. Every public entry has both a full report (including PM sampling) and a separate SourceCounters report. The full/source pair has a different replay pass set, so sample totals and instrumented timings need not agree between reports.</p><p>The trunk uses 3840×2160 requested image geometry, checkpoint weights, seeded random packed inputs scaled by .02, and five warmups. The model pads intermediate fields: level 0 is 1088×1920 and the C1024 bottleneck is 36×60 (2160 tokens). Only the first logical call of each public entry is selected by NVTX; dependencies still execute in schedule order. Any multi-launch split dispatch is retained in the raw report and per-entry JSON. Renderer entries are supplemental 2176×3840 fields, valid height 2160, with constant .25 current/color textures, no history/motion/depth/conditioning, point sampling, and seeded postprocess feature inputs. The supplemental C32 output-view uses 1088×1920 and phase 1. These fixtures exercise entries, not every optional branch or real-scene distribution.</p>
 <h2 id="limits">Which claims each kind of evidence supports</h2>'''
     body+=table(['Claim','Evidence','Limit'],[
@@ -206,4 +251,4 @@ def method_page(data):
 python tools/extract_kernel_doc_evidence.py profile/YOUR_NEW_RUN</code></pre><p>Use a new run directory containing <code>harness/</code>, <code>reports/</code>, <code>analysis/</code> and <code>REPORT.md</code>. The installed NCU version has no <code>source</code> set, so the source collection requests its sections explicitly. Open .ncu-repz files in Nsight Compute to inspect full metrics, source and SASS. The extraction uses <code>ncu_report</code>, not rounded CLI tables.</p>'''
     body+=table(['Raw report','Bytes','SHA-256'],[(f'<a download href="evidence/{key}.ncu-repz">{key}</a>',number(r['bytes']),'<code>'+r['sha256']+'</code>') for key,r in data['reports'].items()])
     body+='<h2 id="coverage">Measured coverage: all 81 public entries</h2><p>Register/shared budgets and instrumented duration for one identified physical launch per entry. Read each lesson for its workload, source mapping and interpretation. Durations are not a ranking of kernel quality: tensor sizes and work differ.</p>'+table(['Kernel lesson','Registers/thread','Static shared/CTA','Duration','Evidence'],rows)
-    return dict(slug='measurement-method',title='How the lessons are built and measured',summary='The six-step reading contract, reproducible SM120 profiles, source-correlated instruction evidence, and the limits of each claim.',body=body)
+    return dict(slug='measurement-method',title='Design, implement, test, revise',summary='The six-section design process, a controlled experiment ledger, reproducible SM120 profiles, and the evidence behind each decision.',body=body)

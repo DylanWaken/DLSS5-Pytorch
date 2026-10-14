@@ -20,6 +20,7 @@ from token_visuals import enrich
 from glossary import glossary_page
 from kernel_maps import enrich as enrich_kernel_maps, write_manifest as write_map_manifest
 from evidence import load as load_evidence, enrich as enrich_evidence, method_page
+from design_checks import run as check_design_models
 
 OUT = ROOT / 'docs/kernel-guide'
 
@@ -48,10 +49,11 @@ def main():
     arch = dict(slug='architecture',title='The network architecture',summary='The complete encoder–decoder: FFN and attention variants, tensor shapes, normalization, resolution transitions and precision boundaries.',body=(ROOT/'tools/kernel_docs/architecture.html').read_text(encoding='utf-8'))
     chapters += [arch, atlas(inventory), glossary_page()]
     evidence = load_evidence()
+    check_design_models(inventory,evidence)
     chapters += [method_page(evidence)]
     for chapter in chapters:
         if chapter['slug'] not in ('architecture','source-atlas','glossary','measurement-method'):
-            chapter['body'] = '<aside class="note">This is a family reference. For the six-section learning path and measured source walkthrough, choose an individual entry in the <a href="index.html#kernels">kernel catalog</a>. <a href="measurement-method.html">Read the evidence method</a>.</aside>' + chapter['body']
+            chapter['body'] = '<aside class="note">This is a family reference. For the forward design process, implementation milestones and measured validation, choose an individual entry in the <a href="index.html#kernels">kernel catalog</a>. <a href="measurement-method.html">Read the evidence method</a>.</aside>' + chapter['body']
     lessons=[]
     for module in ('lessons_frontend','lessons_windows','lessons_c512','lessons_layout','lessons_bottleneck'):
         lessons.extend(importlib.import_module(module).build_lessons(inventory))

@@ -22,6 +22,32 @@ def _edge(x, y, xx, yy):
     return f'<path d="M{x} {y} L{xx} {yy}" stroke="#576c83" stroke-width="2" fill="none" marker-end="url(#arrow)"/>'
 
 
+def design_choice(title, baseline, pressure, decision):
+    """Draw a derivation, explicitly distinct from a benchmark/tuning history."""
+    inner = ''
+    for i, (label, lines, fill) in enumerate((('Correct starting point', baseline, '#e9f2fb'),
+            ('Cost to account for', pressure, '#fff1cf'), ('Construction to try', decision, '#dff1e5'))):
+        x = 20 + i*375
+        inner += _box(x, 25, 340, [label] + list(lines), fill, 155)
+        if i < 2:
+            inner += _edge(x+340, 102, x+367, 102)
+    return svg(title, '0 0 1130 210', inner,
+               'An analytical design comparison. The alternatives are proposed constructions, not recorded benchmark runs.')
+
+
+def milestone_steps(fragment, specifications):
+    """Turn source explanation into build/verify milestones without losing deep links."""
+    for ident, title, motivation, check in specifications:
+        pattern = r'(<h[23] id="' + re.escape(ident) + r'">).*?(</h[23]>)(.*?)(?=<h[23] |$)'
+        def replace(m):
+            return (m[1] + title + m[2] + '<p><strong>Build next.</strong> ' + motivation + '</p>' + m[3] +
+                    '<p class="note"><strong>Before proceeding.</strong> ' + check + '</p>')
+        fragment, count = re.subn(pattern, replace, fragment, count=1, flags=re.S)
+        if count != 1:
+            raise ValueError('Missing source milestone: ' + ident)
+    return fragment
+
+
 def cta_diagram(c, fp8, mode='ordinary', frontend=False):
     b = 1 if fp8 else 2
     title = f'C{c} {"FP8" if fp8 else "FP16"} {mode}: one CTA owns one 8 × 8 window'
@@ -43,7 +69,7 @@ def cta_diagram(c, fp8, mode='ordinary', frontend=False):
     else:
         tail = ['No token exchange across CTAs', 'grid partitions image windows', 'Origin can shift the window by −4', 'out-of-field slots load zero']
     inner += _box(385, 211, 695, tail, '#f0e8fa',128)
-    return svg(title,'0 0 1110 365',inner,'The dimensions are derived from the launch and loop bounds. The measurement panel identifies the actual profiled invocation separately.')
+    return svg(title,'0 0 1110 365',inner,'The proposed whole-window decomposition is now concrete. Section 6 checks this construction against the source and recorded launch.')
 
 
 def ownership_diagram(c, fp8, frontend=None):
@@ -70,7 +96,7 @@ def scheduling_diagram(c, fp8, mode='ordinary', frontend=None):
     elif frontend=='output':
         nodes=[('global low + skip','spatial words + packed uint4'),('shuffle nearest expansion','low product; HalfFma skip'),('raw merge → FFN','publish separate operand copy')]
     elif mode=='upsample':
-        nodes=[('low projection 2C → C','4 × 4 tokens before repeat'),('shuffle repeat + skip merge','SM120 HFMA2; bound raw merge'),('publish merge; CTA barrier' if c>32 else 'publish merged X',f'{fmt} operand + residual lifetime')]
+        nodes=[('low projection 2C → C','4 × 4 tokens before repeat'),('shuffle repeat + skip merge','bound raw merge; check contraction'),('publish merge; CTA barrier' if c>32 else 'publish merged X',f'{fmt} operand + residual lifetime')]
     else:
         nodes=[('gather spatial view words' if mode=='input_view' else 'load four physical tiles','predicate loads; every lane stays'),('establish operand ownership',f'{fmt} working representation'),('publish X; CTA barrier' if c>64 else 'seed FFN residual','complete shared input for all branches' if c>64 else 'round scale × X before MMA')]
     if c==32:
@@ -97,13 +123,11 @@ def scheduling_diagram(c, fp8, mode='ordinary', frontend=None):
 def resource_section(c, fp8, path, frontend=None, down=False):
     chunks=1 if fp8 else 2; b=1 if fp8 else 2
     shared=2048 if frontend=='input' else (0 if c==32 else 64*c*b)
-    cap=192 if c==256 and not fp8 else 168
     shared_desc=('2 planes × 64 pixels × 16 B; one producer/consumer barrier' if frontend=='input' else
                  'No shared declaration; communication uses registers and warp instructions' if c==32 else
                  f'4 tiles × {c//32} panels × {chunks} K chunks × 32 lanes × 16 B; reused, not multiplied by stage count')
-    rows=[('Threads / warps per CTA',f'{c} / {c//32}','Launch shape (32,C/32,1)'),
-          ('Static shared bytes',f'{shared:,}',shared_desc),('Async barrier storage','0 B','No mbarrier objects, cp.async stages, or TMA descriptors in this body'),
-          ('Source register cap',str(cap),'__maxnreg__: compiler constraint, not actual allocation or occupancy'),
+    rows=[('Threads / warps in this construction',f'{c} / {c//32}','Ownership derived in section 3'),
+          ('Shared tensor budget',f'{shared:,} B',shared_desc),('Async barrier budget','0 B','The proposed synchronous schedule needs no mbarrier objects or copy-ring stages'),
           ('One C32 accumulator','8 × uint32 per lane','4 N8 groups × 2 token-row halves = 16 Half scalars'),
           ('One published C32 tile',f'{4*chunks} × uint32 per lane',f'{chunks} K{32 if fp8 else 16} fragments × 4 operand words'),
           ('One C32 weight tile',f'{8*chunks} × uint32 per lane',f'{chunks} K chunks × 4 N8 groups × 2 B words'),
@@ -118,19 +142,34 @@ def resource_section(c, fp8, path, frontend=None, down=False):
     if frontend=='output':rows.append(('Image head array','8 × uint32 per lane','4 tiles × 2 words, useful 4-channel results inside N8 output'))
     if down:rows.append(('Retained raw output','32 × uint32 per lane','Four C32 panels for exact Half pooling; wider CTAs distribute channel panels'))
     table='<div class="table-scroll"><table><thead><tr><th>Resource</th><th>Amount</th><th>Derivation / lifetime</th></tr></thead><tbody>'+''.join('<tr>'+''.join('<td>'+escape(v)+'</td>' for v in row)+'</tr>' for row in rows)+'</tbody></table></div>'
-    return '<h2 id="resources">4. Resource budget</h2><p>Budget software-owned storage before writing the pipeline. The table counts declared 32-bit words and byte arrays. The compiler may reuse, eliminate or spill these values; adding every row does not give the compiled register count.</p>'+table+code(path,1,17,'Entry declaration: register limit and initial storage')+'<p>L1 and L2 have no per-CTA allocation in this source. Cache-policy loads may hit those hardware-managed caches; their actual hit rates, local-memory spills and occupancy belong to the measured evidence below.</p><!-- RESOURCE_EVIDENCE -->'
+    if frontend == 'input':
+        derivation = ('A separate feature kernel would materialize 64×16×2=2048 bytes and its adapter consumer would read them again: 4096 logical global bytes per window. A shared plane needs the same 2048-byte capacity, but can die immediately after the adapter. Double buffering would reserve 4096 shared bytes without providing a second window of independent work in this single-window construction. First use one plane pair and one producer/consumer barrier.')
+    elif frontend == 'output':
+        derivation = ('Retaining all four raw C32 output tiles costs 4×8=32 accumulator words per lane. Applying the Half image head immediately reduces the retained result to 4×2=8 words per lane, one quarter of that source-array footprint. The latter includes padded N8 channels: its warp-wide capacity is 1024 bytes even though only 64×4×2=512 bytes of head values are useful. No cross-warp consumer exists, so a shared copy would add traffic and capacity without solving an ownership dependency.')
+    elif c == 32:
+        derivation = (f'A fully retained hidden activation needs 64×128×{b}={64*128*b:,} published bytes. Stream one hidden C32 panel across the four token tiles instead: 64×32×{b}={64*32*b:,} bytes of logical operand extent, a fourfold reduction. The implementation can consume one token tile at a time within that panel. This does not make the kernel free of register pressure: the four input tiles, raw FFN residuals and later Q/K/V still have overlapping lifetimes. A shared spill candidate would trade that pressure for explicit loads and stores; compilation and measurement must decide whether that trade is useful.')
+    else:
+        ownership = ('The token-parallel C64 FFN avoids shared branch outputs; only Z and attended heads require exchange.' if c == 64 else f'All {c//32} branches read X, then all output panels read branch results. Keeping separate shared X, branch, Z and attended arrays would cost {4*shared:,} bytes; their sequential lifetimes permit one {shared:,}-byte slab if reader completion is enforced.')
+        derivation = ownership + f' A two-stage copy ring would double the slab to {2*shared:,} bytes before any barrier metadata. It is a different candidate, not a free improvement. For attention, two retained attended C32 tiles cost 2×8=16 accumulator words per lane; four cost 32. C{c} uses the '+('four-tile candidate' if c == 256 else 'two-tile candidate')+' in the construction below. Larger batches reduce exchange rounds but lengthen live ranges; the budget alone cannot select the faster batch.'
+    figure = design_choice(f'C{c} {"FP8" if fp8 else "FP16"}: derive the live-storage budget',
+        ['Keep every intermediate', 'hidden: 64 × 128 per branch', 'Q/K/V plus score matrices'],
+        [f'published C32 tile: {4*chunks} words/lane', 'Half accumulator: 8 words/lane', 'overlap, not total declarations'],
+        [f'shared capacity: {shared:,} B', 'stream hidden panels in order', 'reuse only after last reader'])
+    return ('<h2 id="resources">4. Resource budget</h2><p>'+derivation+'</p>'+figure+
+            '<p>Translate the ownership into the source-array budget below. Each register entry counts 32-bit words per thread; the shared entry counts bytes per CTA. This is a liveness worksheet, not a sum to call the hardware register count. A compiler can eliminate, reuse or spill words. Keep a lifetime diagram when deciding which entries overlap.</p>'+table+
+            '<p>A compiler register ceiling is a separate constraint, not the resource consumption predicted here; inspect the declaration and compiled allocation in section 6. L1 and L2 are hardware-managed and have no private per-CTA capacity declaration. The design question is whether the saved global intermediates outweigh longer live ranges, shared transactions and synchronization; only the recorded binary and a matched alternative measurement can resolve that question.</p><!-- RESOURCE_EVIDENCE -->')
 
 
 def trace_intro(c, fp8, mode='ordinary', frontend=None):
     b=1 if fp8 else 2; tilebytes=16*c*b
     offset=tilebytes+(360 if fp8 else 864)
-    pub=('word 2, low E4M3 byte; native K24 corresponds to model channel 20' if fp8 else 'chunk 1, word 0, low Half; native K4 + chunk base16 = channel20')
+    pub=('word 2, low E4M3 byte; native K24 corresponds to model channel 20' if fp8 else 'chunk 1, word 0, low Half; native K4 + chunk base16 = channel 20')
     lead='<h2 id="trace">6. Trace one token through the source</h2><p>Fix an interior, unshifted window at origin (0,0), with an 8×8 field for the byte examples. Follow natural token 13, pixel (5,1), through tile 1 and physical token 21. Its tile row is 5. For C32 panel zero, accumulator lane 22 owns channels 20/21 in <code>r_Pair[2][0]</code>. Other channels of this token are distributed across lanes 20–23; matrix products mix channels, and attention then mixes token values. Following a token means following this output row and its dependencies, not preserving one scalar unchanged.</p>'
     if frontend=='input':
         incoming=['Texture pixel (5,1)','producer lane 13 → features','shared c4/5 word byte 216']
     elif frontend=='output':incoming=['Low (2,0), skip (5,1)','source lane 10 → lane 22','HalfMul then HalfFma']
     else:incoming=['Global token (5,1)',f'c20 fragment word: +{offset} B','packed tile index 1, panel 0']
-    inner=_box(20,30,320,incoming,'#fff1cf',115)+_box(395,30,320,['Lane 22: tile1 / row5','FFN output → Q row5','attention sees all 64 keys'],'#dff1e5',115)+_box(770,30,320,['P × V → projection','same output token (5,1)','packed store / transition'],'#eee4f6',115)
+    inner=_box(20,30,320,incoming,'#fff1cf',115)+_box(395,30,320,['Lane 22: tile 1 / row 5','FFN output → Q row 5','attention sees all 64 keys'],'#dff1e5',115)+_box(770,30,320,['P × V → projection','same output token (5,1)','packed store / transition'],'#eee4f6',115)
     inner+=_edge(340,87,388,87)+_edge(715,87,763,87)
     lead+=svg(f'C{c} {"FP8" if fp8 else "FP16"} {mode}: the concrete token followed below','0 0 1120 180',inner)
     lead+=f'<p>Whenever this token is in the native published A layout, channel 20 is in {pub}. For an ordinary packed allocation, its containing uint32 starts at <code>tileBytes + {360 if fp8 else 864} = {offset}</code> bytes. The allocation base is excluded. View inputs, low planes, feature planes and surfaces use their own equations below; this packed offset must not be applied to those storage layouts.</p>'
@@ -142,12 +181,12 @@ def trace_intro(c, fp8, mode='ordinary', frontend=None):
 
 def trace_checkpoint(stage,c,fp8,mode='ordinary'):
     if stage=='ffn':
-        msg=('Warp 0 retains tile 1 and streams the four hidden panels.' if c==32 else 'Warp 0 owns this token during C64 FFN, computes both branches and both output panels; only afterward does head ownership change.' if c==64 else f'The token is read by every one of the {c//32} branch warps. Each publishes its branch panel; the mixing matrix combines them into output panel zero, including lane22 channel20.')
-        return '<p class="note"><strong>Token checkpoint — FFN.</strong> '+msg+' The selected pair lives in r_Ffn or r_Output tile1/column2/rowHalf0. Each hidden panel contributes before it dies; the raw full hidden vector is never materialized in global memory.</p>'
-    if stage=='qkv':return '<p class="note"><strong>Token checkpoint — attention.</strong> Query tile1,row5 represents pixel(5,1). Lane22 holds Q channels20/21. In its score accumulator, column group2 instead means key positions20/21: the column axis changed from channels to keys. Bias and all 64 K rows contribute to this same query row. The row-sum shuffles use lanes20–23, preserving query identity while combining columns. P×V restores a 32-channel result for that query.</p>'
-    msg='The final projection restores this same tile1,row5/channel20 location. '
+        msg=('Warp 0 retains tile 1 and streams the four hidden panels.' if c==32 else 'Warp 0 owns this token during C64 FFN, computes both branches and both output panels; only afterward does head ownership change.' if c==64 else f'The token is read by every one of the {c//32} branch warps. Each publishes its branch panel; the mixing matrix combines them into output panel zero, including lane 22 channel 20.')
+        return '<p class="note"><strong>Token checkpoint — FFN.</strong> '+msg+' The selected pair lives in r_Ffn or r_Output tile 1/column2/rowHalf 0. Each hidden panel contributes before it dies; the raw full hidden vector is never materialized in global memory.</p>'
+    if stage=='qkv':return '<p class="note"><strong>Token checkpoint — attention.</strong> Query tile 1,row 5 represents pixel(5,1). Lane22 holds Q channels 20/21. In its score accumulator, column group2 instead means key positions20/21: the column axis changed from channels to keys. Bias and all 64 K rows contribute to this same query row. The row-sum shuffles use lanes20–23, preserving query identity while combining columns. P×V restores a 32-channel result for that query.</p>'
+    msg='The final projection restores this same tile 1,row 5/channel 20 location. '
     if mode in ('downsample','input-down'):msg+='Its published high skip remains at pixel(5,1), while raw Y(5,1) is the bottom-right member of the cell [(4,0),(5,0),(4,1),(5,1)] producing low pixel(2,0). The three Half adds and multiply by 1/4 happen before pooled publication.'
-    elif mode=='output_view':msg+='For an 8×8 output view, its word is at plane2,pixel(5,1),component2 (FP16) or plane1,pixel(5,1),component2 (FP8), before applying the actual view extents.'
+    elif mode=='output_view':msg+='For an 8×8 output view, its word is at plane 2,pixel(5,1),component 2 (FP16) or plane 1,pixel(5,1),component 2 (FP8), before applying the actual view extents.'
     else:msg+='Publication changes the fragment representation; the bounded vector store changes storage. These are distinct operations.'
     return '<p class="note"><strong>Token checkpoint — final consumer.</strong> '+msg+'</p>'
 
@@ -160,10 +199,10 @@ def instruction_ledger(c,fp8,frontend=None,mode='ordinary'):
                 '__ldcg(uint4) native tile/skip inputs; __ldca(uint4) packed B/bias')
     rows=[('Packed operands and weights',input_load,
            'One aligned 16-byte vector per lane. Reusing B over token tiles removes repeated source loads; cache hit rate must be measured.'),
-          ('Matrix work',mma,'A: 4 words/lane; B: 2; accumulator: 2 Half2 words per N8. All32 lanes collectively execute one instruction.'),
+          ('Matrix work',mma,'A: 4 words/lane; B: 2; accumulator: 2 Half 2 words per N8. All32 lanes collectively execute one instruction.'),
           ('Activation / residual','HalfMin → HalfMax → HalfAbs → two HalfFma → HalfMul; HalfMul residual seed','The activation uses packed Half arithmetic; ordinary FFN/attention residual products seed the MMA accumulator. A transition merge has a separate contraction check below.'),
           ('Channel reduction','shfl.sync.bfly.b32 + rsqrt.approx.ftz.f32','XOR2 then XOR1 gathers the four lanes for one token; the widened inverse rounds back to Half.'),
-          ('Attention row reduction','shfl.sync.idx.b32 + rcp.approx.ftz.f32','Keep the ordered lane sum over all64 keys. '+('Paired C32 query tiles redistribute reciprocal ownership.' if fp8 and c==32 else 'Single-query normalization preserves each row’s source reduction tree.')),
+          ('Attention row reduction','shfl.sync.idx.b32 + rcp.approx.ftz.f32','Keep the ordered lane sum over all 64 keys. '+('Paired C32 query tiles redistribute reciprocal ownership.' if fp8 and c==32 else 'Single-query normalization preserves each row’s source reduction tree.')),
           ('V orientation','movmatrix.sync.trans.aligned.m8n8.b16','Transpose register-held Half values before making the probability × value B operand; no global V transpose.'),
           ('Publication', 'cvt.rn.satfinite.e4m3x2.f16x2 + mov.b32' if fp8 else 'register word selection',
            'FP8 round-and-pack obeys the model/native-K permutation; Half publication preserves value bits.'),

@@ -5,6 +5,15 @@ import re
 
 # id, label, aliases, short hover definition, additional reading context.
 GROUPS = {
+    'Design reasoning and experiments': [
+        ('baseline', 'Baseline', 'baselines', 'A simple, correctness-checked implementation used as the starting point for a controlled comparison.', 'A scalar oracle defines the desired result, but it is not automatically a measured GPU performance baseline. The lessons distinguish these roles.'),
+        ('oracle', 'Oracle', 'oracles', 'A reference computation or rule used to judge whether a candidate produces the required result.', 'For packed permutations compare exact bits. For arithmetic, preserve the specified rounding boundaries and state the comparison tolerance.'),
+        ('hypothesis', 'Hypothesis', 'hypotheses', 'A prediction about why a design change should help, stated so an experiment can reject it.', 'For example: an additional shared slot may hide copy latency, but its storage cost may reduce residency. Measure both effects before keeping the change.'),
+        ('invariant', 'Invariant', 'invariants', 'A property that must remain true while the implementation changes, such as one writer per output or no reuse of a live buffer.', 'Prove the invariant from ownership and dependencies, then use targeted tests to catch implementation mistakes. A performance counter alone does not prove correctness.'),
+        ('arithmetic-intensity', 'Arithmetic intensity', '', 'The number of arithmetic operations per byte moved at a specified storage boundary.', 'Always state which operations and bytes are counted. Logical payload intensity, per-CTA load intensity and measured DRAM intensity can differ because of reuse, caches and padding.'),
+        ('lower-bound', 'Lower bound', 'lower bounds', 'A minimum cost implied by stated assumptions, before additional implementation and hardware overheads.', 'An accumulator-word lower bound is not the compiled register allocation. Useful tensor bytes are not necessarily measured memory traffic.'),
+        ('controlled-comparison', 'Controlled comparison', 'A/B comparison|A/B experiment', 'An experiment that changes one mechanism while keeping the workload, correctness contract and measurement procedure fixed.', 'Time the candidates outside profiler instrumentation, report variation, and use matching profiler runs to explain a difference. Final-kernel counters alone cannot establish a speedup over an unmeasured alternative.'),
+    ],
     'Measurement and evidence': [
         ('ncu', 'NCU', 'Nsight Compute', 'NVIDIA’s CUDA kernel profiler. It measures compiled launch resources, hardware counters, sampled warp states and source-correlated instructions.', 'A report describes a particular GPU, binary, workload and replay protocol. It does not prove numerical correctness or track a semantic model token.'),
         ('sass', 'SASS', '', 'The machine instructions executed by NVIDIA GPU hardware after PTX compilation.', 'One PTX operation may lower to multiple SASS instructions. Dynamic opcode totals count executed warp instructions across the measured launch.'),

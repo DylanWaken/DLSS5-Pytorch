@@ -20,6 +20,18 @@ def arrow(x1,y1,x2,y2):
     return f'<path d="M{x1},{y1}L{x2},{y2}" stroke="#577783" stroke-width="2"/><polygon points="{x2},{y2} {left[0]},{left[1]} {right[0]},{right[1]}" fill="#577783"/>'
 
 
+def candidates(name, alternatives, invariant):
+    """Calculated design alternatives, deliberately separate from measured results."""
+    b=txt(25,30,'Design worksheet: compare ownership before writing the kernel',18)
+    for i,(title,details) in enumerate(alternatives):
+        x=25+345*i
+        b+=rect(x,58,320,164,[title,*details], '#fff0d4' if i==1 else '#e3f2eb')
+        if i<2:b+=arrow(x+322,140,x+341,140)
+    b+=txt(25,255,invariant,15)
+    b+=txt(25,284,'Counts are derived work/resource sizes. Alternative execution times have not been measured.',14)
+    return svg(name+' — candidate ownership and cost worksheet','0 0 1060 310',b,'The middle candidate is implemented in this source. The other candidates expose a design tradeoff; their throughput is an open experiment, not a benchmark claim.')
+
+
 def cta(name, kind, warps, rows, channels, grid, detail):
     """Spatial tiles × channel/head bands. Its dimensions are the entry's dimensions."""
     b=txt(25,28,grid,18)

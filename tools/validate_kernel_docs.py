@@ -94,6 +94,12 @@ def main():
         for section in ('problem','cta','warp','schedule','trace'):
             if '<svg' not in sections.get(section,''):errors.append(f'{path.name}: {section} needs a specialized SVG')
         if 'measured-resources' not in pages[path].ids or 'ncu-evidence' not in pages[path].ids:errors.append(f'{path.name}: missing measured evidence')
+        for ident in ('design-review','measured-resources','ncu-evidence'):
+            if f'id="{ident}"' not in sections.get('trace',''):errors.append(f'{path.name}: {ident} must validate the implementation in section 6')
+        if 'id="design-review"' in body and body.rfind('data-kernel-map=')>body.index('id="design-review"'):
+            errors.append(f'{path.name}: finish the storage/tiling construction before final validation')
+        if any('class="measured-evidence"' in sections.get(key,'') for key in expected_sections[:-1]):
+            errors.append(f'{path.name}: measured tables precede the design/implementation sequence')
         if '<!-- RESOURCE_EVIDENCE -->' in body or '<!-- NCU_EVIDENCE -->' in body:errors.append(f'{path.name}: unfilled evidence placeholder')
         if f'href="{lesson["slug"]}.html"' not in index:errors.append(f'{path.name}: not discoverable in catalog')
         if 'class="pseudocode"' not in body:errors.append(f'{path.name}: missing teaching algorithm')
@@ -108,6 +114,13 @@ def main():
         excerpt='\n'.join(lines[snip['start']-1:snip['end']])
         if hashlib.sha256(excerpt.encode()).hexdigest()!=snip['sha256']:errors.append(f'Excerpt drift: {snip}')
     maps=json.loads((GUIDE/'kernel-map-manifest.json').read_text(encoding='utf-8'))
+    design_checks=json.loads((GUIDE/'evidence/design-checks.json').read_text(encoding='utf8'))
+    if set(design_checks['kernels'])!=set(entries):errors.append('Design checks must cover every resource prediction')
+    if design_checks['source_revision']!=manifest['source_revision']:errors.append('Design checks use a different source revision')
+    for name,record in design_checks['kernels'].items():
+        if record['source_shared_bytes']!=record['measured_static_shared_bytes']:errors.append(f'Design resource prediction mismatch: {name}')
+        for count in record.get('tensor_instruction_counts',[]):
+            if count['predicted']!=count['observed']:errors.append(f'Design MMA prediction mismatch: {name}')
     profiles={p['name']:p for p in maps['profiles']}
     if set(profiles)!=set(entries):errors.append('Per-kernel SVG profiles do not cover the public roster')
     by_kernel={name:[] for name in entries}

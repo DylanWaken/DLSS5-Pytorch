@@ -30,3 +30,4 @@ pre{--syn-comment:#526b5d;--syn-keyword:#7137a8;--syn-type:#0b6970;--syn-functio
 .measured-evidence{border-left:4px solid #278d76;background:#f3faf7;padding:1.1rem 1.35rem;margin:1.8rem 0;border-radius:0 10px 10px 0}
 .measured-evidence h3{margin-top:.3rem}.measured-evidence td code{overflow-wrap:anywhere;white-space:normal;font-size:.76rem}.measured-evidence td{vertical-align:top}
 .source-evidence{font-size:.86rem;background:#eef6f3;border:1px solid #c5dfd4;border-radius:7px;padding:.7rem 1rem;margin:-.5rem 0 1.6rem}.source-evidence summary{cursor:pointer;font-weight:650}.source-evidence.muted{color:#62716e;background:#f6f8f7}.source-evidence code{overflow-wrap:anywhere;white-space:normal}
+.design-checkpoint{border-left:4px solid #bb753d;background:#fff6e8;padding:16px 21px;font-size:15px}.design-review{border-top:3px solid #278d76;margin-top:45px;padding-top:16px}.design-review td{vertical-align:top;font-size:14px}.design-review th{min-width:155px}
