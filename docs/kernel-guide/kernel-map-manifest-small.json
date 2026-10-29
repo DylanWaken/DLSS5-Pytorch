@@ -1,0 +1,308 @@
+{
+  "profiles": [
+    {
+      "name": "small_global_attention_chained_c1024_fp16",
+      "source": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+      "args": "",
+      "fp8": false,
+      "e": 2,
+      "ik": 16,
+      "fmt": "Half",
+      "kind": "small-global-attention",
+      "c": 1024,
+      "stages": [
+        {
+          "label": "Retain Q once",
+          "m": 256,
+          "k": 0,
+          "n": 32,
+          "storage": "registers",
+          "detail": "four M16 query tiles / warp",
+          "scope": "one CTA / one head"
+        },
+        {
+          "label": "Stage K and V",
+          "m": 64,
+          "k": 0,
+          "n": 32,
+          "storage": "shared",
+          "detail": "two matched K/V slots; reuse across 256 queries",
+          "scope": "one CTA / one key tile"
+        },
+        {
+          "label": "Q \u00d7 K\u1d40 + Half E",
+          "m": 256,
+          "k": 32,
+          "n": 64,
+          "storage": "registers",
+          "detail": "Half QK accumulator and packed Half surrogate",
+          "scope": "one CTA / one key tile"
+        },
+        {
+          "label": "Surrogate E + row sum",
+          "m": 256,
+          "k": 0,
+          "n": 64,
+          "storage": "registers",
+          "detail": "each Half E widens before its first FP32 add",
+          "scope": "one CTA / one key tile"
+        },
+        {
+          "label": "Publish E; FP32 E \u00d7 V",
+          "m": 256,
+          "k": 64,
+          "n": 32,
+          "storage": "registers",
+          "detail": "64 FP32 D values/lane persist across all key tiles",
+          "scope": "one CTA / one key tile"
+        },
+        {
+          "label": "Tail correction + divide",
+          "m": 256,
+          "k": 0,
+          "n": 32,
+          "storage": "global",
+          "detail": "FP32 correction, FP32 reciprocal, one Half/E4M3 publication rounding",
+          "scope": "one CTA / final output"
+        }
+      ],
+      "splits": 1,
+      "slots": 2,
+      "slotbytes": 4096,
+      "step": 32,
+      "shared": 16400,
+      "input": "Q / K / transposed V",
+      "output": "attended C1024 token layout",
+      "shared_kind": "kv",
+      "matrix": "K\u1d40 (not learned weights)",
+      "m_axis": "tokens",
+      "n_axis": "keys",
+      "notes": [
+        "Grid X selects one of 32 heads; Y selects a 256-query block.",
+        "At 4K: T=2160; the key traversal has 34 tiles = 2176 positions.",
+        "64 FP32 numerator values + 2 FP32 denominators per lane; __maxnreg__(208) is a source cap, not the compiled allocation."
+      ],
+      "heads": 32,
+      "m": 2160,
+      "n": 2160,
+      "k": 32,
+      "cm": 256,
+      "cn": 64,
+      "wm": 64,
+      "wn": 64,
+      "warps": 4,
+      "focus": "Q \u00d7 K\u1d40 and FP32 P \u00d7 V for one streamed key tile",
+      "numerator_format": "FP32",
+      "denominator_format": "FP32",
+      "accumulator": "FP32",
+      "pv_mma": "mma.sync.aligned.m16n8k16.row.col.f32.f16.f16.f32"
+    },
+    {
+      "name": "small_global_attention_chained_c1024_fp8",
+      "source": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+      "args": "",
+      "fp8": true,
+      "e": 1,
+      "ik": 32,
+      "fmt": "E4M3",
+      "kind": "small-global-attention",
+      "c": 1024,
+      "stages": [
+        {
+          "label": "Retain Q once",
+          "m": 256,
+          "k": 0,
+          "n": 32,
+          "storage": "registers",
+          "detail": "four M16 query tiles / warp",
+          "scope": "one CTA / one head"
+        },
+        {
+          "label": "Stage K and V",
+          "m": 64,
+          "k": 0,
+          "n": 32,
+          "storage": "shared",
+          "detail": "two matched K/V slots; reuse across 256 queries",
+          "scope": "one CTA / one key tile"
+        },
+        {
+          "label": "Q \u00d7 K\u1d40 + Half E",
+          "m": 256,
+          "k": 32,
+          "n": 64,
+          "storage": "registers",
+          "detail": "Half QK accumulator and packed Half surrogate",
+          "scope": "one CTA / one key tile"
+        },
+        {
+          "label": "Surrogate E + row sum",
+          "m": 256,
+          "k": 0,
+          "n": 64,
+          "storage": "registers",
+          "detail": "each Half E widens before its first FP32 add",
+          "scope": "one CTA / one key tile"
+        },
+        {
+          "label": "Publish E; FP32 E \u00d7 V",
+          "m": 256,
+          "k": 64,
+          "n": 32,
+          "storage": "registers",
+          "detail": "64 FP32 D values/lane persist across all key tiles",
+          "scope": "one CTA / one key tile"
+        },
+        {
+          "label": "Tail correction + divide",
+          "m": 256,
+          "k": 0,
+          "n": 32,
+          "storage": "global",
+          "detail": "FP32 correction, FP32 reciprocal, one Half/E4M3 publication rounding",
+          "scope": "one CTA / final output"
+        }
+      ],
+      "splits": 1,
+      "slots": 2,
+      "slotbytes": 2048,
+      "step": 32,
+      "shared": 8208,
+      "input": "Q / K / transposed V",
+      "output": "attended C1024 token layout",
+      "shared_kind": "kv",
+      "matrix": "K\u1d40 (not learned weights)",
+      "m_axis": "tokens",
+      "n_axis": "keys",
+      "notes": [
+        "Grid X selects one of 32 heads; Y selects a 256-query block.",
+        "At 4K: T=2160; the key traversal has 34 tiles = 2176 positions.",
+        "64 FP32 numerator values + 2 FP32 denominators per lane; __maxnreg__(208) is a source cap, not the compiled allocation."
+      ],
+      "heads": 32,
+      "m": 2160,
+      "n": 2160,
+      "k": 32,
+      "cm": 256,
+      "cn": 64,
+      "wm": 64,
+      "wn": 64,
+      "warps": 4,
+      "focus": "Q \u00d7 K\u1d40 and FP32 P \u00d7 V for one streamed key tile",
+      "numerator_format": "FP32",
+      "denominator_format": "FP32",
+      "accumulator": "FP32",
+      "pv_mma": "mma.sync.aligned.m16n8k32.row.col.f32.e4m3.e4m3.f32"
+    }
+  ],
+  "diagrams": [
+    {
+      "kernel": "small_global_attention_chained_c1024_fp16",
+      "kind": "flow",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp16/flow.svg",
+      "sha256": "8e501220e4871e2d58c3e73c828159d975c8d364561a124a02458199e8fc56e5"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp16",
+      "kind": "address-bank",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp16/address-bank.svg",
+      "sha256": "5488a3a34b4459294f9cb3bfec7c004286e43ec1a69cc193e45dcb5735a8461e"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp16",
+      "kind": "tiling",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp16/tiling.svg",
+      "sha256": "995a6c6fd0c7be62447c8cffe79d84ac7ed41b3ae741de3d361860383a138f2f"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp16",
+      "kind": "denominator-gather",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp16/denominator-gather.svg",
+      "sha256": "2d10faae89ecb33c8d7db76a30fa7984f3ee3a7c5c69a2a50c27829982629e81"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp16",
+      "kind": "ownership",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp16/ownership.svg",
+      "sha256": "b0ff4bf0fe23da9426af758a4ed183f908346ca599ad965be1c4ccb718964b65"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp16",
+      "kind": "storage",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp16/storage.svg",
+      "sha256": "7a3bda25a91a00c0a40de23a3131a6da064045408722be71867ab147eebb0ce6"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp16",
+      "kind": "ring",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp16/ring.svg",
+      "sha256": "15217ccf2c63390eb19bc85490574f88e1859b86d7ad2c734dc0cf9b61003174"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp16",
+      "kind": "publication-map",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp16/publication-map.svg",
+      "sha256": "285dc6e50fa5a9fb39445883dccdfa76d14784b0fce41434ea94a108b5f105d3"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp16",
+      "kind": "token-path",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp16/token-path.svg",
+      "sha256": "27e0ad431a31a985b8c3357f819328550bd941eb32b6e748db0af6d8f1633c94"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp8",
+      "kind": "flow",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp8/flow.svg",
+      "sha256": "206aae19ad1c61a1be9cdd52f4a53d500ba0601288c4dc4786d8bc12456bebbc"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp8",
+      "kind": "address-bank",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp8/address-bank.svg",
+      "sha256": "300dec7acb3fc633a1d065e0c2f7d3fb2aee213d0a2445a7475a422b6c9e6aa9"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp8",
+      "kind": "tiling",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp8/tiling.svg",
+      "sha256": "0074adfb91fac3a0dc076a0bc05c68dc12ba07c5ed85b8e39cbcf82f901c5bbb"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp8",
+      "kind": "denominator-gather",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp8/denominator-gather.svg",
+      "sha256": "3dbb05000f854362e240134a367969713851158601dbe9a4e31a88cea9e47d7d"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp8",
+      "kind": "ownership",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp8/ownership.svg",
+      "sha256": "6ac84b7a3af30f2d09fa00a826a6b792ae00dcee7a04cee05f59b43fd35e9266"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp8",
+      "kind": "storage",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp8/storage.svg",
+      "sha256": "ed1043de80070807ad6eb43d9a5f08538ed257c16cec3aca4c42169288a5a486"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp8",
+      "kind": "ring",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp8/ring.svg",
+      "sha256": "3bf1133993189dcb52ad657cdb56f2ac6b25cd6ced1e4fc00be886dcbed2f9d2"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp8",
+      "kind": "publication-map",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp8/publication-map.svg",
+      "sha256": "deee65a9d47147e11e4b39e1e1160e6467586ea8e2100822109a22b60d16d704"
+    },
+    {
+      "kernel": "small_global_attention_chained_c1024_fp8",
+      "kind": "token-path",
+      "path": "assets/kernels/small_global_attention_chained_c1024_fp8/token-path.svg",
+      "sha256": "556d98fe6896e52c3a1117ce1f631611832841c5ef6e8f38af5bbf412a0c67c4"
+    }
+  ]
+}

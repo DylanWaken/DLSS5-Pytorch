@@ -1,0 +1,1255 @@
+{
+  "step": "sm120-safe-attention-build-smoke",
+  "status": "pass",
+  "environment": {
+    "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+    "capability": [
+      12,
+      0
+    ],
+    "torch": "2.8.0+cu128",
+    "torchCuda": "12.8"
+  },
+  "binary": {
+    "path": "D:\\Research\\DLSSNR-PyTorch\\dlssnr\\_C_sm120.cp311-win_amd64.pyd",
+    "sha256": "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+    "bytes": 18366464,
+    "architectures": [
+      120
+    ]
+  },
+  "schemas": {
+    "small_global_attention_chained_c1024_fp16": {
+      "schema": "dlssnr::small_global_attention_chained_c1024_fp16(Tensor[] inputs, Tensor(a!)[] outputs, int handle) -> ()",
+      "hasCUDAKernel": true,
+      "hasMetaKernel": true
+    },
+    "small_global_attention_chained_c1024_fp8": {
+      "schema": "dlssnr::small_global_attention_chained_c1024_fp8(Tensor[] inputs, Tensor(a!)[] outputs, int handle) -> ()",
+      "hasCUDAKernel": true,
+      "hasMetaKernel": true
+    }
+  },
+  "classes": {
+    "SmallDeploymentPlan_fp8": true,
+    "SmallDeploymentPlan_fp16": true,
+    "DeploymentPlan_fp8": true,
+    "DeploymentPlan_fp16": true
+  },
+  "rosters": {
+    "smallFp8": 66,
+    "smallFp16": 66,
+    "smallFp8Bytes": 66,
+    "smallFp16Bytes": 66,
+    "legacyFp8": 142,
+    "legacyFp16": 142
+  },
+  "runtimeResources": {
+    "fp8": {
+      "resourceEntries": 170,
+      "rows": [
+        [
+          168,
+          0,
+          0,
+          384,
+          12
+        ],
+        [
+          168,
+          0,
+          0,
+          384,
+          12
+        ],
+        [
+          155,
+          4096,
+          0,
+          384,
+          6
+        ],
+        [
+          161,
+          4096,
+          0,
+          384,
+          6
+        ],
+        [
+          162,
+          8192,
+          0,
+          384,
+          3
+        ],
+        [
+          167,
+          8192,
+          0,
+          384,
+          3
+        ],
+        [
+          164,
+          16384,
+          0,
+          384,
+          1
+        ],
+        [
+          167,
+          16384,
+          0,
+          384,
+          1
+        ],
+        [
+          161,
+          8208,
+          0,
+          384,
+          3
+        ],
+        [
+          128,
+          12312,
+          24,
+          512,
+          4
+        ],
+        [
+          159,
+          8208,
+          0,
+          384,
+          3
+        ],
+        [
+          98,
+          12312,
+          0,
+          512,
+          2
+        ],
+        [
+          108,
+          8208,
+          0,
+          512,
+          2
+        ],
+        [
+          122,
+          12312,
+          0,
+          512,
+          4
+        ],
+        [
+          140,
+          8208,
+          0,
+          384,
+          3
+        ],
+        [
+          98,
+          12312,
+          0,
+          512,
+          2
+        ],
+        [
+          20,
+          0,
+          0,
+          1024,
+          6
+        ],
+        [
+          10,
+          0,
+          0,
+          1024,
+          6
+        ],
+        [
+          139,
+          24600,
+          0,
+          384,
+          3
+        ],
+        [
+          150,
+          16400,
+          0,
+          384,
+          3
+        ],
+        [
+          159,
+          8208,
+          0,
+          384,
+          3
+        ],
+        [
+          195,
+          8208,
+          0,
+          256,
+          2
+        ],
+        [
+          116,
+          8208,
+          0,
+          512,
+          4
+        ],
+        [
+          20,
+          0,
+          0,
+          1024,
+          6
+        ],
+        [
+          124,
+          2064,
+          0,
+          512,
+          8
+        ],
+        [
+          121,
+          12312,
+          0,
+          512,
+          4
+        ],
+        [
+          161,
+          16384,
+          0,
+          384,
+          1
+        ],
+        [
+          160,
+          16384,
+          0,
+          384,
+          1
+        ],
+        [
+          161,
+          8192,
+          0,
+          384,
+          3
+        ],
+        [
+          161,
+          8192,
+          0,
+          384,
+          3
+        ],
+        [
+          161,
+          4096,
+          0,
+          384,
+          6
+        ],
+        [
+          160,
+          4096,
+          0,
+          384,
+          6
+        ],
+        [
+          168,
+          0,
+          0,
+          384,
+          12
+        ],
+        [
+          168,
+          0,
+          0,
+          384,
+          12
+        ]
+      ],
+      "candidateSafeRows": [
+        [
+          195,
+          8208,
+          0,
+          256,
+          2
+        ]
+      ],
+      "guardsBefore": true,
+      "guardsAfter": true
+    },
+    "fp16": {
+      "resourceEntries": 170,
+      "rows": [
+        [
+          168,
+          0,
+          0,
+          384,
+          12
+        ],
+        [
+          168,
+          0,
+          0,
+          384,
+          12
+        ],
+        [
+          168,
+          8192,
+          0,
+          384,
+          6
+        ],
+        [
+          168,
+          8192,
+          8,
+          384,
+          6
+        ],
+        [
+          168,
+          16384,
+          0,
+          384,
+          3
+        ],
+        [
+          168,
+          16384,
+          8,
+          384,
+          3
+        ],
+        [
+          184,
+          32768,
+          0,
+          256,
+          1
+        ],
+        [
+          182,
+          32768,
+          0,
+          256,
+          1
+        ],
+        [
+          215,
+          8208,
+          0,
+          256,
+          2
+        ],
+        [
+          128,
+          12312,
+          8,
+          512,
+          4
+        ],
+        [
+          153,
+          4112,
+          0,
+          384,
+          3
+        ],
+        [
+          100,
+          12312,
+          0,
+          512,
+          2
+        ],
+        [
+          217,
+          8208,
+          0,
+          256,
+          2
+        ],
+        [
+          122,
+          12312,
+          0,
+          512,
+          4
+        ],
+        [
+          142,
+          8208,
+          0,
+          384,
+          3
+        ],
+        [
+          96,
+          12312,
+          0,
+          640,
+          2
+        ],
+        [
+          20,
+          0,
+          0,
+          1024,
+          6
+        ],
+        [
+          10,
+          0,
+          0,
+          1024,
+          6
+        ],
+        [
+          139,
+          24600,
+          0,
+          384,
+          3
+        ],
+        [
+          140,
+          24600,
+          0,
+          384,
+          3
+        ],
+        [
+          200,
+          16400,
+          0,
+          256,
+          2
+        ],
+        [
+          208,
+          16400,
+          24,
+          256,
+          2
+        ],
+        [
+          152,
+          16400,
+          0,
+          384,
+          3
+        ],
+        [
+          20,
+          0,
+          0,
+          1024,
+          6
+        ],
+        [
+          124,
+          2064,
+          0,
+          512,
+          8
+        ],
+        [
+          128,
+          12312,
+          0,
+          512,
+          4
+        ],
+        [
+          184,
+          32768,
+          0,
+          256,
+          1
+        ],
+        [
+          182,
+          32768,
+          0,
+          256,
+          1
+        ],
+        [
+          168,
+          16384,
+          8,
+          384,
+          3
+        ],
+        [
+          168,
+          16384,
+          0,
+          384,
+          3
+        ],
+        [
+          168,
+          8192,
+          0,
+          384,
+          6
+        ],
+        [
+          167,
+          8192,
+          16,
+          384,
+          6
+        ],
+        [
+          168,
+          0,
+          0,
+          384,
+          12
+        ],
+        [
+          168,
+          0,
+          0,
+          384,
+          12
+        ]
+      ],
+      "candidateSafeRows": [
+        [
+          208,
+          16400,
+          24,
+          256,
+          2
+        ]
+      ],
+      "guardsBefore": true,
+      "guardsAfter": true
+    }
+  },
+  "launchMetadata": {
+    "3024x1890_fp8": {
+      "valid": [
+        3024,
+        1890
+      ],
+      "full": [
+        3072,
+        1920
+      ],
+      "levels0": [
+        1536,
+        960
+      ],
+      "vitTokens": 1536,
+      "paddedVitTokens64": 1536,
+      "kernelAlignment": 32,
+      "kernelPaddedTokens": 1536,
+      "groups16": 96,
+      "keyTiles": 24,
+      "queryBlocks128": 12,
+      "heads": 32,
+      "grid": [
+        32,
+        6,
+        1
+      ],
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "threadsPerBlock": 128,
+      "ctasPerSafeLaunch": 192,
+      "safeAttentionLaunchesPerModel": 8,
+      "ctasAcrossSafeLaunches": 1536,
+      "scheduleGridBlock": [
+        [
+          [
+            32,
+            6,
+            1
+          ],
+          [
+            32,
+            4,
+            1
+          ]
+        ]
+      ],
+      "scheduleMatchesFormula": true,
+      "guardBytes": 256,
+      "guardPattern": "0xA5"
+    },
+    "3024x1890_fp16": {
+      "valid": [
+        3024,
+        1890
+      ],
+      "full": [
+        3072,
+        1920
+      ],
+      "levels0": [
+        1536,
+        960
+      ],
+      "vitTokens": 1536,
+      "paddedVitTokens64": 1536,
+      "kernelAlignment": 16,
+      "kernelPaddedTokens": 1536,
+      "groups16": 96,
+      "keyTiles": 24,
+      "queryBlocks128": 12,
+      "heads": 32,
+      "grid": [
+        32,
+        6,
+        1
+      ],
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "threadsPerBlock": 128,
+      "ctasPerSafeLaunch": 192,
+      "safeAttentionLaunchesPerModel": 8,
+      "ctasAcrossSafeLaunches": 1536,
+      "scheduleGridBlock": [
+        [
+          [
+            32,
+            6,
+            1
+          ],
+          [
+            32,
+            4,
+            1
+          ]
+        ]
+      ],
+      "scheduleMatchesFormula": true,
+      "guardBytes": 256,
+      "guardPattern": "0xA5"
+    },
+    "3840x2160_fp8": {
+      "valid": [
+        3840,
+        2160
+      ],
+      "full": [
+        3840,
+        2176
+      ],
+      "levels0": [
+        1920,
+        1088
+      ],
+      "vitTokens": 2160,
+      "paddedVitTokens64": 2176,
+      "kernelAlignment": 32,
+      "kernelPaddedTokens": 2176,
+      "groups16": 136,
+      "keyTiles": 34,
+      "queryBlocks128": 17,
+      "heads": 32,
+      "grid": [
+        32,
+        9,
+        1
+      ],
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "threadsPerBlock": 128,
+      "ctasPerSafeLaunch": 288,
+      "safeAttentionLaunchesPerModel": 8,
+      "ctasAcrossSafeLaunches": 2304,
+      "scheduleGridBlock": [
+        [
+          [
+            32,
+            9,
+            1
+          ],
+          [
+            32,
+            4,
+            1
+          ]
+        ]
+      ],
+      "scheduleMatchesFormula": true,
+      "guardBytes": 256,
+      "guardPattern": "0xA5"
+    },
+    "3840x2160_fp16": {
+      "valid": [
+        3840,
+        2160
+      ],
+      "full": [
+        3840,
+        2176
+      ],
+      "levels0": [
+        1920,
+        1088
+      ],
+      "vitTokens": 2160,
+      "paddedVitTokens64": 2176,
+      "kernelAlignment": 16,
+      "kernelPaddedTokens": 2160,
+      "groups16": 135,
+      "keyTiles": 34,
+      "queryBlocks128": 17,
+      "heads": 32,
+      "grid": [
+        32,
+        9,
+        1
+      ],
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "threadsPerBlock": 128,
+      "ctasPerSafeLaunch": 288,
+      "safeAttentionLaunchesPerModel": 8,
+      "ctasAcrossSafeLaunches": 2304,
+      "scheduleGridBlock": [
+        [
+          [
+            32,
+            9,
+            1
+          ],
+          [
+            32,
+            4,
+            1
+          ]
+        ]
+      ],
+      "scheduleMatchesFormula": true,
+      "guardBytes": 256,
+      "guardPattern": "0xA5"
+    }
+  },
+  "generatedGridTable": {
+    "small_plan_geometry_generated.inl": {
+      "safeAttentionGridFormulaCount": 8,
+      "safeAttentionGridFormula": "GeometryGrid(32, GeometryDivideUp(Shape.Tokens(), 256), 1)"
+    },
+    "small_plan_geometry_fp16_generated.inl": {
+      "safeAttentionGridFormulaCount": 8,
+      "safeAttentionGridFormula": "GeometryGrid(32, GeometryDivideUp(Shape.Tokens(), 256), 1)"
+    }
+  },
+  "cases320": {
+    "small-fp8-320x320": {
+      "model": "small31",
+      "precision": "fp8",
+      "width": 320,
+      "height": 320,
+      "geometry": {
+        "valid": [
+          320,
+          320
+        ],
+        "full": [
+          320,
+          320
+        ],
+        "levels0": [
+          160,
+          160
+        ],
+        "levels": [
+          [
+            160,
+            160
+          ],
+          [
+            80,
+            80
+          ],
+          [
+            40,
+            40
+          ],
+          [
+            20,
+            20
+          ],
+          [
+            12,
+            12
+          ],
+          [
+            8,
+            8
+          ]
+        ]
+      },
+      "state": {
+        "bytes": 819200,
+        "sha256": "f3747db2a3b75d16d87f4d2a582cbcda20dc3b864f081b0aa16237d064dcec70",
+        "nonzeroBytes": 806014,
+        "nonzeroFraction": 0.98390380859375,
+        "allZero": false
+      },
+      "planSeconds": 0.0246,
+      "plan": {
+        "buffers": 156,
+        "bufferFirst": "input",
+        "bufferLast": "b69.output",
+        "boundaries": 34,
+        "boundaryUnique": true,
+        "boundaryLast": "b69.output",
+        "expectedBoundaryNames": true,
+        "splitLaunchCounts": 109,
+        "splitLaunchValues": [
+          1
+        ],
+        "resourceEntries": 170,
+        "resourceRows": 34,
+        "tensorArguments": 222,
+        "kernelTensorRows": 218,
+        "preparedKernels": 109,
+        "records": 66,
+        "recordBytesNonZero": true
+      },
+      "reference": {
+        "bufferNamesMatch": true,
+        "bufferExtentsMatch": true,
+        "recordExtentsMatch": true,
+        "referenceCallCount": 109
+      },
+      "records": {
+        "bytes": 113843968,
+        "sha256": "6a73494f42a0429ae6f50ee65bff8c53efc3dcb4b58fbf411d411b8557c64a66",
+        "nonzeroBytes": 111381588,
+        "nonzeroFraction": 0.9783705712014535,
+        "allZero": false
+      },
+      "planCensus": {
+        "buffers": true,
+        "boundaries": true,
+        "splitLaunchCounts": true,
+        "resourceEntries": true,
+        "tensorArguments": true,
+        "kernelTensorRows": true,
+        "preparedKernels": true,
+        "records": true,
+        "boundaryLast": true
+      },
+      "run": {
+        "inputAliasesState": true,
+        "storageEqualsLogical": true,
+        "logicalBytes": 819200,
+        "outputAliasesB69": true,
+        "guardsBefore": true,
+        "guardsAfter": true,
+        "semantics": "raw b69.output viewed in the native element type (storage == logical bytes)",
+        "finiteStats": {
+          "elements": 819200,
+          "finite": true,
+          "min": -0.9375,
+          "max": 1.0,
+          "absMean": 0.15841296315193176,
+          "allZero": false,
+          "sha256": "b2186795a9dfd503668545572bd893b1b847345acfa4722dadb347f2aad0903a"
+        }
+      },
+      "poisonRepeat": {
+        "bitwiseEqual": true,
+        "guardsIntact": true,
+        "outputFinite": true
+      },
+      "passed": true
+    },
+    "small-fp16-320x320": {
+      "model": "small31",
+      "precision": "fp16",
+      "width": 320,
+      "height": 320,
+      "geometry": {
+        "valid": [
+          320,
+          320
+        ],
+        "full": [
+          320,
+          320
+        ],
+        "levels0": [
+          160,
+          160
+        ],
+        "levels": [
+          [
+            160,
+            160
+          ],
+          [
+            80,
+            80
+          ],
+          [
+            40,
+            40
+          ],
+          [
+            20,
+            20
+          ],
+          [
+            12,
+            12
+          ],
+          [
+            8,
+            8
+          ]
+        ]
+      },
+      "state": {
+        "bytes": 1638400,
+        "sha256": "e8124f99a2ef8e897b1ef70d56d62aa8a9b6e9b8dc200c4bb39ffd0cfa9c9331",
+        "nonzeroBytes": 1633855,
+        "nonzeroFraction": 0.9972259521484375,
+        "allZero": false
+      },
+      "planSeconds": 1.2122,
+      "plan": {
+        "buffers": 132,
+        "bufferFirst": "input",
+        "bufferLast": "b69.output",
+        "boundaries": 34,
+        "boundaryUnique": true,
+        "boundaryLast": "b69.output",
+        "expectedBoundaryNames": true,
+        "splitLaunchCounts": 109,
+        "splitLaunchValues": [
+          1
+        ],
+        "resourceEntries": 170,
+        "resourceRows": 34,
+        "tensorArguments": 198,
+        "kernelTensorRows": 218,
+        "preparedKernels": 109,
+        "records": 66,
+        "recordBytesNonZero": true
+      },
+      "reference": {
+        "bufferNamesMatch": true,
+        "bufferExtentsMatch": true,
+        "recordExtentsMatch": true,
+        "referenceCallCount": 109
+      },
+      "records": {
+        "bytes": 226619088,
+        "sha256": "52b2a91ca0fe9422ff05f45f88b1162bd63ff654bad3f360a2d7582620c34855",
+        "nonzeroBytes": 137398013,
+        "nonzeroFraction": 0.6062949692922601,
+        "allZero": false
+      },
+      "planCensus": {
+        "buffers": true,
+        "boundaries": true,
+        "splitLaunchCounts": true,
+        "resourceEntries": true,
+        "tensorArguments": true,
+        "kernelTensorRows": true,
+        "preparedKernels": true,
+        "records": true,
+        "boundaryLast": true
+      },
+      "run": {
+        "inputAliasesState": true,
+        "storageEqualsLogical": true,
+        "logicalBytes": 1638400,
+        "outputAliasesB69": true,
+        "guardsBefore": true,
+        "guardsAfter": true,
+        "semantics": "raw b69.output viewed in the native element type (storage == logical bytes)",
+        "finiteStats": {
+          "elements": 819200,
+          "finite": true,
+          "min": -0.6796875,
+          "max": 1.0595703125,
+          "absMean": 0.14751115441322327,
+          "allZero": false,
+          "sha256": "2b1ec0f8341d907584c752bfb3c36fc5b59c38d8ceb2fb96546e97dde312f3e5"
+        }
+      },
+      "poisonRepeat": {
+        "bitwiseEqual": true,
+        "guardsIntact": true,
+        "outputFinite": true
+      },
+      "passed": true
+    },
+    "legacy-fp8-320x320": {
+      "model": "legacy71",
+      "precision": "fp8",
+      "width": 320,
+      "height": 320,
+      "geometry": {
+        "valid": [
+          320,
+          320
+        ],
+        "full": [
+          320,
+          320
+        ],
+        "levels0": [
+          160,
+          160
+        ],
+        "levels": [
+          [
+            160,
+            160
+          ],
+          [
+            80,
+            80
+          ],
+          [
+            40,
+            40
+          ],
+          [
+            20,
+            20
+          ],
+          [
+            12,
+            12
+          ],
+          [
+            8,
+            8
+          ]
+        ]
+      },
+      "state": {
+        "bytes": 819200,
+        "sha256": "cbbb0b214bddfae4341decb31c780e19e1ab751536e32b1421d7faa2e387a7f8",
+        "nonzeroBytes": 805997,
+        "nonzeroFraction": 0.983883056640625,
+        "allZero": false
+      },
+      "checkpoint": {
+        "path": "D:\\Research\\DLSSNR-PyTorch\\ckpts\\dlss5_nr_fp8.pt",
+        "sha256": "f950c36d699572866f54b880e615302809060b7c02364db11e71c07f8d0f9e2d"
+      },
+      "planSeconds": 0.0301,
+      "plan": {
+        "buffers": 232,
+        "calls": 185,
+        "boundaries": 74,
+        "tensorArguments": 374,
+        "records": 142,
+        "resourceEntries": 185,
+        "preparedKernels": 185,
+        "referenceBufferNamesMatch": true,
+        "referenceBufferExtentsMatch": true
+      },
+      "records": {
+        "bytes": 147640256,
+        "sha256": "6a04449b8725014e060eaefbb51c186cd3facf14b9fee3d4b7b00f396c0383c9",
+        "nonzeroBytes": 144009453,
+        "nonzeroFraction": 0.9754077708995573,
+        "allZero": false
+      },
+      "run": {
+        "outputAliasesLastBoundary": true,
+        "guardsBefore": true,
+        "guardsAfter": true,
+        "finiteStats": {
+          "elements": 819200,
+          "finite": true,
+          "min": -9.0,
+          "max": 11.0,
+          "absMean": 2.0081160068511963,
+          "allZero": false,
+          "sha256": "4172c7b993494b04cc9ebe643bc07e28a011d4e31dfec42ff12d431d78349d30"
+        }
+      },
+      "poisonRepeat": {
+        "bitwiseEqual": true,
+        "guardsIntact": true
+      },
+      "passed": true
+    },
+    "legacy-fp16-320x320": {
+      "model": "legacy71",
+      "precision": "fp16",
+      "width": 320,
+      "height": 320,
+      "geometry": {
+        "valid": [
+          320,
+          320
+        ],
+        "full": [
+          320,
+          320
+        ],
+        "levels0": [
+          160,
+          160
+        ],
+        "levels": [
+          [
+            160,
+            160
+          ],
+          [
+            80,
+            80
+          ],
+          [
+            40,
+            40
+          ],
+          [
+            20,
+            20
+          ],
+          [
+            12,
+            12
+          ],
+          [
+            8,
+            8
+          ]
+        ]
+      },
+      "state": {
+        "bytes": 1638400,
+        "sha256": "b629b50484921e7d1ff7d22c2ed22257321dae1956616c4838ee47096bc4cd8d",
+        "nonzeroBytes": 1633942,
+        "nonzeroFraction": 0.997279052734375,
+        "allZero": false
+      },
+      "checkpoint": {
+        "path": "D:\\Research\\DLSSNR-PyTorch\\ckpts\\dlss5_nr_fp16.pt",
+        "sha256": "1d9d2b667a61a770bc4525f40e09ce04b62b737bec88804d3150274785193d11"
+      },
+      "planSeconds": 1.3659,
+      "plan": {
+        "buffers": 208,
+        "calls": 185,
+        "boundaries": 74,
+        "tensorArguments": 350,
+        "records": 142,
+        "resourceEntries": 185,
+        "preparedKernels": 185,
+        "referenceBufferNamesMatch": true,
+        "referenceBufferExtentsMatch": true
+      },
+      "records": {
+        "bytes": 291446480,
+        "sha256": "7733989498fc741d700330c71f0dae8ad1839527b4dce360a922f30dde769795",
+        "nonzeroBytes": 178594464,
+        "nonzeroFraction": 0.6127864848462057,
+        "allZero": false
+      },
+      "run": {
+        "outputAliasesLastBoundary": true,
+        "guardsBefore": true,
+        "guardsAfter": true,
+        "finiteStats": {
+          "elements": 819200,
+          "finite": true,
+          "min": -9.734375,
+          "max": 11.3671875,
+          "absMean": 2.133732318878174,
+          "allZero": false,
+          "sha256": "cc5c56ecdbfed058da4340a83b5e22aba9226a7f68f261682e0be04bc76cc031"
+        }
+      },
+      "poisonRepeat": {
+        "bitwiseEqual": true,
+        "guardsIntact": true
+      },
+      "passed": true
+    }
+  },
+  "legacyCanonical1280": {
+    "fp8": {
+      "passed": true,
+      "outputSha256": "f9077ef6ed822ed6b82caa9d28f237a65298ac9095edb5b185b65d8a110aff1f",
+      "expectedPriorSha256": "f9077ef6ed822ed6b82caa9d28f237a65298ac9095edb5b185b65d8a110aff1f",
+      "matchesPriorAccepted": true,
+      "guardsAfter": true,
+      "finite": true
+    },
+    "fp16": {
+      "passed": true,
+      "outputSha256": "60498a87aa2137701680bebe96b56f19f61019ed23ddbd7e2af7bc2cad83eae2",
+      "expectedPriorSha256": "60498a87aa2137701680bebe96b56f19f61019ed23ddbd7e2af7bc2cad83eae2",
+      "matchesPriorAccepted": true,
+      "guardsAfter": true,
+      "finite": true
+    }
+  },
+  "registrationAfterRuns": {
+    "smallFp8": 66,
+    "smallFp16": 66,
+    "legacyFp8": 142,
+    "legacyFp16": 142
+  },
+  "checks": {
+    "architectures120": true,
+    "schemasPresent": true,
+    "rostersSmall66Legacy142": true,
+    "resourcesFound": {
+      "fp8": true,
+      "fp16": true
+    },
+    "launchMetadataConsistent": true,
+    "smallSmokePassed": true,
+    "legacySmokePassed": true,
+    "legacyCanonicalUnchanged": true,
+    "registrationAfterRuns": true
+  }
+}

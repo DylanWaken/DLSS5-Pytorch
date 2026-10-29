@@ -1,6 +1,7 @@
 """Executable arithmetic experiments for the teaching models, not CUDA benchmarks."""
 from common import ROOT, REVISION
 from kernel_map_profiles import profile
+from lessons_small_attention import SMALL_NAMES
 import json
 import math
 
@@ -45,6 +46,10 @@ def run(inventory,evidence):
                                result='Exactly one writer per live word; no tail writer.'))
     kernels={}
     for name,entry in inventory['entries'].items():
+        # The legacy design-check file stays exactly the 81 historical entries.
+        # Additive Small31 entries write evidence-small/design-checks.json.
+        if name in SMALL_NAMES:
+            continue
         p=profile(name,entry)
         actions=evidence['kernels'][name]
         first=next(a for a in actions if a['report'].endswith('-full'))

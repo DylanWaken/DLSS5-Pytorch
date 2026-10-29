@@ -1,0 +1,4275 @@
+{
+  "schema": "small-attention-evidence-index/v2",
+  "state": "measured",
+  "scope": "Additive Small31 attention entries only; the legacy 81-entry NCU evidence set is unchanged and is never substituted here.",
+  "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+  "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition (GB202, SM120, CC 12.0, 188 SMs, 97,887 MiB, driver 610.62)",
+  "runtime_source_revision": "266d69acf52dda413df3a874572f1156461f89ff",
+  "runtime_binary_sha256": "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+  "ncu_state": "measured",
+  "measurement_snapshot": {
+    "path": "tools/kernel_docs/small_attention_measurements.json",
+    "sha256": "e80d7164d0913891436e94a99ad271b32707575ad3931dd28a66cfd8036e02c2"
+  },
+  "report_contract": {
+    "required_per_kernel": [
+      "full",
+      "source"
+    ],
+    "same_fixture": true,
+    "raw_suffix": ".ncu-repz",
+    "separate_runs": true,
+    "public_root": "evidence-small/"
+  },
+  "ncu_extension": {
+    "state": "measured",
+    "reports": [
+      {
+        "kind": "full",
+        "path": "evidence-small/full_<fixture>_<precision>.ncu-repz",
+        "sha256": "<raw report sha256>",
+        "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+        "metric_count": "<catalogued metric rows>"
+      },
+      {
+        "kind": "source",
+        "path": "evidence-small/source_<fixture>_<precision>.ncu-repz",
+        "sha256": "<raw report sha256>",
+        "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+        "metric_count": "<catalogued metric rows>"
+      }
+    ],
+    "compiled_metrics": [
+      "launch__registers_per_thread",
+      "launch__registers_per_thread_allocated",
+      "launch__shared_mem_per_block_static",
+      "launch__shared_mem_per_block_dynamic",
+      "launch__shared_mem_per_block_driver",
+      "launch__block_size",
+      "launch__grid_dim_x",
+      "launch__grid_dim_y",
+      "launch__grid_dim_z",
+      "smsp__sass_inst_executed_op_local_ld.sum",
+      "smsp__sass_inst_executed_op_local_st.sum",
+      "sass__inst_executed_register_spilling_mem_local"
+    ],
+    "fixtures": "cyberpunk2077-johnny-first4k-b31",
+    "gate": "one full and one separate source report for the same entry and fixture; no legacy report may be substituted"
+  },
+  "artifacts": [
+    {
+      "role": "raw-ncu-report",
+      "public_path": "evidence-small/full_cyberpunk4k-b31_fp16.ncu-repz",
+      "sha256": "d4d9c57968c169edb268db3606f65e214846d46ac437b14aad074f3bd567f383",
+      "size": 440260,
+      "suffix": ".ncu-repz"
+    },
+    {
+      "role": "raw-ncu-report",
+      "public_path": "evidence-small/source_cyberpunk4k-b31_fp16.ncu-repz",
+      "sha256": "5dc78067f5195425ca4d9421e371cc93135c52d05fee571c6e1025ea8bb5fa29",
+      "size": 105439,
+      "suffix": ".ncu-repz"
+    },
+    {
+      "role": "raw-ncu-report",
+      "public_path": "evidence-small/full_cyberpunk4k-b31_fp8.ncu-repz",
+      "sha256": "c9d1d1b55259e2edbe28588ffba5cdf226612bf583eaf4847e17c21adb8e163a",
+      "size": 341823,
+      "suffix": ".ncu-repz"
+    },
+    {
+      "role": "raw-ncu-report",
+      "public_path": "evidence-small/source_cyberpunk4k-b31_fp8.ncu-repz",
+      "sha256": "f83b10ef4202d70d87a138598376131bfa592a2bc70e6df791c686834619d0a7",
+      "size": 96682,
+      "suffix": ".ncu-repz"
+    },
+    {
+      "role": "verified-report-prose",
+      "public_path": "evidence-small/REPORT.md",
+      "sha256": "5e5b65a7ebe008347a45a678ea91035f15b001d710bdc228a3e72b9eee2cfaf1",
+      "size": 27048,
+      "suffix": ".md"
+    }
+  ],
+  "kernels": {
+    "small_global_attention_chained_c1024_fp16": {
+      "state": "measured",
+      "ncu_state": "measured",
+      "source": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+      "source_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+      "runtime_source_revision": "266d69acf52dda413df3a874572f1156461f89ff",
+      "runtime_binary_sha256": "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition (GB202, SM120, CC 12.0, 188 SMs, 97,887 MiB, driver 610.62)",
+      "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+      "precision": "fp16",
+      "shape": {
+        "batch": 1,
+        "tokens": 2160,
+        "padded_tokens": 2160,
+        "heads": 32,
+        "channels": 1024,
+        "head_channels": 32,
+        "grid": [
+          32,
+          9,
+          1
+        ],
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "dynamic_shared_mem_bytes": 0
+      },
+      "compiled_resources": {
+        "launch__registers_per_thread": 208,
+        "launch__registers_per_thread_allocated": 208.0,
+        "launch__shared_mem_per_block_static": 16400,
+        "launch__shared_mem_per_block_dynamic": 0,
+        "launch__shared_mem_per_block_driver": 1024,
+        "launch__shared_mem_per_block": 17424,
+        "launch__block_size": 128,
+        "max_threads_per_block_attribute": 256,
+        "cuda_occupancy_api_capacity_ctas_per_sm": 2,
+        "ptxas_stack_frame_bytes": 24,
+        "ptxas_spill_store_bytes": 44,
+        "ptxas_spill_load_bytes": 56,
+        "launch__occupancy_limit_registers": 2,
+        "launch__occupancy_limit_shared_mem": 5,
+        "launch__occupancy_limit_warps": 12
+      },
+      "numerical_reference": {
+        "sampled_queries": 96,
+        "heads": 32,
+        "channels": 32,
+        "sampled_outputs": 98304,
+        "exact_equal_fraction": 0.9922281901041666,
+        "max_abs_error": 0.125,
+        "max_ulp": 14.0,
+        "p99_abs_error": 0.0,
+        "full_output_census_values": 2228224,
+        "selected_numerators_above_65504": 723,
+        "max_denominator_error": 0.0001220703125,
+        "artifacts": [
+          "profile/dlss-update-20261029/rgb-safe-attention-validation/artifacts/probability_frame_fp16.json",
+          "profile/dlss-update-20261029/rgb-safe-attention-rgb/results.json"
+        ]
+      },
+      "contract": {
+        "precision": "FP16",
+        "qk_ptx": "mma.sync.aligned.m16n8k16.row.col.f16.f16.f16.f16",
+        "pv_ptx": "mma.sync.aligned.m16n8k16.row.col.f32.f16.f16.f32",
+        "qk_sass": "HMMA.16816.F16",
+        "qk_sass_file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "qk_sass_line": 221,
+        "pv_sass": "HMMA.16816.F32",
+        "pv_sass_file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+        "pv_sass_line": 17,
+        "qchunks": 2,
+        "pchunks": 4,
+        "key_tiles": 34,
+        "qk_mma_per_warp_tile": 64,
+        "pv_mma_per_warp_tile": 64,
+        "warp_mma_per_tile": 128,
+        "cta_mma_per_tile": 512,
+        "total_ptx_mma_per_cta": 17408,
+        "qk_accumulator": "Half",
+        "pv_accumulator": "FP32",
+        "denominator": "FP32",
+        "maxnreg_cap": 208,
+        "persistent_fp32_per_lane": 64,
+        "persistent_denominators": 2,
+        "source_shared_bytes": 16400
+      },
+      "ncu_reports": [
+        {
+          "kind": "full",
+          "path": "evidence-small/full_cyberpunk4k-b31_fp16.ncu-repz",
+          "sha256": "d4d9c57968c169edb268db3606f65e214846d46ac437b14aad074f3bd567f383",
+          "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+          "fixture": "cyberpunk2077-johnny-first4k-b31",
+          "metric_count": 2633,
+          "raw_suffix": ".ncu-repz",
+          "source_path": "profile/small-attention-fp32acc-sm120-20261030/reports/full_cyberpunk4k-b31_fp16.ncu-repz"
+        },
+        {
+          "kind": "source",
+          "path": "evidence-small/source_cyberpunk4k-b31_fp16.ncu-repz",
+          "sha256": "5dc78067f5195425ca4d9421e371cc93135c52d05fee571c6e1025ea8bb5fa29",
+          "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+          "fixture": "cyberpunk2077-johnny-first4k-b31",
+          "metric_count": 1272,
+          "raw_suffix": ".ncu-repz",
+          "source_path": "profile/small-attention-fp32acc-sm120-20261030/reports/source_cyberpunk4k-b31_fp16.ncu-repz"
+        }
+      ],
+      "ncu_extension": {
+        "state": "measured",
+        "reports": [
+          {
+            "kind": "full",
+            "path": "evidence-small/full_<fixture>_<precision>.ncu-repz",
+            "sha256": "<raw report sha256>",
+            "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+            "metric_count": "<catalogued metric rows>"
+          },
+          {
+            "kind": "source",
+            "path": "evidence-small/source_<fixture>_<precision>.ncu-repz",
+            "sha256": "<raw report sha256>",
+            "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+            "metric_count": "<catalogued metric rows>"
+          }
+        ],
+        "compiled_metrics": [
+          "launch__registers_per_thread",
+          "launch__registers_per_thread_allocated",
+          "launch__shared_mem_per_block_static",
+          "launch__shared_mem_per_block_dynamic",
+          "launch__shared_mem_per_block_driver",
+          "launch__block_size",
+          "launch__grid_dim_x",
+          "launch__grid_dim_y",
+          "launch__grid_dim_z",
+          "smsp__sass_inst_executed_op_local_ld.sum",
+          "smsp__sass_inst_executed_op_local_st.sum",
+          "sass__inst_executed_register_spilling_mem_local"
+        ],
+        "fixtures": "cyberpunk2077-johnny-first4k-b31",
+        "gate": "one full and one separate source report for the same entry and fixture; no legacy report may be substituted"
+      },
+      "report_identity": {
+        "kernel": "small_global_attention_chained_c1024_fp16",
+        "precision": "fp16",
+        "ncu_version": "2026.3.0.0 (build 38525999)",
+        "ncu_report_module": "C:/Program Files/NVIDIA Corporation/Nsight Compute 2026.3.0/extras/python/ncu_report.py",
+        "range_count": 1,
+        "action_count": 1,
+        "full": {
+          "path": "profile/small-attention-fp32acc-sm120-20261030/reports/full_cyberpunk4k-b31_fp16.ncu-repz",
+          "sha256": "d4d9c57968c169edb268db3606f65e214846d46ac437b14aad074f3bd567f383",
+          "metric_count": 2633,
+          "pcsamp_sample_count_not_used_for_pc_analysis": 7924
+        },
+        "source": {
+          "path": "profile/small-attention-fp32acc-sm120-20261030/reports/source_cyberpunk4k-b31_fp16.ncu-repz",
+          "sha256": "5dc78067f5195425ca4d9421e371cc93135c52d05fee571c6e1025ea8bb5fa29",
+          "metric_count": 1272,
+          "run_duration_ns": 78048
+        },
+        "separate_runs": true,
+        "warning": "full and source are separate profiling runs. Source PC totals (7999) must never be combined with the full report's PC total."
+      },
+      "metrics": [
+        {
+          "name": "gpu__time_duration.sum",
+          "value": 77024.0,
+          "unit": "ns",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__grid_size",
+          "value": 288,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__grid_dim_x",
+          "value": 32,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__grid_dim_y",
+          "value": 9,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__grid_dim_z",
+          "value": 1,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__block_size",
+          "value": 128,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__block_dim_x",
+          "value": 32,
+          "unit": "block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__block_dim_y",
+          "value": 4,
+          "unit": "block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__block_dim_z",
+          "value": 1,
+          "unit": "block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__waves_per_multiprocessor",
+          "value": 0.7659574468085106,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__registers_per_thread",
+          "value": 208,
+          "unit": "register/thread",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__registers_per_thread_allocated",
+          "value": 208.0,
+          "unit": "register/thread",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__shared_mem_per_block",
+          "value": 17424,
+          "unit": "byte/block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__shared_mem_per_block_static",
+          "value": 16400,
+          "unit": "byte/block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__shared_mem_per_block_dynamic",
+          "value": 0,
+          "unit": "byte/block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__shared_mem_per_block_driver",
+          "value": 1024,
+          "unit": "byte/block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__shared_mem_per_block_allocated",
+          "value": 17536.0,
+          "unit": "byte/block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__occupancy_limit_blocks",
+          "value": 24.0,
+          "unit": "block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__occupancy_limit_registers",
+          "value": 2.0,
+          "unit": "block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__occupancy_limit_shared_mem",
+          "value": 5.0,
+          "unit": "block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__occupancy_limit_warps",
+          "value": 12.0,
+          "unit": "block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__maximum_warps_per_active_cycle_pct",
+          "value": 16.666666666666664,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__warps_active.avg.pct_of_peak_sustained_active",
+          "value": 12.92845362791821,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__warps_active.avg.per_cycle_active",
+          "value": 1.557881653717182,
+          "unit": "warp",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__warps_eligible.avg.per_cycle_active",
+          "value": 0.36826508068966785,
+          "unit": "warp",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__issue_active.avg.pct_of_peak_sustained_active",
+          "value": 32.0263919096905,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__throughput.avg.pct_of_peak_sustained_elapsed",
+          "value": 51.90745912232617,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__cycles_active.avg",
+          "value": 173461.06914893616,
+          "unit": "cycle",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__cycles_active.min",
+          "value": 143549.0,
+          "unit": "cycle",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__cycles_active.max",
+          "value": 207960.0,
+          "unit": "cycle",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed",
+          "value": 51.90745912232617,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_active",
+          "value": 61.49523832390989,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__inst_executed_pipe_tensor_subpipe_hmma.avg.pct_of_peak_sustained_elapsed",
+          "value": 51.90745912232617,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__inst_executed_pipe_tensor_subpipe_imma.avg.pct_of_peak_sustained_elapsed",
+          "value": 0.0,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "gpu__dram_throughput.avg.pct_of_peak_sustained_elapsed",
+          "value": 10.117158327109783,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "dram__bytes_op_read.sum",
+          "value": 13309696.0,
+          "unit": "byte",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "dram__bytes_op_write.sum",
+          "value": 7424.0,
+          "unit": "byte",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sector_hit_rate.pct",
+          "value": 77.5705532447784,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "lts__t_sector_hit_rate.pct",
+          "value": 81.85559439107183,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_wait_per_issue_active.ratio",
+          "value": 1.4771479308915552,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_barrier_per_issue_active.ratio",
+          "value": 0.4589194230812117,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_long_scoreboard_per_issue_active.ratio",
+          "value": 0.29645833445479086,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_short_scoreboard_per_issue_active.ratio",
+          "value": 0.1619719088335739,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_math_pipe_throttle_per_issue_active.ratio",
+          "value": 0.8963800839516729,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_mio_throttle_per_issue_active.ratio",
+          "value": 0.018354143100036836,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_not_selected_per_issue_active.ratio",
+          "value": 0.1500480672736123,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_dispatch_stall_per_issue_active.ratio",
+          "value": 0.1480360762647542,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__sass_inst_executed_op_local_ld.sum",
+          "value": 197824.0,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__sass_inst_executed_op_local_st.sum",
+          "value": 88704.0,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sass__inst_executed_register_spilling_mem_local",
+          "value": 286528,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sass__inst_executed_register_spilling_mem_local_op_read",
+          "value": 197824,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sass__inst_executed_register_spilling_mem_local_op_write",
+          "value": 88704,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_local_op_ld.sum",
+          "value": 788800.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_local_op_ld_lookup_hit.sum",
+          "value": 779479.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_local_op_ld_lookup_miss.sum",
+          "value": 9321.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sector_pipe_lsu_mem_local_op_ld_hit_rate.pct",
+          "value": 98.81833164300203,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_local_op_st.sum",
+          "value": 354816.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_local_op_st_lookup_hit.sum",
+          "value": 330736.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_local_op_st_lookup_miss.sum",
+          "value": 24080.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sector_pipe_lsu_mem_local_op_st_hit_rate.pct",
+          "value": 93.21338383838385,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_requests_pipe_lsu_mem_local_op_ld.sum",
+          "value": 197824.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_requests_pipe_lsu_mem_local_op_st.sum",
+          "value": 88704.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__data_pipe_lsu_wavefronts_mem_shared.sum",
+          "value": 3500389.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__data_pipe_lsu_wavefronts_mem_shared_op_ld.sum",
+          "value": 2534489.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__sass_inst_executed_op_shared_ld.sum",
+          "value": 626688.0,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "memory_l1_wavefronts_shared",
+          "value": 2511360,
+          "unit": "sectors",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "memory_l1_wavefronts_shared_ideal",
+          "value": 2511360,
+          "unit": "sectors",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "derived__memory_l1_wavefronts_shared_excessive",
+          "value": 0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "derived__memory_l1_conflicts_shared_nway",
+          "value": 64,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__data_bank_conflicts_pipe_lsu_mem_shared.sum",
+          "value": 35647.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum",
+          "value": 29169.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_global_op_ld.sum",
+          "value": 148576.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_requests_pipe_lsu_mem_global_op_ld.sum",
+          "value": 18976.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_global_op_st.sum",
+          "value": 138784.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_requests_pipe_lsu_mem_global_op_st.sum",
+          "value": 9184.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_output_wavefronts_pipe_lsu_mem_global_op_ld.sum",
+          "value": 23202.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_output_wavefronts_pipe_lsu_mem_global_op_st.sum",
+          "value": 12640.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__sass_average_data_bytes_per_sector_mem_global_op_ld.ratio",
+          "value": 30.05212147318544,
+          "unit": "byte/sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__sass_inst_executed_op_global_ld.sum",
+          "value": 18976.0,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__sass_inst_executed_op_global_st.sum",
+          "value": 9184.0,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_sample_count",
+          "value": 7999,
+          "unit": "",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_selected",
+          "value": 1732,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_wait",
+          "value": 2507,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_barrier",
+          "value": 897,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_long_scoreboard",
+          "value": 523,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_short_scoreboard",
+          "value": 278,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "value": 1237,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_mio_throttle",
+          "value": 19,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_lg_throttle",
+          "value": 0,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "value": 198,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "value": 245,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_branch_resolving",
+          "value": 210,
+          "unit": "branches",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_no_instructions",
+          "value": 88,
+          "unit": "inst",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_membar",
+          "value": 55,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_drain",
+          "value": 4,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_misc",
+          "value": 6,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_tex_throttle",
+          "value": 0,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_sleeping",
+          "value": 0,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        }
+      ],
+      "metric_count": 98,
+      "derived": {
+        "waves_arithmetic_288_over_188x2": 0.765957447,
+        "uniform_admission_occupancy_pct_288x4_over_188x48": 12.765957,
+        "achieved_occupancy_pct": 12.92845362791821,
+        "theoretical_occupancy_pct": 16.666666666666664,
+        "achieved_vs_theoretical_pct": 77.5707,
+        "achieved_vs_uniform_admission_pct": 101.2729,
+        "shared_ld_wavefronts_per_lds128_instruction": 4.0443,
+        "global_ld_sectors_per_request": 7.8297,
+        "local_ld_sector_hit_rate_pct": 98.8183,
+        "duration_ns": 77024.0
+      },
+      "sampling": {
+        "report_kind": "source",
+        "metric": "smsp__pcsamp_sample_count",
+        "denominator": 7999,
+        "unit": "warp",
+        "base_stall_categories": [
+          "smsp__pcsamp_warps_issue_stalled_barrier",
+          "smsp__pcsamp_warps_issue_stalled_branch_resolving",
+          "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "smsp__pcsamp_warps_issue_stalled_drain",
+          "smsp__pcsamp_warps_issue_stalled_lg_throttle",
+          "smsp__pcsamp_warps_issue_stalled_long_scoreboard",
+          "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "smsp__pcsamp_warps_issue_stalled_membar",
+          "smsp__pcsamp_warps_issue_stalled_mio_throttle",
+          "smsp__pcsamp_warps_issue_stalled_misc",
+          "smsp__pcsamp_warps_issue_stalled_no_instructions",
+          "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "smsp__pcsamp_warps_issue_stalled_selected",
+          "smsp__pcsamp_warps_issue_stalled_short_scoreboard",
+          "smsp__pcsamp_warps_issue_stalled_sleeping",
+          "smsp__pcsamp_warps_issue_stalled_tex_throttle",
+          "smsp__pcsamp_warps_issue_stalled_wait"
+        ],
+        "not_issued_variants_excluded": true,
+        "note": "base stalled_* categories sum exactly to the denominator; *_not_issued are subsets and are excluded"
+      },
+      "source_pins": {
+        "root_source": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+        "root_source_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+        "tree_sha256_sorted": "42286f14c6693e4e7c2388d2cd54925d11f593d6e204f0c7a2ad82f3fc771012",
+        "file_count": 13,
+        "files": [
+          {
+            "path": "csrc/kernel_impl/bottleneck_c1024_attention/common/global_attention.cuh",
+            "sha256": "b5061a54de3bc464b13ed9e77ad4755bbe6a1e8a2ec4345d3d2460d2dbdea7b9",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/bottleneck_c1024_attention/common/intrinsics.cuh",
+            "sha256": "f6b46dc543c46bc93e961792bf549a3def80b3456d0892b007027f2a9e977420",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+            "sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/kernel_abi.h",
+            "sha256": "12723e426e0bde6dc00c8eb2ad315b4944b587c32923313116a4588dfe984679",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/kernel_helpers.cuh",
+            "sha256": "8667f6b336526be41db126632a5c2406659a5039acee36dd632068d01d84c19f",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
+            "sha256": "d354e23c4e56a69c213f05c1ca646c02ed35e40b4f044253f5463127222ce056",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/mma.cuh",
+            "sha256": "86f7ab1ee8d044818775e9165c724273056ac30243e0579569ccb20b5b4ec26a",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/numerical_constants.cuh",
+            "sha256": "12806e2d8befb97545ee0d92feb886435d9009e6bc9a64657629064298c9ce25",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/packed_math.cuh",
+            "sha256": "3cb3128aa0ae6b70a8267dd4cfa9bfeba3083debd57fb30c6cd897b9a54086f2",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
+            "sha256": "18cac3b309a28d09b8207c0f6ab1bb0839b5d2e87cc3af3fe34ec5bb2710534e",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+            "sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/small_c1024_attention/common/small_attention_abi.h",
+            "sha256": "9aaa8c4d7c52524f4f385531ad41052d5157fb42f29da2af186ffba22053795f",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+            "sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+            "role": "kernel"
+          }
+        ],
+        "native_manifest_path": "profile/dlss-update-20261029/rgb-safe-attention-numerical/artifacts/fixture_manifest_small31_b31_4k_fp16.json",
+        "native_manifest_sha256": "69b7223864f6ccd309633782569199a3942af33ee949555a660b9fa10a9a6f1f",
+        "native_manifest_tree_sha256_listed_order": "c9b86a2d8c04fb5a47e7723b6fd1a1e3a2f0648ef31def9425982bfdea285730",
+        "native_manifest_tree_sha256_reproduces_listed_order": true,
+        "native_manifest_tree_sha256_reproduces_sorted_order": false,
+        "note": "Native listed-order tree hash metadata is preserved unchanged; the label method claims sorted order but only listed order reproduces. Cite tree_sha256_sorted and the per-file hashes above as the separately sorted source closure."
+      },
+      "source_hotspots": [
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 53,
+          "metric": "smsp__pcsamp_warps_issue_stalled_barrier",
+          "count": 765,
+          "line_total_base_samples": 799,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 9.5637,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "source_report": "source",
+          "pc_example": 77332164416,
+          "pc_count_at_line": 7,
+          "sass_example": "@P2   BRA 0x12015b3070"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 53,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 18,
+          "line_total_base_samples": 799,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.225,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "source_report": "source",
+          "pc_example": 77332164416,
+          "pc_count_at_line": 7,
+          "sass_example": "@P2   BRA 0x12015b3070"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 53,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 8,
+          "line_total_base_samples": 799,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.1,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "source_report": "source",
+          "pc_example": 77332164416,
+          "pc_count_at_line": 7,
+          "sass_example": "@P2   BRA 0x12015b3070"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 53,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 6,
+          "line_total_base_samples": 799,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.075,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "source_report": "source",
+          "pc_example": 77332164416,
+          "pc_count_at_line": 7,
+          "sass_example": "@P2   BRA 0x12015b3070"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 53,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 2,
+          "line_total_base_samples": 799,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.025,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "source_report": "source",
+          "pc_example": 77332164416,
+          "pc_count_at_line": 7,
+          "sass_example": "@P2   BRA 0x12015b3070"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 30,
+          "metric": "smsp__pcsamp_warps_issue_stalled_long_scoreboard",
+          "count": 239,
+          "line_total_base_samples": 251,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 2.9879,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "source_report": "source",
+          "pc_example": 77332164096,
+          "pc_count_at_line": 8,
+          "sass_example": "ISETP.GT.AND P0, PT, R7, -0x1, PT"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 30,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 8,
+          "line_total_base_samples": 251,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.1,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "source_report": "source",
+          "pc_example": 77332164096,
+          "pc_count_at_line": 8,
+          "sass_example": "ISETP.GT.AND P0, PT, R7, -0x1, PT"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 30,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 3,
+          "line_total_base_samples": 251,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.0375,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "source_report": "source",
+          "pc_example": 77332164096,
+          "pc_count_at_line": 8,
+          "sass_example": "ISETP.GT.AND P0, PT, R7, -0x1, PT"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 30,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 1,
+          "line_total_base_samples": 251,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.0125,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "source_report": "source",
+          "pc_example": 77332164096,
+          "pc_count_at_line": 8,
+          "sass_example": "ISETP.GT.AND P0, PT, R7, -0x1, PT"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 106,
+          "metric": "smsp__pcsamp_warps_issue_stalled_barrier",
+          "count": 116,
+          "line_total_base_samples": 142,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 1.4502,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "source_report": "source",
+          "pc_example": 77332143360,
+          "pc_count_at_line": 10,
+          "sass_example": "LDCU.64 UR4, c[0x0][0x388]"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 106,
+          "metric": "smsp__pcsamp_warps_issue_stalled_short_scoreboard",
+          "count": 14,
+          "line_total_base_samples": 142,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.175,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "source_report": "source",
+          "pc_example": 77332143360,
+          "pc_count_at_line": 10,
+          "sass_example": "LDCU.64 UR4, c[0x0][0x388]"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 106,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 5,
+          "line_total_base_samples": 142,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.0625,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "source_report": "source",
+          "pc_example": 77332143360,
+          "pc_count_at_line": 10,
+          "sass_example": "LDCU.64 UR4, c[0x0][0x388]"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 106,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 4,
+          "line_total_base_samples": 142,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.05,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "source_report": "source",
+          "pc_example": 77332143360,
+          "pc_count_at_line": 10,
+          "sass_example": "LDCU.64 UR4, c[0x0][0x388]"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 106,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 2,
+          "line_total_base_samples": 142,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.025,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "source_report": "source",
+          "pc_example": 77332143360,
+          "pc_count_at_line": 10,
+          "sass_example": "LDCU.64 UR4, c[0x0][0x388]"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 106,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 1,
+          "line_total_base_samples": 142,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.0125,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "source_report": "source",
+          "pc_example": 77332143360,
+          "pc_count_at_line": 10,
+          "sass_example": "LDCU.64 UR4, c[0x0][0x388]"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 17,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 571,
+          "line_total_base_samples": 925,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 7.1384,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332163696,
+          "pc_count_at_line": 56,
+          "sass_example": "HMMA.16816.F32 R80, R28, R82, R132"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 17,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 197,
+          "line_total_base_samples": 925,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 2.4628,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332163696,
+          "pc_count_at_line": 56,
+          "sass_example": "HMMA.16816.F32 R80, R28, R82, R132"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 17,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 100,
+          "line_total_base_samples": 925,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 1.2502,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332163696,
+          "pc_count_at_line": 56,
+          "sass_example": "HMMA.16816.F32 R80, R28, R82, R132"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 17,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 32,
+          "line_total_base_samples": 925,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.4001,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332163696,
+          "pc_count_at_line": 56,
+          "sass_example": "HMMA.16816.F32 R80, R28, R82, R132"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 17,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 20,
+          "line_total_base_samples": 925,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.25,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332163696,
+          "pc_count_at_line": 56,
+          "sass_example": "HMMA.16816.F32 R80, R28, R82, R132"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 17,
+          "metric": "smsp__pcsamp_warps_issue_stalled_short_scoreboard",
+          "count": 5,
+          "line_total_base_samples": 925,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.0625,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332163696,
+          "pc_count_at_line": 56,
+          "sass_example": "HMMA.16816.F32 R80, R28, R82, R132"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 68,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 181,
+          "line_total_base_samples": 396,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 2.2628,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332158896,
+          "pc_count_at_line": 108,
+          "sass_example": "HADD2.F32 R32, -RZ, R32.H0_H0"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 68,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 167,
+          "line_total_base_samples": 396,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 2.0878,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332158896,
+          "pc_count_at_line": 108,
+          "sass_example": "HADD2.F32 R32, -RZ, R32.H0_H0"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 68,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 30,
+          "line_total_base_samples": 396,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.375,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332158896,
+          "pc_count_at_line": 108,
+          "sass_example": "HADD2.F32 R32, -RZ, R32.H0_H0"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 68,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 10,
+          "line_total_base_samples": 396,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.125,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332158896,
+          "pc_count_at_line": 108,
+          "sass_example": "HADD2.F32 R32, -RZ, R32.H0_H0"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 68,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 7,
+          "line_total_base_samples": 396,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.0875,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332158896,
+          "pc_count_at_line": 108,
+          "sass_example": "HADD2.F32 R32, -RZ, R32.H0_H0"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 68,
+          "metric": "smsp__pcsamp_warps_issue_stalled_short_scoreboard",
+          "count": 1,
+          "line_total_base_samples": 396,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.0125,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332158896,
+          "pc_count_at_line": 108,
+          "sass_example": "HADD2.F32 R32, -RZ, R32.H0_H0"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 221,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 569,
+          "line_total_base_samples": 1320,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 7.1134,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332149552,
+          "pc_count_at_line": 69,
+          "sass_example": "HMMA.16816.F16 R28, R44, R16, RZ"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 221,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 563,
+          "line_total_base_samples": 1320,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 7.0384,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332149552,
+          "pc_count_at_line": 69,
+          "sass_example": "HMMA.16816.F16 R28, R44, R16, RZ"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 221,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 107,
+          "line_total_base_samples": 1320,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 1.3377,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332149552,
+          "pc_count_at_line": 69,
+          "sass_example": "HMMA.16816.F16 R28, R44, R16, RZ"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 221,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 41,
+          "line_total_base_samples": 1320,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.5126,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332149552,
+          "pc_count_at_line": 69,
+          "sass_example": "HMMA.16816.F16 R28, R44, R16, RZ"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 221,
+          "metric": "smsp__pcsamp_warps_issue_stalled_short_scoreboard",
+          "count": 36,
+          "line_total_base_samples": 1320,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.4501,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332149552,
+          "pc_count_at_line": 69,
+          "sass_example": "HMMA.16816.F16 R28, R44, R16, RZ"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 221,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 4,
+          "line_total_base_samples": 1320,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.05,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332149552,
+          "pc_count_at_line": 69,
+          "sass_example": "HMMA.16816.F16 R28, R44, R16, RZ"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 298,
+          "metric": "smsp__pcsamp_warps_issue_stalled_long_scoreboard",
+          "count": 120,
+          "line_total_base_samples": 307,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 1.5002,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332166144,
+          "pc_count_at_line": 16,
+          "sass_example": "@!P0  BRA 0x12015b52a0"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 298,
+          "metric": "smsp__pcsamp_warps_issue_stalled_short_scoreboard",
+          "count": 48,
+          "line_total_base_samples": 307,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.6001,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332166144,
+          "pc_count_at_line": 16,
+          "sass_example": "@!P0  BRA 0x12015b52a0"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 298,
+          "metric": "smsp__pcsamp_warps_issue_stalled_no_instructions",
+          "count": 45,
+          "line_total_base_samples": 307,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.5626,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332166144,
+          "pc_count_at_line": 16,
+          "sass_example": "@!P0  BRA 0x12015b52a0"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 298,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 35,
+          "line_total_base_samples": 307,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.4376,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332166144,
+          "pc_count_at_line": 16,
+          "sass_example": "@!P0  BRA 0x12015b52a0"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 298,
+          "metric": "smsp__pcsamp_warps_issue_stalled_branch_resolving",
+          "count": 26,
+          "line_total_base_samples": 307,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.325,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332166144,
+          "pc_count_at_line": 16,
+          "sass_example": "@!P0  BRA 0x12015b52a0"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 298,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 16,
+          "line_total_base_samples": 307,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.2,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332166144,
+          "pc_count_at_line": 16,
+          "sass_example": "@!P0  BRA 0x12015b52a0"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 298,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 7,
+          "line_total_base_samples": 307,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.0875,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332166144,
+          "pc_count_at_line": 16,
+          "sass_example": "@!P0  BRA 0x12015b52a0"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 298,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 6,
+          "line_total_base_samples": 307,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.075,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332166144,
+          "pc_count_at_line": 16,
+          "sass_example": "@!P0  BRA 0x12015b52a0"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 298,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 3,
+          "line_total_base_samples": 307,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.0375,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332166144,
+          "pc_count_at_line": 16,
+          "sass_example": "@!P0  BRA 0x12015b52a0"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 298,
+          "metric": "smsp__pcsamp_warps_issue_stalled_misc",
+          "count": 1,
+          "line_total_base_samples": 307,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.0125,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332166144,
+          "pc_count_at_line": 16,
+          "sass_example": "@!P0  BRA 0x12015b52a0"
+        }
+      ],
+      "source_hotspot_count": 43,
+      "hotspot_line_totals": [
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 221,
+          "base_samples": 1320
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 17,
+          "base_samples": 925
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 53,
+          "base_samples": 799
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 68,
+          "base_samples": 396
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 298,
+          "base_samples": 307
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 30,
+          "base_samples": 251
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 106,
+          "base_samples": 142
+        }
+      ],
+      "local_spill_pcs": [
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 275,
+          "pc": 77332163808,
+          "sass": "LDL R26, [R1+0xc]",
+          "direct_base_samples": 26,
+          "direct_share_of_denominator_pct": 0.325,
+          "source_report": "source"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 244,
+          "pc": 77332163760,
+          "sass": "STL [R1+0x4], R24",
+          "direct_base_samples": 13,
+          "direct_share_of_denominator_pct": 0.1625,
+          "source_report": "source"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 151,
+          "pc": 77332166224,
+          "sass": "LDL R24, [R1+0x8]",
+          "direct_base_samples": 11,
+          "direct_share_of_denominator_pct": 0.1375,
+          "source_report": "source"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 275,
+          "pc": 77332163824,
+          "sass": "LDL R25, [R1+0x10]",
+          "direct_base_samples": 8,
+          "direct_share_of_denominator_pct": 0.1,
+          "source_report": "source"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 244,
+          "pc": 77332163744,
+          "sass": "STL [R1], R23",
+          "direct_base_samples": 7,
+          "direct_share_of_denominator_pct": 0.0875,
+          "source_report": "source"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 275,
+          "pc": 77332163840,
+          "sass": "LDL R24, [R1+0x8]",
+          "direct_base_samples": 6,
+          "direct_share_of_denominator_pct": 0.075,
+          "source_report": "source"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 33,
+          "pc": 77332142848,
+          "sass": "LDL R14, [R1+0x8]",
+          "direct_base_samples": 3,
+          "direct_share_of_denominator_pct": 0.0375,
+          "source_report": "source"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 17,
+          "pc": 77332163040,
+          "sass": "LDL.LU R24, [R1+0x4]",
+          "direct_base_samples": 3,
+          "direct_share_of_denominator_pct": 0.0375,
+          "source_report": "source"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 17,
+          "pc": 77332163056,
+          "sass": "LDL.LU R23, [R1]",
+          "direct_base_samples": 3,
+          "direct_share_of_denominator_pct": 0.0375,
+          "source_report": "source"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 151,
+          "pc": 77332166256,
+          "sass": "LDL R4, [R1]",
+          "direct_base_samples": 1,
+          "direct_share_of_denominator_pct": 0.0125,
+          "source_report": "source"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 304,
+          "pc": 77332166528,
+          "sass": "STL [R1+0x4], R5",
+          "direct_base_samples": 1,
+          "direct_share_of_denominator_pct": 0.0125,
+          "source_report": "source"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 379,
+          "pc": 77332171536,
+          "sass": "LDL.LU R4, [R1+0xc]",
+          "direct_base_samples": 1,
+          "direct_share_of_denominator_pct": 0.0125,
+          "source_report": "source"
+        }
+      ],
+      "sass_evidence": [
+        {
+          "role": "global Q vector load",
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 129,
+          "pc": 77332143392,
+          "sass": "@!P1  LDG.E.128.STRONG.SM R52, desc[UR12][R6.64]",
+          "sampled_base_samples_at_pc": 1,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "pin_status": "repo_source_pin",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "role": "shared K 16-byte/lane load",
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 159,
+          "pc": 77332149504,
+          "sass": "LDS.128 R8, [R3+0x800]",
+          "sampled_base_samples_at_pc": 10,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "pin_status": "repo_source_pin",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "role": "shared V 16-byte/lane load",
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 253,
+          "pc": 77332155808,
+          "sass": "LDS.128 R100, [R3+0x2400]",
+          "sampled_base_samples_at_pc": 5,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "pin_status": "repo_source_pin",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "role": "score MMA (packed Half accumulator)",
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 221,
+          "pc": 77332149552,
+          "sass": "HMMA.16816.F16 R28, R44, R16, RZ",
+          "sampled_base_samples_at_pc": 73,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "pin_status": "repo_source_pin",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "role": "P x V MMA (FP32 accumulator)",
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 17,
+          "pc": 77332163696,
+          "sass": "HMMA.16816.F32 R80, R28, R82, R132",
+          "sampled_base_samples_at_pc": 80,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "pin_status": "repo_source_pin",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "role": "spill reload PC",
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 275,
+          "pc": 77332163808,
+          "sass": "LDL R26, [R1+0xc]",
+          "sampled_base_samples_at_pc": 26,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "pin_status": "repo_source_pin",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "role": "spill store PC",
+          "file": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+          "line": 244,
+          "pc": 77332163760,
+          "sass": "STL [R1+0x4], R24",
+          "sampled_base_samples_at_pc": 13,
+          "file_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+          "pin_status": "repo_source_pin",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "role": "mbarrier phase wait",
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 298,
+          "pc": 77332166128,
+          "sass": "SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [R3+URZ+0x4000], R5",
+          "sampled_base_samples_at_pc": 54,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "pin_status": "repo_source_pin",
+          "source_report": "source",
+          "available": true
+        }
+      ],
+      "unpinned_toolkit_hotspots": [
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 708,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 65,
+          "line_total_base_samples": 161,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.8126,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 708,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 63,
+          "line_total_base_samples": 161,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.7876,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 708,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 18,
+          "line_total_base_samples": 161,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.225,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 708,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 13,
+          "line_total_base_samples": 161,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.1625,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 708,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 2,
+          "line_total_base_samples": 161,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.025,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1720,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 111,
+          "line_total_base_samples": 183,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 1.3877,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1720,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 66,
+          "line_total_base_samples": 183,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.8251,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1720,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 3,
+          "line_total_base_samples": 183,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.0375,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1720,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 2,
+          "line_total_base_samples": 183,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.025,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1720,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 1,
+          "line_total_base_samples": 183,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.0125,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1731,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 332,
+          "line_total_base_samples": 593,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 4.1505,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1731,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 184,
+          "line_total_base_samples": 593,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 2.3003,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1731,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 53,
+          "line_total_base_samples": 593,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.6626,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1731,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 12,
+          "line_total_base_samples": 593,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.15,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1731,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 11,
+          "line_total_base_samples": 593,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.1375,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1731,
+          "metric": "smsp__pcsamp_warps_issue_stalled_no_instructions",
+          "count": 1,
+          "line_total_base_samples": 593,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.0125,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 2604,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 240,
+          "line_total_base_samples": 355,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 3.0004,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 2604,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 83,
+          "line_total_base_samples": 355,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 1.0376,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 2604,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 17,
+          "line_total_base_samples": 355,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.2125,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 2604,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 9,
+          "line_total_base_samples": 355,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.1125,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 2604,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 5,
+          "line_total_base_samples": 355,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.0625,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 2604,
+          "metric": "smsp__pcsamp_warps_issue_stalled_no_instructions",
+          "count": 1,
+          "line_total_base_samples": 355,
+          "sampling_denominator": 7999,
+          "share_of_denominator_pct": 0.0125,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        }
+      ],
+      "observations": [
+        "Source PC samples (denominator 7999) are dominated by stalled_wait 2507 (31.34%) and stalled_barrier 897 (11.21%); long_scoreboard is 523 (6.54%).",
+        "DRAM throughput is 10.117% of peak and the L2 hit rate is 81.856%; the kernel is not DRAM-bandwidth bound.",
+        "Resident occupancy is 12.928% versus a 16.667% theoretical ceiling (2 CTAs/SM, 8 of 48 warps), but only 0.368 warps/cycle are eligible and 32.026% of cycles issue. Resident occupancy and eligible-warp rate are different measurements.",
+        "SASS is vectorized: LDG.E.128 and LDS.128 move 16 B per lane, so a full 32-lane warp request is 512 B. Measured shared-load wavefronts per instruction are 4.044, consistent with the legitimate 4 x 128 B wavefronts; derived excessive wavefronts = 0. A generic 4-sector scalar ideal is not applicable to these global vector loads.",
+        "FP16 local spill traffic is real: 197824 local loads / 88704 local stores, 98.8183% local load-sector hit rate, and 12 direct LDL/STL PCs carrying 83/7999 base PC samples. That small direct PC share is not the total spill runtime share."
+      ],
+      "available": [
+        "launch/occupancy metrics",
+        "source PC stall samples mapped through source_info(pc)",
+        "SASS text through sass_by_pc(address)",
+        "PM sampling series in collection order",
+        "DRAM-equivalent throughput and byte counters",
+        "local/shared/global sector and wavefront counters",
+        "tensor-pipe activity"
+      ],
+      "unavailable": [
+        {
+          "name": "dram__throughput.avg.pct_of_peak_sustained_elapsed",
+          "kind": "metric",
+          "reason": "absent from the SM120 report; actual equivalent gpu__dram_throughput.avg.pct_of_peak_sustained_elapsed is provided"
+        },
+        {
+          "name": "dram__bytes.sum",
+          "kind": "metric",
+          "reason": "absent from the SM120 report; actual dram__bytes_op_read.sum and dram__bytes_op_write.sum are provided"
+        },
+        {
+          "name": "launch__local_size_bytes",
+          "kind": "metric",
+          "reason": "not an ncu report metric; compiler resource comes from ptxas (24 B FP16 / 0 B FP8) and is not runtime traffic"
+        },
+        {
+          "name": "PmSampling_WarpStates",
+          "kind": "section",
+          "reason": "section is not installed in Nsight Compute 2026.3.0"
+        },
+        {
+          "name": "source set",
+          "kind": "section",
+          "reason": "set is not installed in 2026.3.0; the source pass used --set detailed --section SourceCounters"
+        },
+        {
+          "name": "absolute_pm_sample_timestamps",
+          "kind": "timing",
+          "reason": "ncu_report 2026.3.0 has no absolute per-sample timestamp accessor; PM values are in collection order"
+        },
+        {
+          "name": "aggregate_local_sectors_in_source_report",
+          "kind": "metric",
+          "reason": "source pass has no aggregate local-sector metrics; local sector/hit values exist only in the full report and have no PC instances"
+        }
+      ],
+      "pm_sampling": {
+        "archive": "analysis/pm_instances_fp16_full.json",
+        "series_count": 278,
+        "instances_per_series": 216,
+        "all_zero_series_count": 98,
+        "timestamps": null,
+        "timestamp_reason": "ncu_report 2026.3.0 exposes ITimelines.aligned_metric only; no absolute per-sample timestamp accessor is available, so the series is kept in collection order without wall-clock stamps",
+        "series_order": "collection order (no absolute timestamps available)"
+      },
+      "duration_ns": 77024.0,
+      "artifacts": [
+        "profile/dlss-update-20261029/rgb-safe-attention-validation/artifacts/probability_frame_fp16.json",
+        "profile/dlss-update-20261029/rgb-safe-attention-rgb/results.json"
+      ]
+    },
+    "small_global_attention_chained_c1024_fp8": {
+      "state": "measured",
+      "ncu_state": "measured",
+      "source": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+      "source_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+      "runtime_source_revision": "266d69acf52dda413df3a874572f1156461f89ff",
+      "runtime_binary_sha256": "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+      "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition (GB202, SM120, CC 12.0, 188 SMs, 97,887 MiB, driver 610.62)",
+      "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+      "precision": "fp8",
+      "shape": {
+        "batch": 1,
+        "tokens": 2160,
+        "padded_tokens": 2176,
+        "heads": 32,
+        "channels": 1024,
+        "head_channels": 32,
+        "grid": [
+          32,
+          9,
+          1
+        ],
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "dynamic_shared_mem_bytes": 0
+      },
+      "compiled_resources": {
+        "launch__registers_per_thread": 195,
+        "launch__registers_per_thread_allocated": 200.0,
+        "launch__shared_mem_per_block_static": 8208,
+        "launch__shared_mem_per_block_dynamic": 0,
+        "launch__shared_mem_per_block_driver": 1024,
+        "launch__shared_mem_per_block": 9232,
+        "launch__block_size": 128,
+        "max_threads_per_block_attribute": 256,
+        "cuda_occupancy_api_capacity_ctas_per_sm": 2,
+        "ptxas_stack_frame_bytes": 0,
+        "ptxas_spill_store_bytes": 0,
+        "ptxas_spill_load_bytes": 0,
+        "launch__occupancy_limit_registers": 2,
+        "launch__occupancy_limit_shared_mem": 7,
+        "launch__occupancy_limit_warps": 12
+      },
+      "numerical_reference": {
+        "sampled_queries": 96,
+        "heads": 32,
+        "channels": 32,
+        "sampled_outputs": 98304,
+        "exact_equal_fraction": 1.0,
+        "max_abs_error": 0.0,
+        "max_ulp": 0.0,
+        "p99_abs_error": 0.0,
+        "full_output_census_values": 2228224,
+        "selected_numerators_above_65504": 640,
+        "max_denominator_error": 0.0001220703125,
+        "artifacts": [
+          "profile/dlss-update-20261029/rgb-safe-attention-validation/artifacts/probability_frame_fp8.json",
+          "profile/dlss-update-20261029/rgb-safe-attention-rgb/results.json"
+        ]
+      },
+      "contract": {
+        "precision": "FP8",
+        "qk_ptx": "mma.sync.aligned.m16n8k32.row.col.f16.e4m3.e4m3.f16",
+        "pv_ptx": "mma.sync.aligned.m16n8k32.row.col.f32.e4m3.e4m3.f32",
+        "qk_sass": "QMMA.16832.F16.E4M3.E4M3",
+        "qk_sass_file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+        "qk_sass_line": 195,
+        "pv_sass": "QMMA.16832.F32.E4M3.E4M3",
+        "pv_sass_file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+        "pv_sass_line": 31,
+        "qchunks": 1,
+        "pchunks": 2,
+        "key_tiles": 34,
+        "qk_mma_per_warp_tile": 32,
+        "pv_mma_per_warp_tile": 32,
+        "warp_mma_per_tile": 64,
+        "cta_mma_per_tile": 256,
+        "total_ptx_mma_per_cta": 8704,
+        "qk_accumulator": "Half",
+        "pv_accumulator": "FP32",
+        "denominator": "FP32",
+        "maxnreg_cap": 208,
+        "persistent_fp32_per_lane": 64,
+        "persistent_denominators": 2,
+        "source_shared_bytes": 8208
+      },
+      "ncu_reports": [
+        {
+          "kind": "full",
+          "path": "evidence-small/full_cyberpunk4k-b31_fp8.ncu-repz",
+          "sha256": "c9d1d1b55259e2edbe28588ffba5cdf226612bf583eaf4847e17c21adb8e163a",
+          "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+          "fixture": "cyberpunk2077-johnny-first4k-b31",
+          "metric_count": 2633,
+          "raw_suffix": ".ncu-repz",
+          "source_path": "profile/small-attention-fp32acc-sm120-20261030/reports/full_cyberpunk4k-b31_fp8.ncu-repz"
+        },
+        {
+          "kind": "source",
+          "path": "evidence-small/source_cyberpunk4k-b31_fp8.ncu-repz",
+          "sha256": "f83b10ef4202d70d87a138598376131bfa592a2bc70e6df791c686834619d0a7",
+          "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+          "fixture": "cyberpunk2077-johnny-first4k-b31",
+          "metric_count": 1272,
+          "raw_suffix": ".ncu-repz",
+          "source_path": "profile/small-attention-fp32acc-sm120-20261030/reports/source_cyberpunk4k-b31_fp8.ncu-repz"
+        }
+      ],
+      "ncu_extension": {
+        "state": "measured",
+        "reports": [
+          {
+            "kind": "full",
+            "path": "evidence-small/full_<fixture>_<precision>.ncu-repz",
+            "sha256": "<raw report sha256>",
+            "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+            "metric_count": "<catalogued metric rows>"
+          },
+          {
+            "kind": "source",
+            "path": "evidence-small/source_<fixture>_<precision>.ncu-repz",
+            "sha256": "<raw report sha256>",
+            "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+            "metric_count": "<catalogued metric rows>"
+          }
+        ],
+        "compiled_metrics": [
+          "launch__registers_per_thread",
+          "launch__registers_per_thread_allocated",
+          "launch__shared_mem_per_block_static",
+          "launch__shared_mem_per_block_dynamic",
+          "launch__shared_mem_per_block_driver",
+          "launch__block_size",
+          "launch__grid_dim_x",
+          "launch__grid_dim_y",
+          "launch__grid_dim_z",
+          "smsp__sass_inst_executed_op_local_ld.sum",
+          "smsp__sass_inst_executed_op_local_st.sum",
+          "sass__inst_executed_register_spilling_mem_local"
+        ],
+        "fixtures": "cyberpunk2077-johnny-first4k-b31",
+        "gate": "one full and one separate source report for the same entry and fixture; no legacy report may be substituted"
+      },
+      "report_identity": {
+        "kernel": "small_global_attention_chained_c1024_fp8",
+        "precision": "fp8",
+        "ncu_version": "2026.3.0.0 (build 38525999)",
+        "ncu_report_module": "C:/Program Files/NVIDIA Corporation/Nsight Compute 2026.3.0/extras/python/ncu_report.py",
+        "range_count": 1,
+        "action_count": 1,
+        "full": {
+          "path": "profile/small-attention-fp32acc-sm120-20261030/reports/full_cyberpunk4k-b31_fp8.ncu-repz",
+          "sha256": "c9d1d1b55259e2edbe28588ffba5cdf226612bf583eaf4847e17c21adb8e163a",
+          "metric_count": 2633,
+          "pcsamp_sample_count_not_used_for_pc_analysis": 4961
+        },
+        "source": {
+          "path": "profile/small-attention-fp32acc-sm120-20261030/reports/source_cyberpunk4k-b31_fp8.ncu-repz",
+          "sha256": "f83b10ef4202d70d87a138598376131bfa592a2bc70e6df791c686834619d0a7",
+          "metric_count": 1272,
+          "run_duration_ns": 46944
+        },
+        "separate_runs": true,
+        "warning": "full and source are separate profiling runs. Source PC totals (4956) must never be combined with the full report's PC total."
+      },
+      "metrics": [
+        {
+          "name": "gpu__time_duration.sum",
+          "value": 46720.0,
+          "unit": "ns",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__grid_size",
+          "value": 288,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__grid_dim_x",
+          "value": 32,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__grid_dim_y",
+          "value": 9,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__grid_dim_z",
+          "value": 1,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__block_size",
+          "value": 128,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__block_dim_x",
+          "value": 32,
+          "unit": "block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__block_dim_y",
+          "value": 4,
+          "unit": "block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__block_dim_z",
+          "value": 1,
+          "unit": "block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__waves_per_multiprocessor",
+          "value": 0.7659574468085106,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__registers_per_thread",
+          "value": 195,
+          "unit": "register/thread",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__registers_per_thread_allocated",
+          "value": 200.0,
+          "unit": "register/thread",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__shared_mem_per_block",
+          "value": 9232,
+          "unit": "byte/block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__shared_mem_per_block_static",
+          "value": 8208,
+          "unit": "byte/block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__shared_mem_per_block_dynamic",
+          "value": 0,
+          "unit": "byte/block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__shared_mem_per_block_driver",
+          "value": 1024,
+          "unit": "byte/block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__shared_mem_per_block_allocated",
+          "value": 9344.0,
+          "unit": "byte/block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__occupancy_limit_blocks",
+          "value": 24.0,
+          "unit": "block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__occupancy_limit_registers",
+          "value": 2.0,
+          "unit": "block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__occupancy_limit_shared_mem",
+          "value": 7.0,
+          "unit": "block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "launch__occupancy_limit_warps",
+          "value": 12.0,
+          "unit": "block",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__maximum_warps_per_active_cycle_pct",
+          "value": 16.666666666666664,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__warps_active.avg.pct_of_peak_sustained_active",
+          "value": 12.960309321382688,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__warps_active.avg.per_cycle_active",
+          "value": 1.568423286266694,
+          "unit": "warp",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__warps_eligible.avg.per_cycle_active",
+          "value": 0.5496441897826942,
+          "unit": "warp",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__issue_active.avg.pct_of_peak_sustained_active",
+          "value": 46.78210381726032,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__throughput.avg.pct_of_peak_sustained_elapsed",
+          "value": 41.95045574383157,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__cycles_active.avg",
+          "value": 108550.48404255319,
+          "unit": "cycle",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__cycles_active.min",
+          "value": 93637.0,
+          "unit": "cycle",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__cycles_active.max",
+          "value": 124730.0,
+          "unit": "cycle",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed",
+          "value": 41.95045574383157,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_active",
+          "value": 49.13395772170131,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__inst_executed_pipe_tensor_subpipe_hmma.avg.pct_of_peak_sustained_elapsed",
+          "value": 41.95045574383157,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sm__inst_executed_pipe_tensor_subpipe_imma.avg.pct_of_peak_sustained_elapsed",
+          "value": 0.0,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "gpu__dram_throughput.avg.pct_of_peak_sustained_elapsed",
+          "value": 8.416619624345683,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "dram__bytes_op_read.sum",
+          "value": 6717696.0,
+          "unit": "byte",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "dram__bytes_op_write.sum",
+          "value": 0.0,
+          "unit": "byte",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sector_hit_rate.pct",
+          "value": 1.009251471825063,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "lts__t_sector_hit_rate.pct",
+          "value": 80.53933475782485,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_wait_per_issue_active.ratio",
+          "value": 0.6769786774237104,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_barrier_per_issue_active.ratio",
+          "value": 0.4785897086880066,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_long_scoreboard_per_issue_active.ratio",
+          "value": 0.21686478547120408,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_short_scoreboard_per_issue_active.ratio",
+          "value": 0.08881137476942418,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_math_pipe_throttle_per_issue_active.ratio",
+          "value": 0.2937345273870132,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_mio_throttle_per_issue_active.ratio",
+          "value": 0.014965690128880974,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_not_selected_per_issue_active.ratio",
+          "value": 0.175510460263043,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__average_warps_issue_stalled_dispatch_stall_per_issue_active.ratio",
+          "value": 0.14575937653072182,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__sass_inst_executed_op_local_ld.sum",
+          "value": 0.0,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__sass_inst_executed_op_local_st.sum",
+          "value": 0.0,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sass__inst_executed_register_spilling_mem_local",
+          "value": 0,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sass__inst_executed_register_spilling_mem_local_op_read",
+          "value": 0,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "sass__inst_executed_register_spilling_mem_local_op_write",
+          "value": 0,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_local_op_ld.sum",
+          "value": 0.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_local_op_ld_lookup_hit.sum",
+          "value": 0.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_local_op_ld_lookup_miss.sum",
+          "value": 0.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sector_pipe_lsu_mem_local_op_ld_hit_rate.pct",
+          "value": 0.0,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_local_op_st.sum",
+          "value": 0.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_local_op_st_lookup_hit.sum",
+          "value": 0.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_local_op_st_lookup_miss.sum",
+          "value": 0.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sector_pipe_lsu_mem_local_op_st_hit_rate.pct",
+          "value": 0.0,
+          "unit": "%",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_requests_pipe_lsu_mem_local_op_ld.sum",
+          "value": 0.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_requests_pipe_lsu_mem_local_op_st.sum",
+          "value": 0.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__data_pipe_lsu_wavefronts_mem_shared.sum",
+          "value": 1942155.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__data_pipe_lsu_wavefronts_mem_shared_op_ld.sum",
+          "value": 1253431.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__sass_inst_executed_op_shared_ld.sum",
+          "value": 313344.0,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "memory_l1_wavefronts_shared",
+          "value": 1253376,
+          "unit": "sectors",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "memory_l1_wavefronts_shared_ideal",
+          "value": 1253376,
+          "unit": "sectors",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "derived__memory_l1_wavefronts_shared_excessive",
+          "value": 0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "derived__memory_l1_conflicts_shared_nway",
+          "value": 32,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__data_bank_conflicts_pipe_lsu_mem_shared.sum",
+          "value": 9404.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum",
+          "value": 63.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_global_op_ld.sum",
+          "value": 79968.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_requests_pipe_lsu_mem_global_op_ld.sum",
+          "value": 14688.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_sectors_pipe_lsu_mem_global_op_st.sum",
+          "value": 72224.0,
+          "unit": "sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_requests_pipe_lsu_mem_global_op_st.sum",
+          "value": 5024.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_output_wavefronts_pipe_lsu_mem_global_op_ld.sum",
+          "value": 16428.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "l1tex__t_output_wavefronts_pipe_lsu_mem_global_op_st.sum",
+          "value": 6817.0,
+          "unit": "",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__sass_average_data_bytes_per_sector_mem_global_op_ld.ratio",
+          "value": 28.38095238095238,
+          "unit": "byte/sector",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__sass_inst_executed_op_global_ld.sum",
+          "value": 14688.0,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__sass_inst_executed_op_global_st.sum",
+          "value": 5024.0,
+          "unit": "inst",
+          "source_report": "full",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_sample_count",
+          "value": 4956,
+          "unit": "",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_selected",
+          "value": 1545,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_wait",
+          "value": 1055,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_barrier",
+          "value": 747,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_long_scoreboard",
+          "value": 325,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_short_scoreboard",
+          "value": 155,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "value": 356,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_mio_throttle",
+          "value": 26,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_lg_throttle",
+          "value": 1,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "value": 191,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "value": 196,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_branch_resolving",
+          "value": 231,
+          "unit": "branches",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_no_instructions",
+          "value": 89,
+          "unit": "inst",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_membar",
+          "value": 36,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_drain",
+          "value": 0,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_misc",
+          "value": 3,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_tex_throttle",
+          "value": 0,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "name": "smsp__pcsamp_warps_issue_stalled_sleeping",
+          "value": 0,
+          "unit": "warp",
+          "source_report": "source",
+          "available": true
+        }
+      ],
+      "metric_count": 98,
+      "derived": {
+        "waves_arithmetic_288_over_188x2": 0.765957447,
+        "uniform_admission_occupancy_pct_288x4_over_188x48": 12.765957,
+        "achieved_occupancy_pct": 12.960309321382688,
+        "theoretical_occupancy_pct": 16.666666666666664,
+        "achieved_vs_theoretical_pct": 77.7619,
+        "achieved_vs_uniform_admission_pct": 101.5224,
+        "shared_ld_wavefronts_per_lds128_instruction": 4.0002,
+        "global_ld_sectors_per_request": 5.4444,
+        "local_ld_sector_hit_rate_pct": null,
+        "duration_ns": 46720.0
+      },
+      "sampling": {
+        "report_kind": "source",
+        "metric": "smsp__pcsamp_sample_count",
+        "denominator": 4956,
+        "unit": "warp",
+        "base_stall_categories": [
+          "smsp__pcsamp_warps_issue_stalled_barrier",
+          "smsp__pcsamp_warps_issue_stalled_branch_resolving",
+          "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "smsp__pcsamp_warps_issue_stalled_drain",
+          "smsp__pcsamp_warps_issue_stalled_lg_throttle",
+          "smsp__pcsamp_warps_issue_stalled_long_scoreboard",
+          "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "smsp__pcsamp_warps_issue_stalled_membar",
+          "smsp__pcsamp_warps_issue_stalled_mio_throttle",
+          "smsp__pcsamp_warps_issue_stalled_misc",
+          "smsp__pcsamp_warps_issue_stalled_no_instructions",
+          "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "smsp__pcsamp_warps_issue_stalled_selected",
+          "smsp__pcsamp_warps_issue_stalled_short_scoreboard",
+          "smsp__pcsamp_warps_issue_stalled_sleeping",
+          "smsp__pcsamp_warps_issue_stalled_tex_throttle",
+          "smsp__pcsamp_warps_issue_stalled_wait"
+        ],
+        "not_issued_variants_excluded": true,
+        "note": "base stalled_* categories sum exactly to the denominator; *_not_issued are subsets and are excluded"
+      },
+      "source_pins": {
+        "root_source": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+        "root_source_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+        "tree_sha256_sorted": "b9060a5938f0c08842bf024ff1a7e31fc70330371d332b2844092c6061c208e1",
+        "file_count": 13,
+        "files": [
+          {
+            "path": "csrc/kernel_impl/bottleneck_c1024_attention/common/global_attention.cuh",
+            "sha256": "b5061a54de3bc464b13ed9e77ad4755bbe6a1e8a2ec4345d3d2460d2dbdea7b9",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/bottleneck_c1024_attention/common/intrinsics.cuh",
+            "sha256": "f6b46dc543c46bc93e961792bf549a3def80b3456d0892b007027f2a9e977420",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+            "sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/kernel_abi.h",
+            "sha256": "12723e426e0bde6dc00c8eb2ad315b4944b587c32923313116a4588dfe984679",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/kernel_helpers.cuh",
+            "sha256": "8667f6b336526be41db126632a5c2406659a5039acee36dd632068d01d84c19f",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/memoryops.cuh",
+            "sha256": "d354e23c4e56a69c213f05c1ca646c02ed35e40b4f044253f5463127222ce056",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/mma.cuh",
+            "sha256": "86f7ab1ee8d044818775e9165c724273056ac30243e0579569ccb20b5b4ec26a",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/numerical_constants.cuh",
+            "sha256": "12806e2d8befb97545ee0d92feb886435d9009e6bc9a64657629064298c9ce25",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/packed_math.cuh",
+            "sha256": "3cb3128aa0ae6b70a8267dd4cfa9bfeba3083debd57fb30c6cd897b9a54086f2",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/shared/common/warp_window32.cuh",
+            "sha256": "18cac3b309a28d09b8207c0f6ab1bb0839b5d2e87cc3af3fe34ec5bb2710534e",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+            "sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/small_c1024_attention/common/small_attention_abi.h",
+            "sha256": "9aaa8c4d7c52524f4f385531ad41052d5157fb42f29da2af186ffba22053795f",
+            "role": "included_header"
+          },
+          {
+            "path": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+            "sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+            "role": "kernel"
+          }
+        ],
+        "native_manifest_path": "profile/dlss-update-20261029/rgb-safe-attention-numerical/artifacts/fixture_manifest_small31_b31_4k_fp8.json",
+        "native_manifest_sha256": "8ebee7b7f6909c82c111a5d52691836ca60b338ba87b8ebbbd580f4a2d34fd1d",
+        "native_manifest_tree_sha256_listed_order": "75146a4a6219393ec451b86f06d8fffeb7e4d84516806f4cdc957c047a4954af",
+        "native_manifest_tree_sha256_reproduces_listed_order": true,
+        "native_manifest_tree_sha256_reproduces_sorted_order": false,
+        "note": "Native listed-order tree hash metadata is preserved unchanged; the label method claims sorted order but only listed order reproduces. Cite tree_sha256_sorted and the per-file hashes above as the separately sorted source closure."
+      },
+      "source_hotspots": [
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 50,
+          "metric": "smsp__pcsamp_warps_issue_stalled_barrier",
+          "count": 531,
+          "line_total_base_samples": 543,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 10.7143,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332142464,
+          "pc_count_at_line": 2,
+          "sass_example": "BSSY B2, 0x12015adaf0"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 50,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 5,
+          "line_total_base_samples": 543,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.1009,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332142464,
+          "pc_count_at_line": 2,
+          "sass_example": "BSSY B2, 0x12015adaf0"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 50,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 4,
+          "line_total_base_samples": 543,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0807,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332142464,
+          "pc_count_at_line": 2,
+          "sass_example": "BSSY B2, 0x12015adaf0"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 50,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 1,
+          "line_total_base_samples": 543,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0202,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332142464,
+          "pc_count_at_line": 2,
+          "sass_example": "BSSY B2, 0x12015adaf0"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 50,
+          "metric": "smsp__pcsamp_warps_issue_stalled_no_instructions",
+          "count": 1,
+          "line_total_base_samples": 543,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0202,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332142464,
+          "pc_count_at_line": 2,
+          "sass_example": "BSSY B2, 0x12015adaf0"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 50,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 1,
+          "line_total_base_samples": 543,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0202,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332142464,
+          "pc_count_at_line": 2,
+          "sass_example": "BSSY B2, 0x12015adaf0"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 51,
+          "metric": "smsp__pcsamp_warps_issue_stalled_barrier",
+          "count": 101,
+          "line_total_base_samples": 136,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 2.0379,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332124928,
+          "pc_count_at_line": 6,
+          "sass_example": "BSSY B1, 0x12015a9640"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 51,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 21,
+          "line_total_base_samples": 136,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.4237,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332124928,
+          "pc_count_at_line": 6,
+          "sass_example": "BSSY B1, 0x12015a9640"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 51,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 7,
+          "line_total_base_samples": 136,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.1412,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332124928,
+          "pc_count_at_line": 6,
+          "sass_example": "BSSY B1, 0x12015a9640"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 51,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 6,
+          "line_total_base_samples": 136,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.1211,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332124928,
+          "pc_count_at_line": 6,
+          "sass_example": "BSSY B1, 0x12015a9640"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 51,
+          "metric": "smsp__pcsamp_warps_issue_stalled_no_instructions",
+          "count": 1,
+          "line_total_base_samples": 136,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0202,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332124928,
+          "pc_count_at_line": 6,
+          "sass_example": "BSSY B1, 0x12015a9640"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 30,
+          "metric": "smsp__pcsamp_warps_issue_stalled_long_scoreboard",
+          "count": 181,
+          "line_total_base_samples": 193,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 3.6521,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332142272,
+          "pc_count_at_line": 9,
+          "sass_example": "ISETP.GT.AND P0, PT, R18, -0x1, PT"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 30,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 12,
+          "line_total_base_samples": 193,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.2421,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332142272,
+          "pc_count_at_line": 9,
+          "sass_example": "ISETP.GT.AND P0, PT, R18, -0x1, PT"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 102,
+          "metric": "smsp__pcsamp_warps_issue_stalled_barrier",
+          "count": 100,
+          "line_total_base_samples": 168,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 2.0178,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332124336,
+          "pc_count_at_line": 10,
+          "sass_example": "UMOV UR7, URZ"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 102,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 25,
+          "line_total_base_samples": 168,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.5044,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332124336,
+          "pc_count_at_line": 10,
+          "sass_example": "UMOV UR7, URZ"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 102,
+          "metric": "smsp__pcsamp_warps_issue_stalled_branch_resolving",
+          "count": 19,
+          "line_total_base_samples": 168,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.3834,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332124336,
+          "pc_count_at_line": 10,
+          "sass_example": "UMOV UR7, URZ"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 102,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 9,
+          "line_total_base_samples": 168,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.1816,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332124336,
+          "pc_count_at_line": 10,
+          "sass_example": "UMOV UR7, URZ"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 102,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 7,
+          "line_total_base_samples": 168,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.1412,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332124336,
+          "pc_count_at_line": 10,
+          "sass_example": "UMOV UR7, URZ"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 102,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 5,
+          "line_total_base_samples": 168,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.1009,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332124336,
+          "pc_count_at_line": 10,
+          "sass_example": "UMOV UR7, URZ"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 102,
+          "metric": "smsp__pcsamp_warps_issue_stalled_long_scoreboard",
+          "count": 3,
+          "line_total_base_samples": 168,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0605,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332124336,
+          "pc_count_at_line": 10,
+          "sass_example": "UMOV UR7, URZ"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 98,
+          "metric": "smsp__pcsamp_warps_issue_stalled_long_scoreboard",
+          "count": 101,
+          "line_total_base_samples": 121,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 2.0379,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332143392,
+          "pc_count_at_line": 3,
+          "sass_example": "@!P0  BRA 0x12015af680"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 98,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 7,
+          "line_total_base_samples": 121,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.1412,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332143392,
+          "pc_count_at_line": 3,
+          "sass_example": "@!P0  BRA 0x12015af680"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 98,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 7,
+          "line_total_base_samples": 121,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.1412,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332143392,
+          "pc_count_at_line": 3,
+          "sass_example": "@!P0  BRA 0x12015af680"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 98,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 6,
+          "line_total_base_samples": 121,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.1211,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "source_report": "source",
+          "pc_example": 77332143392,
+          "pc_count_at_line": 3,
+          "sass_example": "@!P0  BRA 0x12015af680"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 31,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 140,
+          "line_total_base_samples": 309,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 2.8249,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332140240,
+          "pc_count_at_line": 28,
+          "sass_example": "QMMA.16832.F32.E4M3.E4M3 R48, R16, R114, R48"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 31,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 90,
+          "line_total_base_samples": 309,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 1.816,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332140240,
+          "pc_count_at_line": 28,
+          "sass_example": "QMMA.16832.F32.E4M3.E4M3 R48, R16, R114, R48"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 31,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 58,
+          "line_total_base_samples": 309,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 1.1703,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332140240,
+          "pc_count_at_line": 28,
+          "sass_example": "QMMA.16832.F32.E4M3.E4M3 R48, R16, R114, R48"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 31,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 13,
+          "line_total_base_samples": 309,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.2623,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332140240,
+          "pc_count_at_line": 28,
+          "sass_example": "QMMA.16832.F32.E4M3.E4M3 R48, R16, R114, R48"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 31,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 8,
+          "line_total_base_samples": 309,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.1614,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332140240,
+          "pc_count_at_line": 28,
+          "sass_example": "QMMA.16832.F32.E4M3.E4M3 R48, R16, R114, R48"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 68,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 227,
+          "line_total_base_samples": 306,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 4.5803,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332132288,
+          "pc_count_at_line": 114,
+          "sass_example": "SHF.R.U32.HI R108, RZ, 0xc, R185"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 68,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 35,
+          "line_total_base_samples": 306,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.7062,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332132288,
+          "pc_count_at_line": 114,
+          "sass_example": "SHF.R.U32.HI R108, RZ, 0xc, R185"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 68,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 32,
+          "line_total_base_samples": 306,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.6457,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332132288,
+          "pc_count_at_line": 114,
+          "sass_example": "SHF.R.U32.HI R108, RZ, 0xc, R185"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 68,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 8,
+          "line_total_base_samples": 306,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.1614,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332132288,
+          "pc_count_at_line": 114,
+          "sass_example": "SHF.R.U32.HI R108, RZ, 0xc, R185"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 68,
+          "metric": "smsp__pcsamp_warps_issue_stalled_no_instructions",
+          "count": 3,
+          "line_total_base_samples": 306,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0605,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332132288,
+          "pc_count_at_line": 114,
+          "sass_example": "SHF.R.U32.HI R108, RZ, 0xc, R185"
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 68,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 1,
+          "line_total_base_samples": 306,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0202,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "source_report": "source",
+          "pc_example": 77332132288,
+          "pc_count_at_line": 114,
+          "sass_example": "SHF.R.U32.HI R108, RZ, 0xc, R185"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 195,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 83,
+          "line_total_base_samples": 186,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 1.6747,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332133280,
+          "pc_count_at_line": 30,
+          "sass_example": "QMMA.16832.F16.E4M3.E4M3 R112, R20, R88, RZ"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 195,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 56,
+          "line_total_base_samples": 186,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 1.1299,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332133280,
+          "pc_count_at_line": 30,
+          "sass_example": "QMMA.16832.F16.E4M3.E4M3 R112, R20, R88, RZ"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 195,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 39,
+          "line_total_base_samples": 186,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.7869,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332133280,
+          "pc_count_at_line": 30,
+          "sass_example": "QMMA.16832.F16.E4M3.E4M3 R112, R20, R88, RZ"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 195,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 5,
+          "line_total_base_samples": 186,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.1009,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332133280,
+          "pc_count_at_line": 30,
+          "sass_example": "QMMA.16832.F16.E4M3.E4M3 R112, R20, R88, RZ"
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 195,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 3,
+          "line_total_base_samples": 186,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0605,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "source_report": "source",
+          "pc_example": 77332133280,
+          "pc_count_at_line": 30,
+          "sass_example": "QMMA.16832.F16.E4M3.E4M3 R112, R20, R88, RZ"
+        }
+      ],
+      "source_hotspot_count": 40,
+      "hotspot_line_totals": [
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 50,
+          "base_samples": 543
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 31,
+          "base_samples": 309
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 68,
+          "base_samples": 306
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 30,
+          "base_samples": 193
+        },
+        {
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 195,
+          "base_samples": 186
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 102,
+          "base_samples": 168
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 51,
+          "base_samples": 136
+        },
+        {
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 98,
+          "base_samples": 121
+        }
+      ],
+      "local_spill_pcs": [],
+      "sass_evidence": [
+        {
+          "role": "global Q vector load (SASS maps to sm_32_intrinsics.hpp; call site fp8 .cu:123)",
+          "file": ".cuda/Library/include/sm_32_intrinsics.hpp",
+          "line": 222,
+          "pc": 77332124528,
+          "sass": "@!P1  LDG.E.128.STRONG.SM R24, desc[UR16][R10.64+0x4000]",
+          "sampled_base_samples_at_pc": 1,
+          "file_sha256": null,
+          "pin_status": "unpinned_toolkit_header",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "role": "shared K 16-byte/lane load",
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 153,
+          "pc": 77332128160,
+          "sass": "LDS.128 R16, [R166+UR8+0x200]",
+          "sampled_base_samples_at_pc": 6,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "pin_status": "repo_source_pin",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "role": "shared V 16-byte/lane load",
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 248,
+          "pc": 77332130032,
+          "sass": "LDS.128 R124, [R15+UR8+0x1000]",
+          "sampled_base_samples_at_pc": 5,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "pin_status": "repo_source_pin",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "role": "P x V MMA (FP32 accumulator)",
+          "file": "csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh",
+          "line": 31,
+          "pc": 77332140240,
+          "sass": "QMMA.16832.F32.E4M3.E4M3 R48, R16, R114, R48",
+          "sampled_base_samples_at_pc": 49,
+          "file_sha256": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed",
+          "pin_status": "repo_source_pin",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "role": "score MMA (packed Half accumulator)",
+          "file": "csrc/kernel_impl/shared/common/intrinsics.cuh",
+          "line": 195,
+          "pc": 77332133280,
+          "sass": "QMMA.16832.F16.E4M3.E4M3 R112, R20, R88, RZ",
+          "sampled_base_samples_at_pc": 27,
+          "file_sha256": "f2dd3e6110e0d5207be794ed995cf610c751ffd784276c479b2b00742a6db383",
+          "pin_status": "repo_source_pin",
+          "source_report": "source",
+          "available": true
+        },
+        {
+          "role": "mbarrier phase wait",
+          "file": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+          "line": 98,
+          "pc": 77332143376,
+          "sass": "SYNCS.PHASECHK.TRANS64.TRYWAIT P0, [R13+UR8+0x2000], R17",
+          "sampled_base_samples_at_pc": 55,
+          "file_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+          "pin_status": "repo_source_pin",
+          "source_report": "source",
+          "available": true
+        }
+      ],
+      "unpinned_toolkit_hotspots": [
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 708,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 85,
+          "line_total_base_samples": 123,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 1.7151,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 708,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 16,
+          "line_total_base_samples": 123,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.3228,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 708,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 13,
+          "line_total_base_samples": 123,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.2623,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 708,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 3,
+          "line_total_base_samples": 123,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0605,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 708,
+          "metric": "smsp__pcsamp_warps_issue_stalled_no_instructions",
+          "count": 2,
+          "line_total_base_samples": 123,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0404,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 708,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 2,
+          "line_total_base_samples": 123,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0404,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 708,
+          "metric": "smsp__pcsamp_warps_issue_stalled_short_scoreboard",
+          "count": 2,
+          "line_total_base_samples": 123,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0404,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1720,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 89,
+          "line_total_base_samples": 122,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 1.7958,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1720,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 18,
+          "line_total_base_samples": 122,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.3632,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1720,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 9,
+          "line_total_base_samples": 122,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.1816,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1720,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 4,
+          "line_total_base_samples": 122,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0807,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1720,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 1,
+          "line_total_base_samples": 122,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0202,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1720,
+          "metric": "smsp__pcsamp_warps_issue_stalled_no_instructions",
+          "count": 1,
+          "line_total_base_samples": 122,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.0202,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1731,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 265,
+          "line_total_base_samples": 415,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 5.3471,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1731,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 69,
+          "line_total_base_samples": 415,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 1.3923,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1731,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 35,
+          "line_total_base_samples": 415,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.7062,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1731,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 21,
+          "line_total_base_samples": 415,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.4237,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1731,
+          "metric": "smsp__pcsamp_warps_issue_stalled_no_instructions",
+          "count": 14,
+          "line_total_base_samples": 415,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.2825,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 1731,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 11,
+          "line_total_base_samples": 415,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.222,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 2604,
+          "metric": "smsp__pcsamp_warps_issue_stalled_selected",
+          "count": 97,
+          "line_total_base_samples": 201,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 1.9572,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 2604,
+          "metric": "smsp__pcsamp_warps_issue_stalled_wait",
+          "count": 42,
+          "line_total_base_samples": 201,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.8475,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 2604,
+          "metric": "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle",
+          "count": 35,
+          "line_total_base_samples": 201,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.7062,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 2604,
+          "metric": "smsp__pcsamp_warps_issue_stalled_dispatch_stall",
+          "count": 17,
+          "line_total_base_samples": 201,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.343,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        },
+        {
+          "file": ".cuda/Library/include/cuda_fp16.hpp",
+          "line": 2604,
+          "metric": "smsp__pcsamp_warps_issue_stalled_not_selected",
+          "count": 10,
+          "line_total_base_samples": 201,
+          "sampling_denominator": 4956,
+          "share_of_denominator_pct": 0.2018,
+          "file_sha256": "8e472e719393c64be6a4e0a74b2489bb869431906b854be36a4c7a4703fc04aa",
+          "pin_status": "toolkit_header_not_in_source_closure",
+          "source_report": "source"
+        }
+      ],
+      "observations": [
+        "Source PC samples (denominator 4956) are dominated by stalled_wait 1055 (21.29%) and stalled_barrier 747 (15.07%); long_scoreboard is 325 (6.56%).",
+        "DRAM throughput is 8.417% of peak and the L2 hit rate is 80.539%; the kernel is not DRAM-bandwidth bound.",
+        "Resident occupancy is 12.960% versus a 16.667% theoretical ceiling (2 CTAs/SM, 8 of 48 warps), but only 0.550 warps/cycle are eligible and 46.782% of cycles issue. Resident occupancy and eligible-warp rate are different measurements.",
+        "SASS is vectorized: LDG.E.128 and LDS.128 move 16 B per lane, so a full 32-lane warp request is 512 B. Measured shared-load wavefronts per instruction are 4.000, consistent with the legitimate 4 x 128 B wavefronts; derived excessive wavefronts = 0. A generic 4-sector scalar ideal is not applicable to these global vector loads.",
+        "FP8 has zero local spill instructions and zero local sectors; no LDL/STL PCs exist, so there is no FP8 spill-runtime share to attribute."
+      ],
+      "available": [
+        "launch/occupancy metrics",
+        "source PC stall samples mapped through source_info(pc)",
+        "SASS text through sass_by_pc(address)",
+        "PM sampling series in collection order",
+        "DRAM-equivalent throughput and byte counters",
+        "local/shared/global sector and wavefront counters",
+        "tensor-pipe activity"
+      ],
+      "unavailable": [
+        {
+          "name": "dram__throughput.avg.pct_of_peak_sustained_elapsed",
+          "kind": "metric",
+          "reason": "absent from the SM120 report; actual equivalent gpu__dram_throughput.avg.pct_of_peak_sustained_elapsed is provided"
+        },
+        {
+          "name": "dram__bytes.sum",
+          "kind": "metric",
+          "reason": "absent from the SM120 report; actual dram__bytes_op_read.sum and dram__bytes_op_write.sum are provided"
+        },
+        {
+          "name": "launch__local_size_bytes",
+          "kind": "metric",
+          "reason": "not an ncu report metric; compiler resource comes from ptxas (24 B FP16 / 0 B FP8) and is not runtime traffic"
+        },
+        {
+          "name": "PmSampling_WarpStates",
+          "kind": "section",
+          "reason": "section is not installed in Nsight Compute 2026.3.0"
+        },
+        {
+          "name": "source set",
+          "kind": "section",
+          "reason": "set is not installed in 2026.3.0; the source pass used --set detailed --section SourceCounters"
+        },
+        {
+          "name": "absolute_pm_sample_timestamps",
+          "kind": "timing",
+          "reason": "ncu_report 2026.3.0 has no absolute per-sample timestamp accessor; PM values are in collection order"
+        },
+        {
+          "name": "aggregate_local_sectors_in_source_report",
+          "kind": "metric",
+          "reason": "source pass has no aggregate local-sector metrics; local sector/hit values exist only in the full report and have no PC instances"
+        },
+        {
+          "name": "local_spill_pc_hotspots",
+          "kind": "source_hotspot",
+          "reason": "FP8 has zero local load/store instructions and no LDL/STL SASS PCs"
+        }
+      ],
+      "pm_sampling": {
+        "archive": "analysis/pm_instances_fp8_full.json",
+        "series_count": 278,
+        "instances_per_series": 266,
+        "all_zero_series_count": 105,
+        "timestamps": null,
+        "timestamp_reason": "ncu_report 2026.3.0 exposes ITimelines.aligned_metric only; no absolute per-sample timestamp accessor is available, so the series is kept in collection order without wall-clock stamps",
+        "series_order": "collection order (no absolute timestamps available)"
+      },
+      "duration_ns": 46720.0,
+      "artifacts": [
+        "profile/dlss-update-20261029/rgb-safe-attention-validation/artifacts/probability_frame_fp8.json",
+        "profile/dlss-update-20261029/rgb-safe-attention-rgb/results.json"
+      ]
+    }
+  }
+}

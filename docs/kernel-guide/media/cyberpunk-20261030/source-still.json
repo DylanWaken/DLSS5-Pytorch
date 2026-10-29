@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0",
+  "kind": "cyberpunk2077_still_comparison_source",
+  "generated_at_utc": "2026-10-29T15:00:54Z",
+  "status": "prepared_not_published",
+  "source": {
+    "title": "Cyberpunk 2077 — Create your own cyberpunk (CLEAN)",
+    "artist": "CD PROJEKT RED",
+    "publisher": "CD PROJEKT RED",
+    "page_url": "https://press.cdprojektred.com/en/224/808",
+    "original_media_url": "https://press.cdn.cdpr.app/media/assets/808/Cyberpunk2077_Mac_Create_your_own_cyberpunk_CLEAN_EN.jpeg",
+    "attribution_line": "Unofficial research comparison; not approved or endorsed by CD PROJEKT RED. Cyberpunk2077 imagery © CD PROJEKT RED. Source imagery is not relicensed under this repository code license.",
+    "copyright": "© CD PROJEKT RED S.A. All rights reserved. Cyberpunk 2077 and related marks are trademarks of CD PROJEKT RED.",
+    "license": "Copyright CD PROJEKT RED; not an open-source license",
+    "license_url": "https://www.cdprojektred.com/en/fan-content",
+    "policy_references": [
+      {
+        "name": "Fan content",
+        "url": "https://www.cdprojektred.com/en/fan-content"
+      },
+      {
+        "name": "Video policy",
+        "url": "https://www.cdprojektred.com/en/videopolicy"
+      },
+      {
+        "name": "Support: video policy",
+        "url": "https://support.cdprojektred.com/en/cyberpunk/pc/content-policies/issue/830/video-policy"
+      },
+      {
+        "name": "Press Center regulations",
+        "url": "https://regulations.cdprojektred.com/en/press_regulations"
+      }
+    ],
+    "policy_basis": "Noncommercial, unofficial fan/research comparison using screenshots/video with credit and no implied endorsement. Policy references were checked by the project root on 2026-10-29. This document records provenance; it is not a license grant, a legal opinion, or a claim of endorsement.",
+    "attribution_notice": "Unofficial research comparison; not approved or endorsed by CD PROJEKT RED. Cyberpunk2077 imagery © CD PROJEKT RED. Source imagery is not relicensed under this repository code license.",
+    "open_source_license_claimed": false,
+    "relicensed_under_repository_license": false,
+    "endorsement_claimed": false,
+    "publication_status": "prepared_not_published"
+  },
+  "image": {
+    "path": "profile/dlss-update-20261029/cyberpunk-source/selected_character_native.jpeg",
+    "original_path": "profile/dlss-update-20261029/cyberpunk-source/originals/Cyberpunk2077_Mac_Create_your_own_cyberpunk_CLEAN_EN.jpeg",
+    "source_filename": "Cyberpunk2077_Mac_Create_your_own_cyberpunk_CLEAN_EN.jpeg",
+    "page_url": "https://press.cdprojektred.com/en/224/808",
+    "original_media_url": "https://press.cdn.cdpr.app/media/assets/808/Cyberpunk2077_Mac_Create_your_own_cyberpunk_CLEAN_EN.jpeg",
+    "press_asset_id": 9001,
+    "press_file_id": 36112,
+    "caption": "Cyberpunk 2077 - Create your own cyberpunk (CLEAN)",
+    "mime_type": "image/jpeg",
+    "bytes": 2283357,
+    "width": 3024,
+    "height": 1890,
+    "pix_fmt": "yuvj444p",
+    "color_range": "pc",
+    "color_space": "bt470bg",
+    "sha256": "92412c8c8de579b41d543ef54910ef3bfe185e23ffd23ba67a99b1ec9d89c1ce",
+    "native_pixels_preserved": true,
+    "transformations": "None. Byte-for-byte copy of the official full-resolution download; identical SHA-256 to the original."
+  },
+  "reference_decode": {
+    "path": "profile/dlss-update-20261029/cyberpunk-comparison/input/still/selected_character_native_reference.png",
+    "width": 3024,
+    "height": 1890,
+    "pix_fmt": "rgb24",
+    "color_range": "pc",
+    "bytes": 6031512,
+    "sha256": "d6e5b00f92123a62e2ad80c9fd2b38d32be770e716d907639dbc623cc0f83064",
+    "transformations": "Lossless PNG encode of the JPEG's decoded native pixels at 3024x1890. No rescale, crop, denoise, or sharpening. The JPEG remains the canonical still; this PNG is a convenience reference.",
+    "decoder_note": "The JPEG is full-range yuvj444p with bt470bg color space; FFmpeg used the stream's own color metadata for the RGB24 decode. No color matrix override or range expansion was applied."
+  },
+  "face_roi": {
+    "x": 1030,
+    "y": 80,
+    "width": 960,
+    "height": 960,
+    "source_width": 3024,
+    "source_height": 1890,
+    "path": "profile/dlss-update-20261029/cyberpunk-source/roi_face_inspection.png",
+    "role": "Root-specified display/analysis crop only.",
+    "whole_image_is_input": true,
+    "model_input_crop": false,
+    "rescaled": false,
+    "note": "The canonical still input is the whole native 3024x1890 image. This crop is not a replacement input and is not rescaled."
+  },
+  "character": {
+    "label": "Male V (Cyberpunk 2077 player character)",
+    "confidence": "high",
+    "evidence": "Official screenshot filename 'Create_your_own_cyberpunk' and the in-game mirror interaction identify the player character; face, short hair, beard, facial cyberware, skin, collar, and jacket are clearly readable at native resolution."
+  },
+  "transformations": [
+    "Canonical still: no transformation. Byte-for-byte official 3024x1890 JPEG download; SHA-256 preserved.",
+    "Reference PNG: lossless encode of the JPEG's native decoded pixels at 3024x1890 RGB24; no rescale, crop, denoise, or sharpening. The JPEG remains canonical.",
+    "Face ROI: root-specified 960x960 crop at (1030,80) for display/analysis only; the whole native image remains the comparison input."
+  ],
+  "verification": {
+    "source_sha256_recomputed": true,
+    "dimensions_native_3024x1890": true,
+    "bytes_recomputed": 2283357,
+    "native_pixels_preserved": true,
+    "reference_png_dimensions_match": true,
+    "reference_png_rescaled": false,
+    "open_source_license_claimed": false,
+    "endorsement_claimed": false,
+    "gpu_used": false,
+    "models_executed": false,
+    "git_commands_run": false,
+    "writes_outside_owned_input_path": false
+  },
+  "disclaimer": "Unofficial research comparison; not approved or endorsed by CD PROJEKT RED. Cyberpunk2077 imagery © CD PROJEKT RED. Source imagery is not relicensed under this repository code license."
+}

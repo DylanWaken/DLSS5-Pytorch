@@ -32,6 +32,7 @@ def classify(base):
         'global_ffn_contract_c1024':('ffn','Dense bottleneck FFN',1024,'C1024 → C4096 → C1024','Contraction: C4096 → C1024 + residual'),
         'window_qkv_c512':('attention','Window attention: fused QKV + attention',512,'C512 · 16 heads × 32 channels','QKV, normalization, window scores and weighted values'),
         'global_attention_chained_c1024':('attention','Global attention: streamed queries / keys / values',1024,'C1024 · 32 heads × 32 channels','Streamed global attention'),
+        'small_global_attention_chained_c1024':('attention','Small31 global attention: persistent FP32 accumulation',1024,'C1024 · 32 heads × 32 channels','Streamed attention with FP32 numerator and denominator'),
         'global_qkv_c1024':('attention','Global attention: QKV projection',1024,'C1024 · 32 heads × 32 channels','QKV projection, normalization and V transpose'),
         'window_attention_projection_c512':('attention','Window attention: output projection + residual',512,'C512','Native tiled output'),
         'window_attention_projection_output_view_c512':('attention','Window attention: output projection + residual',512,'C512','Channel-plane output'),
@@ -64,7 +65,8 @@ def render_catalog(lessons):
     for key,label,description in OPERATORS:
         variants=tree[key]
         count=sum(len(p) for channels in variants.values() for rows in channels.values() for _,_,p in rows)
-        html.append(f'<section class="operator-group" data-catalog-group><h2 id="operator-{key}">{label} <span class="catalog-count">{count} lessons</span></h2><p class="operator-description">{description}</p>')
+        unit = 'lesson' if count == 1 else 'lessons'
+        html.append(f'<section class="operator-group" data-catalog-group><h2 id="operator-{key}">{label} <span class="catalog-count">{count} {unit}</span></h2><p class="operator-description">{description}</p>')
         for variant,channels in variants.items():
             html.append(f'<section class="variant-group" data-catalog-group><h3>{escape(variant)}</h3>')
             for (_,channel),rows in sorted(channels.items()):

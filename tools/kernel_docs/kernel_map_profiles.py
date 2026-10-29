@@ -68,6 +68,28 @@ def profile(name, entry):
     if name=='completion_counter_clear':
         p.update(kind='counter',warps=8,input='CounterCount',output='int32 sentinel −1')
         return p
+    if name.startswith('small_global_attention'):
+        # Additive Small31 entry: same geometry as the legacy chained attention,
+        # but a persistent FP32 numerator and a fully FP32 row denominator.  The
+        # explicit branch must precede every generic global_/C512 fallback.
+        p.update(kind='small-global-attention',c=1024,heads=32,m=2160,n=2160,k=32,
+                 cm=256,cn=64,wm=64,wn=64,warps=4,focus='Q × Kᵀ and FP32 P × V for one streamed key tile',
+                 matrix='Kᵀ (not learned weights)',slots=2,slotbytes=2048*e,shared=8192*e+16,
+                 shared_kind='kv',step=32,input='Q / K / transposed V',
+                 output='attended C1024 token layout',n_axis='keys',
+                 numerator_format='FP32',denominator_format='FP32',accumulator='FP32',
+                 pv_mma=('mma.sync.aligned.m16n8k32.row.col.f32.e4m3.e4m3.f32' if fp8 else
+                         'mma.sync.aligned.m16n8k16.row.col.f32.f16.f16.f32'))
+        p['stages']=[stage('Retain Q once',256,0,32,'registers','four M16 query tiles / warp','one CTA / one head'),
+                     stage('Stage K and V',64,0,32,'shared','two matched K/V slots; reuse across 256 queries','one CTA / one key tile'),
+                     stage('Q × Kᵀ + Half E',256,32,64,'registers','Half QK accumulator and packed Half surrogate','one CTA / one key tile'),
+                     stage('Surrogate E + row sum',256,0,64,'registers','each Half E widens before its first FP32 add','one CTA / one key tile'),
+                     stage('Publish E; FP32 E × V',256,64,32,'registers','64 FP32 D values/lane persist across all key tiles','one CTA / one key tile'),
+                     stage('Tail correction + divide',256,0,32,'global','FP32 correction, FP32 reciprocal, one Half/E4M3 publication rounding','one CTA / final output')]
+        p['notes']=['Grid X selects one of 32 heads; Y selects a 256-query block.',
+                    'At 4K: T=2160; the key traversal has 34 tiles = 2176 positions.',
+                    '64 FP32 numerator values + 2 FP32 denominators per lane; __maxnreg__(208) is a source cap, not the compiled allocation.']
+        return p
     if name.startswith('global_attention'):
         p.update(kind='global-attention',c=1024,heads=32,m=2160,n=2160,k=32,
                  cm=256,cn=64,wm=64,wn=64,warps=4,focus='Q × Kᵀ for one streamed key tile',

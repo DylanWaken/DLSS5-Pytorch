@@ -1,0 +1,200 @@
+{
+  "schema": "dlssnr.docs.cyberpunk.v1",
+  "status": "accepted",
+  "source_revision": "266d69acf52dda413df3a874572f1156461f89ff",
+  "binary_sha256": "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+  "device": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+  "fixtures": {
+    "still": {
+      "label": "V character still",
+      "width": 3024,
+      "height": 1890,
+      "physical_width": 3072,
+      "physical_height": 1920,
+      "measurements": 50
+    },
+    "video": {
+      "label": "Johnny Silverhand six-second excerpt",
+      "frames": 180,
+      "fps": 30,
+      "audio": false,
+      "width": 3840,
+      "height": 2160,
+      "physical_width": 3840,
+      "physical_height": 2176,
+      "measurements": 180,
+      "frame90_excerpt_pts_s": 3.0,
+      "frame90_source_pts_s": 13.0
+    }
+  },
+  "files": {
+    "still_fp16_face": {
+      "path": "still-fp16-face.png",
+      "bytes": 3839828,
+      "sha256": "a2c775738c1e83e1eddf95e20fee02d4ddc4d01e5af5211a401855c1f2c58948",
+      "label": "FP16 V still \u2014 accepted three-way ROI, 2896\u00d71040 PNG"
+    },
+    "still_fp8_face": {
+      "path": "still-fp8-face.png",
+      "bytes": 4208098,
+      "sha256": "e2c765a11415ae26ae6a620f7541dd8f32c715fbb8a51a626c0c9eb8cf186d7a",
+      "label": "FP8 V still \u2014 accepted three-way ROI, 2896\u00d71040 PNG"
+    },
+    "render_still_fp16": {
+      "path": "render-still-fp16.json",
+      "bytes": 28890,
+      "sha256": "9ef344a54e9ef8db9d9fc264191f06ccc1b7330779d5195f7f63bb3c8ce07df2",
+      "label": "Unmodified FP16 still render manifest"
+    },
+    "render_still_fp8": {
+      "path": "render-still-fp8.json",
+      "bytes": 28866,
+      "sha256": "006c18042337c9f7026e41fc67e1344473873312464613bc5a87d8447377ca4e",
+      "label": "Unmodified FP8 still render manifest"
+    },
+    "source_still": {
+      "path": "source-still.json",
+      "bytes": 6145,
+      "sha256": "ac8472bb94b98b5458d596afc5ba0a81b371f9a7bf48b67c64135378010fb35a",
+      "label": "Still provenance, source-pixel and ROI record"
+    },
+    "source_video": {
+      "path": "source-video.json",
+      "bytes": 11476,
+      "sha256": "5dacb6ab8eb120d2dfbae5bbed452b79e60b6271acff2a57a6466911e9d8bbf3",
+      "label": "Video provenance, excerpt-timing and frame record"
+    },
+    "video_fp16_overview": {
+      "path": "video-fp16-overview.mp4",
+      "bytes": 6255826,
+      "sha256": "3c6044b863a7e8cab92b3aae64811d79c6074c035cc4e48e5f571b5482e53bfa",
+      "label": "FP16 Johnny \u2014 six-second three-way overview (MP4, 180 frames, 30 fps, no audio)"
+    },
+    "video_fp8_overview": {
+      "path": "video-fp8-overview.mp4",
+      "bytes": 7571934,
+      "sha256": "e15e616d1e4739b3aa614102d92f0d55e527becc2de0c97085c9659e95a6c558",
+      "label": "FP8 Johnny \u2014 six-second three-way overview (MP4, 180 frames, 30 fps, no audio)"
+    },
+    "video_fp16_face": {
+      "path": "video-fp16-roi.mp4",
+      "bytes": 9476995,
+      "sha256": "00064c3a27d9089b751f53a67976f75b94eaa6a9b05ddf6145ecac150dab5370",
+      "label": "FP16 Johnny \u2014 six-second 1024\u00d71024 three-way ROI (MP4, 180 frames)"
+    },
+    "video_fp8_face": {
+      "path": "video-fp8-roi.mp4",
+      "bytes": 11401504,
+      "sha256": "886f2a275d66a9739a3791d0ee44a95e950effcf6050ee40c1afdb6f2c4caf3b",
+      "label": "FP8 Johnny \u2014 six-second 1024\u00d71024 three-way ROI (MP4, 180 frames)"
+    },
+    "render_video_fp16": {
+      "path": "render-video-fp16.json",
+      "bytes": 64011,
+      "sha256": "f67f46127022430fb03f880a4af019164b0a83731acb2453719da62bac8eeda8",
+      "label": "Unmodified FP16 video render manifest (180 frames)"
+    },
+    "render_video_fp8": {
+      "path": "render-video-fp8.json",
+      "bytes": 63960,
+      "sha256": "326045d15dead3e44935ba446a1d0259e0b2c2b52f30e6da5b289c2aed48063a",
+      "label": "Unmodified FP8 video render manifest (180 frames)"
+    },
+    "benchmark_still": {
+      "path": "benchmark-still.json",
+      "bytes": 92396,
+      "sha256": "8493558190ea2a4b41240794b377f29ae5ec8c58493caa23e19e44f478b6b6fb",
+      "label": "Still benchmark manifest (10 warmups, 50 measurements per arm)"
+    },
+    "benchmark_video": {
+      "path": "benchmark-video.json",
+      "bytes": 149197,
+      "sha256": "5263d1e06d5f4cc303c938bc01b6f5d54225195952580cafe8b0cfb7a2a6f232",
+      "label": "Video benchmark manifest (10 warmups, 180 measurements per arm)"
+    },
+    "still_original": {
+      "path": "still-original.png",
+      "bytes": 5972482,
+      "sha256": "75bed2ae8456f571bf16ecb402c19225b534cafecbf9c6a11767e8391c4a7323",
+      "label": "V still \u2014 original downloaded pixels, 3024\u00d71890 PNG (byte-identical for FP16 and FP8)"
+    },
+    "still_legacy71_fp16": {
+      "path": "still-legacy71-fp16.png",
+      "bytes": 6683100,
+      "sha256": "4c2cfeb2fb468edc2a8544fbb9a094b9936b0897a2011211df79fdd87fa3b106",
+      "label": "V still \u2014 Legacy71 reconstruction, FP16, 3024\u00d71890 PNG"
+    },
+    "still_small31_fp16": {
+      "path": "still-small31-fp16.png",
+      "bytes": 6363979,
+      "sha256": "fb3d198a4b4a69fc617d81638b2ae123871687442ccad032269ff6d3ea0e479e",
+      "label": "V still \u2014 Small31 reconstruction, FP16, 3024\u00d71890 PNG"
+    },
+    "still_legacy71_fp8": {
+      "path": "still-legacy71-fp8.png",
+      "bytes": 7005283,
+      "sha256": "e079b58766a44388e20571ee90a5b1fd9e38d6f347de0c55fac09057518dd240",
+      "label": "V still \u2014 Legacy71 reconstruction, FP8, 3024\u00d71890 PNG"
+    },
+    "still_small31_fp8": {
+      "path": "still-small31-fp8.png",
+      "bytes": 6971064,
+      "sha256": "c809ad4ad0a7d0a7ab41b35b7b7b410ae519554028c421e37df4257168534f99",
+      "label": "V still \u2014 Small31 reconstruction, FP8, 3024\u00d71890 PNG"
+    },
+    "video_original_frame90": {
+      "path": "video-original-frame90.png",
+      "bytes": 5780529,
+      "sha256": "f540a136e798eb26e211ed420b9039a611c6adf51ca1dade9cf0c18d4bda20d2",
+      "label": "Johnny frame 90 \u2014 original downloaded pixels, 3840\u00d72160 PNG (excerpt PTS 3.0 s; source PTS 13.0 s; byte-identical for FP16 and FP8)"
+    },
+    "video_legacy71_fp16_frame90": {
+      "path": "video-legacy71-fp16-frame90.png",
+      "bytes": 7294644,
+      "sha256": "158bd86897c8335b3d5f4675fc0ac2c0cb017fcc6704a0a41739aac79541fbd5",
+      "label": "Johnny frame 90 \u2014 Legacy71 reconstruction, FP16, 3840\u00d72160 PNG (excerpt PTS 3.0 s; source PTS 13.0 s)"
+    },
+    "video_small31_fp16_frame90": {
+      "path": "video-small31-fp16-frame90.png",
+      "bytes": 7444342,
+      "sha256": "37f90aa18e7b3334ebcaf803b23d8b6ee925f800bed8630dc8eef7a71ddc5c04",
+      "label": "Johnny frame 90 \u2014 Small31 reconstruction, FP16, 3840\u00d72160 PNG (excerpt PTS 3.0 s; source PTS 13.0 s)"
+    },
+    "video_legacy71_fp8_frame90": {
+      "path": "video-legacy71-fp8-frame90.png",
+      "bytes": 8470920,
+      "sha256": "441b443c2e786246ed30bfd1ae3cc23a3e264200c6935f742a24e0d71b06d267",
+      "label": "Johnny frame 90 \u2014 Legacy71 reconstruction, FP8, 3840\u00d72160 PNG (excerpt PTS 3.0 s; source PTS 13.0 s)"
+    },
+    "video_small31_fp8_frame90": {
+      "path": "video-small31-fp8-frame90.png",
+      "bytes": 8791157,
+      "sha256": "5d922f7ea4da231158ce8e6c2ad21521cd5d834433246cb3825c0a4204cd4ead",
+      "label": "Johnny frame 90 \u2014 Small31 reconstruction, FP8, 3840\u00d72160 PNG (excerpt PTS 3.0 s; source PTS 13.0 s)"
+    },
+    "frames_video_fp16": {
+      "path": "frames-video-fp16.json",
+      "bytes": 326695,
+      "sha256": "78e6b7abac73561824b51e455f8505539aeae5582ac7cfde5a6a0e6ceb28ed15",
+      "label": "Unmodified FP16 per-frame manifest: source and arm PNG hashes, frame 90 evidence"
+    },
+    "frames_video_fp8": {
+      "path": "frames-video-fp8.json",
+      "bytes": 326464,
+      "sha256": "599974bc35a5d6e19b586c128b8920f75d7febf7624bb0cef45946d542ed1a10",
+      "label": "Unmodified FP8 per-frame manifest: source and arm PNG hashes, frame 90 evidence"
+    },
+    "video_fp16_poster": {
+      "path": "video-fp16-poster.png",
+      "bytes": 3151644,
+      "sha256": "eb858ae1dd14f7535feb2a29cf5643a883d6456bff7e378fdccacf071943b051",
+      "label": "FP16 overview display poster \u2014 accepted comparison frame 90 PNG (playback still starts at excerpt 0 s)"
+    },
+    "video_fp8_poster": {
+      "path": "video-fp8-poster.png",
+      "bytes": 3366457,
+      "sha256": "0a4376b65ee06e55ee674455e2825484c916e36da53c827dc05b31382d276f06",
+      "label": "FP8 overview display poster \u2014 accepted comparison frame 90 PNG (playback still starts at excerpt 0 s)"
+    }
+  }
+}

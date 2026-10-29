@@ -50,11 +50,13 @@ GROUPS = {
         ('fragment', 'Fragment', 'fragments', 'The subset of a matrix tile held in a thread’s registers for a collective matrix instruction.', 'An MMA operand is distributed across the warp; no individual lane holds the whole operand matrix.'),
         ('mma', 'MMA', 'mma.sync', 'Matrix multiply-accumulate: a warp collectively computes D = A × B + C from distributed register fragments.', 'These kernels use mma.sync. Instruction shape and operand precision define the lane/register mapping; the lessons show the FP16 and FP8 mappings separately.'),
         ('tensor-core', 'Tensor Core', 'Tensor Cores', 'Specialized GPU arithmetic hardware used by matrix instructions such as MMA.', 'The kernel must first supply the required register operands. An MMA instruction does not itself gather arbitrary model tensors from global memory.'),
-        ('accumulator', 'Accumulator', 'accumulators', 'A running result updated by repeated additions or multiply-accumulate instructions.', 'Its precision and ownership are part of the algorithm. These documented MMA paths use Half accumulator fragments; do not assume FP32 accumulation.'),
+        ('accumulator', 'Accumulator', 'accumulators', 'A running result updated by repeated additions or multiply-accumulate instructions.', 'Its precision and ownership are part of the algorithm. The legacy paths use Half fragments; the additive Small31 attention entries keep Half QK scores but accumulate P times V in FP32. Read the destination type of each MMA instruction.'),
         ('shuffle', 'Shuffle', 'shuffles|warp shuffle|warp shuffles', 'A warp instruction that transfers a register value between participating lanes.', 'An XOR shuffle chooses the partner lane by XORing its index with a mask. It does not stage data in shared memory.'),
         ('occupancy', 'Occupancy', '', 'The fraction of a GPU multiprocessor’s maximum warp capacity occupied by resident warps.', 'Registers, shared-memory allocation and block limits can restrict residency. Higher occupancy alone does not guarantee a faster kernel.'),
     ],
     'Storage, layout and addressing': [
+        ('tile4', 'TILE4', '', 'A packed C32 field layout that groups 4×4 pixels and distributes their channel words across lane slots.', 'Equal byte size does not make it PLANE16. In the FP16 worked example, pixel x1/y0/plane0 has words at bytes 64, 80, 96 and 112. The RGB final output-view descriptor publishes the consumer layout instead.'),
+        ('plane16', 'PLANE16', '', 'A field layout with one consecutive 16-byte group for each plane and pixel.', 'The postconsumer starts a group at ((plane*height+y)*width+x)*16. Its four words are consecutive. The base deployment plan retains its TILE4 output contract; the prepared RGB sequence publishes PLANE16.'),
         ('global-memory', 'Global memory', 'global allocation|global allocations', 'Device memory addressable across thread blocks and kernel launches, commonly backed by GPU DRAM and accessed through caches.', 'A pointer identifies an allocation, not a guarantee that each access reaches DRAM rather than a cache.'),
         ('shared-memory', 'Shared memory', '', 'Explicitly addressed on-chip storage shared by threads in one block.', 'Use it to exchange values between warps or reuse a tile. Allocation, address mapping and synchronization are separate design decisions.'),
         ('register', 'Register', 'registers', 'Thread-local storage for scalar values and instruction operands, including matrix fragments.', 'A register variable is owned by a thread. Actual register allocation and any spills must be checked in compiled code or profiling.'),
@@ -71,8 +73,9 @@ GROUPS = {
         ('spill', 'Spill', 'spills|spilling', 'Moving a thread value out of registers into local memory when register allocation cannot keep it resident.', 'CUDA local memory is thread-private address space backed by the device memory hierarchy; it is not shared memory.'),
     ],
     'Precision, handoffs and pipelines': [
+        ('fp32', 'FP32', '', 'A 32-bit floating-point representation with more exponent range and precision than Half.', 'The Small31 attention kernels widen every Half probability before denominator addition and keep the P times V numerator in FP32 across key tiles. Their QK score calculation still uses Half.'),
         ('fp16', 'FP16', 'Half', 'A 16-bit floating-point representation. Half is the corresponding scalar type used in these kernel explanations.', 'The exact accumulator and conversion boundaries matter: intermediate Half rounding is part of the reconstructed computation.'),
-        ('fp8', 'FP8', '', 'An 8-bit floating-point representation; these deployment paths use E4M3 activation and weight operands.', 'Do not infer that every intermediate is 8-bit. The kernels retain Half accumulators and convert at specified boundaries.'),
+        ('fp8', 'FP8', '', 'An 8-bit floating-point representation; these deployment paths use E4M3 activation and weight operands.', 'Operand precision and accumulation precision differ. Legacy kernels commonly accumulate in Half; Small31 global attention uses Half QK scores and FP32 P times V accumulation and denominator reduction. Conversion happens only at the stated boundaries.'),
         ('e4m3', 'E4M3', '', 'The FP8 format with one sign bit, four exponent bits and three stored fraction bits.', 'The source conversion helpers specify rounding and finite-saturation behavior. Operand packing also has to satisfy the MMA lane layout.'),
         ('quantization', 'Quantization', 'quantize|quantized|quantizing', 'Mapping values to a limited set of representable values, introducing rounding and possibly saturation.', 'Track where conversion occurs. Delaying or moving an FP8 conversion can change the model’s numerical result.'),
         ('publish', 'Publish', 'publishes|published|publishing|publication', 'Prepare a result in the representation and location expected by its next consumer. This is a teaching term, not a CUDA instruction.', 'PublishWindowChunk and PublishWindow32 prepare register operand fragments: FP8 converts and packs Half results into E4M3 words; FP16 rearranges Half words. Publication can stay entirely in registers. A handoff through shared or global memory additionally needs the appropriate store and synchronization. Publishing this website is a separate use of the word.'),
@@ -94,7 +97,7 @@ PATTERN = re.compile(r'(?<![\w.-])(?:' + '|'.join(re.escape(a) for a in sorted(A
 
 class Annotator(HTMLParser):
     """Only wrap text nodes; never modify code, links, SVG, or attributes."""
-    SKIP = {'a', 'code', 'pre', 'svg', 'script', 'style', 'button', 'summary', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'}
+    SKIP = {'a', 'code', 'pre', 'svg', 'script', 'style', 'button', 'label', 'summary', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'}
     VOID = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'}
 
     def __init__(self):

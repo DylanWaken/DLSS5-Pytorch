@@ -1,0 +1,284 @@
+{
+  "schema": "small-attention-design-checks/v2",
+  "state": "measured",
+  "ncu_state": "measured",
+  "source_revision": "266d69acf52dda413df3a874572f1156461f89ff",
+  "runtime_binary_sha256": "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+  "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+  "scope": "Source predictions versus the additive SM120 compiler/reference evidence and the current isolated full/source NCU replay.",
+  "checks": [
+    {
+      "model": "attention-fp32-accumulation",
+      "entry": "small_global_attention_chained_c1024_fp16",
+      "result": "Static shared and the FP32 numerator/denominator contract match the compiled binary; the isolated NCU replay and source hotspots are recorded."
+    },
+    {
+      "model": "attention-fp32-accumulation",
+      "entry": "small_global_attention_chained_c1024_fp8",
+      "result": "Static shared and the FP32 numerator/denominator contract match the compiled binary; the isolated NCU replay and source hotspots are recorded."
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "raw-ncu-report",
+      "public_path": "evidence-small/full_cyberpunk4k-b31_fp16.ncu-repz",
+      "sha256": "d4d9c57968c169edb268db3606f65e214846d46ac437b14aad074f3bd567f383",
+      "size": 440260,
+      "suffix": ".ncu-repz"
+    },
+    {
+      "role": "raw-ncu-report",
+      "public_path": "evidence-small/source_cyberpunk4k-b31_fp16.ncu-repz",
+      "sha256": "5dc78067f5195425ca4d9421e371cc93135c52d05fee571c6e1025ea8bb5fa29",
+      "size": 105439,
+      "suffix": ".ncu-repz"
+    },
+    {
+      "role": "raw-ncu-report",
+      "public_path": "evidence-small/full_cyberpunk4k-b31_fp8.ncu-repz",
+      "sha256": "c9d1d1b55259e2edbe28588ffba5cdf226612bf583eaf4847e17c21adb8e163a",
+      "size": 341823,
+      "suffix": ".ncu-repz"
+    },
+    {
+      "role": "raw-ncu-report",
+      "public_path": "evidence-small/source_cyberpunk4k-b31_fp8.ncu-repz",
+      "sha256": "f83b10ef4202d70d87a138598376131bfa592a2bc70e6df791c686834619d0a7",
+      "size": 96682,
+      "suffix": ".ncu-repz"
+    },
+    {
+      "role": "verified-report-prose",
+      "public_path": "evidence-small/REPORT.md",
+      "sha256": "5e5b65a7ebe008347a45a678ea91035f15b001d710bdc228a3e72b9eee2cfaf1",
+      "size": 27048,
+      "suffix": ".md"
+    }
+  ],
+  "kernels": {
+    "small_global_attention_chained_c1024_fp16": {
+      "source_revision": "266d69acf52dda413df3a874572f1156461f89ff",
+      "source": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+      "source_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+      "runtime_binary_sha256": "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+      "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+      "source_shared_bytes": 16400,
+      "compiled_static_shared_bytes": 16400,
+      "measured_static_shared_bytes": 16400,
+      "resource_prediction": "matched",
+      "kind": "small-global-attention",
+      "persistent_fp32_per_lane": 64,
+      "persistent_denominators": 2,
+      "maxnreg_cap": 208,
+      "compiled_registers_per_thread": 208,
+      "qk_mma": "mma.sync.aligned.m16n8k16.row.col.f16.f16.f16.f16",
+      "pv_mma": "mma.sync.aligned.m16n8k16.row.col.f32.f16.f16.f32",
+      "qk_accumulator": "Half",
+      "pv_accumulator": "FP32",
+      "denominator_accumulator": "FP32",
+      "status": "measured",
+      "ncu_measured": true,
+      "tensor_instruction_counts": [],
+      "source_instruction_work": {
+        "unit": "PTX mma.sync calls per CTA over 34 key tiles",
+        "qk_per_warp_tile": 64,
+        "pv_per_warp_tile": 64,
+        "warp_per_tile": 128,
+        "cta_per_tile": 512,
+        "total_per_cta": 17408,
+        "note": "source program count, not a measured dynamic SASS total"
+      },
+      "measured": {
+        "duration_ns": 77024.0,
+        "registers_per_thread": 208,
+        "static_shared_bytes": 16400,
+        "grid_size": 288,
+        "block_size": 128,
+        "waves_per_multiprocessor": 0.7659574468085106,
+        "achieved_occupancy_pct": 12.92845362791821,
+        "theoretical_occupancy_pct": 16.666666666666664,
+        "issue_active_pct": 32.0263919096905,
+        "local_loads": 197824.0,
+        "local_stores": 88704.0,
+        "spill_instructions": 286528,
+        "shared_load_wavefronts": 2534489.0,
+        "shared_load_instructions": 626688.0,
+        "shared_ld_bank_conflicts": 29169.0,
+        "pcsamp_samples": 7999
+      },
+      "reports": [
+        {
+          "kind": "full",
+          "path": "evidence-small/full_cyberpunk4k-b31_fp16.ncu-repz",
+          "sha256": "d4d9c57968c169edb268db3606f65e214846d46ac437b14aad074f3bd567f383",
+          "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+          "fixture": "cyberpunk2077-johnny-first4k-b31",
+          "metric_count": 2633,
+          "raw_suffix": ".ncu-repz",
+          "source_path": "profile/small-attention-fp32acc-sm120-20261030/reports/full_cyberpunk4k-b31_fp16.ncu-repz"
+        },
+        {
+          "kind": "source",
+          "path": "evidence-small/source_cyberpunk4k-b31_fp16.ncu-repz",
+          "sha256": "5dc78067f5195425ca4d9421e371cc93135c52d05fee571c6e1025ea8bb5fa29",
+          "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+          "fixture": "cyberpunk2077-johnny-first4k-b31",
+          "metric_count": 1272,
+          "raw_suffix": ".ncu-repz",
+          "source_path": "profile/small-attention-fp32acc-sm120-20261030/reports/source_cyberpunk4k-b31_fp16.ncu-repz"
+        }
+      ],
+      "metric_count": 98,
+      "source_hotspot_count": 43,
+      "artifacts": [
+        {
+          "role": "raw-ncu-report",
+          "public_path": "evidence-small/full_cyberpunk4k-b31_fp16.ncu-repz",
+          "sha256": "d4d9c57968c169edb268db3606f65e214846d46ac437b14aad074f3bd567f383",
+          "size": 440260,
+          "suffix": ".ncu-repz"
+        },
+        {
+          "role": "raw-ncu-report",
+          "public_path": "evidence-small/source_cyberpunk4k-b31_fp16.ncu-repz",
+          "sha256": "5dc78067f5195425ca4d9421e371cc93135c52d05fee571c6e1025ea8bb5fa29",
+          "size": 105439,
+          "suffix": ".ncu-repz"
+        },
+        {
+          "role": "raw-ncu-report",
+          "public_path": "evidence-small/full_cyberpunk4k-b31_fp8.ncu-repz",
+          "sha256": "c9d1d1b55259e2edbe28588ffba5cdf226612bf583eaf4847e17c21adb8e163a",
+          "size": 341823,
+          "suffix": ".ncu-repz"
+        },
+        {
+          "role": "raw-ncu-report",
+          "public_path": "evidence-small/source_cyberpunk4k-b31_fp8.ncu-repz",
+          "sha256": "f83b10ef4202d70d87a138598376131bfa592a2bc70e6df791c686834619d0a7",
+          "size": 96682,
+          "suffix": ".ncu-repz"
+        },
+        {
+          "role": "verified-report-prose",
+          "public_path": "evidence-small/REPORT.md",
+          "sha256": "5e5b65a7ebe008347a45a678ea91035f15b001d710bdc228a3e72b9eee2cfaf1",
+          "size": 27048,
+          "suffix": ".md"
+        }
+      ]
+    },
+    "small_global_attention_chained_c1024_fp8": {
+      "source_revision": "266d69acf52dda413df3a874572f1156461f89ff",
+      "source": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+      "source_sha256": "c91253023dab7b30305cc6e30c0e4d69a32dad438a40c53742a2fb1cc2e2f11a",
+      "runtime_binary_sha256": "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+      "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+      "source_shared_bytes": 8208,
+      "compiled_static_shared_bytes": 8208,
+      "measured_static_shared_bytes": 8208,
+      "resource_prediction": "matched",
+      "kind": "small-global-attention",
+      "persistent_fp32_per_lane": 64,
+      "persistent_denominators": 2,
+      "maxnreg_cap": 208,
+      "compiled_registers_per_thread": 195,
+      "qk_mma": "mma.sync.aligned.m16n8k32.row.col.f16.e4m3.e4m3.f16",
+      "pv_mma": "mma.sync.aligned.m16n8k32.row.col.f32.e4m3.e4m3.f32",
+      "qk_accumulator": "Half",
+      "pv_accumulator": "FP32",
+      "denominator_accumulator": "FP32",
+      "status": "measured",
+      "ncu_measured": true,
+      "tensor_instruction_counts": [],
+      "source_instruction_work": {
+        "unit": "PTX mma.sync calls per CTA over 34 key tiles",
+        "qk_per_warp_tile": 32,
+        "pv_per_warp_tile": 32,
+        "warp_per_tile": 64,
+        "cta_per_tile": 256,
+        "total_per_cta": 8704,
+        "note": "source program count, not a measured dynamic SASS total"
+      },
+      "measured": {
+        "duration_ns": 46720.0,
+        "registers_per_thread": 195,
+        "static_shared_bytes": 8208,
+        "grid_size": 288,
+        "block_size": 128,
+        "waves_per_multiprocessor": 0.7659574468085106,
+        "achieved_occupancy_pct": 12.960309321382688,
+        "theoretical_occupancy_pct": 16.666666666666664,
+        "issue_active_pct": 46.78210381726032,
+        "local_loads": 0.0,
+        "local_stores": 0.0,
+        "spill_instructions": 0,
+        "shared_load_wavefronts": 1253431.0,
+        "shared_load_instructions": 313344.0,
+        "shared_ld_bank_conflicts": 63.0,
+        "pcsamp_samples": 4956
+      },
+      "reports": [
+        {
+          "kind": "full",
+          "path": "evidence-small/full_cyberpunk4k-b31_fp8.ncu-repz",
+          "sha256": "c9d1d1b55259e2edbe28588ffba5cdf226612bf583eaf4847e17c21adb8e163a",
+          "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+          "fixture": "cyberpunk2077-johnny-first4k-b31",
+          "metric_count": 2633,
+          "raw_suffix": ".ncu-repz",
+          "source_path": "profile/small-attention-fp32acc-sm120-20261030/reports/full_cyberpunk4k-b31_fp8.ncu-repz"
+        },
+        {
+          "kind": "source",
+          "path": "evidence-small/source_cyberpunk4k-b31_fp8.ncu-repz",
+          "sha256": "f83b10ef4202d70d87a138598376131bfa592a2bc70e6df791c686834619d0a7",
+          "fixture_id": "cyberpunk2077-johnny-first4k-b31",
+          "fixture": "cyberpunk2077-johnny-first4k-b31",
+          "metric_count": 1272,
+          "raw_suffix": ".ncu-repz",
+          "source_path": "profile/small-attention-fp32acc-sm120-20261030/reports/source_cyberpunk4k-b31_fp8.ncu-repz"
+        }
+      ],
+      "metric_count": 98,
+      "source_hotspot_count": 40,
+      "artifacts": [
+        {
+          "role": "raw-ncu-report",
+          "public_path": "evidence-small/full_cyberpunk4k-b31_fp16.ncu-repz",
+          "sha256": "d4d9c57968c169edb268db3606f65e214846d46ac437b14aad074f3bd567f383",
+          "size": 440260,
+          "suffix": ".ncu-repz"
+        },
+        {
+          "role": "raw-ncu-report",
+          "public_path": "evidence-small/source_cyberpunk4k-b31_fp16.ncu-repz",
+          "sha256": "5dc78067f5195425ca4d9421e371cc93135c52d05fee571c6e1025ea8bb5fa29",
+          "size": 105439,
+          "suffix": ".ncu-repz"
+        },
+        {
+          "role": "raw-ncu-report",
+          "public_path": "evidence-small/full_cyberpunk4k-b31_fp8.ncu-repz",
+          "sha256": "c9d1d1b55259e2edbe28588ffba5cdf226612bf583eaf4847e17c21adb8e163a",
+          "size": 341823,
+          "suffix": ".ncu-repz"
+        },
+        {
+          "role": "raw-ncu-report",
+          "public_path": "evidence-small/source_cyberpunk4k-b31_fp8.ncu-repz",
+          "sha256": "f83b10ef4202d70d87a138598376131bfa592a2bc70e6df791c686834619d0a7",
+          "size": 96682,
+          "suffix": ".ncu-repz"
+        },
+        {
+          "role": "verified-report-prose",
+          "public_path": "evidence-small/REPORT.md",
+          "sha256": "5e5b65a7ebe008347a45a678ea91035f15b001d710bdc228a3e72b9eee2cfaf1",
+          "size": 27048,
+          "suffix": ".md"
+        }
+      ]
+    }
+  }
+}
