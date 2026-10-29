@@ -3,6 +3,9 @@ from pathlib import Path
 import hashlib, importlib.util, json, sys
 H = Path(__file__).resolve().parent
 R = H.parent
+if str(R) not in sys.path:
+    sys.path.insert(0, str(R))
+from dlssnr.model_specs import resolve_model
 
 def load_geometry():
     p = R / 'dlssnr/geometry.py'
@@ -12,9 +15,65 @@ def load_geometry():
     s.loader.exec_module(m)
     return m
 
-def make(width=3840, height=2160, *, precision="fp8"):
+# Independent symbol-roster pins, not the schedule row census.
+_EXPECTED_UNIQUE_SYMBOLS = {'legacy71': 36, 'small31': 33}
+
+
+def _retained_roles(spec):
+    """Native trunk roles; the pre/post roots stay separate plan edges."""
+    return tuple(role for role in spec.roles if role not in (spec.pre_role, spec.post_role))
+
+
+def _role_level(role, gmod):
+    channels = gmod.block_channels(role)
+    if channels == 1024:
+        return 5
+    try:
+        return {32: 0, 64: 1, 128: 2, 256: 3, 512: 4}[channels]
+    except KeyError as exc:
+        raise ValueError(f'role {role} has no spatial level') from exc
+
+
+def _expected_compute_positions(spec, roles, gmod):
+    """Independent row census from the retained role roster, including repacks."""
+    count = 0
+    for role in roles:
+        if role in (31, 39):
+            count += 1  # 2D <-> 1D repack connector
+        if 31 <= role <= 38:
+            count += 5  # expand, contract, qkv, chained attention, projection
+        elif role == 39:
+            count += 1  # transition-only upsample
+        elif gmod.block_channels(role) == 512:
+            count += 4 + (1 if role == 30 else 0)  # optional downsample final head
+        else:
+            count += 1
+    return count
+
+
+def _expected_record_positions(spec, roles, gmod):
+    """Independent record roster; repacks carry no packed weight record."""
+    count = 0
+    for role in roles:
+        if 31 <= role <= 38:
+            count += 4  # the native layer-3 slot is not dispatched
+        elif role == 39:
+            count += 1
+        elif gmod.block_channels(role) == 512:
+            count += 4 + (1 if role == 30 else 0)
+        else:
+            count += 1
+    return count
+
+
+def _expected_reset_positions(roles):
+    return 4 * sum(1 for role in roles if 31 <= role <= 38) + (1 if 39 in roles else 0)
+
+
+def make(width=3840, height=2160, *, precision="fp8", model='legacy71'):
     if precision not in ('fp8', 'fp16'):
         raise ValueError('unsupported deployment precision')
+    spec = resolve_model(model)
     gmod = load_geometry()
     g = gmod.Geometry.from_valid(width, height)
     rows = []
@@ -30,11 +89,24 @@ def make(width=3840, height=2160, *, precision="fp8"):
     h, w = (g.levels[0][1], g.levels[0][0])
     alloc('input', h, w, 32, 'plane16')
 
+    roles = _retained_roles(spec)
+    raw_for_role = {role: spec.raw_for_role(role) for role in roles}
+    if spec.id == 'legacy71':
+        phase_for_role = {entry['block']: entry['phase'] for entry in gmod.graph_schedule(g)}
+    else:
+        phase_for_role = {role: spec.phase_for_role(role) for role in roles}
+
     def add(block, stage, symbol, module, inputs, outputs, record, grid, threads, abi, phase=None):
-        rows.append(dict(position=len(rows), native_node=f'block-{block}' if isinstance(block, int) else block, block=block, stage=stage, original_symbol=symbol, module=module, precision='fp8', input_buffers=inputs, output_buffers=outputs, record_layer=record, grid=grid, block_dim=threads, abi_bytes=abi, phase=phase))
-    for e in gmod.graph_schedule(g)[1:70]:
-        b, c, h, w, phase = (e[k] for k in ('block', 'channels', 'height', 'width', 'phase'))
-        phase = phase or 0
+        rows.append(dict(position=len(rows), native_node=f'block-{block}', block=block,
+                         role=block if isinstance(block, int) else None,
+                         raw_block=raw_for_role.get(block) if isinstance(block, int) else None,
+                         stage=stage, original_symbol=symbol, module=module, precision='fp8',
+                         input_buffers=inputs, output_buffers=outputs, record_layer=record,
+                         grid=grid, block_dim=threads, abi_bytes=abi, phase=phase))
+    for b in roles:
+        c = gmod.block_channels(b)
+        h, w = (g.levels[_role_level(b, gmod)][1], g.levels[_role_level(b, gmod)][0])
+        phase = phase_for_role[b] or 0
         if b in (31, 39):
             gh, gw = (g.levels[5][1], g.levels[5][0])
             m = gh * gw
@@ -65,6 +137,9 @@ def make(width=3840, height=2160, *, precision="fp8"):
                         outs['scratch'] = scratch
                 suffix = stage if stage in ('qkv', 'attention_chained', 'projection') else 'ffn_' + stage
                 add(b, stage, 'cc_vit_1d_' + suffix + '_fp8', 5, ins, outs, layer, grid, [32, 4, 1], abi)
+                if spec.id == 'small31' and stage == 'attention_chained':
+                    # Additive Small31-only safe export; legacy rows carry no safe_export.
+                    rows[-1]['safe_export'] = 'small_global_attention_chained_c1024_fp8'
             for stage, final in [('contract', 3), ('qkv', 1), ('attention', 0), ('projection', 3)]:
                 resets.append(dict(before_block=b, counter=stage, initial=-1, final=final, callable='global_counter_clear_reconstructed_out', note='Reset QKV before producer only; chained attention consumes its published predecessor unchanged.'))
             previous = slots['output']
@@ -133,6 +208,8 @@ def make(width=3840, height=2160, *, precision="fp8"):
         for row in rows:
             row['precision'] = 'fp16'
             row['original_symbol'] = row['original_symbol'].removesuffix('_fp8')
+            if 'safe_export' in row:
+                row['safe_export'] = row['safe_export'].removesuffix('_fp8') + '_fp16'
             if row['module'] == 5:
                 row['output_buffers'].pop('scratch', None)
                 if row['stage'] == 'repack': row['grid'][0] *= 2
@@ -140,6 +217,29 @@ def make(width=3840, height=2160, *, precision="fp8"):
                 row['block_dim'] = c512[row['original_symbol']]['block']
     inputs = {v for x in rows for v in x['input_buffers'].values()}
     produced = {v for x in rows for v in x['output_buffers'].values()}
-    if not (len(rows) == 152 and len(resets) == 33 and (inputs - produced == {'input'})):
-        raise ValueError('physical schedule census')
-    return dict(status='CPU_NATIVE_PHYSICAL_SCHEDULE_NOT_RUNTIME_QUALIFIED', valid=[width, height], levels=g.levels, precision=precision, compute_positions=152, counter_reset_positions=33, positions=rows, buffers=buffers, reset_protocol=resets, output_buffer=previous, skip_buffers=skips, alias_rule='Successor consumes the producer allocation at offset 0 with its exact logical extent; retain the entire guarded backing allocation, including any padding-clear workspace.', no_per_block_layout_kernels=True, mandatory_repack_positions=['repack-30-31', 'repack-38-39'], scope='Original resident blocks1..69. Frontend0/output70 are separate root-owned gaps. Half symbol/layout catalogs do not imply full-resolution Half host admission.', source_pins={p: hashlib.sha256((R / p).read_bytes()).hexdigest() for p in ('dlssnr/geometry.py', 'tools/native_reference/trunk.py', 'tools/native_reference/vendor_global_block.py', 'tools/native_reference/vendor_window512_block.py', 'tools/native_reference/native_fused.py', 'tools/native_reference/vendor_connectors.py', 'tools/native_reference/vendor_window_benchmark.py', 'tools/native_reference/vendor_downsample_probe.py')})
+    expected_compute = _expected_compute_positions(spec, roles, gmod)
+    expected_resets = _expected_reset_positions(roles)
+    expected_records = _expected_record_positions(spec, roles, gmod)
+    unique_symbols = len({row['original_symbol'] for row in rows})
+    emitted_records = len({(row['raw_block'], row['record_layer']) for row in rows
+                           if row['record_layer'] is not None})
+    if (len(rows), len(resets), emitted_records) != (expected_compute, expected_resets, expected_records):
+        raise ValueError(f'{spec.id} physical schedule census: computed '
+                         f'{(len(rows), len(resets), emitted_records)}, expected '
+                         f'{(expected_compute, expected_resets, expected_records)}')
+    if unique_symbols != _EXPECTED_UNIQUE_SYMBOLS[spec.id]:
+        raise ValueError(f'{spec.id} unique operator census: computed {unique_symbols}, '
+                         f'expected {_EXPECTED_UNIQUE_SYMBOLS[spec.id]}')
+    if inputs - produced != {'input'}:
+        raise ValueError(f'{spec.id} physical schedule has unresolved inputs: {sorted(inputs - produced)}')
+    if previous != 'b69.output':
+        raise ValueError(f'{spec.id} trunk result must be b69.output, got {previous}')
+    return dict(status='CPU_NATIVE_PHYSICAL_SCHEDULE_NOT_RUNTIME_QUALIFIED', model=spec.id,
+                valid=[width, height], levels=g.levels, precision=precision,
+                compute_positions=len(rows), counter_reset_positions=len(resets),
+                positions=rows, buffers=buffers, reset_protocol=resets,
+                output_buffer=previous, skip_buffers=skips,
+                census=dict(compute_positions=len(rows), counter_reset_positions=len(resets),
+                            calls=len(rows) + len(resets), record_positions=expected_records,
+                            unique_symbols=unique_symbols),
+                alias_rule='Successor consumes the producer allocation at offset 0 with its exact logical extent; retain the entire guarded backing allocation, including any padding-clear workspace.', no_per_block_layout_kernels=True, mandatory_repack_positions=['repack-30-31', 'repack-38-39'], scope=('Small31 raw records 0..30 mapped onto legacy operation roles; pre/post roots remain separate.' if spec.id == 'small31' else 'Original resident blocks1..69. Frontend0/output70 are separate root-owned gaps. Half symbol/layout catalogs do not imply full-resolution Half host admission.'), source_pins={p: hashlib.sha256((R / p).read_bytes()).hexdigest() for p in ('dlssnr/geometry.py', 'tools/native_reference/trunk.py', 'tools/native_reference/vendor_global_block.py', 'tools/native_reference/vendor_window512_block.py', 'tools/native_reference/native_fused.py', 'tools/native_reference/vendor_connectors.py', 'tools/native_reference/vendor_window_benchmark.py', 'tools/native_reference/vendor_downsample_probe.py')})

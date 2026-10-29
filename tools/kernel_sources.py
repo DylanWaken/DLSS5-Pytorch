@@ -17,6 +17,13 @@ import re
 
 
 ROOT = Path(__file__).resolve().parents[1]
+CANONICAL_NAMES = ROOT / "tuning" / "canonical_kernel_names.json"
+# The only additive exports: the Small31-safe attention pair reuses the
+# canonical attention ABI, so the canonical81 roster itself must not move.
+SAFE_ATTENTION_EXPORTS = frozenset({
+    "small_global_attention_chained_c1024_fp8",
+    "small_global_attention_chained_c1024_fp16",
+})
 SOURCE_SUFFIXES = {".cu", ".cuh", ".cpp", ".h", ".inl"}
 INCLUDE = re.compile(r'^\s*#\s*include\s*"([^"\n]+)"', re.MULTILINE)
 COMMENTS_AND_STRINGS = re.compile(
@@ -169,14 +176,30 @@ def collect(csrc, *, allow_legacy_namespaces=False):
     }
 
 
+def canonical_exports():
+    """Return the frozen canonical81 exports from the reviewed name map."""
+    canonical = json.loads(CANONICAL_NAMES.read_text(encoding="utf-8"))
+    names = set(canonical.values())
+    if len(canonical) != 81 or len(names) != 81:
+        raise ValueError("canonical entry map must contain 81 unique entries")
+    return names
+
+
 def check_roster(inventory):
-    """Check the qualified public roster without encoding body-file paths."""
+    """Enforce canonical81 plus the two Small31-safe exports; no exemptions."""
     names = set(inventory["entries"])
-    if len(names) != 81 or "completion_counter_clear" not in names:
-        raise ValueError("expected 40 FP8/FP16 pairs and completion_counter_clear (81 entries)")
+    canonical = canonical_exports()
+    missing = canonical - names
+    if missing:
+        raise ValueError(f"canonical81 exports are missing: {sorted(missing)}")
+    unexpected = names - canonical - SAFE_ATTENTION_EXPORTS
+    if unexpected:
+        raise ValueError(f"exports outside canonical81 plus safe attention: {sorted(unexpected)}")
+    if len(names) != 83 or "completion_counter_clear" not in names:
+        raise ValueError("expected 41 FP8/FP16 pairs and completion_counter_clear (83 entries)")
     fp8 = {name[:-4] for name in names if name.endswith("_fp8")}
     fp16 = {name[:-5] for name in names if name.endswith("_fp16")}
-    if len(fp8) != 40 or fp8 != fp16:
+    if len(fp8) != 41 or fp8 != fp16:
         raise ValueError("FP8/FP16 canonical entry families differ")
 
 

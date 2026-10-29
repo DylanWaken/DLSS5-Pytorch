@@ -10,7 +10,10 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parent
-CPU_TESTS = (
+# Legacy modules are executed as scripts (module-level asserts under
+# ``if __name__ == "__main__"``); they are kept exactly as before so the
+# existing -O behavior is preserved.
+CPU_SCRIPT_TESTS = (
     "test_speed_cpu.py",
     "test_speed_build_cpu.py",
     "test_architecture_support_cpu.py",
@@ -28,6 +31,48 @@ CPU_TESTS = (
     "test_reconstructed_benchmark_cpu.py",
     "test_prepared_kernel_api_cpu.py",
 )
+# pytest-function modules.  Running them as scripts would import the file and
+# silently skip every assertion, so they are handed to pytest explicitly.
+CPU_PYTEST_TESTS = (
+    "test_runtime_assets_cpu.py",
+    "test_small_model_cpu.py",
+    "test_small_plan_cpu.py",
+    "test_small_deployment_cpu.py",
+    "test_small_attention_cpu.py",
+    "test_video_cpu.py",
+)
+
+
+def _run_cpu_scripts(optimized: bool) -> list[tuple[str, int]]:
+    """Run every legacy script check and return ``(label, exit_code)`` results.
+
+    Execution continues after a failure so a broken legacy check cannot hide the
+    pytest modules; the aggregate exit status is still non-zero.
+    """
+    results = []
+    for name in CPU_SCRIPT_TESTS:
+        source = ROOT / "tests" / name
+        if not source.is_file():
+            raise FileNotFoundError(source)
+        label = name + (" (-O)" if optimized else "")
+        command = [sys.executable, "-B"] + (["-O"] if optimized else []) + [str(source)]
+        print("CPU check: " + label, flush=True)
+        results.append((label, subprocess.run(command, cwd=ROOT).returncode))
+    return results
+
+
+def _run_cpu_pytest(optimized: bool) -> tuple[str, int]:
+    sources = [ROOT / "tests" / name for name in CPU_PYTEST_TESTS]
+    for source in sources:
+        if not source.is_file():
+            raise FileNotFoundError(source)
+    command = ([sys.executable, "-B"] + (["-O"] if optimized else [])
+               + ["-m", "pytest", "-q", "-p", "no:cacheprovider"]
+               + [str(source) for source in sources])
+    label = "pytest " + ", ".join(CPU_PYTEST_TESTS) + (" (-O)" if optimized else "")
+    print("CPU pytest: " + label, flush=True)
+    return label, subprocess.run(command, cwd=ROOT).returncode
+
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
@@ -37,14 +82,18 @@ def main():
     if args.mode == "cpu":
         if rest:
             p.error("CPU mode does not accept GPU worker arguments")
+        results = []
         for optimized in ((False, True) if args.optimized else (False,)):
-            for name in CPU_TESTS:
-                source = ROOT / "tests" / name
-                if not source.is_file():
-                    raise FileNotFoundError(source)
-                command = [sys.executable, "-B"] + (["-O"] if optimized else []) + [str(source)]
-                print("CPU check: " + name + (" (-O)" if optimized else ""), flush=True)
-                subprocess.run(command, check=True, cwd=ROOT)
+            results.extend(_run_cpu_scripts(optimized))
+            results.append(_run_cpu_pytest(optimized))
+        failed = [(label, code) for label, code in results if code != 0]
+        print(
+            f"CPU summary: {len(results) - len(failed)}/{len(results)} checks passed",
+            flush=True)
+        if failed:
+            for label, code in failed:
+                print(f"CPU FAILED: {label} (exit {code})", flush=True)
+            raise SystemExit(1)
     elif args.mode == "training":
         if args.optimized:
             p.error("--optimized applies only to CPU checks")

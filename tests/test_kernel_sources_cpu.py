@@ -7,7 +7,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from tools.kernel_sources import check_roster, check_entry_layout, collect, compare_exports, _without_comments_and_strings
+from tools.kernel_sources import (SAFE_ATTENTION_EXPORTS, check_roster, check_entry_layout, collect,
+                                  compare_exports, _without_comments_and_strings)
 
 
 class KernelSourcesCPUTest(unittest.TestCase):
@@ -80,10 +81,22 @@ class KernelSourcesCPUTest(unittest.TestCase):
         inventory = collect(ROOT / "csrc")
         check_roster(inventory)
         check_entry_layout(inventory, ROOT / "csrc")
-        self.assertEqual(inventory["entry_count"], 81)
-        self.assertEqual(inventory["definition_count"], 56)
-        self.assertEqual(inventory["emission_unit_count"], 56)
+        self.assertEqual(inventory["entry_count"], 83)
+        self.assertEqual(inventory["definition_count"], 58)
+        self.assertEqual(inventory["emission_unit_count"], 58)
         self.assertEqual(inventory["template_entry_count"], 40)
+        # The additive safe pair must not edit or hide any canonical81 entry.
+        canonical = set(json.loads(
+            (ROOT / "tuning/canonical_kernel_names.json").read_text(encoding="utf-8")).values())
+        names = set(inventory["entries"])
+        self.assertEqual(len(canonical), 81)
+        self.assertTrue(canonical <= names)
+        self.assertEqual(names - canonical, set(SAFE_ATTENTION_EXPORTS))
+        for name in SAFE_ATTENTION_EXPORTS:
+            entry = inventory["entries"][name]
+            self.assertEqual(entry["emission_unit"],
+                             f"kernel_impl/small_c1024_attention/"
+                             f"{'fp16' if name.endswith('_fp16') else 'fp8'}/{name}.cu")
 
     def test_replaced_entry_files_do_not_survive_beside_templates(self):
         manifest = ROOT / "csrc/kernel_impl/shared/common/kernel_templates.json"
