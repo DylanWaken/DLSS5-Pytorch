@@ -93,7 +93,7 @@ if (filter) {
     catalog.querySelectorAll('[data-catalog-group]').forEach(group => {
       group.hidden = ![...group.querySelectorAll('.kernel-role')].some(row => !row.hidden);
     });
-    document.querySelector('#filter-count').textContent = `${shown} of ${rows.length} kernel roles · ${lessons} of 81 lessons shown`;
+    document.querySelector('#filter-count').textContent = `${shown} of ${rows.length} kernel roles · ${lessons} of 83 lessons shown`;
     document.querySelector('#catalog-empty').hidden = shown !== 0;
     document.querySelectorAll('.operator-jumps a').forEach(link => {
       const group = document.querySelector(link.getAttribute('href')).closest('.operator-group');

@@ -1,0 +1,505 @@
+{
+  "total": 83,
+  "legacy": 81,
+  "additive": 2,
+  "profiles": [
+    {
+      "name": "input_preprocess_window_c32_fp16",
+      "source": "csrc/kernel_impl/input_c32/fp16/input_preprocess_window_c32_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "input_preprocess_window_c32_fp8",
+      "source": "csrc/kernel_impl/input_c32/fp8/input_preprocess_window_c32_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "input_preprocess_window_downsample_c32_fp16",
+      "source": "csrc/kernel_impl/input_c32/fp16/input_preprocess_window_downsample_c32_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "input_preprocess_window_downsample_c32_fp8",
+      "source": "csrc/kernel_impl/input_c32/fp8/input_preprocess_window_downsample_c32_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "output_window_postprocess_c32_fp16",
+      "source": "csrc/kernel_impl/output_c32/fp16/output_window_postprocess_c32_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "output_window_postprocess_c32_fp8",
+      "source": "csrc/kernel_impl/output_c32/fp8/output_window_postprocess_c32_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c128_downsample_fp16",
+      "source": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_wide_downsample_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c128_downsample_fp8",
+      "source": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_wide_downsample_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c128_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c128_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c128_input_view_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c128_input_view_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c128_output_view_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c128_output_view_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c128_upsample_fp16",
+      "source": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_wide_upsample_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c128_upsample_fp8",
+      "source": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_wide_upsample_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c256_downsample_fp16",
+      "source": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_wide_downsample_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c256_downsample_fp8",
+      "source": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_wide_downsample_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c256_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c256_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c256_input_view_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c256_input_view_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c256_output_view_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c256_output_view_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c256_upsample_fp16",
+      "source": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_wide_upsample_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c256_upsample_fp8",
+      "source": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_wide_upsample_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c32_downsample_fp16",
+      "source": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_c32_downsample_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c32_downsample_fp8",
+      "source": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_c32_downsample_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c32_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_compact_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c32_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_compact_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c32_input_view_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_compact_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c32_input_view_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_compact_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c32_output_view_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_c32_output_view_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c32_output_view_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_c32_output_view_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c32_upsample_fp16",
+      "source": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_c32_upsample_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c32_upsample_fp8",
+      "source": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c32_upsample_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c64_downsample_fp16",
+      "source": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_c64_downsample_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c64_downsample_fp8",
+      "source": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_c64_downsample_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c64_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c64_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c64_input_view_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c64_input_view_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c64_output_view_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c64_output_view_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c64_upsample_fp16",
+      "source": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_c64_upsample_fp16.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_block_c64_upsample_fp8",
+      "source": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c64_upsample_fp8.cu",
+      "kind": "window",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_ffn_c512_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_ffn_c512_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_ffn_input_view_c512_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_input_view_c512_fp16.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_ffn_input_view_c512_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_ffn_projection_c512_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_ffn_projection_c512_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_ffn_projection_input_view_c512_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_projection_input_view_c512_fp16.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_ffn_projection_input_view_c512_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_projection_input_view_c512_fp8.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_qkv_c512_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_qkv_c512_fp16.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_qkv_c512_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_qkv_c512_fp8.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_attention_projection_c512_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_attention_projection_c512_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_attention_projection_output_view_c512_fp16",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_attention_projection_output_view_c512_fp16.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_attention_projection_output_view_c512_fp8",
+      "source": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_attention_projection_output_view_c512_fp8.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_attention_projection_pool_c512_fp16",
+      "source": "csrc/kernel_impl/encoder_c512_downsample/fp16/window_attention_projection_pool_c512_fp16.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "window_attention_projection_pool_c512_fp8",
+      "source": "csrc/kernel_impl/encoder_c512_downsample/fp8/window_attention_projection_pool_c512_fp8.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "channel_projection_c512_to_c1024_fp16",
+      "source": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "channel_projection_c512_to_c1024_fp8",
+      "source": "csrc/kernel_impl/encoder_c512_downsample/fp8/channel_projection_c512_to_c1024_fp8.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "decoder_upsample_c1024_to_c512_fp16",
+      "source": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp16/decoder_upsample_c1024_to_c512_fp16.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "decoder_upsample_c1024_to_c512_fp8",
+      "source": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp8/decoder_upsample_c1024_to_c512_fp8.cu",
+      "kind": "c512",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "completion_counter_clear",
+      "source": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+      "kind": "counter",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "repack_1d_to_2d_c1024_fp16",
+      "source": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_token_to_spatial.cu",
+      "kind": "repack",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "repack_1d_to_2d_c1024_fp8",
+      "source": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_token_to_spatial.cu",
+      "kind": "repack",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "repack_2d_to_1d_c1024_fp16",
+      "source": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+      "kind": "repack",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "repack_2d_to_1d_c1024_fp8",
+      "source": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+      "kind": "repack",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "global_ffn_expand_c1024_fp16",
+      "source": "csrc/kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu",
+      "kind": "global-linear",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "global_ffn_contract_c1024_fp16",
+      "source": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu",
+      "kind": "global-linear",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "global_projection_c1024_fp16",
+      "source": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_projection_c1024_fp16.cu",
+      "kind": "global-linear",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "global_qkv_c1024_fp16",
+      "source": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_qkv_c1024_fp16.cu",
+      "kind": "global-linear",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "global_attention_chained_c1024_fp16",
+      "source": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu",
+      "kind": "global-attention",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "global_ffn_expand_c1024_fp8",
+      "source": "csrc/kernel_impl/bottleneck_c1024_ffn/fp8/global_ffn_expand_c1024_fp8.cu",
+      "kind": "global-linear",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "global_ffn_contract_c1024_fp8",
+      "source": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+      "kind": "global-linear",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "global_projection_c1024_fp8",
+      "source": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+      "kind": "global-linear",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "global_qkv_c1024_fp8",
+      "source": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_qkv_c1024_fp8.cu",
+      "kind": "global-linear",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "global_attention_chained_c1024_fp8",
+      "source": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu",
+      "kind": "global-attention",
+      "manifest": "kernel-map-manifest.json"
+    },
+    {
+      "name": "small_global_attention_chained_c1024_fp16",
+      "source": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+      "kind": "small-global-attention",
+      "manifest": "kernel-map-manifest-small.json"
+    },
+    {
+      "name": "small_global_attention_chained_c1024_fp8",
+      "source": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+      "kind": "small-global-attention",
+      "manifest": "kernel-map-manifest-small.json"
+    }
+  ]
+}

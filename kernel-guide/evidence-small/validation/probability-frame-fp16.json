@@ -1,0 +1,518 @@
+{
+  "step": "probability",
+  "precision": "fp16",
+  "seed": 20261029,
+  "source": {
+    "path": "profile\\dlss-update-20261029\\cyberpunk-comparison\\input\\frames\\frame_000000.png",
+    "sha256": "fd69ba6e795855ab047653e4cec5657827e95d603b348a34a620b41aecc900de",
+    "decoded_rgb_sha256": "5bffbfe78a4de41890d8a45bf4d81b3f93c1e6fbc2d7c60179a48055e988d282",
+    "width": 3840,
+    "height": 2160
+  },
+  "tokens": 2160,
+  "padded_keys": 2176,
+  "padded_tokens": 2160,
+  "buffer_tokens": 2176,
+  "q_ranges": [
+    [
+      0,
+      16
+    ],
+    [
+      240,
+      272
+    ],
+    [
+      1008,
+      1040
+    ],
+    [
+      2144,
+      2160
+    ]
+  ],
+  "selected_queries": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    240,
+    241,
+    242,
+    243,
+    244,
+    245,
+    246,
+    247,
+    248,
+    249,
+    250,
+    251,
+    252,
+    253,
+    254,
+    255,
+    256,
+    257,
+    258,
+    259,
+    260,
+    261,
+    262,
+    263,
+    264,
+    265,
+    266,
+    267,
+    268,
+    269,
+    270,
+    271,
+    1008,
+    1009,
+    1010,
+    1011,
+    1012,
+    1013,
+    1014,
+    1015,
+    1016,
+    1017,
+    1018,
+    1019,
+    1020,
+    1021,
+    1022,
+    1023,
+    1024,
+    1025,
+    1026,
+    1027,
+    1028,
+    1029,
+    1030,
+    1031,
+    1032,
+    1033,
+    1034,
+    1035,
+    1036,
+    1037,
+    1038,
+    1039,
+    2144,
+    2145,
+    2146,
+    2147,
+    2148,
+    2149,
+    2150,
+    2151,
+    2152,
+    2153,
+    2154,
+    2155,
+    2156,
+    2157,
+    2158,
+    2159
+  ],
+  "guards_before": true,
+  "binary_sha256": "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+  "diagnostic": {
+    "source": "profile\\dlss-update-20261029\\rgb-safe-attention-validation\\artifacts\\build\\diag_fp16.cu",
+    "source_sha256": "e332a9c238f2a9ee2d3a7f1d1a8e240e6ef35a9c16414d4cbcfe308fc780ef53",
+    "production_source_sha256": "f202ae4bc19b8b9c6e5ffe5fb49cc4751f62a86d32e27cbe8dd6178eb1d38410",
+    "round_trip_exact": true,
+    "cubin": "profile\\dlss-update-20261029\\rgb-safe-attention-validation\\artifacts\\build\\diag_fp16.cubin",
+    "cubin_sha256": "9fa9e1eb8f17eadeaa3dc560799cb62c200f0872b3f7e4fbf3666cccab5c617b",
+    "inputs_key": "125f5c4b2ca70a64eada3c2c0c3c47d3facd346a6229f8dc33c29480662549de",
+    "included_headers": {
+      "D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared/common/kernel_helpers.cuh": "8667f6b336526be41db126632a5c2406659a5039acee36dd632068d01d84c19f",
+      "D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/bottleneck_c1024_attention/common/global_attention.cuh": "b5061a54de3bc464b13ed9e77ad4755bbe6a1e8a2ec4345d3d2460d2dbdea7b9",
+      "D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/small_c1024_attention/common/small_attention_abi.h": "9aaa8c4d7c52524f4f385531ad41052d5157fb42f29da2af186ffba22053795f",
+      "D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/small_c1024_attention/common/intrinsics.cuh": "e3f672a7c9b7030156ec98fb6fdde15c8a984eee0ae0bd4d2ff84560359dd3ed"
+    },
+    "command": [
+      "D:\\Research\\DLSSNR-PyTorch\\.cuda\\Library\\bin\\nvcc.exe",
+      "--dont-use-profile",
+      "--libdevice-directory=D:\\Research\\DLSSNR-PyTorch\\.cuda\\Library\\nvvm\\libdevice",
+      "-ID:\\Research\\DLSSNR-PyTorch\\.cuda\\Library\\include",
+      "-ID:\\Research\\DLSSNR-PyTorch\\.cuda\\Library\\include\\targets\\x64",
+      "-DDLSSNR_PTXAS_CACHE_KEY_462442e14a78d62e9165926e9ae75d4d8dbc5d9db2d4130f36f08e9aeaa0e0d5=1",
+      "-cubin",
+      "-std=c++17",
+      "-O3",
+      "-lineinfo",
+      "--expt-relaxed-constexpr",
+      "-Xptxas=-v",
+      "-D__CUDA_NO_HALF_OPERATORS__",
+      "-D__CUDA_NO_HALF_CONVERSIONS__",
+      "-D__CUDA_NO_BFLOAT16_CONVERSIONS__",
+      "-D__CUDA_NO_HALF2_OPERATORS__",
+      "-gencode=arch=compute_120,code=sm_120",
+      "D:\\Research\\DLSSNR-PyTorch\\profile\\dlss-update-20261029\\rgb-safe-attention-validation\\artifacts\\build\\diag_fp16.cu",
+      "-o",
+      "D:\\Research\\DLSSNR-PyTorch\\profile\\dlss-update-20261029\\rgb-safe-attention-validation\\artifacts\\build\\diag_fp16.cubin"
+    ],
+    "toolchain": {
+      "nvcc_release": "12.8",
+      "ptxas_release": "13.4",
+      "host_compiler": "cl.exe",
+      "ok": true
+    },
+    "parameter_records": [
+      {
+        "name": "parameters",
+        "offset": 0,
+        "size": 64
+      },
+      {
+        "name": "diagnostic",
+        "offset": 64,
+        "size": 48
+      }
+    ]
+  },
+  "attention_call": {
+    "index": 25,
+    "name": "small_global_attention_chained_c1024_fp16",
+    "production_executed": true
+  },
+  "qkv": {
+    "Q": {
+      "bytes": 4456448,
+      "sha256": "ece4ed963a457de436318a72ad0e391d4861e844d184df319c1fa334dbee06bd"
+    },
+    "K": {
+      "bytes": 4456448,
+      "sha256": "84884699079dc83e1fa499eba1e69e458ab74bc3f3c60bc44e7d4095523ac63d"
+    },
+    "V": {
+      "bytes": 4456448,
+      "sha256": "5b464a2bdd9beb9c6fcdece79064c548e7a66ac3e082a0ef15306d9560701b81"
+    },
+    "Q_finite": true,
+    "K_finite": true,
+    "V_finite": true
+  },
+  "qk_decode": {
+    "shape": [
+      2176,
+      32,
+      32
+    ],
+    "Q_finite": true,
+    "K_finite": true,
+    "Q_sha256": "fa89738db9c98a8dc64e4d1f624124282b9229594bb591125df6b5730828d8a2",
+    "K_sha256": "afccf0c223f5b62a95c381a64dd342142eff847b0c1bd0c442be046968d8abc6",
+    "map_evidence": "map_census in check_cpu.py proves each Q/K map is a bijection"
+  },
+  "storage_disjoint": true,
+  "attention_counter_disjoint_from_output": true,
+  "launch": {
+    "grid": [
+      32,
+      9,
+      1
+    ],
+    "block": [
+      32,
+      4,
+      1
+    ],
+    "parameter_bytes": 112,
+    "records": [
+      {
+        "name": "param0",
+        "offset": 0,
+        "size": 64
+      },
+      {
+        "name": "param1",
+        "offset": 64,
+        "size": 48
+      }
+    ],
+    "record1_offset": 64
+  },
+  "outputs": {
+    "production_sha256": "145176287b1362d6e335a28a2b064ac94743c0d1bb022560f0389f9d50f6dc67",
+    "dump_sha256": "145176287b1362d6e335a28a2b064ac94743c0d1bb022560f0389f9d50f6dc67",
+    "no_dump_sha256": "145176287b1362d6e335a28a2b064ac94743c0d1bb022560f0389f9d50f6dc67",
+    "production_zeroed_sha256": "f8cbbdee04223a4630833115cb4fab8799265460abe15172b6d62363c5ebe456",
+    "production_nonzero_bytes": 4415418,
+    "production_equals_dump_bitwise": true,
+    "production_equals_no_dump_bitwise": true,
+    "dump_equals_no_dump_bitwise": true,
+    "dump_outputs_untouched_by_disabled_launch": true,
+    "dump_enabled_wrote_buffers": true,
+    "qkv_unchanged": true,
+    "predecessor_unchanged_by_diagnostics": true,
+    "attention_counter_all_zero_after_production": true
+  },
+  "guards_after": true,
+  "native_output": {
+    "elements": 2228224,
+    "nan": 0,
+    "posinf": 0,
+    "neginf": 0,
+    "nonfinite": 0,
+    "finite": 2228224,
+    "finite_min": -96.5625,
+    "finite_max": 132.375,
+    "abs_ge_65504": 0,
+    "e4m3_448": null,
+    "sha256_raw": "145176287b1362d6e335a28a2b064ac94743c0d1bb022560f0389f9d50f6dc67"
+  },
+  "v_decode": {
+    "decoded_tokens": 2176,
+    "operand_keys": 2176,
+    "keys_with_zero_fill": 16,
+    "v_min": -158.75,
+    "v_max": 223.625,
+    "v_abs_max": 223.625,
+    "map_evidence": "FP8 V byte map pinned by the documented token-83 worked example and proved bijective in check_cpu.py"
+  },
+  "reference": {
+    "probability_source": "native diagnostic dump after QK HalfMMA + exponent surrogate",
+    "probability_zero_score_half": 0.083984375,
+    "padding_keys": 16,
+    "padded_tokens": 2160,
+    "denominator_native_correction": {
+      "p0_times_padding": 1.34375,
+      "all_keys_sum_minus_correction_max_abs_vs_native": 0.0001220703125
+    },
+    "denominator": {
+      "max_abs_diff": 0.0001220703125,
+      "abs_diff_percentiles": {
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0,
+        "max": 0.0001220703125
+      },
+      "fp32_ulp_ratio_percentiles": {
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0,
+        "max": 1.4535043150597464
+      },
+      "fp32_ulp_definition": "abs_diff / (2^-24 * max(|reference|, 1e-30))",
+      "max_rel_diff": 8.663560837863364e-08,
+      "tolerance": 0.8707926736602783,
+      "failing_count": 0,
+      "elements": 3072,
+      "passed": true,
+      "native_min": 18.4256591796875,
+      "native_max": 3356.953125
+    },
+    "numerator": {
+      "max_abs_diff": 0.86572265625,
+      "abs_diff_percentiles": {
+        "p50": 0.0019509326666593552,
+        "p95": 0.08624756336212147,
+        "p99": 0.46117797851562514,
+        "max": 0.86572265625
+      },
+      "fp32_ulp_ratio_percentiles": {
+        "p50": 84.06965864407483,
+        "p95": 152.3537942697125,
+        "p99": 230.76142403173628,
+        "max": 153533.1278043184
+      },
+      "fp32_ulp_definition": "abs_diff / (2^-24 * max(|reference|, 1e-30))",
+      "max_rel_diff": 0.009151287544031049,
+      "max_abs_native": 94402.390625,
+      "tolerance_max": 24.48813990106976,
+      "tolerance_definition": "2 * padded_keys * 2^-24 * sum_abs(P*V) + 1e-6",
+      "within_tolerance_fraction": 1.0,
+      "failing_count": 0,
+      "elements": 98304,
+      "passed": true,
+      "entries_above_half_max": 723
+    }
+  },
+  "publication": {
+    "kind": "fp16",
+    "native": {
+      "elements": 2228224,
+      "nan": 0,
+      "posinf": 0,
+      "neginf": 0,
+      "nonfinite": 0,
+      "finite": 2228224,
+      "finite_min": -96.5625,
+      "finite_max": 132.375,
+      "abs_ge_65504": 0,
+      "e4m3_448": null,
+      "sha256_raw": "145176287b1362d6e335a28a2b064ac94743c0d1bb022560f0389f9d50f6dc67"
+    },
+    "from_diagnostic_numerator_denominator": {
+      "elements": 98304,
+      "finite": 98304,
+      "nan": 0,
+      "posinf": 0,
+      "neginf": 0,
+      "exact_equal_fraction": 0.9999898274739584,
+      "exact_mismatch_count": 1,
+      "max_abs_diff": 0.0009765625,
+      "abs_diff_percentiles": {
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0,
+        "max": 0.0009765625
+      },
+      "max_ulp": 1.0,
+      "ulp_percentiles": {
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0,
+        "max": 1.0
+      },
+      "interval_contained_fraction": 1.0,
+      "outside_interval": 0,
+      "saturated_448_count": null,
+      "passed": true,
+      "ulp_definition": "FP16: one Half spacing; FP8: one E4M3 code spacing at the predicted magnitude",
+      "element_bytes": 2
+    },
+    "from_independent_P_V_reference": {
+      "elements": 98304,
+      "finite": 98304,
+      "nan": 0,
+      "posinf": 0,
+      "neginf": 0,
+      "exact_equal_fraction": 0.9922281901041666,
+      "exact_mismatch_count": 764,
+      "max_abs_diff": 0.125,
+      "abs_diff_percentiles": {
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0,
+        "max": 0.125
+      },
+      "max_ulp": 14.0,
+      "ulp_percentiles": {
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0,
+        "max": 14.0
+      },
+      "interval_contained_fraction": 1.0,
+      "outside_interval": 0,
+      "saturated_448_count": null,
+      "passed": true,
+      "ulp_definition": "FP16: one Half spacing; FP8: one E4M3 code spacing at the predicted magnitude",
+      "element_bytes": 2
+    },
+    "reference_numerator_delta": {
+      "max_abs_diff": 0.86572265625,
+      "max_abs_native": 94402.390625
+    },
+    "tolerance": {
+      "numerator": "2 * padded_keys * 2^-24 * sum_abs(P*V) + 1e-6 (FP32 MMA bound)",
+      "denominator": "2 * padded_keys * 2^-24 * max(denominator,1) + 1e-6",
+      "publication": "value must lie in the quantized convex hull of the numerator and denominator intervals, including the combined reciprocal+FP32 multiply envelope 2^-22 and the final Half (and E4M3) rounds"
+    }
+  },
+  "tolerances": {
+    "numerator": "2 * padded_keys * 2^-24 * sum_abs(P*V) + 1e-6 (FP32 MMA bound)",
+    "denominator": "2 * padded_keys * 2^-24 * max(denominator,1) + 1e-6",
+    "publication": "value must lie in the quantized convex hull of the numerator and denominator intervals, including the combined reciprocal+FP32 multiply envelope 2^-22 and the final Half (and E4M3) rounds"
+  },
+  "full_output_census": {
+    "production": {
+      "elements": 2228224,
+      "nan": 0,
+      "posinf": 0,
+      "neginf": 0,
+      "nonfinite": 0,
+      "finite": 2228224,
+      "finite_min": -96.5625,
+      "finite_max": 132.375,
+      "abs_ge_65504": 0,
+      "e4m3_448": null,
+      "sha256_raw": "145176287b1362d6e335a28a2b064ac94743c0d1bb022560f0389f9d50f6dc67"
+    },
+    "dump_enabled": {
+      "elements": 2228224,
+      "nan": 0,
+      "posinf": 0,
+      "neginf": 0,
+      "nonfinite": 0,
+      "finite": 2228224,
+      "finite_min": -96.5625,
+      "finite_max": 132.375,
+      "abs_ge_65504": 0,
+      "e4m3_448": null,
+      "sha256_raw": "145176287b1362d6e335a28a2b064ac94743c0d1bb022560f0389f9d50f6dc67"
+    },
+    "dump_disabled": {
+      "elements": 2228224,
+      "nan": 0,
+      "posinf": 0,
+      "neginf": 0,
+      "nonfinite": 0,
+      "finite": 2228224,
+      "finite_min": -96.5625,
+      "finite_max": 132.375,
+      "abs_ge_65504": 0,
+      "e4m3_448": null,
+      "sha256_raw": "145176287b1362d6e335a28a2b064ac94743c0d1bb022560f0389f9d50f6dc67"
+    }
+  },
+  "ncu_fixture": {
+    "directory": "profile\\dlss-update-20261029\\rgb-safe-attention-validation\\artifacts\\fixtures\\frame_fp16",
+    "files": {
+      "Q": {
+        "path": "profile\\dlss-update-20261029\\rgb-safe-attention-validation\\artifacts\\fixtures\\frame_fp16\\b31.Q.bin",
+        "bytes": 4456448,
+        "sha256": "ece4ed963a457de436318a72ad0e391d4861e844d184df319c1fa334dbee06bd"
+      },
+      "K": {
+        "path": "profile\\dlss-update-20261029\\rgb-safe-attention-validation\\artifacts\\fixtures\\frame_fp16\\b31.K.bin",
+        "bytes": 4456448,
+        "sha256": "84884699079dc83e1fa499eba1e69e458ab74bc3f3c60bc44e7d4095523ac63d"
+      },
+      "V": {
+        "path": "profile\\dlss-update-20261029\\rgb-safe-attention-validation\\artifacts\\fixtures\\frame_fp16\\b31.V.bin",
+        "bytes": 4456448,
+        "sha256": "5b464a2bdd9beb9c6fcdece79064c548e7a66ac3e082a0ef15306d9560701b81"
+      }
+    },
+    "manifest": "profile\\dlss-update-20261029\\rgb-safe-attention-validation\\artifacts\\fixtures\\frame_fp16\\fixture.json"
+  },
+  "checks": {
+    "production_equals_dump": true,
+    "production_equals_no_dump": true,
+    "dump_equals_no_dump": true,
+    "dump_disabled_wrote_nothing": true,
+    "dump_enabled_wrote_buffers": true,
+    "production_output_not_trivially_zero": true,
+    "qkv_unchanged": true,
+    "predecessor_unchanged": true,
+    "denominator_within_tolerance": true,
+    "numerator_within_tolerance": true,
+    "publication_from_diagnostic": true,
+    "publication_from_independent": true,
+    "full_output_finite": true,
+    "guards_before": true,
+    "guards_after": true,
+    "qkv_finite": true,
+    "storage_disjoint": true
+  },
+  "passed": true,
+  "completed_utc": "2026-10-29T17:05:25Z"
+}
