@@ -19,7 +19,7 @@ from html import escape
 from pathlib import Path
 import sys
 
-from common import code, provenance_note, svg
+from common import REPOSITORY, code, provenance_note, svg
 
 # Read the frozen identity from the implementation instead of duplicating its
 # stage partition in prose. The docs generator runs from the repository root.
@@ -815,12 +815,13 @@ C_COMPOSE = code('dlssnr/model.py', 331, 341,
                  'Composition uses the RGB residual plus the history gate and blend scalar')
 C_EXTRACT = code('tools/extract_runtime_assets.py', 27, 46,
                  'Extraction requires an explicit model identity and a fresh output path')
-C_RECORD_PROVIDER = code('dlssnr/small_deployment.py', 291, 321,
+C_RECORD_PROVIDER = code('dlssnr/small_deployment.py', 295, 325,
                          'FP8 returns original archive bytes; FP16 repacks through the shared packer')
-C_PLAN_RECORDS = code('dlssnr/small_deployment.py', 349, 376,
+C_PLAN_RECORDS = code('dlssnr/small_deployment.py', 353, 380,
                       'Each precision validates every compiled record name, order and size')
-C_NATIVE_SELECTOR = code('dlssnr/small_deployment.py', 393, 433,
-                         'The explicit selector defaults to legacy71 and never infers a model')
+C_NATIVE_SELECTOR = code('dlssnr/small_deployment.py', 397, 442,
+                         'The explicit selector defaults to legacy71, never infers a model, '
+                         'and accepts a self-contained format-3 Small31 checkpoint')
 C_HOST_OWNERSHIP = code('csrc/kernel_launcher/small_deployment.cpp', 128, 175,
                         'Host ownership, guarded workspaces, the 109-call census and split admission')
 C_PLAN_TABLE = code('csrc/kernel_launcher/small_plan_generated.inl', 161, 178,
@@ -1025,6 +1026,95 @@ post16 = small.kernel_record(70, kind="postprocess", precision="fp16")
 
 legacy = load_native_model("ckpts/dlss5_nr_fp16.pt")  # still the default
 </code></pre>
+<h3 id="checkpoint-workflows">Checkpoint selection, training and native deployment</h3>
+<p>Both identities use one explicit selector: <code>load_checkpoint(path, model="small31")</code> selects Small31; use <code>model="legacy71"</code> for the default Legacy71 graph. A mismatched or unknown model raises and is never inferred from a file name, tensor shape or archive size.</p>
+<div class="table-scroll"><table><thead><tr><th>Model selection</th><th>Original portable file</th><th>Stored weights and supported routes</th></tr></thead><tbody>
+<tr><td><code>legacy71</code> (default)</td><td><code>ckpts/dlss5_nr_fp8.pt</code></td><td>Original mixed E4M3/Half storage with the 153 packed native records; FP8 or lossless FP16 native deployment and FP32/BF16 training.</td></tr>
+<tr><td><code>legacy71</code></td><td><code>ckpts/dlss5_nr_fp16.pt</code></td><td>The same learned values widened exactly to Half; FP16 native deployment and FP32/BF16 training.</td></tr>
+<tr><td><code>small31</code> (explicit)</td><td><code>ckpts/dlss5_nr_small31.pt</code></td><td>All 77 original Small31 records (about 114 MB); FP8 or lossless FP16 native deployment and FP32/BF16 training.</td></tr>
+</tbody></table></div>
+<p>Stored weight family and compute precision are separate decisions. <code>training_model(..., precision="fp32")</code> or <code>precision="bf16"</code> builds an ordinary PyTorch/autograd graph with FP32 masters. Native plans use original packed FP8 records or losslessly repacked FP16 records with the reconstructed CUDA kernels. Widening does not recover precision that the source never stored.</p>
+<p><strong>Usage example (hand-written, not a source excerpt).</strong> One diagnostic AdamW update, an FP32 master save/reload and an explicit FP16 export. This is a plumbing and finite-output fixture, not a fine-tuning recipe or a recommended task loss:</p>
+<pre><code>import os
+import torch
+from dlssnr import Geometry, export_trained_checkpoint, load_checkpoint
+
+model_id = "small31"  # Use "legacy71" for the 71-block graph.
+checkpoint_path = ("ckpts/dlss5_nr_small31.pt" if model_id == "small31"
+                   else "ckpts/dlss5_nr_fp8.pt")
+checkpoint = load_checkpoint(checkpoint_path, model=model_id)
+geometry = Geometry.from_valid(320, 320)
+generator = torch.Generator().manual_seed(320)
+features = torch.randn(
+    (1, geometry.full_height, geometry.full_width, 16),
+    generator=generator, dtype=torch.float32,
+) * 0.02
+features = features.to("cuda:0")
+
+model = checkpoint.training_model(
+    device="cuda:0", precision="bf16", trainable=True, checkpoint_blocks=False,
+)
+model.train()
+output = model.forward_train(features, geometry=geometry)
+loss = output.float().square().mean()  # Diagnostic fixture only.
+loss.backward()
+optimizer = torch.optim.AdamW(
+    model.parameters(), lr=1e-5, betas=(0.9, 0.999), eps=1e-8, weight_decay=0.01,
+)
+optimizer.step()
+optimizer.zero_grad(set_to_none=True)
+
+model.eval()
+os.makedirs("outputs", exist_ok=True)
+master_path = "outputs/diagnostic-" + model_id + "-master.pt"
+export_path = "outputs/diagnostic-" + model_id + "-fp16.pt"
+torch.save(model.state_dict(), master_path)
+fresh = checkpoint.training_model(
+    device="cuda:0", precision="bf16", trainable=True, checkpoint_blocks=False,
+)
+fresh.load_state_dict(torch.load(master_path, weights_only=True), strict=True)
+fresh.eval()
+receipt = export_trained_checkpoint(
+    fresh, export_path, model=model_id, precision="fp16")
+trained = load_checkpoint(export_path, model=model_id)
+
+# Independent synthetic physical storage for the native plane16 input. These
+# values are written directly to native byte slots: this is not a BHWC -> native
+# packer and not the training feature above.
+feature_width, feature_height = geometry.levels[0]
+native_generator = torch.Generator().manual_seed(320)  # Separate CPU generator.
+native_slots = torch.randn(
+    feature_width * feature_height * 32,
+    generator=native_generator, dtype=torch.float32,
+) * 0.02
+prepared_half_state = (
+    native_slots.to(torch.float16).view(torch.uint8).to("cuda:0")
+)
+half_plan = trained.create_plan_fp16(prepared_half_state, width=320, height=320)
+half_output = half_plan.run_fp16()
+</code></pre>
+<p><code>precision="bf16"</code> can instead be <code>"fp32"</code>; both are ordinary autograd builds with FP32 masters. The remaining AdamW options are the installed PyTorch 2.8 defaults (<code>amsgrad=False</code>, <code>maximize=False</code>, <code>foreach=None</code>, <code>capturable=False</code>, <code>differentiable=False</code>, <code>fused=None</code>). The 320×320 seed/scale case is a bounded diagnostic fixture, not a claim for arbitrary data or resolutions; the native comparison runner builds its own seeded packed fixture rather than reinterpreting this BHWC tensor. An earlier explicit <code>lr=1e-3</code> update produced nonfinite native FP16 outputs even though the stored weights were finite and serialized correctly; no particular overflowing instruction or root cause is asserted. <code>precision="fp16"</code> is the explicit, deliberately lossy narrowing choice; there is no separate <code>allow_lossy</code> flag. The exported file is state-only: it carries no original records, so stale vendor bytes can never stand in for trained weights. Learned FP8 export is rejected because no inverse learned-FP8 writer exists. GPU acceptance is complete on an RTX PRO 6000 Blackwell (SM120) at 320×320: four original native cases (Legacy71 and Small31, FP16 and FP8), four actual optimizer/training cases (both models, FP32 and BF16) at the explicit diagnostic <code>lr=1e-5</code>, byte-exact FP32 master save/reload, loaded-vs-independently-quantized native trunk output, one zero-update control, and two learned FP32-trained, FP16-exported full-RGB stateless smoke cases that exercise learned preprocess, trunk and postprocess with finite RGBA and intact native trunk guards. Limits: temporal history, motion and blend are empty; the blend scalar is verified but unchanged and not executed; no vendor/surrogate parity, image-quality improvement or broad precision/resolution guarantee is claimed; frontend output guards are not separately exposed. The bounded commands and per-case receipts are in the <a href="{REPOSITORY}/blob/main/docs/kernel-guide/evidence-checkpoints/acceptance.json">public checkpoint acceptance receipt</a>; the earlier 4K runtime figures are separate measurements and are unchanged. See <a href="{REPOSITORY}/blob/main/docs/SETUP.md#training">setup and training</a> for the fuller walkthrough.</p>
+<p><strong>Usage example (hand-written, not a source excerpt).</strong> Select an original checkpoint and prepare its native plan from the same 320×320 diagnostic fixture recipe:</p>
+<pre><code>legacy = load_checkpoint("ckpts/dlss5_nr_fp8.pt")  # legacy71 default
+geometry = Geometry.from_valid(320, 320)
+feature_width, feature_height = geometry.levels[0]
+generator = torch.Generator().manual_seed(320)
+slots = torch.randn(
+    feature_width * feature_height * 32,
+    generator=generator, dtype=torch.float32,
+) * 0.02
+# Same synthetic diagnostic values as above, written directly to native storage.
+prepared_fp8_state = (
+    slots.clamp(-448.0, 448.0)
+    .to(torch.float8_e4m3fn).view(torch.uint8).to("cuda:0")
+)
+plan8 = legacy.create_plan_fp8(prepared_fp8_state, width=320, height=320)
+
+small = load_checkpoint("ckpts/dlss5_nr_small31.pt", model="small31")
+prepared_half_state = slots.to(torch.float16).view(torch.uint8).to("cuda:0")
+plan16 = small.create_plan_fp16(prepared_half_state, width=320, height=320)
+</code></pre>
+<p>The portable Small31 <code>.pt</code> is self-contained: after <code>git lfs pull</code> or a direct extraction with <code>tools/extract_model_checkpoint.py --dll &lt;signed 310.9.16 DLL&gt; --model small31 --output ckpts/reextracted_small31.pt</code>, no original DLL or extracted archive is required to load it. Choose a fresh extraction output whose <code>.pt</code> and <code>.json</code> do not already exist. The optional sidecar records provenance; its checkpoint file hash is verified by default when present, while model identity is checked from the payload. See the <a href="{REPOSITORY}/blob/main/ckpts/README.md">checkpoint guide and receipts</a> for the exact file identities and commands.</p>
 <p><strong>Implementation status:</strong> the Small generator, C++ host plan/registration and loader are implemented and reviewed. The independent static audit parsed every generated call and reported <code>PASS fp8: 109 calls / 76 compute / 33 clear / 66 records / 156 buffers / 34 boundaries / 34 unique kernels</code> and the same counts with 132 FP16 buffers. The SM120 extension was then built and linked (binary <code>f0d51404…528938</code>, 18,366,464 B) and imported in a fresh process, which registered both <code>small_global_attention_chained_c1024_fp16/fp8</code> operators; the roster is <strong>83 exports, 41 FP16/FP8 pairs and 58 owning bodies</strong>, with the historical 81-entry evidence retained. The two attention exports are additive: the original 81 entries, their 56 owning bodies, their ABI and the legacy plan files are unchanged. Both models and both precisions executed real RGB stills and 4K frames: eight cases, 3024×1890 padded to 3072×1920 and 3840×2160 padded to 3840×2176, with typed <code>b69</code> finite in all arms and <code>b31.attended</code> finite in the Small arms and the Small FP8 <code>b31</code> ±448 count 0. A 320² capture/replay check passed 4/4 arms bitwise with intact guards. The two attention exports also have four current full/source NCU reports for an isolated replay of one call each; those records are not network timing. This is native RGB acceptance of the reconstructed path, not vendor DLL numerical parity.</p>
 <h3 id="layout-contract">Forward design 1: a typed field includes its address function</h3>
 <p>The final Small31 producer and the display postconsumer use the same FP16 dtype, the same 1,024-byte tile extent and the same guarded allocation, yet they read and write different byte addresses for the same logical token. <strong>Equal dtype, equal byte size and intact guards are therefore necessary but not sufficient.</strong> The producer writes a <strong>TILE4</strong> field: 4×4 pixels share a 1,024-byte tile, and the four words of one token live in four different 16-byte lane slots. The postconsumer reads a <strong>PLANE16</strong> field: one 16-byte group per (plane, pixel), with its four words consecutive. The layout contract is the pair of address functions, not the size of the buffer.</p>

@@ -24,8 +24,8 @@ SIZES = {"720p": (1280, 720), "1080p": (1920, 1080),
 MODELS = ("legacy71", "small31")
 SMALL_CHECKPOINT_NAME = "dlss5_nr_small31.pt"
 SCOPE = "Prepared feature trunk, blocks 1-69; batch one; CUDA graph; no renderer preprocessing/composition"
-SMALL_SCOPE = ("Prepared Small31 feature trunk, 31 operation roles (the Legacy71 blocks 1-69 "
-               "trunk is not used); batch one; CUDA graph; no renderer preprocessing/composition")
+SMALL_SCOPE = ("Prepared Small31 feature trunk, 29 trunk roles from the 31-role graph; "
+               "batch one; CUDA graph; no renderer preprocessing/composition")
 ENV_OVERRIDES = ("CUDA_FORCE_PTX_JIT", "CUDA_DISABLE_PTX_JIT", "CUDA_FORCE_JIT",
                  "CUDA_DISABLE_JIT", "CUDA_LAUNCH_BLOCKING", "DLSSNR_SM_COUNT_LIMIT")
 

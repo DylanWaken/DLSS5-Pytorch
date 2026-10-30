@@ -13,9 +13,14 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools/kernel_docs'))
-from common import (REVISION, REPOSITORY, RUNTIME_REVISION, SNIPPETS,
-                     file_provenance, source_url)
-from runtime_source_revision import RUNTIME_SOURCE_PATHS
+from common import (CHECKPOINT_API_REVISION, REVISION, REPOSITORY, RUNTIME_REVISION,
+                     SNIPPETS, file_provenance, source_url)
+from runtime_source_revision import (
+    CHECKPOINT_API_CHANGED_PATHS,
+    CHECKPOINT_API_HISTORICAL_PATHS,
+    CHECKPOINT_API_SOURCE_PATHS,
+    RUNTIME_SOURCE_PATHS,
+)
 from kernel_sources import collect, check_roster, check_entry_layout
 from publishing import catalog, render as render_lesson_site, source_appendix, normalize_lesson
 from token_visuals import enrich
@@ -41,7 +46,20 @@ def check_pinned_sources():
     list the pinned tree, then ask Git to compare those exact paths.  New files
     absent from the old tree are not part of this diff; modifications and
     deletions of any old path still fail.
+
+    The checkpoint implementation deliberately changes three loader paths.  It
+    is not allowed to rewrite their historical hashes or drop them from the
+    122-path census.  The two companions that existed at the historical pin are
+    compared against the separately configured checkpoint API commit instead;
+    the loader itself is absent from the historical tree and is covered by its
+    per-file provenance.  A missing checkpoint pin aborts the build.
     """
+    if CHECKPOINT_API_REVISION is None:
+        raise SystemExit(
+            'CHECKPOINT_API_REVISION is not configured; set DLSSNR_CHECKPOINT_API_REVISION to '
+            'the accepted full 40-character checkpoint implementation commit before building '
+            'the guide. Historical and runtime pins are unchanged, and no older revision may '
+            'own the changed checkpoint API sources.')
     listed = subprocess.run(
         ['git', 'ls-tree', '-r', '--name-only', REVISION, '--', 'csrc', 'dlssnr'],
         cwd=ROOT, check=True, capture_output=True, text=True,
@@ -50,9 +68,19 @@ def check_pinned_sources():
     if not paths:
         raise SystemExit(f'Pinned source tree is empty at {REVISION}')
     # Keep the command line bounded on Windows while still comparing the exact
-    # paths inherited from the pinned tree.
-    for start in range(0, len(paths), 100):
-        chunk = paths[start:start + 100]
+    # paths inherited from the pinned tree.  Only the two explicit loader
+    # companions changed by the checkpoint implementation are separated; they
+    # are still checked, against CHECKPOINT_API_REVISION, below.
+    checkpoint_paths = set(CHECKPOINT_API_CHANGED_PATHS)
+    historical_paths = [path for path in paths if path not in checkpoint_paths]
+    separated = sorted(set(CHECKPOINT_API_HISTORICAL_PATHS).intersection(paths))
+    expected_separated = sorted(CHECKPOINT_API_HISTORICAL_PATHS)
+    if separated != expected_separated:
+        raise SystemExit(
+            f'Checkpoint API historical path allowlist does not match the pinned tree: '
+            f'found {separated}, expected {expected_separated}')
+    for start in range(0, len(historical_paths), 100):
+        chunk = historical_paths[start:start + 100]
         try:
             subprocess.run(
                 ['git', 'diff', '--exit-code', REVISION, '--', *chunk],
@@ -63,6 +91,34 @@ def check_pinned_sources():
                 f'Pinned source drift: git diff exited {exc.returncode} for an existing '
                 f'path under csrc/ or dlssnr/ at {REVISION}'
             ) from exc
+    # The separated companions must match the checkpoint commit exactly.  This
+    # is not an exclusion: a missing commit, missing path or changed blob fails.
+    # Check every checkpoint-API path (including the quoted loader) exists at
+    # the commit, then compare the companions as well.
+    for path in CHECKPOINT_API_CHANGED_PATHS:
+        present = subprocess.run(
+            ['git', 'cat-file', '-e', f'{CHECKPOINT_API_REVISION}:{path}'],
+            cwd=ROOT, capture_output=True,
+        )
+        if present.returncode != 0:
+            raise SystemExit(
+                f'{path} is not present at checkpoint API revision '
+                f'{CHECKPOINT_API_REVISION}')
+    try:
+        subprocess.run(
+            ['git', 'diff', '--exit-code', CHECKPOINT_API_REVISION, '--', *separated],
+            cwd=ROOT, check=True, stdout=subprocess.DEVNULL,
+        )
+        subprocess.run(
+            ['git', 'diff', '--exit-code', CHECKPOINT_API_REVISION, '--',
+             *CHECKPOINT_API_SOURCE_PATHS],
+            cwd=ROOT, check=True, stdout=subprocess.DEVNULL,
+        )
+    except subprocess.CalledProcessError as exc:
+        raise SystemExit(
+            f'Checkpoint API source drift: git diff exited {exc.returncode} for '
+            f'{", ".join(CHECKPOINT_API_CHANGED_PATHS)} at {CHECKPOINT_API_REVISION}'
+        ) from exc
     if len(paths) != 122:
         raise SystemExit(f'Expected 122 historical csrc/dlssnr paths at {REVISION}, found {len(paths)}')
     return len(paths)
@@ -167,7 +223,8 @@ def main():
         destination.write_text((ROOT/path).read_text(encoding='utf-8'),encoding='utf-8',newline='\n')
     source_paths = ({row['path'] for row in SNIPPETS} | source_bundle
                     | {'csrc/'+entry['header'] for entry in inventory['entries'].values()}
-                    | set(RUNTIME_SOURCE_PATHS))
+                    | set(RUNTIME_SOURCE_PATHS)
+                    | set(CHECKPOINT_API_SOURCE_PATHS))
     file_revisions = {path: file_provenance(path) for path in sorted(source_paths)}
     # Files that are not present at the historical pin must link to an exact
     # normalized-LF local copy rather than to an old commit that lacks them.
@@ -181,7 +238,8 @@ def main():
         (OUT/'assets'/name).write_text((ROOT/'tools/kernel_docs'/name).read_text(encoding='utf8'),encoding='utf8',newline='\n')
     files = {path: hashlib.sha256((ROOT/path).read_text(encoding='utf-8').encode('utf-8')).hexdigest() for path in sorted(source_paths)}
     manifest = dict(source_revision=REVISION,runtime_source_revision=RUNTIME_REVISION,
-                    provenance_policy='per-file: legacy-commit, runtime-commit, or exact working-tree copy',
+                    checkpoint_api_source_revision=CHECKPOINT_API_REVISION,
+                    provenance_policy='per-file: checkpoint-api-commit, legacy-commit, runtime-commit, or exact working-tree copy',
                     repository=REPOSITORY,file_hash_encoding='UTF-8 with normalized LF newlines',
                     lesson_counts=dict(total=len(lessons),legacy=len(legacy_lessons),additive=len(small_lessons)),
                     evidence_sets=dict(legacy='evidence/index.json',additive='evidence-small/index.json'),
@@ -199,7 +257,8 @@ def main():
     print(f'Generated {len(pages)} guide pages; {len(SNIPPETS)} exact excerpts; {inventory["entry_count"]} entries; {inventory["definition_count"]} bodies; '
           f'{len(legacy_lessons)} legacy + {len(small_lessons)} additive lessons.')
     print(f'Pinned historical paths checked: {pinned_paths}; runtime source revision: '
-          f'{RUNTIME_REVISION or "working tree (uncommitted)"}; '
+          f'{RUNTIME_REVISION or "working tree (uncommitted)"}; checkpoint API source revision: '
+          f'{CHECKPOINT_API_REVISION or "unconfigured"}; '
           f'local runtime source copies: {len(local_runtime_paths)}.')
 
 

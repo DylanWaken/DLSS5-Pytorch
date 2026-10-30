@@ -13,11 +13,32 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 GUIDE = ROOT/'docs/kernel-guide'
 sys.path.insert(0, str(ROOT/'tools/kernel_docs'))
-from runtime_source_revision import RUNTIME_REVISION, RUNTIME_SOURCE_PATHS
+from runtime_source_revision import (
+    CHECKPOINT_API_HISTORICAL_PATHS,
+    CHECKPOINT_API_SOURCE_PATHS,
+    RUNTIME_REVISION,
+    RUNTIME_SOURCE_PATHS,
+    configured_checkpoint_api_revision,
+)
 from lessons_small_attention import SMALL_NAMES
 
 LEGACY_REVISION = 'fc3276497f866bdad639cd443e75743f5d19b749'
 EXPECTED_RUNTIME_REVISION = '266d69acf52dda413df3a874572f1156461f89ff'
+#: The exact three paths changed by the checkpoint API commit.  All three must be
+#: listed, hashed and classified as ``checkpoint-api-commit``; only the first two
+#: belong to the historical 122-path gate.
+EXPECTED_CHECKPOINT_API_SOURCE_PATHS = (
+    'dlssnr/__init__.py',
+    'dlssnr/checkpoint.py',
+    'dlssnr/small_deployment.py',
+)
+EXPECTED_CHECKPOINT_API_HISTORICAL_PATHS = (
+    'dlssnr/__init__.py',
+    'dlssnr/checkpoint.py',
+)
+#: The configured constant or its validated environment override; ``None`` is
+#: an error during strict validation, never a fallback.
+CHECKPOINT_API_REVISION = configured_checkpoint_api_revision()
 EXPECTED_SMALL_BINARY = 'f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938'
 EXPECTED_SMALL_FIXTURE = 'cyberpunk2077-johnny-first4k-b31'
 EXPECTED_SMALL_REPORTS = {
@@ -168,6 +189,26 @@ def main():
         errors.append('Legacy source_revision moved away from the historical 310.8 pin')
     if manifest.get('runtime_source_revision')!=EXPECTED_RUNTIME_REVISION or RUNTIME_REVISION!=EXPECTED_RUNTIME_REVISION:
         errors.append('Runtime source revision is not the committed Small31 pin')
+    checkpoint_api_revision=manifest.get('checkpoint_api_source_revision')
+    if tuple(CHECKPOINT_API_SOURCE_PATHS) != EXPECTED_CHECKPOINT_API_SOURCE_PATHS:
+        errors.append(f'CHECKPOINT_API_SOURCE_PATHS must be exactly '
+                      f'{EXPECTED_CHECKPOINT_API_SOURCE_PATHS}, found '
+                      f'{CHECKPOINT_API_SOURCE_PATHS}')
+    if tuple(CHECKPOINT_API_HISTORICAL_PATHS) != EXPECTED_CHECKPOINT_API_HISTORICAL_PATHS:
+        errors.append(f'CHECKPOINT_API_HISTORICAL_PATHS must stay the two-file historical '
+                      f'subset {EXPECTED_CHECKPOINT_API_HISTORICAL_PATHS}, found '
+                      f'{CHECKPOINT_API_HISTORICAL_PATHS}')
+    if not set(EXPECTED_CHECKPOINT_API_HISTORICAL_PATHS) < set(EXPECTED_CHECKPOINT_API_SOURCE_PATHS):
+        errors.append('Checkpoint API historical paths are not a strict subset of the '
+                      'three API source paths')
+    if CHECKPOINT_API_REVISION is None:
+        errors.append('Checkpoint API source revision is unconfigured; set '
+                      'DLSSNR_CHECKPOINT_API_REVISION to the accepted full 40-character '
+                      'checkpoint implementation commit before publishing the guide')
+    elif (checkpoint_api_revision!=CHECKPOINT_API_REVISION
+          or not re.fullmatch(r'[0-9a-f]{40}',str(checkpoint_api_revision))):
+        errors.append('Checkpoint API source revision does not match the configured '
+                      'checkpoint implementation commit')
     index=(GUIDE/'index.html').read_text(encoding='utf-8')
     glossary=GUIDE/'glossary.html'
     if glossary not in pages or 'publish' not in pages[glossary].ids:
@@ -212,8 +253,11 @@ def main():
         file_revisions={}
     runtime_revision=manifest.get('runtime_source_revision')
     runtime_paths=set(RUNTIME_SOURCE_PATHS)
+    checkpoint_paths=set(CHECKPOINT_API_SOURCE_PATHS)
     if len(runtime_paths)!=len(RUNTIME_SOURCE_PATHS):
         errors.append('RUNTIME_SOURCE_PATHS contains duplicate paths')
+    if len(checkpoint_paths)!=len(CHECKPOINT_API_SOURCE_PATHS):
+        errors.append('CHECKPOINT_API_SOURCE_PATHS contains duplicate paths')
     for path in sorted(runtime_paths):
         if not (ROOT/path).is_file():
             errors.append(f'Declared runtime source is missing: {path}')
@@ -221,6 +265,13 @@ def main():
             errors.append(f'Declared runtime source is missing from manifest files: {path}')
         if path not in file_revisions:
             errors.append(f'Declared runtime source is missing per-file provenance: {path}')
+    for path in sorted(checkpoint_paths):
+        if not (ROOT/path).is_file():
+            errors.append(f'Declared checkpoint API source is missing: {path}')
+        if path not in manifest['files']:
+            errors.append(f'Declared checkpoint API source is missing from manifest files: {path}')
+        if path not in file_revisions:
+            errors.append(f'Declared checkpoint API source is missing per-file provenance: {path}')
     for path,info in file_revisions.items():
         source=ROOT/path
         if not source.is_file():
@@ -230,7 +281,20 @@ def main():
         if info.get('sha256')!=digest or manifest['files'].get(path)!=digest:
             errors.append(f'Per-file provenance hash drift: {path}')
         kind=info.get('kind'); revision=info.get('revision')
-        if kind=='legacy-commit':
+        if path in checkpoint_paths and kind!='checkpoint-api-commit':
+            errors.append(f'{path}: checkpoint API source must use checkpoint-api-commit '
+                          f'provenance, found {kind!r}')
+        if kind=='checkpoint-api-commit':
+            if path not in checkpoint_paths:
+                errors.append(f'{path}: checkpoint-API provenance is only allowed for '
+                              f'{", ".join(CHECKPOINT_API_SOURCE_PATHS)}')
+            if not checkpoint_api_revision or revision!=checkpoint_api_revision:
+                errors.append(f'{path}: checkpoint-API provenance does not match '
+                              f'checkpoint_api_source_revision')
+            committed=_git_blob(revision,path) if checkpoint_api_revision else None
+            if committed is None or _normalized_lf(committed)!=work:
+                errors.append(f'{path}: working tree does not match checkpoint API revision {revision}')
+        elif kind=='legacy-commit':
             if revision!=manifest['source_revision']:errors.append(f'{path}: legacy provenance uses the wrong revision')
             committed=_git_blob(revision,path)
             if committed is None or _normalized_lf(committed)!=work:
@@ -249,6 +313,27 @@ def main():
                 errors.append(f'{path}: missing or changed exact working-tree source copy')
         else:
             errors.append(f'{path}: unknown provenance kind {kind!r}')
+    # Independently verify all three declared checkpoint API blobs against the
+    # checkpoint commit, including the two companions that have no excerpt.
+    for path in EXPECTED_CHECKPOINT_API_SOURCE_PATHS:
+        source=ROOT/path
+        info=file_revisions.get(path) or {}
+        if not source.is_file():
+            errors.append(f'{path}: declared checkpoint API source is missing')
+            continue
+        if info.get('kind')!='checkpoint-api-commit':
+            errors.append(f'{path}: checkpoint API source must use checkpoint-api-commit '
+                          f'provenance, found {info.get("kind")!r}')
+            continue
+        if not checkpoint_api_revision or info.get('revision')!=checkpoint_api_revision:
+            errors.append(f'{path}: checkpoint API provenance does not match '
+                          f'checkpoint_api_source_revision')
+            continue
+        work=_normalized_lf(source.read_text(encoding='utf-8'))
+        committed=_git_blob(checkpoint_api_revision,path)
+        if committed is None or _normalized_lf(committed)!=work:
+            errors.append(f'{path}: working tree does not match checkpoint API revision '
+                          f'{checkpoint_api_revision}')
     for snip in manifest['snippets']:
         info=file_revisions.get(snip['path'])
         if info is None:

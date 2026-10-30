@@ -1,7 +1,8 @@
 {
   "source_revision": "fc3276497f866bdad639cd443e75743f5d19b749",
   "runtime_source_revision": "266d69acf52dda413df3a874572f1156461f89ff",
-  "provenance_policy": "per-file: legacy-commit, runtime-commit, or exact working-tree copy",
+  "checkpoint_api_source_revision": "8d2e104518df3f7cc993acad1edac93dbd5c3c9d",
+  "provenance_policy": "per-file: checkpoint-api-commit, legacy-commit, runtime-commit, or exact working-tree copy",
   "repository": "https://github.com/DylanWaken/DLSS5-Pytorch",
   "file_hash_encoding": "UTF-8 with normalized LF newlines",
   "lesson_counts": {
@@ -1695,10 +1696,12 @@
     "csrc/kernel_launcher/split_launch.cpp": "6013474a8fe96b2ab1d16cb9d219c54dc12ac123eb5194c99aec35604de9c2a7",
     "csrc/kernel_launcher/split_launch_policy.h": "bdd40dbc3f56ddbace08985faf45c9635413ceaa5da3a9dd80007c69ce50c998",
     "csrc/torch_api/small_extension.cpp": "f27218d99d79853093cd37d0199a25048ad6f4c9ad7f5a77efad18419219a30e",
+    "dlssnr/__init__.py": "ed9e8a6de67a1d07b58905513a968d306b3ef46a6a7ed581ceeb347465d21f20",
+    "dlssnr/checkpoint.py": "24049ab9bf0960d21c38012fdb179fb913c4a008b0c7a118b4ff5fb471d2ecdd",
     "dlssnr/model.py": "8bf04d6337741a6af8dd8c7abe85319d054d5c1d68190eea921f4d0890f7e616",
     "dlssnr/model_specs.py": "601a1a64ebb63f299611bff12c4e9304593b0ee61854b242c6791dd6b6a7b7a5",
     "dlssnr/runtime_assets.py": "6a5ab5bddd3f3e7310b9b6ab1d1284d6f2159a809928fc5be2da7e8fcdeadd49",
-    "dlssnr/small_deployment.py": "ae1be385a04908c4f5ff75cd8ff7434b1707e75c3c2c7c0e55321aeddfe7d0bf",
+    "dlssnr/small_deployment.py": "40d0d7ffac8e230fad7dd34ea0faf927049891479d6b5eb4eea6b0d31e5ab265",
     "dlssnr/small_model.py": "4349653ab31ff7841c31bb65fa2fef1dfb5d3765b957ecacdbc0a217bf77d334",
     "dlssnr/video.py": "ee2fbb16535b7868a447f316a50aab82e4f3897672461b538a8bd1b9b0b05239",
     "dlssnr/weights.py": "e798528567bf1a9cdfb6d3fae74224dc2147af67b0714c70a27d8402523738f0",
@@ -2221,6 +2224,16 @@
       "revision": "266d69acf52dda413df3a874572f1156461f89ff",
       "sha256": "f27218d99d79853093cd37d0199a25048ad6f4c9ad7f5a77efad18419219a30e"
     },
+    "dlssnr/__init__.py": {
+      "kind": "checkpoint-api-commit",
+      "revision": "8d2e104518df3f7cc993acad1edac93dbd5c3c9d",
+      "sha256": "ed9e8a6de67a1d07b58905513a968d306b3ef46a6a7ed581ceeb347465d21f20"
+    },
+    "dlssnr/checkpoint.py": {
+      "kind": "checkpoint-api-commit",
+      "revision": "8d2e104518df3f7cc993acad1edac93dbd5c3c9d",
+      "sha256": "24049ab9bf0960d21c38012fdb179fb913c4a008b0c7a118b4ff5fb471d2ecdd"
+    },
     "dlssnr/model.py": {
       "kind": "legacy-commit",
       "revision": "fc3276497f866bdad639cd443e75743f5d19b749",
@@ -2237,9 +2250,9 @@
       "sha256": "6a5ab5bddd3f3e7310b9b6ab1d1284d6f2159a809928fc5be2da7e8fcdeadd49"
     },
     "dlssnr/small_deployment.py": {
-      "kind": "runtime-commit",
-      "revision": "266d69acf52dda413df3a874572f1156461f89ff",
-      "sha256": "ae1be385a04908c4f5ff75cd8ff7434b1707e75c3c2c7c0e55321aeddfe7d0bf"
+      "kind": "checkpoint-api-commit",
+      "revision": "8d2e104518df3f7cc993acad1edac93dbd5c3c9d",
+      "sha256": "40d0d7ffac8e230fad7dd34ea0faf927049891479d6b5eb4eea6b0d31e5ab265"
     },
     "dlssnr/small_model.py": {
       "kind": "runtime-commit",
@@ -2415,33 +2428,33 @@
     },
     {
       "path": "dlssnr/small_deployment.py",
-      "start": 291,
-      "end": 321,
+      "start": 295,
+      "end": 325,
       "sha256": "619db49cce08f64bfd00d804c40e6cad04ece7ae0aa0cd68f2f6529c26d7b560",
-      "source_kind": "runtime-commit",
-      "revision": "266d69acf52dda413df3a874572f1156461f89ff",
-      "source_sha256": "ae1be385a04908c4f5ff75cd8ff7434b1707e75c3c2c7c0e55321aeddfe7d0bf",
-      "url": "https://github.com/DylanWaken/DLSS5-Pytorch/blob/266d69acf52dda413df3a874572f1156461f89ff/dlssnr/small_deployment.py#L291-L321"
+      "source_kind": "checkpoint-api-commit",
+      "revision": "8d2e104518df3f7cc993acad1edac93dbd5c3c9d",
+      "source_sha256": "40d0d7ffac8e230fad7dd34ea0faf927049891479d6b5eb4eea6b0d31e5ab265",
+      "url": "https://github.com/DylanWaken/DLSS5-Pytorch/blob/8d2e104518df3f7cc993acad1edac93dbd5c3c9d/dlssnr/small_deployment.py#L295-L325"
     },
     {
       "path": "dlssnr/small_deployment.py",
-      "start": 349,
-      "end": 376,
+      "start": 353,
+      "end": 380,
       "sha256": "66952384118118ef21f8bd93a2970251180c25886bdb8ddfb115387fc263c28e",
-      "source_kind": "runtime-commit",
-      "revision": "266d69acf52dda413df3a874572f1156461f89ff",
-      "source_sha256": "ae1be385a04908c4f5ff75cd8ff7434b1707e75c3c2c7c0e55321aeddfe7d0bf",
-      "url": "https://github.com/DylanWaken/DLSS5-Pytorch/blob/266d69acf52dda413df3a874572f1156461f89ff/dlssnr/small_deployment.py#L349-L376"
+      "source_kind": "checkpoint-api-commit",
+      "revision": "8d2e104518df3f7cc993acad1edac93dbd5c3c9d",
+      "source_sha256": "40d0d7ffac8e230fad7dd34ea0faf927049891479d6b5eb4eea6b0d31e5ab265",
+      "url": "https://github.com/DylanWaken/DLSS5-Pytorch/blob/8d2e104518df3f7cc993acad1edac93dbd5c3c9d/dlssnr/small_deployment.py#L353-L380"
     },
     {
       "path": "dlssnr/small_deployment.py",
-      "start": 393,
-      "end": 433,
-      "sha256": "1a186d52f5f815529d191da7b65ba2870763d8d03df50c2f2591a98566aa112f",
-      "source_kind": "runtime-commit",
-      "revision": "266d69acf52dda413df3a874572f1156461f89ff",
-      "source_sha256": "ae1be385a04908c4f5ff75cd8ff7434b1707e75c3c2c7c0e55321aeddfe7d0bf",
-      "url": "https://github.com/DylanWaken/DLSS5-Pytorch/blob/266d69acf52dda413df3a874572f1156461f89ff/dlssnr/small_deployment.py#L393-L433"
+      "start": 397,
+      "end": 442,
+      "sha256": "6b4a2dc860eb400f650285dbda72f8cb9f5a74b033087866cef425eab76b8fea",
+      "source_kind": "checkpoint-api-commit",
+      "revision": "8d2e104518df3f7cc993acad1edac93dbd5c3c9d",
+      "source_sha256": "40d0d7ffac8e230fad7dd34ea0faf927049891479d6b5eb4eea6b0d31e5ab265",
+      "url": "https://github.com/DylanWaken/DLSS5-Pytorch/blob/8d2e104518df3f7cc993acad1edac93dbd5c3c9d/dlssnr/small_deployment.py#L397-L442"
     },
     {
       "path": "csrc/kernel_launcher/small_deployment.cpp",

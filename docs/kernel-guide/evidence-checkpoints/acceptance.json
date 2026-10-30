@@ -1,0 +1,2404 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-30",
+  "title": "Public scalar acceptance evidence for portable checkpoint training/export/native deployment",
+  "repository": {
+    "head": "d51b578fdf4a6b4b516ed1987bc87aeff8830306",
+    "head_short": "d51b578",
+    "branch": "main",
+    "shared_worktree_note": "Evidence was produced in a shared worktree with pre-existing unrelated modifications. Audit statuses are recorded separately from child-case gates."
+  },
+  "scope": {
+    "summary": "Bounded acceptance for eight checkpoint arms: four original native deployments and four training/export/deploy cases at explicit diagnostic LR=1e-5, plus one no-update native control and one preserved LR=1e-3 failure. Two further stateless RGB smoke cases exercise the accepted FP32-trained FP16 exports through learned preprocess, RGB trunk and postprocess.",
+    "native_checks": "The original-native and training/export native comparisons cover the reconstructed network trunk (Legacy71 b69 and Small31 native schedules). Full stateless RGB smoke coverage is recorded separately in full_rgb. None establishes vendor DLL equivalence.",
+    "training_checks": "Training checks cover train/export/deploy integration only. They are not quality training evidence and are not a generally validated learning-rate recipe.",
+    "learning_rate": "1e-5 is an explicit diagnostic step size for this bounded run, not a correctness fix for the preserved 1e-3 failure and not a validated recipe.",
+    "precision_modes": {
+      "fp32": "differentiable training compute mode with FP32 master weights",
+      "bf16": "differentiable training compute mode with FP32 master weights",
+      "learned_deployment": "explicit FP16 only; learned FP8 export is intentionally rejected",
+      "original_native": {
+        "legacy71": [
+          "fp16",
+          "fp8"
+        ],
+        "small31": [
+          "fp16",
+          "fp8"
+        ]
+      }
+    },
+    "timing": "No timing or performance claim. Process durations are omitted; no kernel latency was measured."
+  },
+  "device": {
+    "gpu_lease": "gpu0",
+    "nvidia_smi": "0, NVIDIA RTX PRO 6000 Blackwell Workstation Edition, 610.62, 97887 MiB",
+    "name": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+    "driver_version": "610.62",
+    "memory_mib": 97887,
+    "compute_capability": "sm_120",
+    "torch": "2.8.0+cu128",
+    "cuda": "12.8",
+    "cudnn": "91002",
+    "numpy": "1.26.4",
+    "python": "3.11.16",
+    "python_implementation": "CPython",
+    "python_executable": "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+    "child_environment": {
+      "CUDA_VISIBLE_DEVICES": "0",
+      "OMP_NUM_THREADS": "4",
+      "MKL_NUM_THREADS": "4",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "working_directory": "D:\\Research\\DLSSNR-PyTorch"
+  },
+  "extension": {
+    "path": "dlssnr/_C_sm120.cp311-win_amd64.pyd",
+    "sha256": "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+    "verified_before_and_after_both_matrices": true,
+    "rebuilt": false,
+    "note": "Frozen reconstructed SM120 extension; no vendor DLL module is loaded."
+  },
+  "runners": {
+    "original": {
+      "path": "profile/checkpoint-model-selection-20261030/acceptance/learning-rate/original-runner.py",
+      "sha256": "98b014b92bd593ecf3a507a6457ff393e54ed97e98235db83f8749395a92f551",
+      "used_by": [
+        "01-native-legacy71-fp16",
+        "02-native-legacy71-fp8",
+        "03-native-small31-fp16",
+        "04-native-small31-fp8",
+        "05-training-legacy71-fp32"
+      ]
+    },
+    "updated": {
+      "path": "tools/validate_portable_checkpoint.py",
+      "sha256": "20287a1a48350dd1339f698e509065819d4247f925712a740614fd6f6b5b545c",
+      "used_by": [
+        "00-zero-update-legacy71-fp16",
+        "01-training-legacy71-fp32",
+        "02-training-legacy71-bf16",
+        "03-training-small31-fp32",
+        "04-training-small31-bf16"
+      ]
+    },
+    "note": "The original runner hardcoded LR=1e-3. The updated runner adds a validated --learning-rate with default 1e-5; export/pack/schema/native-comparison code is unchanged by that diff."
+  },
+  "provenance": {
+    "source_hashes": {
+      "tools/validate_portable_checkpoint.py": {
+        "sha256": "20287a1a48350dd1339f698e509065819d4247f925712a740614fd6f6b5b545c"
+      },
+      "dlssnr/trained_checkpoint.py": {
+        "sha256": "2592f36a626ed94d8d4d2d5b46914067582e4716371a12a8c68e053f191a1f14"
+      },
+      "dlssnr/checkpoint.py": {
+        "sha256": "24049ab9bf0960d21c38012fdb179fb913c4a008b0c7a118b4ff5fb471d2ecdd"
+      },
+      "dlssnr/portable_checkpoint.py": {
+        "sha256": "5cd2de9916bd3424f82669a840406b1906f8efac0a010ce1aa6c441470c1aa08"
+      },
+      "dlssnr/small_deployment.py": {
+        "sha256": "40d0d7ffac8e230fad7dd34ea0faf927049891479d6b5eb4eea6b0d31e5ab265"
+      },
+      "dlssnr/small_model.py": {
+        "sha256": "4349653ab31ff7841c31bb65fa2fef1dfb5d3765b957ecacdbc0a217bf77d334"
+      },
+      "dlssnr/deployment.py": {
+        "sha256": "745869aea731ad3682afe915a65d615f8c0317c59957e010cfe78fa8635ecc6c"
+      },
+      "dlssnr/model_specs.py": {
+        "sha256": "601a1a64ebb63f299611bff12c4e9304593b0ee61854b242c6791dd6b6a7b7a5"
+      },
+      "tuning/generate_plan.py": {
+        "sha256": "bcf975d66508867ac286fe0c2f5b564a54ea00cd4757ea45a94308b913c58e58"
+      },
+      "tuning/physical_schedule.py": {
+        "sha256": "737ec7406557d9862c95d60a696790eb04b8d1c1f6363535dc61a6bda5977cb4"
+      }
+    },
+    "all_current_source_hashes_match_recorded_provenance": true,
+    "model_identity_ref": "model_identity",
+    "model_implementation_hashes_verified_against": [
+      "legacy extraction metadata",
+      "CPU diagnosis"
+    ],
+    "recorded_in": "gpu-lr1e-5/provenance.json and gpu/provenance.json"
+  },
+  "model_identity": {
+    "legacy71": {
+      "native_architecture": "DLSSNR; 71 numbered records; blocks 0-70",
+      "native_source_runtime": "nvngx_dlssnr 310.8.0",
+      "extracted_manifest_sha256": "29642ee8acceb50e5f5506ff9168ccb9932677474e06f73a33be7a87877f7c32",
+      "source_dll_sha256": "e16bcf15e16e13f527491cdf7845b2fe6521a738d8f7c9c721866a8496e1fc8e",
+      "source_resource_sha256": "836f445d06ecd2e59bb9f17b84b91c143396fd76ccda1c9dc7fe81d5edd548f4",
+      "source_resource_byte_length": 147695410,
+      "model_implementation_sha256": {
+        "dlssnr/model.py": "8bf04d6337741a6af8dd8c7abe85319d054d5c1d68190eea921f4d0890f7e616",
+        "dlssnr/geometry.py": "677499c0c7bd06544581ebd719801d7d1e027fe1fa3438d5e55f3f43af5db6c1",
+        "dlssnr/weights.py": "e798528567bf1a9cdfb6d3fae74224dc2147af67b0714c70a27d8402523738f0"
+      },
+      "model_specs_sha256": "601a1a64ebb63f299611bff12c4e9304593b0ee61854b242c6791dd6b6a7b7a5"
+    },
+    "small31": {
+      "runtime_version": "310.9.16.0",
+      "display_name": "DLSS-NR Small31 research reconstruction (WEIGHTS_CC_SMALL_FP8)",
+      "block_count": 31,
+      "record_count": 77,
+      "archive_manifest_sha256": "8471411ad9b8e4f4a158c8dd62fad4f10f97febdceed2192af270ec820e9f6fc",
+      "source_dll_sha256": "2bc19bc09a7b89dd44f73e2ac0108fcc586e2154bdd0830f242f4f040e28789f",
+      "model_source_sha256": "4349653ab31ff7841c31bb65fa2fef1dfb5d3765b957ecacdbc0a217bf77d334",
+      "model_specs_sha256": "601a1a64ebb63f299611bff12c4e9304593b0ee61854b242c6791dd6b6a7b7a5"
+    }
+  },
+  "checkpoints": {
+    "legacy71_fp16_original": {
+      "path": "ckpts/dlss5_nr_fp16.pt",
+      "sha256": "1d9d2b667a61a770bc4525f40e09ce04b62b737bec88804d3150274785193d11"
+    },
+    "legacy71_fp8_original": {
+      "path": "ckpts/dlss5_nr_fp8.pt",
+      "sha256": "f950c36d699572866f54b880e615302809060b7c02364db11e71c07f8d0f9e2d"
+    },
+    "small31_original": {
+      "path": "ckpts/dlss5_nr_small31.pt",
+      "sha256": "742c63cae96fb0d6f53f2de6e89e8175606ad51b8939e5e7d255a9167fbef154",
+      "format_version": 3,
+      "storage": "native_records",
+      "weight_precision": "fp8"
+    },
+    "legacy71_zero_update": {
+      "path": "profile/checkpoint-model-selection-20261030/acceptance/diagnosis/zero-update-fp16.pt",
+      "sha256": "e2853e2729fd297be17b40b0d291586faf00999be4a627f35b3bdb4d88811d13",
+      "bytes": 291699775
+    }
+  },
+  "determinism_and_definitions": {
+    "seed": 320,
+    "geometry": {
+      "valid_width": 320,
+      "valid_height": 320,
+      "full_width": 320,
+      "full_height": 320,
+      "levels": [
+        [
+          160,
+          160
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          40,
+          40
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          8,
+          8
+        ]
+      ]
+    },
+    "native_input": {
+      "definition": "torch.randn(819200, generator=torch.Generator(device='cpu').manual_seed(320), dtype=torch.float32) * 0.02, then typed and moved to cuda:0",
+      "elements": 819200,
+      "scale": 0.02,
+      "fp16": "cast to torch.float16; 1,638,400 logical bytes",
+      "fp8": "torch.clamp(-448.0, 448.0).to(torch.float8_e4m3fn); 819,200 logical bytes",
+      "transport": "view(torch.uint8).to('cuda:<device>')",
+      "finite_check": "typed.float().isfinite().all()"
+    },
+    "training_features": {
+      "definition": "torch.randn((1, 320, 320, 16), generator=torch.Generator(device='cpu').manual_seed(320), dtype=torch.float32) * 0.02, moved to cuda:0",
+      "shape": [
+        1,
+        320,
+        320,
+        16
+      ],
+      "scale": 0.02
+    },
+    "loss": "output.float().square().mean()",
+    "step": "one AdamW optimizer.step(); no training replay or LR ladder in this step",
+    "training_model": {
+      "checkpoint_blocks": false,
+      "trainable": true,
+      "master_dtype": "float32",
+      "compute_precision_per_case": [
+        "fp32",
+        "bf16"
+      ],
+      "train_mode_during_backward": true,
+      "eval_mode_during_post_step_reload_comparison": true
+    }
+  },
+  "optimizer": {
+    "name": "AdamW",
+    "installed_torch": "2.8.0+cu128",
+    "defaults_read_from_installed_torch_cpu": true,
+    "effective_defaults": {
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "weight_decay": 0.01,
+      "amsgrad": false,
+      "maximize": false,
+      "foreach": null,
+      "capturable": false,
+      "differentiable": false,
+      "fused": null
+    },
+    "accepted_cases": {
+      "learning_rate": 1e-05,
+      "explicit_argument": "--learning-rate 1e-5",
+      "argument_note": "lr is explicit; every other optimizer argument is the installed default"
+    },
+    "preserved_failure": {
+      "learning_rate": 0.001,
+      "hardcoded_in": "profile/checkpoint-model-selection-20261030/acceptance/learning-rate/original-runner.py",
+      "hardcoded_line": 38
+    }
+  },
+  "summary_counts": {
+    "accepted_checkpoint_arms": 8,
+    "accepted_original_native_cases": 4,
+    "accepted_training_cases_at_1e_5": 4,
+    "accepted_zero_update_control_cases": 1,
+    "known_failed_cases": 1,
+    "accepted_gpu_child_cases_total": 11,
+    "failed_case_failed_checks": [
+      "child_exit_zero",
+      "accepted_flag_true",
+      "no_failed_phase",
+      "native_compare_exported_finite",
+      "native_compare_in_memory_finite"
+    ],
+    "accepted_full_rgb_smoke_cases": 2
+  },
+  "native_cases": [
+    {
+      "case_id": "01-native-legacy71-fp16",
+      "role": "original native deployment",
+      "mode": "native",
+      "model": "legacy71",
+      "native_precision": "fp16",
+      "checkpoint_precision": "fp16",
+      "dimensions": {
+        "valid_width": 320,
+        "valid_height": 320,
+        "full_width": 320,
+        "full_height": 320,
+        "levels": [
+          [
+            160,
+            160
+          ],
+          [
+            80,
+            80
+          ],
+          [
+            40,
+            40
+          ],
+          [
+            20,
+            20
+          ],
+          [
+            12,
+            12
+          ],
+          [
+            8,
+            8
+          ]
+        ]
+      },
+      "checkpoint": {
+        "path": "ckpts/dlss5_nr_fp16.pt",
+        "sha256": "1d9d2b667a61a770bc4525f40e09ce04b62b737bec88804d3150274785193d11",
+        "format_version": 2,
+        "declared_model": null,
+        "weight_precision": "fp16",
+        "storage": null,
+        "loaded_precision": "fp16"
+      },
+      "runner_sha256": "98b014b92bd593ecf3a507a6457ff393e54ed97e98235db83f8749395a92f551",
+      "command": {
+        "argv": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\validate_portable_checkpoint.py",
+          "--model",
+          "legacy71",
+          "--checkpoint",
+          "D:\\Research\\DLSSNR-PyTorch\\ckpts\\dlss5_nr_fp16.pt",
+          "--mode",
+          "native",
+          "--native-precision",
+          "fp16",
+          "--width",
+          "320",
+          "--height",
+          "320",
+          "--device",
+          "0",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\dlssnr\\_C_sm120.cp311-win_amd64.pyd",
+          "--expected-extension-sha256",
+          "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+          "--archive",
+          "D:\\Research\\DLSSNR-PyTorch\\ckpts\\dlss5_nr_fp16.pt",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\profile\\checkpoint-model-selection-20261030\\acceptance\\gpu\\01-native-legacy71-fp16"
+        ],
+        "cwd": "D:/Research/DLSSNR-PyTorch",
+        "watchdog_seconds": 180
+      },
+      "execution": {
+        "exit_code": 0,
+        "accepted": true,
+        "timed_out": false,
+        "timeout_cleanup": "not-required"
+      },
+      "gate_counts": {
+        "passed": 29,
+        "total": 29,
+        "failed": []
+      },
+      "report": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu/01-native-legacy71-fp16/report.json",
+        "sha256": "f60e43e9b6f97addc89ab8ccdbba58bd8bb8f20999742268d8beb25942a4d206",
+        "hash_source": "computed_sha256"
+      },
+      "native": {
+        "logical_call_count": 185,
+        "physical_launch_count": 185,
+        "logical_elements": 819200,
+        "logical_dtype": "float16",
+        "logical_output_bytes": 1638400,
+        "output_sha256": "a8d3913b4e452b4e4a1a7af8872bfeeaa738037df50c9a5a5823630ba4e674fc",
+        "graph_sha256": "a8d3913b4e452b4e4a1a7af8872bfeeaa738037df50c9a5a5823630ba4e674fc",
+        "finite_typed_logical_output": true,
+        "eager_repeatable": true,
+        "graph_matches_eager": true,
+        "graph_repeatable": true,
+        "graph_output_finite": true,
+        "guards_intact": true,
+        "guards_intact_after_graph": true
+      },
+      "reference": {
+        "path": "ckpts/dlss5_nr_fp16.pt",
+        "kind": "checkpoint",
+        "precision": "fp16",
+        "output_sha256": "a8d3913b4e452b4e4a1a7af8872bfeeaa738037df50c9a5a5823630ba4e674fc",
+        "equals_portable": true,
+        "mismatches": 0
+      },
+      "flags": {
+        "finite_typed_logical_output": true,
+        "repeatability_and_graph_exercised": true,
+        "guards_intact": true,
+        "reference_equal_with_zero_mismatches": true
+      },
+      "note": "Native mode performs no optimizer step and no learned-export update."
+    },
+    {
+      "case_id": "02-native-legacy71-fp8",
+      "role": "original native deployment",
+      "mode": "native",
+      "model": "legacy71",
+      "native_precision": "fp8",
+      "checkpoint_precision": "fp8",
+      "dimensions": {
+        "valid_width": 320,
+        "valid_height": 320,
+        "full_width": 320,
+        "full_height": 320,
+        "levels": [
+          [
+            160,
+            160
+          ],
+          [
+            80,
+            80
+          ],
+          [
+            40,
+            40
+          ],
+          [
+            20,
+            20
+          ],
+          [
+            12,
+            12
+          ],
+          [
+            8,
+            8
+          ]
+        ]
+      },
+      "checkpoint": {
+        "path": "ckpts/dlss5_nr_fp8.pt",
+        "sha256": "f950c36d699572866f54b880e615302809060b7c02364db11e71c07f8d0f9e2d",
+        "format_version": 2,
+        "declared_model": null,
+        "weight_precision": "fp8",
+        "storage": null,
+        "loaded_precision": "fp8"
+      },
+      "runner_sha256": "98b014b92bd593ecf3a507a6457ff393e54ed97e98235db83f8749395a92f551",
+      "command": {
+        "argv": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\validate_portable_checkpoint.py",
+          "--model",
+          "legacy71",
+          "--checkpoint",
+          "D:\\Research\\DLSSNR-PyTorch\\ckpts\\dlss5_nr_fp8.pt",
+          "--mode",
+          "native",
+          "--native-precision",
+          "fp8",
+          "--width",
+          "320",
+          "--height",
+          "320",
+          "--device",
+          "0",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\dlssnr\\_C_sm120.cp311-win_amd64.pyd",
+          "--expected-extension-sha256",
+          "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+          "--archive",
+          "D:\\Research\\DLSSNR-PyTorch\\ckpts\\dlss5_nr_fp8.pt",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\profile\\checkpoint-model-selection-20261030\\acceptance\\gpu\\02-native-legacy71-fp8"
+        ],
+        "cwd": "D:/Research/DLSSNR-PyTorch",
+        "watchdog_seconds": 180
+      },
+      "execution": {
+        "exit_code": 0,
+        "accepted": true,
+        "timed_out": false,
+        "timeout_cleanup": "not-required"
+      },
+      "gate_counts": {
+        "passed": 29,
+        "total": 29,
+        "failed": []
+      },
+      "report": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu/02-native-legacy71-fp8/report.json",
+        "sha256": "9a9c44d2febfb22e3acba344afe8c1cf04987ba1c740a7ed8a394dd607198ed7",
+        "hash_source": "computed_sha256"
+      },
+      "native": {
+        "logical_call_count": 185,
+        "physical_launch_count": 185,
+        "logical_elements": 819200,
+        "logical_dtype": "float8_e4m3fn",
+        "logical_output_bytes": 819200,
+        "output_sha256": "ea5c454300053fe7030c2803edf0b691bad4c7eb82d78ec7eaa83edc4c5d4da9",
+        "graph_sha256": "ea5c454300053fe7030c2803edf0b691bad4c7eb82d78ec7eaa83edc4c5d4da9",
+        "finite_typed_logical_output": true,
+        "eager_repeatable": true,
+        "graph_matches_eager": true,
+        "graph_repeatable": true,
+        "graph_output_finite": true,
+        "guards_intact": true,
+        "guards_intact_after_graph": true
+      },
+      "reference": {
+        "path": "ckpts/dlss5_nr_fp8.pt",
+        "kind": "checkpoint",
+        "precision": "fp8",
+        "output_sha256": "ea5c454300053fe7030c2803edf0b691bad4c7eb82d78ec7eaa83edc4c5d4da9",
+        "equals_portable": true,
+        "mismatches": 0
+      },
+      "flags": {
+        "finite_typed_logical_output": true,
+        "repeatability_and_graph_exercised": true,
+        "guards_intact": true,
+        "reference_equal_with_zero_mismatches": true
+      },
+      "note": "Native mode performs no optimizer step and no learned-export update."
+    },
+    {
+      "case_id": "03-native-small31-fp16",
+      "role": "original native deployment",
+      "mode": "native",
+      "model": "small31",
+      "native_precision": "fp16",
+      "checkpoint_precision": "fp8",
+      "dimensions": {
+        "valid_width": 320,
+        "valid_height": 320,
+        "full_width": 320,
+        "full_height": 320,
+        "levels": [
+          [
+            160,
+            160
+          ],
+          [
+            80,
+            80
+          ],
+          [
+            40,
+            40
+          ],
+          [
+            20,
+            20
+          ],
+          [
+            12,
+            12
+          ],
+          [
+            8,
+            8
+          ]
+        ]
+      },
+      "checkpoint": {
+        "path": "ckpts/dlss5_nr_small31.pt",
+        "sha256": "742c63cae96fb0d6f53f2de6e89e8175606ad51b8939e5e7d255a9167fbef154",
+        "format_version": 3,
+        "declared_model": "small31",
+        "weight_precision": "fp8",
+        "storage": "native_records",
+        "loaded_precision": "fp8"
+      },
+      "runner_sha256": "98b014b92bd593ecf3a507a6457ff393e54ed97e98235db83f8749395a92f551",
+      "command": {
+        "argv": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\validate_portable_checkpoint.py",
+          "--model",
+          "small31",
+          "--checkpoint",
+          "D:\\Research\\DLSSNR-PyTorch\\ckpts\\dlss5_nr_small31.pt",
+          "--mode",
+          "native",
+          "--native-precision",
+          "fp16",
+          "--width",
+          "320",
+          "--height",
+          "320",
+          "--device",
+          "0",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\dlssnr\\_C_sm120.cp311-win_amd64.pyd",
+          "--expected-extension-sha256",
+          "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+          "--archive",
+          "D:\\Research\\DLSSNR-PyTorch\\profile\\dlss-update-20261029\\implementation\\runtime-assets-small31",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\profile\\checkpoint-model-selection-20261030\\acceptance\\gpu\\03-native-small31-fp16"
+        ],
+        "cwd": "D:/Research/DLSSNR-PyTorch",
+        "watchdog_seconds": 180
+      },
+      "execution": {
+        "exit_code": 0,
+        "accepted": true,
+        "timed_out": false,
+        "timeout_cleanup": "not-required"
+      },
+      "gate_counts": {
+        "passed": 29,
+        "total": 29,
+        "failed": []
+      },
+      "report": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu/03-native-small31-fp16/report.json",
+        "sha256": "0cc924c5c811b92e9b68871a880376e1f076d6e03f6ddc8a44c7c9bf544ebac1",
+        "hash_source": "computed_sha256"
+      },
+      "native": {
+        "logical_call_count": 109,
+        "physical_launch_count": 109,
+        "logical_elements": 819200,
+        "logical_dtype": "float16",
+        "logical_output_bytes": 1638400,
+        "output_sha256": "592cd81184ca638bd59cd8a2372aa5a7fc0d07efdeede8651b255413b75b4ad7",
+        "graph_sha256": "592cd81184ca638bd59cd8a2372aa5a7fc0d07efdeede8651b255413b75b4ad7",
+        "finite_typed_logical_output": true,
+        "eager_repeatable": true,
+        "graph_matches_eager": true,
+        "graph_repeatable": true,
+        "graph_output_finite": true,
+        "guards_intact": true,
+        "guards_intact_after_graph": true
+      },
+      "reference": {
+        "path": "profile/dlss-update-20261029/implementation/runtime-assets-small31",
+        "kind": "directory",
+        "precision": "fp8",
+        "output_sha256": "592cd81184ca638bd59cd8a2372aa5a7fc0d07efdeede8651b255413b75b4ad7",
+        "equals_portable": true,
+        "mismatches": 0
+      },
+      "flags": {
+        "finite_typed_logical_output": true,
+        "repeatability_and_graph_exercised": true,
+        "guards_intact": true,
+        "reference_equal_with_zero_mismatches": true
+      },
+      "note": "Native mode performs no optimizer step and no learned-export update."
+    },
+    {
+      "case_id": "04-native-small31-fp8",
+      "role": "original native deployment",
+      "mode": "native",
+      "model": "small31",
+      "native_precision": "fp8",
+      "checkpoint_precision": "fp8",
+      "dimensions": {
+        "valid_width": 320,
+        "valid_height": 320,
+        "full_width": 320,
+        "full_height": 320,
+        "levels": [
+          [
+            160,
+            160
+          ],
+          [
+            80,
+            80
+          ],
+          [
+            40,
+            40
+          ],
+          [
+            20,
+            20
+          ],
+          [
+            12,
+            12
+          ],
+          [
+            8,
+            8
+          ]
+        ]
+      },
+      "checkpoint": {
+        "path": "ckpts/dlss5_nr_small31.pt",
+        "sha256": "742c63cae96fb0d6f53f2de6e89e8175606ad51b8939e5e7d255a9167fbef154",
+        "format_version": 3,
+        "declared_model": "small31",
+        "weight_precision": "fp8",
+        "storage": "native_records",
+        "loaded_precision": "fp8"
+      },
+      "runner_sha256": "98b014b92bd593ecf3a507a6457ff393e54ed97e98235db83f8749395a92f551",
+      "command": {
+        "argv": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\validate_portable_checkpoint.py",
+          "--model",
+          "small31",
+          "--checkpoint",
+          "D:\\Research\\DLSSNR-PyTorch\\ckpts\\dlss5_nr_small31.pt",
+          "--mode",
+          "native",
+          "--native-precision",
+          "fp8",
+          "--width",
+          "320",
+          "--height",
+          "320",
+          "--device",
+          "0",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\dlssnr\\_C_sm120.cp311-win_amd64.pyd",
+          "--expected-extension-sha256",
+          "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+          "--archive",
+          "D:\\Research\\DLSSNR-PyTorch\\profile\\dlss-update-20261029\\implementation\\runtime-assets-small31",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\profile\\checkpoint-model-selection-20261030\\acceptance\\gpu\\04-native-small31-fp8"
+        ],
+        "cwd": "D:/Research/DLSSNR-PyTorch",
+        "watchdog_seconds": 180
+      },
+      "execution": {
+        "exit_code": 0,
+        "accepted": true,
+        "timed_out": false,
+        "timeout_cleanup": "not-required"
+      },
+      "gate_counts": {
+        "passed": 29,
+        "total": 29,
+        "failed": []
+      },
+      "report": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu/04-native-small31-fp8/report.json",
+        "sha256": "7e35828da015222f080028cb1abfb32578d42c2081b786830d513c0ec69553c7",
+        "hash_source": "computed_sha256"
+      },
+      "native": {
+        "logical_call_count": 109,
+        "physical_launch_count": 109,
+        "logical_elements": 819200,
+        "logical_dtype": "float8_e4m3fn",
+        "logical_output_bytes": 819200,
+        "output_sha256": "cd24c322be4be9b93fbdd4ecb7eb90c8dd894971fca8a7e09ba6ee860f0f5611",
+        "graph_sha256": "cd24c322be4be9b93fbdd4ecb7eb90c8dd894971fca8a7e09ba6ee860f0f5611",
+        "finite_typed_logical_output": true,
+        "eager_repeatable": true,
+        "graph_matches_eager": true,
+        "graph_repeatable": true,
+        "graph_output_finite": true,
+        "guards_intact": true,
+        "guards_intact_after_graph": true
+      },
+      "reference": {
+        "path": "profile/dlss-update-20261029/implementation/runtime-assets-small31",
+        "kind": "directory",
+        "precision": "fp8",
+        "output_sha256": "cd24c322be4be9b93fbdd4ecb7eb90c8dd894971fca8a7e09ba6ee860f0f5611",
+        "equals_portable": true,
+        "mismatches": 0
+      },
+      "flags": {
+        "finite_typed_logical_output": true,
+        "repeatability_and_graph_exercised": true,
+        "guards_intact": true,
+        "reference_equal_with_zero_mismatches": true
+      },
+      "note": "Native mode performs no optimizer step and no learned-export update."
+    }
+  ],
+  "zero_update_control": {
+    "case_id": "00-zero-update-legacy71-fp16",
+    "role": "no-update exporter control",
+    "mode": "native",
+    "model": "legacy71",
+    "native_precision": "fp16",
+    "checkpoint_precision": "fp16",
+    "dimensions": {
+      "valid_width": 320,
+      "valid_height": 320,
+      "full_width": 320,
+      "full_height": 320,
+      "levels": [
+        [
+          160,
+          160
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          40,
+          40
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          8,
+          8
+        ]
+      ]
+    },
+    "checkpoint": {
+      "path": "profile/checkpoint-model-selection-20261030/acceptance/diagnosis/zero-update-fp16.pt",
+      "sha256": "e2853e2729fd297be17b40b0d291586faf00999be4a627f35b3bdb4d88811d13",
+      "format_version": 2,
+      "declared_model": "legacy71",
+      "weight_precision": "fp16",
+      "storage": null,
+      "loaded_precision": "fp16"
+    },
+    "runner_sha256": "20287a1a48350dd1339f698e509065819d4247f925712a740614fd6f6b5b545c",
+    "command": {
+      "argv": [
+        "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+        "-B",
+        "D:\\Research\\DLSSNR-PyTorch\\tools\\validate_portable_checkpoint.py",
+        "--model",
+        "legacy71",
+        "--checkpoint",
+        "D:\\Research\\DLSSNR-PyTorch\\profile\\checkpoint-model-selection-20261030\\acceptance\\diagnosis\\zero-update-fp16.pt",
+        "--mode",
+        "native",
+        "--native-precision",
+        "fp16",
+        "--width",
+        "320",
+        "--height",
+        "320",
+        "--device",
+        "0",
+        "--extension",
+        "D:\\Research\\DLSSNR-PyTorch\\dlssnr\\_C_sm120.cp311-win_amd64.pyd",
+        "--expected-extension-sha256",
+        "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+        "--learning-rate",
+        "1e-5",
+        "--archive",
+        "D:\\Research\\DLSSNR-PyTorch\\ckpts\\dlss5_nr_fp16.pt",
+        "--output",
+        "D:\\Research\\DLSSNR-PyTorch\\profile\\checkpoint-model-selection-20261030\\acceptance\\gpu-lr1e-5\\00-zero-update-legacy71-fp16"
+      ],
+      "cwd": "D:/Research/DLSSNR-PyTorch",
+      "watchdog_seconds": 180
+    },
+    "execution": {
+      "exit_code": 0,
+      "accepted": true,
+      "timed_out": false,
+      "timeout_cleanup": "not-required"
+    },
+    "gate_counts": {
+      "passed": 41,
+      "total": 41,
+      "failed": []
+    },
+    "report": {
+      "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/00-zero-update-legacy71-fp16/report.json",
+      "sha256": "853ae4cd141390fd0bf1d48489f78fb28a49921a13f11993d072be023ec7a4e1",
+      "hash_source": "computed_sha256"
+    },
+    "native": {
+      "logical_call_count": 185,
+      "physical_launch_count": 185,
+      "logical_elements": 819200,
+      "logical_dtype": "float16",
+      "logical_output_bytes": 1638400,
+      "output_sha256": "a8d3913b4e452b4e4a1a7af8872bfeeaa738037df50c9a5a5823630ba4e674fc",
+      "graph_sha256": "a8d3913b4e452b4e4a1a7af8872bfeeaa738037df50c9a5a5823630ba4e674fc",
+      "finite_typed_logical_output": true,
+      "eager_repeatable": true,
+      "graph_matches_eager": true,
+      "graph_repeatable": true,
+      "graph_output_finite": true,
+      "guards_intact": true,
+      "guards_intact_after_graph": true
+    },
+    "reference": {
+      "path": "ckpts/dlss5_nr_fp16.pt",
+      "kind": "checkpoint",
+      "precision": "fp16",
+      "output_sha256": "a8d3913b4e452b4e4a1a7af8872bfeeaa738037df50c9a5a5823630ba4e674fc",
+      "equals_portable": true,
+      "mismatches": 0
+    },
+    "flags": {
+      "finite_typed_logical_output": true,
+      "repeatability_and_graph_exercised": true,
+      "guards_intact": true,
+      "reference_equal_with_zero_mismatches": true
+    },
+    "note": "Native mode performs no optimizer step. The zero-update control argv carries --learning-rate 1e-5 because it is the updated runner's default; the native path only parses and records that value."
+  },
+  "training_cases": [
+    {
+      "case_id": "01-training-legacy71-fp32",
+      "role": "accepted training/export/deploy at explicit diagnostic LR=1e-5",
+      "mode": "training",
+      "model": "legacy71",
+      "training_precision": "fp32",
+      "master_precision": "fp32",
+      "deployment_precision": "fp16",
+      "dimensions": {
+        "valid_width": 320,
+        "valid_height": 320,
+        "full_width": 320,
+        "full_height": 320,
+        "levels": [
+          [
+            160,
+            160
+          ],
+          [
+            80,
+            80
+          ],
+          [
+            40,
+            40
+          ],
+          [
+            20,
+            20
+          ],
+          [
+            12,
+            12
+          ],
+          [
+            8,
+            8
+          ]
+        ]
+      },
+      "checkpoint": {
+        "path": "ckpts/dlss5_nr_fp16.pt",
+        "sha256": "1d9d2b667a61a770bc4525f40e09ce04b62b737bec88804d3150274785193d11",
+        "format_version": 2,
+        "declared_model": null,
+        "weight_precision": "fp16",
+        "loaded_precision": "fp16"
+      },
+      "runner_sha256": "20287a1a48350dd1339f698e509065819d4247f925712a740614fd6f6b5b545c",
+      "command": {
+        "argv": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "-B",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\validate_portable_checkpoint.py",
+          "--model",
+          "legacy71",
+          "--checkpoint",
+          "D:\\Research\\DLSSNR-PyTorch\\ckpts\\dlss5_nr_fp16.pt",
+          "--mode",
+          "training",
+          "--training-precision",
+          "fp32",
+          "--width",
+          "320",
+          "--height",
+          "320",
+          "--device",
+          "0",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\dlssnr\\_C_sm120.cp311-win_amd64.pyd",
+          "--expected-extension-sha256",
+          "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+          "--learning-rate",
+          "1e-5",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\profile\\checkpoint-model-selection-20261030\\acceptance\\gpu-lr1e-5\\01-training-legacy71-fp32"
+        ],
+        "cwd": "D:/Research/DLSSNR-PyTorch",
+        "watchdog_seconds": 300
+      },
+      "execution": {
+        "exit_code": 0,
+        "accepted": true,
+        "timed_out": false,
+        "timeout_cleanup": "not-required"
+      },
+      "gate_counts": {
+        "passed": 75,
+        "total": 75,
+        "failed": []
+      },
+      "report": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/01-training-legacy71-fp32/report.json",
+        "sha256": "3d7e878d6fe2e992abae7260e239a6c715167a9aad16450fb9f1050efd24d3d5",
+        "hash_source": "computed_sha256"
+      },
+      "optimizer": {
+        "name": "AdamW",
+        "learning_rate": 1e-05,
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "eps": 1e-08,
+        "weight_decay": 0.01,
+        "amsgrad": false,
+        "maximize": false,
+        "foreach": null,
+        "capturable": false,
+        "differentiable": false,
+        "fused": null,
+        "argument_note": "only lr is passed explicitly; all other values are installed torch defaults"
+      },
+      "training": {
+        "fp32_master_parameters": 145755115,
+        "gradient_tensors": 639,
+        "nonzero_gradient_tensors": 639,
+        "changed_parameter_tensors": 639,
+        "missing_gradient_count": 1,
+        "missing_gradient_names": [
+          "blocks.70.blend_scale"
+        ],
+        "finite_forward": true,
+        "finite_loss": true,
+        "finite_gradients": true,
+        "master_state_bitwise_equal": true,
+        "post_step_output_sha256": "b546adc684ab997cf1d2150ebdf8911ab15c22db6f591125c8b38cd53a100e46",
+        "reload_matches_post_step_output": true
+      },
+      "learned_fp8_export": {
+        "rejected": true,
+        "error_type": "ValueError",
+        "intended_message": "learned FP8 export is unsupported",
+        "error": "ValueError: learned FP8 export is unsupported: no inverse learned-FP8 writer exists and original packed records cannot represent trained values"
+      },
+      "master": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/01-training-legacy71-fp32/training/master_state_fp32.pt",
+        "sha256": "b2bcf3575f3951d05875b540a3db636846a6f578a11eae3f8d92e982227d767b",
+        "bytes": 583226235
+      },
+      "export": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/01-training-legacy71-fp32/training/trained_fp16.pt",
+        "sha256": "9f9a8f1b5446b4d9a2f261aa29301b137e268d029628c720fa5f77c126174ccf",
+        "bytes": 291699775,
+        "precision": "fp16",
+        "native_records": 0,
+        "state_tensors": 640,
+        "state_matches_post_step_master": true,
+        "state_mismatch_count": 0,
+        "changed_state_keys": 501,
+        "changed_half_state_keys": 431
+      },
+      "native_compare": {
+        "precision": "fp16",
+        "logical_elements": 819200,
+        "baseline_output_sha256": "a8d3913b4e452b4e4a1a7af8872bfeeaa738037df50c9a5a5823630ba4e674fc",
+        "exported_output_sha256": "c5dba87960fa3118d897f2e7588f1edceb0631a77482c9e3a3712f00d188f9bd",
+        "in_memory_checkpoint_output_sha256": "c5dba87960fa3118d897f2e7588f1edceb0631a77482c9e3a3712f00d188f9bd",
+        "native_outputs_differ": true,
+        "differing_bytes": 1408561,
+        "serialization_mismatches": 0,
+        "exported_output_finite": true,
+        "in_memory_output_finite": true,
+        "baseline_output_finite": true,
+        "baseline_guards_intact": true,
+        "exported_guards_intact": true,
+        "in_memory_guards_intact": true
+      },
+      "flags": {
+        "nonzero_finite_gradients": true,
+        "single_blend_only_missing_gradient": true,
+        "changed_masters": true,
+        "bitwise_master_save_reload": true,
+        "post_step_reload_equality": true,
+        "learned_fp8_intended_rejection": true,
+        "exact_export_vs_poststep_quantization": true,
+        "zero_native_serialization_differences": true,
+        "changed_native_output_vs_baseline": true,
+        "all_native_outputs_finite": true,
+        "all_native_guards_intact": true
+      },
+      "changed_key_scope_note": "changed_state_keys counts every changed native state key; changed_half_state_keys is not evidence that changes are confined to the b69 trunk. The changed native output proves that a deployed change reached the native path."
+    },
+    {
+      "case_id": "02-training-legacy71-bf16",
+      "role": "accepted training/export/deploy at explicit diagnostic LR=1e-5",
+      "mode": "training",
+      "model": "legacy71",
+      "training_precision": "bf16",
+      "master_precision": "fp32",
+      "deployment_precision": "fp16",
+      "dimensions": {
+        "valid_width": 320,
+        "valid_height": 320,
+        "full_width": 320,
+        "full_height": 320,
+        "levels": [
+          [
+            160,
+            160
+          ],
+          [
+            80,
+            80
+          ],
+          [
+            40,
+            40
+          ],
+          [
+            20,
+            20
+          ],
+          [
+            12,
+            12
+          ],
+          [
+            8,
+            8
+          ]
+        ]
+      },
+      "checkpoint": {
+        "path": "ckpts/dlss5_nr_fp16.pt",
+        "sha256": "1d9d2b667a61a770bc4525f40e09ce04b62b737bec88804d3150274785193d11",
+        "format_version": 2,
+        "declared_model": null,
+        "weight_precision": "fp16",
+        "loaded_precision": "fp16"
+      },
+      "runner_sha256": "20287a1a48350dd1339f698e509065819d4247f925712a740614fd6f6b5b545c",
+      "command": {
+        "argv": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "-B",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\validate_portable_checkpoint.py",
+          "--model",
+          "legacy71",
+          "--checkpoint",
+          "D:\\Research\\DLSSNR-PyTorch\\ckpts\\dlss5_nr_fp16.pt",
+          "--mode",
+          "training",
+          "--training-precision",
+          "bf16",
+          "--width",
+          "320",
+          "--height",
+          "320",
+          "--device",
+          "0",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\dlssnr\\_C_sm120.cp311-win_amd64.pyd",
+          "--expected-extension-sha256",
+          "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+          "--learning-rate",
+          "1e-5",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\profile\\checkpoint-model-selection-20261030\\acceptance\\gpu-lr1e-5\\02-training-legacy71-bf16"
+        ],
+        "cwd": "D:/Research/DLSSNR-PyTorch",
+        "watchdog_seconds": 300
+      },
+      "execution": {
+        "exit_code": 0,
+        "accepted": true,
+        "timed_out": false,
+        "timeout_cleanup": "not-required"
+      },
+      "gate_counts": {
+        "passed": 75,
+        "total": 75,
+        "failed": []
+      },
+      "report": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/02-training-legacy71-bf16/report.json",
+        "sha256": "6f8bcd798a20eedb7e7efd6bcf1f222a07d2a1df6eb9c021e70121bc379e8ea2",
+        "hash_source": "computed_sha256"
+      },
+      "optimizer": {
+        "name": "AdamW",
+        "learning_rate": 1e-05,
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "eps": 1e-08,
+        "weight_decay": 0.01,
+        "amsgrad": false,
+        "maximize": false,
+        "foreach": null,
+        "capturable": false,
+        "differentiable": false,
+        "fused": null,
+        "argument_note": "only lr is passed explicitly; all other values are installed torch defaults"
+      },
+      "training": {
+        "fp32_master_parameters": 145755115,
+        "gradient_tensors": 639,
+        "nonzero_gradient_tensors": 639,
+        "changed_parameter_tensors": 639,
+        "missing_gradient_count": 1,
+        "missing_gradient_names": [
+          "blocks.70.blend_scale"
+        ],
+        "finite_forward": true,
+        "finite_loss": true,
+        "finite_gradients": true,
+        "master_state_bitwise_equal": true,
+        "post_step_output_sha256": "993bcc7071eba6f13d0badcb14eda27b020ffc8a9008c3696b90607f6a9102d9",
+        "reload_matches_post_step_output": true
+      },
+      "learned_fp8_export": {
+        "rejected": true,
+        "error_type": "ValueError",
+        "intended_message": "learned FP8 export is unsupported",
+        "error": "ValueError: learned FP8 export is unsupported: no inverse learned-FP8 writer exists and original packed records cannot represent trained values"
+      },
+      "master": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/02-training-legacy71-bf16/training/master_state_fp32.pt",
+        "sha256": "ed07dc3b97d04445a3a25b2525c4ee7c10238eb99097dbef4e45f4d34f389844",
+        "bytes": 583226235
+      },
+      "export": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/02-training-legacy71-bf16/training/trained_fp16.pt",
+        "sha256": "a24a61bb6d7801b3b61a8914086205b919f797291e6845cb1b222f7713e8c933",
+        "bytes": 291699775,
+        "precision": "fp16",
+        "native_records": 0,
+        "state_tensors": 640,
+        "state_matches_post_step_master": true,
+        "state_mismatch_count": 0,
+        "changed_state_keys": 501,
+        "changed_half_state_keys": 431
+      },
+      "native_compare": {
+        "precision": "fp16",
+        "logical_elements": 819200,
+        "baseline_output_sha256": "a8d3913b4e452b4e4a1a7af8872bfeeaa738037df50c9a5a5823630ba4e674fc",
+        "exported_output_sha256": "27c1441114ec19f40e37e18a5eff2c50277cd5f0d886cbc38980d07e363777be",
+        "in_memory_checkpoint_output_sha256": "27c1441114ec19f40e37e18a5eff2c50277cd5f0d886cbc38980d07e363777be",
+        "native_outputs_differ": true,
+        "differing_bytes": 1409634,
+        "serialization_mismatches": 0,
+        "exported_output_finite": true,
+        "in_memory_output_finite": true,
+        "baseline_output_finite": true,
+        "baseline_guards_intact": true,
+        "exported_guards_intact": true,
+        "in_memory_guards_intact": true
+      },
+      "flags": {
+        "nonzero_finite_gradients": true,
+        "single_blend_only_missing_gradient": true,
+        "changed_masters": true,
+        "bitwise_master_save_reload": true,
+        "post_step_reload_equality": true,
+        "learned_fp8_intended_rejection": true,
+        "exact_export_vs_poststep_quantization": true,
+        "zero_native_serialization_differences": true,
+        "changed_native_output_vs_baseline": true,
+        "all_native_outputs_finite": true,
+        "all_native_guards_intact": true
+      },
+      "changed_key_scope_note": "changed_state_keys counts every changed native state key; changed_half_state_keys is not evidence that changes are confined to the b69 trunk. The changed native output proves that a deployed change reached the native path."
+    },
+    {
+      "case_id": "03-training-small31-fp32",
+      "role": "accepted training/export/deploy at explicit diagnostic LR=1e-5",
+      "mode": "training",
+      "model": "small31",
+      "training_precision": "fp32",
+      "master_precision": "fp32",
+      "deployment_precision": "fp16",
+      "dimensions": {
+        "valid_width": 320,
+        "valid_height": 320,
+        "full_width": 320,
+        "full_height": 320,
+        "levels": [
+          [
+            160,
+            160
+          ],
+          [
+            80,
+            80
+          ],
+          [
+            40,
+            40
+          ],
+          [
+            20,
+            20
+          ],
+          [
+            12,
+            12
+          ],
+          [
+            8,
+            8
+          ]
+        ]
+      },
+      "checkpoint": {
+        "path": "ckpts/dlss5_nr_small31.pt",
+        "sha256": "742c63cae96fb0d6f53f2de6e89e8175606ad51b8939e5e7d255a9167fbef154",
+        "format_version": 3,
+        "declared_model": "small31",
+        "weight_precision": "fp8",
+        "loaded_precision": "fp8"
+      },
+      "runner_sha256": "20287a1a48350dd1339f698e509065819d4247f925712a740614fd6f6b5b545c",
+      "command": {
+        "argv": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "-B",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\validate_portable_checkpoint.py",
+          "--model",
+          "small31",
+          "--checkpoint",
+          "D:\\Research\\DLSSNR-PyTorch\\ckpts\\dlss5_nr_small31.pt",
+          "--mode",
+          "training",
+          "--training-precision",
+          "fp32",
+          "--width",
+          "320",
+          "--height",
+          "320",
+          "--device",
+          "0",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\dlssnr\\_C_sm120.cp311-win_amd64.pyd",
+          "--expected-extension-sha256",
+          "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+          "--learning-rate",
+          "1e-5",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\profile\\checkpoint-model-selection-20261030\\acceptance\\gpu-lr1e-5\\03-training-small31-fp32"
+        ],
+        "cwd": "D:/Research/DLSSNR-PyTorch",
+        "watchdog_seconds": 300
+      },
+      "execution": {
+        "exit_code": 0,
+        "accepted": true,
+        "timed_out": false,
+        "timeout_cleanup": "not-required"
+      },
+      "gate_counts": {
+        "passed": 75,
+        "total": 75,
+        "failed": []
+      },
+      "report": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/03-training-small31-fp32/report.json",
+        "sha256": "b25490401b74325b6f74b21db20db0c4b7030f0dc16675ba10f81ec4ba7cbd46",
+        "hash_source": "computed_sha256"
+      },
+      "optimizer": {
+        "name": "AdamW",
+        "learning_rate": 1e-05,
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "eps": 1e-08,
+        "weight_decay": 0.01,
+        "amsgrad": false,
+        "maximize": false,
+        "foreach": null,
+        "capturable": false,
+        "differentiable": false,
+        "fused": null,
+        "argument_note": "only lr is passed explicitly; all other values are installed torch defaults"
+      },
+      "training": {
+        "fp32_master_parameters": 113342367,
+        "gradient_tensors": 271,
+        "nonzero_gradient_tensors": 271,
+        "changed_parameter_tensors": 271,
+        "missing_gradient_count": 1,
+        "missing_gradient_names": [
+          "blocks.by_role.70.blend_scale"
+        ],
+        "finite_forward": true,
+        "finite_loss": true,
+        "finite_gradients": true,
+        "master_state_bitwise_equal": true,
+        "post_step_output_sha256": "f120ee516f5ce6d47d4935426e480f9768583816ecfa84ef5751d3e8a3995d46",
+        "reload_matches_post_step_output": true
+      },
+      "learned_fp8_export": {
+        "rejected": true,
+        "error_type": "ValueError",
+        "intended_message": "learned FP8 export is unsupported",
+        "error": "ValueError: learned FP8 export is unsupported: no inverse learned-FP8 writer exists and original packed records cannot represent trained values"
+      },
+      "master": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/03-training-small31-fp32/training/master_state_fp32.pt",
+        "sha256": "0552d54602d89cc6ba75c93d89c61c28ce58294f01a371eb2ef2762bdb5c11e8",
+        "bytes": 453460603
+      },
+      "export": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/03-training-small31-fp32/training/trained_fp16.pt",
+        "sha256": "a7a395c769003b2bb46a61e5de00c69a114ad9061de606a27c5f436a0187225c",
+        "bytes": 226766559,
+        "precision": "fp16",
+        "native_records": 0,
+        "state_tensors": 272,
+        "state_matches_post_step_master": true,
+        "state_mismatch_count": 0,
+        "changed_state_keys": 215,
+        "changed_half_state_keys": 185
+      },
+      "native_compare": {
+        "precision": "fp16",
+        "logical_elements": 819200,
+        "baseline_output_sha256": "592cd81184ca638bd59cd8a2372aa5a7fc0d07efdeede8651b255413b75b4ad7",
+        "exported_output_sha256": "edcb7d575c8e7f03aa93a488ebab191e9ce6487d14cba70950f1839517fd5d35",
+        "in_memory_checkpoint_output_sha256": "edcb7d575c8e7f03aa93a488ebab191e9ce6487d14cba70950f1839517fd5d35",
+        "native_outputs_differ": true,
+        "differing_bytes": 1352891,
+        "serialization_mismatches": 0,
+        "exported_output_finite": true,
+        "in_memory_output_finite": true,
+        "baseline_output_finite": true,
+        "baseline_guards_intact": true,
+        "exported_guards_intact": true,
+        "in_memory_guards_intact": true
+      },
+      "flags": {
+        "nonzero_finite_gradients": true,
+        "single_blend_only_missing_gradient": true,
+        "changed_masters": true,
+        "bitwise_master_save_reload": true,
+        "post_step_reload_equality": true,
+        "learned_fp8_intended_rejection": true,
+        "exact_export_vs_poststep_quantization": true,
+        "zero_native_serialization_differences": true,
+        "changed_native_output_vs_baseline": true,
+        "all_native_outputs_finite": true,
+        "all_native_guards_intact": true
+      },
+      "changed_key_scope_note": "changed_state_keys counts every changed native state key; changed_half_state_keys is not evidence that changes are confined to the b69 trunk. The changed native output proves that a deployed change reached the native path."
+    },
+    {
+      "case_id": "04-training-small31-bf16",
+      "role": "accepted training/export/deploy at explicit diagnostic LR=1e-5",
+      "mode": "training",
+      "model": "small31",
+      "training_precision": "bf16",
+      "master_precision": "fp32",
+      "deployment_precision": "fp16",
+      "dimensions": {
+        "valid_width": 320,
+        "valid_height": 320,
+        "full_width": 320,
+        "full_height": 320,
+        "levels": [
+          [
+            160,
+            160
+          ],
+          [
+            80,
+            80
+          ],
+          [
+            40,
+            40
+          ],
+          [
+            20,
+            20
+          ],
+          [
+            12,
+            12
+          ],
+          [
+            8,
+            8
+          ]
+        ]
+      },
+      "checkpoint": {
+        "path": "ckpts/dlss5_nr_small31.pt",
+        "sha256": "742c63cae96fb0d6f53f2de6e89e8175606ad51b8939e5e7d255a9167fbef154",
+        "format_version": 3,
+        "declared_model": "small31",
+        "weight_precision": "fp8",
+        "loaded_precision": "fp8"
+      },
+      "runner_sha256": "20287a1a48350dd1339f698e509065819d4247f925712a740614fd6f6b5b545c",
+      "command": {
+        "argv": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "-B",
+          "D:\\Research\\DLSSNR-PyTorch\\tools\\validate_portable_checkpoint.py",
+          "--model",
+          "small31",
+          "--checkpoint",
+          "D:\\Research\\DLSSNR-PyTorch\\ckpts\\dlss5_nr_small31.pt",
+          "--mode",
+          "training",
+          "--training-precision",
+          "bf16",
+          "--width",
+          "320",
+          "--height",
+          "320",
+          "--device",
+          "0",
+          "--extension",
+          "D:\\Research\\DLSSNR-PyTorch\\dlssnr\\_C_sm120.cp311-win_amd64.pyd",
+          "--expected-extension-sha256",
+          "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+          "--learning-rate",
+          "1e-5",
+          "--output",
+          "D:\\Research\\DLSSNR-PyTorch\\profile\\checkpoint-model-selection-20261030\\acceptance\\gpu-lr1e-5\\04-training-small31-bf16"
+        ],
+        "cwd": "D:/Research/DLSSNR-PyTorch",
+        "watchdog_seconds": 300
+      },
+      "execution": {
+        "exit_code": 0,
+        "accepted": true,
+        "timed_out": false,
+        "timeout_cleanup": "not-required"
+      },
+      "gate_counts": {
+        "passed": 75,
+        "total": 75,
+        "failed": []
+      },
+      "report": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/04-training-small31-bf16/report.json",
+        "sha256": "d33551a2416cc25566145be95c0f818f1afd2f7d34dc7eb5970c0e51352ba027",
+        "hash_source": "computed_sha256"
+      },
+      "optimizer": {
+        "name": "AdamW",
+        "learning_rate": 1e-05,
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "eps": 1e-08,
+        "weight_decay": 0.01,
+        "amsgrad": false,
+        "maximize": false,
+        "foreach": null,
+        "capturable": false,
+        "differentiable": false,
+        "fused": null,
+        "argument_note": "only lr is passed explicitly; all other values are installed torch defaults"
+      },
+      "training": {
+        "fp32_master_parameters": 113342367,
+        "gradient_tensors": 271,
+        "nonzero_gradient_tensors": 271,
+        "changed_parameter_tensors": 271,
+        "missing_gradient_count": 1,
+        "missing_gradient_names": [
+          "blocks.by_role.70.blend_scale"
+        ],
+        "finite_forward": true,
+        "finite_loss": true,
+        "finite_gradients": true,
+        "master_state_bitwise_equal": true,
+        "post_step_output_sha256": "4c3a17c1204ce14422bd5bf5d812729e65f2869a4fbe449c488ecdfc5efdd58b",
+        "reload_matches_post_step_output": true
+      },
+      "learned_fp8_export": {
+        "rejected": true,
+        "error_type": "ValueError",
+        "intended_message": "learned FP8 export is unsupported",
+        "error": "ValueError: learned FP8 export is unsupported: no inverse learned-FP8 writer exists and original packed records cannot represent trained values"
+      },
+      "master": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/04-training-small31-bf16/training/master_state_fp32.pt",
+        "sha256": "24145574b49a64a715cc567647111c18a8db9926a9f6336649af75615f8de744",
+        "bytes": 453460603
+      },
+      "export": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/04-training-small31-bf16/training/trained_fp16.pt",
+        "sha256": "63f24be57226a0fa8a8a4a48b896d1cfa075115b0d3e6f9dc91ed7377b56b216",
+        "bytes": 226766559,
+        "precision": "fp16",
+        "native_records": 0,
+        "state_tensors": 272,
+        "state_matches_post_step_master": true,
+        "state_mismatch_count": 0,
+        "changed_state_keys": 215,
+        "changed_half_state_keys": 185
+      },
+      "native_compare": {
+        "precision": "fp16",
+        "logical_elements": 819200,
+        "baseline_output_sha256": "592cd81184ca638bd59cd8a2372aa5a7fc0d07efdeede8651b255413b75b4ad7",
+        "exported_output_sha256": "5a7dbd01b5e7078aa85ddfd041a7ea3d11aade032645ad258e7fbb6d1f0b5bae",
+        "in_memory_checkpoint_output_sha256": "5a7dbd01b5e7078aa85ddfd041a7ea3d11aade032645ad258e7fbb6d1f0b5bae",
+        "native_outputs_differ": true,
+        "differing_bytes": 1345901,
+        "serialization_mismatches": 0,
+        "exported_output_finite": true,
+        "in_memory_output_finite": true,
+        "baseline_output_finite": true,
+        "baseline_guards_intact": true,
+        "exported_guards_intact": true,
+        "in_memory_guards_intact": true
+      },
+      "flags": {
+        "nonzero_finite_gradients": true,
+        "single_blend_only_missing_gradient": true,
+        "changed_masters": true,
+        "bitwise_master_save_reload": true,
+        "post_step_reload_equality": true,
+        "learned_fp8_intended_rejection": true,
+        "exact_export_vs_poststep_quantization": true,
+        "zero_native_serialization_differences": true,
+        "changed_native_output_vs_baseline": true,
+        "all_native_outputs_finite": true,
+        "all_native_guards_intact": true
+      },
+      "changed_key_scope_note": "changed_state_keys counts every changed native state key; changed_half_state_keys is not evidence that changes are confined to the b69 trunk. The changed native output proves that a deployed change reached the native path."
+    }
+  ],
+  "known_failed_case": {
+    "case_id": "05-training-legacy71-fp32",
+    "role": "preserved known failed LR=1e-3 Legacy71 FP32 training/export/deploy case",
+    "mode": "training",
+    "model": "legacy71",
+    "training_precision": "fp32",
+    "master_precision": "fp32",
+    "deployment_precision": "fp16",
+    "learning_rate": 0.001,
+    "runner_sha256": "98b014b92bd593ecf3a507a6457ff393e54ed97e98235db83f8749395a92f551",
+    "command": {
+      "argv": [
+        "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+        "D:\\Research\\DLSSNR-PyTorch\\tools\\validate_portable_checkpoint.py",
+        "--model",
+        "legacy71",
+        "--checkpoint",
+        "D:\\Research\\DLSSNR-PyTorch\\ckpts\\dlss5_nr_fp16.pt",
+        "--mode",
+        "training",
+        "--training-precision",
+        "fp32",
+        "--width",
+        "320",
+        "--height",
+        "320",
+        "--device",
+        "0",
+        "--extension",
+        "D:\\Research\\DLSSNR-PyTorch\\dlssnr\\_C_sm120.cp311-win_amd64.pyd",
+        "--expected-extension-sha256",
+        "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+        "--output",
+        "D:\\Research\\DLSSNR-PyTorch\\profile\\checkpoint-model-selection-20261030\\acceptance\\gpu\\05-training-legacy71-fp32"
+      ],
+      "cwd": "D:/Research/DLSSNR-PyTorch",
+      "watchdog_seconds": 300
+    },
+    "execution": {
+      "exit_code": 1,
+      "accepted": false,
+      "timed_out": false,
+      "timeout_cleanup": "not-required",
+      "failed_checks": [
+        "child_exit_zero",
+        "accepted_flag_true",
+        "no_failed_phase",
+        "native_compare_exported_finite",
+        "native_compare_in_memory_finite"
+      ]
+    },
+    "gate_counts": {
+      "passed": 45,
+      "total": 50,
+      "failed": [
+        "child_exit_zero",
+        "accepted_flag_true",
+        "no_failed_phase",
+        "native_compare_exported_finite",
+        "native_compare_in_memory_finite"
+      ]
+    },
+    "failed_phase": "compare-native-fp16",
+    "error": "RuntimeError: exported native FP16 logical output is nonfinite",
+    "report": {
+      "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu/05-training-legacy71-fp32/report.json",
+      "sha256": "4310ae70bd2e9f2f2119e49dab361daa36bcb608edefec4e441db0d6ba1a7d2a",
+      "hash_source": "computed_sha256"
+    },
+    "training": {
+      "fp32_master_parameters": 145755115,
+      "gradient_tensors": 639,
+      "nonzero_gradient_tensors": 639,
+      "changed_parameter_tensors": 639,
+      "missing_gradient_count": 1,
+      "missing_gradient_names": [
+        "blocks.70.blend_scale"
+      ],
+      "finite_forward": true,
+      "finite_loss": true,
+      "finite_gradients": true,
+      "master_state_bitwise_equal": true,
+      "reload_matches_post_step_output": true,
+      "fresh_forward_finite": true,
+      "export_precision": "fp16",
+      "export_native_records": 0,
+      "export_state_tensors": 640,
+      "export_state_matches_post_step_master": true,
+      "export_state_mismatch_count": 0,
+      "changed_state_keys": 639,
+      "changed_half_state_keys": 569,
+      "learned_fp8_rejected_intended_value_error": true
+    },
+    "export": {
+      "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu/05-training-legacy71-fp32/training/trained_fp16.pt",
+      "sha256": "bfb8702f15d3d11cc17f7a43cdd42830bc3e0276b94595fc145e4ec473cb581f",
+      "bytes": 291699775,
+      "precision": "fp16",
+      "native_records": 0,
+      "state_tensors": 640,
+      "state_matches_post_step_master": true,
+      "state_mismatch_count": 0,
+      "stored_values_finite": true,
+      "stored_values_finite_evidence": "diagnosis/results.json optimizer_scale_changes.all_finite_trained"
+    },
+    "artifacts": {
+      "master": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu/05-training-legacy71-fp32/training/master_state_fp32.pt",
+        "sha256": "0d531c66814949cb5c910cf4cdf684b55e03e19e0df45a5c07d9f256ff74bcef",
+        "bytes": 583226235,
+        "hash_source": "recomputed_sha256"
+      },
+      "export": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu/05-training-legacy71-fp32/training/trained_fp16.pt",
+        "sha256": "bfb8702f15d3d11cc17f7a43cdd42830bc3e0276b94595fc145e4ec473cb581f",
+        "bytes": 291699775,
+        "hash_source": "recomputed_sha256"
+      },
+      "export_sidecar": {
+        "path": "profile/checkpoint-model-selection-20261030/acceptance/gpu/05-training-legacy71-fp32/training/trained_fp16.json",
+        "sha256": "7c1db1ced36d806e455113cd73477edfbf0892efa75fa10891141c0db898a0ff",
+        "bytes": 600,
+        "hash_source": "recomputed_sha256"
+      }
+    },
+    "native_compare": {
+      "precision": "fp16",
+      "logical_elements": 819200,
+      "baseline_output_sha256": "a8d3913b4e452b4e4a1a7af8872bfeeaa738037df50c9a5a5823630ba4e674fc",
+      "exported_output_sha256": "9977ca6845785ff48528d4228be9a0c04ee4590469ef6f75c60d8f1ff762ac58",
+      "in_memory_checkpoint_output_sha256": "9977ca6845785ff48528d4228be9a0c04ee4590469ef6f75c60d8f1ff762ac58",
+      "native_outputs_differ": true,
+      "differing_bytes": 1635552,
+      "serialization_mismatches": 0,
+      "baseline_output_finite": true,
+      "exported_output_finite": false,
+      "in_memory_output_finite": false,
+      "baseline_guards_intact": true,
+      "exported_guards_intact": true,
+      "in_memory_guards_intact": true
+    },
+    "flags": {
+      "finite_training_records": true,
+      "finite_export_records": true,
+      "nonfinite_native_output": true,
+      "zero_serialization_mismatches": true,
+      "baseline_finite": true,
+      "preserved_not_rerun": true
+    },
+    "note": "The training and export records are finite and internally consistent, but the exported native FP16 logical output is nonfinite. The report, FP32 master, FP16 export and sidecar are preserved byte-for-byte and were not overwritten. This failure remains part of the public record."
+  },
+  "no_update_cpu_control": {
+    "source": "diagnosis/results.json",
+    "command_shell": "$env:CUDA_VISIBLE_DEVICES='-1'; $env:OMP_NUM_THREADS='4'; $env:MKL_NUM_THREADS='4'; $env:PYTHONDONTWRITEBYTECODE='1'; .\\.venv\\Scripts\\python.exe profile/checkpoint-model-selection-20261030/acceptance/diagnosis/cpu_diagnosis.py",
+    "device_policy": "CPU only; CUDA_VISIBLE_DEVICES=-1; no device query",
+    "export": {
+      "path": "profile/checkpoint-model-selection-20261030/acceptance/diagnosis/zero-update-fp16.pt",
+      "sha256": "e2853e2729fd297be17b40b0d291586faf00999be4a627f35b3bdb4d88811d13",
+      "bytes": 291699775
+    },
+    "roster": {
+      "original": 640,
+      "zero_update": 640,
+      "schema": 640,
+      "expected": 640,
+      "equal": true,
+      "equal_schema": true
+    },
+    "byte_identical_count": 640,
+    "tensor_mismatch_count": 0,
+    "dtypes": {
+      "float16": 570,
+      "float32": 70
+    },
+    "float32_key_count": 70,
+    "float32_keys_all_head_scale": true,
+    "head_scale_float32_preserved": true,
+    "native_records_empty": true,
+    "all_tensors_finite": true,
+    "training_model_non_fp32_parameters": [],
+    "records": {
+      "count": 12,
+      "all_equal": true,
+      "roles": [
+        {
+          "block": 0,
+          "kind": "preprocess"
+        },
+        {
+          "block": 70,
+          "kind": "postprocess"
+        },
+        {
+          "block": 1,
+          "kind": "window"
+        },
+        {
+          "block": 48,
+          "kind": "window"
+        },
+        {
+          "block": 30,
+          "kind": "ffn"
+        },
+        {
+          "block": 30,
+          "kind": "qkv"
+        },
+        {
+          "block": 30,
+          "kind": "projection"
+        },
+        {
+          "block": 39,
+          "kind": "upsample"
+        },
+        {
+          "block": 31,
+          "kind": "expand"
+        },
+        {
+          "block": 31,
+          "kind": "contract"
+        },
+        {
+          "block": 31,
+          "kind": "qkv"
+        },
+        {
+          "block": 31,
+          "kind": "projection"
+        }
+      ]
+    },
+    "passed": true,
+    "qualification": "The 12 records compare original.kernel_record(...) with zero.kernel_record(...) through the same pack_kernel_fp16 implementation: a packer-vs-packer determinism check, not an independent vendor-native record-byte oracle."
+  },
+  "acceptance_gates": {
+    "per_case": [
+      "child exit 0",
+      "child report accepted=true",
+      "no failed phase",
+      "extension verified and not rebuilt",
+      "mode/model/precision/320x320 exact",
+      "all orchestrator receipt checks pass",
+      "no watchdog timeout"
+    ],
+    "native": [
+      "finite typed logical output",
+      "eager repeatability",
+      "graph replay matches eager and repeats",
+      "guards intact before/after graph",
+      "reference equality with 0 mismatches",
+      "output SHA256 equals reference SHA256"
+    ],
+    "training": [
+      "finite forward/loss/gradients",
+      "at least one nonzero backward gradient; observed nonzero counts equal all gradient-bearing tensors in these cases",
+      "changed FP32 masters",
+      "bitwise master save/reload",
+      "post-step reload output equality",
+      "learned FP8 rejected with intended ValueError",
+      "exact export vs independently quantized post-step state",
+      "0 native serialization mismatches",
+      "changed native output vs baseline",
+      "finite native outputs and intact guards"
+    ],
+    "counts": {
+      "gpu_matrix_cases_accepted": "4/8 (matrix stopped after real case 05 failure)",
+      "gpu_lr1e5_matrix_cases_accepted": "5/5",
+      "accepted_public_cases": "4 original native + 4 training at 1e-5 + 1 zero-update control + 2 full stateless RGB smoke cases",
+      "known_failed_public_cases": 1
+    }
+  },
+  "deepcluster_status": {
+    "gpu_matrix": {
+      "operation_status": "failed",
+      "step_status": "fail",
+      "matrix_status": "stopped",
+      "total_cases_defined": 8,
+      "cases_attempted": 5,
+      "cases_accepted": 4,
+      "child_cases_accepted": [
+        "01-native-legacy71-fp16",
+        "02-native-legacy71-fp8",
+        "03-native-small31-fp16",
+        "04-native-small31-fp8"
+      ],
+      "failed_child_case": "05-training-legacy71-fp32",
+      "remaining_cases": [
+        "06-training-legacy71-bf16",
+        "07-training-small31-fp32",
+        "08-training-small31-bf16"
+      ],
+      "stop_reason": "05-training-legacy71-fp32 failed (correctness); phase=compare-native-fp16; checks=['child_exit_zero', 'accepted_flag_true', 'no_failed_phase', 'native_compare_exported_finite', 'native_compare_in_memory_finite']",
+      "note": "The four original native child cases passed. The overall DeepCluster operation is failed because the real LR=1e-3 training case failed at compare-native-fp16; that failure is preserved and is not erased by later 1e-5 diagnostics."
+    },
+    "gpu_lr1e5_matrix": {
+      "operation_status": "failed",
+      "step_status": "fail",
+      "matrix_status": "completed",
+      "total_cases_defined": 5,
+      "cases_attempted": 5,
+      "cases_accepted": 5,
+      "child_cases_accepted": [
+        "00-zero-update-legacy71-fp16",
+        "01-training-legacy71-fp32",
+        "02-training-legacy71-bf16",
+        "03-training-small31-fp32",
+        "04-training-small31-bf16"
+      ],
+      "failed_child_cases": [],
+      "audit_problem": "write audit failed: undeclared-write \"tools/kernel_docs/runtime_update.py\"; dirty-change \"tools/kernel_docs/runtime_update.py\"",
+      "note": "All five GPU child cases passed. The overall DeepCluster operation is recorded failed only by the shared-worktree write audit, which attributed an unrelated concurrent documentation edit (tools/kernel_docs/runtime_update.py) to this step. This does not change any gate result."
+    },
+    "diagnosis": {
+      "operation_status": "failed",
+      "step_status": "fail",
+      "audit_problem": "write audit failed: undeclared-write \"ckpts/README.md\"; dirty-change \"ckpts/README.md\"",
+      "note": "CPU diagnosis run was also marked failed by an unrelated shared-worktree documentation write audit (ckpts/README.md)."
+    },
+    "learning_rate": {
+      "operation_status": "failed",
+      "step_status": "fail",
+      "audit_problem": "write audit failed: undeclared-write \"README.md\"; dirty-change \"README.md\"; undeclared-write \"docs/SETUP.md\"; dirty-change \"docs/SETUP.md\"",
+      "note": "Learning-rate edit run was also marked failed by unrelated shared-worktree documentation write audits (README.md, docs/SETUP.md)."
+    },
+    "interpretation": "Child-case gates and DeepCluster audit statuses are distinct. GPU child cases passed where recorded; the 1e-5 operation was marked failed by an unrelated concurrent documentation write audit and the original matrix was failed by the genuine LR=1e-3 case. Neither audit status changes a gate result, and the real failure is not erased."
+  },
+  "artifact_preservation": {
+    "failed_artifacts_unchanged": true,
+    "prior_accepted_originals_unchanged": true,
+    "extension_unchanged_before_and_after": true,
+    "preservation_snapshot_unchanged": true,
+    "failed_receipt_never_overwritten": true,
+    "failed_weights_never_overwritten": true,
+    "note": "No failed receipt, master state, export or sidecar was modified. Prior accepted 01-04 reports are preserved and were not re-run in the 1e-5 matrix."
+  },
+  "full_rgb": {
+    "status": "passed",
+    "scope": "Two one-frame stateless RGB smoke cases using the accepted FP32-trained FP16 exports: learned preprocess, RGB trunk and postprocess. Temporal history/motion/blend are empty and excluded; no vendor or training-surrogate parity or quality claim.",
+    "helper": {
+      "path": "docs/kernel-guide/evidence-checkpoints/source/measured_rgb_helper.py",
+      "sha256": "14723d785754173199e8dbcf8e9499a41204b4f312061d6a15aa5620bf37cf9d",
+      "kind": "archived measured-helper snapshot",
+      "original_measured_path": "profile/checkpoint-model-selection-20261030/rgb-acceptance/validate_rgb.py",
+      "note": "Exact bytes of the helper used for these measurements. Historical commands and original local/profile path assumptions are retained. This snapshot is for inspection, not a generic portable CLI; it was not adapted or re-tested after archiving."
+    },
+    "execution_receipt": {
+      "path": "profile/checkpoint-model-selection-20261030/rgb-acceptance/gpu-execution.json",
+      "sha256": "f300c7796090fc962f8b9677b0526318f61d48befeca36f7ba0fc9e55f01810a"
+    },
+    "watchdog_seconds": 180,
+    "benchmark": false,
+    "fixture_definition": "uint8 RGB at x,y in [0,319]: R=x*255//319, G=y*255//319, B=((x//20+y//20)%2)*255. FramePipeline noise seed 320.",
+    "guard_scope": "Native trunk plan guards only; no separate frontend output guards are exposed.",
+    "cases": [
+      {
+        "model": "legacy71",
+        "training_precision": "fp32",
+        "native_precision": "fp16",
+        "width": 320,
+        "height": 320,
+        "accepted": true,
+        "command_argv": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "-B",
+          "D:\\Research\\DLSSNR-PyTorch\\profile\\checkpoint-model-selection-20261030\\rgb-acceptance\\validate_rgb.py",
+          "--model",
+          "legacy71",
+          "--mode",
+          "gpu",
+          "--output-dir",
+          "D:\\Research\\DLSSNR-PyTorch\\profile\\checkpoint-model-selection-20261030\\rgb-acceptance\\gpu-legacy71"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "report": {
+          "path": "profile/checkpoint-model-selection-20261030/rgb-acceptance/gpu-legacy71/report.json",
+          "sha256": "51ef0a7af506030999741ebaa9a5b5e1f5b4cd041e5eb1a2fd0a0ef7283149e4"
+        },
+        "provenance": {
+          "accepted_case": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/01-training-legacy71-fp32/report.json",
+          "accepted_case_sha256": "3d7e878d6fe2e992abae7260e239a6c715167a9aad16450fb9f1050efd24d3d5",
+          "trained_checkpoint": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/01-training-legacy71-fp32/training/trained_fp16.pt",
+          "trained_sha256": "9f9a8f1b5446b4d9a2f261aa29301b137e268d029628c720fa5f77c126174ccf",
+          "master_sha256": "b2bcf3575f3951d05875b540a3db636846a6f578a11eae3f8d92e982227d767b",
+          "original_sha256": "1d9d2b667a61a770bc4525f40e09ce04b62b737bec88804d3150274785193d11",
+          "learning_rate": 1e-05
+        },
+        "helper_sha256": "14723d785754173199e8dbcf8e9499a41204b4f312061d6a15aa5620bf37cf9d",
+        "extension_path": "dlssnr/_C_sm120.cp311-win_amd64.pyd",
+        "extension_sha256": "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+        "fixture": {
+          "shape": [
+            320,
+            320,
+            3
+          ],
+          "dtype": "uint8",
+          "range": [
+            0,
+            255
+          ],
+          "sha256": "c52a32dc17e943db09cd6708d4ca27ea78323a3269546d6de74a0e93d2147d53",
+          "seed": 320
+        },
+        "prepost": {
+          "tensors_checked": 21,
+          "records": {
+            "preprocess": {
+              "role": 0,
+              "bytes": 33984,
+              "sha256": "6e374a49c5c58c225ed34256973335b976ba894b93291d3eabfa8602b374e56e",
+              "matches_quantized_master": true,
+              "differs_from_original": true,
+              "changed_fields": [
+                "blocks.0.w1",
+                "blocks.0.w2",
+                "blocks.0.qkv",
+                "blocks.0.projection",
+                "blocks.0.ffn_scale",
+                "blocks.0.head_scale",
+                "blocks.0.bias",
+                "blocks.0.input_adapter"
+              ]
+            },
+            "postprocess": {
+              "role": 70,
+              "bytes": 34096,
+              "sha256": "d45b1eb2a6e66ae1e324550b23e8109bf8e517ff1f21360e6665fe7e5db354da",
+              "matches_quantized_master": true,
+              "differs_from_original": true,
+              "changed_fields": [
+                "blocks.70.w1",
+                "blocks.70.w2",
+                "blocks.70.qkv",
+                "blocks.70.projection",
+                "blocks.70.head_scale",
+                "blocks.70.bias",
+                "blocks.70.input_scale",
+                "blocks.70.head"
+              ]
+            }
+          },
+          "no_stale_native_records": true,
+          "gpu_records_match": true
+        },
+        "blend": {
+          "matches_quantized_master": true,
+          "differs_from_original": false,
+          "executed": false,
+          "reason": "stateless FramePipeline passes empty_blend"
+        },
+        "pipeline": {
+          "preprocess": "input_preprocess_window_downsample_c32_fp16",
+          "postprocess": "output_window_postprocess_c32_fp16",
+          "post_phase": 1,
+          "post_phase_source": "model_specs.post_phase_default",
+          "post_phase_note": "legacy71 uses graph_schedule phase 1; small31 uses the model-spec phase 0 (source-derived host choice, not verified against DLL dispatch)",
+          "trunk_final_kernel": "window_block_c32_output_view_fp16",
+          "trunk_output_layout": "plane16",
+          "trunk_logical_calls": 185,
+          "trunk_split_launches": 185,
+          "trunk_extra_repack": false,
+          "stateless": true,
+          "history": "empty",
+          "motion": "empty",
+          "depth": "empty",
+          "conditioning": "empty",
+          "blend": "empty"
+        },
+        "full_pipeline_runs": 1,
+        "packed_low": {
+          "precision": "fp16",
+          "bytes": 1638400,
+          "nonfinite": 0,
+          "element_bytes": 2,
+          "role": "b69.output"
+        },
+        "rgba": {
+          "shape": [
+            320,
+            320,
+            4
+          ],
+          "rgb_min": 0.0,
+          "rgb_max": 1.0,
+          "alpha_min": 1.0,
+          "alpha_max": 1.0,
+          "sha256": "8c3823b7c6f4b460684cc710a0127ad263a804fc0745199c35bd896f08291fb2"
+        },
+        "rgba_finite": true,
+        "plan_guards_intact": true,
+        "guard_scope": "native trunk plan only; no separate frontend output guards exposed",
+        "parity_claim": "none; no vendor or training-surrogate comparison"
+      },
+      {
+        "model": "small31",
+        "training_precision": "fp32",
+        "native_precision": "fp16",
+        "width": 320,
+        "height": 320,
+        "accepted": true,
+        "command_argv": [
+          "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+          "-B",
+          "D:\\Research\\DLSSNR-PyTorch\\profile\\checkpoint-model-selection-20261030\\rgb-acceptance\\validate_rgb.py",
+          "--model",
+          "small31",
+          "--mode",
+          "gpu",
+          "--output-dir",
+          "D:\\Research\\DLSSNR-PyTorch\\profile\\checkpoint-model-selection-20261030\\rgb-acceptance\\gpu-small31"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "report": {
+          "path": "profile/checkpoint-model-selection-20261030/rgb-acceptance/gpu-small31/report.json",
+          "sha256": "ffdcbc9a5f0e3abcd935daecab7f80e4fd523ca1c8a10bc7374632b953720fcb"
+        },
+        "provenance": {
+          "accepted_case": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/03-training-small31-fp32/report.json",
+          "accepted_case_sha256": "b25490401b74325b6f74b21db20db0c4b7030f0dc16675ba10f81ec4ba7cbd46",
+          "trained_checkpoint": "profile/checkpoint-model-selection-20261030/acceptance/gpu-lr1e-5/03-training-small31-fp32/training/trained_fp16.pt",
+          "trained_sha256": "a7a395c769003b2bb46a61e5de00c69a114ad9061de606a27c5f436a0187225c",
+          "master_sha256": "0552d54602d89cc6ba75c93d89c61c28ce58294f01a371eb2ef2762bdb5c11e8",
+          "original_sha256": "742c63cae96fb0d6f53f2de6e89e8175606ad51b8939e5e7d255a9167fbef154",
+          "learning_rate": 1e-05
+        },
+        "helper_sha256": "14723d785754173199e8dbcf8e9499a41204b4f312061d6a15aa5620bf37cf9d",
+        "extension_path": "dlssnr/_C_sm120.cp311-win_amd64.pyd",
+        "extension_sha256": "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+        "fixture": {
+          "shape": [
+            320,
+            320,
+            3
+          ],
+          "dtype": "uint8",
+          "range": [
+            0,
+            255
+          ],
+          "sha256": "c52a32dc17e943db09cd6708d4ca27ea78323a3269546d6de74a0e93d2147d53",
+          "seed": 320
+        },
+        "prepost": {
+          "tensors_checked": 21,
+          "records": {
+            "preprocess": {
+              "role": 0,
+              "bytes": 33984,
+              "sha256": "beff86c399891bc2c1ec27c07104d1e19c5fe25f20c52bc27deab2c41b8b73f2",
+              "matches_quantized_master": true,
+              "differs_from_original": true,
+              "changed_fields": [
+                "blocks.0.w1",
+                "blocks.0.w2",
+                "blocks.0.qkv",
+                "blocks.0.projection",
+                "blocks.0.ffn_scale",
+                "blocks.0.head_scale",
+                "blocks.0.bias",
+                "blocks.0.input_adapter"
+              ]
+            },
+            "postprocess": {
+              "role": 70,
+              "bytes": 34096,
+              "sha256": "2e8494a325d79c7af92d822e8933738e278ec3d4e5e9f48314e8044f280d12b3",
+              "matches_quantized_master": true,
+              "differs_from_original": true,
+              "changed_fields": [
+                "blocks.70.w1",
+                "blocks.70.w2",
+                "blocks.70.qkv",
+                "blocks.70.projection",
+                "blocks.70.head_scale",
+                "blocks.70.bias",
+                "blocks.70.adapter_scale",
+                "blocks.70.head"
+              ]
+            }
+          },
+          "no_stale_native_records": true,
+          "gpu_records_match": true
+        },
+        "blend": {
+          "matches_quantized_master": true,
+          "differs_from_original": false,
+          "executed": false,
+          "reason": "stateless FramePipeline passes empty_blend"
+        },
+        "pipeline": {
+          "preprocess": "input_preprocess_window_downsample_c32_fp16",
+          "postprocess": "output_window_postprocess_c32_fp16",
+          "post_phase": 0,
+          "post_phase_source": "model_specs.post_phase_default",
+          "post_phase_note": "legacy71 uses graph_schedule phase 1; small31 uses the model-spec phase 0 (source-derived host choice, not verified against DLL dispatch)",
+          "trunk_final_kernel": "window_block_c32_output_view_fp16",
+          "trunk_output_layout": "plane16",
+          "trunk_logical_calls": 109,
+          "trunk_split_launches": 109,
+          "trunk_extra_repack": false,
+          "stateless": true,
+          "history": "empty",
+          "motion": "empty",
+          "depth": "empty",
+          "conditioning": "empty",
+          "blend": "empty"
+        },
+        "full_pipeline_runs": 1,
+        "packed_low": {
+          "precision": "fp16",
+          "bytes": 1638400,
+          "nonfinite": 0,
+          "element_bytes": 2,
+          "role": "b69.output"
+        },
+        "rgba": {
+          "shape": [
+            320,
+            320,
+            4
+          ],
+          "rgb_min": 0.0,
+          "rgb_max": 1.0,
+          "alpha_min": 1.0,
+          "alpha_max": 1.0,
+          "sha256": "c1317e4f774d8fc6cd70ad8b9d8abede91be0d40fbdfa1395628c475d1297cff"
+        },
+        "rgba_finite": true,
+        "plan_guards_intact": true,
+        "guard_scope": "native trunk plan only; no separate frontend output guards exposed",
+        "parity_claim": "none; no vendor or training-surrogate comparison"
+      }
+    ]
+  },
+  "receipts": {
+    "gpu_matrix": {
+      "path": "gpu/matrix.json",
+      "sha256": "26d713493b818f13efb542a29a89b023baa2dd2410ecde801d758decc3ac923a"
+    },
+    "gpu_provenance": {
+      "path": "gpu/provenance.json",
+      "sha256": "bbed393c49c578b694230766a470e85ba993bac019eb1f0efc7bacec46f72b42"
+    },
+    "gpu_lr1e5_matrix": {
+      "path": "gpu-lr1e-5/matrix.json",
+      "sha256": "4ddbf5f7db3191efaa6798ccb813bfffd046d4c95dc03d67a5a46e6ddcc6b7d5"
+    },
+    "gpu_lr1e5_provenance": {
+      "path": "gpu-lr1e-5/provenance.json",
+      "sha256": "a3282a6bde49972ddcf48d2b4dce2a5b42043326880d12b35149e2d782e63bde"
+    },
+    "gpu_lr1e5_preflight": {
+      "path": "gpu-lr1e-5/preflight.json",
+      "sha256": "e51bad7bc4cf93670f0912b0dd6bd3bc4e3a8d8b8b599eb8118667c8aebb9c50"
+    },
+    "diagnosis_results": {
+      "path": "diagnosis/results.json",
+      "sha256": "1ffbb4193d443fb16a52931e904f7703ce0dbe4ac392a00fb6771a9899e21eb4"
+    },
+    "learning_rate_report": {
+      "path": "learning-rate/report.json",
+      "sha256": "8e2d6d8068918f3d47d94d6f7e01085a98f420015a54469fbe1234a035e01e31"
+    }
+  },
+  "cpu_integration": {
+    "status": "passed",
+    "command_argv": [
+      ".venv/Scripts/python.exe",
+      "-B",
+      "run_tests.py",
+      "cpu",
+      "--optimized"
+    ],
+    "environment": {
+      "PYTEST_ADDOPTS": "-v -rs"
+    },
+    "exit_code": 0,
+    "runner_checks": {
+      "passed": 34,
+      "total": 34
+    },
+    "pytest_normal": {
+      "collected": 121,
+      "passed": 120,
+      "skipped": 1,
+      "failed": 0
+    },
+    "pytest_optimized": {
+      "collected": 121,
+      "passed": 120,
+      "skipped": 1,
+      "failed": 0
+    },
+    "new_modules": {
+      "tests/test_trained_checkpoint_cpu.py": {
+        "normal_passed": 9,
+        "optimized_passed": 9,
+        "skipped": 0
+      },
+      "tests/test_portable_checkpoint_cpu.py": {
+        "normal_passed": 9,
+        "optimized_passed": 9,
+        "skipped": 0
+      }
+    },
+    "real_checkpoint_integration_tests": {
+      "module": "tests/test_portable_checkpoint_cpu.py",
+      "passed_each_mode": 5,
+      "missing_weight_skips": 0
+    },
+    "only_skip": {
+      "source": "tests/test_runtime_assets_cpu.py:903",
+      "per_mode": 1,
+      "reason": "Opt-in real DLL extraction test requires DLSSNR_RUN_REAL_SMALL_EXTRACT=1 to write the 113.9 MB archive; actual signed-DLL CLI extraction was separately executed and verified."
+    },
+    "scope_qualification": "The worker preflight queried torch.cuda.is_available(); the tests ran on CPU and no GPU workload or native extension execution ran in this suite.",
+    "receipts": [
+      {
+        "path": "profile/checkpoint-model-selection-20261030/cpu-integration/report.md",
+        "sha256": "9db602653f2eccdb3a03470b263e89c2a176b5b78ce6afdbe4448f4eb5932900"
+      },
+      {
+        "path": "profile/checkpoint-model-selection-20261030/cpu-integration/cpu-optimized.stdout.log",
+        "sha256": "b4d6d758fdceccee768c2777a73851c2463b5bf64e22a01db38c6fcf0b7fe242"
+      }
+    ],
+    "extraction_artifact": {
+      "path": "ckpts/dlss5_nr_small31.pt",
+      "sha256": "742c63cae96fb0d6f53f2de6e89e8175606ad51b8939e5e7d255a9167fbef154",
+      "byte_length": 113943356,
+      "receipt": {
+        "path": "ckpts/dlss5_nr_small31.json",
+        "sha256": "5bcea203aa106b41693ad5f90bc0ab249857fce08d50b69889f463318ec19e32"
+      }
+    }
+  }
+}

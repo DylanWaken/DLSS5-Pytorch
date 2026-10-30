@@ -216,6 +216,22 @@ three network passes per sample. Adjust `--warmup`, `--samples`, `--iterations`,
 or the per-case `--timeout` for your machine. `--precision fp16` or `fp8` selects
 one supported precision; `--checkpoint-dir` overrides the checkpoint location.
 
+`--model {legacy71,small31}` selects the identity (default `legacy71`) and
+`--checkpoint PATH` supplies one original portable checkpoint for every tested
+precision. Explicit original-file examples:
+
+```powershell
+python test_speed.py --model legacy71 --checkpoint ckpts/dlss5_nr_fp8.pt
+python test_speed.py --model small31 --checkpoint ckpts/dlss5_nr_small31.pt
+```
+
+Without `--checkpoint`, Legacy71 uses the precision-specific
+`ckpts/dlss5_nr_<precision>.pt`; Small31 uses `ckpts/dlss5_nr_small31.pt`.
+Legacy71 requires its adjacent JSON sidecar for hash verification; the Small31
+sidecar is optional. `--model` is never inferred from the file, and a checkpoint
+whose payload declares another model is rejected. Add `--precision fp16` (or
+`fp8` on SM89+) to test only one supported precision.
+
 `--per-kernel` additionally saves `kernels.csv` and per-call JSON timings from a
 separate graph. It preserves the complete schedule, including counter resets
 and any ordered split launches. Timing events perturb those short kernels, so
@@ -349,16 +365,31 @@ so confirm improvements with the separate unprofiled, paired DLL benchmark.
 
 ## Checkpoints
 
-`git lfs pull` retrieves both [checkpoint files](../ckpts/README.md):
+`git lfs pull` retrieves the [checkpoint files](../ckpts/README.md). One explicit selector chooses the identity; `legacy71` remains the default and `small31` must be named:
 
-- `ckpts/dlss5_nr_fp8.pt`: original FP8 matrices, FP16 auxiliaries and FP32 scales;
-  supports FP8/FP16 deployment and FP32/BF16 training.
-- `ckpts/dlss5_nr_fp16.pt`: the same FP8 values widened exactly to FP16;
-  supports FP16 deployment and FP32/BF16 training.
+```python
+from dlssnr import load_checkpoint
 
-There is no separate higher-precision trained weight resource. Downward weight
-conversion requires explicit quantization and is rejected; FP32 scales stay
-FP32. Loading these checkpoints needs no extracted DLL asset directory.
+legacy = load_checkpoint("ckpts/dlss5_nr_fp8.pt")                      # legacy71 default
+legacy_half = load_checkpoint("ckpts/dlss5_nr_fp16.pt")                # legacy71 default
+small = load_checkpoint("ckpts/dlss5_nr_small31.pt", model="small31")
+```
+
+| Model selection | Original portable file | Stored weights and supported routes |
+|---|---|---|
+| `legacy71` (default) | `ckpts/dlss5_nr_fp8.pt` | Original mixed FP8/Half storage plus the 153 packed native records; FP8 or lossless FP16 native deployment and FP32/BF16 training. |
+| `legacy71` | `ckpts/dlss5_nr_fp16.pt` | The same learned values widened exactly to Half; FP16 native deployment and FP32/BF16 training. |
+| `small31` (explicit) | `ckpts/dlss5_nr_small31.pt` | All 77 original Small31 records; FP8 or lossless FP16 native deployment and FP32/BF16 training. |
+
+A mismatched file or unknown model name raises; the model is never inferred from a file name, tensor shape or size. There is no separate higher-precision trained weight resource. Stored weight family and compute precision are separate: `training_model(..., precision="fp32")` or `precision="bf16"` uses ordinary PyTorch/autograd with FP32 masters. Native plans use original packed FP8 records or losslessly repacked FP16 records with the reconstructed CUDA kernels. Widening does not recover precision absent from the source. Ordinary loading rejects downward conversion; the explicit trained FP16 export described below performs the deliberate narrowing. FP32 scales stay FP32.
+
+The actual Small31 artifact is `ckpts/dlss5_nr_small31.pt`, 113,943,356 bytes with SHA-256 `742c63cae96fb0d6f53f2de6e89e8175606ad51b8939e5e7d255a9167fbef154`. It is extracted statically from the signed 310.9.16 `WEIGHTS_CC_SMALL_FP8` resource:
+
+```powershell
+python -B tools/extract_model_checkpoint.py --dll profile/dlss-update-20261029/artifacts/dll/nvngx_dlssnr_310.9.16.dll --model small31 --output ckpts/reextracted_small31.pt
+```
+
+Substitute the path to your copy of the same signed 310.9.16 DLL if it lives elsewhere, and choose a fresh output path: neither its `.pt` nor its `.json` may already exist. The `.pt` is self-contained. After `git lfs pull` or that extraction, **no original DLL or extracted archive directory is required to load it**. The optional adjacent `.json` records provenance and its checkpoint file hash is verified by default when present; model identity is enforced from the payload. The 77 raw records, 272 decoded state tensors across 31 blocks, source-based roundtrip and isolated `.pt`-only loading passed CPU checks. The bounded GPU acceptance for these checkpoint flows is recorded in the [public checkpoint acceptance receipt](kernel-guide/evidence-checkpoints/acceptance.json). See the [checkpoint guide](../ckpts/README.md) for the receipt and full identity details.
 
 ## Deployment
 
@@ -371,24 +402,56 @@ packing; reshaping BHWC features or reinterpreting bytes does not perform it.
 import torch
 from dlssnr import Geometry, load_checkpoint, prepare_kernels
 
-width, height = 1234, 777
+width, height = 320, 320
 geometry = Geometry.from_valid(width, height)
 feature_width, feature_height = geometry.levels[0]
 
-# Supply prepared_state from a matching FP16 physical-layout producer.
-# It is not created by this example and is not an RGB/BHWC tensor.
-assert prepared_state.is_cuda and prepared_state.dtype == torch.uint8
-assert prepared_state.ndim == 1 and prepared_state.is_contiguous()
-assert prepared_state.numel() == feature_width * feature_height * 32 * 2
+# Independent synthetic values written directly to native physical slots.
+# This is not a BHWC -> native packing conversion; real RGB/BHWC deployment
+# needs a matching producer.
+native_generator = torch.Generator().manual_seed(320)  # Separate CPU generator.
+physical_slots = torch.randn(
+    feature_width * feature_height * 32,
+    generator=native_generator, dtype=torch.float32,
+) * 0.02
+prepared_half_state = (
+    physical_slots.to(torch.float16).view(torch.uint8).to("cuda:0")
+)
+prepared_fp8_state = (
+    physical_slots.clamp(-448.0, 448.0)
+    .to(torch.float8_e4m3fn).view(torch.uint8).to("cuda:0")
+)
+assert prepared_half_state.dtype == torch.uint8
+assert prepared_half_state.numel() == feature_width * feature_height * 32 * 2
+assert prepared_fp8_state.numel() == feature_width * feature_height * 32
 
 checkpoint = load_checkpoint("ckpts/dlss5_nr_fp16.pt")
-plan = checkpoint.create_plan_fp16(prepared_state, width=width, height=height)
+plan = checkpoint.create_plan_fp16(prepared_half_state, width=width, height=height)
 output = plan.run_fp16()
 
 sequence = prepare_kernels(plan)
 output = sequence(*sequence.tensors)  # Individually visible Torch operations.
 output = sequence.run_cpp()           # Bound chain dispatched entirely in C++.
 ```
+
+The fixture above is generated directly in native storage and is not converted
+from an RGB or BHWC tensor. For this 320×320 geometry, `geometry.levels[0]` is
+160×160, so the flat fixture holds 160 × 160 × 32 = 819,200 values (1,638,400
+bytes as FP16). The plan's `width`/`height` are the 320×320 valid dimensions.
+
+Small31 uses the same prepared-feature contract but its own 31-role plan and record roster. It must be selected explicitly:
+
+```python
+# Reuses width, height and both prepared states from the example above.
+small = load_checkpoint("ckpts/dlss5_nr_small31.pt", model="small31")
+small_plan8 = small.create_plan_fp8(prepared_fp8_state, width=width, height=height)
+small_output8 = small_plan8.run_fp8()
+
+small_plan16 = small.create_plan_fp16(prepared_half_state, width=width, height=height)
+small_output16 = small_plan16.run_fp16()
+```
+
+`ckpts/dlss5_nr_small31.pt` is complete: no original DLL or archive directory is consulted at load or plan time, and its optional JSON receipt is not required. The same file supports the original FP8 records and the lossless FP16 widening path. No plan is inferred from a file name; pass `model="small31"` explicitly.
 
 FP8 uses the FP8 checkpoint, `create_plan_fp8`, `run_fp8`, and one byte per
 feature element. Prepare plans outside CUDA Graph capture. Keep plans alive
@@ -405,26 +468,79 @@ default Inductor needs compatible Triton. The earlier SM120 validation used
 
 ## Training
 
-```python
-import torch
-from dlssnr import Geometry, load_checkpoint
+The training graph is ordinary PyTorch/autograd. The example below is a diagnostic plumbing and finite-output fixture: one real AdamW update on synthetic features, an FP32 master save/reload, an explicit FP16 export, and a native FP16 plan load. It is not a DLSS fine-tuning recipe, and its scalar is not a task loss. Keep FP32 master parameters; do not call `model.half()` or `model.bfloat16()`. Training includes all 71 Legacy blocks (or the 31 Small31 roles) and uses floating BHWC features, unlike deployment byte buffers.
 
-model = load_checkpoint("ckpts/dlss5_nr_fp16.pt").training_model(
-    device="cuda", precision="bf16", checkpoint_blocks=True,
-).train()
-geometry = Geometry.from_valid(1280, 720)
-features = torch.randn(1, geometry.full_height, geometry.full_width, 16,
-                       device="cuda", dtype=torch.float32) * 0.02
-model.zero_grad(set_to_none=True)
-head = model.forward_train(features, geometry=geometry)
-head.square().mean().backward()  # Diagnostic scalar, not a proposed task loss.
+```python
+import os
+import torch
+from dlssnr import Geometry, export_trained_checkpoint, load_checkpoint
+
+model_id = "small31"  # Use "legacy71" for the original 71-block graph.
+checkpoint_paths = {
+    "legacy71": "ckpts/dlss5_nr_fp8.pt",  # Or ckpts/dlss5_nr_fp16.pt.
+    "small31": "ckpts/dlss5_nr_small31.pt",
+}
+output_paths = {
+    "master": f"outputs/diagnostic-{model_id}-master.pt",
+    "fp16": f"outputs/diagnostic-{model_id}-fp16.pt",
+}
+checkpoint = load_checkpoint(checkpoint_paths[model_id], model=model_id)
+
+geometry = Geometry.from_valid(320, 320)
+generator = torch.Generator().manual_seed(320)  # CPU generator.
+features = torch.randn(
+    (1, geometry.full_height, geometry.full_width, 16),
+    generator=generator, dtype=torch.float32,
+) * 0.02
+features = features.to("cuda:0")
+
+model = checkpoint.training_model(
+    device="cuda:0", precision="bf16", trainable=True, checkpoint_blocks=False,
+)
+model.train()
+output = model.forward_train(features, geometry=geometry)
+loss = output.float().square().mean()  # Diagnostic fixture only, not a task loss.
+loss.backward()
+optimizer = torch.optim.AdamW(
+    model.parameters(), lr=1e-5, betas=(0.9, 0.999), eps=1e-8, weight_decay=0.01,
+)
+optimizer.step()
+optimizer.zero_grad(set_to_none=True)
+
+model.eval()
+os.makedirs("outputs", exist_ok=True)
+torch.save(model.state_dict(), output_paths["master"])
+fresh = checkpoint.training_model(
+    device="cuda:0", precision="bf16", trainable=True, checkpoint_blocks=False,
+)
+fresh.load_state_dict(
+    torch.load(output_paths["master"], weights_only=True), strict=True,
+)
+fresh.eval()
+receipt = export_trained_checkpoint(
+    fresh, output_paths["fp16"], model=model_id, precision="fp16",
+)
+trained = load_checkpoint(output_paths["fp16"], model=model_id)
+
+# Independent synthetic native physical storage for the trained FP16 export.
+# These values are written directly to native byte slots: this is not a
+# BHWC -> native packer and not the training feature above.
+feature_width, feature_height = geometry.levels[0]
+native_generator = torch.Generator().manual_seed(320)  # Separate CPU generator.
+native_slots = torch.randn(
+    feature_width * feature_height * 32,
+    generator=native_generator, dtype=torch.float32,
+) * 0.02
+prepared_half_state = (
+    native_slots.to(torch.float16).view(torch.uint8).to("cuda:0")
+)
+trained_plan = trained.create_plan_fp16(prepared_half_state, width=320, height=320)
+trained_output = trained_plan.run_fp16()
 ```
 
-Use `precision="fp32"` for FP32 computation. Keep FP32 master parameters;
-do not call `model.half()` or `model.bfloat16()`. Training includes all 71 blocks
-and uses floating BHWC features, unlike deployment byte buffers. Checkpointing
-trades recomputation for lower activation memory. **Actual DLSS5 transfer
-learning, task losses, data preparation and training procedures remain TBD.**
+`precision="bf16"` can instead be `"fp32"`; both are ordinary autograd builds with FP32 masters. Other AdamW options remain installed PyTorch 2.8 defaults (`amsgrad=False`, `maximize=False`, `foreach=None`, `capturable=False`, `differentiable=False`, `fused=None`). `checkpoint_blocks=True` is supported for lower activation memory but was not part of this diagnostic setting. The 320×320 seed/scale case is a bounded example; it does not generalize to arbitrary inputs or resolutions. An earlier explicit `lr=1e-3` update produced nonfinite native FP16 outputs even though the stored weights were finite and serialized correctly; no specific overflowing instruction or root cause is asserted. `precision="fp16"` is the explicit, deliberately lossy narrowing opt-in; the export accepts only `fp16` and exposes no separate implicit-conversion flag. That master state is not a native deployment file: updated learned values reach the native CUDA records only through the explicit export, which is state-only, carries no original records, and cannot be used as an FP8 deployment source. Learned FP8 export is rejected because no inverse learned-FP8 writer exists; stale original records never stand in for trained weights. GPU acceptance is complete on an RTX PRO 6000 Blackwell (SM120) at 320×320: four original native cases (Legacy71 and Small31, FP16 and FP8), four actual optimizer/training cases (both models, FP32 and BF16) at the explicit diagnostic `lr=1e-5`, byte-exact FP32 master save/reload, loaded-vs-independently-quantized native trunk output, one zero-update control, and two learned FP32-trained, FP16-exported full-RGB stateless smoke cases that exercise learned preprocess, trunk and postprocess with finite RGBA and intact native trunk guards. Limits: temporal history, motion and blend are empty; the blend scalar is verified but unchanged and not executed; no vendor/surrogate parity, image-quality improvement or broad precision/resolution guarantee is claimed; frontend output guards are not separately exposed. The bounded commands and per-case receipts are in the [public checkpoint acceptance receipt](kernel-guide/evidence-checkpoints/acceptance.json); the earlier 4K runtime figures elsewhere in the documentation are separate measurements and are unchanged. See [Deployment](#deployment) for the packed input contract.
+
+**Actual DLSS5 transfer learning, task losses, data preparation and training procedures remain TBD.**
 
 GPU comparison fixtures additionally need cached original DLL/cubin assets;
 the training benchmark worker needs `assets/nr`. There is no current top-level
