@@ -12,6 +12,7 @@ import textwrap
 
 from architecture_attention import render as render_attention
 from architecture_blocks import render as render_blocks
+from architecture_models import render as render_models
 from architecture_stages import render as render_stages
 from architecture_variants import render as render_variants
 
@@ -152,7 +153,7 @@ def main():
     if len(SCHEDULE) != 71 or SCHEDULE[39]["kind"] != "transition":
         raise RuntimeError("Network schedule changed; review the diagram annotations")
     OUT.mkdir(parents=True, exist_ok=True)
-    for render in (overview, render_blocks, render_variants, render_attention, render_stages, numerics):
+    for render in (overview, render_models, render_blocks, render_variants, render_attention, render_stages, numerics):
         render()
     # These summary-card figures were replaced by individual tensor-flow views.
     for obsolete in ("ffn.svg", "endpoints.svg"):

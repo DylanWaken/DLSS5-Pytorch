@@ -26,7 +26,7 @@ The repository supports two explicit identities. `legacy71` stays the default fo
 | Identity | Resource | Status |
 |---|---|---|
 | `legacy71` (default) | `WEIGHTS_HT`, 153 records | Existing FP8/FP16 deployment and 71-block training path, unchanged. |
-| `small31` (opt-in) | `WEIGHTS_CC_SMALL_FP8`, 77 records over raw ids 0–30 | Separate trained model with a source-derived 31-role schedule, four-channel head (4 × 32 = 128 logical values: 96 RGB + 32 history-gate), and its own native plan/loader. |
+| `small31` (opt-in) | `WEIGHTS_CC_SMALL_FP8`, 77 records over raw ids 0–30 | Separate trained model with a source-derived 31-role schedule, a 32 → 4 head (128 weight coefficients: 96 for RGB and 32 for the history gate), and its own native plan/loader. |
 
 Small31 is extracted only from the original signed 310.9.16 DLL; the community-patched DLL is rejected. The DLL is parsed statically and never executed:
 
@@ -57,11 +57,13 @@ The PyTorch FP32/BF16 training path has separate forward/checkpointed-gradient s
 
 ## Network at a glance
 
-A multiscale encoder–decoder combines local window attention, a global-attention bottleneck and skip connections. Different channel widths use different feed-forward blocks.
+A multiscale encoder–decoder combines local window attention, a global-attention bottleneck and six skip connections. The aligned diagrams show both supported models: **Legacy71**, with the High-resource weights, and **Small31**, with the separate Small weights extracted from 310.9.16.
 
-![Network architecture, stage ranges and skip connections](docs/kernel-guide/assets/architecture/network.svg)
+![Legacy71 and Small31: aligned encoder, global-attention, decoder, skip and output stages](docs/kernel-guide/assets/architecture/network-variants.svg)
 
-The master diagram labels each stage's FFN and attention variants. The [architecture guide](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html) compares [FFN variants](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html#channel-mixing-inside-a-block) and [attention variants](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html#how-positions-exchange-information) side by side, then expands their tensor flows, shapes and normalization steps. It also covers [encoder/decoder transitions](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html#moving-between-resolutions) and [input/output blocks](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html#entering-and-leaving-the-network).
+Small31 uses two blocks at each local encoder/decoder stage and retains all eight global-attention blocks. Both follow the same channel ladder, 32 → 64 → 128 → 256 → 512 → 1024 and back, and produce four head channels per location: RGB plus a history gate. Small31 has its own trained weights and window phases; it is not obtained by deleting blocks from the Legacy71 checkpoint. The diagram distinguishes the 71/31 operation roles from the 153/77 packed records.
+
+The [architecture guide](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html) expands both model schedules, then compares [FFN variants](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html#channel-mixing-inside-a-block) and [attention variants](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html#how-positions-exchange-information), including tensor flows, shapes and normalization. It also covers [encoder/decoder transitions](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html#moving-between-resolutions) and [input/output blocks](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html#entering-and-leaving-the-network).
 
 ## Getting started
 
@@ -122,17 +124,30 @@ latency, throughput and memory results as JSON/CSV. Add `--per-kernel` for a
 separate diagnostic breakdown. Checkpoints are required; extracted DLLs are not.
 See [local speed testing](docs/SETUP.md#test-speed-on-your-gpu) for options.
 
-**FP8 inference:** three of four sizes meet the 1% limit; 1080p measures **1.19% slower**. At 4K: **6.528 ms reconstructed / 6.650 ms original**.
+**Both models against DLL-extracted CUDA kernels.** The measurements below were collected on 2026-10-30 using the RTX PRO 6000 Blackwell (SM120), driver 610.62, and the accepted native extension. Legacy71 replays kernels extracted from **310.8.0.0**; Small31 replays kernels extracted from the signed **310.9.16.0** DLL. These are prepared-feature trunk timings using our reconstructed schedules. They exclude RGB preprocessing/postprocessing, transfers, decoding, and DLL/NGX host execution; the [Cyberpunk RGB timings](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/cyberpunk-comparison.html) measure a different scope.
 
-![FP8 deployment latency at 720p, 1080p, 2K and 4K](docs/figures/deployment_fp8_resolutions.svg)
+| Model at 3840 × 2160 | Precision | DLL-kernel replay | Reconstruction |
+|---|---|---:|---:|
+| Legacy71 · 310.8.0.0 | FP16 | 12.058 ms | 11.756 ms |
+| Legacy71 · 310.8.0.0 | FP8 | 7.030 ms | 6.879 ms |
+| Small31 · 310.9.16.0 | FP16 | N/A: required Half exports absent | 5.748 ms |
+| Small31 · 310.9.16.0 | FP8 | 3.416 ms | 3.411 ms |
 
-**FP16 inference:** the prepared-feature trunk meets the 1% limit at all four sizes. At 4K: **11.307 ms reconstructed / 11.572 ms original**.
+**FP8, both models:** each panel shows 720p, 1080p, 1440p and 4K. Small31 comparisons are timing-only: our FP32 persistent P×V accumulation and denominator differ from the extracted vendor kernel's Half arithmetic. Both executions remain finite, but numerical equality is not claimed.
 
-![FP16 deployment latency at 720p, 1080p, 2K and 4K](docs/figures/deployment_fp16_resolutions.svg)
+![Legacy71 and Small31 FP8 prepared-trunk latency versus their DLL-extracted kernels at four resolutions](docs/figures/deployment_fp8_resolutions.svg)
 
-These measurements use the current build and automatic scheduling on the RTX PRO 6000. Inference charts cover prepared-feature blocks 1–69 and exclude input/output stages and DLL host processing. Timings use 64 alternating pairs; both execution orders must meet the 1% limit.
+**FP16, both models:** Legacy71 has a paired DLL-kernel reference. Small31 shows reconstruction latency only: the extracted 310.9.16 CUDA modules lack the 33 Half symbols required by its replay schedule. This does not establish what other execution paths the full DLL might support.
 
-**Training:** full-network FP32/BF16 forward and backward, with checkpointing, batch one and no optimizer. At 4K, peak allocated memory is **52.4 / 43.3 GiB**, respectively.
+![Legacy71 and Small31 FP16 prepared-trunk latency at four resolutions, with unavailable Small31 DLL references explicitly marked](docs/figures/deployment_fp16_resolutions.svg)
+
+Each model uses its own packed weights and a fixed synthetic prepared-feature fixture (seed 3108, normal noise scaled by 0.02 and cast to the selected precision). Each paired case uses 64 alternating pairs, balanced across both execution orders, after 20 warmup graph replays. A captured graph contains three trunk passes; each timed sample replays it ten times, giving 30 passes per sample. Bars report median milliseconds per pass; percentage annotations use the median of paired reconstruction/reference ratios, which can differ from the ratio of the two latency medians. Small31 FP16 uses 64 reconstruction-only samples with the same graph and warmup settings.
+
+All eight Legacy71 cases are byte-exact at all 74 checked boundaries. All four Small31 FP8 pairs pass finite-output, memory-guard, counter and fresh-input checks at 34 boundaries, but first diverge at `b31.output`. At 4K, the largest boundary relative L2 difference is 0.143 and the largest absolute difference is 4.0 in internal feature values. The receipt reports these numerical differences separately from latency; there is no speed pass threshold. See the [measurement summary](docs/figures/dual_model_deployment_measurements.json) and [raw scalar receipt and samples](docs/figures/dual_model_deployment_raw.json) for hardware, source/DLL/weight/binary hashes, per-case checks and paired variability.
+
+The paired protocol is implemented in [benchmark_model_vendor.py](tools/benchmark_model_vendor.py), separate from the convenience `test_speed.py` runner. This replay tool currently targets Windows/SM120; its `--help` documents explicit model, precision, checkpoint/archive and extracted-module paths. [extract_vendor_kernels_310_9_16.py](tools/extract_vendor_kernels_310_9_16.py) statically extracts the pinned signed DLL's compressed CUDA modules using Python 3.14's `compression.zstd`. Supply the matching DLL and model assets to reproduce these measurements.
+
+**Legacy71 training (earlier measurements):** full-network FP32/BF16 forward and backward, with checkpointing, batch one and no optimizer. At 4K, peak allocated memory is **52.4 / 43.3 GiB**, respectively. This chart does not measure Small31 or compare training against a DLL.
 
 ![FP32 and BF16 training speed and memory at four resolutions](docs/figures/training_resolutions.svg)
 
@@ -141,6 +156,6 @@ These measurements use the current build and automatic scheduling on the RTX PRO
 `csrc/kernel_impl/<network_stage>/{fp8,fp16,common}` contains **58 complete kernel bodies for 83 public configurations**: the original 56 bodies/81 configurations plus two Small31 attention entries. Folder names identify shared encoder/decoder levels; repeated blocks retain one implementation. Each global function shows its storage, loops, pipelining and writeback. Stage helpers and intrinsics sit beside their kernels; `shared/common` contains cross-stage primitives and the ABI. `kernel_launcher` owns host dispatch, `torch_api` registers PyTorch interfaces, and `dlssnr` contains entry points and the training model. `tests` and `tuning` hold validation and offline policy tools.
 
 - [Setup, deployment and training](docs/SETUP.md)
-- [Network architecture and tensor flow](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html) — the complete model guide with 15 SVG diagrams; [local HTML](docs/kernel-guide/architecture.html).
+- [Network architecture and tensor flow](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html) — both model schedules and 16 SVG diagrams; [local HTML](docs/kernel-guide/architecture.html).
 - [83 standalone FP16/FP8 kernel lessons](https://DylanWaken.github.io/DLSS5-Pytorch/kernel-guide/) — one complete reconstruction tutorial per public kernel, with model equations, tensor/lane/address diagrams, source excerpts and [local HTML](docs/kernel-guide/index.html).
 - [Kernel reconstruction workflow](skills/dlssnr-reconstruction/SKILL.md)

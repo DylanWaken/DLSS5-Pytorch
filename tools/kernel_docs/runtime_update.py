@@ -442,7 +442,7 @@ def _plan_svg():
         '<text x="1203" y="101" class="small">pre raw0: 21,696 / 33,984 B</text>',
         '<text x="1203" y="123" class="small">post raw30: 21,808 / 34,096 B</text>',
         '<text x="1203" y="145" class="small">+ separate blend_scale (2 B)</text>',
-        '<text x="1203" y="167" class="small">4 × 32 = 96 RGB + 32 gate</text>',
+        '<text x="1203" y="167" class="small">weights: 96 RGB + 32 gate</text>',
         '<text x="1203" y="185" class="small">frontend dispatch, not this plan</text>',
         # host ownership
         '<rect x="24" y="236" width="690" height="150" rx="9" class="tensor"/>',
@@ -532,15 +532,15 @@ def _binding_svg():
         '<text x="43" y="410" class="label">post · raw30 / role70</text>',
         '<text x="43" y="433" class="small">block30.layer0.layer + blend_scale 2 B</text>',
         '<text x="43" y="454" class="small">FP8 21,808 B / FP16 34,096 B</text>',
-        '<text x="43" y="475" class="small">existing postprocess → 4 × 32 head</text>',
-        '<text x="43" y="494" class="small">96 RGB + 32-high history gate</text>',
+        '<text x="43" y="475" class="small">postprocess → RGB + history gate</text>',
+        '<text x="43" y="494" class="small">head weights: 96 RGB + 32 gate</text>',
     ])
     # precision ladder
     ladder = [
         ('archive storage', 'FP8 = original E4M3 bytes', 'FP16 = lossless repack; no re-quantize', 'storage'),
         ('native plan · FP8/FP16', 'most kernels reused; 2 Small attention variants', 'one logical call may split into N launches', 'compute'),
         ('PyTorch surrogate · FP32/BF16', 'FP32 master weights', 'FP32 or BF16 working arithmetic', 'tensor'),
-        ('post head · float', 'float 4 × 32 = 128 logical values', 'RGB residual + history gate', 'compute'),
+        ('post head · float', '4 output channels per location', '4 × 32 weights → RGB + history gate', 'compute'),
     ]
     y = 56
     for title, line1, line2, klass in ladder:
@@ -559,7 +559,7 @@ def _binding_svg():
     return (
         '0 0 1500 580',
         ''.join(parts),
-        'One tracked token crosses the Small31 pipeline: pre raw0/role0 is outside the trunk; the trunk input is buffer index 0; four positional record bindings show raw1/role1 to b1.output, raw10/role30 to b30 buffers, raw19/role39 to b39 with the b30 residual, and raw29/role69 to b69.output; post raw30/role70 plus its blend scalar is outside the trunk and produces the four-channel 4x32 head. A right-hand ladder labels archive FP8/FP16 storage, the native FP8/FP16 and PyTorch FP32/BF16 alternative execution routes, and the float post head; native and PyTorch are alternatives, not sequential stages.',
+        'One tracked token crosses the Small31 pipeline: pre raw0/role0 is outside the trunk; the trunk input is buffer index 0; four positional record bindings show raw1/role1 to b1.output, raw10/role30 to b30 buffers, raw19/role39 to b39 with the b30 residual, and raw29/role69 to b69.output; post raw30/role70 plus its blend scalar is outside the trunk and applies 4x32 weight coefficients to produce four head channels per location. A right-hand ladder labels archive FP8/FP16 storage, the native FP8/FP16 and PyTorch FP32/BF16 alternative execution routes, and the float post head; native and PyTorch are alternatives, not sequential stages.',
         'Raw ids, operation roles and record positions are three different namespaces. A logical call may become multiple physical split launches; the diagram makes no timing or speed claim, and pre/post are outside the 109-call trunk census.',
     )
 
@@ -924,7 +924,7 @@ BODY = f"""
 <tr><td>Deployed records / boundaries / unique kernels</td><td>142 / 74 / 36</td><td><strong>66 / 34 / 34</strong></td></tr>
 <tr><td>Native buffers</td><td>232 FP8 / 208 FP16</td><td><strong>156 FP8 / 132 FP16</strong></td></tr>
 <tr><td>Window phases</td><td>legacy <code>graph_schedule</code></td><td>explicit per-role masks below</td></tr>
-<tr><td>Post head</td><td>32 × 4 training head; 2-byte blend scalar 0.73974609375</td><td>native four logical channels: 96 RGB values + 32-half history gate in 4 × 32; Small blend scalar 0.76708984375</td></tr>
+<tr><td>Post head</td><td>32 × 4 training head weights; 2-byte blend scalar 0.73974609375</td><td>4 × 32 weight coefficients: 96 for RGB + 32 for the history gate, producing four channels per location; Small blend scalar 0.76708984375</td></tr>
 </tbody></table></div>
 <p>The {STAGE_COUNT} archive stages below are sums over the verified 77-record roster. They are not copied from legacy stage ranges; grouping by raw range would mix ViT and decoder records into the wrong files. In the current spec, {STAGE_GROUPING}. The forward schedule still separates those boundary roles into 14 logical segments; both descriptions are correct at their own layer.</p>
 <div class="table-scroll"><table><thead><tr><th>Archive stage</th><th>Logical segment(s)</th><th>Roles</th><th>Raw ids</th><th>Records</th><th>Payload bytes</th></tr></thead><tbody>
@@ -958,7 +958,7 @@ BODY = f"""
 <tr><td>Resource envelope</td><td><code>113,893,343 = 8 + 113,887,490 + 77×56 + 1,533</code></td><td>File length, full SHA-256, envelope self-size, 77 records, payload sum.</td></tr>
 <tr><td>Stage payload</td><td><code>encoder512</code>: 9 records, 4,460,688 B</td><td>Stage comes from the role, not the raw id; each record is concatenated once.</td></tr>
 <tr><td>Raw id → role</td><td><code>block2 → role 4</code>; <code>block10.layer4 → role 30</code>; <code>block19 → role 39</code>; <code>block30 → role 70</code></td><td>Explicit bijection, record name/layer/parameter, role-mapped byte length; 19/31 role ids remain source/order-derived.</td></tr>
-<tr><td>Decoded tensors</td><td>role 4 C32 down; role 30 512 × 1024 down; role 39 1024 → 512; post head 4 × 32 = 96 RGB + 32 gate</td><td>Shapes, finite values, decoded dtype and the source-derived post permutation; the 4 × 32 layout is artifact/kernel checked.</td></tr>
+<tr><td>Decoded tensors</td><td>role 4 C32 down; role 30 512 × 1024 down; role 39 1024 → 512; post weights 4 × 32 = 96 RGB + 32 gate coefficients</td><td>Shapes, finite values, decoded dtype and the source-derived post permutation; the 4 × 32 weight layout is artifact/kernel checked.</td></tr>
 <tr><td>PyTorch operations</td><td><code>SMALL31</code> model: five encoder pairs, 8 global blocks, transition, five decoder pairs, four-channel head (RGB + source-backed gate)</td><td>Executed CPU/GPU self-consistency; this training reconstruction stays FP32/BF16. The separate native deployment path is supported for both models and passes real RGB fixtures.</td></tr>
 <tr><td>Native FP8 / FP16 records</td><td>FP8 keeps the original archive bytes; FP16 repacks the decoded state with <code>pack_kernel_fp16</code></td><td>Every compiled record name, order and byte size checked; no Half-to-FP8 conversion.</td></tr>
 <tr><td>Native plan binding</td><td>66 positional records, 109 logical calls, 34 boundaries, 156 FP8 / 132 FP16 buffers</td><td>Generated-table/static audit; one logical call may become multiple physical split launches.</td></tr>
@@ -969,7 +969,7 @@ BODY = f"""
 {FIGURE_TOKEN}
 <p>The token path also fixes the skip semantics: the published attention result is saved; the raw result takes the 2 × 2 average and channel projection. At the decoder entry the lower-resolution path is projected before spatial repetition, then cropped and added to the scaled skip. The merge is addition, not concatenation. This is the same obligation at every mapped pair; the changed phases do not change it.</p>
 <h3 id="post-head">The post head is four logical channels</h3>
-<p>The native 1,024-byte head region is <code>[20784, 21808)</code> of <code>block30.layer0.layer</code>: 512 halves, of which exactly 128 are non-zero and 384 are zero padding. The HIP <code>16×32</code> scatter selects rows <code>0, 2, 4, 6</code>; rows 0, 2 and 4 carry the 96 RGB values and row 6 carries the 32-half history gate, so <code>96 + 32 = 128 = 4 × 32</code>. The layout review verified that all 128 values are the same values as the local <code>head[32,4]</code> decode under a consistent packing permutation. The declared head is therefore <strong>four logical channels</strong>, not a three-channel RGB head. The separate Small blend scalar is <code>0.76708984375</code> (<code>0x3a23</code>); the legacy HT value is <code>0.73974609375</code>.</p>
+<p>The native 1,024-byte head-weight region is <code>[20784, 21808)</code> of <code>block30.layer0.layer</code>: 512 halves, of which exactly 128 are non-zero coefficients and 384 are zero padding. The HIP <code>16×32</code> scatter selects rows <code>0, 2, 4, 6</code>; rows 0, 2 and 4 carry the 96 RGB weight coefficients and row 6 carries the 32 history-gate weight coefficients, so <code>96 + 32 = 128 = 4 × 32</code>. The layout review verified that all 128 coefficients are the same as the local <code>head[32,4]</code> decode under a consistent packing permutation. Applying these weights produces <strong>four activation channels per location</strong>: RGB and a history gate. The separate Small blend scalar is <code>0.76708984375</code> (<code>0x3a23</code>); the legacy HT value is <code>0.73974609375</code>.</p>
 {C_NATIVE_HEAD}
 {C_POST_SPEC}
 {C_COMPOSE}
@@ -1055,7 +1055,7 @@ legacy = load_native_model("ckpts/dlss5_nr_fp16.pt")  # still the default
 <tr><td>Independent artifact review</td><td>Cached bundle, original DLL, both resources, 230 record files, 22 stage packs</td><td><strong>Direct bytes:</strong> all re-hashed; HT 153/153 identical, Small 0/77 identical and 77/77 changed. Host dispatch, phases, geometry, post layout and numerical parity are not established by bytes.</td></tr>
 <tr><td>Stage payloads</td><td>{STAGE_COUNT} archive-stage sums over the 77-record roster</td><td><strong>Direct bytes:</strong> total equals 113,887,490 B; stage grouping is by role, not legacy raw ranges.</td></tr>
 <tr><td>Source-derived phase schedule</td><td>HIP masks and decoder rule at pinned <code>fe3f91a2</code></td><td><strong>Source inference:</strong> recorded with provenance; not observed in DLL host dispatch. Changed roles are exactly 4, 8, 22, 30, 40, 48, 62, 66; role 56 is already phase 2 in the legacy <code>graph_schedule</code>.</td></tr>
-<tr><td>Post head</td><td>Layout review + primary-kernel/FP16 probe; <code>PostHeadSpec</code> and the opt-in model</td><td><strong>Artifact/kernel check:</strong> native 4 × 32 = 96 RGB + 32 gate; the 16×32 scatter rows 0,2,4,6 give the same 128 values as local <code>32×4</code>. DLL host descriptor still unobserved.</td></tr>
+<tr><td>Post head</td><td>Layout review + primary-kernel/FP16 probe; <code>PostHeadSpec</code> and the opt-in model</td><td><strong>Artifact/kernel check:</strong> native 4 × 32 weights = 96 RGB + 32 gate coefficients; the 16×32 scatter rows 0,2,4,6 give the same 128 coefficients as local <code>32×4</code>. DLL host descriptor still unobserved.</td></tr>
 <tr><td>Canonical offsets and portable identity</td><td>Focused CPU tests at final source: real equal-size offset swap, provenance variants, checkpoint portability</td><td><strong>Executed:</strong> swapped <code>decoder512</code> offsets are rejected at load and at fixture-mode model construction; checkpoint restore is portable across verified provenance variants; cross-identity loads are rejected before tensor copies. 33 passed / 1 skipped plus 11 deployment tests.</td></tr>
 <tr><td>Archive extraction</td><td><code>tools/extract_runtime_assets.py --dll &lt;original 310.9.16 DLL&gt; --model small31 --output &lt;new-dir&gt;</code></td><td><strong>Executed:</strong> fresh extraction produced 31 blocks, 77 records, 11 archive stages, payload 113,887,490 B and manifest SHA-256 <code>8471411a…e9f6fc</code>. The DLL was parsed, not executed.</td></tr>
 <tr><td>Small native plan census</td><td>Generated FP8/FP16 assets + independent static parser</td><td><strong>Executed CPU/static:</strong> 109 calls (76 compute/repack + 33 clear), 66 records, 34 boundaries, 156 FP8 / 132 FP16 buffers, 34 unique kernels, output <code>b69.output</code>. One logical call may split into multiple physical launches; these are not timings.</td></tr>

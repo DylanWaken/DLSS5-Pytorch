@@ -1,0 +1,239 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="2040" viewBox="0 0 960 2040" role="img" aria-labelledby="title desc">
+<title id="title">DLSS-NR Legacy71 and Small31 aligned architecture</title>
+<desc id="desc">Aligned Legacy71 and Small31 architecture: fourteen stage rows, five encoder and five decoder levels, a C1024 global bottleneck, transition 39, six role-space skip rails, separate trained weights and four-channel output heads.</desc>
+<defs>
+<marker id="flowArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#52647c"/></marker>
+<marker id="skipArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#b86910"/></marker>
+</defs>
+<rect width="960" height="2040" fill="#ffffff"/>
+<text x="24" y="40" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="28" font-weight="650" text-anchor="start">DLSS-NR Legacy71 and Small31 aligned architecture</text>
+<text x="24" y="68" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Legacy71 and Small31: same block math and stage skeleton.</text>
+<text x="24" y="91" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Separate trained weights. Totals include input 0, transition 39 and post 70.</text>
+<text x="24" y="114" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Small raw ids are not legacy roles. Amber rails show the six shared role-space skips.</text>
+<text x="70" y="144" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="22" font-weight="650" text-anchor="start">Legacy71</text>
+<text x="70" y="166" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">71 roles · 153 records · identity raw→role</text>
+<text x="70" y="186" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">encoder 4/4/6/8/8 · decoder 8/8/6/4/4</text>
+<text x="490" y="144" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="22" font-weight="650" text-anchor="start">Small31</text>
+<text x="490" y="166" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">31 roles · 77 records · source-derived roles</text>
+<text x="490" y="186" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">separate weights, not a prune of Legacy71</text>
+<path d="M 24,1632 L 936,1632" fill="none" stroke="#d8e1ed" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<path d="M 70,254 L 28,254 L 28,1580 L 70,1580" fill="none" stroke="#b86910" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" opacity="1" stroke-dasharray="6 5" marker-end="url(#skipArrow)"/>
+<path d="M 70,356 L 34,356 L 34,1478 L 70,1478" fill="none" stroke="#b86910" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" opacity="1" stroke-dasharray="6 5" marker-end="url(#skipArrow)"/>
+<path d="M 70,458 L 40,458 L 40,1376 L 70,1376" fill="none" stroke="#b86910" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" opacity="1" stroke-dasharray="6 5" marker-end="url(#skipArrow)"/>
+<path d="M 70,560 L 46,560 L 46,1274 L 70,1274" fill="none" stroke="#b86910" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" opacity="1" stroke-dasharray="6 5" marker-end="url(#skipArrow)"/>
+<path d="M 70,662 L 52,662 L 52,1172 L 70,1172" fill="none" stroke="#b86910" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" opacity="1" stroke-dasharray="6 5" marker-end="url(#skipArrow)"/>
+<path d="M 70,764 L 58,764 L 58,968 L 70,968" fill="none" stroke="#b86910" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" opacity="1" stroke-dasharray="6 5" marker-end="url(#skipArrow)"/>
+<path d="M 890,254 L 930,254 L 930,1580 L 890,1580" fill="none" stroke="#b86910" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" opacity="1" stroke-dasharray="6 5" marker-end="url(#skipArrow)"/>
+<path d="M 890,356 L 924,356 L 924,1478 L 890,1478" fill="none" stroke="#b86910" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" opacity="1" stroke-dasharray="6 5" marker-end="url(#skipArrow)"/>
+<path d="M 890,458 L 918,458 L 918,1376 L 890,1376" fill="none" stroke="#b86910" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" opacity="1" stroke-dasharray="6 5" marker-end="url(#skipArrow)"/>
+<path d="M 890,560 L 912,560 L 912,1274 L 890,1274" fill="none" stroke="#b86910" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" opacity="1" stroke-dasharray="6 5" marker-end="url(#skipArrow)"/>
+<path d="M 890,662 L 906,662 L 906,1172 L 890,1172" fill="none" stroke="#b86910" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" opacity="1" stroke-dasharray="6 5" marker-end="url(#skipArrow)"/>
+<path d="M 890,764 L 900,764 L 900,968 L 890,968" fill="none" stroke="#b86910" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" opacity="1" stroke-dasharray="6 5" marker-end="url(#skipArrow)"/>
+<rect x="70" y="204" width="400" height="90" rx="10" fill="#edf5ff" stroke="#2563ab" stroke-width="1.4"/>
+<text x="84" y="227" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Input C32 · block 0</text>
+<text x="84" y="249" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">role 0 · 1 head · skip 0→70</text>
+<text x="84" y="269" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Dense FFN → 8×8 window</text>
+<text x="84" y="289" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">16→32 adapter · 2× pool → next level</text>
+<rect x="70" y="306" width="400" height="90" rx="10" fill="#edf5ff" stroke="#2563ab" stroke-width="1.4"/>
+<text x="84" y="329" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Encoder C32 · 4 blocks</text>
+<text x="84" y="351" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">roles 1–4 · 1 head · skip 4→66</text>
+<text x="84" y="371" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Dense FFN → 8×8 window</text>
+<text x="84" y="391" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">down 2× · C32→C64</text>
+<rect x="70" y="408" width="400" height="90" rx="10" fill="#edf5ff" stroke="#2563ab" stroke-width="1.4"/>
+<text x="84" y="431" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Encoder C64 · 4 blocks</text>
+<text x="84" y="453" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">roles 5–8 · 2 heads · skip 8→62</text>
+<text x="84" y="473" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Branched FFN → 8×8 window</text>
+<text x="84" y="493" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">down 2× · C64→C128</text>
+<rect x="70" y="510" width="400" height="90" rx="10" fill="#edf5ff" stroke="#2563ab" stroke-width="1.4"/>
+<text x="84" y="533" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Encoder C128 · 6 blocks</text>
+<text x="84" y="555" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">roles 9–14 · 4 heads · skip 14→56</text>
+<text x="84" y="575" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Branched FFN → 8×8 window</text>
+<text x="84" y="595" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">down 2× · C128→C256</text>
+<rect x="70" y="612" width="400" height="90" rx="10" fill="#edf5ff" stroke="#2563ab" stroke-width="1.4"/>
+<text x="84" y="635" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Encoder C256 · 8 blocks</text>
+<text x="84" y="657" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">roles 15–22 · 8 heads · skip 22→48</text>
+<text x="84" y="677" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Branched FFN → 8×8 window</text>
+<text x="84" y="697" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">down 2× · C256→C512</text>
+<rect x="70" y="714" width="400" height="90" rx="10" fill="#edf5ff" stroke="#2563ab" stroke-width="1.4"/>
+<text x="84" y="737" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Encoder C512 · 8 blocks</text>
+<text x="84" y="759" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">roles 23–30 · 16 heads · skip 30→39</text>
+<text x="84" y="779" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Grouped FFN → 8×8 window</text>
+<text x="84" y="799" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">down 2× · C512→C1024</text>
+<rect x="70" y="816" width="400" height="90" rx="10" fill="#f3eefb" stroke="#7750aa" stroke-width="1.4"/>
+<text x="84" y="839" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Global C1024 · 8 blocks</text>
+<text x="84" y="861" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">roles 31–38 · 32 heads</text>
+<text x="84" y="881" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Dense FFN → global attention</text>
+<text x="84" y="901" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">all T tokens · 8 blocks</text>
+<rect x="70" y="918" width="400" height="90" rx="10" fill="#fff5e5" stroke="#b86910" stroke-width="1.4"/>
+<text x="84" y="941" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Transition 39 · 1 role</text>
+<text x="84" y="963" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">role 39 · no FFN or attention</text>
+<text x="84" y="983" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">project 1024→512 · 2× upsample</text>
+<text x="84" y="1003" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">merge skip 30 · no residual block</text>
+<rect x="70" y="1020" width="400" height="90" rx="10" fill="#eaf8f5" stroke="#087f80" stroke-width="1.4"/>
+<text x="84" y="1043" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Decoder C512 · 8 blocks</text>
+<text x="84" y="1065" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">roles 40–47 · 16 heads</text>
+<text x="84" y="1085" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Grouped FFN → 8×8 window</text>
+<text x="84" y="1105" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">after 39&#x27;s 2× upsample</text>
+<rect x="70" y="1122" width="400" height="90" rx="10" fill="#eaf8f5" stroke="#087f80" stroke-width="1.4"/>
+<text x="84" y="1145" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Decoder C256 · 8 blocks</text>
+<text x="84" y="1167" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">roles 48–55 · 8 heads · merge 22</text>
+<text x="84" y="1187" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Branched FFN → 8×8 window</text>
+<text x="84" y="1207" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">up 2× · C512→C256</text>
+<rect x="70" y="1224" width="400" height="90" rx="10" fill="#eaf8f5" stroke="#087f80" stroke-width="1.4"/>
+<text x="84" y="1247" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Decoder C128 · 6 blocks</text>
+<text x="84" y="1269" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">roles 56–61 · 4 heads · merge 14</text>
+<text x="84" y="1289" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Branched FFN → 8×8 window</text>
+<text x="84" y="1309" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">up 2× · C256→C128</text>
+<rect x="70" y="1326" width="400" height="90" rx="10" fill="#eaf8f5" stroke="#087f80" stroke-width="1.4"/>
+<text x="84" y="1349" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Decoder C64 · 4 blocks</text>
+<text x="84" y="1371" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">roles 62–65 · 2 heads · merge 8</text>
+<text x="84" y="1391" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Branched FFN → 8×8 window</text>
+<text x="84" y="1411" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">up 2× · C128→C64</text>
+<rect x="70" y="1428" width="400" height="90" rx="10" fill="#eaf8f5" stroke="#087f80" stroke-width="1.4"/>
+<text x="84" y="1451" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Decoder C32 · 4 blocks</text>
+<text x="84" y="1473" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">roles 66–69 · 1 head · merge 4</text>
+<text x="84" y="1493" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Dense FFN → 8×8 window</text>
+<text x="84" y="1513" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">up 2× · C64→C32</text>
+<rect x="70" y="1530" width="400" height="90" rx="10" fill="#eaf8f5" stroke="#087f80" stroke-width="1.4"/>
+<text x="84" y="1553" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Output C32 · block 70</text>
+<text x="84" y="1575" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">role 70 · 1 head · merge skip 0</text>
+<text x="84" y="1595" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">2× up to full res · dense FFN → window</text>
+<text x="84" y="1615" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">head 32→4 = RGB + gate output</text>
+<rect x="490" y="204" width="400" height="90" rx="10" fill="#edf5ff" stroke="#2563ab" stroke-width="1.4"/>
+<text x="504" y="227" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Input C32 · block 0</text>
+<text x="504" y="249" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">raw 0 → role 0 · 1 head</text>
+<text x="504" y="269" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Dense FFN → 8×8 window</text>
+<text x="504" y="289" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">16→32 adapter · 2× pool → next level</text>
+<rect x="490" y="306" width="400" height="90" rx="10" fill="#edf5ff" stroke="#2563ab" stroke-width="1.4"/>
+<text x="504" y="329" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Encoder C32 · 2 blocks</text>
+<text x="504" y="351" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">raw 1–2 → roles 1,4 · 1 head</text>
+<text x="504" y="371" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Dense FFN → 8×8 window</text>
+<text x="504" y="391" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">down 2× · C32→C64 · keeps 2 of 4</text>
+<rect x="490" y="408" width="400" height="90" rx="10" fill="#edf5ff" stroke="#2563ab" stroke-width="1.4"/>
+<text x="504" y="431" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Encoder C64 · 2 blocks</text>
+<text x="504" y="453" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">raw 3–4 → roles 5,8 · 2 heads</text>
+<text x="504" y="473" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Branched FFN → 8×8 window</text>
+<text x="504" y="493" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">down 2× · C64→C128 · keeps 2 of 4</text>
+<rect x="490" y="510" width="400" height="90" rx="10" fill="#edf5ff" stroke="#2563ab" stroke-width="1.4"/>
+<text x="504" y="533" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Encoder C128 · 2 blocks</text>
+<text x="504" y="555" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">raw 5–6 → roles 9,14 · 4 heads</text>
+<text x="504" y="575" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Branched FFN → 8×8 window</text>
+<text x="504" y="595" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">down 2× · C128→C256 · keeps 2 of 6</text>
+<rect x="490" y="612" width="400" height="90" rx="10" fill="#edf5ff" stroke="#2563ab" stroke-width="1.4"/>
+<text x="504" y="635" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Encoder C256 · 2 blocks</text>
+<text x="504" y="657" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">raw 7–8 → roles 15,22 · 8 heads</text>
+<text x="504" y="677" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Branched FFN → 8×8 window</text>
+<text x="504" y="697" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">down 2× · C256→C512 · keeps 2 of 8</text>
+<rect x="490" y="714" width="400" height="90" rx="10" fill="#edf5ff" stroke="#2563ab" stroke-width="1.4"/>
+<text x="504" y="737" fill="#2563ab" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Encoder C512 · 2 blocks</text>
+<text x="504" y="759" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">raw 9–10 → roles 23,30 · 16 heads</text>
+<text x="504" y="779" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Grouped FFN → 8×8 window</text>
+<text x="504" y="799" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">down 2× · C512→C1024 · keeps 2 of 8</text>
+<rect x="490" y="816" width="400" height="90" rx="10" fill="#f3eefb" stroke="#7750aa" stroke-width="1.4"/>
+<text x="504" y="839" fill="#7750aa" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Global C1024 · 8 blocks</text>
+<text x="504" y="861" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">raw 11–18 → roles 31–38 · 32 heads</text>
+<text x="504" y="881" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Dense FFN → global attention</text>
+<text x="504" y="901" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">all T tokens · retains all 8</text>
+<rect x="490" y="918" width="400" height="90" rx="10" fill="#fff5e5" stroke="#b86910" stroke-width="1.4"/>
+<text x="504" y="941" fill="#b86910" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Transition 39 · 1 role</text>
+<text x="504" y="963" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">raw 19 → role 39 · no FFN/attention</text>
+<text x="504" y="983" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">project 1024→512 · 2× upsample</text>
+<text x="504" y="1003" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">merge skip 30 · no residual block</text>
+<rect x="490" y="1020" width="400" height="90" rx="10" fill="#eaf8f5" stroke="#087f80" stroke-width="1.4"/>
+<text x="504" y="1043" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Decoder C512 · 2 blocks</text>
+<text x="504" y="1065" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">raw 20–21 → roles 40,47 · 16 heads</text>
+<text x="504" y="1085" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Grouped FFN → 8×8 window</text>
+<text x="504" y="1105" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">after 39&#x27;s upsample · keeps 2 of 8</text>
+<rect x="490" y="1122" width="400" height="90" rx="10" fill="#eaf8f5" stroke="#087f80" stroke-width="1.4"/>
+<text x="504" y="1145" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Decoder C256 · 2 blocks</text>
+<text x="504" y="1167" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">raw 22–23 → roles 48,55 · 8 heads</text>
+<text x="504" y="1187" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Branched FFN → 8×8 window</text>
+<text x="504" y="1207" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">up 2× · C512→C256 · keeps 2 of 8</text>
+<rect x="490" y="1224" width="400" height="90" rx="10" fill="#eaf8f5" stroke="#087f80" stroke-width="1.4"/>
+<text x="504" y="1247" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Decoder C128 · 2 blocks</text>
+<text x="504" y="1269" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">raw 24–25 → roles 56,61 · 4 heads</text>
+<text x="504" y="1289" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Branched FFN → 8×8 window</text>
+<text x="504" y="1309" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">up 2× · C256→C128 · keeps 2 of 6</text>
+<rect x="490" y="1326" width="400" height="90" rx="10" fill="#eaf8f5" stroke="#087f80" stroke-width="1.4"/>
+<text x="504" y="1349" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Decoder C64 · 2 blocks</text>
+<text x="504" y="1371" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">raw 26–27 → roles 62,65 · 2 heads</text>
+<text x="504" y="1391" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Branched FFN → 8×8 window</text>
+<text x="504" y="1411" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">up 2× · C128→C64 · keeps 2 of 4</text>
+<rect x="490" y="1428" width="400" height="90" rx="10" fill="#eaf8f5" stroke="#087f80" stroke-width="1.4"/>
+<text x="504" y="1451" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Decoder C32 · 2 blocks</text>
+<text x="504" y="1473" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">raw 28–29 → roles 66,69 · 1 head</text>
+<text x="504" y="1493" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Dense FFN → 8×8 window</text>
+<text x="504" y="1513" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">up 2× · C64→C32 · keeps 2 of 4</text>
+<rect x="490" y="1530" width="400" height="90" rx="10" fill="#eaf8f5" stroke="#087f80" stroke-width="1.4"/>
+<text x="504" y="1553" fill="#087f80" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Output C32 · block 70</text>
+<text x="504" y="1575" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">raw 30 → role 70 · 1 head</text>
+<text x="504" y="1595" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">2× up to full res · dense FFN → window</text>
+<text x="504" y="1615" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">head 32→4 = RGB + gate output</text>
+<circle cx="70" cy="254" r="2.4" fill="#b86910"/>
+<circle cx="70" cy="356" r="2.4" fill="#b86910"/>
+<circle cx="70" cy="458" r="2.4" fill="#b86910"/>
+<circle cx="70" cy="560" r="2.4" fill="#b86910"/>
+<circle cx="70" cy="662" r="2.4" fill="#b86910"/>
+<circle cx="70" cy="764" r="2.4" fill="#b86910"/>
+<circle cx="890" cy="254" r="2.4" fill="#b86910"/>
+<circle cx="890" cy="356" r="2.4" fill="#b86910"/>
+<circle cx="890" cy="458" r="2.4" fill="#b86910"/>
+<circle cx="890" cy="560" r="2.4" fill="#b86910"/>
+<circle cx="890" cy="662" r="2.4" fill="#b86910"/>
+<circle cx="890" cy="764" r="2.4" fill="#b86910"/>
+<path d="M 270,295 L 270,303" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 270,397 L 270,405" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 270,499 L 270,507" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 270,601 L 270,609" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 270,703 L 270,711" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 270,805 L 270,813" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 270,907 L 270,915" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 270,1009 L 270,1017" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 270,1111 L 270,1119" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 270,1213 L 270,1221" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 270,1315 L 270,1323" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 270,1417 L 270,1425" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 270,1519 L 270,1527" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 690,295 L 690,303" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 690,397 L 690,405" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 690,499 L 690,507" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 690,601 L 690,609" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 690,703 L 690,711" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 690,805 L 690,813" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 690,907 L 690,915" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 690,1009 L 690,1017" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 690,1111 L 690,1119" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 690,1213 L 690,1221" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 690,1315 L 690,1323" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 690,1417 L 690,1425" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<path d="M 690,1519 L 690,1527" fill="none" stroke="#52647c" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="1" marker-end="url(#flowArrow)"/>
+<text x="24" y="1654" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Skips and stage order</text>
+<text x="24" y="1680" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Solid arrows = stage order.</text>
+<text x="24" y="1701" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Amber dashed rails = six role-space skips:</text>
+<text x="24" y="1722" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">0→70 · 4→66 · 8→62 · 14→56 · 22→48 · 30→39</text>
+<text x="24" y="1743" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Rails run outside each lane and never cross.</text>
+<text x="24" y="1764" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Legacy cards name the save/merge roles.</text>
+<text x="24" y="1795" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">FFN, attention and heads</text>
+<text x="24" y="1821" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Dense: C32 32→128→32; C1024 1024→4096→1024.</text>
+<text x="24" y="1842" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Branched C64/128/256: C/32 full-input branches.</text>
+<text x="24" y="1863" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Grouped C512: premix+8×(64→256→64)+postmix.</text>
+<text x="24" y="1884" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Attention: 8×8 window C32–C512; global C1024.</text>
+<text x="24" y="1905" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Heads C/32 = 1/2/4/8/16/32; post 32→4.</text>
+<text x="24" y="1926" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Both: 4 logical head channels = RGB + gate.</text>
+<text x="24" y="1947" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Head weights 4×32 = 128 coefficients:</text>
+<text x="24" y="1968" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">96 RGB-row + 32 gate-row coefficients,</text>
+<text x="24" y="1989" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">producing 4 output activation channels/pixel.</text>
+<text x="492" y="1654" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Model identity</text>
+<text x="492" y="1680" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Legacy71: 71 roles / 153 records, raw=role.</text>
+<text x="492" y="1701" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Small31: 31 roles / 77 records, raw ids 0–30.</text>
+<text x="492" y="1722" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Small raw→role is source-derived.</text>
+<text x="492" y="1743" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Raw ids are not legacy role ids.</text>
+<text x="492" y="1764" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Separately trained; interior repeats omitted.</text>
+<text x="492" y="1785" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Not a pruning of Legacy71 weights or records.</text>
+<text x="492" y="1806" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Window phases differ by model; not merged here.</text>
+<text x="492" y="1827" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Legacy deployment trunk: blocks 1–69.</text>
+<text x="492" y="1848" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">Input 0 and post 70 are separate paths.</text>
+<text x="492" y="1900" fill="#172b45" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" text-anchor="start">Sources</text>
+<text x="492" y="1926" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">model_specs.py · geometry.py · model.py</text>
+<text x="492" y="1947" fill="#52647c" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" text-anchor="start">small_model.py · runtime-310-9-16 chapter</text>
+</svg>

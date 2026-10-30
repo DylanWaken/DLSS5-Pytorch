@@ -1,40 +1,1115 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="560" viewBox="0 0 1120 560" role="img" aria-labelledby="title desc">
-<title id="title">FP8 semantic CUDA deployment versus original kernels</title>
-<desc id="desc">Measured 720p, 1080p, 1440p and 4K latency on RTX PRO 6000 Blackwell. The 1% gate has not passed at every size.</desc>
-<rect width="1120" height="560" rx="20" fill="#f6f8fc"/>
-<style>text{font-family:Segoe UI,Arial,sans-serif;fill:#172a43}.muted{fill:#52647c}</style>
-<text x="42" y="48" font-size="26" font-weight="700">FP8 deployment: original vs readable CUDA</text>
-<text x="42" y="77" font-size="15" class="muted">Prepared-feature trunk, blocks 1–69 | SM120 | batch 1 | lower latency is better</text>
-<rect x="42" y="99" width="16" height="16" fill="#7893b5"/><text x="67" y="113" font-size="14">Original extracted kernels</text>
-<rect x="295" y="99" width="16" height="16" fill="#127e89"/><text x="320" y="113" font-size="14">CUDA/C++ reconstruction</text>
-<text x="42" y="171" font-size="19" font-weight="600">720p</text>
-<text x="42" y="192" font-size="12" class="muted">1280 × 720</text>
-<rect x="188" y="155" width="221.57" height="21" rx="4" fill="#7893b5"/>
-<text x="419.57" y="171" font-size="14">2.199 ms</text>
-<rect x="188" y="182" width="221.83" height="21" rx="4" fill="#127e89"/>
-<text x="419.83" y="198" font-size="14">2.202 ms</text>
-<text x="1015" y="184" text-anchor="middle" font-size="18" font-weight="600">+0.01%</text>
-<text x="42" y="256" font-size="19" font-weight="600">1080p</text>
-<text x="42" y="277" font-size="12" class="muted">1920 × 1080</text>
-<rect x="188" y="240" width="259.09" height="21" rx="4" fill="#7893b5"/>
-<text x="457.09" y="256" font-size="14">2.572 ms</text>
-<rect x="188" y="267" width="262.03" height="21" rx="4" fill="#127e89"/>
-<text x="460.03" y="283" font-size="14">2.601 ms</text>
-<text x="1015" y="269" text-anchor="middle" font-size="18" font-weight="600">+1.18%</text>
-<text x="42" y="341" font-size="19" font-weight="600">2K / 1440p</text>
-<text x="42" y="362" font-size="12" class="muted">2560 × 1440</text>
-<rect x="188" y="325" width="357.99" height="21" rx="4" fill="#7893b5"/>
-<text x="555.99" y="341" font-size="14">3.553 ms</text>
-<rect x="188" y="352" width="355.45" height="21" rx="4" fill="#127e89"/>
-<text x="553.45" y="368" font-size="14">3.528 ms</text>
-<text x="1015" y="354" text-anchor="middle" font-size="18" font-weight="600">-0.78%</text>
-<text x="42" y="426" font-size="19" font-weight="600">4K</text>
-<text x="42" y="447" font-size="12" class="muted">3840 × 2160</text>
-<rect x="188" y="410" width="670.00" height="21" rx="4" fill="#7893b5"/>
-<text x="868.00" y="426" font-size="14">6.650 ms</text>
-<rect x="188" y="437" width="657.70" height="21" rx="4" fill="#127e89"/>
-<text x="855.70" y="453" font-size="14">6.528 ms</text>
-<text x="1015" y="439" text-anchor="middle" font-size="18" font-weight="600">-1.73%</text>
-<text x="42" y="512" font-size="14" class="muted">64 alternating pairs; paired-ratio medians. The 1% gate has not passed at every size.</text>
-<text x="42" y="537" font-size="13" class="muted">Excludes input/output stages and DLL host work. Recorded CUDA-event timings on SM120.</text>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1120" height="1000" viewBox="0 0 806.4 720" xmlns="http://www.w3.org/2000/svg" version="1.1">
+<title id="chart-title">FP8 prepared-feature trunk latency</title>
+<desc id="chart-desc">FP8 prepared-feature reconstruction trunk latency; two model panels, four resolutions (720p, 1080p, 1440p, 4K). Scope: Prepared-feature reconstruction trunk only: DLL-extracted cubins replayed through the reconstruction trunk, four resolutions; excludes RGB front/back ends and DLL host/NGX. Device: NVIDIA RTX PRO 6000 Blackwell Workstation Edition, SM120, batch 1. Protocol: CUDA-event graph timing; 3 passes/graph; 20 warmup replays; 64 alternating paired samples (32 per order); 10 graph replays/sample. Small31 FP16 uses 64 candidate-only samples. Bars are per-case medians. Paired delta is the supplied candidate/reference paired median ratio minus 1; positive means longer candidate latency, negative means shorter. Ratios are supplied by the measurement summary and are not recomputed from aggregate medians. Legacy71: 74/74 boundaries byte-exact and finite. Small31 FP8: Small31 FP8 timing_only: candidate FP32 P.V/denominator vs 310.9.16 vendor Half-PV QMMA arithmetic; 19/34 boundaries differ, first b31.output; no equivalence claim and no tolerance. No performance, speedup or equivalence claim is made.</desc>
+<metadata id="chart-metadata">{
+  "schema_version": "dual-model-deployment-svg/1",
+  "precision": "fp8",
+  "title": "FP8 prepared-feature trunk latency",
+  "source": {
+    "aggregate_path": "profile/readme-dual-model-20261030/dll-speed/aggregate.json",
+    "aggregate_sha256": "cd392d2550af9d9c4a4ae2775a80545c7635359e7425bc6dd8e25c84dea31de1",
+    "raw_evidence": {
+      "path": "docs/figures/dual_model_deployment_raw.json",
+      "sha256": "cd392d2550af9d9c4a4ae2775a80545c7635359e7425bc6dd8e25c84dea31de1",
+      "immutable": true,
+      "description": "Exact byte-identical copy of the 16-case source aggregate; read-only and never rewritten by this transform."
+    },
+    "source_revision": "ca7086b98d21",
+    "generated_at": "2026-10-30T01:19:14.072960+00:00"
+  },
+  "device": {
+    "name": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+    "driver_version": "610.62",
+    "sm": 120,
+    "sm_count": 188,
+    "torch_version": "2.8.0+cu128",
+    "torch_cuda_version": "12.8",
+    "cudnn_version": 91002
+  },
+  "scope": {
+    "text": "Prepared-feature reconstruction trunk only: DLL-extracted cubins replayed through the reconstruction trunk, four resolutions; excludes RGB front/back ends and DLL host/NGX.",
+    "acceptance": {
+      "required_cases": 16,
+      "finite_validated_timing_cases": 16,
+      "complete": true
+    },
+    "source_text": "Dual-model reconstruction trunk inference, four resolutions; no RGB front/back process, no CPU wall/decode included.",
+    "text_normalization": "Public scope clarified to prepared-feature trunk only, DLL-extracted cubin replay, excluding RGB front/back ends and DLL host/NGX; source text retained in source_text."
+  },
+  "protocol": {
+    "timing": "CUDA events on current capture stream; end.synchronize()",
+    "paired": {
+      "calls_per_graph": 3,
+      "warmup_replays": 20,
+      "pairs": 64,
+      "order_balance": "32 pairs each order (0,1)/(1,0)",
+      "replays_per_sample": 10,
+      "passes_per_sample": 30
+    },
+    "candidate_only": {
+      "calls_per_graph": 3,
+      "warmup_replays": 20,
+      "samples": 64,
+      "replays_per_sample": 10,
+      "passes_per_sample": 30
+    },
+    "statistics": [
+      "median",
+      "p10",
+      "p90",
+      "raw pairs/samples",
+      "by-order median ratio"
+    ],
+    "input": "torch.manual_seed(3108); torch.randn(elements, device='cuda', dtype=float16) * 0.02, then cast to the precision dtype",
+    "immutable_weights": true,
+    "fixture_restore": "original seeded fixture restored after changed-input freshness check",
+    "no_speed_gate": true
+  },
+  "generator": {
+    "path": "tools/render_dual_model_benchmarks.py",
+    "sha256": "3e26a1c93994ad9bf40d2430f0ad4d50c2db6a87e910466b980f31451542cb56",
+    "interpreter": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe",
+    "command": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe tools/render_dual_model_benchmarks.py --data docs/figures/dual_model_deployment_measurements.json --output-dir docs/figures --png-dir profile/readme-dual-model-20261030/speed-figures/png"
+  },
+  "panels": [
+    {
+      "model": "legacy71",
+      "dll_version": "310.8.0.0",
+      "subtitle": "74/74 boundaries byte-exact and finite",
+      "cases": [
+        {
+          "case": "legacy71_fp8_1280x720",
+          "native_ms": 2.3069386800130207,
+          "candidate_ms": 2.3057594299316406,
+          "median_ratio": 1.00061058511382,
+          "by_order": [
+            0.9997593603415946,
+            1.0019792575218744
+          ],
+          "native_status": "accepted",
+          "candidate_status": "accepted",
+          "sample_summary": {
+            "kind": "pairs",
+            "count": 64
+          },
+          "validation": {
+            "boundary_count": 74,
+            "boundaries_equal": 74,
+            "boundaries_differing": 0,
+            "compared_logical_values": 159989760,
+            "all_finite": true,
+            "all_exact": true,
+            "first_difference": null,
+            "first_nonfinite": null,
+            "failures": 0,
+            "post_failures": 0,
+            "post_all_finite": true,
+            "post_all_exact": true,
+            "guards": true,
+            "counters": true,
+            "input_immutable": true,
+            "poison": true,
+            "freshness": true,
+            "post_timing": true,
+            "known_arithmetic_difference": false,
+            "precision_terminology": "activation/kernel family: Legacy71 pairs 310.8 vendor kernels with reconstructed kernels and validates 74/74 boundaries byte-exact and finite; the Small31 FP8 macrotile terminology does not apply.",
+            "input_sha256": "9b7d451faca7a2036d3290e007e6ff690f94e9c8fdea4b8e08a0ffc26d68e8c1",
+            "counts": {
+              "plan_calls": 185,
+              "records": 142,
+              "buffers": 232,
+              "schedule_positions": 152,
+              "launch_count": 185,
+              "all_resident_calls": 25
+            },
+            "source_precision_terminology": "activation/kernel family: Small31 FP8 vendor kernels are *_fp8 activation/weight kernels; extracted SASS shows QMMA.16832.F16.E4M3.E4M3 plus HADD2/HFMA2/HMUL2, so FP8 macrotiles may contain Half intermediate arithmetic; this is not an FP32-accumulator contract"
+          },
+          "numerical_contract": "Legacy71: 74/74 boundaries byte-exact and finite.",
+          "source_result": "profile/readme-dual-model-20261030/dll-speed/results/legacy71_fp8_1280x720_timing.json",
+          "source_result_sha256": "6247469cc06be9be3a30341d48d11c7d4bf65df266d278c86d6476ac5cfb43f6",
+          "harness_sha256": "cabf2305329a2631a69ba3351bf22556380b88b9db8a4690c27fbb21150ec43a"
+        },
+        {
+          "case": "legacy71_fp8_1920x1080",
+          "native_ms": 2.716461817423503,
+          "candidate_ms": 2.7406388600667317,
+          "median_ratio": 1.0094808448557764,
+          "by_order": [
+            1.0086043616928535,
+            1.0114607080427307
+          ],
+          "native_status": "accepted",
+          "candidate_status": "accepted",
+          "sample_summary": {
+            "kind": "pairs",
+            "count": 64
+          },
+          "validation": {
+            "boundary_count": 74,
+            "boundaries_equal": 74,
+            "boundaries_differing": 0,
+            "compared_logical_values": 342097920,
+            "all_finite": true,
+            "all_exact": true,
+            "first_difference": null,
+            "first_nonfinite": null,
+            "failures": 0,
+            "post_failures": 0,
+            "post_all_finite": true,
+            "post_all_exact": true,
+            "guards": true,
+            "counters": true,
+            "input_immutable": true,
+            "poison": true,
+            "freshness": true,
+            "post_timing": true,
+            "known_arithmetic_difference": false,
+            "precision_terminology": "activation/kernel family: Legacy71 pairs 310.8 vendor kernels with reconstructed kernels and validates 74/74 boundaries byte-exact and finite; the Small31 FP8 macrotile terminology does not apply.",
+            "input_sha256": "83bd07945e5ad04b9d059321a8d0c1099f539ceb3df282d6a966d912551c6e65",
+            "counts": {
+              "plan_calls": 185,
+              "records": 142,
+              "buffers": 232,
+              "schedule_positions": 152,
+              "launch_count": 185,
+              "all_resident_calls": 25
+            },
+            "source_precision_terminology": "activation/kernel family: Small31 FP8 vendor kernels are *_fp8 activation/weight kernels; extracted SASS shows QMMA.16832.F16.E4M3.E4M3 plus HADD2/HFMA2/HMUL2, so FP8 macrotiles may contain Half intermediate arithmetic; this is not an FP32-accumulator contract"
+          },
+          "numerical_contract": "Legacy71: 74/74 boundaries byte-exact and finite.",
+          "source_result": "profile/readme-dual-model-20261030/dll-speed/results/legacy71_fp8_1920x1080_timing.json",
+          "source_result_sha256": "c3b0a5b1363bb9b670b641d6849c6bfd28caee105b5cac7ebb95f4e3f70e651f",
+          "harness_sha256": "cabf2305329a2631a69ba3351bf22556380b88b9db8a4690c27fbb21150ec43a"
+        },
+        {
+          "case": "legacy71_fp8_2560x1440",
+          "native_ms": 3.7649183909098305,
+          "candidate_ms": 3.736448542277018,
+          "median_ratio": 0.9902864602584509,
+          "by_order": [
+            0.9901511892496334,
+            0.990504178948636
+          ],
+          "native_status": "accepted",
+          "candidate_status": "accepted",
+          "sample_summary": {
+            "kind": "pairs",
+            "count": 64
+          },
+          "validation": {
+            "boundary_count": 74,
+            "boundaries_equal": 74,
+            "boundaries_differing": 0,
+            "compared_logical_values": 583106560,
+            "all_finite": true,
+            "all_exact": true,
+            "first_difference": null,
+            "first_nonfinite": null,
+            "failures": 0,
+            "post_failures": 0,
+            "post_all_finite": true,
+            "post_all_exact": true,
+            "guards": true,
+            "counters": true,
+            "input_immutable": true,
+            "poison": true,
+            "freshness": true,
+            "post_timing": true,
+            "known_arithmetic_difference": false,
+            "precision_terminology": "activation/kernel family: Legacy71 pairs 310.8 vendor kernels with reconstructed kernels and validates 74/74 boundaries byte-exact and finite; the Small31 FP8 macrotile terminology does not apply.",
+            "input_sha256": "4d944ba6789f8ff219d8edb825501b710a6f67c715139acc50cd4d6595719557",
+            "counts": {
+              "plan_calls": 185,
+              "records": 142,
+              "buffers": 232,
+              "schedule_positions": 152,
+              "launch_count": 185,
+              "all_resident_calls": 25
+            },
+            "source_precision_terminology": "activation/kernel family: Small31 FP8 vendor kernels are *_fp8 activation/weight kernels; extracted SASS shows QMMA.16832.F16.E4M3.E4M3 plus HADD2/HFMA2/HMUL2, so FP8 macrotiles may contain Half intermediate arithmetic; this is not an FP32-accumulator contract"
+          },
+          "numerical_contract": "Legacy71: 74/74 boundaries byte-exact and finite.",
+          "source_result": "profile/readme-dual-model-20261030/dll-speed/results/legacy71_fp8_2560x1440_timing.json",
+          "source_result_sha256": "c475e76e7bd3188bfb21538959b4249e97fd90dd91c3c6f3d1c4f7396b9c5726",
+          "harness_sha256": "cabf2305329a2631a69ba3351bf22556380b88b9db8a4690c27fbb21150ec43a"
+        },
+        {
+          "case": "legacy71_fp8_3840x2160",
+          "native_ms": 7.03003158569336,
+          "candidate_ms": 6.878914133707682,
+          "median_ratio": 0.9815097764280483,
+          "by_order": [
+            0.9819591019457972,
+            0.9797733105165052
+          ],
+          "native_status": "accepted",
+          "candidate_status": "accepted",
+          "sample_summary": {
+            "kind": "pairs",
+            "count": 64
+          },
+          "validation": {
+            "boundary_count": 74,
+            "boundaries_equal": 74,
+            "boundaries_differing": 0,
+            "compared_logical_values": 1289994240,
+            "all_finite": true,
+            "all_exact": true,
+            "first_difference": null,
+            "first_nonfinite": null,
+            "failures": 0,
+            "post_failures": 0,
+            "post_all_finite": true,
+            "post_all_exact": true,
+            "guards": true,
+            "counters": true,
+            "input_immutable": true,
+            "poison": true,
+            "freshness": true,
+            "post_timing": true,
+            "known_arithmetic_difference": false,
+            "precision_terminology": "activation/kernel family: Legacy71 pairs 310.8 vendor kernels with reconstructed kernels and validates 74/74 boundaries byte-exact and finite; the Small31 FP8 macrotile terminology does not apply.",
+            "input_sha256": "546b980ba91e7d766812360be22107c7bae616d2a506c9d0860cbb3af860defb",
+            "counts": {
+              "plan_calls": 185,
+              "records": 142,
+              "buffers": 232,
+              "schedule_positions": 152,
+              "launch_count": 185,
+              "all_resident_calls": 25
+            },
+            "source_precision_terminology": "activation/kernel family: Small31 FP8 vendor kernels are *_fp8 activation/weight kernels; extracted SASS shows QMMA.16832.F16.E4M3.E4M3 plus HADD2/HFMA2/HMUL2, so FP8 macrotiles may contain Half intermediate arithmetic; this is not an FP32-accumulator contract"
+          },
+          "numerical_contract": "Legacy71: 74/74 boundaries byte-exact and finite.",
+          "source_result": "profile/readme-dual-model-20261030/dll-speed/results/legacy71_fp8_3840x2160_timing.json",
+          "source_result_sha256": "6c01802de14c973448c3cdcb1b46042c4f716ebc571676b38745bcada53fb0b1",
+          "harness_sha256": "cabf2305329a2631a69ba3351bf22556380b88b9db8a4690c27fbb21150ec43a"
+        }
+      ]
+    },
+    {
+      "model": "small31",
+      "dll_version": "310.9.16.0",
+      "subtitle": "Timing only - different arithmetic (FP32 candidate vs Half vendor PV)",
+      "cases": [
+        {
+          "case": "small31_fp8_1280x720",
+          "native_ms": 1.2292655944824218,
+          "candidate_ms": 1.1873674392700195,
+          "median_ratio": 0.9585132383902408,
+          "by_order": [
+            0.961250206817917,
+            0.9549004190044715
+          ],
+          "native_status": "timing_only",
+          "candidate_status": "accepted",
+          "sample_summary": {
+            "kind": "pairs",
+            "count": 64
+          },
+          "validation": {
+            "boundary_count": 34,
+            "boundaries_equal": 15,
+            "boundaries_differing": 19,
+            "compared_logical_values": 75055104,
+            "all_finite": true,
+            "all_exact": false,
+            "first_difference": "b31.output",
+            "first_nonfinite": null,
+            "failures": 0,
+            "post_failures": 0,
+            "post_all_finite": true,
+            "post_all_exact": false,
+            "guards": true,
+            "counters": true,
+            "input_immutable": true,
+            "poison": true,
+            "freshness": true,
+            "post_timing": true,
+            "known_arithmetic_difference": true,
+            "precision_terminology": "activation/kernel family: Small31 FP8 vendor kernels are *_fp8 activation/weight kernels; extracted SASS shows QMMA.16832.F16.E4M3.E4M3 plus HADD2/HFMA2/HMUL2, so FP8 macrotiles may contain Half intermediate arithmetic; this is not an FP32-accumulator contract",
+            "input_sha256": "9b7d451faca7a2036d3290e007e6ff690f94e9c8fdea4b8e08a0ffc26d68e8c1",
+            "counts": {
+              "plan_calls": 109,
+              "records": 66,
+              "buffers": 156,
+              "schedule_positions": 76,
+              "launch_count": 109,
+              "all_resident_calls": 25
+            }
+          },
+          "numerical_contract": "Small31 FP8 timing_only: candidate FP32 P.V/denominator vs 310.9.16 vendor Half-PV QMMA arithmetic; 19/34 boundaries differ, first b31.output; no equivalence claim and no tolerance.",
+          "source_result": "profile/readme-dual-model-20261030/dll-speed/results/small31_fp8_1280x720_timing.json",
+          "source_result_sha256": "b4730c47c214dc4018bf73f5c36654f01cb40dd822bcd1dfafc4531dd2e460e2",
+          "harness_sha256": "2b98a38a8f98c31058e682184ab71885b7a32a09c3c1275dbee58249dba8fcb9",
+          "error_magnitude": {
+            "max_abs_difference": 2.0,
+            "max_relative_l2": 0.14530772146563128,
+            "first_differing_boundary": "b31.output",
+            "post_timing_max_abs_difference": 2.0,
+            "post_timing_max_relative_l2": 0.14530772146563128,
+            "boundary_count": 34,
+            "post_timing_boundary_count": 34
+          }
+        },
+        {
+          "case": "small31_fp8_1920x1080",
+          "native_ms": 1.4635925928751627,
+          "candidate_ms": 1.4241359710693358,
+          "median_ratio": 0.9737828172578255,
+          "by_order": [
+            0.9671607525938328,
+            0.976498963560634
+          ],
+          "native_status": "timing_only",
+          "candidate_status": "accepted",
+          "sample_summary": {
+            "kind": "pairs",
+            "count": 64
+          },
+          "validation": {
+            "boundary_count": 34,
+            "boundaries_equal": 15,
+            "boundaries_differing": 19,
+            "compared_logical_values": 160727040,
+            "all_finite": true,
+            "all_exact": false,
+            "first_difference": "b31.output",
+            "first_nonfinite": null,
+            "failures": 0,
+            "post_failures": 0,
+            "post_all_finite": true,
+            "post_all_exact": false,
+            "guards": true,
+            "counters": true,
+            "input_immutable": true,
+            "poison": true,
+            "freshness": true,
+            "post_timing": true,
+            "known_arithmetic_difference": true,
+            "precision_terminology": "activation/kernel family: Small31 FP8 vendor kernels are *_fp8 activation/weight kernels; extracted SASS shows QMMA.16832.F16.E4M3.E4M3 plus HADD2/HFMA2/HMUL2, so FP8 macrotiles may contain Half intermediate arithmetic; this is not an FP32-accumulator contract",
+            "input_sha256": "83bd07945e5ad04b9d059321a8d0c1099f539ceb3df282d6a966d912551c6e65",
+            "counts": {
+              "plan_calls": 109,
+              "records": 66,
+              "buffers": 156,
+              "schedule_positions": 76,
+              "launch_count": 109,
+              "all_resident_calls": 25
+            }
+          },
+          "numerical_contract": "Small31 FP8 timing_only: candidate FP32 P.V/denominator vs 310.9.16 vendor Half-PV QMMA arithmetic; 19/34 boundaries differ, first b31.output; no equivalence claim and no tolerance.",
+          "source_result": "profile/readme-dual-model-20261030/dll-speed/results/small31_fp8_1920x1080_timing.json",
+          "source_result_sha256": "77ec9631eb5852d40451574a40ff762046d50238a92882974509d0ef96c21db7",
+          "harness_sha256": "2b98a38a8f98c31058e682184ab71885b7a32a09c3c1275dbee58249dba8fcb9",
+          "error_magnitude": {
+            "max_abs_difference": 8.0,
+            "max_relative_l2": 0.15400382956944395,
+            "first_differing_boundary": "b31.output",
+            "post_timing_max_abs_difference": 8.0,
+            "post_timing_max_relative_l2": 0.15400382956944395,
+            "boundary_count": 34,
+            "post_timing_boundary_count": 34
+          }
+        },
+        {
+          "case": "small31_fp8_2560x1440",
+          "native_ms": 1.821705118815104,
+          "candidate_ms": 1.8267151514689126,
+          "median_ratio": 1.0050344160890732,
+          "by_order": [
+            1.0050344160890732,
+            1.0052283400916444
+          ],
+          "native_status": "timing_only",
+          "candidate_status": "accepted",
+          "sample_summary": {
+            "kind": "pairs",
+            "count": 64
+          },
+          "validation": {
+            "boundary_count": 34,
+            "boundaries_equal": 15,
+            "boundaries_differing": 19,
+            "compared_logical_values": 273121280,
+            "all_finite": true,
+            "all_exact": false,
+            "first_difference": "b31.output",
+            "first_nonfinite": null,
+            "failures": 0,
+            "post_failures": 0,
+            "post_all_finite": true,
+            "post_all_exact": false,
+            "guards": true,
+            "counters": true,
+            "input_immutable": true,
+            "poison": true,
+            "freshness": true,
+            "post_timing": true,
+            "known_arithmetic_difference": true,
+            "precision_terminology": "activation/kernel family: Small31 FP8 vendor kernels are *_fp8 activation/weight kernels; extracted SASS shows QMMA.16832.F16.E4M3.E4M3 plus HADD2/HFMA2/HMUL2, so FP8 macrotiles may contain Half intermediate arithmetic; this is not an FP32-accumulator contract",
+            "input_sha256": "4d944ba6789f8ff219d8edb825501b710a6f67c715139acc50cd4d6595719557",
+            "counts": {
+              "plan_calls": 109,
+              "records": 66,
+              "buffers": 156,
+              "schedule_positions": 76,
+              "launch_count": 109,
+              "all_resident_calls": 25
+            }
+          },
+          "numerical_contract": "Small31 FP8 timing_only: candidate FP32 P.V/denominator vs 310.9.16 vendor Half-PV QMMA arithmetic; 19/34 boundaries differ, first b31.output; no equivalence claim and no tolerance.",
+          "source_result": "profile/readme-dual-model-20261030/dll-speed/results/small31_fp8_2560x1440_timing.json",
+          "source_result_sha256": "b44a6845e057aee3e69d7f84e24aaeaf8b5621d2b6e6822d06092203145b4bd4",
+          "harness_sha256": "2b98a38a8f98c31058e682184ab71885b7a32a09c3c1275dbee58249dba8fcb9",
+          "error_magnitude": {
+            "max_abs_difference": 2.0,
+            "max_relative_l2": 0.1391567637104711,
+            "first_differing_boundary": "b31.output",
+            "post_timing_max_abs_difference": 2.0,
+            "post_timing_max_relative_l2": 0.1391567637104711,
+            "boundary_count": 34,
+            "post_timing_boundary_count": 34
+          }
+        },
+        {
+          "case": "small31_fp8_3840x2160",
+          "native_ms": 3.4159669240315758,
+          "candidate_ms": 3.410613250732422,
+          "median_ratio": 1.0004952032739094,
+          "by_order": [
+            1.0021508195691164,
+            0.9969611270987858
+          ],
+          "native_status": "timing_only",
+          "candidate_status": "accepted",
+          "sample_summary": {
+            "kind": "pairs",
+            "count": 64
+          },
+          "validation": {
+            "boundary_count": 34,
+            "boundaries_equal": 15,
+            "boundaries_differing": 19,
+            "compared_logical_values": 604815360,
+            "all_finite": true,
+            "all_exact": false,
+            "first_difference": "b31.output",
+            "first_nonfinite": null,
+            "failures": 0,
+            "post_failures": 0,
+            "post_all_finite": true,
+            "post_all_exact": false,
+            "guards": true,
+            "counters": true,
+            "input_immutable": true,
+            "poison": true,
+            "freshness": true,
+            "post_timing": true,
+            "known_arithmetic_difference": true,
+            "precision_terminology": "activation/kernel family: Small31 FP8 vendor kernels are *_fp8 activation/weight kernels; extracted SASS shows QMMA.16832.F16.E4M3.E4M3 plus HADD2/HFMA2/HMUL2, so FP8 macrotiles may contain Half intermediate arithmetic; this is not an FP32-accumulator contract",
+            "input_sha256": "546b980ba91e7d766812360be22107c7bae616d2a506c9d0860cbb3af860defb",
+            "counts": {
+              "plan_calls": 109,
+              "records": 66,
+              "buffers": 156,
+              "schedule_positions": 76,
+              "launch_count": 109,
+              "all_resident_calls": 25
+            }
+          },
+          "numerical_contract": "Small31 FP8 timing_only: candidate FP32 P.V/denominator vs 310.9.16 vendor Half-PV QMMA arithmetic; 19/34 boundaries differ, first b31.output; no equivalence claim and no tolerance.",
+          "source_result": "profile/readme-dual-model-20261030/dll-speed/results/small31_fp8_3840x2160_timing.json",
+          "source_result_sha256": "fc9bc4dca1ca4cfff9fb78070ac0d3e494bd9bb77bd4d902ecd0fb4d7aad513e",
+          "harness_sha256": "2b98a38a8f98c31058e682184ab71885b7a32a09c3c1275dbee58249dba8fcb9",
+          "error_magnitude": {
+            "max_abs_difference": 4.0,
+            "max_relative_l2": 0.1431409897703094,
+            "first_differing_boundary": "b31.output",
+            "post_timing_max_abs_difference": 4.0,
+            "post_timing_max_relative_l2": 0.1431409897703094,
+            "boundary_count": 34,
+            "post_timing_boundary_count": 34
+          }
+        }
+      ]
+    }
+  ]
+}</metadata>
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 720
+L 806.4 720
+L 806.4 0
+L 0 0
+z
+" style="fill: #f7f9fc"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 157.248 301.32
+L 612.864 301.32
+L 612.864 129.6
+L 157.248 129.6
+z
+" style="fill: #f7f9fc"/>
+   </g>
+   <g id="line2d_1">
+    <path d="M 157.248 180.362494
+L 612.864 180.362494
+" clip-path="url(#p030cd80f4a)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.7; stroke-width: 0.65; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 157.248 220.020693
+L 612.864 220.020693
+" clip-path="url(#p030cd80f4a)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.7; stroke-width: 0.65; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_3">
+    <path d="M 157.248 259.678891
+L 612.864 259.678891
+" clip-path="url(#p030cd80f4a)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.7; stroke-width: 0.65; stroke-linecap: square"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_4">
+      <path d="M 157.248 301.32
+L 157.248 129.6
+" clip-path="url(#p030cd80f4a)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_5">
+      <defs>
+       <path id="m99421841e1" d="M 0 0
+L 0 3
+" style="stroke: #52647c; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m99421841e1" x="157.248" y="301.32" style="fill: #52647c; stroke: #52647c; stroke-width: 0.8"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_6">
+      <path d="M 270.949668 301.32
+L 270.949668 129.6
+" clip-path="url(#p030cd80f4a)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_7">
+      <g>
+       <use xlink:href="#m99421841e1" x="270.949668" y="301.32" style="fill: #52647c; stroke: #52647c; stroke-width: 0.8"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_8">
+      <path d="M 384.651336 301.32
+L 384.651336 129.6
+" clip-path="url(#p030cd80f4a)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_9">
+      <g>
+       <use xlink:href="#m99421841e1" x="384.651336" y="301.32" style="fill: #52647c; stroke: #52647c; stroke-width: 0.8"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_10">
+      <path d="M 498.353003 301.32
+L 498.353003 129.6
+" clip-path="url(#p030cd80f4a)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_11">
+      <g>
+       <use xlink:href="#m99421841e1" x="498.353003" y="301.32" style="fill: #52647c; stroke: #52647c; stroke-width: 0.8"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_12">
+      <path d="M 612.054671 301.32
+L 612.054671 129.6
+" clip-path="url(#p030cd80f4a)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_13">
+      <g>
+       <use xlink:href="#m99421841e1" x="612.054671" y="301.32" style="fill: #52647c; stroke: #52647c; stroke-width: 0.8"/>
+      </g>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_14"/>
+     <g id="text_1">
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(118.75975 158.266707)">720p</text>
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(83.618 172.231707)">1280 x 720</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_15"/>
+     <g id="text_2">
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(111.63375 197.924906)">1080p</text>
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(76.492 211.889906)">1920 x 1080</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_16"/>
+     <g id="text_3">
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(111.63375 237.583105)">1440p</text>
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(76.492 251.548105)">2560 x 1440</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_17"/>
+     <g id="text_4">
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(132.77725 278.332428)">4K</text>
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(76.492 291.206303)">3840 x 2160</text>
+     </g>
+    </g>
+   </g>
+   <g id="patch_3">
+    <path d="M 157.248 301.32
+L 612.864 301.32
+" style="fill: none; stroke: #dbe3ee; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_5">
+    <text style="font-size: 9.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52647c" x="648.402048" y="138.387476" transform="rotate(-0 648.402048 138.387476)">paired delta</text>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 9.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52647c" x="162.715392" y="138.387476" transform="rotate(-0 162.715392 138.387476)">median ms</text>
+   </g>
+   <g id="bar-legacy71_fp8_1280x720-native">
+    <path d="M 157.248 148.041062
+L 288.399388 148.041062
+L 288.399388 159.54194
+L 157.248 159.54194
+z
+" clip-path="url(#p030cd80f4a)" style="fill: #7b93b2"/>
+   </g>
+   <g id="bar-legacy71_fp8_1280x720-candidate">
+    <path d="M 157.248 161.52485
+L 288.332346 161.52485
+L 288.332346 173.025727
+L 157.248 173.025727
+z
+" clip-path="url(#p030cd80f4a)" style="fill: #147b86"/>
+   </g>
+   <g id="delta-legacy71_fp8_1280x720">
+    <text style="font-weight: 700; font-size: 10.9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="648.402048" y="163.36484" transform="rotate(-0 648.402048 163.36484)">+0.06%</text>
+   </g>
+   <g id="bar-legacy71_fp8_1920x1080-native">
+    <path d="M 157.248 187.699261
+L 311.68112 187.699261
+L 311.68112 199.200139
+L 157.248 199.200139
+z
+" clip-path="url(#p030cd80f4a)" style="fill: #7b93b2"/>
+   </g>
+   <g id="bar-legacy71_fp8_1920x1080-candidate">
+    <path d="M 157.248 201.183048
+L 313.055605 201.183048
+L 313.055605 212.683926
+L 157.248 212.683926
+z
+" clip-path="url(#p030cd80f4a)" style="fill: #147b86"/>
+   </g>
+   <g id="delta-legacy71_fp8_1920x1080">
+    <text style="font-weight: 700; font-size: 10.9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="648.402048" y="203.023039" transform="rotate(-0 648.402048 203.023039)">+0.95%</text>
+   </g>
+   <g id="bar-legacy71_fp8_2560x1440-native">
+    <path d="M 157.248 227.35746
+L 371.28675 227.35746
+L 371.28675 238.858337
+L 157.248 238.858337
+z
+" clip-path="url(#p030cd80f4a)" style="fill: #7b93b2"/>
+   </g>
+   <g id="bar-legacy71_fp8_2560x1440-candidate">
+    <path d="M 157.248 240.841247
+L 369.668215 240.841247
+L 369.668215 252.342125
+L 157.248 252.342125
+z
+" clip-path="url(#p030cd80f4a)" style="fill: #147b86"/>
+   </g>
+   <g id="delta-legacy71_fp8_2560x1440">
+    <text style="font-weight: 700; font-size: 10.9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="648.402048" y="242.681237" transform="rotate(-0 648.402048 242.681237)">-0.97%</text>
+   </g>
+   <g id="bar-legacy71_fp8_3840x2160-native">
+    <path d="M 157.248 267.015658
+L 556.911158 267.015658
+L 556.911158 278.516536
+L 157.248 278.516536
+z
+" clip-path="url(#p030cd80f4a)" style="fill: #7b93b2"/>
+   </g>
+   <g id="bar-legacy71_fp8_3840x2160-candidate">
+    <path d="M 157.248 280.499446
+L 548.320005 280.499446
+L 548.320005 292.000323
+L 157.248 292.000323
+z
+" clip-path="url(#p030cd80f4a)" style="fill: #147b86"/>
+   </g>
+   <g id="delta-legacy71_fp8_3840x2160">
+    <text style="font-weight: 700; font-size: 10.9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="648.402048" y="282.339436" transform="rotate(-0 648.402048 282.339436)">-1.85%</text>
+   </g>
+   <g id="value-legacy71_fp8_1280x720-native">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="293.86678" y="156.570993" transform="rotate(-0 293.86678 156.570993)">2.307 ms</text>
+   </g>
+   <g id="value-legacy71_fp8_1280x720-candidate">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="293.799738" y="170.054781" transform="rotate(-0 293.799738 170.054781)">2.306 ms</text>
+   </g>
+   <g id="value-legacy71_fp8_1920x1080-native">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="317.148512" y="196.229192" transform="rotate(-0 317.148512 196.229192)">2.716 ms</text>
+   </g>
+   <g id="value-legacy71_fp8_1920x1080-candidate">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="318.522997" y="209.712979" transform="rotate(-0 318.522997 209.712979)">2.741 ms</text>
+   </g>
+   <g id="value-legacy71_fp8_2560x1440-native">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="376.754142" y="235.887391" transform="rotate(-0 376.754142 235.887391)">3.765 ms</text>
+   </g>
+   <g id="value-legacy71_fp8_2560x1440-candidate">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="375.135607" y="249.371178" transform="rotate(-0 375.135607 249.371178)">3.736 ms</text>
+   </g>
+   <g id="value-legacy71_fp8_3840x2160-native">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="562.37855" y="275.545589" transform="rotate(-0 562.37855 275.545589)">7.030 ms</text>
+   </g>
+   <g id="value-legacy71_fp8_3840x2160-candidate">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="553.787397" y="289.029377" transform="rotate(-0 553.787397 289.029377)">6.879 ms</text>
+   </g>
+  </g>
+  <g id="axes_2">
+   <g id="patch_4">
+    <path d="M 157.248 554.04
+L 612.864 554.04
+L 612.864 379.08
+L 157.248 379.08
+z
+" style="fill: #f7f9fc"/>
+   </g>
+   <g id="line2d_18">
+    <path d="M 157.248 430.800277
+L 612.864 430.800277
+" clip-path="url(#pb6492510a5)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.7; stroke-width: 0.65; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_19">
+    <path d="M 157.248 471.206744
+L 612.864 471.206744
+" clip-path="url(#pb6492510a5)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.7; stroke-width: 0.65; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_20">
+    <path d="M 157.248 511.61321
+L 612.864 511.61321
+" clip-path="url(#pb6492510a5)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.7; stroke-width: 0.65; stroke-linecap: square"/>
+   </g>
+   <g id="matplotlib.axis_3">
+    <g id="xtick_6">
+     <g id="line2d_21">
+      <path d="M 157.248 554.04
+L 157.248 379.08
+" clip-path="url(#pb6492510a5)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_22">
+      <g>
+       <use xlink:href="#m99421841e1" x="157.248" y="554.04" style="fill: #52647c; stroke: #52647c; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_7">
+      <text style="font-size: 9.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #52647c" x="157.248" y="567.33375" transform="rotate(-0 157.248 567.33375)">0</text>
+     </g>
+    </g>
+    <g id="xtick_7">
+     <g id="line2d_23">
+      <path d="M 270.949668 554.04
+L 270.949668 379.08
+" clip-path="url(#pb6492510a5)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_24">
+      <g>
+       <use xlink:href="#m99421841e1" x="270.949668" y="554.04" style="fill: #52647c; stroke: #52647c; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <text style="font-size: 9.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #52647c" x="270.949668" y="567.33375" transform="rotate(-0 270.949668 567.33375)">2</text>
+     </g>
+    </g>
+    <g id="xtick_8">
+     <g id="line2d_25">
+      <path d="M 384.651336 554.04
+L 384.651336 379.08
+" clip-path="url(#pb6492510a5)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_26">
+      <g>
+       <use xlink:href="#m99421841e1" x="384.651336" y="554.04" style="fill: #52647c; stroke: #52647c; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <text style="font-size: 9.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #52647c" x="384.651336" y="567.33375" transform="rotate(-0 384.651336 567.33375)">4</text>
+     </g>
+    </g>
+    <g id="xtick_9">
+     <g id="line2d_27">
+      <path d="M 498.353003 554.04
+L 498.353003 379.08
+" clip-path="url(#pb6492510a5)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_28">
+      <g>
+       <use xlink:href="#m99421841e1" x="498.353003" y="554.04" style="fill: #52647c; stroke: #52647c; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_10">
+      <text style="font-size: 9.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #52647c" x="498.353003" y="567.33375" transform="rotate(-0 498.353003 567.33375)">6</text>
+     </g>
+    </g>
+    <g id="xtick_10">
+     <g id="line2d_29">
+      <path d="M 612.054671 554.04
+L 612.054671 379.08
+" clip-path="url(#pb6492510a5)" style="fill: none; stroke: #dbe3ee; stroke-opacity: 0.9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_30">
+      <g>
+       <use xlink:href="#m99421841e1" x="612.054671" y="554.04" style="fill: #52647c; stroke: #52647c; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_11">
+      <text style="font-size: 9.6px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #52647c" x="612.054671" y="567.33375" transform="rotate(-0 612.054671 567.33375)">8</text>
+     </g>
+    </g>
+    <g id="text_12">
+     <text style="font-size: 10.2px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #172a43" x="385.056" y="583.390406" transform="rotate(-0 385.056 583.390406)">latency (ms, CUDA-event graph)</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_4">
+    <g id="ytick_5">
+     <g id="line2d_31"/>
+     <g id="text_13">
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(118.75975 408.330356)">720p</text>
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(83.618 422.295356)">1280 x 720</text>
+     </g>
+    </g>
+    <g id="ytick_6">
+     <g id="line2d_32"/>
+     <g id="text_14">
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(111.63375 448.736823)">1080p</text>
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(76.492 462.701823)">1920 x 1080</text>
+     </g>
+    </g>
+    <g id="ytick_7">
+     <g id="line2d_33"/>
+     <g id="text_15">
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(111.63375 489.143289)">1440p</text>
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(76.492 503.108289)">2560 x 1440</text>
+     </g>
+    </g>
+    <g id="ytick_8">
+     <g id="line2d_34"/>
+     <g id="text_16">
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(132.77725 530.640881)">4K</text>
+      <text style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #172a43" transform="translate(76.492 543.514756)">3840 x 2160</text>
+     </g>
+    </g>
+   </g>
+   <g id="patch_5">
+    <path d="M 157.248 554.04
+L 612.864 554.04
+" style="fill: none; stroke: #dbe3ee; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_17">
+    <text style="font-size: 9.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52647c" x="648.402048" y="387.987199" transform="rotate(-0 648.402048 387.987199)">paired delta</text>
+   </g>
+   <g id="text_18">
+    <text style="font-size: 9.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52647c" x="162.715392" y="387.987199" transform="rotate(-0 162.715392 387.987199)">median ms</text>
+   </g>
+   <g id="bar-small31_fp8_1280x720-native">
+    <path d="M 157.248 397.869007
+L 227.132774 397.869007
+L 227.132774 409.586882
+L 157.248 409.586882
+z
+" clip-path="url(#pb6492510a5)" style="fill: #7b93b2"/>
+   </g>
+   <g id="bar-small31_fp8_1280x720-candidate">
+    <path d="M 157.248 411.607206
+L 224.750829 411.607206
+L 224.750829 423.325081
+L 157.248 423.325081
+z
+" clip-path="url(#pb6492510a5)" style="fill: #147b86"/>
+   </g>
+   <g id="delta-small31_fp8_1280x720">
+    <text style="font-weight: 700; font-size: 10.9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="648.402048" y="413.428489" transform="rotate(-0 648.402048 413.428489)">-4.15%</text>
+   </g>
+   <g id="bar-small31_fp8_1920x1080-native">
+    <path d="M 157.248 438.275473
+L 240.454459 438.275473
+L 240.454459 449.993349
+L 157.248 449.993349
+z
+" clip-path="url(#pb6492510a5)" style="fill: #7b93b2"/>
+   </g>
+   <g id="bar-small31_fp8_1920x1080-candidate">
+    <path d="M 157.248 452.013672
+L 238.211318 452.013672
+L 238.211318 463.731547
+L 157.248 463.731547
+z
+" clip-path="url(#pb6492510a5)" style="fill: #147b86"/>
+   </g>
+   <g id="delta-small31_fp8_1920x1080">
+    <text style="font-weight: 700; font-size: 10.9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="648.402048" y="453.834956" transform="rotate(-0 648.402048 453.834956)">-2.62%</text>
+   </g>
+   <g id="bar-small31_fp8_2560x1440-native">
+    <path d="M 157.248 478.68194
+L 260.813455 478.68194
+L 260.813455 490.399815
+L 157.248 490.399815
+z
+" clip-path="url(#pb6492510a5)" style="fill: #7b93b2"/>
+   </g>
+   <g id="bar-small31_fp8_2560x1440-candidate">
+    <path d="M 157.248 492.420139
+L 261.09828 492.420139
+L 261.09828 504.138014
+L 157.248 504.138014
+z
+" clip-path="url(#pb6492510a5)" style="fill: #147b86"/>
+   </g>
+   <g id="delta-small31_fp8_2560x1440">
+    <text style="font-weight: 700; font-size: 10.9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="648.402048" y="494.241422" transform="rotate(-0 648.402048 494.241422)">+0.50%</text>
+   </g>
+   <g id="bar-small31_fp8_3840x2160-native">
+    <path d="M 157.248 519.088406
+L 351.448568 519.088406
+L 351.448568 530.806282
+L 157.248 530.806282
+z
+" clip-path="url(#pb6492510a5)" style="fill: #7b93b2"/>
+   </g>
+   <g id="bar-small31_fp8_3840x2160-candidate">
+    <path d="M 157.248 532.826605
+L 351.144207 532.826605
+L 351.144207 544.54448
+L 157.248 544.54448
+z
+" clip-path="url(#pb6492510a5)" style="fill: #147b86"/>
+   </g>
+   <g id="delta-small31_fp8_3840x2160">
+    <text style="font-weight: 700; font-size: 10.9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="648.402048" y="534.647889" transform="rotate(-0 648.402048 534.647889)">+0.05%</text>
+   </g>
+   <g id="value-small31_fp8_1280x720-native">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="232.600166" y="406.507437" transform="rotate(-0 232.600166 406.507437)">1.229 ms</text>
+   </g>
+   <g id="value-small31_fp8_1280x720-candidate">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="230.218221" y="420.245635" transform="rotate(-0 230.218221 420.245635)">1.187 ms</text>
+   </g>
+   <g id="value-small31_fp8_1920x1080-native">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="245.921851" y="446.913903" transform="rotate(-0 245.921851 446.913903)">1.464 ms</text>
+   </g>
+   <g id="value-small31_fp8_1920x1080-candidate">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="243.67871" y="460.652102" transform="rotate(-0 243.67871 460.652102)">1.424 ms</text>
+   </g>
+   <g id="value-small31_fp8_2560x1440-native">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="266.280847" y="487.32037" transform="rotate(-0 266.280847 487.32037)">1.822 ms</text>
+   </g>
+   <g id="value-small31_fp8_2560x1440-candidate">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="266.565672" y="501.058568" transform="rotate(-0 266.565672 501.058568)">1.827 ms</text>
+   </g>
+   <g id="value-small31_fp8_3840x2160-native">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="356.91596" y="527.726836" transform="rotate(-0 356.91596 527.726836)">3.416 ms</text>
+   </g>
+   <g id="value-small31_fp8_3840x2160-candidate">
+    <text style="font-size: 10.7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="356.611599" y="541.465035" transform="rotate(-0 356.611599 541.465035)">3.411 ms</text>
+   </g>
+  </g>
+  <g id="text_19">
+   <text style="font-weight: 700; font-size: 19.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="14.5152" y="32.816953" transform="rotate(-0 14.5152 32.816953)">FP8 prepared-feature trunk latency</text>
+  </g>
+  <g id="text_20">
+   <text style="font-size: 10.3px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52647c" x="14.5152" y="48.191453" transform="rotate(-0 14.5152 48.191453)">Prepared-feature reconstruction trunk only | DLL-extracted cubins replay | batch 1 | SM120 | lower is shorter</text>
+  </g>
+  <g id="text_21">
+   <text style="font-weight: 700; font-size: 14.2px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="157.248" y="113.821781" transform="rotate(-0 157.248 113.821781)">Legacy71 - old DLL 310.8.0.0</text>
+  </g>
+  <g id="text_22">
+   <text style="font-size: 10.2px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52647c" x="157.248" y="126.334406" transform="rotate(-0 157.248 126.334406)">74/74 boundaries byte-exact and finite</text>
+  </g>
+  <g id="text_23">
+   <text style="font-weight: 700; font-size: 14.2px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="157.248" y="363.301781" transform="rotate(-0 157.248 363.301781)">Small31 - new DLL 310.9.16.0</text>
+  </g>
+  <g id="text_24">
+   <text style="font-weight: 700; font-size: 10.4px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #147b86" x="157.248" y="375.966375" transform="rotate(-0 157.248 375.966375)">Timing only - different arithmetic (FP32 candidate vs Half vendor PV)</text>
+  </g>
+  <g id="text_25">
+   <text style="font-size: 11.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52647c" x="14.5152" y="609.218203" transform="rotate(-0 14.5152 609.218203)">GPU: NVIDIA RTX PRO 6000 Blackwell Workstation Edition, SM120, batch 1.</text>
+  </g>
+  <g id="text_26">
+   <text style="font-size: 11.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52647c" x="14.5152" y="621.458203" transform="rotate(-0 14.5152 621.458203)">Prepared-feature reconstruction trunk only: DLL-extracted cubins replayed in CUDA graphs.</text>
+  </g>
+  <g id="text_27">
+   <text style="font-size: 11.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52647c" x="14.5152" y="633.698203" transform="rotate(-0 14.5152 633.698203)">CUDA events: 3 passes/graph, 20 warmup replays, 64 alternating paired samples (32 each order).</text>
+  </g>
+  <g id="text_28">
+   <text style="font-size: 11.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52647c" x="14.5152" y="645.938203" transform="rotate(-0 14.5152 645.938203)">10 graph replays/sample; Small31 FP16: 64 candidate-only samples.</text>
+  </g>
+  <g id="text_29">
+   <text style="font-size: 11.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52647c" x="14.5152" y="658.178203" transform="rotate(-0 14.5152 658.178203)">Excludes RGB front/back ends and DLL host/NGX.</text>
+  </g>
+  <g id="text_30">
+   <text style="font-size: 11.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #52647c" x="14.5152" y="670.418203" transform="rotate(-0 14.5152 670.418203)">Paired delta = candidate/reference paired median - 1; + longer, - shorter.</text>
+  </g>
+  <g id="legend_1">
+   <g id="patch_6">
+    <path d="M 21.1896 66.858281
+L 34.3896 66.858281
+L 34.3896 59.158281
+L 21.1896 59.158281
+z
+" style="fill: #7b93b2"/>
+   </g>
+   <g id="text_31">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="43.1896" y="66.858281" transform="rotate(-0 43.1896 66.858281)">DLL-extracted kernels</text>
+   </g>
+   <g id="patch_7">
+    <path d="M 181.165694 66.858281
+L 194.365694 66.858281
+L 194.365694 59.158281
+L 181.165694 59.158281
+z
+" style="fill: #147b86"/>
+   </g>
+   <g id="text_32">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #172a43" x="203.165694" y="66.858281" transform="rotate(-0 203.165694 66.858281)">Reconstructed kernels</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p030cd80f4a">
+   <rect x="157.248" y="129.6" width="455.616" height="171.72"/>
+  </clipPath>
+  <clipPath id="pb6492510a5">
+   <rect x="157.248" y="379.08" width="455.616" height="174.96"/>
+  </clipPath>
+ </defs>
 </svg>
