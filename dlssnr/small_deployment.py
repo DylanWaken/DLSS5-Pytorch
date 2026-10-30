@@ -25,6 +25,10 @@ for that verified archive:
   rosters (``record_names_small31_*`` / ``record_bytes_small31_*``) in order and
   reject any name, order, duplicate or byte count that differs from the pinned
   :data:`SMALL31` roster before calling the separate Small host plan.
+* With ``model='small31'``, :func:`load_native_model` also accepts a
+  self-contained format-3 ``.pt`` checkpoint through
+  :mod:`dlssnr.portable_checkpoint`; the extracted archive directory path stays
+  supported and the legacy default is unchanged.
 
 The legacy 71-block path is unchanged: :func:`load_native_model` defaults to
 ``model='legacy71'`` and delegates to the existing
@@ -397,8 +401,11 @@ def load_native_model(checkpoint_or_archive, model="legacy71", *, verify_hash=Tr
     :data:`dlssnr.model_specs.MODEL_SPECS`; an unknown name raises
     :class:`ValueError`.  The default stays ``legacy71`` and hands the path to
     the existing :func:`dlssnr.checkpoint.load_checkpoint` (the old public load
-    API; ``Checkpoint`` has no ``load`` classmethod).  Nothing is inferred from
-    file shape, size or directory contents.
+    API; ``Checkpoint`` has no ``load`` classmethod).  ``model='small31'``
+    accepts either a self-contained format-3 ``.pt`` checkpoint or an extracted
+    archive directory; the two are distinguished only by the explicit path
+    type, never by file size, tensor shape or name.  Nothing is inferred from a
+    file's contents.
     """
     spec = resolve_model(model)
     if spec.id == "legacy71":
@@ -427,7 +434,9 @@ def load_native_model(checkpoint_or_archive, model="legacy71", *, verify_hash=Tr
         raise TypeError("small31 requires an extracted archive directory or a SmallWeightArchive")
     path = Path(checkpoint_or_archive)
     if path.is_file():
-        raise ValueError("small31 requires an extracted archive directory, not a checkpoint file")
+        # A self-contained format-3 Small31 checkpoint; the legacy default and
+        # the archive-directory branch below remain unchanged.
+        return load_checkpoint(path, model="small31", verify_hash=verify_hash)
     if not path.is_dir():
         raise ValueError("small31 requires an existing extracted archive directory")
     return SmallNativeCheckpoint(path, verify_hashes=verify_hash)

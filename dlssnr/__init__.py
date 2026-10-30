@@ -2,7 +2,8 @@
 __all__ = ["DLSSNR", "Geometry", "WeightArchive", "create_plan_fp8", "inference_forward_fp8",
            "create_plan_fp16", "inference_forward_fp16", "load_checkpoint", "PreparedKernel",
            "PreparedSequence", "prepare_kernels", "prepare_output_view_fp8", "prepare_output_view_fp16",
-           "prepare_frontend", "frontend_configuration", "compose_kernels"]
+           "prepare_frontend", "frontend_configuration", "compose_kernels", "SmallCheckpoint",
+           "load_native_model", "export_trained_checkpoint"]
 
 def __getattr__(name):
     from importlib import import_module
@@ -11,7 +12,9 @@ def __getattr__(name):
                    create_plan_fp8="deployment", inference_forward_fp8="deployment", load_checkpoint="checkpoint",
                    PreparedKernel="deployment", PreparedSequence="deployment", prepare_kernels="deployment",
                    prepare_output_view_fp8="deployment", prepare_output_view_fp16="deployment",
-                   prepare_frontend="deployment", frontend_configuration="deployment", compose_kernels="deployment")
+                   prepare_frontend="deployment", frontend_configuration="deployment", compose_kernels="deployment",
+                   SmallCheckpoint="portable_checkpoint", load_native_model="small_deployment",
+                   export_trained_checkpoint="trained_checkpoint")
     if name not in modules:
         raise AttributeError(name)
     return getattr(import_module('.'+modules[name], __name__), name)

@@ -1,0 +1,220 @@
+{
+  "byte_length": 113943356,
+  "bytes": 113943356,
+  "file": "dlss5_nr_small31.pt",
+  "format_version": 3,
+  "model": "small31",
+  "path": "ckpts\\dlss5_nr_small31.pt",
+  "sha256": "742c63cae96fb0d6f53f2de6e89e8175606ad51b8939e5e7d255a9167fbef154",
+  "sidecar": "ckpts\\dlss5_nr_small31.json",
+  "storage": "native_records",
+  "weight_precision": "fp8",
+  "extraction": {
+    "tool": "tools/extract_model_checkpoint.py",
+    "command": [
+      "D:\\Research\\DLSSNR-PyTorch\\.venv\\Scripts\\python.exe",
+      "D:\\Research\\DLSSNR-PyTorch\\tools\\extract_model_checkpoint.py",
+      "--dll",
+      "profile\\dlss-update-20261029\\artifacts\\dll\\nvngx_dlssnr_310.9.16.dll",
+      "--model",
+      "small31",
+      "--output",
+      "ckpts\\dlss5_nr_small31.pt"
+    ],
+    "schema": "small31-native-records-v3",
+    "source": {
+      "dll": "profile\\dlss-update-20261029\\artifacts\\dll\\nvngx_dlssnr_310.9.16.dll",
+      "dll_sha256": "2bc19bc09a7b89dd44f73e2ac0108fcc586e2154bdd0830f242f4f040e28789f",
+      "dll_byte_length": 266424944,
+      "resource_path": "10/WEIGHTS_CC_SMALL_FP8/1033",
+      "resource_sha256": "f743e8eb320f42bc9bdc992ee2bf51f7bb7c8688ced4ecf5ce6807ec4eef7962",
+      "resource_byte_length": 113893343,
+      "archive_manifest_sha256": "8471411ad9b8e4f4a158c8dd62fad4f10f97febdceed2192af270ec820e9f6fc",
+      "runtime_executed": false,
+      "dll_loaded": false,
+      "network_used": false
+    },
+    "record_count": 77,
+    "record_payload_bytes": 113887490,
+    "special_records": {
+      "pre": {
+        "name": "block0.layer0.layer",
+        "byte_length": 21696
+      },
+      "post": {
+        "name": "block30.layer0.layer",
+        "byte_length": 21808
+      },
+      "blend_scale": {
+        "name": "block30.layer0.blend_scale",
+        "byte_length": 2
+      },
+      "vit_layer3": [
+        {
+          "name": "block11.layer3.layer",
+          "byte_length": 2
+        },
+        {
+          "name": "block12.layer3.layer",
+          "byte_length": 2
+        },
+        {
+          "name": "block13.layer3.layer",
+          "byte_length": 2
+        },
+        {
+          "name": "block14.layer3.layer",
+          "byte_length": 2
+        },
+        {
+          "name": "block15.layer3.layer",
+          "byte_length": 2
+        },
+        {
+          "name": "block16.layer3.layer",
+          "byte_length": 2
+        },
+        {
+          "name": "block17.layer3.layer",
+          "byte_length": 2
+        },
+        {
+          "name": "block18.layer3.layer",
+          "byte_length": 2
+        }
+      ]
+    }
+  },
+  "verification": {
+    "performed": [
+      "native_records_bytes_vs_fresh_archive",
+      "decoded_state_vs_archive_cpu_decode",
+      "torch_load_weights_only_roundtrip",
+      "isolated_pt_load_without_sidecar_or_archive"
+    ],
+    "pre_save": {
+      "record_count": 77,
+      "record_payload_bytes": 113887490,
+      "decoded_state_tensor_count": 272,
+      "decoded_state_dtypes": {
+        "torch.float32": 272
+      },
+      "decoded_block_count": 31,
+      "decoded_block_tensor_count": 272,
+      "special_records": {
+        "pre": {
+          "name": "block0.layer0.layer",
+          "byte_length": 21696
+        },
+        "post": {
+          "name": "block30.layer0.layer",
+          "byte_length": 21808
+        },
+        "blend_scale": {
+          "name": "block30.layer0.blend_scale",
+          "byte_length": 2
+        },
+        "vit_layer3": [
+          {
+            "name": "block11.layer3.layer",
+            "byte_length": 2
+          },
+          {
+            "name": "block12.layer3.layer",
+            "byte_length": 2
+          },
+          {
+            "name": "block13.layer3.layer",
+            "byte_length": 2
+          },
+          {
+            "name": "block14.layer3.layer",
+            "byte_length": 2
+          },
+          {
+            "name": "block15.layer3.layer",
+            "byte_length": 2
+          },
+          {
+            "name": "block16.layer3.layer",
+            "byte_length": 2
+          },
+          {
+            "name": "block17.layer3.layer",
+            "byte_length": 2
+          },
+          {
+            "name": "block18.layer3.layer",
+            "byte_length": 2
+          }
+        ]
+      }
+    },
+    "roundtrip": {
+      "record_count": 77,
+      "record_payload_bytes": 113887490,
+      "decoded_state_tensor_count": 272,
+      "decoded_state_dtypes": {
+        "torch.float32": 272
+      },
+      "decoded_block_count": 31,
+      "decoded_block_tensor_count": 272,
+      "special_records": {
+        "pre": {
+          "name": "block0.layer0.layer",
+          "byte_length": 21696
+        },
+        "post": {
+          "name": "block30.layer0.layer",
+          "byte_length": 21808
+        },
+        "blend_scale": {
+          "name": "block30.layer0.blend_scale",
+          "byte_length": 2
+        },
+        "vit_layer3": [
+          {
+            "name": "block11.layer3.layer",
+            "byte_length": 2
+          },
+          {
+            "name": "block12.layer3.layer",
+            "byte_length": 2
+          },
+          {
+            "name": "block13.layer3.layer",
+            "byte_length": 2
+          },
+          {
+            "name": "block14.layer3.layer",
+            "byte_length": 2
+          },
+          {
+            "name": "block15.layer3.layer",
+            "byte_length": 2
+          },
+          {
+            "name": "block16.layer3.layer",
+            "byte_length": 2
+          },
+          {
+            "name": "block17.layer3.layer",
+            "byte_length": 2
+          },
+          {
+            "name": "block18.layer3.layer",
+            "byte_length": 2
+          }
+        ]
+      }
+    },
+    "isolated_load": {
+      "archive_directory_removed": true,
+      "sidecar_present": false,
+      "load": "load_checkpoint(path, model='small31')",
+      "state_dict_equal": true,
+      "blend_scale_equal": true,
+      "state_tensor_count": 272
+    }
+  }
+}

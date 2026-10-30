@@ -240,7 +240,15 @@ def pack_kernel_fp16(state, block, kind):
 
 class Checkpoint:
     """Validated CPU weight owner. Packing/loading occurs outside CUDA graph capture."""
+    model = "legacy71"
+
     def __init__(self, payload):
+        if not isinstance(payload, dict):
+            raise TypeError("checkpoint payload must be a dict")
+        declared = payload.get("model")
+        if declared is not None and declared != "legacy71":
+            raise ValueError(
+                f"Legacy Checkpoint accepts only the legacy71 model, got {declared!r}")
         if payload.get("format_version") != 2 or payload.get("weight_precision") not in ("fp8", "fp16"):
             raise ValueError("Expected DLSSNR checkpoint format 2, precision fp8 or fp16")
         self.precision = payload["weight_precision"]
@@ -368,11 +376,60 @@ class Checkpoint:
         return create_plan_fp8(state, records, width=width, height=height)
 
 
-def load_checkpoint(path, *, verify_hash=True):
-    """Load tensors and plain metadata only, without any extracted archive dependency."""
+def load_checkpoint(path, *, model="legacy71", verify_hash=True):
+    """Load one explicitly selected checkpoint owner without archive access.
+
+    ``model='legacy71'`` (the default) keeps the existing format-2 behavior,
+    including the adjacent SHA-256 sidecar requirement.  ``model='small31'``
+    loads a self-contained format-3 Small31 payload; its sidecar is optional at
+    load and verified when present.  The safe ``weights_only=True`` payload is
+    inspected before any sidecar policy is applied so cross-model selection
+    fails with an explicit identity error even when no sidecar exists.
+    """
+    from .model_specs import resolve_model
+
+    spec = resolve_model(model)
     path = Path(path)
-    if verify_hash:
-        manifest = json.loads(path.with_suffix(".json").read_text(encoding="utf-8"))
-        if file_sha256(path) != manifest["sha256"]:
-            raise ValueError("Checkpoint file SHA-256 mismatch")
-    return Checkpoint(torch.load(path, map_location="cpu", weights_only=True))
+    if not path.is_file():
+        raise ValueError(f"checkpoint file does not exist: {path}")
+    payload = torch.load(path, map_location="cpu", weights_only=True)
+    if not isinstance(payload, dict):
+        raise ValueError("Checkpoint payload must be a dict")
+    version = payload.get("format_version")
+    declared = payload.get("model")
+
+    if version == 3:
+        if declared != "small31":
+            raise ValueError(
+                f"Checkpoint format 3 declares model {declared!r}; only 'small31' is supported")
+        if spec.id != "small31":
+            raise ValueError(
+                "this checkpoint is a self-contained small31 checkpoint; "
+                "select model='small31' explicitly")
+        if verify_hash:
+            sidecar = path.with_suffix(".json")
+            if sidecar.is_file():
+                manifest = json.loads(sidecar.read_text(encoding="utf-8"))
+                if not isinstance(manifest, dict) or manifest.get("sha256") is None:
+                    raise ValueError("Small31 checkpoint sidecar has no sha256 entry")
+                if file_sha256(path) != manifest["sha256"]:
+                    raise ValueError("Checkpoint file SHA-256 mismatch")
+        from .portable_checkpoint import SmallCheckpoint
+        return SmallCheckpoint(payload)
+
+    if version == 2:
+        if declared is not None and declared != "legacy71":
+            raise ValueError(
+                f"Checkpoint format 2 declares model {declared!r}; expected 'legacy71'")
+        if spec.id != "legacy71":
+            raise ValueError(
+                "this checkpoint is a legacy71 format-2 checkpoint; "
+                "select model='legacy71' explicitly")
+        if verify_hash:
+            manifest = json.loads(path.with_suffix(".json").read_text(encoding="utf-8"))
+            if file_sha256(path) != manifest["sha256"]:
+                raise ValueError("Checkpoint file SHA-256 mismatch")
+        return Checkpoint(payload)
+
+    raise ValueError(
+        f"Unsupported checkpoint format_version {version!r}; expected 2 (legacy71) or 3 (small31)")

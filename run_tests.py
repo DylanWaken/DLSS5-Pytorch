@@ -39,6 +39,8 @@ CPU_PYTEST_TESTS = (
     "test_small_plan_cpu.py",
     "test_small_deployment_cpu.py",
     "test_small_attention_cpu.py",
+    "test_trained_checkpoint_cpu.py",
+    "test_portable_checkpoint_cpu.py",
     "test_video_cpu.py",
 )
 
