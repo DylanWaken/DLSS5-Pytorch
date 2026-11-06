@@ -207,8 +207,8 @@ extern "C" __global__
 		#pragma unroll
 		for (int r_Column = 0; r_Column < 4; ++r_Column)
 		{
-			flashlight::MmaAccumulator<flashlight::AccumulatorPrecision::Half> accumulator{
-				{r_Adapter[r_Tile].pair[r_Column][0], r_Adapter[r_Tile].pair[r_Column][1]}};
+			// Start this feature-adapter product as A * B + 0.
+			flashlight::MmaAccumulator<flashlight::AccumulatorPrecision::Half> accumulator{};
 			dlssnr::ops::mma_window_fragment<false>(
 				r_Input,
 				flashlight::MmaBFragment<flashlight::InputPrecision::Fp16>{
