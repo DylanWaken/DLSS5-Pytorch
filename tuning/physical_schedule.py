@@ -1,40 +1,24 @@
 """CPU-only native physical schedule; no Torch, extension, or CUDA import."""
 from pathlib import Path
-import hashlib, importlib.util, json, sys
+import json, sys
+
 H = Path(__file__).resolve().parent
 R = H.parent
 if str(R) not in sys.path:
     sys.path.insert(0, str(R))
-from dlssnr.model_specs import resolve_model
 
-def load_geometry():
-    p = R / 'dlssnr/geometry.py'
-    s = importlib.util.spec_from_file_location('_all_reconstructed_geometry', p)
-    m = importlib.util.module_from_spec(s)
-    sys.modules[s.name] = m
-    s.loader.exec_module(m)
-    return m
+from dlssnr.common.hashing import sha256_file
+from dlssnr.common.precision import resolve_precision
+from dlssnr.geometry import (Geometry, block_channels, graph_schedule, level_for_channels,
+                             native_token_storage, repack_output_level, role_spatial_level,
+                             window_shift)
+from dlssnr.model_specs import resolve_model
 
 # Independent symbol-roster pins, not the schedule row census.
 _EXPECTED_UNIQUE_SYMBOLS = {'legacy71': 36, 'small31': 33}
 
 
-def _retained_roles(spec):
-    """Native trunk roles; the pre/post roots stay separate plan edges."""
-    return tuple(role for role in spec.roles if role not in (spec.pre_role, spec.post_role))
-
-
-def _role_level(role, gmod):
-    channels = gmod.block_channels(role)
-    if channels == 1024:
-        return 5
-    try:
-        return {32: 0, 64: 1, 128: 2, 256: 3, 512: 4}[channels]
-    except KeyError as exc:
-        raise ValueError(f'role {role} has no spatial level') from exc
-
-
-def _expected_compute_positions(spec, roles, gmod):
+def _expected_compute_positions(roles):
     """Independent row census from the retained role roster, including repacks."""
     count = 0
     for role in roles:
@@ -44,14 +28,14 @@ def _expected_compute_positions(spec, roles, gmod):
             count += 5  # expand, contract, qkv, chained attention, projection
         elif role == 39:
             count += 1  # transition-only upsample
-        elif gmod.block_channels(role) == 512:
+        elif block_channels(role) == 512:
             count += 4 + (1 if role == 30 else 0)  # optional downsample final head
         else:
             count += 1
     return count
 
 
-def _expected_record_positions(spec, roles, gmod):
+def _expected_record_positions(roles):
     """Independent record roster; repacks carry no packed weight record."""
     count = 0
     for role in roles:
@@ -59,7 +43,7 @@ def _expected_record_positions(spec, roles, gmod):
             count += 4  # the native layer-3 slot is not dispatched
         elif role == 39:
             count += 1
-        elif gmod.block_channels(role) == 512:
+        elif block_channels(role) == 512:
             count += 4 + (1 if role == 30 else 0)
         else:
             count += 1
@@ -71,11 +55,10 @@ def _expected_reset_positions(roles):
 
 
 def make(width=3840, height=2160, *, precision="fp8", model='legacy71'):
-    if precision not in ('fp8', 'fp16'):
-        raise ValueError('unsupported deployment precision')
+    precision = resolve_precision(
+        precision, error_message='unsupported deployment precision')
     spec = resolve_model(model)
-    gmod = load_geometry()
-    g = gmod.Geometry.from_valid(width, height)
+    g = Geometry.from_valid(width, height)
     rows = []
     buffers = {}
     skips = {}
@@ -89,10 +72,10 @@ def make(width=3840, height=2160, *, precision="fp8", model='legacy71'):
     h, w = (g.levels[0][1], g.levels[0][0])
     alloc('input', h, w, 32, 'plane16')
 
-    roles = _retained_roles(spec)
+    roles = spec.retained_roles
     raw_for_role = {role: spec.raw_for_role(role) for role in roles}
     if spec.id == 'legacy71':
-        phase_for_role = {entry['block']: entry['phase'] for entry in gmod.graph_schedule(g)}
+        phase_for_role = {entry['block']: entry['phase'] for entry in graph_schedule(g)}
     else:
         phase_for_role = {role: spec.phase_for_role(role) for role in roles}
 
@@ -104,13 +87,15 @@ def make(width=3840, height=2160, *, precision="fp8", model='legacy71'):
                          input_buffers=inputs, output_buffers=outputs, record_layer=record,
                          grid=grid, block_dim=threads, abi_bytes=abi, phase=phase))
     for b in roles:
-        c = gmod.block_channels(b)
-        h, w = (g.levels[_role_level(b, gmod)][1], g.levels[_role_level(b, gmod)][0])
+        c = block_channels(b)
+        level = role_spatial_level(b)
+        h, w = (g.levels[level][1], g.levels[level][0])
         phase = phase_for_role[b] or 0
         if b in (31, 39):
-            gh, gw = (g.levels[5][1], g.levels[5][0])
+            repack_level = repack_output_level(b)
+            gh, gw = (g.levels[repack_level][1], g.levels[repack_level][0])
             m = gh * gw
-            p = (m + 31) // 32 * 32
+            p = native_token_storage(m)
             to1d = b == 31
             name = 'repack-30-31' if to1d else 'repack-38-39'
             out = alloc(name, gh, gw, 1024, 'token16' if to1d else 'tile4', p * 1024 if to1d else m * 1024)
@@ -118,7 +103,7 @@ def make(width=3840, height=2160, *, precision="fp8", model='legacy71'):
             previous = out
         if c == 1024:
             m = h * w
-            p = (m + 31) // 32 * 32
+            p = native_token_storage(m)
             slots = {n: alloc(f'b{b}.{n}', h, w, 4096 if n == 'expanded' else c, 'global_' + n.lower() if n in ('Q', 'K', 'V') else 'token16', p * (4096 if n == 'expanded' else c)) for n in ('expanded', 'contracted', 'Q', 'K', 'V', 'attended', 'output')}
             stages = [('expand', {'state': previous}, {'high': slots['expanded']}, 0, [32 * ((m + 127) // 128), 1, 1], 72), ('contract', {'state': slots['expanded'], 'residual': previous}, {'high': slots['contracted']}, 1, [8 * ((m + 127) // 128), 1, 4], 72), ('qkv', {'state': slots['contracted']}, {k.lower(): slots[k] for k in ('Q', 'K', 'V')}, 2, [16 * ((m + 127) // 128), 1, 2], 80), ('attention_chained', {k.lower(): slots[k] for k in ('Q', 'K', 'V')}, {'high': slots['attended']}, None, [32, (m + 255) // 256, 1], 64), ('projection', {'state': slots['attended'], 'residual': slots['contracted']}, {'high': slots['output']}, 4, [8 * ((m + 127) // 128), 1, 4], 72)]
             for stage, ins, outs, layer, grid, abi in stages:
@@ -153,7 +138,7 @@ def make(width=3840, height=2160, *, precision="fp8", model='legacy71'):
             resets.append(dict(before_block=39, counter='up', initial=-1, final=3, callable='global_counter_clear_reconstructed_out'))
             previous = out
             continue
-        sx, sy = gmod.window_shift(phase)
+        sx, sy = window_shift(phase)
         grid = [(w + sx + 7) // 8, (h + sy + 7) // 8, 1]
         if c == 512:
             slots = {n: alloc(f'b{b}.{n}', h, w, c, 'plane16' if b == 47 and n == 'output' else 'tile4') for n in ('branches', 'ffn', 'attended', 'output')}
@@ -191,7 +176,7 @@ def make(width=3840, height=2160, *, precision="fp8", model='legacy71'):
             padded = h != 2 * dh or w != 2 * dw
             outputs['down'] = alloc(f'b{b}.down', dh, dw, 2 * c, 'plane16', dh * dw * 2 * c * (2 if padded else 1))
             skips[b] = out
-        add(b, 'fused', symbol, {32: 0, 64: 1, 128: 2, 256: 3}[c], inputs, outputs, 0, grid, [32, c // 32, 1], 96 if c == 32 else 88, phase)
+        add(b, 'fused', symbol, level_for_channels(c), inputs, outputs, 0, grid, [32, c // 32, 1], 96 if c == 32 else 88, phase)
         previous = outputs['down'] if down else out
     if precision == 'fp16':
         # Half uses independent K16/plane16 layouts, direct global reductions,
@@ -217,9 +202,9 @@ def make(width=3840, height=2160, *, precision="fp8", model='legacy71'):
                 row['block_dim'] = c512[row['original_symbol']]['block']
     inputs = {v for x in rows for v in x['input_buffers'].values()}
     produced = {v for x in rows for v in x['output_buffers'].values()}
-    expected_compute = _expected_compute_positions(spec, roles, gmod)
+    expected_compute = _expected_compute_positions(roles)
     expected_resets = _expected_reset_positions(roles)
-    expected_records = _expected_record_positions(spec, roles, gmod)
+    expected_records = _expected_record_positions(roles)
     unique_symbols = len({row['original_symbol'] for row in rows})
     emitted_records = len({(row['raw_block'], row['record_layer']) for row in rows
                            if row['record_layer'] is not None})
@@ -242,4 +227,4 @@ def make(width=3840, height=2160, *, precision="fp8", model='legacy71'):
                 census=dict(compute_positions=len(rows), counter_reset_positions=len(resets),
                             calls=len(rows) + len(resets), record_positions=expected_records,
                             unique_symbols=unique_symbols),
-                alias_rule='Successor consumes the producer allocation at offset 0 with its exact logical extent; retain the entire guarded backing allocation, including any padding-clear workspace.', no_per_block_layout_kernels=True, mandatory_repack_positions=['repack-30-31', 'repack-38-39'], scope=('Small31 raw records 0..30 mapped onto legacy operation roles; pre/post roots remain separate.' if spec.id == 'small31' else 'Original resident blocks1..69. Frontend0/output70 are separate root-owned gaps. Half symbol/layout catalogs do not imply full-resolution Half host admission.'), source_pins={p: hashlib.sha256((R / p).read_bytes()).hexdigest() for p in ('dlssnr/geometry.py', 'tools/native_reference/trunk.py', 'tools/native_reference/vendor_global_block.py', 'tools/native_reference/vendor_window512_block.py', 'tools/native_reference/native_fused.py', 'tools/native_reference/vendor_connectors.py', 'tools/native_reference/vendor_window_benchmark.py', 'tools/native_reference/vendor_downsample_probe.py')})
+                alias_rule='Successor consumes the producer allocation at offset 0 with its exact logical extent; retain the entire guarded backing allocation, including any padding-clear workspace.', no_per_block_layout_kernels=True, mandatory_repack_positions=['repack-30-31', 'repack-38-39'], scope=('Small31 raw records 0..30 mapped onto legacy operation roles; pre/post roots remain separate.' if spec.id == 'small31' else 'Original resident blocks1..69. Frontend0/output70 are separate root-owned gaps. Half symbol/layout catalogs do not imply full-resolution Half host admission.'), source_pins={p: sha256_file(R / p) for p in ('dlssnr/geometry.py', 'tools/native_reference/trunk.py', 'tools/native_reference/vendor_global_block.py', 'tools/native_reference/vendor_window512_block.py', 'tools/native_reference/native_fused.py', 'tools/native_reference/vendor_connectors.py', 'tools/native_reference/vendor_window_benchmark.py', 'tools/native_reference/vendor_downsample_probe.py')})

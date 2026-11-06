@@ -1,14 +1,26 @@
 """Raw OpenDLSS-NR checkpoint records for the reconstructed-only route.
 
-Parsing/record validation retained from the prior strict reader. No Torch,
-NumPy, model, decode_block, or compute-operator imports. Layout attribution:
+Canonical stdlib-only packed-record wire/archive owner. Parsing/record
+validation retained from the prior strict reader. No Torch, NumPy, model,
+decode_block, or compute-operator imports. Layout attribution:
 OpenDLSS-NR, Copyright (c) 2026 maan, MIT; see third_party notice.
+
+``WeightArchive`` is retained as a same-object compatibility alias; the
+canonical pure wire name is :class:`PackedRecordArchive`.
 """
 from dataclasses import dataclass
 import hashlib
 import json
 from pathlib import Path
 from .geometry import block_channels, block_layout
+
+__all__ = [
+    "PackedRecordArchive",
+    "TensorRecord",
+    "WeightArchive",
+    "expected_record_names",
+    "expected_record_sizes",
+]
 
 def expected_record_names() -> frozenset[str]:
     names = set()
@@ -62,7 +74,7 @@ class TensorRecord:
         return self.data[offset:offset + count]
 
 
-class WeightArchive:
+class PackedRecordArchive:
     """Strict raw packed-record reader; no tensor decoding or compute selection."""
     def __init__(self, directory, *, verify_hashes: bool = True, require_complete: bool = True):
         self.directory = Path(directory).resolve()
@@ -132,3 +144,7 @@ class WeightArchive:
         except KeyError as exc:
             raise ValueError(f"missing tensor {name}") from exc
 
+
+# Compatibility aliases: preserve the established import surface while the pure
+# wire class keeps its clearer canonical name.
+WeightArchive = PackedRecordArchive

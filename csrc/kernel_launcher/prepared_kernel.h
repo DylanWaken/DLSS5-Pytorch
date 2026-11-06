@@ -1,4 +1,5 @@
 #pragma once
+#include "common/host/parameter_binding.h"
 #include <ATen/ATen.h>
 #include <torch/custom_class.h>
 #include <array>
@@ -79,13 +80,6 @@ class FPreparedKernelSequence : public torch::CustomClassHolder
 c10::intrusive_ptr<FPreparedKernelSequence>
 CreateKernelSequence(std::vector<c10::intrusive_ptr<FPreparedKernelHandle>> Owners);
 
-struct FPhysicalTensorBinding
-{
-	size_t ParameterOffset;
-	size_t TensorIndex;
-	bool bMutable;
-};
-
 // All extents are exact physical byte counts; layouts are the native packed ABI.
 struct FPhysicalKernelDescriptor final : FPreparedKernelDescriptor
 {
@@ -93,12 +87,13 @@ struct FPhysicalKernelDescriptor final : FPreparedKernelDescriptor
 	const dim3 Grid, Block;
 	const int SplitParameterOffset;
 	const std::array<unsigned char, 96> ParameterBlock;
-	const std::vector<FPhysicalTensorBinding> Bindings;
+	const std::vector<dlssnr::host::FPhysicalTensorBinding> Bindings;
 	const std::vector<int64_t> InputBytes, OutputBytes;
 	FPhysicalKernelDescriptor(std::string Name, int DeviceIndex, const void* Function, dim3 Grid, dim3 Block,
 							  std::array<unsigned char, 96> ParameterBlock,
-							  std::vector<FPhysicalTensorBinding> Bindings, std::vector<int64_t> InputBytes,
-							  std::vector<int64_t> OutputBytes, int SplitParameterOffset = -1);
+							  std::vector<dlssnr::host::FPhysicalTensorBinding> Bindings,
+							  std::vector<int64_t> InputBytes, std::vector<int64_t> OutputBytes,
+							  int SplitParameterOffset = -1);
 	void Validate(const std::vector<at::Tensor>& Inputs, const std::vector<at::Tensor>& Outputs,
 				  bool bMeta) const override;
 	void Launch(const std::vector<at::Tensor>& Inputs, const std::vector<at::Tensor>& Outputs) const override;

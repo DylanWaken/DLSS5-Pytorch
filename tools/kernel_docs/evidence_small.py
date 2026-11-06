@@ -5,7 +5,9 @@ directory.  It is a compact, checked-in snapshot of the verified handoff in
 ``profile/small-attention-fp32acc-sm120-20261030`` so a future documentation
 build does not need the ignored profile tree.  The four raw reports themselves
 are committed under ``docs/kernel-guide/evidence-small`` with their original
-names and ``.ncu-repz`` suffix.
+names and ``.ncu-repz`` suffix.  Generated index/design-check files follow the
+configured output root; the pinned source kernel is read from the immutable
+original provider, never from the working tree.
 
 This namespace stays separate from ``evidence/index.json``.  The legacy file
 remains the frozen 81-entry NCU set pinned to the historical source.  Here each
@@ -21,7 +23,9 @@ import hashlib
 import json
 
 from common import ROOT
+from output_paths import output_root
 from runtime_source_revision import RUNTIME_REVISION
+from source_providers import ORIGINAL
 from kernel_map_profiles import profile
 
 BINARY_SHA256 = 'f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938'
@@ -89,12 +93,6 @@ def _sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _normalized_sha256(path):
-    text = path.read_text(encoding='utf-8')
-    text = text.replace('\r\n', '\n').replace('\r', '\n')
-    return hashlib.sha256(text.encode()).hexdigest()
-
-
 def load_snapshot(require_current=True):
     """Load and structurally verify the checked-in compact snapshot.
 
@@ -121,8 +119,13 @@ def load_snapshot(require_current=True):
         record = kernels[name]
         if record.get('fixture_id') != EXPECTED_FIXTURE_ID:
             raise SystemExit(f'{name}: fixture identity is missing or mismatched')
-        source = ROOT / record.get('source', '')
-        if not source.is_file() or _normalized_sha256(source) != record.get('source_sha256'):
+        source = record.get('source', '')
+        try:
+            source_sha256 = ORIGINAL.sha256(source)
+        except (OSError, ValueError) as exc:
+            raise SystemExit(f'{name}: pinned source is not in the immutable original '
+                             f'snapshot: {exc}') from exc
+        if source_sha256 != record.get('source_sha256'):
             raise SystemExit(f'{name}: source hash does not match the snapshot pin')
         if record.get('runtime_binary_sha256') != BINARY_SHA256:
             raise SystemExit(f'{name}: runtime binary hash is not the accepted binary')
@@ -137,7 +140,7 @@ def load_snapshot(require_current=True):
             public = report.get('public_path', '')
             if not public.startswith(f'{PUBLIC_DIR}/') or not public.endswith('.ncu-repz'):
                 raise SystemExit(f'{name}: report path is not a relative public .ncu-repz path')
-            path = ROOT / 'docs/kernel-guide' / public
+            path = output_root() / public
             if not path.is_file():
                 raise SystemExit(f'{name}: missing copied raw report {public}')
             if _sha256(path) != report.get('sha256'):
@@ -174,7 +177,7 @@ def _public_artifacts(snapshot):
     items = []
     for record in snapshot.get('artifacts', []):
         if record.get('public_path'):
-            path = ROOT / 'docs/kernel-guide' / record['public_path']
+            path = output_root() / record['public_path']
             actual = _sha256(path) if path.is_file() else None
             if actual != record.get('sha256'):
                 raise SystemExit(f'Public evidence artifact hash mismatch: {record["public_path"]}')
@@ -268,10 +271,10 @@ def write_index():
     """Write the measured index and the public compact measurement copy."""
     snapshot = load_snapshot()
     index = build_index(snapshot)
-    target = ROOT / 'docs/kernel-guide/evidence-small/index.json'
+    target = output_root() / 'evidence-small/index.json'
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(index, indent=2) + '\n', encoding='utf-8', newline='\n')
-    public = ROOT / 'docs/kernel-guide/evidence-small/measurements.json'
+    public = output_root() / 'evidence-small/measurements.json'
     public.write_text(SNAPSHOT_PATH.read_text(encoding='utf-8'), encoding='utf-8', newline='\n')
     return index
 
@@ -365,7 +368,7 @@ def run_design_checks(inventory):
         'artifacts': _public_artifacts(snapshot),
         'kernels': kernels,
     }
-    target = ROOT / 'docs/kernel-guide/evidence-small/design-checks.json'
+    target = output_root() / 'evidence-small/design-checks.json'
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8', newline='\n')
     return result

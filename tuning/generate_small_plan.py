@@ -55,7 +55,7 @@ def render(precision='fp8'):
         raise ValueError(f'unsupported precision {precision!r}')
     abi_fields, parameter_types = load_abi_fields()
     resolvers = load_template_resolvers()
-    spec, schedules, plans = build_precision_plans(precision, 'small31')
+    spec, schedules, plans = build_precision_plans(precision, SMALL31.id)
     reference = plans[-1]
     call_count = len(reference['calls'])
     title = (f'// Generated separate Small31 native FP8 schedule. Every resolution uses '

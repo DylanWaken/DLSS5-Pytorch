@@ -8,7 +8,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.kernel_sources import (SAFE_ATTENTION_EXPORTS, check_roster, check_entry_layout, collect,
-                                  compare_exports, _without_comments_and_strings)
+                                  compare_exports, local_dependencies, _without_comments_and_strings)
 
 
 class KernelSourcesCPUTest(unittest.TestCase):
@@ -362,15 +362,65 @@ class KernelSourcesCPUTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "found 0"):
                 collect(root)
 
-    def test_namespaces_and_using_directives_are_rejected(self):
-        for declaration in ("namespace Hidden { }", "namespace { }", "using namespace std;"):
+    def test_helper_namespaces_do_not_change_global_entry_ownership(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.make_fixture(root)
+            path = root / "kernel_impl/group.cuh"
+            path.write_text("namespace flashlight { namespace tile { void helper() {} } }\n"
+                            "namespace { void local_helper() {} }\n" + path.read_text(), encoding="utf-8")
+            self.assertEqual(collect(root)["entries"]["example_fp8"]["namespace"], "")
+
+    def test_namespaced_cuda_entries_are_rejected(self):
+        for declaration in ("namespace Hidden", "namespace", "namespace dlssnr { namespace ops"):
             with self.subTest(declaration=declaration), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 self.make_fixture(root)
                 path = root / "kernel_impl/group.cuh"
-                path.write_text(declaration + "\n" + path.read_text(), encoding="utf-8")
-                with self.assertRaisesRegex(ValueError, "namespaces and using namespace are forbidden"):
+                path.write_text(declaration + " {\n" + path.read_text()
+                                + "}\n" * (declaration.count("{") + 1), encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, "must remain in the global namespace"):
                     collect(root)
+
+    def test_project_angle_includes_are_followed_and_missing_headers_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.make_fixture(root)
+            public = root / "include/flashlight"
+            public.mkdir(parents=True)
+            (public / "core.cuh").write_text("#include <cuda_runtime.h>\n", encoding="utf-8")
+            owner = root / "kernel_launcher/group.cu"
+            owner.write_text('#include <kernel_impl/group.cuh>\n#include <flashlight/core.cuh>\n',
+                             encoding="utf-8")
+            self.assertEqual(local_dependencies(owner, root),
+                             ["include/flashlight/core.cuh", "kernel_impl/group.cuh"])
+            self.assertEqual(collect(root)["entry_count"], 1)
+            owner.write_text("#include <flashlight/missing.cuh>\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "missing local include"):
+                collect(root)
+
+    def test_project_include_cannot_escape_source_root(self):
+        with tempfile.TemporaryDirectory() as directory:
+            parent = Path(directory)
+            root = parent / "csrc"
+            root.mkdir()
+            self.make_fixture(root)
+            (parent / "outside.cuh").write_text("// outside project roots\n", encoding="utf-8")
+            owner = root / "kernel_launcher/group.cu"
+            owner.write_text('#include "../../outside.cuh"\n', encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "local include leaves csrc"):
+                collect(root)
+
+    def test_specialization_resolver_cannot_hide_in_namespace(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path, _, _ = self.make_template_fixture(root)
+            text = path.read_text(encoding="utf-8")
+            marker = 'extern "C" const void* Resolve_example_c32_fp8'
+            path.write_text(text.replace(marker, "namespace hidden {\n" + marker) + "}\n",
+                            encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "resolver must remain in the global namespace"):
+                collect(root)
 
     def test_cuda_entries_require_c_linkage(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -389,7 +439,7 @@ class KernelSourcesCPUTest(unittest.TestCase):
             path = root / "kernel_impl/group.cuh"
             original = path.read_text().replace('extern "C" ', '')
             path.write_text("namespace dlssnr::reconstructed::example_fp8 {\n" + original + "}\n", encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "namespaces and using namespace are forbidden"):
+            with self.assertRaisesRegex(ValueError, "must remain in the global namespace"):
                 collect(root)
             historical = collect(root, allow_legacy_namespaces=True)
             with self.assertRaisesRegex(ValueError, "exported entry roster changed"):

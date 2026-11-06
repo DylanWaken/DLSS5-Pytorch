@@ -11,6 +11,8 @@
 #include <mutex>
 #include <unordered_map>
 
+using namespace dlssnr::host;
+
 struct FPreparedKernelRegistry
 {
 	std::mutex Mutex;
@@ -46,11 +48,8 @@ RegisterPreparedKernel(std::shared_ptr<const FPreparedKernelDescriptor> Descript
 {
 	Descriptor->Validate(Inputs, Outputs, false);
 	c10::cuda::CUDAGuard DeviceGuard(c10::Device(c10::kCUDA, Descriptor->DeviceIndex));
-	cudaStreamCaptureStatus CaptureStatus{};
-	C10_CUDA_CHECK(cudaStreamIsCapturing(c10::cuda::getCurrentCUDAStream(Descriptor->DeviceIndex).stream(),
-										 &CaptureStatus));
-	TORCH_CHECK(CaptureStatus == cudaStreamCaptureStatusNone,
-				"prepare individual kernels outside CUDA graph capture");
+	RequireOutsideCapture(c10::cuda::getCurrentCUDAStream(Descriptor->DeviceIndex).stream(),
+						  "prepare individual kernels outside CUDA graph capture");
 	auto& Registry = GetPreparedKernelRegistry();
 	const int64_t HandleId = Registry.NextId.fetch_add(1);
 	TORCH_CHECK(HandleId > 0, "prepared kernel handle range exhausted");
@@ -81,11 +80,8 @@ FPreparedKernelSequence::FPreparedKernelSequence(
 	TORCH_CHECK(!Owners.empty(), "a prepared kernel sequence cannot be empty");
 	const auto FirstDescriptor = FindPreparedKernel(Owners.front()->Id());
 	c10::cuda::CUDAGuard DeviceGuard(c10::Device(c10::kCUDA, FirstDescriptor->DeviceIndex));
-	cudaStreamCaptureStatus CaptureStatus{};
-	C10_CUDA_CHECK(cudaStreamIsCapturing(
-		c10::cuda::getCurrentCUDAStream(FirstDescriptor->DeviceIndex).stream(), &CaptureStatus));
-	TORCH_CHECK(CaptureStatus == cudaStreamCaptureStatusNone,
-				"compose prepared kernel sequences outside CUDA graph capture");
+	RequireOutsideCapture(c10::cuda::getCurrentCUDAStream(FirstDescriptor->DeviceIndex).stream(),
+						  "compose prepared kernel sequences outside CUDA graph capture");
 	for (const auto& Owner : Owners)
 	{
 		const auto Descriptor = FindPreparedKernel(Owner->Id());
@@ -119,8 +115,9 @@ CreateKernelSequence(std::vector<c10::intrusive_ptr<FPreparedKernelHandle>> Owne
 
 FPhysicalKernelDescriptor::FPhysicalKernelDescriptor(
 	std::string InputName, int InputDeviceIndex, const void* InputFunction, dim3 InputGrid, dim3 InputBlock,
-	std::array<unsigned char, 96> InputParameterBlock, std::vector<FPhysicalTensorBinding> InputBindings,
-	std::vector<int64_t> InputExtents, std::vector<int64_t> OutputExtents, int InputSplitParameterOffset)
+	std::array<unsigned char, 96> InputParameterBlock,
+	std::vector<dlssnr::host::FPhysicalTensorBinding> InputBindings, std::vector<int64_t> InputExtents,
+	std::vector<int64_t> OutputExtents, int InputSplitParameterOffset)
 	: FPreparedKernelDescriptor(std::move(InputName), InputDeviceIndex), Function(InputFunction),
 	  Grid(InputGrid), Block(InputBlock), SplitParameterOffset(InputSplitParameterOffset),
 	  ParameterBlock(InputParameterBlock), Bindings(std::move(InputBindings)),
@@ -133,40 +130,29 @@ void FPhysicalKernelDescriptor::Validate(const std::vector<at::Tensor>& Inputs,
 {
 	TORCH_CHECK(Inputs.size() == InputBytes.size() && Outputs.size() == OutputBytes.size(), Name,
 				": tensor argument count differs from prepared ABI");
-	std::vector<std::pair<uintptr_t, uintptr_t>> StorageRanges;
+	std::vector<FPhysicalRange> StorageRanges;
 	const auto ValidateList = [&](const auto& Tensors, const auto& Bytes)
 	{
 		for (size_t TensorIndex = 0; TensorIndex < Tensors.size(); ++TensorIndex)
 		{
 			const auto& Tensor = Tensors[TensorIndex];
-			TORCH_CHECK(Tensor.defined() && Tensor.scalar_type() == at::kByte && Tensor.dim() == 1 &&
-							Tensor.is_contiguous(),
-						Name, ": requires exact contiguous one-dimensional uint8 physical extents");
-			// Dynamo can generalize dimensions while tracing another prepared entry.
-			// Emit a shape equality guard instead of extracting a concrete numel from
-			// a symbolic FakeTensor. The descriptor still admits exactly one extent.
-			TORCH_CHECK(
-				Tensor.sym_numel().sym_eq(c10::SymInt(Bytes[TensorIndex])).guard_bool(__FILE__, __LINE__),
-				Name, ": physical byte extent differs from the prepared kernel");
-			TORCH_CHECK(!Tensor.requires_grad(), Name, ": deployment kernels are inference only");
+			RequirePreparedByteExtent(Tensor, Bytes[TensorIndex], Name);
+			RequireInferenceOnly(Tensor, Name, ": deployment kernels are inference only");
 			if (bMeta)
 				continue;
 			TORCH_CHECK(Tensor.is_cuda() && Tensor.get_device() == DeviceIndex, Name,
 						": tensor device differs from prepared kernel");
-			const auto g_Address = reinterpret_cast<uintptr_t>(Tensor.data_ptr());
-			TORCH_CHECK(g_Address % 16 == 0 &&
-							g_Address <= std::numeric_limits<uintptr_t>::max() - uintptr_t(Tensor.numel()),
+			FPhysicalRange Range{};
+			const auto Address = TensorByteAddress(Tensor);
+			TORCH_CHECK(IsAligned16(Address) && TryPhysicalRange(Address, uintptr_t(Tensor.numel()), Range),
 						Name, ": invalid or unaligned physical storage range");
-			StorageRanges.emplace_back(g_Address, g_Address + uintptr_t(Tensor.numel()));
+			StorageRanges.push_back(Range);
 		}
 	};
 	ValidateList(Inputs, InputBytes);
 	ValidateList(Outputs, OutputBytes);
 	// No undeclared aliases: functionalization may replace every mutable tensor.
-	std::sort(StorageRanges.begin(), StorageRanges.end());
-	for (size_t RangeIndex = 1; RangeIndex < StorageRanges.size(); ++RangeIndex)
-		TORCH_CHECK(StorageRanges[RangeIndex - 1].second <= StorageRanges[RangeIndex].first, Name,
-					": physical tensor arguments must be pairwise disjoint");
+	RequirePairwiseDisjoint(StorageRanges, Name, ": physical tensor arguments must be pairwise disjoint");
 }
 
 void FPhysicalKernelDescriptor::Launch(const std::vector<at::Tensor>& Inputs,
@@ -181,8 +167,7 @@ void FPhysicalKernelDescriptor::Launch(const std::vector<at::Tensor>& Inputs,
 	for (const auto& Binding : Bindings)
 	{
 		const auto& Tensor = (Binding.bMutable ? Outputs : Inputs).at(Binding.TensorIndex);
-		const auto g_Address = reinterpret_cast<uint64_t>(Tensor.data_ptr());
-		std::memcpy(Arguments.data() + Binding.ParameterOffset, &g_Address, sizeof(g_Address));
+		BindPrevalidatedTensorAddress(Arguments, Binding.ParameterOffset, Tensor);
 	}
 	LaunchPhysicalKernel(Function, Grid, Block, Arguments, SplitParameterOffset, Stream.stream());
 	C10_CUDA_KERNEL_LAUNCH_CHECK();

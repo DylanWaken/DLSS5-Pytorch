@@ -1,6 +1,7 @@
 """Twenty self-contained reconstruction lessons for C512 public CUDA entries."""
 from html import escape
-from common import ROOT, code, svg
+from common import code, svg
+from source_providers import ORIGINAL
 from lesson_support import storage_legend, pseudo
 
 F='csrc/kernel_impl/shared_encoder_decoder_c512_ffn/'
@@ -12,7 +13,7 @@ S='csrc/kernel_impl/shared/common/'
 
 
 def cut(path, needle, count=18, before=0, caption=''):
-    lines=(ROOT/path).read_text(encoding='utf-8').splitlines()
+    lines=ORIGINAL.text(path).splitlines()
     i=next(i for i,line in enumerate(lines) if needle in line)
     start=max(1,i+1-before)
     return code(path,start,min(len(lines),start+count-1),caption)

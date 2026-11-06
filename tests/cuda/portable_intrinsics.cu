@@ -1,28 +1,67 @@
 // Compile explicitly, then pass the cubin to tests/test_portable_intrinsics.py --module:
-// nvcc --cubin -std=c++17 -gencode arch=compute_80,code=sm_120 tests/cuda/portable_intrinsics.cu -o portable_intrinsics.cubin
-#include "../../csrc/kernel_impl/shared/common/memoryops.cuh"
-#include "../../csrc/kernel_impl/shared/common/packed_math.cuh"
+// nvcc --cubin -std=c++17 -I csrc/include -gencode arch=compute_80,code=sm_120 tests/cuda/portable_intrinsics.cu -o portable_intrinsics.cubin
+#include <flashlight/memory/pipeline.cuh>
+#include <flashlight/memory/publication.cuh>
+#include <flashlight/layout/strided.cuh>
+
+namespace fl = flashlight;
+
+extern "C" __global__ void ProbeSharedLayout(const uint4* g_Input, uint4* g_Output)
+{
+	// Nonzero origins and more logical phases than physical slots catch disagreement
+	// between a copy destination's byte_offset and the consumer's at/load/store.
+	constexpr int OriginBytes = 64, StageBytes = 2048, Stages = 3, Phases = 7;
+	__shared__ __align__(16) unsigned char storage[OriginBytes + Stages * StageBytes];
+	const fl::memory::SharedBytes shared(storage);
+	using Layout = fl::layout::ByteStrides<512, 16>;
+	const fl::memory::StagedSharedLayoutView<uint4, Layout, Stages, StageBytes> tile(shared, OriginBytes);
+	const int thread = int(threadIdx.x), warp = thread / 32, lane = thread % 32;
+	for (int phase = 0; phase < Phases; ++phase)
+	{
+		if (phase & 1)
+			tile.store_slot(g_Input[phase * 128 + thread], phase % Stages, warp, lane);
+		else
+			tile.store(g_Input[phase * 128 + thread], phase, warp, lane);
+		if (phase & 1)
+			tile.at_slot(phase % Stages, warp, lane).w ^= 0x12345678u;
+		else
+			tile.at(phase, warp, lane).w ^= 0x12345678u;
+		__syncthreads();
+		const int reader = (thread + 32) % 128;
+		const int expected_offset = OriginBytes + (phase % Stages) * StageBytes + reader * 16;
+		// This direct address is the independent old-style oracle, not a view accessor.
+		g_Output[phase * 128 + thread] = *reinterpret_cast<const uint4*>(storage + expected_offset);
+		g_Output[(Phases + phase) * 128 + thread] = (phase & 1)
+			? tile.load_slot(phase % Stages, reader / 32, reader % 32)
+			: tile.load(phase, reader / 32, reader % 32);
+		g_Output[(Phases * 2 + phase) * 128 + thread] = make_uint4(
+			tile.byte_offset(phase, reader / 32, reader % 32),
+			tile.byte_offset_slot(phase % Stages, reader / 32, reader % 32), phase, reader);
+		__syncthreads();
+	}
+}
 
 extern "C" __global__ void ProbeCopies(const uint4* g_Input, uint4* g_Output)
 {
 	__shared__ __align__(16) unsigned char s_Storage[2064];
+	const fl::memory::SharedBytes shared(s_Storage);
 	const int Thread = int(threadIdx.x);
 	const int Warp = Thread / 32;
 	if (Thread == 0)
-		BarrierInit(s_Storage, 2048, 128);
+		fl::memory::TransactionBarrier(shared, 2048).initialize(128);
 	__syncthreads();
 
 	// Four warps issue disjoint copies; all 128 threads must see those copies
 	// before reading. Reuse the barrier across eight phase changes.
 	for (int Phase = 0; Phase < 8; ++Phase)
 	{
-		if (IsCopyProducer(0xffffffffu))
+		if (fl::arch::is_copy_producer(0xffffffffu))
 		{
-			CopyBulk(s_Storage, Warp * 512, uint64_t(g_Input + Phase * 128 + Warp * 32), 512, 2048);
-			BarrierExpect(s_Storage, 2048, 512);
+			fl::memory::TransactionBarrier(shared, 2048).copy_then_expect(
+				Warp * 512, fl::memory::GlobalAddress(uint64_t(g_Input + Phase * 128 + Warp * 32)), 512);
 		}
 
-		ArriveAndWait(s_Storage, 2048);
+		fl::memory::TransactionBarrier(shared, 2048).arrive_and_wait();
 		g_Output[Phase * 128 + Thread] = reinterpret_cast<const uint4*>(s_Storage)[Thread];
 
 		// Every reader finishes before the next phase reuses the shared tile.
@@ -39,6 +78,7 @@ extern "C" __global__ void ProbeCopyRing(const uint4* g_Input, uint4* g_Output)
 	constexpr int PhaseCount = 16;
 	constexpr int s_BarrierBase = 32768;
 	__shared__ __align__(16) unsigned char s_Storage[s_BarrierBase + 16];
+	const fl::memory::SharedBytes shared(s_Storage);
 	const int Thread = int(threadIdx.x);
 	const int Lane = Thread & 31;
 	const int Warp = Thread / 32;
@@ -47,8 +87,8 @@ extern "C" __global__ void ProbeCopyRing(const uint4* g_Input, uint4* g_Output)
 	const int s_StageVectors = s_StageBytes / int(sizeof(uint4));
 	if (Thread == 0)
 	{
-		BarrierInit(s_Storage, s_BarrierBase, ThreadCount);
-		BarrierInit(s_Storage, s_BarrierBase + 8, ThreadCount);
+		fl::memory::TransactionBarrier(shared, s_BarrierBase).initialize(ThreadCount);
+		fl::memory::TransactionBarrier(shared, s_BarrierBase + 8).initialize(ThreadCount);
 	}
 
 	__syncthreads();
@@ -66,11 +106,11 @@ extern "C" __global__ void ProbeCopyRing(const uint4* g_Input, uint4* g_Output)
 			const int s_Destination = s_Stage * s_StageBytes + s_CopyOffset;
 			if ((Warp + Copy + Phase) % 3 != 0)
 			{
-				if (IsCopyProducer(0xffffffffu))
+				if (fl::arch::is_copy_producer(0xffffffffu))
 				{
 					const uint64_t g_Source = uint64_t(g_Input) + Phase * s_StageBytes + s_CopyOffset;
-					CopyBulk(s_Storage, s_Destination, g_Source, CopyBytes, s_Barrier);
-					BarrierExpect(s_Storage, s_Barrier, CopyBytes);
+					fl::memory::TransactionBarrier(shared, s_Barrier).copy_then_expect(
+						s_Destination, fl::memory::GlobalAddress(g_Source), CopyBytes);
 				}
 			}
 			else
@@ -89,7 +129,7 @@ extern "C" __global__ void ProbeCopyRing(const uint4* g_Input, uint4* g_Output)
 	for (int Phase = 0; Phase < PhaseCount; ++Phase)
 	{
 		const int s_Stage = Phase & 1;
-		ArriveAndWait(s_Storage, s_BarrierBase + s_Stage * 8);
+		fl::memory::TransactionBarrier(shared, s_BarrierBase + s_Stage * 8).arrive_and_wait();
 		const auto* s_ReadyStage = reinterpret_cast<const uint4*>(s_Storage + s_Stage * s_StageBytes);
 		for (int s_Vector = Thread; s_Vector < s_StageVectors; s_Vector += ThreadCount)
 			g_Output[Phase * s_StageVectors + s_Vector] = s_ReadyStage[s_Vector];
@@ -109,6 +149,7 @@ extern "C" __global__ void ProbePrefetchCopies(const uint4* g_Input, uint4* g_Ou
 	constexpr int PhaseCount = 8;
 	constexpr int s_BarrierBase = 32768;
 	__shared__ __align__(16) unsigned char s_Storage[s_BarrierBase + 16];
+	const fl::memory::SharedBytes shared(s_Storage);
 	const int Thread = int(threadIdx.x);
 	const int Lane = Thread & 31;
 	const int Warp = Thread / 32;
@@ -118,8 +159,8 @@ extern "C" __global__ void ProbePrefetchCopies(const uint4* g_Input, uint4* g_Ou
 	const int s_StageVectors = s_StageBytes / int(sizeof(uint4));
 	if (Thread == 0)
 	{
-		BarrierInit(s_Storage, s_BarrierBase, ThreadCount);
-		BarrierInit(s_Storage, s_BarrierBase + 8, ThreadCount);
+		fl::memory::TransactionBarrier(shared, s_BarrierBase).initialize(ThreadCount);
+		fl::memory::TransactionBarrier(shared, s_BarrierBase + 8).initialize(ThreadCount);
 	}
 
 	__syncthreads();
@@ -135,11 +176,11 @@ extern "C" __global__ void ProbePrefetchCopies(const uint4* g_Input, uint4* g_Ou
 			const int s_Destination = s_Stage * s_StageBytes + s_CopyOffset;
 			if ((Warp + Copy + Phase) % 3 != 0)
 			{
-				if (IsCopyProducer(0xffffffffu))
+				if (fl::arch::is_copy_producer(0xffffffffu))
 				{
 					const uint64_t g_Source = uint64_t(g_Input) + Phase * s_StageBytes + s_CopyOffset;
-					CopyBulk(s_Storage, s_Destination, g_Source, CopyBytes, s_Barrier);
-					BarrierExpect(s_Storage, s_Barrier, CopyBytes);
+					fl::memory::TransactionBarrier(shared, s_Barrier).copy_then_expect(
+						s_Destination, fl::memory::GlobalAddress(g_Source), CopyBytes);
 				}
 			}
 			else
@@ -153,7 +194,7 @@ extern "C" __global__ void ProbePrefetchCopies(const uint4* g_Input, uint4* g_Ou
 
 	// Match the deployment prologue: one ready input stage, one empty slot.
 	IssueStage(0);
-	ArriveAndWait(s_Storage, s_BarrierBase);
+	fl::memory::TransactionBarrier(shared, s_BarrierBase).arrive_and_wait();
 
 	for (int Phase = 0; Phase < PhaseCount; ++Phase)
 	{
@@ -165,7 +206,7 @@ extern "C" __global__ void ProbePrefetchCopies(const uint4* g_Input, uint4* g_Ou
 		// Rotate readers by one warp so they consume other producers' copies.
 		// A different slow reader each phase stresses inter-warp slot release.
 		if (Warp == Phase % WarpCount)
-			PollSleep(128);
+			fl::arch::poll_sleep(128);
 		const auto* s_ReadyStage = reinterpret_cast<const uint4*>(s_Storage + (Phase & 1) * s_StageBytes);
 		for (int s_Vector = Thread; s_Vector < s_StageVectors; s_Vector += ThreadCount)
 		{
@@ -176,7 +217,7 @@ extern "C" __global__ void ProbePrefetchCopies(const uint4* g_Input, uint4* g_Ou
 		// No after-read CTA barrier: the next stage's ordinary mbarrier arrivals
 		// both complete its copies and release this slot for the next iteration.
 		if (Phase + 1 < PhaseCount)
-			ArriveAndWait(s_Storage, s_BarrierBase + ((Phase + 1) & 1) * 8);
+			fl::memory::TransactionBarrier(shared, s_BarrierBase + ((Phase + 1) & 1) * 8).arrive_and_wait();
 	}
 }
 
@@ -185,7 +226,7 @@ extern "C" __global__ void ProbeHalfReduction(const uint4* g_Input, uint4* g_Out
 	// A thread owns four independent Half2 words. Repeated launches check each
 	// component's rounding without introducing nondeterministic inter-CTA order.
 	const int g_Vector = int(blockIdx.x) * int(blockDim.x) + int(threadIdx.x);
-	ReduceHalf4(uint64_t(g_Output + g_Vector), g_Input[g_Vector]);
+	fl::arch::reduce_half4_add_noftz(uint64_t(g_Output + g_Vector), g_Input[g_Vector]);
 }
 
 extern "C" __global__ void ProbeExclusiveHalfReduction(const uint4* g_Input, uint4* g_Output)
@@ -193,7 +234,9 @@ extern "C" __global__ void ProbeExclusiveHalfReduction(const uint4* g_Input, uin
 	// Identical ownership and input layout to the atomic oracle above. Both
 	// destinations are initialized by the host before these ordered launches.
 	const int g_Vector = int(blockIdx.x) * int(blockDim.x) + int(threadIdx.x);
-	AccumulateExclusiveHalf4(uint64_t(g_Output + g_Vector), g_Input[g_Vector]);
+	const uint4 value = g_Input[g_Vector];
+	fl::memory::accumulate_exclusive_half2x4(fl::memory::GlobalAddress(uint64_t(g_Output + g_Vector)),
+		fl::PackedHalf2x4{{value.x, value.y, value.z, value.w}});
 }
 
 template <bool bExclusive>
@@ -207,7 +250,7 @@ __device__ __forceinline__ void RunSplitHandoff(const uint4* g_Input, uint4* g_O
 	const int Split = int(blockIdx.z);
 	const int g_PhaseVectors = int(gridDim.x) * int(blockDim.x);
 	const int g_Vector = Tile * int(blockDim.x) + Thread;
-	const uint64_t g_CounterAddress = uint64_t(g_Counters + Tile);
+	const fl::memory::SplitPublication publication(fl::memory::GlobalAddress(uint64_t(g_Counters + Tile)));
 	const uint64_t g_ScratchAddress = uint64_t(g_Scratch + g_Vector);
 
 	// The runner admits the entire eight-CTA grid against measured occupancy.
@@ -219,9 +262,9 @@ __device__ __forceinline__ void RunSplitHandoff(const uint4* g_Input, uint4* g_O
 		{
 			if (Thread == 0)
 			{
-				while (int32_t(CounterLoadRelaxed(g_CounterAddress)) < Publication - 1)
-					PollSleep(64);
-				AcquireSplitPublication();
+				while (int32_t(publication.load_relaxed()) < Publication - 1)
+					fl::arch::poll_sleep(64);
+				publication.acquire_fence();
 			}
 
 			__syncthreads();
@@ -229,30 +272,32 @@ __device__ __forceinline__ void RunSplitHandoff(const uint4* g_Input, uint4* g_O
 
 		const uint4 r_Contribution = g_Input[Publication * g_PhaseVectors + g_Vector];
 		if (Split == 0)
-			StoreNoAllocate(g_ScratchAddress, r_Contribution);
+			fl::memory::store_no_allocate(fl::memory::GlobalAddress(g_ScratchAddress), r_Contribution);
 		else if (Split < SplitCount - 1)
 		{
 			if constexpr (bExclusive)
-				AccumulateExclusiveHalf4(g_ScratchAddress, r_Contribution);
+				fl::memory::accumulate_exclusive_half2x4(fl::memory::GlobalAddress(g_ScratchAddress),
+					fl::PackedHalf2x4{{r_Contribution.x, r_Contribution.y, r_Contribution.z, r_Contribution.w}});
 			else
-				ReduceHalf4(g_ScratchAddress, r_Contribution);
+				fl::arch::reduce_half4_add_noftz(g_ScratchAddress, r_Contribution);
 		}
 		else
 		{
 			// Match the deployment's last split: consume scratch and publish the
 			// final sum elsewhere, leaving intermediate scratch unchanged.
-			const uint4 r_Previous = LoadSplitAccumulatorHalf4(g_ScratchAddress);
-			StoreNoAllocate(
-				uint64_t(g_Output + Phase * g_PhaseVectors + g_Vector),
-				make_uint4(HalfAdd(r_Previous.x, r_Contribution.x), HalfAdd(r_Previous.y, r_Contribution.y),
-						   HalfAdd(r_Previous.z, r_Contribution.z), HalfAdd(r_Previous.w, r_Contribution.w)));
+			const fl::PackedHalf2x4 r_Previous = fl::memory::load_exclusive_half2x4(
+				fl::memory::GlobalAddress(g_ScratchAddress));
+			fl::memory::store_half2x4_no_allocate(
+				fl::memory::GlobalAddress(uint64_t(g_Output + Phase * g_PhaseVectors + g_Vector)),
+				fl::numeric::half2x4_add(r_Previous,
+					fl::PackedHalf2x4{{r_Contribution.x, r_Contribution.y, r_Contribution.z, r_Contribution.w}}));
 		}
 
 		// Every lane finishes its write before the publishing lane releases the
 		// next CTA; the next phase must also wait for all final-output readers.
 		__syncthreads();
 		if (Thread == 0)
-			CounterStoreRelease(g_CounterAddress, Publication);
+			publication.store_release(Publication);
 	}
 }
 

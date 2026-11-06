@@ -14,7 +14,9 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from .geometry import Geometry, align_up, block_channels, graph_schedule, window_shift
+from .common.weight_schema import MATRIX_FIELDS
+from .geometry import (Geometry, align_up, block_channels, graph_schedule,
+                       training_padded_vit_tokens, window_shift)
 from .weights import WeightArchive, tiled_token
 
 def _windows(x: torch.Tensor, sx: int, sy: int) -> torch.Tensor:
@@ -115,9 +117,8 @@ class NRBlock(nn.Module):
     def __init__(self, index: int, tensors: dict[str, torch.Tensor], numerics: Numerics, *, trainable=False):
         super().__init__()
         self.index, self.channels, self.numerics = index, block_channels(index), numerics
-        matrix_keys = {"w1", "w2", "w3", "w4", "qkv", "projection", "input_adapter", "head", "up_projection", "down_projection"}
         for name, tensor in tensors.items():
-            value = tensor.transpose(-1, -2).contiguous() if name in matrix_keys else tensor.contiguous()
+            value = tensor.transpose(-1, -2).contiguous() if name in MATRIX_FIELDS else tensor.contiguous()
             if trainable:
                 self.register_parameter(name, nn.Parameter(value))
             else:
@@ -135,7 +136,7 @@ class NRBlock(nn.Module):
         k, v = n.publish(k), n.publish(v)
         if c == 1024:
             b, h, w, heads, _ = q.shape
-            tokens, padded = h * w, align_up(h * w, 64)
+            tokens, padded = h * w, training_padded_vit_tokens(h * w)
             q = q.reshape(b, tokens, heads, 32).transpose(1, 2)
             k = F.pad(k.reshape(b, tokens, heads, 32).transpose(1, 2), (0, 0, 0, padded - tokens))
             v = F.pad(v.reshape(b, tokens, heads, 32).transpose(1, 2), (0, 0, 0, padded - tokens))

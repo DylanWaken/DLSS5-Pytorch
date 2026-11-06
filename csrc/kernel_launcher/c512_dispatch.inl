@@ -16,7 +16,8 @@
 #include <type_traits>
 #include <vector>
 
-#include "kernel_impl/shared/common/kernel_abi.h"
+#include "common/host/physical_tensor.h"
+#include <dlssnr/abi/kernel_parameters.h>
 #include "architecture_support.h"
 
 constexpr int C512EntryCount = 18;
@@ -105,40 +106,6 @@ FC512PreparedEntries& C512GetPreparationState()
 	return PreparationState;
 }
 
-void C512ValidatePhysicalTensor(const at::Tensor& Tensor, int64_t Bytes, const at::Device& TensorDevice,
-								const char* Role)
-{
-	TORCH_CHECK(Tensor.defined() && Tensor.is_cuda() && Tensor.device() == TensorDevice &&
-					Tensor.scalar_type() == at::kByte,
-				Role, " requires a physical uint8 tensor on the selected CUDA device");
-	TORCH_CHECK(Tensor.dim() == 1 && Tensor.is_contiguous() && Tensor.numel() == Bytes, Role,
-				" requires exact contiguous physical extent ", Bytes);
-	TORCH_CHECK(!Tensor.requires_grad(), "reconstructed C512 execution is inference only");
-	TORCH_CHECK(reinterpret_cast<uintptr_t>(Tensor.data_ptr()) % 16 == 0, Role,
-				" requires 16-byte alignment");
-}
-
-void C512ValidateDisjoint(const at::Tensor& FirstTensor, const at::Tensor& SecondTensor)
-{
-	const uintptr_t g_FirstAddress = reinterpret_cast<uintptr_t>(FirstTensor.data_ptr()),
-					g_SecondAddress = reinterpret_cast<uintptr_t>(SecondTensor.data_ptr());
-	const uintptr_t FirstByteCount = uintptr_t(FirstTensor.numel()),
-					SecondByteCount = uintptr_t(SecondTensor.numel());
-	TORCH_CHECK(g_FirstAddress <= std::numeric_limits<uintptr_t>::max() - FirstByteCount &&
-					g_SecondAddress <= std::numeric_limits<uintptr_t>::max() - SecondByteCount,
-				"C512 physical range overflow");
-	TORCH_CHECK(g_FirstAddress + FirstByteCount <= g_SecondAddress ||
-					g_SecondAddress + SecondByteCount <= g_FirstAddress,
-				"C512 supplied physical buffers must be pairwise disjoint");
-}
-
-void C512ValidateAllDisjoint(const std::vector<const at::Tensor*>& Buffers)
-{
-	for (size_t BufferIndex = 0; BufferIndex < Buffers.size(); ++BufferIndex)
-		for (size_t OtherBufferIndex = BufferIndex + 1; OtherBufferIndex < Buffers.size(); ++OtherBufferIndex)
-			C512ValidateDisjoint(*Buffers[BufferIndex], *Buffers[OtherBufferIndex]);
-}
-
 int C512GetDeviceIndex(const at::Tensor& Tensor)
 {
 	const int DeviceIndex = Tensor.get_device();
@@ -210,10 +177,8 @@ std::vector<int64_t> C512PrepareEntries(const at::Tensor& DeviceAnchor, bool bFp
 	c10::cuda::CUDAGuard DeviceGuard(DeviceAnchor.device());
 	const int DeviceIndex = C512GetDeviceIndex(DeviceAnchor);
 	const auto Stream = c10::cuda::getCurrentCUDAStream(DeviceIndex);
-	cudaStreamCaptureStatus CaptureStatus = cudaStreamCaptureStatusNone;
-	C10_CUDA_CHECK(cudaStreamIsCapturing(Stream.stream(), &CaptureStatus));
-	TORCH_CHECK(CaptureStatus == cudaStreamCaptureStatusNone,
-				"C512 preparation forbidden during capture, including cache hits");
+	dlssnr::host::RequireOutsideCapture(Stream.stream(),
+										"C512 preparation forbidden during capture, including cache hits");
 	cudaDeviceProp DeviceProperties{};
 	C10_CUDA_CHECK(cudaGetDeviceProperties(&DeviceProperties, DeviceIndex));
 	RequireDevicePrecision(DeviceProperties, bFp16, "C512 preparation");
@@ -273,21 +238,27 @@ std::vector<at::Tensor> C512LaunchEntry(int64_t EntryIndex, std::vector<at::Tens
 				"phase belongs only to fused QKV/attention");
 	const int64_t ImageBytes = Height * Width * 512 * EntrySpec.ElementBytes,
 				  PoolHeight = ((Height + 7) / 8) * 4, PoolWidth = ((Width + 7) / 8) * 4;
-	C512ValidatePhysicalTensor(Input, ImageBytes, Input.device(), "state");
-	C512ValidatePhysicalTensor(Inputs[1], EntrySpec.RecordBytes, Input.device(), "record");
+	dlssnr::host::ValidateLaunchedPhysicalBuffer(Input, ImageBytes, Input.device(), "state",
+												 "reconstructed C512 execution is inference only");
+	dlssnr::host::ValidateLaunchedPhysicalBuffer(Inputs[1], EntrySpec.RecordBytes, Input.device(), "record",
+												 "reconstructed C512 execution is inference only");
 	if (bResidualInput)
-		C512ValidatePhysicalTensor(Inputs[2], ImageBytes, Input.device(), "skip");
-	C512ValidatePhysicalTensor(Outputs[0], bChannelExpansion ? 2 * ImageBytes : ImageBytes, Input.device(),
-							   "high");
+		dlssnr::host::ValidateLaunchedPhysicalBuffer(Inputs[2], ImageBytes, Input.device(), "skip",
+													 "reconstructed C512 execution is inference only");
+	dlssnr::host::ValidateLaunchedPhysicalBuffer(Outputs[0], bChannelExpansion ? 2 * ImageBytes : ImageBytes,
+												 Input.device(), "high",
+												 "reconstructed C512 execution is inference only");
 	if (bPooledOutput)
-		C512ValidatePhysicalTensor(Outputs[1], PoolHeight * PoolWidth * 512 * EntrySpec.ElementBytes,
-								   Input.device(), "pool");
+		dlssnr::host::ValidateLaunchedPhysicalBuffer(
+			Outputs[1], PoolHeight * PoolWidth * 512 * EntrySpec.ElementBytes, Input.device(), "pool",
+			"reconstructed C512 execution is inference only");
 	std::vector<const at::Tensor*> Buffers;
 	for (const auto& Tensor : Inputs)
 		Buffers.push_back(&Tensor);
 	for (const auto& Tensor : Outputs)
 		Buffers.push_back(&Tensor);
-	C512ValidateAllDisjoint(Buffers);
+	dlssnr::host::RequirePairwiseDisjointTensorPointers(
+		Buffers, "C512 physical range overflow", "C512 supplied physical buffers must be pairwise disjoint");
 	c10::cuda::CUDAGuard DeviceGuard(Input.device());
 	const int DeviceIndex = Input.get_device();
 	TORCH_CHECK(DeviceIndex >= 0 && DeviceIndex < 64, "C512 device outside preparation table");
@@ -300,16 +271,14 @@ std::vector<at::Tensor> C512LaunchEntry(int64_t EntryIndex, std::vector<at::Tens
 	const auto Stream = c10::cuda::getCurrentCUDAStream(DeviceIndex);
 	for (const auto* Tensor : Buffers)
 		c10::cuda::CUDACachingAllocator::recordStream(Tensor->storage().data_ptr(), Stream);
-	const auto GetTensorAddress = [](const at::Tensor& Tensor)
-	{ return uint64_t(reinterpret_cast<uintptr_t>(Tensor.data_ptr())); };
 	const int ShiftX = (WindowPhase == 1 || WindowPhase == 2) ? 4 : 0;
 	const int ShiftY = (WindowPhase == 1 || WindowPhase == 3) ? 4 : 0;
 	const bool bQkvAttention = EntrySpec.Role == EC512KernelRole::QkvAttention;
-	const FC512LaunchArguments Bindings{GetTensorAddress(Input),
-										bResidualInput ? GetTensorAddress(Inputs[2]) : 0,
-										GetTensorAddress(Outputs[0]),
-										bPooledOutput ? GetTensorAddress(Outputs[1]) : 0,
-										GetTensorAddress(Inputs[1]),
+	const FC512LaunchArguments Bindings{dlssnr::host::TensorAddress(Input),
+										bResidualInput ? dlssnr::host::TensorAddress(Inputs[2]) : 0,
+										dlssnr::host::TensorAddress(Outputs[0]),
+										bPooledOutput ? dlssnr::host::TensorAddress(Outputs[1]) : 0,
+										dlssnr::host::TensorAddress(Inputs[1]),
 										int32_t(Height),
 										int32_t(Width),
 										bQkvAttention ? -ShiftX : 0,
@@ -439,25 +408,30 @@ std::vector<at::Tensor> C512BlockOutEntry(int64_t BlockIndex, bool bFp16, const 
 				"C512 block complete retained roles");
 	TORCH_CHECK(Input.is_cuda(), "C512 block state CUDA");
 	const int64_t ImageBytes = 68 * 120 * 512 * (bFp16 ? 2 : 1);
-	C512ValidatePhysicalTensor(Input, ImageBytes, Input.device(), "block state");
+	dlssnr::host::ValidateLaunchedPhysicalBuffer(Input, ImageBytes, Input.device(), "block state",
+												 "reconstructed C512 execution is inference only");
 	const std::array<int64_t, 5> RecordByteExtents{{bFp16 ? 1048576 : 524288, bFp16 ? 525312 : 263168,
 													bFp16 ? 1704000 : 917568, bFp16 ? 525312 : 263168,
 													bFp16 ? 1048592 : 524304}};
 	std::vector<const at::Tensor*> Buffers{&Input};
 	for (size_t RecordIndex = 0; RecordIndex < Records.size(); ++RecordIndex)
 	{
-		C512ValidatePhysicalTensor(Records[RecordIndex], RecordByteExtents[RecordIndex], Input.device(),
-								   "block record");
+		dlssnr::host::ValidateLaunchedPhysicalBuffer(Records[RecordIndex], RecordByteExtents[RecordIndex],
+													 Input.device(), "block record",
+													 "reconstructed C512 execution is inference only");
 		Buffers.push_back(&Records[RecordIndex]);
 	}
 	for (size_t WorkspaceIndex = 0; WorkspaceIndex < Workspaces.size(); ++WorkspaceIndex)
 	{
 		const int64_t Bytes =
 			WorkspaceIndex < 4 ? ImageBytes : 36 * 60 * 512 * (bFp16 ? 2 : 1) * (WorkspaceIndex == 5 ? 2 : 1);
-		C512ValidatePhysicalTensor(Workspaces[WorkspaceIndex], Bytes, Input.device(), "block workspace");
+		dlssnr::host::ValidateLaunchedPhysicalBuffer(Workspaces[WorkspaceIndex], Bytes, Input.device(),
+													 "block workspace",
+													 "reconstructed C512 execution is inference only");
 		Buffers.push_back(&Workspaces[WorkspaceIndex]);
 	}
-	C512ValidateAllDisjoint(Buffers);
+	dlssnr::host::RequirePairwiseDisjointTensorPointers(
+		Buffers, "C512 physical range overflow", "C512 supplied physical buffers must be pairwise disjoint");
 	C512LaunchEntry((bInputView ? 2 : 0) + PrecisionOffset, {Input, Records[0]}, {Workspaces[0]}, 68, 120, 0);
 	C512LaunchEntry((bInputView ? 6 : 4) + PrecisionOffset, {Workspaces[0], Records[1], Input},
 					{Workspaces[1]}, 68, 120, 0);

@@ -42,6 +42,12 @@ CPU_PYTEST_TESTS = (
     "test_trained_checkpoint_cpu.py",
     "test_portable_checkpoint_cpu.py",
     "test_video_cpu.py",
+    "test_python_modularity_cpu.py",
+    "test_video_module_boundaries_cpu.py",
+    "test_build_support.py",
+    "test_kernel_docs_provenance_cpu.py",
+    "test_flashlight_docs_cpu.py",
+    "test_runtime_metadata_cpu.py",
 )
 
 

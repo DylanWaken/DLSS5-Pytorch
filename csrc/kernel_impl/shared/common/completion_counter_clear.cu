@@ -1,6 +1,6 @@
-#include "kernel_helpers.cuh"
+#include <dlssnr/abi/kernel_parameters.h>
 
-// Exact original kernel definition; shared physical-layout algebra lives in the included header.
+// Exact original kernel definition; only the public parameter record is required.
 
 extern "C" __global__ void completion_counter_clear(FCompletionCounterParameters Parameters)
 {

@@ -196,7 +196,7 @@ class TrainedCheckpointCPUTest(unittest.TestCase):
         schema = Mock(return_value=SMALL_SCHEMA)
         canonical = Mock(return_value=SMALL_IDENTITY)
         with patch("dlssnr.portable_checkpoint.canonical_small_identity", canonical), \
-                patch("dlssnr.portable_checkpoint.small31_state_schema", schema), \
+                patch("dlssnr.small_state.small31_state_schema", schema), \
                 patch("dlssnr.portable_checkpoint.SmallCheckpoint", RecordingSmallCheckpoint), \
                 patch("dlssnr.portable_checkpoint.save_checkpoint_payload"):
             without = small_shell({"blocks.by_role.0.w1": torch.zeros(2, 3)})
@@ -228,7 +228,7 @@ class TrainedCheckpointCPUTest(unittest.TestCase):
 
         with patch("dlssnr.portable_checkpoint.canonical_small_identity",
                    return_value=SMALL_IDENTITY), \
-                patch("dlssnr.portable_checkpoint.small31_state_schema",
+                patch("dlssnr.small_state.small31_state_schema",
                       return_value=SMALL_SCHEMA), \
                 patch("dlssnr.portable_checkpoint.SmallCheckpoint", RecordingSmallCheckpoint), \
                 patch("dlssnr.portable_checkpoint.save_checkpoint_payload", side_effect=save):
@@ -254,7 +254,7 @@ class TrainedCheckpointCPUTest(unittest.TestCase):
     def test_small_exact_roster_and_shape_are_enforced(self):
         with patch("dlssnr.portable_checkpoint.canonical_small_identity",
                    return_value=SMALL_IDENTITY), \
-                patch("dlssnr.portable_checkpoint.small31_state_schema",
+                patch("dlssnr.small_state.small31_state_schema",
                       return_value=SMALL_SCHEMA), \
                 patch("dlssnr.portable_checkpoint.SmallCheckpoint", RecordingSmallCheckpoint), \
                 patch("dlssnr.portable_checkpoint.save_checkpoint_payload") as save:

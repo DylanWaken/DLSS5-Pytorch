@@ -1,6 +1,6 @@
 # DLSSNR-PyTorch
 
-**[Documentation](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/)** · [Cyberpunk comparison](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/cyberpunk-comparison.html) · [310.9.16 / Small31 update](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/runtime-310-9-16.html) · [Network architecture](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html) · [Kernel lessons](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/index.html#kernels) · [Glossary](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/glossary.html) · [Design process & experiments](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/measurement-method.html)
+**[Documentation](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/)** · [FlashLight library](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/flashlight.html) · [Cyberpunk comparison](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/cyberpunk-comparison.html) · [310.9.16 / Small31 update](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/runtime-310-9-16.html) · [Network architecture](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html) · [Kernel lessons](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/index.html#kernels) · [Glossary](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/glossary.html) · [Design process & experiments](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/measurement-method.html)
 
 [![FP16 Cyberpunk V three-way comparison: original downloaded pixels, Legacy71 reconstruction and Small31 reconstruction](docs/kernel-guide/media/cyberpunk-20261030/still-fp16-face.png)](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/cyberpunk-comparison.html)
 
@@ -17,7 +17,23 @@ Reconstructed DLSS-NR CUDA kernels for PyTorch, plus a differentiable network fo
 | **FP32 / BF16 training** | The default 71-role graph and opt-in Small31 graph, ordinary autograd and optional activation checkpointing. |
 | **RGB research pipeline** | Both models in FP16/FP8 on SM120, with native preprocess, prepared trunk and postprocess. RGB-only stateless mode; no renderer motion/depth/history integration. |
 
-Deployment builds separate binaries per architecture, or one multi-architecture library. Native runtime measurements use an RTX PRO 6000 Blackwell (SM120). Earlier Ampere/Ada compilation and lower-target PTX checks covered the original kernel set; the added Small31 path has native acceptance on SM120. Physical RTX 30/40 hardware remains untested. Prepared-feature APIs and an RGB-only research pipeline are available; engine renderer integration is not included. C++ prepares arbitrary supported resolutions and uses ordered split launches for smaller GPU capacity. See [architecture build options and validation limits](docs/SETUP.md#architecture-specific-binaries).
+Deployment builds separate binaries per architecture, or one multi-architecture library. Native runtime measurements use an RTX PRO 6000 Blackwell (SM120). FlashLight compile checks cover SM80, SM86, SM89 and SM120; FP8 execution requires SM89 or later. Physical RTX 30/40 hardware remains untested. Prepared-feature APIs and an RGB-only research pipeline are available; engine renderer integration is not included. C++ prepares arbitrary supported resolutions and uses ordered split launches for smaller GPU capacity. See [architecture build options and validation limits](docs/SETUP.md#architecture-specific-binaries).
+
+## FlashLight kernel library
+
+All 58 CUDA translation units, exposing 83 kernel entries, now use **FlashLight**, our small, header-only CUDA/C++17 template library. It adopts CUTLASS's separation of responsibilities while keeping the existing packed layouts and instruction order explicit. It has no CUTLASS, ThunderKittens, PyTorch or DLSSNR dependency.
+
+| Layer | Responsibility |
+|---|---|
+| [`core`](csrc/include/flashlight/core.cuh) | Precision tags, packed values and typed MMA operand/accumulator fragments. |
+| [`arch`](csrc/include/flashlight/arch/) | Individual MMA, load/store, asynchronous copy, barrier and warp instructions with architecture-specific implementations. |
+| [`memory`](csrc/include/flashlight/memory/) | Byte-addressed views, staged storage, copy groups, transaction-barrier rings and split-result publication. |
+| [`layout`](csrc/include/flashlight/layout/) / [`warp`](csrc/include/flashlight/warp/) | Strides, tiled addressing and lane permutations. |
+| [`numeric`](csrc/include/flashlight/numeric/) / [`tile`](csrc/include/flashlight/tile/) | Packed arithmetic and tiled MMA accumulation with explicit rounding and reduction order. |
+
+DLSSNR's activations, tensor layouts, packing and operator composition live in [`csrc/common/`](csrc/common/); launch policy stays in `csrc/kernel_launcher/`. The library centralizes repeated address and synchronization mechanics, while each kernel still specifies producer ownership and the points where its CTA must synchronize. Resident split consumers now acquire a predecessor's published result after observing its completion counter.
+
+The [FlashLight design lesson](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/flashlight.html) walks from the C1024 FFN problem through CTA/warp subdivision, resource budgeting, a three-stage pipeline and one token's exact addresses and register fragments. Historical kernel lessons retain their original source and profiling provenance.
 
 ## Two model identities
 
@@ -61,7 +77,7 @@ python -B tools/extract_model_checkpoint.py --dll profile/dlss-update-20261029/a
 
 Substitute the path to your copy of the same signed 310.9.16 DLL if it lives elsewhere, and choose an output whose `.pt` and `.json` do not already exist. See the [checkpoint guide](ckpts/README.md) for file identities, receipt fields and the stricter CPU checks. The extraction and isolated `.pt`-only load checks are CPU-only; GPU acceptance for the checkpoint flows is recorded in the [public checkpoint acceptance receipt](docs/kernel-guide/evidence-checkpoints/acceptance.json).
 
-Both identities are supported by the built SM120 native extension. Eight accepted still/frame cases cover both models and both precisions, including 4K input; the RGB layout bridge is byte-exact against an independent permutation, typed output fields are finite, and all four 320² graph capture/replay checks pass. Most CUDA operators are reused. Small31's eight global-attention calls select **two new kernels** with FP32 persistent P×V accumulation and full FP32 denominator reduction. The final RGB descriptor reuses the existing phase-3 C32 output-view kernel with no extra call; the original 81 implementations and legacy plans remain unchanged.
+Both identities are supported by the built SM120 native extension. The historical Small31 acceptance covered eight still/frame cases across both models and both precisions, including 4K input; the RGB layout bridge was byte-exact against an independent permutation, typed output fields were finite, and all four 320² graph capture/replay checks passed. Most CUDA operators are shared. Small31's eight global-attention calls select **two additional kernels** with FP32 persistent P×V accumulation and full FP32 denominator reduction. The final RGB descriptor reuses the existing phase-3 C32 output-view kernel with no extra call. FlashLight subsequently migrated all 83 entries; the Legacy71 graph and plan semantics are preserved.
 
 The PyTorch FP32/BF16 training path has separate forward/checkpointed-gradient self-consistency checks. Native fixture acceptance and training self-consistency do not establish vendor DLL parity. See the [310.9.16 / Small31 chapter](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/runtime-310-9-16.html) for source identity, layout contracts and the measured numerical scope.
 
@@ -204,7 +220,7 @@ python test_speed.py --model small31 --checkpoint ckpts/dlss5_nr_small31.pt
 `dlss5_nr_small31.pt`. A Legacy71 file requires its JSON sidecar; the Small31
 sidecar is optional. See [local speed testing](docs/SETUP.md#test-speed-on-your-gpu) for options.
 
-**Both models against DLL-extracted CUDA kernels.** The measurements below were collected on 2026-10-30 using the RTX PRO 6000 Blackwell (SM120), driver 610.62, and the accepted native extension. Legacy71 replays kernels extracted from **310.8.0.0**; Small31 replays kernels extracted from the signed **310.9.16.0** DLL. These are prepared-feature trunk timings using our reconstructed schedules. They exclude RGB preprocessing/postprocessing, transfers, decoding, and DLL/NGX host execution; the [Cyberpunk RGB timings](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/cyberpunk-comparison.html) measure a different scope.
+**Historical comparison against DLL-extracted CUDA kernels.** The measurements below were collected on 2026-10-30, before the FlashLight migration, using the RTX PRO 6000 Blackwell (SM120), driver 610.62, and the then-accepted native extension. Legacy71 replays kernels extracted from **310.8.0.0**; Small31 replays kernels extracted from the signed **310.9.16.0** DLL. These are prepared-feature trunk timings using our reconstructed schedules. They exclude RGB preprocessing/postprocessing, transfers, decoding, and DLL/NGX host execution; the [Cyberpunk RGB timings](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/cyberpunk-comparison.html) measure a different scope.
 
 | Model at 3840 × 2160 | Precision | DLL-kernel replay | Reconstruction |
 |---|---|---:|---:|
@@ -233,7 +249,11 @@ The paired protocol is implemented in [benchmark_model_vendor.py](tools/benchmar
 
 ## Project layout and further reading
 
-`csrc/kernel_impl/<network_stage>/{fp8,fp16,common}` contains **58 complete kernel bodies for 83 public configurations**: the original 56 bodies/81 configurations plus two Small31 attention entries. Folder names identify shared encoder/decoder levels; repeated blocks retain one implementation. Each global function shows its storage, loops, pipelining and writeback. Stage helpers and intrinsics sit beside their kernels; `shared/common` contains cross-stage primitives and the ABI. `kernel_launcher` owns host dispatch, `torch_api` registers PyTorch interfaces, and `dlssnr` contains entry points and the training model. `tests` and `tuning` hold validation and offline policy tools.
+`csrc/kernel_impl/<network_stage>/{fp8,fp16,common}` contains **58 complete kernel bodies for 83 public configurations**: the original 56 bodies/81 configurations plus two Small31 attention entries. Each global function owns its storage, loops, pipeline schedule and writeback; repeated model blocks share implementations.
+
+**FlashLight**, in [`csrc/include/flashlight`](csrc/include/flashlight), is the project's C++17 CUDA template library. It separates instruction primitives, packed numeric types, memory views and synchronization protocols, coordinate layouts, warp operations and tiled MMA. It has no CUTLASS, ThunderKittens, Torch or DLSSNR dependency. Recovered model layouts and activation/attention compositions live in `csrc/common/{layout,ops}`; native parameter records live in `csrc/include/dlssnr/abi`. Model-neutral host validation and execution helpers live in `csrc/common/host`, while `kernel_launcher` selects launches and `torch_api` registers the public interfaces.
+
+The Python package separates weight/state ownership, checkpoint serialization, native frontend execution, media handling and diagnostics. `dlssnr/build` owns build and architecture-policy helpers; `tuning` retains offline tools and compatibility entry points. The historical kernel lessons continue to quote their original committed sources and profiler evidence.
 
 - [Setup, deployment and training](docs/SETUP.md)
 - [Network architecture and tensor flow](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/architecture.html) — both model schedules and 16 SVG diagrams; [local HTML](docs/kernel-guide/architecture.html).

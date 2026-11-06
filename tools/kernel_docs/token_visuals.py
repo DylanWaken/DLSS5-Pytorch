@@ -5,7 +5,8 @@ permutation is called out explicitly; byte offsets always name their base.
 """
 from html import escape
 import re
-from common import ROOT, svg, code
+from common import svg, code
+from source_providers import ORIGINAL
 
 INK = '#19394c'
 TOKEN = '#d9eee9'
@@ -35,7 +36,7 @@ def figure(title,height,inner,caption):
 
 
 def evidence(path, needle, after=10):
-    lines=(ROOT/path).read_text(encoding='utf-8').splitlines()
+    lines=ORIGINAL.text(path).splitlines()
     i=next(i for i,line in enumerate(lines) if needle in line)
     return code(path,i+1,min(len(lines),i+after),'Source for the highlighted mapping')
 

@@ -25,11 +25,11 @@ SAFE_ATTENTION_EXPORTS = frozenset({
     "small_global_attention_chained_c1024_fp16",
 })
 SOURCE_SUFFIXES = {".cu", ".cuh", ".cpp", ".h", ".inl"}
-INCLUDE = re.compile(r'^\s*#\s*include\s*"([^"\n]+)"', re.MULTILINE)
+INCLUDE = re.compile(r'^\s*#\s*include\s*(["<])([^">\n]+)[">]', re.MULTILINE)
 COMMENTS_AND_STRINGS = re.compile(
     r'//[^\n]*|/\*.*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'', re.DOTALL
 )
-NAMESPACE = re.compile(r"\bnamespace\s+([A-Za-z_]\w*(?:::\w+)*)\s*\{")
+NAMESPACE = re.compile(r"\bnamespace(?:\s+([A-Za-z_]\w*(?:::\w+)*))?\s*\{")
 KERNEL = re.compile(
     r"\b__global__\s+(?:__\w+__\s*\([^{};]*?\)\s*)?void\s+"
     r"([A-Za-z_]\w*)\s*\(([^{};]*)\)\s*\{"
@@ -54,6 +54,42 @@ def _body_end(source, opening):
     raise ValueError("unclosed kernel body")
 
 
+def local_dependencies(path, csrc, source=None):
+    """Resolve project includes using the same two roots as the native build.
+
+    Quoted includes also search beside the including file. Unresolved SDK/STL
+    angle includes are external; a missing project include is always an error.
+    """
+    path, csrc = Path(path).resolve(), Path(csrc).resolve()
+    source = path.read_text(encoding="utf-8") if source is None else source
+    roots = (csrc, csrc / "include")
+    project_prefixes = {child.name for root in roots if root.is_dir()
+                        for child in root.iterdir() if child.is_dir()}
+    dependencies = set()
+    for include in INCLUDE.finditer(source):
+        quoted, name = include[1] == '"', include[2]
+        search_roots = (path.parent, *roots) if quoted else roots
+        resolved = next((candidate.resolve() for root in search_roots
+                         if (candidate := root / name).is_file()), None)
+        if resolved is None:
+            if quoted or name.split("/", 1)[0] in project_prefixes:
+                raise ValueError(f"{path.relative_to(csrc)}: missing local include {name}")
+            continue
+        if not resolved.is_relative_to(csrc):
+            raise ValueError(f"{path.relative_to(csrc)}: local include leaves csrc: {name}")
+        dependencies.add(resolved.relative_to(csrc).as_posix())
+    return sorted(dependencies)
+
+
+def _namespace_ranges(cleaned):
+    return [(match.end() - 1, _body_end(cleaned, match.end() - 1),
+             match[1] or "<anonymous>") for match in NAMESPACE.finditer(cleaned)]
+
+
+def _namespace_at(ranges, position):
+    return "::".join(name for start, end, name in ranges if start < position < end)
+
+
 def collect(csrc, *, allow_legacy_namespaces=False):
     """Return a JSON-compatible inventory keyed by canonical CUDA entry name."""
     csrc = Path(csrc).resolve()
@@ -76,28 +112,19 @@ def collect(csrc, *, allow_legacy_namespaces=False):
     entries = {}
     for path, source in sources.items():
         relative = path.relative_to(csrc).as_posix()
-        dependencies = []
-        for include in INCLUDE.finditer(source):
-            candidates = [path.parent / include[1], csrc / include[1]]
-            resolved = next((candidate.resolve() for candidate in candidates if candidate.is_file()), None)
-            if resolved is None:
-                raise ValueError(f"{relative}: missing local include {include[1]}")
-            if not resolved.is_relative_to(csrc):
-                raise ValueError(f"{relative}: local include leaves csrc: {include[1]}")
-            dependencies.append(resolved.relative_to(csrc).as_posix())
-        includes[relative] = sorted(set(dependencies))
+        includes[relative] = local_dependencies(path, csrc, source)
 
         cleaned = _without_comments_and_strings(source)
-        if not allow_legacy_namespaces and re.search(r"\bnamespace\b", cleaned):
-            raise ValueError(f"{relative}: project namespaces and using namespace are forbidden")
-        namespaces = list(NAMESPACE.finditer(cleaned))
+        namespaces = _namespace_ranges(cleaned)
         for kernel in KERNEL.finditer(cleaned):
             name = kernel[1]
             if name in entries:
                 raise ValueError(f"duplicate CUDA entry {name}: {entries[name]['header']} and {relative}")
             if not path.is_relative_to(csrc / "kernel_impl"):
                 raise ValueError(f"CUDA entry {name} is outside kernel_impl: {relative}")
-            namespace = next((match[1] for match in reversed(namespaces) if match.start() < kernel.start()), "")
+            namespace = _namespace_at(namespaces, kernel.start())
+            if namespace and not allow_legacy_namespaces:
+                raise ValueError(f"{name}: CUDA exports must remain in the global namespace")
             c_linkage = re.search(r'\bextern\s*"C"\s*$', source[:kernel.start()]) is not None
             template_rows = [entry for entry in templates
                              if entry["template_function"] == name and entry["source"] == relative]
@@ -160,6 +187,8 @@ def collect(csrc, *, allow_legacy_namespaces=False):
                     + "<" + re.sub(r"\s+", "", row["template_arguments"]) + ">);")
         if resolver is None or re.sub(r"\s+", "", resolver[1]).replace("(&", "(") != expected:
             raise ValueError(f"{name}: resolver does not reference its exact specialization")
+        if _namespace_at(_namespace_ranges(code), resolver.start()):
+            raise ValueError(f"{name}: specialization resolver must remain in the global namespace")
         if not re.search(r'extern\s+"C"\s+const\s+void\s*\*\s*$', source[:resolver.start()]):
             raise ValueError(f"{name}: resolver must have extern C const void* signature")
         entries[name] = dict(definition, resolver=row["resolver"],

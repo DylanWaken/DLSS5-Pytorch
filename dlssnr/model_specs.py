@@ -235,6 +235,11 @@ class ModelSpec:
     def records_for_role(self, role: int) -> tuple[RecordSpec, ...]:
         return tuple(record for record in self.records if record.role == role)
 
+    @property
+    def retained_roles(self) -> tuple[int, ...]:
+        """Resident trunk roles; the pre/post full-frame roots stay plan edges."""
+        return tuple(role for role in self.roles if role not in (self.pre_role, self.post_role))
+
     def next_role(self, role: int) -> int | None:
         for index, known in enumerate(self.roles):
             if known == role:
@@ -633,6 +638,8 @@ SMALL31 = make_model_spec(
 )
 
 MODEL_SPECS = {"legacy71": LEGACY71, "small31": SMALL31}
+#: Public model-name order derived from the registry, never a second table.
+MODEL_NAMES = tuple(MODEL_SPECS)
 
 
 def resolve_model(model: str) -> ModelSpec:

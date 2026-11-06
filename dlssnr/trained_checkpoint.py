@@ -124,8 +124,8 @@ def export_trained_checkpoint(training_model, path, *, model="legacy71", precisi
             SmallCheckpoint,
             canonical_small_identity,
             save_checkpoint_payload,
-            small31_state_schema,
         )
+        from .small_state import small31_state_schema
 
         # Identity is checked before any block key is mapped or copied.
         identity = full_state.get("_extra_state")

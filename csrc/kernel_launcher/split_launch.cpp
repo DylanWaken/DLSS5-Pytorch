@@ -1,5 +1,6 @@
 #include "split_launch.h"
-#include "kernel_impl/shared/common/kernel_abi.h"
+#include "common/host/parameter_binding.h"
+#include <dlssnr/abi/kernel_parameters.h>
 #include <c10/cuda/CUDAException.h>
 #include <c10/util/Exception.h>
 #include <cerrno>
@@ -59,7 +60,8 @@ void LaunchPhysicalKernel(const void* Function, dim3 Grid, dim3 Block,
 	for (unsigned Split = 0; Split < SplitCount; ++Split)
 	{
 		const uint64_t OrderedSplit = uint64_t(Split) + 1;
-		std::memcpy(PhaseParameters.data() + SplitParameterOffset, &OrderedSplit, sizeof(OrderedSplit));
+		dlssnr::host::WritePrevalidatedParameterField(PhaseParameters, size_t(SplitParameterOffset),
+													  OrderedSplit);
 		void* Arguments[] = {PhaseParameters.data()};
 		C10_CUDA_CHECK(cudaLaunchKernel(Function, Grid, Block, Arguments, 0, Stream));
 	}

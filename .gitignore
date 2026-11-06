@@ -5,6 +5,8 @@ assets/
 !docs/kernel-guide/assets/*
 third_party/
 build/
+!dlssnr/build/
+!dlssnr/build/**
 *.egg-info/
 __pycache__/
 .pytest_cache/
@@ -14,5 +16,6 @@ __pycache__/
 *.lib
 *.exp
 profile/
+docs/diagram-preview/
 outputs/
 *.log

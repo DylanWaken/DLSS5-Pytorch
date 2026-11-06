@@ -1,6 +1,7 @@
 #include "frontend_dispatch.h"
 #include "architecture_support.h"
-#include "kernel_impl/shared/common/kernel_abi.h"
+#include "common/host/physical_tensor.h"
+#include <dlssnr/abi/kernel_parameters.h>
 #include <c10/cuda/CUDAGuard.h>
 #include <c10/cuda/CUDAStream.h>
 #include <c10/cuda/CUDAException.h>
@@ -10,6 +11,8 @@
 #include <cstring>
 #include <limits>
 #include <mutex>
+
+using namespace dlssnr::host;
 
 struct FFrontendTensorContract
 {
@@ -112,47 +115,32 @@ struct FFrontendKernelDescriptor final : FPreparedKernelDescriptor
 	{
 		TORCH_CHECK(Inputs.size() == InputContracts.size() && Outputs.size() == OutputContracts.size(), Name,
 					": input/output tensor roles differ from the prepared frontend");
-		std::vector<std::pair<uintptr_t, uintptr_t>> Ranges;
+		std::vector<FPhysicalRange> Ranges;
 		const auto CheckList = [&](const auto& Tensors, const auto& Contracts)
 		{
 			for (size_t Index = 0; Index < Tensors.size(); ++Index)
 			{
 				const auto& Tensor = Tensors[Index];
 				const auto& Contract = Contracts[Index];
-				TORCH_CHECK(Tensor.defined() && Tensor.scalar_type() == Contract.Type &&
-								Tensor.dim() == int64_t(Contract.Shape.size()) && Tensor.is_contiguous(),
-							Name,
-							": tensor dtype/shape differs from prepared physical or HWC4 layout at role ",
-							Index);
-				// Prepared geometry is fixed, but Dynamo may initially present symbolic
-				// sizes. Guard each equality instead of requesting concrete sizes().
-				for (int64_t Dimension = 0; Dimension < Tensor.dim(); ++Dimension)
-					TORCH_CHECK(Tensor.sym_size(Dimension)
-									.sym_eq(c10::SymInt(Contract.Shape[Dimension]))
-									.guard_bool(__FILE__, __LINE__),
-								Name,
-								": tensor dtype/shape differs from prepared physical or HWC4 layout at role ",
-								Index);
-				TORCH_CHECK(!Tensor.requires_grad(), Name, ": deployment frontend is inference only");
+				RequireTensorShapeContract(Tensor, Contract.Type, Contract.Shape, Name, Index);
+				RequireInferenceOnly(Tensor, Name, ": deployment frontend is inference only");
 				if (bMeta)
 					continue;
 				TORCH_CHECK(Tensor.is_cuda() && Tensor.get_device() == DeviceIndex, Name,
 							": every input/output must be on the prepared CUDA device");
 				if (!Tensor.numel())
 					continue;
-				const auto g_Address = reinterpret_cast<uintptr_t>(Tensor.data_ptr());
-				const auto Bytes = Tensor.nbytes();
-				TORCH_CHECK(g_Address % 16 == 0 && g_Address <= std::numeric_limits<uintptr_t>::max() - Bytes,
-							Name, ": tensor physical storage must be 16-byte aligned with a valid extent");
-				Ranges.emplace_back(g_Address, g_Address + Bytes);
+				FPhysicalRange Range{};
+				const auto Address = TensorByteAddress(Tensor);
+				const auto Bytes = uintptr_t(Tensor.nbytes());
+				TORCH_CHECK(IsAligned16(Address) && TryPhysicalRange(Address, Bytes, Range), Name,
+							": tensor physical storage must be 16-byte aligned with a valid extent");
+				Ranges.push_back(Range);
 			}
 		};
 		CheckList(Inputs, InputContracts);
 		CheckList(Outputs, OutputContracts);
-		std::sort(Ranges.begin(), Ranges.end());
-		for (size_t Index = 1; Index < Ranges.size(); ++Index)
-			TORCH_CHECK(Ranges[Index - 1].second <= Ranges[Index].first, Name,
-						": tensor arguments must be pairwise disjoint");
+		RequirePairwiseDisjoint(Ranges, Name, ": tensor arguments must be pairwise disjoint");
 	}
 
 	void Launch(const std::vector<at::Tensor>& Inputs, const std::vector<at::Tensor>& Outputs) const override
@@ -236,11 +224,8 @@ c10::intrusive_ptr<FPreparedKernelHandle> PrepareFrontend(std::string Name, at::
 				"prepare_frontend requires CUDA tensor inputs");
 	const int DeviceIndex = Inputs[0].get_device();
 	c10::cuda::CUDAGuard DeviceGuard(c10::Device(c10::kCUDA, DeviceIndex));
-	cudaStreamCaptureStatus CaptureStatus{};
-	C10_CUDA_CHECK(
-		cudaStreamIsCapturing(c10::cuda::getCurrentCUDAStream(DeviceIndex).stream(), &CaptureStatus));
-	TORCH_CHECK(CaptureStatus == cudaStreamCaptureStatusNone,
-				"prepare_frontend must run outside CUDA graph capture");
+	RequireOutsideCapture(c10::cuda::getCurrentCUDAStream(DeviceIndex).stream(),
+						  "prepare_frontend must run outside CUDA graph capture");
 	cudaDeviceProp Properties{};
 	C10_CUDA_CHECK(cudaGetDeviceProperties(&Properties, DeviceIndex));
 	auto Descriptor = std::make_shared<FFrontendKernelDescriptor>(Name, DeviceIndex);

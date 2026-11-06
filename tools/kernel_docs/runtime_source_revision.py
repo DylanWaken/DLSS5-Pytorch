@@ -6,13 +6,12 @@ The historical 81 kernel lessons stay pinned to ``common.REVISION``.  The
 small_plan_generated.inl``).  Those files must never be attributed to the old
 revision.
 
-Until the root committer supplies the implementation commit, ``RUNTIME_REVISION``
-is ``None``.  In that state the documentation build copies the exact normalized
-LF working-tree files under ``docs/kernel-guide/source/`` and links to those
-copies with an explicit working-tree/hash provenance.  Once a commit is
-supplied, either by editing the constant below or by setting
-``DLSSNR_RUNTIME_REVISION`` to the full 40-character SHA-1, every runtime
-excerpt is verified against that committed blob before the link is emitted.
+Historical and runtime excerpts are read from the immutable original snapshot
+``e2741a72b390f830de810e6f1180369ed52eb325`` (see ``source_providers.py``), not
+from the working tree.  Each runtime path is still attributed to the explicit
+``RUNTIME_REVISION`` recorded here, and the build verifies the snapshot bytes
+against that committed blob before emitting a link.  A missing or malformed pin
+is an error; there is no working-tree fallback.
 
 The checkpoint API is a separate source change, committed at
 ``8d2e104518df3f7cc993acad1edac93dbd5c3c9d``.  It modifies
@@ -35,6 +34,12 @@ RUNTIME_REVISION = "266d69acf52dda413df3a874572f1156461f89ff"
 #: its two public-API companions are pinned here and must never fall back to
 #: ``RUNTIME_REVISION``.
 CHECKPOINT_API_REVISION = "8d2e104518df3f7cc993acad1edac93dbd5c3c9d"
+
+#: Optional full commit for a later FlashLight implementation chapter.  No
+#: default and no working-tree mode: an absent pin simply means the current
+#: chapter is not published.  Root supplies the real commit after the
+#: implementation is actually committed.
+REFACTOR_REVISION = None
 
 #: Every new or modified runtime/generation/source file the 310.9.16 chapter and
 #: the two additive Small31 lessons rely on.  These paths are added to the
@@ -92,6 +97,7 @@ CHECKPOINT_API_CHANGED_PATHS = CHECKPOINT_API_SOURCE_PATHS
 
 ENVIRONMENT_VARIABLE = "DLSSNR_RUNTIME_REVISION"
 CHECKPOINT_API_ENVIRONMENT_VARIABLE = "DLSSNR_CHECKPOINT_API_REVISION"
+REFACTOR_ENVIRONMENT_VARIABLE = "DLSSNR_REFACTOR_REVISION"
 _COMMIT_RE = re.compile(r"[0-9a-f]{40}")
 
 
@@ -124,6 +130,19 @@ def configured_checkpoint_api_revision() -> str | None:
     if value is None or value == "":
         return None
     return _validated_commit(value, CHECKPOINT_API_ENVIRONMENT_VARIABLE)
+
+
+def configured_refactor_revision() -> str | None:
+    """Return the optional validated FlashLight implementation commit.
+
+    ``None`` means no current chapter may be published.  It is never permission
+    to read the working tree or to attribute uncommitted code to the historical
+    original reference.
+    """
+    value = os.environ.get(REFACTOR_ENVIRONMENT_VARIABLE, REFACTOR_REVISION)
+    if value is None or value == "":
+        return None
+    return _validated_commit(value, REFACTOR_ENVIRONMENT_VARIABLE)
 
 
 def revision_for(path: str) -> str | None:

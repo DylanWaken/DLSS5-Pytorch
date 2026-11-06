@@ -1,4 +1,8 @@
-recursive-include csrc *.h *.cuh *.inl *.cpp *.cu
+recursive-include csrc *.h *.hpp *.cuh *.inl *.cpp *.cu *.json
 include csrc/kernel_impl/shared/common/kernel_templates.json
 recursive-include tuning *.py *.json *.h
 include README.md NOTICE LICENSE-OpenDLSS-NR
+prune build
+prune profile
+prune outputs
+global-exclude *.py[cod] *.pyd *.so *.obj *.lib *.exp

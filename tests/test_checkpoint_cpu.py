@@ -1,5 +1,6 @@
 """Portable checkpoint conversion rules, independent of downloaded weights/CUDA."""
 from pathlib import Path
+import re
 import sys
 import unittest
 from unittest.mock import patch
@@ -8,6 +9,7 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from dlssnr.checkpoint import Checkpoint, FP8, promote_tensor, _half_matrix, pack_kernel_fp16, _SchemaArchive, native_state_dict
+from dlssnr.geometry import block_channels
 
 
 class CheckpointCPUTest(unittest.TestCase):
@@ -57,6 +59,60 @@ class CheckpointCPUTest(unittest.TestCase):
             first = pack_kernel_fp16(state, block, kind)
             self.assertEqual(len(first), size)
             self.assertEqual(first, pack_kernel_fp16(state, block, 'window'))
+
+    def test_create_plan_fp16_dispatches_independent_kinds_for_compiled_roster(self):
+        roster_path = (Path(__file__).resolve().parents[1]
+                       / "csrc/kernel_launcher/plan_fp16_generated.inl")
+        text = roster_path.read_text(encoding="utf-8")
+        body = re.search(r"static const FBufferSpec RecordSpecs_fp16\[\] = \{(.*?)\};",
+                         text, re.S)
+        self.assertIsNotNone(body)
+        roster = [(name, int(size)) for name, size in
+                  re.findall(r'\{"([^"]+)", (\d+)LL\}', body.group(1))]
+        self.assertEqual(len(roster), 142)
+
+        def expected_kind(block, layer):
+            if block == 39:
+                return "upsample"
+            if 31 <= block <= 38:
+                return {0: "expand", 1: "contract", 2: "qkv", 4: "projection"}[layer]
+            if block_channels(block) == 512:
+                return {0: "ffn", 1: "ffn_projection", 2: "qkv",
+                        3: "projection", 4: "down"}[layer]
+            return "window"
+
+        expected = []
+        for name, _ in roster:
+            block, layer = (int(part.removeprefix(prefix)) for part, prefix in
+                            zip(name.split(".")[:2], ("block", "layer")))
+            expected.append((block, expected_kind(block, layer)))
+
+        class _Ops:
+            def record_names_fp16(self):
+                return [name for name, _ in roster]
+
+            def record_bytes_fp16(self):
+                return [size for _, size in roster]
+
+        calls = []
+        sizes = iter(size for _, size in roster)
+        checkpoint = Checkpoint.__new__(Checkpoint)
+
+        def fake_kernel_record(block, *, kind="window", precision=None, device="cpu"):
+            calls.append((block, kind, precision))
+            return torch.zeros(next(sizes), dtype=torch.uint8)
+
+        checkpoint.kernel_record = fake_kernel_record
+        with patch("dlssnr.deployment.load_extension", return_value=_Ops()), \
+                patch("dlssnr.deployment.create_plan_fp16",
+                      side_effect=lambda state, records, **kwargs: (records, kwargs)):
+            records, kwargs = checkpoint.create_plan_fp16(
+                torch.empty(0, dtype=torch.uint8), width=1234, height=777)
+
+        self.assertEqual([(block, kind) for block, kind, _ in calls], expected)
+        self.assertTrue(all(precision == "fp16" for _, _, precision in calls))
+        self.assertEqual(len(records), len(roster))
+        self.assertEqual(kwargs, {"width": 1234, "height": 777})
 
 
 if __name__ == "__main__":

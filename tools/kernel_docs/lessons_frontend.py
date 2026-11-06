@@ -1,5 +1,6 @@
 """Six independent frontend lessons; the fused core is inlined in each."""
-from common import ROOT, code, svg, note
+from common import code, svg, note
+from source_providers import ORIGINAL
 from lesson_support import pseudo, mma_primer, storage_legend
 from lessons_window_figures import (subordinate, cta_diagram, ownership_diagram,
     scheduling_diagram, resource_section, trace_intro, trace_checkpoint, instruction_ledger,
@@ -102,7 +103,7 @@ def six_frontend_sections(body,name,path,fp8,output=False,down=False):
 
 
 def excerpt(path, first, last, caption):
-    lines=(ROOT/path).read_text(encoding='utf-8').splitlines()
+    lines=ORIGINAL.text(path).splitlines()
     a=next(i for i,l in enumerate(lines) if first in l)
     b=next(i for i,l in enumerate(lines[a:],a) if last in l)
     return code(path,a+1,b+1,caption)
@@ -172,7 +173,7 @@ def preprocess(name,entry):
     from lessons_windows import c32_core_lesson
     body+=c32_core_lesson(fp8,'the raw Half adapter result r_Adapter',path)
     body+='''<h2 id="publication">Publish the full-resolution feature field</h2><p>For each physical 4×4 tile, pack the output fragment into the selected operand precision. The byte address for lane L and reduction chunk k is <code>tileLinear×TileBytes+k×512+L×16</code>, where <code>tileLinear=tileY×(FullWidth/4)+tileX</code>. The lane emits one uint4 vector at each such address. A complete warp writes 512 bytes per chunk. TileBytes is 512 for FP8 and 1024 for FP16. The four tile positions cover the 8×8 window exactly once.</p><p>The store helper uses the source's no-allocation cache policy. This affects cache handling, not the output layout or synchronization contract. A later stream-ordered launch consumes the global buffer. No intermediate FFN, QKV, 64×64 score matrix or expanded hidden tensor has been written to global memory along the fused path.</p>'''
-    body+=excerpt(path,'const int64_t g_TileIndex','r_Output.r_Word[2]', 'Full-resolution tile address and packed publication') if 'const int64_t g_TileIndex' in (ROOT/path).read_text() else excerpt(path,'const int g_TileColumns = WindowParameters.Width / 4','r_Output.r_Word[2]','Full-resolution tile address and packed publication')
+    body+=excerpt(path,'const int64_t g_TileIndex','r_Output.r_Word[2]', 'Full-resolution tile address and packed publication') if 'const int64_t g_TileIndex' in ORIGINAL.text(path) else excerpt(path,'const int g_TileColumns = WindowParameters.Width / 4','r_Output.r_Word[2]','Full-resolution tile address and packed publication')
     if down:
         body+='''<h2 id="pool">Pool the raw Half result before precision publication</h2><p>Retain four raw output tiles in <code>r_Output[4]</code>. For each output channel pair, the pooling helper routes adjacent tiles and row halves into a common lane pattern. Swapping lane bits 2 and 3 changes a four-wide token arrangement into two-wide pooled cells; XOR 4 selects the horizontal neighbor and XOR 16 the vertical neighbor. Four shuffles gather top-left, top-right, bottom-left and bottom-right Half pairs.</p><p>The arithmetic tree is <code>HalfMul(HalfAdd(HalfAdd(TL,TR),HalfAdd(BL,BR)),0.25)</code>. Three rounded Half additions precede the rounded quarter multiplication. Pooling FP32 values, or decoding an already-published FP8 feature image and averaging that, would change the result. This second output has shape <code>[FullHeight/2,FullWidth/2,32]</code>, not 64 channels.</p>'''
         body+=code('csrc/kernel_impl/shared/common/window_pool.cuh',6,59,'Lane routing and the exact Half pooling tree')

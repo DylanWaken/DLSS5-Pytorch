@@ -6,10 +6,10 @@ import json
 import math
 import re
 import textwrap
-from common import ROOT, source_url
+from common import source_url
+from output_paths import output_root
 from kernel_map_profiles import profile
 
-OUT=ROOT/'docs/kernel-guide/assets/kernels'
 MAPS=[]
 INK='#183347'; MUTED='#546b7b'; LINE='#c5d3dc'
 A='#ead9f1'; B='#f6ebbb'; D='#c8eadb'; SELECT='#ef8e34'; SHARED='#dce9fa'
@@ -379,9 +379,10 @@ def split_map(p):
 
 
 def figure_html(p,kind,xml,caption):
-    directory=OUT/p['name'];directory.mkdir(parents=True,exist_ok=True)
+    guide=output_root()
+    directory=guide/'assets/kernels'/p['name'];directory.mkdir(parents=True,exist_ok=True)
     path=directory/(kind+'.svg');path.write_text(xml,encoding='utf-8',newline='\n')
-    rel=path.relative_to(ROOT/'docs/kernel-guide').as_posix()
+    rel=path.relative_to(guide).as_posix()
     MAPS.append(dict(kernel=p['name'],kind=kind,path=rel,sha256=hashlib.sha256(xml.encode()).hexdigest()))
     return (f'<figure class="diagram kernel-map" data-kernel-map="{escape(p["name"])}"><div class="diagram-scroll" tabindex="0" role="region" aria-label="{escape(kind)} map for {p["name"]}">'
             f'{xml}</div><figcaption>{caption} <a href="{rel}" target="_blank" rel="noopener">Open full-size SVG ↗</a> · '
@@ -414,5 +415,5 @@ def enrich(lesson,entry):
 
 
 def write_manifest(lessons):
-    target=ROOT/'docs/kernel-guide/kernel-map-manifest.json'
+    target=output_root()/'kernel-map-manifest.json'
     target.write_text(json.dumps(dict(profiles=[p['map_profile'] for p in lessons],diagrams=MAPS),indent=2)+'\n',encoding='utf-8',newline='\n')

@@ -11,8 +11,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PREP = Path(__file__).resolve().parent
 OUT = ROOT / 'csrc' / 'kernel_launcher'
+# Public ABI owner; the generator only reads the compiler-checked declarations.
+ABI_HEADER = ROOT / 'csrc' / 'include' / 'dlssnr' / 'abi' / 'kernel_parameters.h'
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+from dlssnr.geometry import (TOKEN_LEVEL, WINDOW_LEVEL, channels_for_level,
+                             level_for_channels, role_spatial_level, window_shift)
 from dlssnr.model_specs import LEGACY71, resolve_model
 
 # Additive Small31-only exports. They reuse the unchanged canonical attention
@@ -29,7 +33,7 @@ def load(name):
 
 def load_template_resolvers():
     """Resolve logical names to same-TU getters, independent of CUDA mangling."""
-    source = (ROOT / 'csrc/kernel_impl/shared/common/kernel_abi.h').read_text(encoding='utf-8')
+    source = ABI_HEADER.read_text(encoding='utf-8')
     return {
         entry: resolver for resolver, entry in re.findall(
             r'extern\s+"C"\s+const\s+void\s*\*\s*(Resolve_(\w+))\s*\(\s*\)\s*;', source)
@@ -46,7 +50,7 @@ def load_abi_fields():
     Generation fails when a written offset has no checked field. Neither the
     generated plans nor a second schema can silently redefine the native ABI.
     """
-    source = (ROOT / 'csrc' / 'kernel_impl' / 'shared' / 'common' / 'kernel_abi.h').read_text(encoding='utf-8')
+    source = ABI_HEADER.read_text(encoding='utf-8')
     fields_by_type = {}
     for parameter_type, field, offset in re.findall(
             r'offsetof\((\w+),\s*(\w+)\)\s*==\s*(\d+)', source):
@@ -143,7 +147,7 @@ def build_plan(schedule, spec=LEGACY71):
         if symbol in windows:
             e = windows[symbol]; fn = canonical[symbol]; c = e['channels']; kind = e['kind']
             h,w,_ = buffers[outs['high']]['shape_hwc']; phase = n['phase']
-            sx,sy = ((0,0),(4,4),(4,0),(0,4))[phase]
+            sx,sy = window_shift(phase)
             p(0,ins['state']);p(8,outs['high']);record(16,e['record_bytes'])
             off = 24 if c == 32 else 32
             for i,v in enumerate((h,w,-sx,-sy)): scalar(off+4*i,v)
@@ -166,7 +170,7 @@ def build_plan(schedule, spec=LEGACY71):
             for key,off in e['pointer_fields'].items():
                 if key=='record':record(off,e['record_bytes'])
                 else:p(off,role_map[key])
-            phase = n['phase'] or 0;sx,sy=((0,0),(4,4),(4,0),(0,4))[phase]
+            phase = n['phase'] or 0;sx,sy=window_shift(phase)
             vals=dict(height=h,width=w,origin_x=-sx,origin_y=-sy)
             if 'pool' in outs:
                 lh,lw,_=buffers[outs['pool']]['shape_hwc']
@@ -210,9 +214,14 @@ def build_plan(schedule, spec=LEGACY71):
         add(symbol,fn,n['abi_bytes'],n['grid'],n['block_dim'],fields,resident,mutable_offsets)
     census = schedule.get('census')
     if census is None:
-        # Older schedule JSON has no explicit census; keep the validated legacy default.
-        census = dict(compute_positions=152, counter_reset_positions=33, calls=185,
-                      record_positions=142, unique_symbols=36)
+        raise ValueError('physical schedule is missing required census metadata')
+    if not isinstance(census, dict):
+        raise ValueError('physical schedule census must be a mapping')
+    required = ('compute_positions', 'counter_reset_positions', 'calls',
+                'record_positions', 'unique_symbols')
+    missing = [name for name in required if name not in census]
+    if missing:
+        raise ValueError(f'physical schedule census is missing required fields: {missing}')
     if (len(schedule['positions']) != census['compute_positions'] or
             len(schedule['reset_protocol']) != census['counter_reset_positions']):
         raise ValueError('schedule position census')
@@ -230,12 +239,10 @@ RESOLUTIONS = ((1280, 720), (1920, 1080), (2560, 1440), (3840, 2160))
 
 
 def block_level(block):
-    for first, last, level in ((1, 4, 0), (5, 8, 1), (9, 14, 2), (15, 22, 3),
-                               (23, 30, 4), (31, 38, 5), (39, 47, 4), (48, 55, 3),
-                               (56, 61, 2), (62, 65, 1), (66, 69, 0)):
-        if first <= block <= last:
-            return level
-    raise ValueError(f'unknown network block: {block}')
+    try:
+        return role_spatial_level(block)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f'unknown network block: {block}') from exc
 
 
 def buffer_geometry_expression(name):
@@ -251,7 +258,7 @@ def buffer_geometry_expression(name):
         raise ValueError(f'unknown physical buffer role: {name}')
     block, role = int(match[1]), match[2]
     level = block_level(block)
-    channels = 32 << level
+    channels = channels_for_level(level)
     if 31 <= block <= 38:
         if role.endswith('_counter'):
             counters = {'contract_counter': 8, 'qkv_counter': 16,
@@ -284,11 +291,11 @@ def call_geometry_expressions(call, fields):
     level = None
     if name.startswith('window_block_'):
         channels = int(re.search(r'_c(32|64|128|256)_', name)[1])
-        level = {32: 0, 64: 1, 128: 2, 256: 3}[channels]
+        level = level_for_channels(channels)
     elif name.startswith(('window_ffn_', 'window_qkv_', 'window_attention_')):
-        level = 4
+        level = WINDOW_LEVEL
     elif name.startswith(('channel_projection_', 'repack_')):
-        level = 5
+        level = TOKEN_LEVEL
 
     scalars = {}
     for field in values:
@@ -428,7 +435,8 @@ def build_precision_plans(precision, model='legacy71'):
         from .physical_schedule import make
 
     spec = resolve_model(model)
-    schedules = [make(width, height, precision=precision, model=model) for width, height in RESOLUTIONS]
+    schedules = [make(width, height, precision=precision, model=spec.id)
+                 for width, height in RESOLUTIONS]
     plans = [build_plan(schedule, spec) for schedule in schedules]
     reference = plans[-1]
     names = list(reference['buffers'])
@@ -450,7 +458,7 @@ def render(precision="fp8"):
     """Render the legacy generated assets in memory without touching any file."""
     abi_fields, parameter_types = load_abi_fields()
     resolvers = load_template_resolvers()
-    spec, schedules, plans = build_precision_plans(precision, 'legacy71')
+    spec, schedules, plans = build_precision_plans(precision, LEGACY71.id)
     reference = plans[-1]
     suffix = '' if precision == 'fp8' else '_fp16'
     return {

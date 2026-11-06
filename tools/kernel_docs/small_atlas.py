@@ -10,7 +10,7 @@ import hashlib
 import json
 import re
 
-from common import ROOT
+from output_paths import output_root
 from kernel_map_profiles import profile
 
 SMALL_NAMES = (
@@ -47,14 +47,15 @@ def attach(lessons, inventory):
         figures = re.findall(r'<svg\b.*?</svg>', lesson['body'], flags=re.S)
         if len(figures) != len(KINDS):
             raise ValueError(f'{name}: expected {len(KINDS)} specialised SVGs, found {len(figures)}')
-        directory = ROOT / 'docs/kernel-guide/assets/kernels' / name
+        guide = output_root()
+        directory = guide / 'assets/kernels' / name
         directory.mkdir(parents=True, exist_ok=True)
         links = []
         for kind, svg in zip(KINDS, figures):
             path = directory / f'{kind}.svg'
             text = _standalone(svg, name)
             path.write_text(text, encoding='utf-8', newline='\n')
-            rel = path.relative_to(ROOT / 'docs/kernel-guide').as_posix()
+            rel = path.relative_to(guide).as_posix()
             DIAGRAMS.append(dict(kernel=name, kind=kind, path=rel,
                                  sha256=hashlib.sha256(text.encode()).hexdigest()))
             links.append(f'<p class="atlas-export"><a href="{rel}">Open full-size SVG ↗</a></p>')
@@ -69,7 +70,7 @@ def attach(lessons, inventory):
 
 
 def write_manifest(lessons):
-    target = ROOT / 'docs/kernel-guide/kernel-map-manifest-small.json'
+    target = output_root() / 'kernel-map-manifest-small.json'
     records = [lesson['map_profile'] for lesson in lessons
                if lesson['name'] in SMALL_NAMES]
     if len(records) != len(SMALL_NAMES):
@@ -89,7 +90,7 @@ def write_registry(legacy_lessons, small_lessons):
         records.append(dict(name=lesson['name'], source=lesson['map_profile']['source'],
                             kind=lesson['map_profile']['kind'],
                             manifest='kernel-map-manifest-small.json'))
-    target = ROOT / 'docs/kernel-guide/kernel-map-registry.json'
+    target = output_root() / 'kernel-map-registry.json'
     data = dict(total=len(records), legacy=len(legacy_lessons),
                 additive=len(small_lessons), profiles=records)
     target.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8', newline='\n')

@@ -27,7 +27,7 @@ SAFE_SOURCES = {
     'fp8': SMALL_DIR / 'fp8' / 'small_global_attention_chained_c1024_fp8.cu',
     'fp16': SMALL_DIR / 'fp16' / 'small_global_attention_chained_c1024_fp16.cu',
 }
-ABI_HEADER = SMALL_DIR / 'common' / 'small_attention_abi.h'
+ABI_HEADER = CSRC / 'include' / 'dlssnr' / 'abi' / 'small_attention.h'
 SMALL_PLANS = {
     'fp8': CSRC / 'kernel_launcher' / 'small_plan_generated.inl',
     'fp16': CSRC / 'kernel_launcher' / 'small_plan_fp16_generated.inl',
@@ -44,21 +44,6 @@ PARAMETER_TYPES = {
 
 def _compact(text: str) -> str:
     return re.sub(r'\s+', ' ', text).strip()
-
-
-def _function_body(text: str, name: str) -> str:
-    """Return one braced C++ function body from source text."""
-    start = text.index(f'static void {name}(')
-    opening = text.index('{', start)
-    depth = 0
-    for index in range(opening, len(text)):
-        if text[index] == '{':
-            depth += 1
-        elif text[index] == '}':
-            depth -= 1
-            if depth == 0:
-                return text[opening + 1:index]
-    raise AssertionError(f'unclosed function body: {name}')
 
 
 class SmallAttentionCPUTest(unittest.TestCase):
@@ -83,19 +68,19 @@ class SmallAttentionCPUTest(unittest.TestCase):
                 self.assertTrue(path.is_file())
 
     def test_denominator_reduction_is_fp32_from_each_native_half_term(self):
-        helper = SMALL_DIR / 'common' / 'intrinsics.cuh'
+        helper = CSRC / 'common' / 'ops' / 'small_attention.h'
         self.assertTrue(helper.is_file())
-        self.assertFalse((SMALL_DIR / 'common' / 'small_attention_intrinsics.cuh').exists())
+        self.assertFalse((SMALL_DIR / 'common' / 'intrinsics.cuh').exists())
         helper_code = helper.read_text(encoding='utf-8')
-        for name in ('WidenHalfPairFloat2', 'AddFloat2Componentwise',
-                     'PermuteGlobalAttentionQuadFloat2', 'ShuffleFloat2Idx', 'TotalFloat2'):
+        for name in ('widen_half_pair_float2', 'add_float2_componentwise',
+                     'total_float2', 'clamp_denominator_float'):
             with self.subTest(helper=name):
                 self.assertIn(name, helper_code)
         self.assertIn('__half2float', helper_code)
         for precision, path in SAFE_SOURCES.items():
             with self.subTest(precision=precision):
                 text = path.read_text(encoding='utf-8')
-                self.assertIn('#include "../common/intrinsics.cuh"', text)
+                self.assertIn('#include <common/ops/small_attention.h>', text)
                 self.assertNotIn('small_attention_intrinsics', text)
                 self.assertIn('float r_Denominator[2]', text)
                 start = text.index('// Sum the current score tile')
@@ -103,9 +88,10 @@ class SmallAttentionCPUTest(unittest.TestCase):
                 reduction = text[start:end]
                 # Every one of the eight packed probability words per row is
                 # widened term-by-term; no packed Half addition may survive.
-                self.assertEqual(reduction.count('WidenHalfPairFloat2(r_Pairs['), 8)
-                self.assertNotIn('HalfAdd', reduction)
-                self.assertNotIn('PermuteGlobalAttentionQuad(', reduction)
+                self.assertEqual(reduction.count('widen_half_pair_float2(r_Pairs['), 8)
+                self.assertNotIn('half2_add', reduction)
+                self.assertIn('flashlight::warp::permute_quad', reduction)
+                self.assertIn('flashlight::warp::shuffle_index', reduction)
                 self.assertIn('r_LocalProbabilitySums[4]', reduction)
                 self.assertIn('r_GatheredProbabilitySums[4]', reduction)
                 self.assertIn('float r_QuerySums[2];', reduction)
@@ -134,9 +120,9 @@ class SmallAttentionCPUTest(unittest.TestCase):
                 self.assertIn(declaration, code)
         self.assertNotRegex(code, r'struct\s+\w*GlobalAttention\w*Parameters')
         deployment = (CSRC / 'kernel_launcher' / 'small_deployment.cpp').read_text(encoding='utf-8')
-        self.assertIn('#include "kernel_impl/small_c1024_attention/common/small_attention_abi.h"',
+        self.assertIn('#include <dlssnr/abi/small_attention.h>',
                       deployment)
-        canonical = (CSRC / 'kernel_impl' / 'shared' / 'common' / 'kernel_abi.h').read_text(
+        canonical = (CSRC / 'include' / 'dlssnr' / 'abi' / 'kernel_parameters.h').read_text(
             encoding='utf-8')
         for legacy in LEGACY_ATTENTION.values():
             self.assertIn(f'extern "C" void {legacy}(', canonical)
@@ -144,11 +130,18 @@ class SmallAttentionCPUTest(unittest.TestCase):
     def test_boxed_registration_matches_prepared_ops_contract(self):
         prepared = (CSRC / 'torch_api' / 'prepared_ops.cpp').read_text(encoding='utf-8')
         small = (CSRC / 'torch_api' / 'small_extension.cpp').read_text(encoding='utf-8')
-        self.assertEqual(_compact(_function_body(prepared, 'InvokePreparedKernel')),
-                         _compact(_function_body(small, 'InvokeSmallSafeAttention')))
-        self.assertIn('FindPreparedKernel', small)
-        self.assertIn('Operator.schema().name() == "dlssnr::" + Descriptor->Name', small)
-        self.assertIn('Descriptor->Validate(Inputs, Outputs, bMeta);', small)
+        shared = (CSRC / 'common/host/boxed_dispatch.h').read_text(encoding='utf-8')
+        for source, names in ((prepared, 'PreparedKernelNames'), (small, 'SmallSafeAttentionNames')):
+            self.assertIn('#include "common/host/boxed_dispatch.h"', source)
+            for meta in ('true', 'false'):
+                self.assertIn(f'dlssnr::host::RegisterBoxedPreparedImplementations<{meta}>'
+                              f'(Library, {names});', source)
+            self.assertNotIn('Descriptor->Launch', source)
+        self.assertIn('FindPreparedKernel', shared)
+        self.assertIn('Operator.schema().name() == "dlssnr::" + Descriptor->Name', shared)
+        self.assertIn('Descriptor->Validate(Inputs, Outputs, bMeta);', shared)
+        self.assertIn('if constexpr (!bMeta)', shared)
+        self.assertIn('Descriptor->Launch(Inputs, Outputs);', shared)
         self.assertIn('(Tensor[] inputs, Tensor(a!)[] outputs, int handle) -> ()', small)
         for name in sorted(SAFE_ATTENTION_EXPORTS):
             self.assertEqual(small.count(f'"{name}"'), 1)

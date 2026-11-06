@@ -1,29 +1,31 @@
 """Small, dependency-free publishing helpers for the kernel field guide.
 
-Three source namespaces are deliberately kept separate:
+Source text comes from an explicit immutable provider, never from the working
+tree.  Three ownership namespaces are deliberately kept separate:
 
 * ``REVISION`` is the legacy pin for the historical 310.8 kernel lessons and the
   design-check manifest key.  It must not be used for files that did not exist
   at that commit.
 * ``RUNTIME_REVISION`` is the explicit commit for new/modified 310.9.16 runtime
-  sources.  When it is absent, those excerpts link to exact normalized LF copies
-  under ``docs/kernel-guide/source/`` with the working-tree hash recorded, rather
-  than to a Git URL that cannot resolve.
+  sources.  The snapshot bytes are verified against that committed blob.
 * ``CHECKPOINT_API_REVISION`` owns only the checkpoint-API sources.  It takes
   precedence for those paths and has no fallback to either historical pin.
+
+All three are read from the immutable snapshot materialized by
+``source_providers.ORIGINAL``.  ``current_provider()`` is the separate,
+optional namespace for a later real FlashLight implementation commit.
 """
 from pathlib import Path
 from html import escape
 import hashlib
 import re
-import subprocess
 
 from highlight import highlight_lines
 from runtime_source_revision import (
-    CHECKPOINT_API_SOURCE_PATHS,
     configured_checkpoint_api_revision,
     configured_runtime_revision,
 )
+from source_providers import ORIGINAL, Provider
 
 ROOT = Path(__file__).resolve().parents[2]
 #: Historical 310.8 / 81-lesson source pin.  Also the ``source_revision`` value
@@ -36,129 +38,80 @@ RUNTIME_REVISION = configured_runtime_revision()
 #: unconfigured: the build must fail rather than borrow another revision.
 CHECKPOINT_API_REVISION = configured_checkpoint_api_revision()
 REPOSITORY = "https://github.com/DylanWaken/DLSS5-Pytorch"
+#: Historical (original-provider) excerpts.  Kept exactly 1,570 for the frozen
+#: 99-page guide; current-chapter excerpts use a separate registry so two
+#: revisions of the same path can never collide or inflate the old counts.
 SNIPPETS = []
+#: Optional FlashLight/current-provider excerpts, serialized in their own
+#: manifest namespace.
+CURRENT_SNIPPETS = []
 
-_CHECKPOINT_API_PATHS = frozenset(CHECKPOINT_API_SOURCE_PATHS)
-_PROVENANCE: dict[str, dict] = {}
-
-
-def _normalized_lf(text: str) -> str:
-    """Return the canonical text form used for hashes and local copies."""
-    return text.replace("\r\n", "\n").replace("\r", "\n")
+_PROVENANCE: dict[tuple[str, str, str], dict] = {}
 
 
-def _git_blob(revision: str, path: str) -> str | None:
-    """Read ``revision:path`` as text, or return ``None`` when it is absent."""
-    result = subprocess.run(
-        ["git", "show", f"{revision}:{path}"],
-        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
-        errors="replace",
-    )
-    if result.returncode != 0:
-        return None
-    return result.stdout
+def file_provenance(path: str, provider: Provider = ORIGINAL) -> dict:
+    """Classify one source path explicitly for ``provider`` and cache it.
 
-
-def file_provenance(path: str) -> dict:
-    """Classify one repository source file and cache its exact provenance.
-
-    The result is a plain dict so it can be serialized into the manifest:
-
-    ``kind``
-        ``checkpoint-api-commit`` for a checkpoint-API source (this branch is
-        evaluated first and never falls back), ``legacy-commit`` when the working
-        file is byte-identical (after newline normalization) to ``REVISION``;
-        ``runtime-commit`` when an explicit runtime commit is configured, exists
-        at that commit, and the working content matches it; ``working-tree``
-        otherwise.
+    The original provider applies the frozen precedence: checkpoint API first,
+    runtime second, legacy remaining, and an unowned/missing blob is an error.
+    The current provider returns ``refactor-commit`` for its own commit.
     """
-    if path in _PROVENANCE:
-        return _PROVENANCE[path]
-    target = ROOT / path
-    if not target.is_file():
-        raise FileNotFoundError(f"source file is missing: {path}")
-    work = _normalized_lf(target.read_text(encoding="utf-8"))
-    digest = hashlib.sha256(work.encode()).hexdigest()
-    if path in _CHECKPOINT_API_PATHS:
-        # Checkpoint-API precedence: this branch deliberately runs before the
-        # legacy and runtime checks, and an unconfigured pin is an error.
-        if CHECKPOINT_API_REVISION is None:
-            raise ValueError(
-                f"{path} belongs to the checkpoint API and differs from the historical "
-                "and runtime pins. Set CHECKPOINT_API_REVISION (or "
-                "DLSSNR_CHECKPOINT_API_REVISION) to the accepted full 40-character "
-                "checkpoint implementation commit before building the guide.")
-        committed = _git_blob(CHECKPOINT_API_REVISION, path)
-        if committed is None:
-            raise ValueError(
-                f"{path} is not present at checkpoint API revision "
-                f"{CHECKPOINT_API_REVISION}; supply the commit that contains the "
-                "checkpoint implementation")
-        if _normalized_lf(committed) != work:
-            raise ValueError(
-                f"{path} differs between the working tree and checkpoint API revision "
-                f"{CHECKPOINT_API_REVISION}; commit the exact documented source first")
-        info = dict(kind="checkpoint-api-commit", revision=CHECKPOINT_API_REVISION,
-                    sha256=digest)
-    elif (pinned := _git_blob(REVISION, path)) is not None and _normalized_lf(pinned) == work:
-        info = dict(kind="legacy-commit", revision=REVISION, sha256=digest)
-    elif RUNTIME_REVISION is not None:
-        committed = _git_blob(RUNTIME_REVISION, path)
-        if committed is None:
-            raise ValueError(
-                f"{path} is not present at runtime revision {RUNTIME_REVISION}; "
-                "supply the commit that contains the implementation")
-        if _normalized_lf(committed) != work:
-            raise ValueError(
-                f"{path} differs between the working tree and runtime revision "
-                f"{RUNTIME_REVISION}; commit the exact documented source first")
-        info = dict(kind="runtime-commit", revision=RUNTIME_REVISION, sha256=digest)
-    else:
-        info = dict(kind="working-tree", revision=None, sha256=digest)
-    _PROVENANCE[path] = info
-    return info
+    key = (provider.name, provider.revision, path)
+    if key not in _PROVENANCE:
+        _PROVENANCE[key] = provider.provenance(path)
+    return _PROVENANCE[key]
 
 
-def _location(path: str, start: int | None = None, end: int | None = None) -> tuple[str, str]:
+def _location(path: str, start: int | None = None, end: int | None = None,
+              provider: Provider = ORIGINAL) -> tuple[str, str]:
     """Return ``(href, label)`` for one source location."""
     suffix = f"#L{start}" if start else ""
     if end:
         suffix += f"-L{end}"
-    info = file_provenance(path)
-    if info["kind"] == "working-tree":
-        return f"source/{path}{suffix}", "working tree · no implementation commit"
+    info = file_provenance(path, provider)
     revision = info["revision"]
     if info["kind"] == "legacy-commit":
         label = "legacy pin " + revision[:12]
     elif info["kind"] == "checkpoint-api-commit":
         label = "checkpoint API commit " + revision[:12]
-    else:
+    elif info["kind"] == "runtime-commit":
         label = "runtime commit " + revision[:12]
+    else:
+        label = "refactor commit " + revision[:12]
     return f"{REPOSITORY}/blob/{revision}/{path}{suffix}", label
 
 
-def source_url(path, start=None, end=None):
-    """Return the honest link target for one source path.
+def source_url(path, start=None, end=None, provider: Provider = ORIGINAL):
+    """Return the honest link target for one source path at ``provider``.
 
-    No file is ever linked to a commit that does not contain it.  Legacy files
-    keep the historical GitHub link; uncommitted runtime files resolve to the
-    exact local copy written by the build.
+    No file is ever linked to a commit that does not contain it, and the
+    working tree is never consulted.
     """
-    return _location(path, start, end)[0]
+    return _location(path, start, end, provider)[0]
 
 
-def code(path, start, end, caption=""):
-    lines = (ROOT / path).read_text(encoding="utf-8").splitlines()
+def code(path, start, end, caption="", provider: Provider = ORIGINAL,
+         registry=None):
+    """Emit one exact provider excerpt and record its provider attribution.
+
+    Historical callers keep the one-argument default.  A current chapter must
+    pass ``provider=current_provider()`` explicitly and defaults to the separate
+    ``CURRENT_SNIPPETS`` registry.
+    """
+    lines = provider.text(path).splitlines()
     if not 1 <= start <= end <= len(lines):
         raise ValueError(f"Invalid excerpt {path}:{start}-{end} ({len(lines)} lines)")
     excerpt = "\n".join(lines[start - 1:end])
-    href, revision_label = _location(path, start, end)
-    info = file_provenance(path)
-    SNIPPETS.append(dict(
+    href, revision_label = _location(path, start, end, provider)
+    info = file_provenance(path, provider)
+    if registry is None:
+        registry = SNIPPETS if provider.name == "original" else CURRENT_SNIPPETS
+    registry.append(dict(
         path=path, start=start, end=end,
         sha256=hashlib.sha256(excerpt.encode()).hexdigest(),
         source_kind=info["kind"], revision=info["revision"],
         source_sha256=info["sha256"], url=href,
+        source_provider=provider.name,
     ))
     language = 'python' if Path(path).suffix == '.py' else 'cpp'
     colored = highlight_lines('\n'.join(lines), language)
@@ -186,11 +139,9 @@ def provenance_note():
         return (
             '<aside class="note"><strong>Source provenance is mixed.</strong> '
             f'Historical 310.8 kernel sources are pinned to <code>{REVISION[:12]}</code>. '
-            'The new/modified 310.9.16 runtime sources quoted on this page are not '
-            'present at that commit, so every such excerpt links to an exact normalized-LF '
-            'copy under <code>source/</code> and records the working-tree SHA-256 in '
-            '<code>source-manifest.json</code>. No runtime implementation commit has been '
-            f'supplied yet; these excerpts are therefore working-tree provenance, not a GitHub pin. '
+            'The new/modified 310.9.16 runtime sources have no configured implementation '
+            'commit, so the build refuses to attribute them to the immutable historical '
+            f'snapshot at <code>{ORIGINAL.revision[:12]}</code>. '
             f'{checkpoint} '
             'The 81 historical lessons and the legacy <code>source_revision</code> key are '
             'unchanged.</aside>'
@@ -199,8 +150,9 @@ def provenance_note():
         '<aside class="note"><strong>Source provenance is mixed.</strong> '
         f'Historical 310.8 kernel sources are pinned to <code>{REVISION[:12]}</code>. '
         f'New/modified 310.9.16 runtime sources are pinned to the supplied implementation '
-        f'commit <code>{RUNTIME_REVISION[:12]}</code>; the build compared every working-tree '
-        'excerpt with that committed blob. '
+        f'commit <code>{RUNTIME_REVISION[:12]}</code>; every excerpt is read from the '
+        f'immutable original snapshot at <code>{ORIGINAL.revision[:12]}</code> and checked '
+        'against that committed blob, never against the working tree. '
         f'{checkpoint} '
         'The manifest records both revisions per file. '
         'The legacy <code>source_revision</code> key and the 81 historical lessons are '

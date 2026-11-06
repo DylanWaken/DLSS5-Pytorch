@@ -1,5 +1,6 @@
 """Executable arithmetic experiments for the teaching models, not CUDA benchmarks."""
-from common import ROOT, REVISION
+from common import REVISION
+from output_paths import output_root
 from kernel_map_profiles import profile
 from lessons_small_attention import SMALL_NAMES
 import json
@@ -81,6 +82,7 @@ def run(inventory,evidence):
         kernels[name]=record
     result=dict(source_revision=REVISION,scope='CPU arithmetic experiments and independent comparison with recorded NCU; no CUDA candidate execution or performance sweep.',
                 checks=checks,kernels=kernels)
-    path=ROOT/'docs/kernel-guide/evidence/design-checks.json'
+    path=output_root()/'evidence/design-checks.json'
+    path.parent.mkdir(parents=True,exist_ok=True)
     path.write_text(json.dumps(result,indent=2)+'\n',encoding='utf8',newline='\n')
     return result

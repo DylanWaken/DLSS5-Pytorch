@@ -29,10 +29,13 @@ import numpy as np
 import torch
 from torch import nn
 
+from .common.hashing import sha256_bytes
 from .geometry import Geometry, block_layout
 from .model import DLSSNR, NRBlock, Numerics
 from .model_specs import ModelSpec, PostHeadSpec, SMALL31
-from .runtime_assets import AssetIdentityError, ManifestError, sha256_bytes, validate_manifest_tensors, verify_stage_pins
+from .runtime_assets import (AssetIdentityError, ManifestError,
+                             validate_manifest_tensors, verify_stage_pins)
+from .small_state import small_identity
 from .weights import TensorRecord, WeightArchive
 
 
@@ -659,20 +662,12 @@ class SmallDLSSNR(nn.Module):
         manifest SHA-256) is deliberately excluded, so two independently
         extracted copies of the same verified source remain interchangeable.
         """
-        return {
-            "stateSchema": "dlssnr-small31/1",
-            "model": self.spec.id,
-            "sourceDllSha256": self.source_dll_sha256,
-            "resourcePath": self.spec.resource.path,
-            "resourceSha256": self.spec.resource.sha256,
-            "resourceByteLength": self.spec.resource.byte_length,
-            "roles": list(self.spec.roles),
-            "rawToRole": list(self.spec.raw_to_role),
-            "blockCount": len(self.blocks),
-            "postPhase": self.post_phase,
-            "postHead": "4x32",
-            "postHeadLayout": "rgb+history_gate",
-        }
+        return small_identity(
+            self.spec,
+            source_dll_sha256=self.source_dll_sha256,
+            post_phase=self.post_phase,
+            block_count=len(self.blocks),
+        )
 
     def descriptor(self) -> dict:
         """Identity useful for checkpoint/provenance cross-checks.

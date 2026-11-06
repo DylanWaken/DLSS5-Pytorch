@@ -1,10 +1,14 @@
-// The complete global template retains each native schedule and register limit.
+﻿// The complete global template retains each native schedule and register limit.
 // Only supported profiles are emitted; host launch selection remains in kernel_launcher.
-#include "../../shared/common/kernel_helpers.cuh"
-#include "global_repack_layout.cuh"
+// Both directions use the recovered project layout maps; the only global access
+// here is a plain typed word load/store.
+#include <common/layout/global_repack.h>
+#include <dlssnr/abi/kernel_parameters.h>
+#include <flashlight/memory/views.cuh>
+#include <cuda_runtime.h>
+#include <cstdint>
 
-template <bool bFp8>
-__global__ void repack_spatial_to_token(FGlobalRepackParameters Parameters)
+template <bool bFp8> __global__ void repack_spatial_to_token(FGlobalRepackParameters Parameters)
 {
 	constexpr bool bToTokenLayout = true;
 	constexpr uint32_t CONST_WORDS_PER_TOKEN = bFp8 ? 256u : 512u;
@@ -13,8 +17,8 @@ __global__ void repack_spatial_to_token(FGlobalRepackParameters Parameters)
 	const uint32_t g_PaddedTokenCount =
 		(g_TokenCount + CONST_TOKEN_ALIGNMENT - 1u) / CONST_TOKEN_ALIGNMENT * CONST_TOKEN_ALIGNMENT;
 	const uint32_t g_WordCount = (bToTokenLayout ? g_PaddedTokenCount : g_TokenCount) * CONST_WORDS_PER_TOKEN;
-	const auto* g_Input = reinterpret_cast<const uint32_t*>(Parameters.g_Input);
-	auto* g_Output = reinterpret_cast<uint32_t*>(Parameters.g_Output);
+	const auto* g_Input = flashlight::memory::GlobalAddress(Parameters.g_Input).as_pointer<const uint32_t>();
+	auto* g_Output = flashlight::memory::GlobalAddress(Parameters.g_Output).as_pointer<uint32_t>();
 	const uint32_t g_WordStride = gridDim.x * blockDim.x;
 
 	// Remap packed words between spatial tiles and global-token storage without changing precision.
@@ -24,20 +28,19 @@ __global__ void repack_spatial_to_token(FGlobalRepackParameters Parameters)
 		const uint32_t g_TokenIndex = g_WordIndex / CONST_WORDS_PER_TOKEN,
 					   g_ChannelWord = g_WordIndex % CONST_WORDS_PER_TOKEN;
 		const uint32_t g_TokenWord =
-			GlobalRepackPhysicalWord<CONST_WORDS_PER_TOKEN>(g_TokenIndex, g_ChannelWord);
-		{
-			uint32_t r_CopiedWord = 0;
+			dlssnr::layout::repack_physical_word<CONST_WORDS_PER_TOKEN>(g_TokenIndex, g_ChannelWord);
+		uint32_t r_CopiedWord = 0;
 
-			// Forward tail writes +0 bits and never reads the spatial input.
-			if (g_TokenIndex < g_TokenCount)
-			{
-				const uint32_t g_SpatialToken =
-					GlobalRepackSpatialToken(g_TokenIndex, uint32_t(Parameters.Width));
-				r_CopiedWord =
-					g_Input[GlobalRepackPhysicalWord<CONST_WORDS_PER_TOKEN>(g_SpatialToken, g_ChannelWord)];
-			}
-			g_Output[g_TokenWord] = r_CopiedWord;
+		// Forward tail writes +0 bits and never reads the spatial input.
+		if (g_TokenIndex < g_TokenCount)
+		{
+			const uint32_t g_SpatialToken =
+				dlssnr::layout::repack_spatial_token(g_TokenIndex, uint32_t(Parameters.Width));
+			r_CopiedWord = g_Input[dlssnr::layout::repack_physical_word<CONST_WORDS_PER_TOKEN>(
+				g_SpatialToken, g_ChannelWord)];
 		}
+
+		g_Output[g_TokenWord] = r_CopiedWord;
 	}
 }
 

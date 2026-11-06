@@ -52,7 +52,94 @@ class Geometry:
 
     @property
     def padded_vit_tokens(self) -> int:
-        return align_up(self.vit_tokens, 64)
+        """Training ViT attention padding (64-token reduction groups)."""
+        return training_padded_vit_tokens(self.vit_tokens)
+
+
+# Native physical storage pads tokens to 32-token tiles; the training ViT
+# attention pads its reduction to 64 tokens.  They are deliberately separate
+# policies and must not be merged into one "padded token" value.
+NATIVE_TOKEN_STORAGE_ALIGNMENT = 32
+TRAINING_VIT_TOKEN_ALIGNMENT = 64
+
+FULL_FRAME_LEVEL = 6
+TOKEN_LEVEL = 5
+WINDOW_LEVEL = 4
+
+# Window/global operation role -> produced spatial level.  Roles 0/70 are the
+# full-frame pre/post graph roots (see role_frame_level) and role 39 is the
+# transition-only 1024->512 record; its repack input is level 5 and its record
+# output is level 4.
+_ROLE_LEVEL_RANGES = (
+    (1, 4, 0), (5, 8, 1), (9, 14, 2), (15, 22, 3), (23, 30, WINDOW_LEVEL),
+    (31, 38, TOKEN_LEVEL), (39, 47, WINDOW_LEVEL), (48, 55, 3), (56, 61, 2),
+    (62, 65, 1), (66, 69, 0),
+)
+_FULL_FRAME_ROLES = (0, 70)
+_REPACK_ROLES = (31, 39)
+
+
+def native_token_storage(tokens: int) -> int:
+    """Token count rounded up to the native 32-token storage tile."""
+    return align_up(tokens, NATIVE_TOKEN_STORAGE_ALIGNMENT)
+
+
+def training_padded_vit_tokens(tokens: int) -> int:
+    """Token count rounded up to the training 64-token attention group."""
+    return align_up(tokens, TRAINING_VIT_TOKEN_ALIGNMENT)
+
+
+def channels_for_level(level: int) -> int:
+    """Channel width produced at one native spatial level (0..5)."""
+    if isinstance(level, bool) or not isinstance(level, int) or not 0 <= level <= TOKEN_LEVEL:
+        raise ValueError(f"spatial level must be an integer in 0..{TOKEN_LEVEL}, got {level!r}")
+    return 32 << level
+
+
+def level_for_channels(channels: int) -> int:
+    """Native spatial level for a window/global channel width (32..1024)."""
+    if isinstance(channels, bool) or not isinstance(channels, int):
+        raise TypeError("channels must be an int")
+    for level in range(TOKEN_LEVEL + 1):
+        if channels_for_level(level) == channels:
+            return level
+    raise ValueError(f"channels must be 32, 64, 128, 256, 512 or 1024, got {channels}")
+
+
+def role_spatial_level(role: int) -> int:
+    """Spatial level produced by a retained window/global operation role.
+
+    Full-frame pre/post roots are not spatial levels; use
+    :func:`role_frame_level` for those.  Role 39 produces its 512-channel level
+    4 record but its repack consumes level 5 (see :func:`repack_input_level`).
+    """
+    if isinstance(role, bool) or not isinstance(role, int):
+        raise TypeError("role must be an int")
+    for first, last, level in _ROLE_LEVEL_RANGES:
+        if first <= role <= last:
+            return level
+    raise ValueError(f"role must be a retained spatial role in [1, 69], got {role}")
+
+
+def role_frame_level(role: int) -> int:
+    """Level for the legacy graph: full-frame pre/post roots, else spatial."""
+    if role in _FULL_FRAME_ROLES:
+        return FULL_FRAME_LEVEL
+    return role_spatial_level(role)
+
+
+def repack_input_level(role: int) -> int:
+    """Spatial level consumed by one mandatory token repack (roles 31 and 39)."""
+    if role not in _REPACK_ROLES:
+        raise ValueError(f"role must be a mandatory token repack (31 or 39), got {role}")
+    return WINDOW_LEVEL if role == 31 else TOKEN_LEVEL
+
+
+def repack_output_level(role: int) -> int:
+    """Both mandatory repacks emit a 1024-channel level-5 token field."""
+    if role not in _REPACK_ROLES:
+        raise ValueError(f"role must be a mandatory token repack (31 or 39), got {role}")
+    return TOKEN_LEVEL
 
 
 def window_shift(phase: int) -> tuple[int, int]:
@@ -116,8 +203,9 @@ def graph_schedule(geometry: Geometry) -> tuple[dict, ...]:
     schedule = []
     for block in range(71):
         c = block_channels(block)
-        level = 6 if block in (0, 70) else {32: 0, 64: 1, 128: 2, 256: 3, 512: 4, 1024: 5}[c]
-        width, height = (geometry.full_width, geometry.full_height) if level == 6 else geometry.levels[level]
+        level = role_frame_level(block)
+        width, height = ((geometry.full_width, geometry.full_height)
+                         if level == FULL_FRAME_LEVEL else geometry.levels[level])
         phase = None if c == 1024 or block == 39 else phases[level] % 4
         if phase is not None:
             phases[level] += 1

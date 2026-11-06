@@ -1,4 +1,5 @@
 #include <torch/library.h>
+#include "common/host/deployment_runtime.h"
 #include "../kernel_launcher/deployment.h"
 #include "../kernel_launcher/windows_dispatch.h"
 #include "../kernel_launcher/c512_dispatch.h"
@@ -18,36 +19,14 @@ TORCH_LIBRARY(dlssnr, Library)
 	RegisterPreparedKernelSchemas(Library);
 	RegisterFrontendKernels(Library);
 	Library.def("kernel_symbol", &KernelSymbol);
-	Library.class_<FDeploymentPlan_fp8>("DeploymentPlan_fp8")
-		.def("run_fp8", &FDeploymentPlan_fp8::Run_fp8)
-		.def("buffer", &FDeploymentPlan_fp8::GetBuffer)
-		.def("buffer_names", &FDeploymentPlan_fp8::GetBufferNames)
-		.def("boundaries", &FDeploymentPlan_fp8::GetBoundaries)
-		.def("boundary_names", &FDeploymentPlan_fp8::GetBoundaryNames)
-		.def("guards_intact", &FDeploymentPlan_fp8::GuardsIntact)
-		.def("poison", &FDeploymentPlan_fp8::Poison)
-		.def("resources", &FDeploymentPlan_fp8::GetResources)
-		.def("split_launch_counts", &FDeploymentPlan_fp8::GetSplitLaunchCounts)
-		.def("prepare_kernels", &FDeploymentPlan_fp8::PrepareKernels)
-		.def("tensor_arguments", &FDeploymentPlan_fp8::GetTensorArguments)
-		.def("kernel_tensor_indices", &FDeploymentPlan_fp8::GetKernelTensorIndices);
+	dlssnr::host::RegisterDeploymentPlanClass<FDeploymentPlan_fp8>(Library, "DeploymentPlan_fp8", "run_fp8",
+																   &FDeploymentPlan_fp8::Run_fp8);
 	Library.def("create_plan_fp8", &CreatePlan_fp8);
 	Library.def("create_plan_for_resolution_fp8", &CreatePlanForResolution_fp8);
 	Library.def("record_names_fp8", &RecordNames_fp8);
 	Library.def("record_bytes_fp8", &RecordBytes_fp8);
-	Library.class_<FDeploymentPlan_fp16>("DeploymentPlan_fp16")
-		.def("run_fp16", &FDeploymentPlan_fp16::Run_fp16)
-		.def("buffer", &FDeploymentPlan_fp16::GetBuffer)
-		.def("buffer_names", &FDeploymentPlan_fp16::GetBufferNames)
-		.def("boundaries", &FDeploymentPlan_fp16::GetBoundaries)
-		.def("boundary_names", &FDeploymentPlan_fp16::GetBoundaryNames)
-		.def("guards_intact", &FDeploymentPlan_fp16::GuardsIntact)
-		.def("poison", &FDeploymentPlan_fp16::Poison)
-		.def("resources", &FDeploymentPlan_fp16::GetResources)
-		.def("split_launch_counts", &FDeploymentPlan_fp16::GetSplitLaunchCounts)
-		.def("prepare_kernels", &FDeploymentPlan_fp16::PrepareKernels)
-		.def("tensor_arguments", &FDeploymentPlan_fp16::GetTensorArguments)
-		.def("kernel_tensor_indices", &FDeploymentPlan_fp16::GetKernelTensorIndices);
+	dlssnr::host::RegisterDeploymentPlanClass<FDeploymentPlan_fp16>(
+		Library, "DeploymentPlan_fp16", "run_fp16", &FDeploymentPlan_fp16::Run_fp16);
 	Library.def("create_plan_fp16", &CreatePlan_fp16);
 	Library.def("create_plan_for_resolution_fp16", &CreatePlanForResolution_fp16);
 	Library.def("record_names_fp16", &RecordNames_fp16);

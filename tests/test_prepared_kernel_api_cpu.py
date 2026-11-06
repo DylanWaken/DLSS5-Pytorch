@@ -3,6 +3,7 @@
 The fixture implements tiny CPU operators with the exact public schema. GPU
 numerical agreement is validated separately against the linked CUDA extension.
 """
+from contextlib import ExitStack
 import json
 import re
 from pathlib import Path
@@ -66,6 +67,13 @@ class Plan:
 
 
 class Tests(unittest.TestCase):
+    def setUp(self):
+        # These CPU+Meta fixtures deliberately expose no CUDA to Dynamo.
+        stack = ExitStack()
+        self.addCleanup(stack.close)
+        stack.enter_context(patch.object(torch.cuda, 'is_available', return_value=False))
+        stack.enter_context(patch.object(torch.cuda, 'device_count', return_value=0))
+
     def api(self):
         # CPU fixtures only: mimic ownership setup, never claim CUDA validation.
         class CppChain:

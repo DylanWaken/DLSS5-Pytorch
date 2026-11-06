@@ -23,7 +23,8 @@ _here = Path(__file__).resolve()
 if str(_here.parent) not in sys.path:
     sys.path.insert(0, str(_here.parent))
 
-from common import ROOT, code  # noqa: E402
+from common import code  # noqa: E402
+from source_providers import ORIGINAL  # noqa: E402
 from lesson_support import pseudo  # noqa: E402
 from lessons_small_attention_figures import build_all  # noqa: E402
 
@@ -81,7 +82,7 @@ def _cfg(fp8):
 
 
 def cut(path, needle, count, before=0, caption=''):
-    lines = (ROOT / path).read_text(encoding='utf-8').splitlines()
+    lines = ORIGINAL.text(path).splitlines()
     index = next(i for i, line in enumerate(lines) if needle in line)
     start = max(1, index + 1 - before)
     return code(path, start, min(len(lines), start + count - 1), caption)

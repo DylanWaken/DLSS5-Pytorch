@@ -8,6 +8,7 @@
 #include <mutex>
 #include <string>
 #include <vector>
+#include "common/host/parameter_binding.h"
 #include "plan_geometry.h"
 #include "prepared_kernel.h"
 
@@ -23,7 +24,7 @@ struct FKernelCall
 	dim3 Grid, Block;
 	int AbiBytes;
 	bool bAllResident;
-	alignas(8) std::array<unsigned char, 96> ParameterBlock{};
+	alignas(8) dlssnr::host::FParameterBlock ParameterBlock{};
 	const char* Name = nullptr;
 	int SplitParameterOffset = -1;
 
@@ -42,8 +43,8 @@ struct FKernelCall
 
 	template <class TValue> void Set(size_t FieldOffset, TValue FieldValue)
 	{
-		TORCH_CHECK(FieldOffset + sizeof(TValue) <= size_t(AbiBytes), "parameter outside native ABI");
-		std::memcpy(ParameterBlock.data() + FieldOffset, &FieldValue, sizeof(FieldValue));
+		dlssnr::host::WriteParameterField(ParameterBlock.data(), size_t(AbiBytes), FieldOffset, FieldValue,
+										  "parameter outside native ABI");
 	}
 };
 

@@ -1,15 +1,31 @@
 // Compile-time window schedule; each specialization retains its native launch profile.
 // Storage, tensor stages, layout reads and final publication remain in this global body.
-#include "../../shared/common/kernel_helpers.cuh"
-#include "../../shared/common/warp_window_wide.cuh"
+
+#include <common/layout/numerical_constants.h>
+#include <common/layout/spatial_projection.h>
+#include <common/layout/window_profiles.h>
+#include <common/ops/activation.h>
+#include <common/ops/frontend_texture.h>
+#include <common/ops/window_attention.h>
+#include <dlssnr/abi/kernel_parameters.h>
+#include <flashlight/arch/mma.cuh>
+#include <flashlight/arch/warp.cuh>
+#include <flashlight/core.cuh>
+#include <flashlight/layout/strided.cuh>
+#include <flashlight/memory/pipeline.cuh>
+#include <flashlight/memory/views.cuh>
+#include <flashlight/numeric/packed.cuh>
+#include <flashlight/tile/mma.cuh>
+#include <flashlight/warp/permutation.cuh>
+#include <cstdint>
 
 template <int Channels, bool bInputView, bool bOutputView, typename FParameters>
 __global__ __maxnreg__(168) void window_block_wide_fp8(FParameters Parameters)
 {
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 890
 	constexpr bool bFp8 = true;
-	__shared__ FSharedWindow<Channels, bFp8> s_Window;
-	using FConfig = FWideWindowProfile<Channels, bFp8>;
+	__shared__ dlssnr::layout::SharedWindowExchange<Channels, bFp8> s_Window;
+	using FConfig = dlssnr::layout::WideWindowProfile<Channels, bFp8>;
 	const auto* g_PackedWeights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights);
 
 	// FFN: compute per-warp experts, then mix their shared channel panels.
@@ -20,12 +36,12 @@ __global__ __maxnreg__(168) void window_block_wide_fp8(FParameters Parameters)
 			if constexpr (bInputView)
 			{
 				// Read the physical input tile without a separate layout staging pass.
-				constexpr int Chunks = FWindow32Profile<bFp8>::InputChunks;
+				constexpr int Chunks = dlssnr::layout::Window32Profile<bFp8>::input_chunks;
 				const int g_Height = Parameters.ViewHeight > 0 ? Parameters.ViewHeight : Parameters.Height;
 				const int g_Width = Parameters.ViewWidth > 0 ? Parameters.ViewWidth : Parameters.Width;
 				const int g_OriginX = int(blockIdx.x) * 8 + Parameters.OriginX + ((TileIndex) & 1) * 4;
 				const int g_OriginY = int(blockIdx.y) * 8 + Parameters.OriginY + ((TileIndex) >> 1) * 4;
-				FWindowActivationTile<bFp8> r_InputTile;
+				dlssnr::layout::WindowActivationTile<bFp8> r_InputTile;
 				#pragma unroll
 				for (int r_Chunk = 0; r_Chunk < Chunks; ++r_Chunk)
 					#pragma unroll
@@ -39,17 +55,18 @@ __global__ __maxnreg__(168) void window_block_wide_fp8(FParameters Parameters)
 						const uint64_t g_InputWordAddress =
 							Parameters.g_Input + ((uint64_t(g_Plane * g_Height + g_Y) * g_Width + g_X) * 16) +
 							4 * (threadIdx.x & 3);
-						r_InputTile.r_Reduction[r_Chunk].r_Word[r_Word] =
+						r_InputTile.reduction[r_Chunk].word[r_Word] =
 							g_X >= 0 && g_X < g_Width && g_Y >= 0 && g_Y < g_Height
-								? *reinterpret_cast<const uint32_t*>(g_InputWordAddress)
+								? *flashlight::memory::GlobalAddress(g_InputWordAddress)
+									   .as_pointer<const std::uint32_t>()
 								: 0u;
 					}
-				s_Window.Store(TileIndex, Warp, r_InputTile);
+				s_Window.store(TileIndex, Warp, r_InputTile);
 			}
 			else
 			{
 				// Read the physical input tile without a separate layout staging pass.
-				using FConfig = FWideWindowProfile<Channels, bFp8>;
+				using FConfig = dlssnr::layout::WideWindowProfile<Channels, bFp8>;
 				const int g_TileColumns = Parameters.Width / 4, g_TileRows = Parameters.Height / 4;
 				const int g_TileX = g_TileColumns == 1
 										? 0
@@ -58,92 +75,103 @@ __global__ __maxnreg__(168) void window_block_wide_fp8(FParameters Parameters)
 					g_TileRows == 1 ? 0 : (int(blockIdx.y) * 8 + Parameters.OriginY) / 4 + ((TileIndex) >> 1);
 				const bool bValid =
 					g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows;
-				FWindowActivationTile<bFp8> r_InputTile;
+				dlssnr::layout::WindowActivationTile<bFp8> r_InputTile;
 				#pragma unroll
-				for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
+				for (int r_Chunk = 0; r_Chunk < FConfig::chunks; ++r_Chunk)
 				{
 					const uint64_t g_InputFragmentAddress =
 						Parameters.g_Input +
-						uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
-						(Warp)*FConfig::PanelBytes + r_Chunk * 512 + int(threadIdx.x) * 16;
-					r_InputTile.r_Reduction[r_Chunk] = MakeWindowFragment(
-						bValid ? __ldcg(reinterpret_cast<const uint4*>(g_InputFragmentAddress))
+						uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::tile_bytes +
+						(Warp)*FConfig::panel_bytes + r_Chunk * 512 + int(threadIdx.x) * 16;
+					r_InputTile.reduction[r_Chunk] = dlssnr::ops::make_window_fragment<bFp8>(
+						bValid ? flashlight::memory::load_vector<flashlight::memory::CachePolicy::Cg, uint4>(
+									 flashlight::memory::GlobalAddress(g_InputFragmentAddress))
 							   : make_uint4(0, 0, 0, 0));
 				}
-				s_Window.Store(TileIndex, Warp, r_InputTile);
+				s_Window.store(TileIndex, Warp, r_InputTile);
 			}
 
 		__syncthreads();
-		FWindowAccumulatorTile<32> r_Contracted[4]{};
-		ComputeWindowExpert<Channels, bFp8>(s_Window, g_PackedWeights, Warp, r_Contracted);
-		FWindowAccumulatorTile<32> r_Output[4];
+		dlssnr::layout::WindowAccumulatorTile<32> r_Contracted[4]{};
+		dlssnr::ops::compute_window_expert<Channels, bFp8>(s_Window, g_PackedWeights, Warp, r_Contracted);
+		dlssnr::layout::WindowAccumulatorTile<32> r_Output[4];
 		#pragma unroll
 		for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
-			r_Output[r_Tile] = ScaledWindowResidual(s_Window.Load(r_Tile, Warp),
-													g_PackedWeights + FConfig::FfnScaleOffset, 32 * Warp);
+			r_Output[r_Tile] = dlssnr::ops::scaled_window_residual(
+				s_Window.load(r_Tile, Warp), g_PackedWeights + FConfig::ffn_scale_offset, 32 * Warp);
 
 		// All experts must finish reading X before their published outputs reuse
 		// the same slab. This is a tensor lifetime barrier, not a warp shuffle.
 		__syncthreads();
 		#pragma unroll
 		for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
-			s_Window.Store(r_Tile, Warp, PublishWindow32<bFp8>(r_Contracted[r_Tile]));
+			s_Window.store(r_Tile, Warp, dlssnr::ops::publish_window32<bFp8>(r_Contracted[r_Tile]));
 		__syncthreads();
 		#pragma unroll 1
-		for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
+		for (int PanelIndex = 0; PanelIndex < FConfig::heads; ++PanelIndex)
 		{
-			const auto r_Weights = LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::MixOffset, 32 * Warp,
-														   32 * PanelIndex, Channels);
+			const auto r_Weights = dlssnr::ops::load_window_weights<bFp8>(
+				g_PackedWeights + FConfig::mix_offset, 32 * Warp, 32 * PanelIndex, Channels);
 			#pragma unroll
 			for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
-				LinearWindow32(s_Window.Load(r_Tile, PanelIndex), r_Weights, r_Output[r_Tile]);
+				dlssnr::ops::linear_window32(s_Window.load(r_Tile, PanelIndex), r_Weights, r_Output[r_Tile]);
 		}
 
 		__syncthreads();
 		#pragma unroll
 		for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
-			s_Window.Store(r_Tile, Warp, PublishWindow32<bFp8>(r_Output[r_Tile]));
+			s_Window.store(r_Tile, Warp, dlssnr::ops::publish_window32<bFp8>(r_Output[r_Tile]));
 		__syncthreads();
 	}
 
 	// Project the FFN output into Q/K/V fragments and normalize the query/key rows.
-	FWindowActivationTile<bFp8> r_Query[4], r_Key[4];
-	FWindowValueTile<bFp8> r_Value[4];
+	dlssnr::layout::WindowActivationTile<bFp8> r_Query[4], r_Key[4];
+	dlssnr::layout::WindowValueTile<bFp8> r_Value[4];
 
 	// Q/K/V projection and normalization keep the native shared-panel ownership.
-	FWindowAccumulatorTile<32> r_Projected[3][4]{};
+	dlssnr::layout::WindowAccumulatorTile<32> r_Projected[3][4]{};
 	#pragma unroll 1
-	for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
+	for (int PanelIndex = 0; PanelIndex < FConfig::heads; ++PanelIndex)
 		#pragma unroll
 		for (int r_QkvComponent = 0; r_QkvComponent < 3; ++r_QkvComponent)
 		{
 			// The record interleaves Q/K/V within each head: [Head][Q,K,V][32].
-			const auto r_Weights = LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::QkvOffset,
-														   96 * int(threadIdx.y) + 32 * r_QkvComponent,
-														   32 * PanelIndex, 3 * Channels);
+			const auto r_Weights = dlssnr::ops::load_window_weights<bFp8>(
+				g_PackedWeights + FConfig::qkv_offset, 96 * int(threadIdx.y) + 32 * r_QkvComponent,
+				32 * PanelIndex, 3 * Channels);
 			#pragma unroll
 			for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
-				LinearWindow32(s_Window.Load(r_Tile, PanelIndex), r_Weights,
-							   r_Projected[r_QkvComponent][r_Tile]);
+				dlssnr::ops::linear_window32(s_Window.load(r_Tile, PanelIndex), r_Weights,
+											 r_Projected[r_QkvComponent][r_Tile]);
 		}
 
-	const uint32_t r_HeadScale = FloatToHalf2(
-		*reinterpret_cast<const uint32_t*>(g_PackedWeights + FConfig::HeadScaleOffset + 4 * threadIdx.y));
+	const uint32_t r_HeadScale = flashlight::numeric::half2_from_float_bits(
+									 *flashlight::memory::GlobalAddress(
+										  reinterpret_cast<std::uint64_t>(
+											  g_PackedWeights + FConfig::head_scale_offset + 4 * threadIdx.y))
+										  .as_pointer<const std::uint32_t>())
+									 .bits;
 	#pragma unroll
 	for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 	{
-		NormalizeWindow<true>(r_Projected[0][r_Tile], r_HeadScale);
-		NormalizeWindow<false>(r_Projected[1][r_Tile], CONST_HALF2_ONE);
-		r_Query[r_Tile] = PublishWindow32<bFp8>(r_Projected[0][r_Tile]);
-		r_Key[r_Tile] = PublishWindow32<bFp8>(r_Projected[1][r_Tile]);
+		dlssnr::ops::normalize_window<true>(r_Projected[0][r_Tile], flashlight::PackedHalf2{r_HeadScale});
+		dlssnr::ops::normalize_window<false>(r_Projected[1][r_Tile],
+											 flashlight::PackedHalf2{dlssnr::layout::half2_one});
+		r_Query[r_Tile] = dlssnr::ops::publish_window32<bFp8>(r_Projected[0][r_Tile]);
+		r_Key[r_Tile] = dlssnr::ops::publish_window32<bFp8>(r_Projected[1][r_Tile]);
 		#pragma unroll
 		for (int r_Column = 0; r_Column < 4; ++r_Column)
 		{
 			// Transpose Half accumulators before E4 publication, exactly as the
 			// DLL does, to obtain B fragments for probability times value.
-			const uint32_t r_LowerValueRows = TransposeM8n8(r_Projected[2][r_Tile].r_Pair[r_Column][0]);
-			const uint32_t r_UpperValueRows = TransposeM8n8(r_Projected[2][r_Tile].r_Pair[r_Column][1]);
-			r_Value[r_Tile].r_Column[r_Column][0] = PackHalfPairsE4(r_LowerValueRows, r_UpperValueRows);
+			const uint32_t r_LowerValueRows =
+				flashlight::arch::transpose_m8n8(r_Projected[2][r_Tile].pair[r_Column][0]);
+			const uint32_t r_UpperValueRows =
+				flashlight::arch::transpose_m8n8(r_Projected[2][r_Tile].pair[r_Column][1]);
+			r_Value[r_Tile].word[r_Column][0] =
+				flashlight::numeric::publish_e4x4(flashlight::PackedHalf2{r_LowerValueRows},
+												  flashlight::PackedHalf2{r_UpperValueRows})
+					.bits;
 		}
 	}
 
@@ -151,46 +179,46 @@ __global__ __maxnreg__(168) void window_block_wide_fp8(FParameters Parameters)
 
 	// Evaluate attention in tile batches, then project each head back into the residual stream.
 	#pragma unroll
-	for (int r_FirstTile = 0; r_FirstTile < 4; r_FirstTile += FConfig::AttentionBatch)
+	for (int r_FirstTile = 0; r_FirstTile < 4; r_FirstTile += FConfig::attention_batch)
 	{
-		FWindowActivationTile<bFp8> r_Attended[FConfig::AttentionBatch];
-		FWindowAccumulatorTile<32> r_Output[FConfig::AttentionBatch];
+		dlssnr::layout::WindowActivationTile<bFp8> r_Attended[FConfig::attention_batch];
+		dlssnr::layout::WindowAccumulatorTile<32> r_Output[FConfig::attention_batch];
 		#pragma unroll
-		for (int r_LocalTile = 0; r_LocalTile < FConfig::AttentionBatch; ++r_LocalTile)
+		for (int r_LocalTile = 0; r_LocalTile < FConfig::attention_batch; ++r_LocalTile)
 		{
 			const int r_Tile = r_FirstTile + r_LocalTile;
-			r_Attended[r_LocalTile] = AttendWithBias<bFp8>(
-				r_Tile, g_PackedWeights + FConfig::BiasOffset + 8192 * threadIdx.y, r_Query, r_Key, r_Value);
-			r_Output[r_LocalTile] =
-				ScaledWindowResidual(s_Window.Load(r_Tile, threadIdx.y),
-									 g_PackedWeights + FConfig::AttentionScaleOffset, 32 * threadIdx.y);
+			r_Attended[r_LocalTile] = dlssnr::ops::attend_with_bias<bFp8>(
+				r_Tile, g_PackedWeights + FConfig::bias_offset + 8192 * threadIdx.y, r_Query, r_Key, r_Value);
+			r_Output[r_LocalTile] = dlssnr::ops::scaled_window_residual(
+				s_Window.load(r_Tile, threadIdx.y), g_PackedWeights + FConfig::attention_scale_offset,
+				32 * threadIdx.y);
 		}
 
 		// Each warp has consumed its own published FFN residual; attention
 		// output now occupies the same head panel for the cross-head projection.
 		#pragma unroll
-		for (int r_LocalTile = 0; r_LocalTile < FConfig::AttentionBatch; ++r_LocalTile)
-			s_Window.Store(r_FirstTile + r_LocalTile, threadIdx.y, r_Attended[r_LocalTile]);
+		for (int r_LocalTile = 0; r_LocalTile < FConfig::attention_batch; ++r_LocalTile)
+			s_Window.store(r_FirstTile + r_LocalTile, threadIdx.y, r_Attended[r_LocalTile]);
 		__syncthreads();
 		#pragma unroll 1
-		for (int PanelIndex = 0; PanelIndex < FConfig::Heads; ++PanelIndex)
+		for (int PanelIndex = 0; PanelIndex < FConfig::heads; ++PanelIndex)
 		{
-			const auto r_Weights = LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::ProjectionOffset,
-														   32 * threadIdx.y, 32 * PanelIndex, Channels);
+			const auto r_Weights = dlssnr::ops::load_window_weights<bFp8>(
+				g_PackedWeights + FConfig::projection_offset, 32 * threadIdx.y, 32 * PanelIndex, Channels);
 			#pragma unroll
-			for (int r_LocalTile = 0; r_LocalTile < FConfig::AttentionBatch; ++r_LocalTile)
-				LinearWindow32(s_Window.Load(r_FirstTile + r_LocalTile, PanelIndex), r_Weights,
-							   r_Output[r_LocalTile]);
+			for (int r_LocalTile = 0; r_LocalTile < FConfig::attention_batch; ++r_LocalTile)
+				dlssnr::ops::linear_window32(s_Window.load(r_FirstTile + r_LocalTile, PanelIndex), r_Weights,
+											 r_Output[r_LocalTile]);
 		}
 
 		#pragma unroll
-		for (int r_LocalTile = 0; r_LocalTile < FConfig::AttentionBatch; ++r_LocalTile)
+		for (int r_LocalTile = 0; r_LocalTile < FConfig::attention_batch; ++r_LocalTile)
 		{
 
 			if constexpr (bOutputView)
 			{
 				// Publish final packed fragments directly to their physical output layout.
-				constexpr int Chunks = FWindow32Profile<bFp8>::InputChunks;
+				constexpr int Chunks = dlssnr::layout::Window32Profile<bFp8>::input_chunks;
 				const int g_Height = Parameters.ViewHeight > 0 ? Parameters.ViewHeight : Parameters.Height;
 				const int g_Width = Parameters.ViewWidth > 0 ? Parameters.ViewWidth : Parameters.Width;
 				const int g_OriginX =
@@ -200,7 +228,8 @@ __global__ __maxnreg__(168) void window_block_wide_fp8(FParameters Parameters)
 				#pragma unroll
 				for (int r_Chunk = 0; r_Chunk < Chunks; ++r_Chunk)
 				{
-					const auto r_Fragment = PublishWindowChunk<bFp8>(r_Output[r_LocalTile], r_Chunk);
+					const auto r_Fragment =
+						dlssnr::ops::publish_window_chunk<bFp8>(r_Output[r_LocalTile], r_Chunk);
 					#pragma unroll
 					for (int r_Word = 0; r_Word < 4; ++r_Word)
 					{
@@ -213,7 +242,9 @@ __global__ __maxnreg__(168) void window_block_wide_fp8(FParameters Parameters)
 								Parameters.g_Output +
 								((uint64_t(g_Plane * g_Height + g_Y) * g_Width + g_X) * 16) +
 								4 * (threadIdx.x & 3);
-							*reinterpret_cast<uint32_t*>(g_OutputWordAddress) = r_Fragment.r_Word[r_Word];
+							flashlight::memory::store_vector<std::uint32_t>(
+								flashlight::memory::GlobalAddress(g_OutputWordAddress),
+								r_Fragment.word[r_Word]);
 						}
 					}
 				}
@@ -221,7 +252,7 @@ __global__ __maxnreg__(168) void window_block_wide_fp8(FParameters Parameters)
 			else
 			{
 				// Publish final packed fragments directly to their physical output layout.
-				using FConfig = FWideWindowProfile<Channels, bFp8>;
+				using FConfig = dlssnr::layout::WideWindowProfile<Channels, bFp8>;
 				const int g_TileColumns = Parameters.Width / 4, g_TileRows = Parameters.Height / 4;
 				const int g_TileX =
 					(int(blockIdx.x) * 8 + Parameters.OriginX) / 4 + ((r_FirstTile + r_LocalTile) & 1);
@@ -229,22 +260,25 @@ __global__ __maxnreg__(168) void window_block_wide_fp8(FParameters Parameters)
 					(int(blockIdx.y) * 8 + Parameters.OriginY) / 4 + ((r_FirstTile + r_LocalTile) >> 1);
 				if (g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows)
 					#pragma unroll
-					for (int r_Chunk = 0; r_Chunk < FConfig::Chunks; ++r_Chunk)
+					for (int r_Chunk = 0; r_Chunk < FConfig::chunks; ++r_Chunk)
 					{
-						const auto r_Published = PublishWindowChunk<bFp8>(r_Output[r_LocalTile], r_Chunk);
+						const auto r_Published =
+							dlssnr::ops::publish_window_chunk<bFp8>(r_Output[r_LocalTile], r_Chunk);
 						const uint64_t g_OutputFragmentAddress =
 							Parameters.g_Output +
-							uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
-							threadIdx.y * FConfig::PanelBytes + r_Chunk * 512 + threadIdx.x * 16;
-						StoreNoAllocate(g_OutputFragmentAddress,
-										make_uint4(r_Published.r_Word[0], r_Published.r_Word[1],
-												   r_Published.r_Word[2], r_Published.r_Word[3]));
+							uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::tile_bytes +
+							threadIdx.y * FConfig::panel_bytes + r_Chunk * 512 + threadIdx.x * 16;
+						flashlight::memory::store_no_allocate(
+							flashlight::memory::GlobalAddress(g_OutputFragmentAddress),
+							make_uint4(r_Published.word[0], r_Published.word[1], r_Published.word[2],
+									   r_Published.word[3]));
 					}
 			}
 		}
 
 		__syncthreads();
 	}
+
 #else
 	// Keep the exported entry on older targets, but never silently skip FP8 work.
 	__trap();

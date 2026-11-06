@@ -7,10 +7,10 @@ description: Reconstruct, integrate, qualify and document this repository's DLSS
 
 ## Current source-ownership rule
 
-The latest user stage-layout and template requests supersede both the earlier
-one-file-per-logical export rule and the older canonical-body/ABI-adapter design. Current source has
-81 logical kernels in 56 CUDA units: 40 configurations share 15 true global
-templates, and 41 retain direct definitions. Each authored `__global__` body
+The user's FlashLight library request supersedes the earlier stage-local
+intrinsics ownership rule. Current source has 83 logical kernels in 58 CUDA
+units: 40 configurations share 15 true global templates, and 43 retain direct
+definitions, including the two Small31 attention entries. Each authored `__global__` body
 must show storage, staging, loops, synchronization and writes. Do not restore a
 device wrapper forwarding the algorithm to `Run*`, a macro or an include fragment.
 
@@ -21,28 +21,36 @@ FP8/FP16 files where schedules differ; shared repacks live in
 `bottleneck_c1024_layout/common/`. C32
 output-view direct bodies remain separate until changed template code is qualified.
 
-`kernel_abi.h` owns typed records, checked aliases and host resolver declarations.
+`csrc/include/dlssnr/abi/kernel_parameters.h` owns typed records, checked aliases
+and host resolver declarations; `small_attention.h` adds the two Small31 declarations.
 Small same-TU `Resolve_<logical>()` functions return registered specialization
 addresses; launch and policy work stay in host-only `kernel_launcher`. Direct
 globals retain C symbols; template globals have mangled C++ symbols. Stable
 logical names remain the public API. `kernel_symbols` and additive C++
 `KernelSymbol` / Torch `kernel_symbol` expose runtime symbols for Driver tools.
 
-Use `kernel_impl/<network_stage>/<precision>/` for global bodies and the stage's
-`common/` for its profiles, helpers and `intrinsics.cuh`. Name reused
+Use `kernel_impl/<network_stage>/<precision>/` for global bodies. Name reused
 encoder/decoder levels explicitly, as in
 `shared_encoder_decoder_c32_c64_c128_c256_fused_window`. Keep complete fused
-window bodies together. Endpoint instructions shared by input and output live
-in `shared_input_output_c32/common/`; C512 input-copy and bottleneck-attention
-instructions live with those stages. `shared/common/` retains genuine
-cross-stage primitives and ABI. Do not duplicate helpers or instruction wrappers
-to make each stage appear isolated. Function relocation must preserve the exact
-declaration, body, assembly modifiers and force-inline behavior.
+window bodies together. Generic instruction primitives have one owner in
+`csrc/include/flashlight/arch`; typed memory views, copy/barrier/publication
+protocols, packed numeric operations, coordinate layouts and tiled MMA build on
+those primitives. FlashLight is C++17 and independent of Torch, DLSSNR, CUTLASS
+and ThunderKittens. Recovered model-specific layouts belong in
+`csrc/common/layout`, and activation/attention/frontend compositions in
+`csrc/common/ops`. Model-neutral host validation and plan mechanics belong in
+`csrc/common/host`. Keep the template catalog at `kernel_impl/shared/common/`;
+do not restore parallel copies of the old intrinsic headers. Preserve assembly
+modifiers, numerical order, byte addressing and force-inline behavior when moving code.
 
 Keep one-use helpers with their owner; share only real repeated math/layout
 contracts and intrinsics. Small local lambdas may share repeated pipeline steps
 while their definitions remain visible in the global body. The fragment
-interface is `MMA`. Indent each `#pragma unroll` with its loop and separate major
+interfaces are `flashlight::arch::mma_sync` and `flashlight::tile::accumulate_tile`.
+Use explicit slot accessors for already-reduced ring slots and wrapping accessors
+for logical iterations. CTA ownership and synchronization remain visible in the
+kernel; copy groups and transaction barriers are distinct protocols. Indent each
+`#pragma unroll` with its loop and separate major
 stages with comments and blank lines. After clang-format, run
 `python -B tools/format_cuda.py`, then its `--check` mode.
 

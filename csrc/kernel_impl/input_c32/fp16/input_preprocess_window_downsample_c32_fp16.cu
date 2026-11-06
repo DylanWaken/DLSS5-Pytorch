@@ -1,11 +1,22 @@
-#include "../../shared/common/kernel_helpers.cuh"
-#include "../../shared_input_output_c32/common/frontend_profiles.cuh"
-#include "../../shared_input_output_c32/common/frontend_math.cuh"
-#include "../../shared_input_output_c32/common/input_features.cuh"
-#include "../../encoder_c32_c64_c128_c256_downsample/common/window_downsample.cuh"
-#include "../../shared/common/window_pool.cuh"
-
 // Reconstructed native frontend schedule; storage, fused window and publication are visible below.
+#include <common/layout/numerical_constants.h>
+#include <common/layout/spatial_projection.h>
+#include <common/layout/window_profiles.h>
+#include <common/ops/activation.h>
+#include <common/ops/frontend_texture.h>
+#include <common/ops/window_attention.h>
+#include <dlssnr/abi/kernel_parameters.h>
+#include <flashlight/arch/mma.cuh>
+#include <flashlight/arch/warp.cuh>
+#include <flashlight/core.cuh>
+#include <flashlight/layout/strided.cuh>
+#include <flashlight/memory/pipeline.cuh>
+#include <flashlight/memory/views.cuh>
+#include <flashlight/numeric/packed.cuh>
+#include <flashlight/tile/mma.cuh>
+#include <flashlight/warp/permutation.cuh>
+#include <cstdint>
+
 extern "C" __global__ __maxnreg__(168) void input_preprocess_window_downsample_c32_fp16(
 	FInputPreprocessWindowDownsampleC32Fp16Parameters Parameters)
 {
@@ -13,11 +24,11 @@ extern "C" __global__ __maxnreg__(168) void input_preprocess_window_downsample_c
 	constexpr bool bFp8 = false;
 
 	// Stage one 8x8 window of renderer features before the Half adapter consumes it.
-	__shared__ FSharedFeatures s_Features;
+	__shared__ dlssnr::layout::SharedFeatures s_Features;
 	const float Width = __int2float_rn(Parameters.ValidWidth);
 	const float Height = __int2float_rn(Parameters.ValidHeight);
-	const uint16_t r_ColorScale =
-		ConvertFeatureToHalf(NativeFloatAdd(Parameters.ColorScale, Parameters.ColorScale));
+	const uint16_t r_ColorScale = dlssnr::ops::convert_feature_to_half(
+		flashlight::arch::add_ftz(Parameters.ColorScale, Parameters.ColorScale));
 	for (int s_Pixel = 32 * threadIdx.y + threadIdx.x; s_Pixel < 64; s_Pixel += 32 * blockDim.y)
 	{
 		const int g_X = 8 * blockIdx.x + (s_Pixel & 7), g_Y = 8 * blockIdx.y + s_Pixel / 8;
@@ -27,26 +38,31 @@ extern "C" __global__ __maxnreg__(168) void input_preprocess_window_downsample_c
 		const int g_ReflectedX = g_X < Parameters.ValidWidth ? g_X : 2 * Parameters.ValidWidth - g_X - 2;
 		const int g_ReflectedY = g_Y < Parameters.ValidHeight ? g_Y : 2 * Parameters.ValidHeight - g_Y - 2;
 		const float2 Uv = make_float2(
-			NativeFloatDivide(NativeFloatAdd(__int2float_rn(g_ReflectedX), CONST_PIXEL_CENTER), Width),
-			NativeFloatDivide(NativeFloatAdd(__int2float_rn(g_ReflectedY), CONST_PIXEL_CENTER), Height));
-		const float3 r_Noise = PixelNoise(Parameters.NoiseSeed, g_X, g_Y);
+			flashlight::arch::divide_approx_ftz(
+				flashlight::arch::add_ftz(__int2float_rn(g_ReflectedX), dlssnr::layout::pixel_center), Width),
+			flashlight::arch::divide_approx_ftz(
+				flashlight::arch::add_ftz(__int2float_rn(g_ReflectedY), dlssnr::layout::pixel_center),
+				Height));
+		const float3 r_Noise = dlssnr::ops::pixel_noise(Parameters.NoiseSeed, g_X, g_Y);
 		const float4 r_Current =
-			SampleTransformed(Parameters.CurrentTexture, Parameters.CurrentTransform, Uv);
+			dlssnr::ops::sample_transformed(Parameters.CurrentTexture, Parameters.CurrentTransform, Uv);
 		uint16_t r_CurrentHalf[3], r_HistoryHalf[3];
 		#pragma unroll
 		for (int r_Channel = 0; r_Channel < 3; ++r_Channel)
 			r_HistoryHalf[r_Channel] = r_CurrentHalf[r_Channel] =
-				ConditionColor((&r_Current.x)[r_Channel], r_ColorScale);
+				dlssnr::ops::condition_color((&r_Current.x)[r_Channel], r_ColorScale);
 		if (Parameters.HistoryTexture && Parameters.MotionTexture)
 		{
 			// Visit the original depth candidates here so motion selection stays with feature staging.
-			float2 MotionSampleOffset = make_float2(CONST_ZERO, CONST_ZERO);
+			float2 MotionSampleOffset = make_float2(dlssnr::layout::zero, dlssnr::layout::zero);
 			if (Parameters.DepthTexture)
 			{
-				const float DepthTexelWidth = NativeFloatReciprocal(Parameters.DepthTransform.ScaleX);
-				const float DepthTexelHeight = NativeFloatReciprocal(Parameters.DepthTransform.ScaleY);
+				const float DepthTexelWidth =
+					dlssnr::ops::native_float_reciprocal(Parameters.DepthTransform.ScaleX);
+				const float DepthTexelHeight =
+					dlssnr::ops::native_float_reciprocal(Parameters.DepthTransform.ScaleY);
 				float r_BestDepth =
-					SampleTransformed(Parameters.DepthTexture, Parameters.DepthTransform, Uv).x;
+					dlssnr::ops::sample_transformed(Parameters.DepthTexture, Parameters.DepthTransform, Uv).x;
 
 				// The four diagonal candidates are visited TL, TR, BL, BR. Ties and NaNs
 				// retain the prior sample, exactly as the native unordered comparisons do.
@@ -56,104 +72,118 @@ extern "C" __global__ __maxnreg__(168) void input_preprocess_window_downsample_c
 					const float OffsetX = (Corner & 1) ? DepthTexelWidth : -DepthTexelWidth;
 					const float OffsetY = (Corner & 2) ? DepthTexelHeight : -DepthTexelHeight;
 					const float2 CandidateUv =
-						make_float2((Corner & 1) ? NativeFloatAdd(Uv.x, DepthTexelWidth)
-												 : NativeFloatSubtract(Uv.x, DepthTexelWidth),
-									(Corner & 2) ? NativeFloatAdd(Uv.y, DepthTexelHeight)
-												 : NativeFloatSubtract(Uv.y, DepthTexelHeight));
+						make_float2((Corner & 1) ? flashlight::arch::add_ftz(Uv.x, DepthTexelWidth)
+												 : flashlight::arch::subtract_ftz(Uv.x, DepthTexelWidth),
+									(Corner & 2) ? flashlight::arch::add_ftz(Uv.y, DepthTexelHeight)
+												 : flashlight::arch::subtract_ftz(Uv.y, DepthTexelHeight));
 					const float r_CandidateDepth =
-						SampleTransformed(Parameters.DepthTexture, Parameters.DepthTransform, CandidateUv).x;
+						dlssnr::ops::sample_transformed(Parameters.DepthTexture, Parameters.DepthTransform,
+														CandidateUv)
+							.x;
 					const bool bKeepPreviousDepth =
 						Parameters.bPreferGreaterDepth
-							? NativeSetpLeuFtzF32(__float_as_uint(r_CandidateDepth),
-												  __float_as_uint(r_BestDepth))
-							: NativeSetpGeuFtzF32(__float_as_uint(r_CandidateDepth),
-												  __float_as_uint(r_BestDepth));
+							? flashlight::arch::compare_less_equal_unordered_ftz_bits(
+								  __float_as_uint(r_CandidateDepth), __float_as_uint(r_BestDepth))
+							: flashlight::arch::compare_greater_equal_unordered_ftz_bits(
+								  __float_as_uint(r_CandidateDepth), __float_as_uint(r_BestDepth));
 					if (!bKeepPreviousDepth)
 					{
 						MotionSampleOffset = make_float2(OffsetX, OffsetY);
 						r_BestDepth = r_CandidateDepth;
 					}
 				}
-				MotionSampleOffset.x = NativeFloatMultiply(
+				MotionSampleOffset.x = dlssnr::ops::native_float_multiply(
 					MotionSampleOffset.x,
-					NativeFloatDivide(Parameters.DepthTransform.ScaleX, Parameters.MotionTransform.ScaleX));
-				MotionSampleOffset.y = NativeFloatMultiply(
+					flashlight::arch::divide_approx_ftz(Parameters.DepthTransform.ScaleX,
+														Parameters.MotionTransform.ScaleX));
+				MotionSampleOffset.y = dlssnr::ops::native_float_multiply(
 					MotionSampleOffset.y,
-					NativeFloatDivide(Parameters.DepthTransform.ScaleY, Parameters.MotionTransform.ScaleY));
+					flashlight::arch::divide_approx_ftz(Parameters.DepthTransform.ScaleY,
+														Parameters.MotionTransform.ScaleY));
 			}
-			const float4 r_Motion =
-				SampleTransformed(Parameters.MotionTexture, Parameters.MotionTransform,
-								  make_float2(NativeFloatAdd(Uv.x, MotionSampleOffset.x),
-											  NativeFloatAdd(Uv.y, MotionSampleOffset.y)));
-			const float2 PreviousUv = make_float2(NativeFloatFma(r_Motion.x, Parameters.MotionScaleX, Uv.x),
-												  NativeFloatFma(r_Motion.y, Parameters.MotionScaleY, Uv.y));
-			const float3 r_History = ReconstructHistory(
+			const float4 r_Motion = dlssnr::ops::sample_transformed(
+				Parameters.MotionTexture, Parameters.MotionTransform,
+				make_float2(flashlight::arch::add_ftz(Uv.x, MotionSampleOffset.x),
+							flashlight::arch::add_ftz(Uv.y, MotionSampleOffset.y)));
+			const float2 PreviousUv =
+				make_float2(flashlight::arch::fma_rn_ftz(r_Motion.x, Parameters.MotionScaleX, Uv.x),
+							flashlight::arch::fma_rn_ftz(r_Motion.y, Parameters.MotionScaleY, Uv.y));
+			const float3 r_History = dlssnr::ops::reconstruct_history(
 				Parameters.HistoryTexture, Parameters.HistoryTransform, PreviousUv, Width, Height);
 			#pragma unroll
 			for (int r_Channel = 0; r_Channel < 3; ++r_Channel)
-				r_HistoryHalf[r_Channel] = ConditionColor((&r_History.x)[r_Channel], r_ColorScale);
+				r_HistoryHalf[r_Channel] =
+					dlssnr::ops::condition_color((&r_History.x)[r_Channel], r_ColorScale);
 		}
 
 		float r_ConditioningGreen = Parameters.ConditioningGreen,
 			  r_ConditioningBlue = Parameters.ConditioningBlue;
-		float r_ConditioningOverrideGreen = Parameters.bConditioningOverride ? -CONST_UNIT : CONST_ZERO;
+		float r_ConditioningOverrideGreen =
+			Parameters.bConditioningOverride ? -dlssnr::layout::unit : dlssnr::layout::zero;
 		float r_ConditioningOverrideBlue = r_ConditioningOverrideGreen;
 		if (Parameters.bConditioningOverride && !Parameters.ConditioningTexture)
 		{
-			const bool bExplicitConditioningOverride =
-				NativeSetpGeFtzF32(__float_as_uint(NativeFloatMaximum(Parameters.ConditioningOverrideGreen,
-																	  Parameters.ConditioningOverrideBlue)),
-								   __float_as_uint(CONST_ZERO));
+			const bool bExplicitConditioningOverride = flashlight::arch::compare_greater_equal_ftz_bits(
+				__float_as_uint(flashlight::arch::maximum_ftz(Parameters.ConditioningOverrideGreen,
+															  Parameters.ConditioningOverrideBlue)),
+				__float_as_uint(dlssnr::layout::zero));
 			if (bExplicitConditioningOverride)
 			{
-				r_ConditioningBlue = CONST_UNIT;
-				r_ConditioningOverrideGreen =
-					NativeSetpLtuFtzF32(__float_as_uint(Parameters.ConditioningOverrideGreen),
-										__float_as_uint(CONST_ZERO))
-						? Parameters.ConditioningBlue
-						: Parameters.ConditioningOverrideGreen;
-				r_ConditioningOverrideBlue =
-					NativeSetpLtuFtzF32(__float_as_uint(Parameters.ConditioningOverrideBlue),
-										__float_as_uint(CONST_ZERO))
-						? Parameters.ConditioningBlue
-						: Parameters.ConditioningOverrideBlue;
+				r_ConditioningBlue = dlssnr::layout::unit;
+				r_ConditioningOverrideGreen = flashlight::arch::compare_less_unordered_ftz_bits(
+												  __float_as_uint(Parameters.ConditioningOverrideGreen),
+												  __float_as_uint(dlssnr::layout::zero))
+												  ? Parameters.ConditioningBlue
+												  : Parameters.ConditioningOverrideGreen;
+				r_ConditioningOverrideBlue = flashlight::arch::compare_less_unordered_ftz_bits(
+												 __float_as_uint(Parameters.ConditioningOverrideBlue),
+												 __float_as_uint(dlssnr::layout::zero))
+												 ? Parameters.ConditioningBlue
+												 : Parameters.ConditioningOverrideBlue;
 			}
 		}
 		else if (Parameters.ConditioningTexture)
 		{
-			const float4 r_Conditioning =
-				SampleTransformed(Parameters.ConditioningTexture, Parameters.ConditioningTransform, Uv);
-			r_ConditioningGreen = NativeFloatMultiply(r_Conditioning.y, r_ConditioningGreen);
-			r_ConditioningBlue = NativeFloatMultiply(r_Conditioning.z, r_ConditioningBlue);
+			const float4 r_Conditioning = dlssnr::ops::sample_transformed(
+				Parameters.ConditioningTexture, Parameters.ConditioningTransform, Uv);
+			r_ConditioningGreen = dlssnr::ops::native_float_multiply(r_Conditioning.y, r_ConditioningGreen);
+			r_ConditioningBlue = dlssnr::ops::native_float_multiply(r_Conditioning.z, r_ConditioningBlue);
 		}
 
-		s_Features.s_Plane[0][s_Pixel] = make_uint4(
-			PackFeatureHalfWords(ConvertFeatureToHalf(r_Noise.x), ConvertFeatureToHalf(r_Noise.y)),
-			PackFeatureHalfWords(ConvertFeatureToHalf(r_Noise.z), ConvertFeatureToHalf(CONST_UNIT)),
-			PackFeatureHalfWords(r_CurrentHalf[0], r_CurrentHalf[1]),
-			PackFeatureHalfWords(r_CurrentHalf[2], r_HistoryHalf[0]));
-		s_Features.s_Plane[1][s_Pixel] =
-			make_uint4(PackFeatureHalfWords(r_HistoryHalf[1], r_HistoryHalf[2]),
-					   PackFeatureHalfWords(ConvertFeatureToHalf(Parameters.ConstantConditioning),
-											ConvertFeatureToHalf(r_ConditioningGreen)),
-					   PackFeatureHalfWords(ConvertFeatureToHalf(r_ConditioningBlue),
-											ConvertFeatureToHalf(r_ConditioningOverrideGreen)),
-					   PackFeatureHalfWords(ConvertFeatureToHalf(r_ConditioningOverrideBlue),
-											ConvertFeatureToHalf(CONST_ZERO)));
+		s_Features.plane[0][s_Pixel] = make_uint4(
+			dlssnr::ops::pack_feature_half_words(dlssnr::ops::convert_feature_to_half(r_Noise.x),
+												 dlssnr::ops::convert_feature_to_half(r_Noise.y)),
+			dlssnr::ops::pack_feature_half_words(dlssnr::ops::convert_feature_to_half(r_Noise.z),
+												 dlssnr::ops::convert_feature_to_half(dlssnr::layout::unit)),
+			dlssnr::ops::pack_feature_half_words(r_CurrentHalf[0], r_CurrentHalf[1]),
+			dlssnr::ops::pack_feature_half_words(r_CurrentHalf[2], r_HistoryHalf[0]));
+		s_Features.plane[1][s_Pixel] =
+			make_uint4(dlssnr::ops::pack_feature_half_words(r_HistoryHalf[1], r_HistoryHalf[2]),
+					   dlssnr::ops::pack_feature_half_words(
+						   dlssnr::ops::convert_feature_to_half(Parameters.ConstantConditioning),
+						   dlssnr::ops::convert_feature_to_half(r_ConditioningGreen)),
+					   dlssnr::ops::pack_feature_half_words(
+						   dlssnr::ops::convert_feature_to_half(r_ConditioningBlue),
+						   dlssnr::ops::convert_feature_to_half(r_ConditioningOverrideGreen)),
+					   dlssnr::ops::pack_feature_half_words(
+						   dlssnr::ops::convert_feature_to_half(r_ConditioningOverrideBlue),
+						   dlssnr::ops::convert_feature_to_half(dlssnr::layout::zero)));
 	}
 
 	__syncthreads();
-	FWindowAccumulatorTile<32> r_Adapter[4];
+	dlssnr::layout::WindowAccumulatorTile<32> r_Adapter[4];
 
 	// The 16-to-32 adapter consumes the same two shared Half planes directly.
 	const auto* g_Weights = reinterpret_cast<const unsigned char*>(Parameters.g_PackedWeights) +
-							FPreprocessWindowProfile<bFp8>::AdapterOffset;
+							dlssnr::layout::PreprocessWindowProfile<bFp8>::adapter_offset;
 	uint32_t r_WeightFragments[4][2];
 	#pragma unroll
 	for (int r_ColumnPair = 0; r_ColumnPair < 2; ++r_ColumnPair)
 	{
 		const uint4 r_WeightVector =
-			*reinterpret_cast<const uint4*>(g_Weights + r_ColumnPair * 512 + threadIdx.x * 16);
+			flashlight::memory::load_vector<flashlight::memory::CachePolicy::Ca, uint4>(
+				flashlight::memory::GlobalAddress(
+					reinterpret_cast<std::uint64_t>(g_Weights + r_ColumnPair * 512 + threadIdx.x * 16)));
 		r_WeightFragments[2 * r_ColumnPair][0] = r_WeightVector.x;
 		r_WeightFragments[2 * r_ColumnPair][1] = r_WeightVector.y;
 		r_WeightFragments[2 * r_ColumnPair + 1][0] = r_WeightVector.z;
@@ -163,7 +193,7 @@ extern "C" __global__ __maxnreg__(168) void input_preprocess_window_downsample_c
 	#pragma unroll
 	for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 	{
-		FWindowAFragment r_Input;
+		dlssnr::ops::WindowAFragment<false> r_Input;
 		#pragma unroll
 		for (int r_Word = 0; r_Word < 4; ++r_Word)
 		{
@@ -171,38 +201,42 @@ extern "C" __global__ __maxnreg__(168) void input_preprocess_window_downsample_c
 			// into a 4x4 physical tile, with the row-half distance of two pixels.
 			const int s_Pixel = 4 * (r_Tile & 1) + 32 * (r_Tile >> 1) + ((threadIdx.x / 4) & 3) +
 								8 * (threadIdx.x / 16) + 16 * (r_Word & 1);
-			const uint4& s_Channels = s_Features.s_Plane[r_Word / 2][s_Pixel];
-			r_Input.r_Word[r_Word] = reinterpret_cast<const uint32_t*>(&s_Channels)[threadIdx.x & 3];
+			r_Input.word[r_Word] = s_Features.word(r_Word / 2, s_Pixel, threadIdx.x & 3);
 		}
 
 		#pragma unroll
 		for (int r_Column = 0; r_Column < 4; ++r_Column)
 		{
-			r_Adapter[r_Tile].r_Pair[r_Column][0] = 0;
-			r_Adapter[r_Tile].r_Pair[r_Column][1] = 0;
-			MmaWindowFragment<false>(r_Input, r_WeightFragments[r_Column],
-									 r_Adapter[r_Tile].r_Pair[r_Column]);
+			flashlight::MmaAccumulator<flashlight::AccumulatorPrecision::Half> accumulator{
+				{r_Adapter[r_Tile].pair[r_Column][0], r_Adapter[r_Tile].pair[r_Column][1]}};
+			dlssnr::ops::mma_window_fragment<false>(
+				r_Input,
+				flashlight::MmaBFragment<flashlight::InputPrecision::Fp16>{
+					{r_WeightFragments[r_Column][0], r_WeightFragments[r_Column][1]}},
+				accumulator);
+			r_Adapter[r_Tile].pair[r_Column][0] = accumulator.word[0];
+			r_Adapter[r_Tile].pair[r_Column][1] = accumulator.word[1];
 		}
 	}
 
-	FPreprocessWindowParameters WindowParameters{0,
-												 Parameters.g_Output,
-												 Parameters.g_PackedWeights,
-												 Parameters.FullHeight,
-												 Parameters.FullWidth,
-												 0,
-												 0,
-												 r_Adapter};
+	dlssnr::layout::PreprocessWindowArguments WindowParameters{0,
+															   Parameters.g_Output,
+															   Parameters.g_PackedWeights,
+															   Parameters.FullHeight,
+															   Parameters.FullWidth,
+															   0,
+															   0,
+															   r_Adapter};
 	{
-		FWindowAccumulatorTile<32> r_Output[4];
+		dlssnr::layout::WindowAccumulatorTile<32> r_Output[4];
 
 		// The complete fused FFN/attention schedule remains in this entry.
 		{
-			using FConfig = FPreprocessWindowProfile<bFp8>;
+			using FConfig = dlssnr::layout::PreprocessWindowProfile<bFp8>;
 			const unsigned char* g_PackedWeights =
-				reinterpret_cast<const unsigned char*>(WindowParameters.g_PackedWeights);
-			FWindowActivationTile<bFp8> r_Input[4];
-			FWindowAccumulatorTile<32> r_Ffn[4];
+				reinterpret_cast<const unsigned char*>(WindowParameters.packed_weights);
+			dlssnr::layout::WindowActivationTile<bFp8> r_Input[4];
+			dlssnr::layout::WindowAccumulatorTile<32> r_Ffn[4];
 
 			// Load the per-channel residual scales used by the FFN and attention branches.
 			uint32_t r_FfnScale[4], r_AttentionScale[4];
@@ -210,10 +244,15 @@ extern "C" __global__ __maxnreg__(168) void input_preprocess_window_downsample_c
 			for (int r_Column = 0; r_Column < 4; ++r_Column)
 			{
 				const int g_ChannelByte = 16 * r_Column + 4 * (threadIdx.x & 3);
-				r_FfnScale[r_Column] = *reinterpret_cast<const uint32_t*>(
-					g_PackedWeights + FConfig::FfnScaleOffset + g_ChannelByte);
-				r_AttentionScale[r_Column] = *reinterpret_cast<const uint32_t*>(
-					g_PackedWeights + FConfig::AttentionScaleOffset + g_ChannelByte);
+				r_FfnScale[r_Column] = *flashlight::memory::GlobalAddress(
+											reinterpret_cast<std::uint64_t>(
+												g_PackedWeights + FConfig::ffn_scale_offset + g_ChannelByte))
+											.as_pointer<const std::uint32_t>();
+				r_AttentionScale[r_Column] =
+					*flashlight::memory::GlobalAddress(
+						 reinterpret_cast<std::uint64_t>(g_PackedWeights + FConfig::attention_scale_offset +
+														 g_ChannelByte))
+						 .as_pointer<const std::uint32_t>();
 			}
 
 			// Coalesced physical-tile input. Singleton dimensions broadcast the one
@@ -221,16 +260,18 @@ extern "C" __global__ __maxnreg__(168) void input_preprocess_window_downsample_c
 			#pragma unroll
 			for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 			{
-				r_Input[r_Tile] = PublishWindow32<bFp8>(WindowParameters.r_Adapter[r_Tile]);
+				r_Input[r_Tile] = dlssnr::ops::publish_window32<bFp8>(WindowParameters.adapter[r_Tile]);
 				#pragma unroll
 				for (int r_Column = 0; r_Column < 4; ++r_Column)
 					#pragma unroll
 					for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
 					{
 						uint32_t r_ResidualPair;
-						r_ResidualPair = WindowParameters.r_Adapter[r_Tile].r_Pair[r_Column][r_RowHalf];
-						r_Ffn[r_Tile].r_Pair[r_Column][r_RowHalf] =
-							HalfMul(r_ResidualPair, r_FfnScale[r_Column]);
+						r_ResidualPair = WindowParameters.adapter[r_Tile].pair[r_Column][r_RowHalf];
+						r_Ffn[r_Tile].pair[r_Column][r_RowHalf] =
+							flashlight::numeric::half2_multiply(flashlight::PackedHalf2{r_ResidualPair},
+																flashlight::PackedHalf2{r_FfnScale[r_Column]})
+								.bits;
 					}
 			}
 
@@ -239,70 +280,84 @@ extern "C" __global__ __maxnreg__(168) void input_preprocess_window_downsample_c
 			#pragma unroll
 			for (int HiddenPanel = 0; HiddenPanel < 4; ++HiddenPanel)
 			{
-				const FWindowWeightTile<bFp8> r_Expand =
-					LoadWindowWeights<bFp8>(g_PackedWeights, 32 * HiddenPanel, 0, 128);
-				const FWindowWeightTile<bFp8> r_Contract = LoadWindowWeights<bFp8>(
-					g_PackedWeights + FConfig::ContractOffset, 0, 32 * HiddenPanel, 32);
+				const dlssnr::layout::WindowWeightTile<bFp8> r_Expand =
+					dlssnr::ops::load_window_weights<bFp8>(g_PackedWeights, 32 * HiddenPanel, 0, 128);
+				const dlssnr::layout::WindowWeightTile<bFp8> r_Contract =
+					dlssnr::ops::load_window_weights<bFp8>(g_PackedWeights + FConfig::contract_offset, 0,
+														   32 * HiddenPanel, 32);
 				#pragma unroll
 				for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 				{
-					FWindowAccumulatorTile<32> r_HiddenTile{};
-					LinearWindow32(r_Input[r_Tile], r_Expand, r_HiddenTile);
+					dlssnr::layout::WindowAccumulatorTile<32> r_HiddenTile{};
+					dlssnr::ops::linear_window32(r_Input[r_Tile], r_Expand, r_HiddenTile);
 					#pragma unroll
 					for (int r_Column = 0; r_Column < 4; ++r_Column)
 						#pragma unroll
 						for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
-							r_HiddenTile.r_Pair[r_Column][r_RowHalf] =
-								ActivateWindow(r_HiddenTile.r_Pair[r_Column][r_RowHalf]);
-					LinearWindow32(PublishWindow32<bFp8>(r_HiddenTile), r_Contract, r_Ffn[r_Tile]);
+							r_HiddenTile.pair[r_Column][r_RowHalf] =
+								dlssnr::ops::activate_window(
+									flashlight::PackedHalf2{r_HiddenTile.pair[r_Column][r_RowHalf]})
+									.bits;
+					dlssnr::ops::linear_window32(dlssnr::ops::publish_window32<bFp8>(r_HiddenTile),
+												 r_Contract, r_Ffn[r_Tile]);
 				}
 			}
 			#pragma unroll
 			for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
-				r_Input[r_Tile] = PublishWindow32<bFp8>(r_Ffn[r_Tile]);
+				r_Input[r_Tile] = dlssnr::ops::publish_window32<bFp8>(r_Ffn[r_Tile]);
 
 			// Project the FFN output into Q/K/V fragments and normalize the query/key rows.
-			FWindowActivationTile<bFp8> r_Query[4], r_Key[4];
-			FWindowValueTile<bFp8> r_Value[4];
+			dlssnr::layout::WindowActivationTile<bFp8> r_Query[4], r_Key[4];
+			dlssnr::layout::WindowValueTile<bFp8> r_Value[4];
 			const uint32_t r_HeadScale =
-				FloatToHalf2(*reinterpret_cast<const uint32_t*>(g_PackedWeights + FConfig::HeadScaleOffset));
+				flashlight::numeric::half2_from_float_bits(
+					*flashlight::memory::GlobalAddress(
+						 reinterpret_cast<std::uint64_t>(g_PackedWeights + FConfig::head_scale_offset))
+						 .as_pointer<const std::uint32_t>())
+					.bits;
 			#pragma unroll
 			for (int ProjectionComponent = 0; ProjectionComponent < 3; ++ProjectionComponent)
 			{
-				const FWindowWeightTile<bFp8> r_Weights = LoadWindowWeights<bFp8>(
-					g_PackedWeights + FConfig::QkvOffset, 32 * ProjectionComponent, 0, 96);
+				const dlssnr::layout::WindowWeightTile<bFp8> r_Weights =
+					dlssnr::ops::load_window_weights<bFp8>(g_PackedWeights + FConfig::qkv_offset,
+														   32 * ProjectionComponent, 0, 96);
 				#pragma unroll
 				for (int r_Tile = 0; r_Tile < 4; ++r_Tile)
 				{
-					FWindowAccumulatorTile<32> r_Projected{};
-					LinearWindow32(r_Input[r_Tile], r_Weights, r_Projected);
+					dlssnr::layout::WindowAccumulatorTile<32> r_Projected{};
+					dlssnr::ops::linear_window32(r_Input[r_Tile], r_Weights, r_Projected);
 					if (ProjectionComponent < 2)
 					{
 						if (ProjectionComponent == 0)
-							NormalizeWindow<true>(r_Projected, r_HeadScale);
+							dlssnr::ops::normalize_window<true>(r_Projected,
+																flashlight::PackedHalf2{r_HeadScale});
 						else
-							NormalizeWindow<false>(r_Projected, CONST_HALF2_ONE);
+							dlssnr::ops::normalize_window<false>(
+								r_Projected, flashlight::PackedHalf2{dlssnr::layout::half2_one});
 						if (ProjectionComponent == 0)
-							r_Query[r_Tile] = PublishWindow32<bFp8>(r_Projected);
+							r_Query[r_Tile] = dlssnr::ops::publish_window32<bFp8>(r_Projected);
 						else
-							r_Key[r_Tile] = PublishWindow32<bFp8>(r_Projected);
+							r_Key[r_Tile] = dlssnr::ops::publish_window32<bFp8>(r_Projected);
 					}
 					else
 						#pragma unroll
 						for (int r_Column = 0; r_Column < 4; ++r_Column)
 						{
-							const uint32_t r_LowRows = TransposeM8n8(r_Projected.r_Pair[r_Column][0]);
-							const uint32_t r_HighRows = TransposeM8n8(r_Projected.r_Pair[r_Column][1]);
+							const uint32_t r_LowRows =
+								flashlight::arch::transpose_m8n8(r_Projected.pair[r_Column][0]);
+							const uint32_t r_HighRows =
+								flashlight::arch::transpose_m8n8(r_Projected.pair[r_Column][1]);
 							{
-								r_Value[r_Tile].r_Column[r_Column][0] = r_LowRows;
-								r_Value[r_Tile].r_Column[r_Column][1] = r_HighRows;
+								r_Value[r_Tile].word[r_Column][0] = r_LowRows;
+								r_Value[r_Tile].word[r_Column][1] = r_HighRows;
 							}
 						}
 				}
 			}
 
-			const FWindowWeightTile<bFp8> r_OutputWeights =
-				LoadWindowWeights<bFp8>(g_PackedWeights + FConfig::ProjectionOffset, 0, 0, 32);
+			const dlssnr::layout::WindowWeightTile<bFp8> r_OutputWeights =
+				dlssnr::ops::load_window_weights<bFp8>(g_PackedWeights + FConfig::projection_offset, 0, 0,
+													   32);
 
 			// FP8 follows the native two-query-tile softmax schedule. Keep the tested
 			// FP16 schedule independent until its register pressure is measured.
@@ -310,48 +365,54 @@ extern "C" __global__ __maxnreg__(168) void input_preprocess_window_downsample_c
 			#pragma unroll
 			for (int r_FirstTile = 0; r_FirstTile < 4; r_FirstTile += CONST_QUERY_TILE_BATCH)
 			{
-				FWindowAccumulatorTile<64> r_Probabilities[CONST_QUERY_TILE_BATCH];
+				dlssnr::layout::WindowAccumulatorTile<64> r_Probabilities[CONST_QUERY_TILE_BATCH];
 				#pragma unroll
 				for (int r_LocalTile = 0; r_LocalTile < CONST_QUERY_TILE_BATCH; ++r_LocalTile)
-					r_Probabilities[r_LocalTile] = QueryKeyScores<bFp8>(
-						r_FirstTile + r_LocalTile, g_PackedWeights + FConfig::BiasOffset, r_Query, r_Key);
-				SoftmaxWindow(r_Probabilities[0]);
+					r_Probabilities[r_LocalTile] = dlssnr::ops::query_key_scores<bFp8>(
+						r_FirstTile + r_LocalTile, g_PackedWeights + FConfig::bias_offset, r_Query, r_Key);
+				dlssnr::ops::softmax_window(r_Probabilities[0]);
 
 				#pragma unroll
 				for (int r_LocalTile = 0; r_LocalTile < CONST_QUERY_TILE_BATCH; ++r_LocalTile)
 				{
 					const int r_Tile = r_FirstTile + r_LocalTile;
-					const auto r_Attended = ProbabilityValues<bFp8>(r_Probabilities[r_LocalTile], r_Value);
+					const auto r_Attended =
+						dlssnr::ops::probability_values<bFp8>(r_Probabilities[r_LocalTile], r_Value);
 					#pragma unroll
 					for (int r_Column = 0; r_Column < 4; ++r_Column)
 						#pragma unroll
 						for (int r_RowHalf = 0; r_RowHalf < 2; ++r_RowHalf)
-							r_Ffn[r_Tile].r_Pair[r_Column][r_RowHalf] = HalfMul(
-								r_Ffn[r_Tile].r_Pair[r_Column][r_RowHalf], r_AttentionScale[r_Column]);
-					LinearWindow32(PublishWindow32<bFp8>(r_Attended), r_OutputWeights, r_Ffn[r_Tile]);
+							r_Ffn[r_Tile].pair[r_Column][r_RowHalf] =
+								flashlight::numeric::half2_multiply(
+									flashlight::PackedHalf2{r_Ffn[r_Tile].pair[r_Column][r_RowHalf]},
+									flashlight::PackedHalf2{r_AttentionScale[r_Column]})
+									.bits;
+					dlssnr::ops::linear_window32(dlssnr::ops::publish_window32<bFp8>(r_Attended),
+												 r_OutputWeights, r_Ffn[r_Tile]);
 					r_Output[r_Tile] = r_Ffn[r_Tile];
 
 					{
-						const int g_TileColumns = WindowParameters.Width / 4,
-								  g_TileRows = WindowParameters.Height / 4;
-						const int g_OriginTileX = (int(blockIdx.x) * 8 + WindowParameters.OriginX) / 4;
-						const int g_OriginTileY = (int(blockIdx.y) * 8 + WindowParameters.OriginY) / 4;
+						const int g_TileColumns = WindowParameters.width / 4,
+								  g_TileRows = WindowParameters.height / 4;
+						const int g_OriginTileX = (int(blockIdx.x) * 8 + WindowParameters.origin_x) / 4;
+						const int g_OriginTileY = (int(blockIdx.y) * 8 + WindowParameters.origin_y) / 4;
 						const int g_TileX = g_OriginTileX + (r_Tile & 1),
 								  g_TileY = g_OriginTileY + (r_Tile >> 1);
 						if (g_TileX >= 0 && g_TileX < g_TileColumns && g_TileY >= 0 && g_TileY < g_TileRows)
 						{
 							#pragma unroll
-							for (int r_Chunk = 0; r_Chunk < FConfig::InputChunks; ++r_Chunk)
+							for (int r_Chunk = 0; r_Chunk < FConfig::input_chunks; ++r_Chunk)
 							{
-								const FWindowAFragment r_Output =
-									PublishWindowChunk<bFp8>(r_Ffn[r_Tile], r_Chunk);
+								const dlssnr::ops::WindowAFragment<bFp8> r_Output =
+									dlssnr::ops::publish_window_chunk<bFp8>(r_Ffn[r_Tile], r_Chunk);
 								const uint64_t g_OutputAddress =
-									WindowParameters.g_Output +
-									uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::TileBytes +
+									WindowParameters.output +
+									uint64_t(g_TileY * g_TileColumns + g_TileX) * FConfig::tile_bytes +
 									r_Chunk * 512 + int(threadIdx.x) * 16;
-								StoreNoAllocate(g_OutputAddress,
-												make_uint4(r_Output.r_Word[0], r_Output.r_Word[1],
-														   r_Output.r_Word[2], r_Output.r_Word[3]));
+								flashlight::memory::store_no_allocate(
+									flashlight::memory::GlobalAddress(g_OutputAddress),
+									make_uint4(r_Output.word[0], r_Output.word[1], r_Output.word[2],
+											   r_Output.word[3]));
 							}
 						}
 					}
@@ -359,22 +420,22 @@ extern "C" __global__ __maxnreg__(168) void input_preprocess_window_downsample_c
 			}
 		}
 
-		const auto r_Pooled = PoolWindow(r_Output);
-		const FWindowDownsampleArguments DownsampledParameters{0,
-															   Parameters.g_Output,
-															   Parameters.g_PackedWeights,
-															   Parameters.g_PooledOutput,
-															   Parameters.FullHeight,
-															   Parameters.FullWidth,
-															   0,
-															   0,
-															   Parameters.PooledHeight,
-															   Parameters.PooledWidth};
+		const auto r_Pooled = dlssnr::ops::pool_window(r_Output);
+		const dlssnr::layout::WindowDownsampleArguments DownsampledParameters{0,
+																			  Parameters.g_Output,
+																			  Parameters.g_PackedWeights,
+																			  Parameters.g_PooledOutput,
+																			  Parameters.FullHeight,
+																			  Parameters.FullWidth,
+																			  0,
+																			  0,
+																			  Parameters.PooledHeight,
+																			  Parameters.PooledWidth};
 
 		// The input stage pools C32 directly. Later encoder stages additionally
 		// project C -> 2C, which would be an incorrect extra operation here.
-		PublishWindowDownsample<32, bFp8>(DownsampledParameters, 0, r_Pooled);
-		ClearDownsamplePadding<32, 4>(DownsampledParameters);
+		dlssnr::ops::publish_window_downsample<32, bFp8>(DownsampledParameters, 0, r_Pooled);
+		dlssnr::ops::clear_window_downsample_padding<32, 4>(DownsampledParameters);
 	}
 #endif
 }

@@ -1,8 +1,9 @@
 #include "deployment.h"
 #include "architecture_support.h"
+#include "common/host/deployment_runtime.h"
 #include "windows_dispatch.inl"
 #include "c512_dispatch.inl"
-#include "kernel_impl/shared/common/kernel_abi.h"
+#include <dlssnr/abi/kernel_parameters.h>
 #include "compiled_resolution_policy.h"
 #include "split_launch.h"
 #include "split_launch_policy.h"
@@ -18,6 +19,8 @@
 #include "plan_generated.inl"
 #include "plan_geometry_fp16_generated.inl"
 #include "plan_fp16_generated.inl"
+
+using namespace dlssnr::host;
 
 template <bool bFp16> struct FPlanData;
 
@@ -46,39 +49,14 @@ template <> struct FPlanData<true>
 constexpr int64_t CONST_GUARD_BYTES = 256;
 constexpr uint8_t CONST_GUARD_PATTERN = 0xA5;
 
-static uint64_t GetDeploymentTensorAddress(const at::Tensor& Tensor)
-{
-	return reinterpret_cast<uint64_t>(Tensor.data_ptr());
-}
-
-static void ValidateDeploymentPhysicalBuffer(const at::Tensor& Tensor, int64_t Bytes, int DeviceIndex,
-											 const char* Role)
-{
-	TORCH_CHECK(Tensor.defined() && Tensor.is_cuda() && Tensor.get_device() == DeviceIndex &&
-					Tensor.scalar_type() == at::kByte,
-				Role, " must be raw uint8 on the plan's CUDA device");
-	TORCH_CHECK(Tensor.dim() == 1 && Tensor.is_contiguous() && Tensor.numel() == Bytes, Role,
-				" physical extent must be exactly ", Bytes, " bytes");
-	TORCH_CHECK(GetDeploymentTensorAddress(Tensor) % 16 == 0,
-				"physical tensor must be 16-byte aligned: ", Role);
-}
-
-static void RequireDeploymentOutsideCapture(cudaStream_t Stream)
-{
-	cudaStreamCaptureStatus CaptureStatus{};
-	C10_CUDA_CHECK(cudaStreamIsCapturing(Stream, &CaptureStatus));
-	TORCH_CHECK(CaptureStatus == cudaStreamCaptureStatusNone,
-				"create deployment plan outside CUDA graph capture");
-}
-
 template <bool bFp16> uint64_t FDeploymentPlan<bFp16>::GetBufferAddress(size_t BufferIndex) const
 {
-	return GetDeploymentTensorAddress(Buffers.at(BufferIndex));
+	return TensorAddress(Buffers.at(BufferIndex));
 }
 
 template <bool bFp16> uint64_t FDeploymentPlan<bFp16>::GetRecordAddress(size_t RecordIndex) const
 {
-	return GetDeploymentTensorAddress(PackedWeightRecords.at(RecordIndex));
+	return TensorAddress(PackedWeightRecords.at(RecordIndex));
 }
 
 template <bool bFp16>
@@ -91,7 +69,7 @@ FDeploymentPlan<bFp16>::FDeploymentPlan(at::Tensor Input, std::vector<at::Tensor
 	Geometry = std::make_unique<FGeometryPlanSpec>(FPlanData<bFp16>::SelectGeometryPlan(Width, Height));
 	c10::cuda::CUDAGuard DeviceGuard(Input.device());
 	const auto Stream = c10::cuda::getCurrentCUDAStream(DeviceIndex);
-	RequireDeploymentOutsideCapture(Stream.stream());
+	RequireOutsideCapture(Stream.stream(), "create deployment plan outside CUDA graph capture");
 	cudaDeviceProp DeviceProperties{};
 	C10_CUDA_CHECK(cudaGetDeviceProperties(&DeviceProperties, DeviceIndex));
 	RequireDevicePrecision(DeviceProperties, bFp16, "deployment plan");
@@ -100,39 +78,29 @@ FDeploymentPlan<bFp16>::FDeploymentPlan(at::Tensor Input, std::vector<at::Tensor
 							   bFp16 ? EResolutionPrecision::Fp16 : EResolutionPrecision::Fp8);
 	TORCH_CHECK(Selection.ConfigId == -1 || Selection.ConfigId == 0,
 				"policy selects a configuration absent from this compiled reconstruction");
-	ValidateDeploymentPhysicalBuffer(Input, Geometry->BufferBytes[0], DeviceIndex,
-									 bFp16 ? "FP16 trunk input" : "FP8 trunk input");
+	ValidatePlanPhysicalBuffer(Input, Geometry->BufferBytes[0], DeviceIndex,
+							   bFp16 ? "FP16 trunk input" : "FP8 trunk input");
 	TORCH_CHECK(PackedWeightRecords.size() == std::size(FPlanData<bFp16>::RecordSpecs), "expected ",
 				std::size(FPlanData<bFp16>::RecordSpecs), " native packed records");
-	std::vector<std::pair<uint64_t, uint64_t>> StorageRanges;
-	StorageRanges.emplace_back(GetDeploymentTensorAddress(Input),
-							   GetDeploymentTensorAddress(Input) + Input.numel());
+	std::vector<FPhysicalRange> StorageRanges;
+	AppendTensorByteRange(StorageRanges, Input, "plan physical storage range overflow");
 	for (size_t RecordIndex = 0; RecordIndex < PackedWeightRecords.size(); ++RecordIndex)
 	{
-		ValidateDeploymentPhysicalBuffer(PackedWeightRecords[RecordIndex],
-										 FPlanData<bFp16>::RecordSpecs[RecordIndex].Bytes, DeviceIndex,
-										 FPlanData<bFp16>::RecordSpecs[RecordIndex].Name);
-		const auto g_RecordAddress = GetDeploymentTensorAddress(PackedWeightRecords[RecordIndex]);
-		StorageRanges.emplace_back(g_RecordAddress,
-								   g_RecordAddress + PackedWeightRecords[RecordIndex].numel());
+		ValidatePlanPhysicalBuffer(PackedWeightRecords[RecordIndex],
+								   FPlanData<bFp16>::RecordSpecs[RecordIndex].Bytes, DeviceIndex,
+								   FPlanData<bFp16>::RecordSpecs[RecordIndex].Name);
+		const auto g_RecordAddress = TensorAddress(PackedWeightRecords[RecordIndex]);
+		AppendTensorByteRange(StorageRanges, PackedWeightRecords[RecordIndex],
+							  "plan physical storage range overflow");
 		PackedWeightAddresses.push_back(g_RecordAddress);
 	}
-	std::sort(StorageRanges.begin(), StorageRanges.end());
-	for (size_t StorageRangeIndex = 1; StorageRangeIndex < StorageRanges.size(); ++StorageRangeIndex)
-		TORCH_CHECK(StorageRanges[StorageRangeIndex - 1].second <= StorageRanges[StorageRangeIndex].first,
-					"input and packed record ranges must be disjoint");
+	RequirePairwiseDisjoint(StorageRanges, "input and packed record ranges must be disjoint");
 	// Guard each workspace so replay validation detects writes outside its physical extent.
-	Buffers.reserve(std::size(FPlanData<bFp16>::BufferNameTable));
-	Buffers.push_back(std::move(Input));
-	for (size_t BufferIndex = 1; BufferIndex < std::size(FPlanData<bFp16>::BufferNameTable); ++BufferIndex)
-	{
-		auto Backing = at::full({Geometry->BufferBytes[BufferIndex] + 2 * CONST_GUARD_BYTES},
-								CONST_GUARD_PATTERN, Buffers[0].options());
-		Buffers.push_back(Backing.narrow(0, CONST_GUARD_BYTES, Geometry->BufferBytes[BufferIndex]));
-		GuardedBackings.push_back(std::move(Backing));
-	}
+	AllocateGuardedWorkspace(Buffers, GuardedBackings, std::move(Input), Geometry->BufferBytes,
+							 std::size(FPlanData<bFp16>::BufferNameTable), CONST_GUARD_BYTES,
+							 CONST_GUARD_PATTERN);
 	for (const auto& Tensor : Buffers)
-		BufferAddresses.push_back(GetDeploymentTensorAddress(Tensor));
+		BufferAddresses.push_back(TensorAddress(Tensor));
 	BuildCalls();
 	TORCH_CHECK(Calls.size() == 185, "reconstructed trunk schedule census");
 	// Cache the choice before capture. If the complete dependent grid cannot fit,
@@ -140,87 +108,24 @@ FDeploymentPlan<bFp16>::FDeploymentPlan(at::Tensor Input, std::vector<at::Tensor
 	// of waves, without relying on the scheduler to start predecessors first.
 	const int EffectiveSmCount =
 		EffectiveSplitSmCount(DeviceProperties.multiProcessorCount, ReadSplitSmCountLimit());
-	std::set<const void*> UniqueKernels;
-	for (auto& KernelCall : Calls)
-	{
-		const auto Admission = ValidateKernelDevice(KernelCall.Function, DeviceProperties, bFp16,
-													KernelCall.Block, KernelCall.Name);
-		const auto& FunctionAttributes = Admission.Attributes;
-		const int ActiveBlocksPerSm = Admission.ActiveBlocksPerSm;
-		ValidateKernelGrid(KernelCall.Grid, DeviceProperties, KernelCall.Name);
-		const unsigned LaunchCount =
-			SelectSplitLaunchCount(KernelCall.bAllResident, uint64_t(KernelCall.Grid.x) * KernelCall.Grid.y,
-								   KernelCall.Grid.z, ActiveBlocksPerSm, EffectiveSmCount);
-		if (LaunchCount > 1)
-		{
-			KernelCall.SplitParameterOffset = OrderedSplitParameterOffset(KernelCall.Name);
-			TORCH_CHECK(KernelCall.SplitParameterOffset >= 0 &&
-							KernelCall.SplitParameterOffset + int(sizeof(uint64_t)) <= KernelCall.AbiBytes,
-						"ordered split control outside parameter block: ", KernelCall.Name);
-		}
-		if (UniqueKernels.insert(KernelCall.Function).second)
-		{
-			const int64_t ResourceRow[] = {FunctionAttributes.numRegs,
-										   int64_t(FunctionAttributes.sharedSizeBytes),
-										   int64_t(FunctionAttributes.localSizeBytes),
-										   FunctionAttributes.maxThreadsPerBlock, ActiveBlocksPerSm};
-			ResourceRows.insert(ResourceRows.end(), std::begin(ResourceRow), std::end(ResourceRow));
-		}
-	}
-	TORCH_CHECK(UniqueKernels.size() == 37, "36 compute/repack entries plus counter clear expected");
+	AdmitPlanCalls(Calls, DeviceProperties, bFp16, EffectiveSmCount, ResourceRows, 37,
+				   "36 compute/repack entries plus counter clear expected");
 }
 
 template <bool bFp16>
 std::vector<c10::intrusive_ptr<FPreparedKernelHandle>> FDeploymentPlan<bFp16>::PrepareKernels() const
 {
-	std::vector<c10::intrusive_ptr<FPreparedKernelHandle>> Prepared;
-	Prepared.reserve(Calls.size());
-	for (const auto& Call : Calls)
-	{
-		std::vector<at::Tensor> Inputs, Outputs;
-		std::vector<int64_t> InputBytes, OutputBytes;
-		std::vector<FPhysicalTensorBinding> Bindings;
-		auto ParameterBlock = Call.ParameterBlock;
-		for (const auto& Binding : Call.Bindings)
-		{
-			const auto& Tensor = (Binding.bRecord ? PackedWeightRecords : Buffers).at(Binding.SourceIndex);
-			auto& Tensors = Binding.bMutable ? Outputs : Inputs;
-			auto& Extents = Binding.bMutable ? OutputBytes : InputBytes;
-			Bindings.push_back({Binding.ParameterOffset, Tensors.size(), Binding.bMutable});
-			Tensors.push_back(Tensor);
-			Extents.push_back(Tensor.numel());
-			// Descriptors must never retain hidden device addresses from the plan.
-			std::memset(ParameterBlock.data() + Binding.ParameterOffset, 0, sizeof(uint64_t));
-		}
-		auto Descriptor = std::make_shared<FPhysicalKernelDescriptor>(
-			Call.Name, DeviceIndex, Call.Function, Call.Grid, Call.Block, ParameterBlock, std::move(Bindings),
-			std::move(InputBytes), std::move(OutputBytes), Call.SplitParameterOffset);
-		Prepared.push_back(
-			RegisterPreparedKernel(std::move(Descriptor), std::move(Inputs), std::move(Outputs)));
-	}
-	return Prepared;
+	return PreparePlanKernels(Calls, DeviceIndex, Buffers, PackedWeightRecords);
 }
 
 template <bool bFp16> std::vector<at::Tensor> FDeploymentPlan<bFp16>::GetTensorArguments() const
 {
-	auto Arguments = Buffers;
-	Arguments.insert(Arguments.end(), PackedWeightRecords.begin(), PackedWeightRecords.end());
-	return Arguments;
+	return PlanTensorArguments(Buffers, PackedWeightRecords);
 }
 
 template <bool bFp16> std::vector<std::vector<int64_t>> FDeploymentPlan<bFp16>::GetKernelTensorIndices() const
 {
-	std::vector<std::vector<int64_t>> Indices;
-	for (const auto& Call : Calls)
-	{
-		std::vector<int64_t> Inputs, Outputs;
-		for (const auto& Binding : Call.Bindings)
-			(Binding.bMutable ? Outputs : Inputs)
-				.push_back(int64_t(Binding.SourceIndex + (Binding.bRecord ? Buffers.size() : 0)));
-		Indices.push_back(std::move(Inputs));
-		Indices.push_back(std::move(Outputs));
-	}
-	return Indices;
+	return PlanKernelTensorIndices(Calls, Buffers.size());
 }
 
 // Output-view C32 is an individual export outside the prepared-feature trunk.
@@ -273,83 +178,39 @@ c10::intrusive_ptr<FPreparedKernelHandle> PrepareOutputView_fp16(at::Tensor Inpu
 template <bool bFp16> at::Tensor FDeploymentPlan<bFp16>::Run()
 {
 	std::lock_guard<std::mutex> Lock(LaunchMutex);
-	c10::cuda::CUDAGuard DeviceGuard(Buffers[0].device());
-	const auto Stream = c10::cuda::getCurrentCUDAStream(DeviceIndex);
-	for (size_t BufferIndex = 0; BufferIndex < Buffers.size(); ++BufferIndex)
-	{
-		ValidateDeploymentPhysicalBuffer(Buffers[BufferIndex], Geometry->BufferBytes[BufferIndex],
-										 DeviceIndex, FPlanData<bFp16>::BufferNameTable[BufferIndex]);
-		TORCH_CHECK(GetDeploymentTensorAddress(Buffers[BufferIndex]) == BufferAddresses[BufferIndex],
-					"plan buffer storage was replaced");
-		c10::cuda::CUDACachingAllocator::recordStream(Buffers[BufferIndex].storage().data_ptr(), Stream);
-	}
-	for (size_t RecordIndex = 0; RecordIndex < PackedWeightRecords.size(); ++RecordIndex)
-	{
-		ValidateDeploymentPhysicalBuffer(PackedWeightRecords[RecordIndex],
-										 FPlanData<bFp16>::RecordSpecs[RecordIndex].Bytes, DeviceIndex,
-										 FPlanData<bFp16>::RecordSpecs[RecordIndex].Name);
-		TORCH_CHECK(GetDeploymentTensorAddress(PackedWeightRecords[RecordIndex]) ==
-						PackedWeightAddresses[RecordIndex],
-					"plan record storage was replaced");
-		c10::cuda::CUDACachingAllocator::recordStream(PackedWeightRecords[RecordIndex].storage().data_ptr(),
-													  Stream);
-	}
+	RunPlanCalls(Calls, Buffers, Geometry->BufferBytes, FPlanData<bFp16>::BufferNameTable, BufferAddresses,
+				 PackedWeightRecords, FPlanData<bFp16>::RecordSpecs, PackedWeightAddresses, DeviceIndex,
+				 "plan buffer storage was replaced", "plan record storage was replaced");
 	// Parameters and storage are prepared once; capture records these same kernel launches.
-	for (auto& KernelCall : Calls)
-	{
-		LaunchPhysicalKernel(KernelCall.Function, KernelCall.Grid, KernelCall.Block,
-							 KernelCall.ParameterBlock, KernelCall.SplitParameterOffset, Stream.stream());
-	}
 	C10_CUDA_KERNEL_LAUNCH_CHECK();
 	return Buffers.back();
 }
 
 template <bool bFp16> std::vector<int64_t> FDeploymentPlan<bFp16>::GetSplitLaunchCounts() const
 {
-	std::vector<int64_t> Counts;
-	Counts.reserve(Calls.size());
-	for (const auto& Call : Calls)
-		Counts.push_back(Call.SplitParameterOffset < 0 ? 1 : Call.Grid.z);
-	return Counts;
+	return PlanSplitLaunchCounts(Calls);
 }
 
 template <bool bFp16> std::vector<std::string> FDeploymentPlan<bFp16>::GetBufferNames() const
 {
-	std::vector<std::string> Names;
-	for (const auto* Name : FPlanData<bFp16>::BufferNameTable)
-		Names.emplace_back(Name);
-	return Names;
+	return PlanBufferNames(FPlanData<bFp16>::BufferNameTable);
 }
 
 template <bool bFp16> bool FDeploymentPlan<bFp16>::GuardsIntact() const
 {
-	c10::cuda::CUDAGuard DeviceGuard(Buffers[0].device());
-	RequireDeploymentOutsideCapture(c10::cuda::getCurrentCUDAStream(DeviceIndex).stream());
-	for (const auto& Backing : GuardedBackings)
-		if (!Backing.narrow(0, 0, CONST_GUARD_BYTES).eq(CONST_GUARD_PATTERN).all().item<bool>() ||
-			!Backing.narrow(0, Backing.numel() - CONST_GUARD_BYTES, CONST_GUARD_BYTES)
-				 .eq(CONST_GUARD_PATTERN)
-				 .all()
-				 .item<bool>())
-			return false;
-	return true;
+	return PlanGuardsIntact(Buffers, GuardedBackings, DeviceIndex, CONST_GUARD_BYTES, CONST_GUARD_PATTERN,
+							"create deployment plan outside CUDA graph capture");
 }
 
 template <bool bFp16> void FDeploymentPlan<bFp16>::Poison(int64_t PoisonByte)
 {
-	TORCH_CHECK(PoisonByte >= 0 && PoisonByte <= 255, "poison requires byte value");
-	c10::cuda::CUDAGuard DeviceGuard(Buffers[0].device());
-	RequireDeploymentOutsideCapture(c10::cuda::getCurrentCUDAStream(DeviceIndex).stream());
-	for (size_t BufferIndex = 1; BufferIndex < Buffers.size(); ++BufferIndex)
-		Buffers[BufferIndex].fill_(PoisonByte);
+	PoisonPlanWorkspaces(Buffers, DeviceIndex, PoisonByte,
+						 "create deployment plan outside CUDA graph capture");
 }
 
 template <bool bFp16> at::Tensor FDeploymentPlan<bFp16>::GetBuffer(const std::string& Name) const
 {
-	for (size_t BufferIndex = 0; BufferIndex < std::size(FPlanData<bFp16>::BufferNameTable); ++BufferIndex)
-		if (Name == FPlanData<bFp16>::BufferNameTable[BufferIndex])
-			return Buffers[BufferIndex];
-	TORCH_CHECK(false, "unknown deployment buffer: ", Name);
+	return FindPlanBuffer(Buffers, FPlanData<bFp16>::BufferNameTable, Name, "unknown deployment buffer: ");
 }
 
 template <bool bFp16> std::vector<std::string> FDeploymentPlan<bFp16>::GetBoundaryNames() const
@@ -366,42 +227,28 @@ template <bool bFp16> std::vector<std::string> FDeploymentPlan<bFp16>::GetBounda
 
 template <bool bFp16> std::vector<at::Tensor> FDeploymentPlan<bFp16>::GetBoundaries() const
 {
-	std::vector<at::Tensor> BoundaryOutputs;
-	for (const auto& Name : GetBoundaryNames())
-		BoundaryOutputs.push_back(GetBuffer(Name));
-	return BoundaryOutputs;
+	return ResolveBoundaryBuffers(Buffers, FPlanData<bFp16>::BufferNameTable, GetBoundaryNames(),
+								  "unknown deployment buffer: ");
 }
 
 std::vector<std::string> RecordNames_fp8()
 {
-	std::vector<std::string> Names;
-	for (const auto& RecordSpec : RecordSpecs_fp8)
-		Names.emplace_back(RecordSpec.Name);
-	return Names;
+	return PlanRecordNames(RecordSpecs_fp8);
 }
 
 std::vector<int64_t> RecordBytes_fp8()
 {
-	std::vector<int64_t> RecordByteExtents;
-	for (const auto& RecordSpec : RecordSpecs_fp8)
-		RecordByteExtents.emplace_back(RecordSpec.Bytes);
-	return RecordByteExtents;
+	return PlanRecordBytes(RecordSpecs_fp8);
 }
 
 std::vector<std::string> RecordNames_fp16()
 {
-	std::vector<std::string> Names;
-	for (const auto& RecordSpec : RecordSpecs_fp16)
-		Names.emplace_back(RecordSpec.Name);
-	return Names;
+	return PlanRecordNames(RecordSpecs_fp16);
 }
 
 std::vector<int64_t> RecordBytes_fp16()
 {
-	std::vector<int64_t> RecordByteExtents;
-	for (const auto& RecordSpec : RecordSpecs_fp16)
-		RecordByteExtents.emplace_back(RecordSpec.Bytes);
-	return RecordByteExtents;
+	return PlanRecordBytes(RecordSpecs_fp16);
 }
 
 std::string CompiledPolicyVersion()

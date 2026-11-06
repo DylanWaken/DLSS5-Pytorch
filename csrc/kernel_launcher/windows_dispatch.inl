@@ -1,7 +1,9 @@
 #pragma once
 #include "windows_dispatch.h"
 #include "architecture_support.h"
-#include "kernel_impl/shared/common/kernel_abi.h"
+#include "common/host/parameter_binding.h"
+#include "common/host/physical_tensor.h"
+#include <dlssnr/abi/kernel_parameters.h>
 #include <cuda_runtime_api.h>
 #include <c10/cuda/CUDAGuard.h>
 #include <c10/cuda/CUDAStream.h>
@@ -60,84 +62,64 @@ int WindowGetCudaDeviceIndex(const at::Tensor& DeviceAnchor)
 	return DeviceIndex;
 }
 
-void WindowValidatePhysicalTensor(const at::Tensor& Tensor, int64_t Bytes, const at::Device& TensorDevice,
-								  const char* Name)
-{
-	TORCH_CHECK(Tensor.is_cuda() && Tensor.device() == TensorDevice && Tensor.scalar_type() == at::kByte,
-				Name, " requires uint8 physical storage on the selected CUDA device");
-	TORCH_CHECK(Tensor.dim() == 1 && Tensor.is_contiguous() && Tensor.numel() == Bytes, Name,
-				" requires exact contiguous physical extent ", Bytes);
-	TORCH_CHECK(reinterpret_cast<uintptr_t>(Tensor.data_ptr()) % 16 == 0, Name,
-				" requires 16-byte alignment");
-	TORCH_CHECK(!Tensor.requires_grad(), "reconstructed windows are inference only");
-}
-
-void WindowValidateDisjoint(const at::Tensor& FirstTensor, const at::Tensor& SecondTensor)
-{
-	const auto g_FirstAddress = reinterpret_cast<uintptr_t>(FirstTensor.data_ptr()),
-			   g_SecondAddress = reinterpret_cast<uintptr_t>(SecondTensor.data_ptr());
-	const auto FirstByteCount = uintptr_t(FirstTensor.numel()),
-			   SecondByteCount = uintptr_t(SecondTensor.numel());
-	TORCH_CHECK(g_FirstAddress <= std::numeric_limits<uintptr_t>::max() - FirstByteCount &&
-					g_SecondAddress <= std::numeric_limits<uintptr_t>::max() - SecondByteCount,
-				"reconstructed window physical range overflow");
-	TORCH_CHECK(g_FirstAddress + FirstByteCount <= g_SecondAddress ||
-					g_SecondAddress + SecondByteCount <= g_FirstAddress,
-				"reconstructed window buffers must be pairwise disjoint");
-}
-
-template <class TValue>
-void WindowWriteParameterField(std::array<uint8_t, 96>& ParameterBlock, size_t FieldOffset, TValue FieldValue)
-{
-	TORCH_CHECK(FieldOffset + sizeof(TValue) <= ParameterBlock.size(), "window parameter field overflow");
-	std::memcpy(ParameterBlock.data() + FieldOffset, &FieldValue, sizeof(FieldValue));
-}
-
 // This is a byte representation of exactly one by-value Parameters argument.
 // The generated stub header proves each accepted struct's size and offsets.
-std::array<uint8_t, 96> WindowBuildParameterBlock(const FWindowKernelEntry& EntrySpec,
-												  const FWindowBufferRequirements& BufferRequirements,
-												  uintptr_t g_InputAddress, uintptr_t g_PackedWeightsAddress,
-												  uintptr_t g_OutputAddress,
-												  uintptr_t g_DownsampledOutputAddress,
-												  uintptr_t g_ResidualAddress, int32_t Height, int32_t Width,
-												  int WindowPhase)
+dlssnr::host::FParameterBlock
+WindowBuildParameterBlock(const FWindowKernelEntry& EntrySpec,
+						  const FWindowBufferRequirements& BufferRequirements, uintptr_t g_InputAddress,
+						  uintptr_t g_PackedWeightsAddress, uintptr_t g_OutputAddress,
+						  uintptr_t g_DownsampledOutputAddress, uintptr_t g_ResidualAddress, int32_t Height,
+						  int32_t Width, int WindowPhase)
 {
-	std::array<uint8_t, 96> ParameterBlock{};
-	WindowWriteParameterField<uint64_t>(ParameterBlock, 0, g_InputAddress);
-	WindowWriteParameterField<uint64_t>(ParameterBlock, 8, g_OutputAddress);
-	WindowWriteParameterField<uint64_t>(ParameterBlock, 16, g_PackedWeightsAddress);
+	dlssnr::host::FParameterBlock ParameterBlock{};
+	dlssnr::host::WriteParameterField<uint64_t>(ParameterBlock, 0, g_InputAddress,
+												"window parameter field overflow");
+	dlssnr::host::WriteParameterField<uint64_t>(ParameterBlock, 8, g_OutputAddress,
+												"window parameter field overflow");
+	dlssnr::host::WriteParameterField<uint64_t>(ParameterBlock, 16, g_PackedWeightsAddress,
+												"window parameter field overflow");
 	const size_t InputDimensionsOffset = EntrySpec.Channels == 32 ? 24 : 32;
 	const int32_t ShiftX = (WindowPhase == 1 || WindowPhase == 2) ? 4 : 0;
 	const int32_t ShiftY = (WindowPhase == 1 || WindowPhase == 3) ? 4 : 0;
-	WindowWriteParameterField<int32_t>(ParameterBlock, InputDimensionsOffset, Height);
-	WindowWriteParameterField<int32_t>(ParameterBlock, InputDimensionsOffset + 4, Width);
-	WindowWriteParameterField<int32_t>(ParameterBlock, InputDimensionsOffset + 8, -ShiftX);
-	WindowWriteParameterField<int32_t>(ParameterBlock, InputDimensionsOffset + 12, -ShiftY);
+	dlssnr::host::WriteParameterField<int32_t>(ParameterBlock, InputDimensionsOffset, Height,
+											   "window parameter field overflow");
+	dlssnr::host::WriteParameterField<int32_t>(ParameterBlock, InputDimensionsOffset + 4, Width,
+											   "window parameter field overflow");
+	dlssnr::host::WriteParameterField<int32_t>(ParameterBlock, InputDimensionsOffset + 8, -ShiftX,
+											   "window parameter field overflow");
+	dlssnr::host::WriteParameterField<int32_t>(ParameterBlock, InputDimensionsOffset + 12, -ShiftY,
+											   "window parameter field overflow");
 	if (EntrySpec.KindValue == EWindowKind::InputView || EntrySpec.KindValue == EWindowKind::OutputView)
 	{
 		const size_t ViewDimensionsOffset = EntrySpec.Channels == 32 ? 72 : 80;
-		WindowWriteParameterField<int32_t>(ParameterBlock, ViewDimensionsOffset, Height);
-		WindowWriteParameterField<int32_t>(ParameterBlock, ViewDimensionsOffset + 4, Width);
+		dlssnr::host::WriteParameterField<int32_t>(ParameterBlock, ViewDimensionsOffset, Height,
+												   "window parameter field overflow");
+		dlssnr::host::WriteParameterField<int32_t>(ParameterBlock, ViewDimensionsOffset + 4, Width,
+												   "window parameter field overflow");
 	}
 	else if (EntrySpec.KindValue == EWindowKind::Down)
 	{
 		const size_t DownsampledOutputOffset = EntrySpec.Channels == 32 ? 64 : 72;
-		WindowWriteParameterField<uint64_t>(ParameterBlock, DownsampledOutputOffset,
-											g_DownsampledOutputAddress);
-		WindowWriteParameterField<int32_t>(ParameterBlock, DownsampledOutputOffset + 8,
-										   BufferRequirements.DownsampledHeight);
-		WindowWriteParameterField<int32_t>(ParameterBlock, DownsampledOutputOffset + 12,
-										   BufferRequirements.DownsampledWidth);
+		dlssnr::host::WriteParameterField<uint64_t>(ParameterBlock, DownsampledOutputOffset,
+													g_DownsampledOutputAddress,
+													"window parameter field overflow");
+		dlssnr::host::WriteParameterField<int32_t>(ParameterBlock, DownsampledOutputOffset + 8,
+												   BufferRequirements.DownsampledHeight,
+												   "window parameter field overflow");
+		dlssnr::host::WriteParameterField<int32_t>(ParameterBlock, DownsampledOutputOffset + 12,
+												   BufferRequirements.DownsampledWidth,
+												   "window parameter field overflow");
 	}
 	else if (EntrySpec.KindValue == EWindowKind::Up)
 	{
-		WindowWriteParameterField<uint64_t>(ParameterBlock, EntrySpec.Channels == 32 ? 80 : 24,
-											g_ResidualAddress);
+		dlssnr::host::WriteParameterField<uint64_t>(ParameterBlock, EntrySpec.Channels == 32 ? 80 : 24,
+													g_ResidualAddress, "window parameter field overflow");
 		if (EntrySpec.Channels == 32)
 		{
-			WindowWriteParameterField<int32_t>(ParameterBlock, 88, Height);
-			WindowWriteParameterField<int32_t>(ParameterBlock, 92, Width);
+			dlssnr::host::WriteParameterField<int32_t>(ParameterBlock, 88, Height,
+													   "window parameter field overflow");
+			dlssnr::host::WriteParameterField<int32_t>(ParameterBlock, 92, Width,
+													   "window parameter field overflow");
 		}
 	}
 	return ParameterBlock;
@@ -207,10 +189,8 @@ std::vector<int64_t> WindowPrepareEntry(const at::Tensor& DeviceAnchor, int Entr
 	const int DeviceIndex = WindowGetCudaDeviceIndex(DeviceAnchor);
 	c10::cuda::CUDAGuard DeviceGuard(DeviceAnchor.device());
 	const auto Stream = c10::cuda::getCurrentCUDAStream(DeviceIndex);
-	cudaStreamCaptureStatus CaptureStatus = cudaStreamCaptureStatusNone;
-	C10_CUDA_CHECK(cudaStreamIsCapturing(Stream.stream(), &CaptureStatus));
-	TORCH_CHECK(CaptureStatus == cudaStreamCaptureStatusNone,
-				"window prepare is forbidden during capture including cache hits");
+	dlssnr::host::RequireOutsideCapture(Stream.stream(),
+										"window prepare is forbidden during capture including cache hits");
 	cudaDeviceProp DeviceProperties{};
 	C10_CUDA_CHECK(cudaGetDeviceProperties(&DeviceProperties, DeviceIndex));
 	const auto Admission = ValidateKernelDevice(EntrySpec.Stub, DeviceProperties,
@@ -246,24 +226,31 @@ std::vector<at::Tensor> WindowLaunchEntry(int EntryIndex, const at::Tensor& Inpu
 				"down output role does not match reconstructed entry");
 	TORCH_CHECK(Residual.has_value() == (EntrySpec.KindValue == EWindowKind::Up),
 				"skip input role does not match reconstructed entry");
-	WindowValidatePhysicalTensor(Input, BufferRequirements.InputBytes, Input.device(), "state");
-	WindowValidatePhysicalTensor(PackedWeights, BufferRequirements.RecordBytes, Input.device(), "record");
-	WindowValidatePhysicalTensor(Output, BufferRequirements.OutputBytes, Input.device(), "high");
+	dlssnr::host::ValidateLaunchedPhysicalBuffer(Input, BufferRequirements.InputBytes, Input.device(),
+												 "state", "reconstructed windows are inference only");
+	dlssnr::host::ValidateLaunchedPhysicalBuffer(PackedWeights, BufferRequirements.RecordBytes,
+												 Input.device(), "record",
+												 "reconstructed windows are inference only");
+	dlssnr::host::ValidateLaunchedPhysicalBuffer(Output, BufferRequirements.OutputBytes, Input.device(),
+												 "high", "reconstructed windows are inference only");
 	std::vector<const at::Tensor*> Buffers{&Input, &PackedWeights, &Output};
 	if (DownsampledOutput)
 	{
-		WindowValidatePhysicalTensor(*DownsampledOutput, BufferRequirements.DownsampledOutputBytes,
-									 Input.device(), "down");
+		dlssnr::host::ValidateLaunchedPhysicalBuffer(
+			*DownsampledOutput, BufferRequirements.DownsampledOutputBytes, Input.device(), "down",
+			"reconstructed windows are inference only");
 		Buffers.push_back(&*DownsampledOutput);
 	}
 	if (Residual)
 	{
-		WindowValidatePhysicalTensor(*Residual, BufferRequirements.ResidualBytes, Input.device(), "skip");
+		dlssnr::host::ValidateLaunchedPhysicalBuffer(*Residual, BufferRequirements.ResidualBytes,
+													 Input.device(), "skip",
+													 "reconstructed windows are inference only");
 		Buffers.push_back(&*Residual);
 	}
-	for (size_t BufferIndex = 0; BufferIndex < Buffers.size(); ++BufferIndex)
-		for (size_t OtherBufferIndex = BufferIndex + 1; OtherBufferIndex < Buffers.size(); ++OtherBufferIndex)
-			WindowValidateDisjoint(*Buffers[BufferIndex], *Buffers[OtherBufferIndex]);
+	dlssnr::host::RequirePairwiseDisjointTensorPointers(
+		Buffers, "reconstructed window physical range overflow",
+		"reconstructed window buffers must be pairwise disjoint");
 	c10::cuda::CUDAGuard DeviceGuard(Input.device());
 	{
 		auto& Preparation = WindowGetPreparationState();

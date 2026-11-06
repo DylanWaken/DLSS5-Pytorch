@@ -20,7 +20,6 @@ sidecar is required to decode a loaded checkpoint.
 """
 from __future__ import annotations
 
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -32,16 +31,17 @@ import torch
 from .checkpoint import (
     MATRIX_FIELDS,
     Checkpoint,
-    _SchemaArchive,
     file_sha256,
-    native_state_dict,
-    promote_tensor,
 )
+from .common.hashing import sha256_bytes
+from .common.precision import resolve_precision
 from .model_specs import SMALL31, ModelSpec
 from .records import TensorRecord
 from .runtime_assets import ManifestError, verify_stage_pins
-from .small_deployment import SmallNativeCheckpoint, _state_from_archive
 from .small_model import SmallWeightArchive
+from .small_state import small31_state_schema, small_identity
+from .small_weights import SmallNativeCheckpoint
+from .weight_packing import promote_tensor
 from .weights import WeightArchive
 
 __all__ = [
@@ -53,7 +53,7 @@ __all__ = [
 ]
 
 FORMAT_VERSION = 3
-MODEL_ID = "small31"
+MODEL_ID = SMALL31.id
 MODEL_CLASS = "dlssnr.SmallDLSSNR"
 NATIVE_STORAGE = "native_records"
 STATE_STORAGE = "state_dict"
@@ -70,43 +70,11 @@ def canonical_small_identity() -> dict:
     spec = SMALL31
     if len(spec.dll_pins) != 1:
         raise ValueError("canonical Small31 identity requires exactly one signed DLL pin")
-    post_head = spec.post_head
-    if post_head is None:
-        raise ValueError("canonical Small31 identity requires the native post head")
-    return {
-        "stateSchema": "dlssnr-small31/1",
-        "model": spec.id,
-        "sourceDllSha256": spec.dll_pins[0].sha256,
-        "resourcePath": spec.resource.path,
-        "resourceSha256": spec.resource.sha256,
-        "resourceByteLength": spec.resource.byte_length,
-        "roles": list(spec.roles),
-        "rawToRole": list(spec.raw_to_role),
-        "blockCount": spec.block_count,
-        "postPhase": spec.post_phase_default,
-        "postHead": "{}x{}".format(*post_head.native_shape),
-        "postHeadLayout": "rgb+history_gate",
-    }
-
-
-def small31_state_schema() -> dict[str, torch.Tensor]:
-    """Return ``blocks.<role>.<field>`` meta tensors with native mixed dtypes.
-
-    The schema is derived from the existing native decoder by filtering
-    :func:`dlssnr.checkpoint.native_state_dict` over the Small31 role roster;
-    shapes and dtypes are never maintained in a second hand-written table.
-    """
-    roles = frozenset(SMALL31.roles)
-    schema: dict[str, torch.Tensor] = {}
-    for name, value in native_state_dict(_SchemaArchive()).items():
-        if int(name.split(".", 2)[1]) in roles:
-            schema[name] = value
-    if not schema:
-        raise ValueError("native Small31 schema derivation returned no tensors")
-    decoded_roles = {int(name.split(".", 2)[1]) for name in schema}
-    if decoded_roles != roles:
-        raise ValueError("native Small31 schema roles differ from the canonical roster")
-    return schema
+    return small_identity(
+        spec,
+        source_dll_sha256=spec.dll_pins[0].sha256,
+        post_phase=spec.post_phase_default,
+    )
 
 
 def _record_bytes(value: torch.Tensor, name: str, expected: int) -> bytes:
@@ -189,7 +157,7 @@ def small31_checkpoint_payload(archive: SmallWeightArchive) -> dict:
             raise ValueError(
                 f"Small31 archive record {record.name!r} is {len(data)} bytes, "
                 f"expected {record.byte_length}")
-        digest = hashlib.sha256(data).hexdigest()
+        digest = sha256_bytes(data)
         record_hashes[record.name] = digest
         record_bytes[record.name] = data
         records[record.name] = torch.from_numpy(
@@ -292,9 +260,9 @@ class SmallCheckpoint(SmallNativeCheckpoint):
                 f"Small31 checkpoint declares model {payload.get('model')!r}, expected {MODEL_ID!r}")
         if payload.get("model_class") != MODEL_CLASS:
             raise ValueError(f"Small31 checkpoint model_class must be {MODEL_CLASS!r}")
-        precision = payload.get("weight_precision")
-        if precision not in ("fp8", "fp16"):
-            raise ValueError("Small31 checkpoint precision must be fp8 or fp16")
+        precision = resolve_precision(
+            payload.get("weight_precision"),
+            error_message="Small31 checkpoint precision must be fp8 or fp16")
         storage = payload.get("storage")
         expected_storage = NATIVE_STORAGE if precision == "fp8" else STATE_STORAGE
         if storage != expected_storage:
@@ -383,7 +351,7 @@ class SmallCheckpoint(SmallNativeCheckpoint):
         record_bytes: dict[str, bytes] = {}
         for name, record in roster.items():
             data = _record_bytes(native_records[name], name, record.byte_length)
-            digest = hashlib.sha256(data).hexdigest()
+            digest = sha256_bytes(data)
             if record_hashes[name] != digest:
                 raise ValueError("Small31 native record hash mismatch: " + name)
             record_bytes[name] = data

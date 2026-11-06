@@ -59,8 +59,10 @@ def main():
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     changed = []
-    for path in sorted((ROOT / "csrc/kernel_impl").rglob("*")):
-        if path.suffix not in (".cu", ".cuh"):
+    source_roots = (ROOT / "csrc/kernel_impl", ROOT / "csrc/include/flashlight",
+                    ROOT / "csrc/common")
+    for path in sorted(path for directory in source_roots for path in directory.rglob("*")):
+        if path.suffix not in (".cu", ".cuh", ".h"):
             continue
         raw = path.read_bytes()
         source = raw.decode("utf8").replace("\r\n", "\n")

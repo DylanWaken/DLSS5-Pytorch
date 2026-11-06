@@ -1,31 +1,7 @@
 #include "prepared_ops.h"
+#include "common/host/boxed_dispatch.h"
 #include "../kernel_launcher/prepared_kernel.h"
 #include "../kernel_launcher/prepared_kernel_names_generated.inl"
-
-static void InvokePreparedKernel(const c10::OperatorHandle& Operator, torch::jit::Stack* Stack, bool bMeta)
-{
-	TORCH_CHECK(Stack->size() >= 3, "individual kernel requires inputs, outputs and handle");
-	const auto Start = Stack->size() - 3;
-	const auto Inputs = (*Stack)[Start].toTensorVector();
-	const auto Outputs = (*Stack)[Start + 1].toTensorVector();
-	const auto Descriptor = FindPreparedKernel((*Stack)[Start + 2].toInt());
-	TORCH_CHECK(Operator.schema().name() == "dlssnr::" + Descriptor->Name,
-				"prepared kernel descriptor does not match the named operator");
-	Descriptor->Validate(Inputs, Outputs, bMeta);
-	if (!bMeta)
-		Descriptor->Launch(Inputs, Outputs);
-	Stack->erase(Stack->begin() + Start, Stack->end());
-}
-
-static void InvokePreparedKernelCuda(const c10::OperatorHandle& Operator, torch::jit::Stack* Stack)
-{
-	InvokePreparedKernel(Operator, Stack, false);
-}
-
-static void InvokePreparedKernelMeta(const c10::OperatorHandle& Operator, torch::jit::Stack* Stack)
-{
-	InvokePreparedKernel(Operator, Stack, true);
-}
 
 void RegisterPreparedKernelSchemas(torch::Library& Library)
 {
@@ -48,12 +24,10 @@ void RegisterPreparedKernelSchemas(torch::Library& Library)
 
 TORCH_LIBRARY_IMPL(dlssnr, CUDA, Library)
 {
-	for (const auto* Name : PreparedKernelNames)
-		Library.impl(Name, torch::CppFunction::makeFromBoxedFunction<&InvokePreparedKernelCuda>());
+	dlssnr::host::RegisterBoxedPreparedImplementations<false>(Library, PreparedKernelNames);
 }
 
 TORCH_LIBRARY_IMPL(dlssnr, Meta, Library)
 {
-	for (const auto* Name : PreparedKernelNames)
-		Library.impl(Name, torch::CppFunction::makeFromBoxedFunction<&InvokePreparedKernelMeta>());
+	dlssnr::host::RegisterBoxedPreparedImplementations<true>(Library, PreparedKernelNames);
 }

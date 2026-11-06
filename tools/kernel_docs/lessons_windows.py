@@ -1,21 +1,20 @@
 """One reconstructable, precision-specific lesson for every local-window entry."""
-from pathlib import Path
 from html import escape
 import re
 from common import code, svg, note
+from source_providers import ORIGINAL
 from lesson_support import pseudo, mma_primer, storage_legend
 from lessons_window_figures import (subordinate, cta_diagram, ownership_diagram,
     scheduling_diagram, resource_section, trace_intro, trace_checkpoint, instruction_ledger,
     design_choice, milestone_steps)
 
-ROOT = Path(__file__).resolve().parents[2]
 BASE = 'csrc/kernel_impl/shared/common/'
 WIDE = BASE + 'warp_window_wide.cuh'
 W32 = BASE + 'warp_window32.cuh'
 
 
 def excerpt(path, needle, after=20, before=0, caption=''):
-    lines = (ROOT / path).read_text(encoding='utf-8').splitlines()
+    lines = ORIGINAL.text(path).splitlines()
     found = [i for i,line in enumerate(lines) if needle in line]
     if not found:
         raise ValueError(f'Missing lesson source anchor {path}: {needle}')

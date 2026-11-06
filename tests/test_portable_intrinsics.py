@@ -3,7 +3,7 @@
 Compile tests/cuda/portable_intrinsics.cu first; this test never compiles or
 loads the deployment extension. Offline cubin example, from the repository root:
 
-  nvcc --cubin -std=c++17 -gencode arch=compute_80,code=sm_120 tests/cuda/portable_intrinsics.cu -o portable_intrinsics.cubin
+  nvcc --cubin -std=c++17 -I csrc/include -gencode arch=compute_80,code=sm_120 tests/cuda/portable_intrinsics.cu -o portable_intrinsics.cubin
   python tests/test_portable_intrinsics.py --module portable_intrinsics.cubin --report result.json
 
 The existing --ptx argument remains available for explicit PTX JIT tests.
@@ -48,7 +48,7 @@ class PortableModule:
         try:
             for name in ("ProbeCopies", "ProbeCopyRing", "ProbePrefetchCopies", "ProbeHalfReduction",
                          "ProbeExclusiveHalfReduction", "ProbeAtomicSplitHandoff",
-                         "ProbeExclusiveSplitHandoff"):
+                         "ProbeExclusiveSplitHandoff", "ProbeSharedLayout"):
                 function = pointer()
                 self.call("cuModuleGetFunction", C.byref(function), self.module, name.encode("ascii"))
                 self.functions[name] = function
@@ -138,6 +138,39 @@ def check_exclusive_arithmetic(torch, module):
     return dict(half_encodings=65536, edge_operands=[hex(value) for value in edge_bits],
                 operand_orders=2, comparisons=65536 * len(edge_bits) * 2,
                 bytes_equal=True, guards_intact=True, inputs_immutable=True)
+
+
+def check_shared_layout(torch, module):
+    """Check nonzero view origins and ring reuse against direct byte addresses."""
+    phases, threads, words = 7, 128, 4
+    size = phases * threads * words * 4
+    owners, views = {}, {}
+    for name, byte_count in (("input", size), ("output", size * 3)):
+        owners[name], views[name] = guarded_buffer(torch, byte_count)
+    source = torch.arange(phases * threads * words, dtype=torch.int32, device="cuda")
+    views["input"].copy_(source.view(torch.uint8))
+    views["output"].fill_(0xA7)
+    original = owners["input"].clone()
+    module.launch("ProbeSharedLayout", views["input"], views["output"])
+    torch.cuda.synchronize()
+    reader = (torch.arange(threads, device="cuda") + 32) % threads
+    expected = source.reshape(phases, threads, words)[:, reader].clone()
+    expected[:, :, 3] ^= 0x12345678
+    output = views["output"].view(torch.int32).reshape(3, phases, threads, words)
+    if not torch.equal(output[0], expected) or not torch.equal(output[1], expected):
+        raise AssertionError("Staged view store/at/load disagrees with independent byte addresses")
+    phase = torch.arange(phases, device="cuda")[:, None].expand(phases, threads)
+    reader = reader[None, :].expand(phases, threads)
+    offset = 64 + (phase % 3) * 2048 + reader * 16
+    addresses = torch.stack((offset, offset, phase, reader), dim=-1).to(torch.int32)
+    if not torch.equal(output[2], addresses):
+        raise AssertionError("Staged view byte_offset dropped the origin or selected the wrong ring slot")
+    if not torch.equal(owners["input"], original):
+        raise AssertionError("Staged view probe modified its input")
+    check_guards(torch, owners)
+    return dict(origin_bytes=64, stage_bytes=2048, physical_stages=3, phases=phases,
+                threads=threads, addresses_equal=True, bytes_equal=True,
+                guards_intact=True, inputs_immutable=True)
 
 
 def check_exclusive_handoff(torch, module, replays):
@@ -306,6 +339,7 @@ def execute(args):
             assert bool(torch.all(destination_owner[:guard_bytes] == 0xB9))
             assert bool(torch.all(destination_owner[-guard_bytes:] == 0xB9))
         report.update(half_reduction_bytes_equal=True, guards_intact=True, inputs_immutable=True)
+        report["shared_layout"] = check_shared_layout(torch, module)
         report["exclusive_arithmetic"] = check_exclusive_arithmetic(torch, module)
         report["exclusive_handoff"] = check_exclusive_handoff(torch, module, args.reduction_replays)
         report["pass"] = True

@@ -27,6 +27,7 @@ if str(ROOT) not in sys.path:
 from dlssnr.checkpoint import load_checkpoint
 from dlssnr.model_specs import SMALL31
 from dlssnr.portable_checkpoint import SmallCheckpoint, save_checkpoint_payload
+from dlssnr.small_state import small31_state_schema
 from dlssnr.trained_checkpoint import export_trained_checkpoint
 
 REAL_CHECKPOINT = ROOT / "ckpts" / "dlss5_nr_small31.pt"
@@ -113,6 +114,22 @@ class SelectionAndSaveContractCPUTest(unittest.TestCase):
             self.assertFalse(target.exists())
             self.assertFalse(target.with_suffix(".json").exists())
             self.assertEqual(list(Path(directory).iterdir()), [])
+
+    def test_state_only_learned_fp16_rejects_fp8_before_archive_or_extension(self):
+        checkpoint = object.__new__(SmallCheckpoint)
+        checkpoint.precision = "fp16"
+        checkpoint.spec = SMALL31
+        checkpoint._state = {}
+
+        class NoArchive:
+            def __getattr__(self, name):
+                raise AssertionError("learned FP16 touched the original FP8 archive")
+
+        checkpoint.archive = NoArchive()
+        with self.assertRaisesRegex(ValueError, "no original FP8 records"):
+            checkpoint.kernel_record(SMALL31.post_role, precision="fp8")
+        with self.assertRaisesRegex(ValueError, "no original FP8 records"):
+            checkpoint.create_plan_fp8(object())
 
 
 @needs_real_checkpoint
@@ -204,6 +221,27 @@ class PortableMetadataIntegrityCPUTest(unittest.TestCase):
             self.assertIsInstance(loaded, SmallCheckpoint)
             self.assertEqual(loaded.precision, "fp8")
             self.assertEqual(len(loaded.archive.records), SMALL31.record_count)
+
+    def test_original_artifact_schema_and_decoded_state_are_exact(self):
+        """real artifact: isolated .pt load derives the canonical schema/head."""
+        checkpoint = SmallCheckpoint(real_payload())
+        schema = small31_state_schema()
+        state = checkpoint._ensure_state()
+        self.assertEqual(set(state), set(schema))
+        for name, expected in schema.items():
+            actual = state[name]
+            self.assertEqual(tuple(actual.shape), tuple(expected.shape), name)
+            self.assertEqual(actual.dtype, expected.dtype, name)
+
+        decoded = checkpoint.decode_block(SMALL31.post_role)
+        self.assertEqual(tuple(decoded["head"].shape), (32, 4))
+        post = checkpoint.archive.records["block30.layer0.layer"]
+        independent_head = checkpoint.archive.f16_matrix(
+            post, SMALL31.post_head.offset, 32, 4)
+        self.assertTrue(torch.equal(decoded["head"], independent_head.float()))
+        blend = checkpoint.archive.records["block30.layer0.blend_scale"]
+        self.assertEqual(float(checkpoint.blend_scale()[0]),
+                         float(checkpoint.archive.vector(blend, 0, 1)[0]))
 
     def test_public_load_verifies_a_present_sidecar(self):
         """real artifact: the normal verified loader still rejects a bad sidecar."""

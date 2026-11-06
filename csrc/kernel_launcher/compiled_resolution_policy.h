@@ -4,11 +4,9 @@
 #include <cstdint>
 #include <limits>
 
-inline constexpr char CONST_RESOLUTION_POLICY_VERSION[] =
-	"212c80bfd9243b45f4798b01a27754afb51933745f827946694a2feb38086612";
+inline constexpr char CONST_RESOLUTION_POLICY_VERSION[] = "212c80bfd9243b45f4798b01a27754afb51933745f827946694a2feb38086612";
 inline constexpr char CONST_RESOLUTION_RESOLVER_VERSION[] = "domain_then_same_family_measured_extrema_v1";
-inline constexpr int CONST_RESOLUTION_WIDTH_MIN = 1280, CONST_RESOLUTION_WIDTH_MAX = 3840,
-					 CONST_RESOLUTION_HEIGHT_MIN = 720, CONST_RESOLUTION_HEIGHT_MAX = 2160;
+inline constexpr int CONST_RESOLUTION_WIDTH_MIN = 1280, CONST_RESOLUTION_WIDTH_MAX = 3840, CONST_RESOLUTION_HEIGHT_MIN = 720, CONST_RESOLUTION_HEIGHT_MAX = 2160;
 enum class EResolutionPrecision : int
 {
 	Fp8 = 0,
@@ -55,8 +53,7 @@ struct FResolutionSelection
 	const FResolutionAdmission* Admission = nullptr;
 };
 
-inline FResolutionSelection SelectResolutionPolicy(int Width, int Height, int Sm,
-												   EResolutionPrecision PrecisionValue)
+inline FResolutionSelection SelectResolutionPolicy(int Width, int Height, int Sm, EResolutionPrecision PrecisionValue)
 {
 	FResolutionSelection Selection;
 	Selection.ActualWidth = Width;
@@ -67,15 +64,10 @@ inline FResolutionSelection SelectResolutionPolicy(int Width, int Height, int Sm
 		Selection.StatusValue = EResolutionStatus::InvalidInput;
 		return Selection;
 	}
-	Selection.QueryWidth = Width < CONST_RESOLUTION_WIDTH_MIN	? CONST_RESOLUTION_WIDTH_MIN
-						   : Width > CONST_RESOLUTION_WIDTH_MAX ? CONST_RESOLUTION_WIDTH_MAX
-																: Width;
-	Selection.QueryHeight = Height < CONST_RESOLUTION_HEIGHT_MIN   ? CONST_RESOLUTION_HEIGHT_MIN
-							: Height > CONST_RESOLUTION_HEIGHT_MAX ? CONST_RESOLUTION_HEIGHT_MAX
-																   : Height;
+	Selection.QueryWidth = Width < CONST_RESOLUTION_WIDTH_MIN ? CONST_RESOLUTION_WIDTH_MIN : Width > CONST_RESOLUTION_WIDTH_MAX ? CONST_RESOLUTION_WIDTH_MAX : Width;
+	Selection.QueryHeight = Height < CONST_RESOLUTION_HEIGHT_MIN ? CONST_RESOLUTION_HEIGHT_MIN : Height > CONST_RESOLUTION_HEIGHT_MAX ? CONST_RESOLUTION_HEIGHT_MAX : Height;
 	// Measured extrema are family-local and affect metadata only.
-	int MeasuredWidthMin = CONST_RESOLUTION_WIDTH_MAX, MeasuredWidthMax = CONST_RESOLUTION_WIDTH_MIN,
-		MeasuredHeightMin = CONST_RESOLUTION_HEIGHT_MAX, MeasuredHeightMax = CONST_RESOLUTION_HEIGHT_MIN;
+	int MeasuredWidthMin = CONST_RESOLUTION_WIDTH_MAX, MeasuredWidthMax = CONST_RESOLUTION_WIDTH_MIN, MeasuredHeightMin = CONST_RESOLUTION_HEIGHT_MAX, MeasuredHeightMax = CONST_RESOLUTION_HEIGHT_MIN;
 	bool bMeasuredFamily = false;
 	for (const auto& EvidenceRow : ResolutionAnchors)
 	{
@@ -93,12 +85,10 @@ inline FResolutionSelection SelectResolutionPolicy(int Width, int Height, int Sm
 	}
 	if (bMeasuredFamily)
 	{
-		Selection.QueryWidth = Selection.QueryWidth < MeasuredWidthMin	 ? MeasuredWidthMin
-							   : Selection.QueryWidth > MeasuredWidthMax ? MeasuredWidthMax
-																		 : Selection.QueryWidth;
+		Selection.QueryWidth = Selection.QueryWidth < MeasuredWidthMin ? MeasuredWidthMin : Selection.QueryWidth > MeasuredWidthMax ? MeasuredWidthMax : Selection.QueryWidth;
 		Selection.QueryHeight = Selection.QueryHeight < MeasuredHeightMin	? MeasuredHeightMin
-								: Selection.QueryHeight > MeasuredHeightMax ? MeasuredHeightMax
-																			: Selection.QueryHeight;
+							 : Selection.QueryHeight > MeasuredHeightMax ? MeasuredHeightMax
+														: Selection.QueryHeight;
 	}
 	Selection.bClamped = Selection.QueryWidth != Width || Selection.QueryHeight != Height;
 	// Exact actual dimensions only. Clamped coordinates never grant admission.
@@ -118,8 +108,7 @@ inline FResolutionSelection SelectResolutionPolicy(int Width, int Height, int Sm
 			continue;
 		const int64_t WidthDelta = int64_t(Selection.QueryWidth) - EvidenceRow.Width,
 					  HeightDelta = int64_t(Selection.QueryHeight) - EvidenceRow.Height;
-		const int64_t DistanceSquared =
-			WidthDelta * WidthDelta * 1440LL * 1440LL + HeightDelta * HeightDelta * 2560LL * 2560LL;
+		const int64_t DistanceSquared = WidthDelta * WidthDelta * 1440LL * 1440LL + HeightDelta * HeightDelta * 2560LL * 2560LL;
 		// Generated rows are sorted by width, height, configuration within family.
 		if (DistanceSquared < NearestDistanceSquared)
 		{
@@ -132,8 +121,7 @@ inline FResolutionSelection SelectResolutionPolicy(int Width, int Height, int Sm
 		Selection.ConfigId = Selection.AnchorEvidence->ConfigId;
 		Selection.bActualResolutionMeasured =
 			Selection.AnchorEvidence->Width == Width && Selection.AnchorEvidence->Height == Height;
-		Selection.StatusValue = Selection.bActualResolutionMeasured ? EResolutionStatus::ExactMeasured
-																	: EResolutionStatus::Transferred;
+		Selection.StatusValue = Selection.bActualResolutionMeasured ? EResolutionStatus::ExactMeasured : EResolutionStatus::Transferred;
 	}
 	return Selection;
 }
