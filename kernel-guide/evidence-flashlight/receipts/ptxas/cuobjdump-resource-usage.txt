@@ -1,0 +1,862 @@
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function global_attention_chained_c1024_fp16:
+  REG:154 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:960 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_qkv_c1024_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function global_qkv_c1024_fp16:
+  REG:202 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function global_attention_chained_c1024_fp8:
+  REG:160 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:960 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_qkv_c1024_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function global_qkv_c1024_fp8:
+  REG:160 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function global_ffn_contract_c1024_fp16:
+  REG:142 STACK:0 SHARED:25624 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_projection_c1024_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function global_projection_c1024_fp16:
+  REG:154 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _Z19global_contract_fp8ILb1E35FGlobalProjectionC1024Fp8ParametersEvT0_:
+  REG:118 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z19global_contract_fp8ILb0E36FGlobalFfnContractC1024Fp8ParametersEvT0_:
+  REG:148 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function global_ffn_expand_c1024_fp16:
+  REG:140 STACK:0 SHARED:25624 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/bottleneck_c1024_ffn/fp8/global_ffn_expand_c1024_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function global_ffn_expand_c1024_fp8:
+  REG:139 STACK:0 SHARED:25624 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _Z23repack_spatial_to_tokenILb0EEv23FGlobalRepackParameters:
+  REG:19 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z23repack_spatial_to_tokenILb1EEv23FGlobalRepackParameters:
+  REG:19 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/bottleneck_c1024_layout/common/repack_token_to_spatial.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _Z23repack_token_to_spatialILb0EEv23FGlobalRepackParameters:
+  REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z23repack_token_to_spatialILb1EEv23FGlobalRepackParameters:
+  REG:20 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:920 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp16/decoder_upsample_c1024_to_c512_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function decoder_upsample_c1024_to_c512_fp16:
+  REG:125 STACK:0 SHARED:3088 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp8/decoder_upsample_c1024_to_c512_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function decoder_upsample_c1024_to_c512_fp8:
+  REG:125 STACK:0 SHARED:3088 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_c32_upsample_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_block_c32_upsample_fp16:
+  REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_c64_upsample_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_block_c64_upsample_fp16:
+  REG:168 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_wide_upsample_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _Z31window_block_wide_upsample_fp16ILi256E38FWindowBlockC256UpsampleFp16ParametersEvT0_:
+  REG:184 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z31window_block_wide_upsample_fp16ILi128E38FWindowBlockC128UpsampleFp16ParametersEvT0_:
+  REG:164 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c32_upsample_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_block_c32_upsample_fp8:
+  REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c64_upsample_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_block_c64_upsample_fp8:
+  REG:161 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_wide_upsample_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _Z30window_block_wide_upsample_fp8ILi256E37FWindowBlockC256UpsampleFp8ParametersEvT0_:
+  REG:161 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z30window_block_wide_upsample_fp8ILi128E37FWindowBlockC128UpsampleFp8ParametersEvT0_:
+  REG:163 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_c32_downsample_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_block_c32_downsample_fp16:
+  REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_c64_downsample_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_block_c64_downsample_fp16:
+  REG:168 STACK:8 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_wide_downsample_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _Z33window_block_wide_downsample_fp16ILi256E40FWindowBlockC256DownsampleFp16ParametersEvT0_:
+  REG:180 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z33window_block_wide_downsample_fp16ILi128E40FWindowBlockC128DownsampleFp16ParametersEvT0_:
+  REG:168 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_c32_downsample_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_block_c32_downsample_fp8:
+  REG:168 STACK:8 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_c64_downsample_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_block_c64_downsample_fp8:
+  REG:162 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_wide_downsample_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _Z32window_block_wide_downsample_fp8ILi256E39FWindowBlockC256DownsampleFp8ParametersEvT0_:
+  REG:166 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z32window_block_wide_downsample_fp8ILi128E39FWindowBlockC128DownsampleFp8ParametersEvT0_:
+  REG:167 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function channel_projection_c512_to_c1024_fp16:
+  REG:96 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:936 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/encoder_c512_downsample/fp16/window_attention_projection_pool_c512_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_attention_projection_pool_c512_fp16:
+  REG:144 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/encoder_c512_downsample/fp8/channel_projection_c512_to_c1024_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function channel_projection_c512_to_c1024_fp8:
+  REG:96 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:936 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/encoder_c512_downsample/fp8/window_attention_projection_pool_c512_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_attention_projection_pool_c512_fp8:
+  REG:144 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:976 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/input_c32/fp16/input_preprocess_window_c32_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function input_preprocess_window_c32_fp16:
+  REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/input_c32/fp16/input_preprocess_window_downsample_c32_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function input_preprocess_window_downsample_c32_fp16:
+  REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/input_c32/fp8/input_preprocess_window_c32_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function input_preprocess_window_c32_fp8:
+  REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/input_c32/fp8/input_preprocess_window_downsample_c32_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function input_preprocess_window_downsample_c32_fp8:
+  REG:168 STACK:0 SHARED:3072 LOCAL:0 CONSTANT[0]:1160 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/output_c32/fp16/output_window_postprocess_c32_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function output_window_postprocess_c32_fp16:
+  REG:168 STACK:48 SHARED:0 LOCAL:0 CONSTANT[0]:1080 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/output_c32/fp8/output_window_postprocess_c32_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function output_window_postprocess_c32_fp8:
+  REG:168 STACK:48 SHARED:0 LOCAL:0 CONSTANT[0]:1080 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared/common/completion_counter_clear.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function completion_counter_clear:
+  REG:10 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:912 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_c32_output_view_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_block_c32_output_view_fp16:
+  REG:168 STACK:24 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_compact_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _Z25window_block_compact_fp16ILi32ELb1E38FWindowBlockC32InputViewFp16ParametersEvT1_:
+  REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z25window_block_compact_fp16ILi32ELb0E29FWindowBlockC32Fp16ParametersEvT1_:
+  REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _Z26window_block_two_warp_fp16ILi64ELb0ELb1E39FWindowBlockC64OutputViewFp16ParametersEvT2_:
+  REG:168 STACK:16 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z26window_block_two_warp_fp16ILi64ELb1ELb0E38FWindowBlockC64InputViewFp16ParametersEvT2_:
+  REG:168 STACK:16 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z26window_block_two_warp_fp16ILi64ELb0ELb0E29FWindowBlockC64Fp16ParametersEvT2_:
+  REG:168 STACK:8 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _Z22window_block_wide_fp16ILi256ELb0ELb1E40FWindowBlockC256OutputViewFp16ParametersEvT2_:
+  REG:182 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z22window_block_wide_fp16ILi256ELb1ELb0E39FWindowBlockC256InputViewFp16ParametersEvT2_:
+  REG:182 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z22window_block_wide_fp16ILi256ELb0ELb0E30FWindowBlockC256Fp16ParametersEvT2_:
+  REG:186 STACK:0 SHARED:33792 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z22window_block_wide_fp16ILi128ELb0ELb1E40FWindowBlockC128OutputViewFp16ParametersEvT2_:
+  REG:168 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z22window_block_wide_fp16ILi128ELb1ELb0E39FWindowBlockC128InputViewFp16ParametersEvT2_:
+  REG:168 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z22window_block_wide_fp16ILi128ELb0ELb0E30FWindowBlockC128Fp16ParametersEvT2_:
+  REG:164 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_c32_output_view_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_block_c32_output_view_fp8:
+  REG:168 STACK:8 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_compact_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _Z24window_block_compact_fp8ILi32ELb1E37FWindowBlockC32InputViewFp8ParametersEvT1_:
+  REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z24window_block_compact_fp8ILi32ELb0E28FWindowBlockC32Fp8ParametersEvT1_:
+  REG:168 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:992 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _Z25window_block_two_warp_fp8ILi64ELb0ELb1E38FWindowBlockC64OutputViewFp8ParametersEvT2_:
+  REG:157 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z25window_block_two_warp_fp8ILi64ELb1ELb0E37FWindowBlockC64InputViewFp8ParametersEvT2_:
+  REG:157 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z25window_block_two_warp_fp8ILi64ELb0ELb0E28FWindowBlockC64Fp8ParametersEvT2_:
+  REG:160 STACK:0 SHARED:5120 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _Z21window_block_wide_fp8ILi256ELb0ELb1E39FWindowBlockC256OutputViewFp8ParametersEvT2_:
+  REG:160 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z21window_block_wide_fp8ILi256ELb1ELb0E38FWindowBlockC256InputViewFp8ParametersEvT2_:
+  REG:164 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z21window_block_wide_fp8ILi256ELb0ELb0E29FWindowBlockC256Fp8ParametersEvT2_:
+  REG:163 STACK:0 SHARED:17408 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z21window_block_wide_fp8ILi128ELb0ELb1E39FWindowBlockC128OutputViewFp8ParametersEvT2_:
+  REG:161 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z21window_block_wide_fp8ILi128ELb1ELb0E38FWindowBlockC128InputViewFp8ParametersEvT2_:
+  REG:161 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z21window_block_wide_fp8ILi128ELb0ELb0E29FWindowBlockC128Fp8ParametersEvT2_:
+  REG:163 STACK:0 SHARED:9216 LOCAL:0 CONSTANT[0]:984 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_attention_projection_output_view_c512_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_attention_projection_output_view_c512_fp16:
+  REG:128 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_qkv_c512_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_qkv_c512_fp16:
+  REG:154 STACK:0 SHARED:5136 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_attention_projection_output_view_c512_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_attention_projection_output_view_c512_fp8:
+  REG:122 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_qkv_c512_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_qkv_c512_fp8:
+  REG:164 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _Z23spatial_projection_fp16ILi4E38FWindowFfnProjectionC512Fp16ParametersEvT0_:
+  REG:122 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z23spatial_projection_fp16ILi2E44FWindowAttentionProjectionC512Fp16ParametersEvT0_:
+  REG:102 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function _Z22spatial_projection_fp8ILi4E37FWindowFfnProjectionC512Fp8ParametersEvT0_:
+  REG:122 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _Z22spatial_projection_fp8ILi2E43FWindowAttentionProjectionC512Fp8ParametersEvT0_:
+  REG:100 STACK:0 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_ffn_c512_fp16:
+  REG:217 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_input_view_c512_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_ffn_input_view_c512_fp16:
+  REG:215 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_projection_input_view_c512_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_ffn_projection_input_view_c512_fp16:
+  REG:128 STACK:8 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_ffn_c512_fp8:
+  REG:108 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_ffn_input_view_c512_fp8:
+  REG:161 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:952 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_projection_input_view_c512_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function window_ffn_projection_input_view_c512_fp8:
+  REG:128 STACK:32 SHARED:13336 LOCAL:0 CONSTANT[0]:968 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function small_global_attention_chained_c1024_fp16:
+  REG:208 STACK:0 SHARED:17424 LOCAL:0 CONSTANT[0]:960 TEXTURE:0 SURFACE:0 SAMPLER:0
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = D:/Research/DLSSNR-PyTorch/csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu
+
+Resource usage:
+ Common:
+  GLOBAL:0
+ Function small_global_attention_chained_c1024_fp8:
+  REG:199 STACK:0 SHARED:9232 LOCAL:0 CONSTANT[0]:960 TEXTURE:0 SURFACE:0 SAMPLER:0

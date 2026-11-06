@@ -1,0 +1,3195 @@
+{
+  "schema_version": 1,
+  "state": "accepted",
+  "acceptance_id": "flashlight-sm120-20261106-candidate007",
+  "original_source_revision": "e2741a72b390f830de810e6f1180369ed52eb325",
+  "candidate_source_revision": "c6fb8f912719e70bda1bc9b5b15383e741c4d39f",
+  "original_build": {
+    "provenance_basis": "inferred",
+    "provenance_note": "Original binary build is preserved-receipt evidence from the frozen 2026-10-30 link. The recorded short build commit 266d69a resolves to the full commit 266d69acf52dda413df3a874572f1156461f89ff. The receipt does not record the build checkout's dirty state, so dirty is honestly null (inferred basis). e2741a72b390f830de810e6f1180369ed52eb325 is the separate source-replay snapshot, not this original binary's build checkout. Old-build continuity limitation: This 2026-10-09 receipt produced an earlier SM120 link and does not contain a binary SHA. It is the receipt for the 61 object files that the 2026-10-30 final link reused, not for the f0d514 link itself. The final 2026-10-30 link has 65 objects: 4 translation units were rebuilt and 61 objects were reused from the earlier 2026-10-09 build. That earlier receipt lacks the full source/binary manifest and the final-link binary SHA; it is the receipt for the reused objects, not the f0d514 final-link binary receipt. The preserved f0d514 final-link binary is a separate artifact. The e2741a72b390f830de810e6f1180369ed52eb325 source replay is a separate source-only record. The 125 measurement-time csrc rows (including 3 FFN rows; e274-blob-exact: 56, e274-blob-lf-to-crlf-reconstruction: 69) are reconstructed from real e2741a72b390f830de810e6f1180369ed52eb325 blobs only after raw SHA-256 and byte length match; they are not a direct archived old-build source association. Raw bytes, normalized-LF bytes and Git blob identities remain distinct. The 12 Small31 final-link sourceHashes are not used as the complete original source manifest. Toolchain identity basis is preserved-receipt: Original toolchain versions and CUDA release are preserved from the archived final-link environment; original nvcc/ptxas executable SHA-256 values and the build-time PyTorch distribution are unknown and field-qualified in the build receipt toolchain.qualifications. Coarse recorded versions are preserved; no candidate/current patch version or executable hash is substituted. No historical value is invented.",
+    "build_time_HEAD": "266d69acf52dda413df3a874572f1156461f89ff",
+    "dirty": null,
+    "build_receipt": {
+      "path": "receipts/build/original-build-receipt.json",
+      "sha256": "8eeb8fa92ad387fe8d03acae4c9c2b26ea0978c271e18904bde2b0250a404939"
+    },
+    "input_manifest": {
+      "path": "receipts/source/original-input-manifest.json",
+      "sha256": "ca3dd482a76f6b7520e6d8e294ff0ea6340149cf41fd5c248a759600770b5f66"
+    },
+    "binary_filename": "_C_sm120.cp311-win_amd64.pyd",
+    "binary_sha256": "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+    "toolchain": {
+      "nvcc_version": "12.8.93",
+      "nvcc_sha256": null,
+      "ptxas_version": "13.4",
+      "ptxas_sha256": null,
+      "cuda_version": "12.8",
+      "pytorch_version": null,
+      "qualifications": {
+        "nvcc_sha256": "Unknown historical fact: the archived original final-link receipt profile/cutlass-refactor-20261105/baseline/frozen/build-receipts/rgb-safe-attention-build/results.json (sha256 1cd49918c9fc0ffd56f81c65913fe19ffe654b1f75ed1047ac66d4a93f0a432d) and provenance profile/cutlass-refactor-20261105/baseline/provenance/build-provenance.json (sha256 676b4faca69d4d8e54626b71307c2eeba9af2b8a3ae45bfe5afa12be17a6ef8c) record the nvcc version but no nvcc executable SHA-256. No contemporaneous original nvcc bytes are archived; the candidate hash is not substituted.",
+        "ptxas_sha256": "Unknown historical fact: the archived original final-link receipt profile/cutlass-refactor-20261105/baseline/frozen/build-receipts/rgb-safe-attention-build/results.json (sha256 1cd49918c9fc0ffd56f81c65913fe19ffe654b1f75ed1047ac66d4a93f0a432d) and provenance profile/cutlass-refactor-20261105/baseline/provenance/build-provenance.json (sha256 676b4faca69d4d8e54626b71307c2eeba9af2b8a3ae45bfe5afa12be17a6ef8c) record the ptxas version but no ptxas executable SHA-256. No contemporaneous original ptxas bytes are archived; the candidate hash is not substituted.",
+        "pytorch_version": "Unknown build-time fact: the archived original final-link receipt profile/cutlass-refactor-20261105/baseline/frozen/build-receipts/rgb-safe-attention-build/results.json (sha256 1cd49918c9fc0ffd56f81c65913fe19ffe654b1f75ed1047ac66d4a93f0a432d) does not record the PyTorch distribution. The later measurement-time runtime environment profile/cutlass-refactor-20261105/baseline/provenance/environment.json (sha256 7e1fa75dbb253b155afebc816b6059aa13a03d5a4b617ebf3ce17b3cb6c7ace6, captured 2026-11-05T12:02:24.384391+00:00) records torch==2.8.0+cu128; that runtime pip_freeze is not build-time evidence."
+      }
+    }
+  },
+  "candidate_build": {
+    "provenance_basis": "preserved-receipt",
+    "provenance_note": "Candidate built by direct local fallback after DeepCluster ACCOUNT_QUOTA from HEAD 98d6309a193b00767877e36ffea56ef1de43dd69 with four dirty preprocessing files, actual environment/cache key 6d94f46f0bddeb2844a919445fc7c6d67881864158836a620b1de5f6a5789dff. The launcher records 2026-11-06T08:26:26Z to 2026-11-06T08:27:02Z and 36.734s monotonic duration. This is the actual build-time identity; later source-commit attribution requires normalized measured input bytes to match that commit. No separate preparation-key discrepancy or DeepCluster execution is claimed. The build guard recorded zero blocked calls and one availability stub call. Candidate007 resources are derived directly from its hash-bound compiler log and cuobjdump output. The accepted parser handles the optional cumulative-stack clause; no historical006 six-row correction is attributed to this build. FFN static shared memory and the1024-byte cuobjdump reserved delta stay separate.",
+    "build_time_HEAD": "98d6309a193b00767877e36ffea56ef1de43dd69",
+    "dirty": true,
+    "build_receipt": {
+      "path": "receipts/build/candidate-build-receipt.json",
+      "sha256": "939ce01239b218069910de4695c702573f50ca95f24a961d74c0106037259f7c"
+    },
+    "input_manifest": {
+      "path": "receipts/source/candidate-input-manifest.json",
+      "sha256": "d141c317dc6e3f8a2578449ca7b90a752f1b4a7e338e7130aca5b048285bab95"
+    },
+    "binary_filename": "_C_sm120.cp311-win_amd64.pyd",
+    "binary_sha256": "532dc6b34bbf4813c4aab9e13e9e26f2cd32e9aa98db1fb15216c9b24fdbfbb4",
+    "toolchain": {
+      "nvcc_version": "12.8.93",
+      "nvcc_sha256": "07565c215cc96e3b3609a931eb6eaffb1ecca24339442603f92832494c656727",
+      "ptxas_version": "13.4.59",
+      "ptxas_sha256": "462442e14a78d62e9165926e9ae75d4d8dbc5d9db2d4130f36f08e9aeaa0e0d5",
+      "cuda_version": "12.8",
+      "pytorch_version": "2.8.0+cu128"
+    }
+  },
+  "source_provenance": {
+    "manifest": {
+      "path": "receipts/source/candidate-input-manifest.json",
+      "sha256": "d141c317dc6e3f8a2578449ca7b90a752f1b4a7e338e7130aca5b048285bab95"
+    },
+    "files": [
+      {
+        "path": "csrc/common/host/boxed_dispatch.h",
+        "raw_file_sha256": "028ea58b3c085003c2e606aba3e0942b541024f16465102cc71c20fd000f8734",
+        "normalized_lf_sha256": "028ea58b3c085003c2e606aba3e0942b541024f16465102cc71c20fd000f8734"
+      },
+      {
+        "path": "csrc/common/host/deployment_runtime.h",
+        "raw_file_sha256": "658adbc25df0ab98456ff7ff71478979560a2ade9425a2cd0e3a868bc98efa4d",
+        "normalized_lf_sha256": "658adbc25df0ab98456ff7ff71478979560a2ade9425a2cd0e3a868bc98efa4d"
+      },
+      {
+        "path": "csrc/common/host/parameter_binding.h",
+        "raw_file_sha256": "db1db793c73c75d70a75480d29a8efe84da944652e4eeadbc9f75d891481bf47",
+        "normalized_lf_sha256": "db1db793c73c75d70a75480d29a8efe84da944652e4eeadbc9f75d891481bf47"
+      },
+      {
+        "path": "csrc/common/host/physical_tensor.h",
+        "raw_file_sha256": "89f2c621c1fa224a57107b78332fa24dfb472d2ebf7c8a158939b9710069eb16",
+        "normalized_lf_sha256": "89f2c621c1fa224a57107b78332fa24dfb472d2ebf7c8a158939b9710069eb16"
+      },
+      {
+        "path": "csrc/common/layout/global_profiles.h",
+        "raw_file_sha256": "b68bb27a8adf4bdd3cf28713334a6f8f413c5aae46cfb0563a8d02f7a58d0c80",
+        "normalized_lf_sha256": "b68bb27a8adf4bdd3cf28713334a6f8f413c5aae46cfb0563a8d02f7a58d0c80"
+      },
+      {
+        "path": "csrc/common/layout/global_repack.h",
+        "raw_file_sha256": "c7fba4e65ee1ae328174d4e2d73d76cacac8174c9cde29469637920bb67290f1",
+        "normalized_lf_sha256": "c7fba4e65ee1ae328174d4e2d73d76cacac8174c9cde29469637920bb67290f1"
+      },
+      {
+        "path": "csrc/common/layout/numerical_constants.h",
+        "raw_file_sha256": "ef000f752cc02a4ccce3dfe15332dee42ca8698c980a88db9f3d3c20a81a1071",
+        "normalized_lf_sha256": "ef000f752cc02a4ccce3dfe15332dee42ca8698c980a88db9f3d3c20a81a1071"
+      },
+      {
+        "path": "csrc/common/layout/spatial_projection.h",
+        "raw_file_sha256": "433ed79cb0b1409b1e6ec8e814f5367f6482c8e15881de57862848f8ed509679",
+        "normalized_lf_sha256": "433ed79cb0b1409b1e6ec8e814f5367f6482c8e15881de57862848f8ed509679"
+      },
+      {
+        "path": "csrc/common/layout/window_profiles.h",
+        "raw_file_sha256": "a88ac4fda4ca7bceddc519ce22a20d2577f54ae8b3f011f4784d74547656af73",
+        "normalized_lf_sha256": "a88ac4fda4ca7bceddc519ce22a20d2577f54ae8b3f011f4784d74547656af73"
+      },
+      {
+        "path": "csrc/common/ops/activation.h",
+        "raw_file_sha256": "0080c468c0d37a734702cbbd08339e1cabec146ce64c4563edd1a21a52d7daa3",
+        "normalized_lf_sha256": "0080c468c0d37a734702cbbd08339e1cabec146ce64c4563edd1a21a52d7daa3"
+      },
+      {
+        "path": "csrc/common/ops/frontend_texture.h",
+        "raw_file_sha256": "ba695166f682f809bb0ab7f4ff36cf45275c309851a06bc578b94afe2ae5b20e",
+        "normalized_lf_sha256": "ba695166f682f809bb0ab7f4ff36cf45275c309851a06bc578b94afe2ae5b20e"
+      },
+      {
+        "path": "csrc/common/ops/global_attention.h",
+        "raw_file_sha256": "f75349aa1a335ec038d030b6b8f361f66ae2c88c4f23ba120e4148e678f6482e",
+        "normalized_lf_sha256": "f75349aa1a335ec038d030b6b8f361f66ae2c88c4f23ba120e4148e678f6482e"
+      },
+      {
+        "path": "csrc/common/ops/small_attention.h",
+        "raw_file_sha256": "ce346e8ed2763cfcbcc735daa4ad9309ba8645b7f22e6ca7caa65fa05c3eb997",
+        "normalized_lf_sha256": "ce346e8ed2763cfcbcc735daa4ad9309ba8645b7f22e6ca7caa65fa05c3eb997"
+      },
+      {
+        "path": "csrc/common/ops/window_attention.h",
+        "raw_file_sha256": "b3874fd454ae926b88d4956fe26c13e82f261877666a5559c4e87915e9dc1f9f",
+        "normalized_lf_sha256": "98d51564f272a3746902f1cfe8bdd544e182b763a3004a8c0b48be65aeddee00"
+      },
+      {
+        "path": "csrc/include/dlssnr/abi/kernel_parameters.h",
+        "raw_file_sha256": "12723e426e0bde6dc00c8eb2ad315b4944b587c32923313116a4588dfe984679",
+        "normalized_lf_sha256": "866022f1db2f070426fb1cdba67d0b68dd37ec06dae79d2c7f654edbd4f2c0ee"
+      },
+      {
+        "path": "csrc/include/dlssnr/abi/small_attention.h",
+        "raw_file_sha256": "41580f177bf5f9f32aed9855797a1bc5d119cbd94097c34ef1f6de04d6180d47",
+        "normalized_lf_sha256": "41580f177bf5f9f32aed9855797a1bc5d119cbd94097c34ef1f6de04d6180d47"
+      },
+      {
+        "path": "csrc/include/flashlight/arch/async.cuh",
+        "raw_file_sha256": "f89203c5b40faea1875d48e24420d3d47fddcf75a12edc71586b5a2c55dae1f9",
+        "normalized_lf_sha256": "f89203c5b40faea1875d48e24420d3d47fddcf75a12edc71586b5a2c55dae1f9"
+      },
+      {
+        "path": "csrc/include/flashlight/arch/math.cuh",
+        "raw_file_sha256": "545a02a73b43877fd14fd23dae191d786afbde4f7e0e428053bc2e2628555e25",
+        "normalized_lf_sha256": "545a02a73b43877fd14fd23dae191d786afbde4f7e0e428053bc2e2628555e25"
+      },
+      {
+        "path": "csrc/include/flashlight/arch/memory.cuh",
+        "raw_file_sha256": "9e1f8e25dab8464f90c304cc6ea4b9ae482bcb862b1c7a5ee8f150537b0b717f",
+        "normalized_lf_sha256": "9e1f8e25dab8464f90c304cc6ea4b9ae482bcb862b1c7a5ee8f150537b0b717f"
+      },
+      {
+        "path": "csrc/include/flashlight/arch/mma.cuh",
+        "raw_file_sha256": "dddec66d833d28a791c5b8659d749cd603c95775ed52575c77ee26affb26daa1",
+        "normalized_lf_sha256": "dddec66d833d28a791c5b8659d749cd603c95775ed52575c77ee26affb26daa1"
+      },
+      {
+        "path": "csrc/include/flashlight/arch/warp.cuh",
+        "raw_file_sha256": "55593122f9980d91c9d2160c4933157935ffd8579d811695375e781d91af3d50",
+        "normalized_lf_sha256": "55593122f9980d91c9d2160c4933157935ffd8579d811695375e781d91af3d50"
+      },
+      {
+        "path": "csrc/include/flashlight/core.cuh",
+        "raw_file_sha256": "8c90094ffb3a21921b9f974dcbc6b09738b846ba7bb27537ae8f87b16e150b53",
+        "normalized_lf_sha256": "8c90094ffb3a21921b9f974dcbc6b09738b846ba7bb27537ae8f87b16e150b53"
+      },
+      {
+        "path": "csrc/include/flashlight/layout/strided.cuh",
+        "raw_file_sha256": "a64f846241016197e12b6837c60f9c9ff4d9dad3ebe6c07cc9013e3b99a6898c",
+        "normalized_lf_sha256": "a64f846241016197e12b6837c60f9c9ff4d9dad3ebe6c07cc9013e3b99a6898c"
+      },
+      {
+        "path": "csrc/include/flashlight/memory/pipeline.cuh",
+        "raw_file_sha256": "3216c12dc9bad3fcb518fdb01d007a1b008e565094b2a9936e255f65a9292e5d",
+        "normalized_lf_sha256": "3216c12dc9bad3fcb518fdb01d007a1b008e565094b2a9936e255f65a9292e5d"
+      },
+      {
+        "path": "csrc/include/flashlight/memory/publication.cuh",
+        "raw_file_sha256": "0d3d259eab7f16f7a1057dd36abeb3965f86a4b0a01ec65e3035683d5aeb683a",
+        "normalized_lf_sha256": "0d3d259eab7f16f7a1057dd36abeb3965f86a4b0a01ec65e3035683d5aeb683a"
+      },
+      {
+        "path": "csrc/include/flashlight/memory/views.cuh",
+        "raw_file_sha256": "86ff10fda6fe21ff754b97758709f7e6ddd5e821d7a3342a50a9f0798a567f67",
+        "normalized_lf_sha256": "86ff10fda6fe21ff754b97758709f7e6ddd5e821d7a3342a50a9f0798a567f67"
+      },
+      {
+        "path": "csrc/include/flashlight/numeric/packed.cuh",
+        "raw_file_sha256": "432dc7cc5f9e2c27361f3dcbdf7eba589319f6f51e4e6bbc79b440d9e3d01e59",
+        "normalized_lf_sha256": "432dc7cc5f9e2c27361f3dcbdf7eba589319f6f51e4e6bbc79b440d9e3d01e59"
+      },
+      {
+        "path": "csrc/include/flashlight/tile/mma.cuh",
+        "raw_file_sha256": "b9d19c06d5f1c6d1b4ded0a1f4f85046899034fb8a9e368d49c39b6a5d072ca2",
+        "normalized_lf_sha256": "b9d19c06d5f1c6d1b4ded0a1f4f85046899034fb8a9e368d49c39b6a5d072ca2"
+      },
+      {
+        "path": "csrc/include/flashlight/warp/permutation.cuh",
+        "raw_file_sha256": "097f7a0de3d73867daac5a26575399d22f458bd32696bcdc8b5aac1dd158a693",
+        "normalized_lf_sha256": "097f7a0de3d73867daac5a26575399d22f458bd32696bcdc8b5aac1dd158a693"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_attention_chained_c1024_fp16.cu",
+        "raw_file_sha256": "bccd5bade925250b37881492d8ee464526b0188aa006b24e2bd1ed90ad84f517",
+        "normalized_lf_sha256": "bccd5bade925250b37881492d8ee464526b0188aa006b24e2bd1ed90ad84f517"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp16/global_qkv_c1024_fp16.cu",
+        "raw_file_sha256": "bc183c0d2f34fc897ceaed33ad1254ab6be7603943d181bd0a057c9aba4696cb",
+        "normalized_lf_sha256": "bc183c0d2f34fc897ceaed33ad1254ab6be7603943d181bd0a057c9aba4696cb"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_attention_chained_c1024_fp8.cu",
+        "raw_file_sha256": "18f8756f6542d49f84e453667ecdc94125fceb62662fda1e0c00090c864f8f4d",
+        "normalized_lf_sha256": "18f8756f6542d49f84e453667ecdc94125fceb62662fda1e0c00090c864f8f4d"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention/fp8/global_qkv_c1024_fp8.cu",
+        "raw_file_sha256": "702df0ec16b39a83e751fe77967162eed8fbbcba3bbbf8f3bc3a227f3c098fdb",
+        "normalized_lf_sha256": "702df0ec16b39a83e751fe77967162eed8fbbcba3bbbf8f3bc3a227f3c098fdb"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_ffn_contract_c1024_fp16.cu",
+        "raw_file_sha256": "1a9a37eac25c2b5c075b92fb2f8936f31ad540d56df7c6bfc90dbfece0195fe6",
+        "normalized_lf_sha256": "1a9a37eac25c2b5c075b92fb2f8936f31ad540d56df7c6bfc90dbfece0195fe6"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp16/global_projection_c1024_fp16.cu",
+        "raw_file_sha256": "d0caffac9f3850f06d7368b57e94154b38e65c94ad3952ffb77478cd59604666",
+        "normalized_lf_sha256": "d0caffac9f3850f06d7368b57e94154b38e65c94ad3952ffb77478cd59604666"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_attention_ffn_projection/fp8/global_contract_fp8.cu",
+        "raw_file_sha256": "e7eb8fc640297a78398592dc394b62b578bc9f8d9584046201bd97f354f3af4a",
+        "normalized_lf_sha256": "e7eb8fc640297a78398592dc394b62b578bc9f8d9584046201bd97f354f3af4a"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu",
+        "raw_file_sha256": "17e89f3e217661489bcc5252c1af288cca195a403c47651ac749e7c3dd51c06f",
+        "normalized_lf_sha256": "17e89f3e217661489bcc5252c1af288cca195a403c47651ac749e7c3dd51c06f"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_ffn/fp8/global_ffn_expand_c1024_fp8.cu",
+        "raw_file_sha256": "3e97d67dd70990ddd9f3eb013e4681654dee50ac6009b916087877d8a67fe188",
+        "normalized_lf_sha256": "3e97d67dd70990ddd9f3eb013e4681654dee50ac6009b916087877d8a67fe188"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_spatial_to_token.cu",
+        "raw_file_sha256": "c2aca9e5456bfa1906e03046854d9da4e1f8c6f070b96fc4fc6518ea5ee83fdb",
+        "normalized_lf_sha256": "c2aca9e5456bfa1906e03046854d9da4e1f8c6f070b96fc4fc6518ea5ee83fdb"
+      },
+      {
+        "path": "csrc/kernel_impl/bottleneck_c1024_layout/common/repack_token_to_spatial.cu",
+        "raw_file_sha256": "8560aab0b85149470d9e8bc0fcf7d0e22b693aa4d22ab157d35e09590feb3ec5",
+        "normalized_lf_sha256": "8560aab0b85149470d9e8bc0fcf7d0e22b693aa4d22ab157d35e09590feb3ec5"
+      },
+      {
+        "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp16/decoder_upsample_c1024_to_c512_fp16.cu",
+        "raw_file_sha256": "617bb7dbba20afd6fb4d8667dd7f3dbef49c94bfc8075b4adb949161f1bcc5b9",
+        "normalized_lf_sha256": "617bb7dbba20afd6fb4d8667dd7f3dbef49c94bfc8075b4adb949161f1bcc5b9"
+      },
+      {
+        "path": "csrc/kernel_impl/decoder_c1024_to_c512_upsample/fp8/decoder_upsample_c1024_to_c512_fp8.cu",
+        "raw_file_sha256": "538f0368b62d60162c8d517f6044fbb3fa88ae635596975e52b4223989d7c8d4",
+        "normalized_lf_sha256": "538f0368b62d60162c8d517f6044fbb3fa88ae635596975e52b4223989d7c8d4"
+      },
+      {
+        "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_c32_upsample_fp16.cu",
+        "raw_file_sha256": "12547a2e0dee40282470e9540a59ff684e24f76b74f889ae5f67fb75fccbcaba",
+        "normalized_lf_sha256": "fdeec45a3d9734ddbe4e1501cb0f7d1819df8a2a8c287018aa0228e006e30e7b"
+      },
+      {
+        "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_c64_upsample_fp16.cu",
+        "raw_file_sha256": "a551e294ca48cc2d778aa260dba90c79bc26a3be957be85df9f0969c58a15039",
+        "normalized_lf_sha256": "32541e2db273c623e9c3c431ad20c522a7541e14e5f43f6314ddb83ddf9404fa"
+      },
+      {
+        "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp16/window_block_wide_upsample_fp16.cu",
+        "raw_file_sha256": "d0b5a8fe6beefd678f5571713ddde4f94830bd3f0d3526eecb85087786d9aeb2",
+        "normalized_lf_sha256": "ec14759dd9b9fb8650eb101ef20a212482a6759ea52a0577cdc254ffc534e4a3"
+      },
+      {
+        "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c32_upsample_fp8.cu",
+        "raw_file_sha256": "ecaa407c04dfa9889987140a7595a5e8aea67d6d6998241b5cad64a142d6fd1a",
+        "normalized_lf_sha256": "69ce3ee5be6fb0f9615a8e7869e1a2c91a1a6d0e47e5f683ffa9ee40f8c2a36d"
+      },
+      {
+        "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_c64_upsample_fp8.cu",
+        "raw_file_sha256": "39d1f420d0a34994ac4ab7391aaec473ade9e8d9e78769731faaed6e72105cd7",
+        "normalized_lf_sha256": "5669271a775346fe8135b47a12ae68fdc75b8ff009cf98470c8f96fd8f49bf02"
+      },
+      {
+        "path": "csrc/kernel_impl/decoder_c32_c64_c128_c256_upsample/fp8/window_block_wide_upsample_fp8.cu",
+        "raw_file_sha256": "8341b7ea8b5a285c3a62e5b4a9f0c016ca59a5aa2367cb597e3b07277e028424",
+        "normalized_lf_sha256": "85579b94f8f83a73f1ece73d00cc3aee548ba1344a4f0f8efcf97eb8cd43c02f"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_c32_downsample_fp16.cu",
+        "raw_file_sha256": "1c8b6a21b0e1534adfd8a722d3153c6bb149d54a16acdb04209511393f8cd457",
+        "normalized_lf_sha256": "7ecc38a671b5a04c42f30da30c2483aa3a175a7c19f503330a2a6004cb1c8926"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_c64_downsample_fp16.cu",
+        "raw_file_sha256": "da7ea2085822536009659fe5b2069c250a3db3d6d7353122c49fe21d6f6b77ef",
+        "normalized_lf_sha256": "5c23b150e0824d36b8b08853d1a3b4a7e2cdb06ae59a97ec4f8bbffc277521c4"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp16/window_block_wide_downsample_fp16.cu",
+        "raw_file_sha256": "a20f98ea2ed87244654181585128fcc874829363ec14e0d59251b2bab00bd497",
+        "normalized_lf_sha256": "4a4ce4e64124bfe97d7b126861b1e45180ef8230d40e3da79a5d9a54379b0b81"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_c32_downsample_fp8.cu",
+        "raw_file_sha256": "6b4a28b5ab30a3f6b9441ddf1afcf2fff54e0d913279baa030e4b95305353693",
+        "normalized_lf_sha256": "c552c2d0460684599d778691c55bb100a262389e097b3180c00e9f3c0d5fbb94"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_c64_downsample_fp8.cu",
+        "raw_file_sha256": "9d69a13f4abbdbdc59e6a6b365a3747f8024e867d07acb4be531b83e7828eede",
+        "normalized_lf_sha256": "3905e7672fe7a3aebf42b603b365cd3623ba575c8ae7e840ee96f177c725d0b2"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c32_c64_c128_c256_downsample/fp8/window_block_wide_downsample_fp8.cu",
+        "raw_file_sha256": "37c561e6c2e15b28507c4d39e689592dbc6a57ffbded10b881b823b89bf7d9e3",
+        "normalized_lf_sha256": "7f1d4fd4860d6121e19431adabc7fd440ef4cca75151c0ac6432a22aa2ff8fa3"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/channel_projection_c512_to_c1024_fp16.cu",
+        "raw_file_sha256": "0eae9ebb6d7b1bf8742e7743c8733d890062f3a4c356ccb3ac8ffa1812443bcf",
+        "normalized_lf_sha256": "57f0fff595b8c65ecc20dcf8231357f1d37fe8781731a532c8e47132bb9a899a"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp16/window_attention_projection_pool_c512_fp16.cu",
+        "raw_file_sha256": "4d4d6a471eae097fae7a35189228a957d241859ec6b7a9c735bfd7054018eae7",
+        "normalized_lf_sha256": "e3ab839f4d6252f509c814464cf0413803a947d12566914ba58e3b33b0e5f891"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/channel_projection_c512_to_c1024_fp8.cu",
+        "raw_file_sha256": "c6971a3ddfada0b34a5d9566bd0bee0ad361174cfdc01aa4ec35b694c8fbc9e9",
+        "normalized_lf_sha256": "878f072a2cacd07b27c01331f6449631e9b72d1116fae076ffd2af57888ab595"
+      },
+      {
+        "path": "csrc/kernel_impl/encoder_c512_downsample/fp8/window_attention_projection_pool_c512_fp8.cu",
+        "raw_file_sha256": "b64f685b6e3d5565d16518b21b09ef97eb17f370d94db6672a33e6515e4c380e",
+        "normalized_lf_sha256": "b64f685b6e3d5565d16518b21b09ef97eb17f370d94db6672a33e6515e4c380e"
+      },
+      {
+        "path": "csrc/kernel_impl/input_c32/fp16/input_preprocess_window_c32_fp16.cu",
+        "raw_file_sha256": "e646b5c986a9fcfb459fb2b786ace3d37553c1033d9f72a220a0d0b39ec0ecf7",
+        "normalized_lf_sha256": "0238e8783fee092d5f088e0f3b9eae12224ba5937beab57436d30337d3917e2b"
+      },
+      {
+        "path": "csrc/kernel_impl/input_c32/fp16/input_preprocess_window_downsample_c32_fp16.cu",
+        "raw_file_sha256": "165da692b11ecdf3e26ef732c81db56150c91c4057bedeb2f16b9065d6ed9247",
+        "normalized_lf_sha256": "163a441401ea026611f82e32f6c7029fafb07eac8f12b1e2022466e44092283f"
+      },
+      {
+        "path": "csrc/kernel_impl/input_c32/fp8/input_preprocess_window_c32_fp8.cu",
+        "raw_file_sha256": "4c5228cb88c19ca079ea6bdac7879e77b1b695a4d66b5071c9176229949a1571",
+        "normalized_lf_sha256": "594ffd98715463c8da5cf4dcb767a5bad0a2c9c47cefc81939e514dd2f469425"
+      },
+      {
+        "path": "csrc/kernel_impl/input_c32/fp8/input_preprocess_window_downsample_c32_fp8.cu",
+        "raw_file_sha256": "685229c7de29f857a7a689add30bae40b16d90089b03e9d8df849374d48f8c6f",
+        "normalized_lf_sha256": "fdb76f8a6dac2da2b3afd9555609f4f9ce942c67377f7c90a46b499eb32ab3ab"
+      },
+      {
+        "path": "csrc/kernel_impl/output_c32/fp16/output_window_postprocess_c32_fp16.cu",
+        "raw_file_sha256": "9ed28a1479bf37cfdd703df4f3eaaa357a156b3c3b56ff36c539f66aaa46c9ad",
+        "normalized_lf_sha256": "c113d68d24ad30594a1ec82ba49ff2b8c45615151e970605ad5541b4d20dea2d"
+      },
+      {
+        "path": "csrc/kernel_impl/output_c32/fp8/output_window_postprocess_c32_fp8.cu",
+        "raw_file_sha256": "ea5efed470a96ac98e27d30f74eec1be6652f892a511030b6894ab81439b701d",
+        "normalized_lf_sha256": "67fe0d85850872ef4db8a290e14428140d8dbe479902b01c55049b3e9477a048"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/completion_counter_clear.cu",
+        "raw_file_sha256": "b9f8d75f3c2f77c9c4b315f22e86a156da7c02e1c7b9a3734677ed35d449d91d",
+        "normalized_lf_sha256": "8a392e6435fb1798430db8fd02fb42605e73d3a18d2ac25b2af3a6c106cc682e"
+      },
+      {
+        "path": "csrc/kernel_impl/shared/common/kernel_templates.json",
+        "raw_file_sha256": "84e87750270140811e4a63191693c15816ef28cefb8b94555b9f570f914ff4eb",
+        "normalized_lf_sha256": "84e87750270140811e4a63191693c15816ef28cefb8b94555b9f570f914ff4eb"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_c32_output_view_fp16.cu",
+        "raw_file_sha256": "9503495498d4f87dce6e3e8a22b8811702da189d9df0965f03b0851668f70f67",
+        "normalized_lf_sha256": "2d32783b6cc64ea9fa6fb07ae999fd9aa7abc53ec3cdb0129505036547f7cadc"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_compact_fp16.cu",
+        "raw_file_sha256": "c4f6d4022f608d93340299fa58fb8d4d3feb4535f772b5aac9d5a2f51e009f33",
+        "normalized_lf_sha256": "00918f49a250f2b8c0445e0e2858c6cd721c01b1adcb2b1ff28d3e25e1d872d6"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_two_warp_fp16.cu",
+        "raw_file_sha256": "64baf03edac9af6e42ad56714a2f1d55340ed15a37827b437a7becf6ba72726a",
+        "normalized_lf_sha256": "b4bee52e7ac148199c96ab4be368985e6fe0093ef76ff71fbcbc7ff8b036c8a2"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp16/window_block_wide_fp16.cu",
+        "raw_file_sha256": "a14cb638c6e04415af9d97c6364fac639022a46d51c3aa70d255f5c1900708b9",
+        "normalized_lf_sha256": "573b6e5abdbe95349b81ffe8c589755d3e60bc62879dded626dfe477c623c4d8"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_c32_output_view_fp8.cu",
+        "raw_file_sha256": "cf7bb3eab54cb49f2080f3299aff728599d71bf9a7d1c8d7c49336ba25bec4e7",
+        "normalized_lf_sha256": "a9f56801c71247e73da0e2b9395df4b5a5758e5497fd639cc6461677cda9eb1c"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_compact_fp8.cu",
+        "raw_file_sha256": "e57d86fb4accd67a09d5c3b03b59079ffeae520a5a220cf51b0d5413c8d28ef5",
+        "normalized_lf_sha256": "6274ec6450f79d17dd902c34e71bd7040dac8853d6eb64f3a363ac9ac28e2fd6"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_two_warp_fp8.cu",
+        "raw_file_sha256": "647baa54d3fcd7c4f39cb36661efa75db7994db9bd6c747286752fcc6188faff",
+        "normalized_lf_sha256": "dbfe3953beecb87628ad56e18b4638ab88075054c95d696e9cbf7e0ec205d127"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c32_c64_c128_c256_fused_window/fp8/window_block_wide_fp8.cu",
+        "raw_file_sha256": "b749d5632a7d09019a7203e4ee0d87fa7949ccddbac88a4a279f990ca2fc9557",
+        "normalized_lf_sha256": "fbfdb8bb763b9e6d63847493bf3d16d1cc8b877ff92cc0e48efd40752896930d"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_attention_projection_output_view_c512_fp16.cu",
+        "raw_file_sha256": "58bd2f0428d845c35f5008c48a51108f14c72fa7da5c13ff3237b4ce2c317c23",
+        "normalized_lf_sha256": "c9804733b953ed06bd05a31502aff0cb6563503b952f580cbb6de12693319265"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp16/window_qkv_c512_fp16.cu",
+        "raw_file_sha256": "b6cd05a1d9a26c574630890516e808db636beed9668488212efb16fbfc0ab990",
+        "normalized_lf_sha256": "38e13e3d220f5a454bd36e4d565c44dabd5fefb6ba5ed01f2208fdc1260297d0"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_attention_projection_output_view_c512_fp8.cu",
+        "raw_file_sha256": "86e44b98909badcf828c63b334809361ca861d342402457f621ba0014d55f944",
+        "normalized_lf_sha256": "86e44b98909badcf828c63b334809361ca861d342402457f621ba0014d55f944"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention/fp8/window_qkv_c512_fp8.cu",
+        "raw_file_sha256": "a109965fe8b1e1fa15786f5fc429e3079bc51ab4492d4ab9c71062df226a8c88",
+        "normalized_lf_sha256": "8e99f5c99965501685e7b100a0dd4200654f764126a8c06ad11161099410ec5f"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp16/spatial_projection_fp16.cu",
+        "raw_file_sha256": "fb7a5e323bcf96116802096be2ae9c091ab178b0e8c8bc23cac60c93aed7694a",
+        "normalized_lf_sha256": "e78f54db48cee8356cb404f3c0eb0c318674d2d8c396cfddb21dff99d4f8db35"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_attention_ffn_projection/fp8/spatial_projection_fp8.cu",
+        "raw_file_sha256": "f31c92fb7c86aea06b8159fbaeed39ace3c952d6294e676a6bf4670cc4273e61",
+        "normalized_lf_sha256": "87efe322622925750c4a1f2058d71263b7496e8013c2d0abcd15a2e5bb4f54f1"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_c512_fp16.cu",
+        "raw_file_sha256": "c32884f425a8009cc84adde2013195d8a61265fd82a61ef9e8bbcc941571628e",
+        "normalized_lf_sha256": "d7a48b0d7626cc362ad136e68f99a8322b8ee086c26cc3a185c67756c1040fc6"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_input_view_c512_fp16.cu",
+        "raw_file_sha256": "ea7dd817b4ec2c96b80218b0ba25b126ad5e86bd3f7699c4860ed477f9177b69",
+        "normalized_lf_sha256": "cd8ac976292c7284bdc2d979ea934f40db1f97da1629a3fdba014215ffdb18ae"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp16/window_ffn_projection_input_view_c512_fp16.cu",
+        "raw_file_sha256": "efa258c98bfb5582a6cd7d7eaf7241a293af5b9b7a430f966f7a858f1b56f771",
+        "normalized_lf_sha256": "b6a71b13217f6fc2c602c1a88a731364ff942065d111ebfb333cc243d89ee18c"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_c512_fp8.cu",
+        "raw_file_sha256": "db0ebe1d1d25f8f6ba65d721b03a959747ae2d0564a4b9eede0f189d240981ec",
+        "normalized_lf_sha256": "d0328ef132668a4660f9a47e4e6bb598b5a7c28d11a6ce2c7f634c6b4666c215"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_input_view_c512_fp8.cu",
+        "raw_file_sha256": "9a74222d370b6cfde4a8987a9869c836bf84953597a48d796be603a0fe56a2aa",
+        "normalized_lf_sha256": "c3d6c5a0f0114a2752f9d105b59410032dc86a177814f6039d7c7811a56c8f1f"
+      },
+      {
+        "path": "csrc/kernel_impl/shared_encoder_decoder_c512_ffn/fp8/window_ffn_projection_input_view_c512_fp8.cu",
+        "raw_file_sha256": "ad58467ec9e85149c7e01a8be00e6cb42a9dd0f53e4b776c351c3533e84f804c",
+        "normalized_lf_sha256": "e2a7e02266b0e3631519da12a3a3ea3bcd52054c582e1f08631933fb807d3a9f"
+      },
+      {
+        "path": "csrc/kernel_impl/small_c1024_attention/fp16/small_global_attention_chained_c1024_fp16.cu",
+        "raw_file_sha256": "c9bf9eb92573d8c9fc2fbc8dc2a21141f18afac3d0c226f3e28bd2da1e64454f",
+        "normalized_lf_sha256": "c9bf9eb92573d8c9fc2fbc8dc2a21141f18afac3d0c226f3e28bd2da1e64454f"
+      },
+      {
+        "path": "csrc/kernel_impl/small_c1024_attention/fp8/small_global_attention_chained_c1024_fp8.cu",
+        "raw_file_sha256": "f3dbb0e1c1528766c96c13358affe6276d06779a1c93d3f832c44d68d2408c06",
+        "normalized_lf_sha256": "f3dbb0e1c1528766c96c13358affe6276d06779a1c93d3f832c44d68d2408c06"
+      },
+      {
+        "path": "csrc/kernel_launcher/architecture_support.h",
+        "raw_file_sha256": "3bc9f62d8527c3328e2b5da739d6f6da26e838d59f6a82fc20a00543114a30dd",
+        "normalized_lf_sha256": "3bc9f62d8527c3328e2b5da739d6f6da26e838d59f6a82fc20a00543114a30dd"
+      },
+      {
+        "path": "csrc/kernel_launcher/c512_dispatch.h",
+        "raw_file_sha256": "342fcbd574ee20f236f2f908cede9265fda6ba1e2cbee25ba5316423f33dd14d",
+        "normalized_lf_sha256": "342fcbd574ee20f236f2f908cede9265fda6ba1e2cbee25ba5316423f33dd14d"
+      },
+      {
+        "path": "csrc/kernel_launcher/c512_dispatch.inl",
+        "raw_file_sha256": "e94116d0dd3da1d29b739977049e00784b44bc3887dcd7899955966cbffc2873",
+        "normalized_lf_sha256": "e94116d0dd3da1d29b739977049e00784b44bc3887dcd7899955966cbffc2873"
+      },
+      {
+        "path": "csrc/kernel_launcher/compiled_resolution_policy.h",
+        "raw_file_sha256": "2a4461b35eb938e788f603c9876c768a5769e9ab39fc7a824bc8d41ffa3f6dc4",
+        "normalized_lf_sha256": "2a4461b35eb938e788f603c9876c768a5769e9ab39fc7a824bc8d41ffa3f6dc4"
+      },
+      {
+        "path": "csrc/kernel_launcher/deployment.cpp",
+        "raw_file_sha256": "4c9a8c70f1373f8c3b155007ed43e6943f648204bc7ed5a6fffa7247b9afbb78",
+        "normalized_lf_sha256": "723260ab49e1a3d11fc0ec7552673a61b7808a322e29f48fed620e4d6919beee"
+      },
+      {
+        "path": "csrc/kernel_launcher/deployment.h",
+        "raw_file_sha256": "fd784e6a20722664bdda78f8999b05bfcd6d95d9e67fb15917dec7ca481a6835",
+        "normalized_lf_sha256": "fd784e6a20722664bdda78f8999b05bfcd6d95d9e67fb15917dec7ca481a6835"
+      },
+      {
+        "path": "csrc/kernel_launcher/frontend_dispatch.cpp",
+        "raw_file_sha256": "3830ab8e29ee09eb5f80a3c8d72e67591fd780b4468a51eae4955189e0de6e2c",
+        "normalized_lf_sha256": "ee29fef93f79828718578a46c57feaf5805dab8b757dba3340247b06aa87f3ac"
+      },
+      {
+        "path": "csrc/kernel_launcher/frontend_dispatch.h",
+        "raw_file_sha256": "d495dcd17bfb4efb21097a117bd97cc7df5c45dc71e64064ef5ff33de4aca073",
+        "normalized_lf_sha256": "5ae411cd30865022fda749c9f53868e5a0acbff1ffe781001cf8323489dde40f"
+      },
+      {
+        "path": "csrc/kernel_launcher/kernel_symbols.cpp",
+        "raw_file_sha256": "7bccde5fd80c6f026059f439a28c29237efa32b26563b94a22b06f15516faa5b",
+        "normalized_lf_sha256": "7bccde5fd80c6f026059f439a28c29237efa32b26563b94a22b06f15516faa5b"
+      },
+      {
+        "path": "csrc/kernel_launcher/kernel_symbols.h",
+        "raw_file_sha256": "cb73d741c849d4c84bd2b86a726d64662683d40f45682960e94cee561840d8e4",
+        "normalized_lf_sha256": "cb73d741c849d4c84bd2b86a726d64662683d40f45682960e94cee561840d8e4"
+      },
+      {
+        "path": "csrc/kernel_launcher/kernel_symbols_generated.inl",
+        "raw_file_sha256": "6b33718998713aa9f3c3fa3d2ac1edaa8046903fdfb5956e52b83026896981bd",
+        "normalized_lf_sha256": "6b33718998713aa9f3c3fa3d2ac1edaa8046903fdfb5956e52b83026896981bd"
+      },
+      {
+        "path": "csrc/kernel_launcher/plan_fp16_generated.inl",
+        "raw_file_sha256": "9edd2dad4b9057c5e19e0412eac5400e79e88506641f7e5fed1d679f066dd280",
+        "normalized_lf_sha256": "9edd2dad4b9057c5e19e0412eac5400e79e88506641f7e5fed1d679f066dd280"
+      },
+      {
+        "path": "csrc/kernel_launcher/plan_generated.inl",
+        "raw_file_sha256": "8c0afe61aca4c681429be65b337b95f7a21c0116f6c891857b366385be357972",
+        "normalized_lf_sha256": "8c0afe61aca4c681429be65b337b95f7a21c0116f6c891857b366385be357972"
+      },
+      {
+        "path": "csrc/kernel_launcher/plan_geometry.h",
+        "raw_file_sha256": "ab31bfe2e7caf30f31c5af87656a9a1834ae20d679cd403869bd542cfdfff4fe",
+        "normalized_lf_sha256": "ab31bfe2e7caf30f31c5af87656a9a1834ae20d679cd403869bd542cfdfff4fe"
+      },
+      {
+        "path": "csrc/kernel_launcher/plan_geometry_fp16_generated.inl",
+        "raw_file_sha256": "94b634c55307ff3d1de7b50ba69d3b15652ff4d8fd7f988be6dae8381875dc64",
+        "normalized_lf_sha256": "94b634c55307ff3d1de7b50ba69d3b15652ff4d8fd7f988be6dae8381875dc64"
+      },
+      {
+        "path": "csrc/kernel_launcher/plan_geometry_generated.inl",
+        "raw_file_sha256": "f395ff95d3cf9e1ab25e1c3d8d485f5aae06e34468b5f2f477d8756897cac694",
+        "normalized_lf_sha256": "f395ff95d3cf9e1ab25e1c3d8d485f5aae06e34468b5f2f477d8756897cac694"
+      },
+      {
+        "path": "csrc/kernel_launcher/prepared_kernel.cpp",
+        "raw_file_sha256": "ac6d9867b17286297d40e78cb86a3596b6619d915e095cbb5a785b2ecbcbc97a",
+        "normalized_lf_sha256": "ac6d9867b17286297d40e78cb86a3596b6619d915e095cbb5a785b2ecbcbc97a"
+      },
+      {
+        "path": "csrc/kernel_launcher/prepared_kernel.h",
+        "raw_file_sha256": "7d069e4b344f48ba665a80f0a490a41e74a2b6815cc75a8daf33a5db3642343b",
+        "normalized_lf_sha256": "7d069e4b344f48ba665a80f0a490a41e74a2b6815cc75a8daf33a5db3642343b"
+      },
+      {
+        "path": "csrc/kernel_launcher/prepared_kernel_names_generated.inl",
+        "raw_file_sha256": "3854e4e6327aab07711622acc13e5b87b4b8593df328dd8ea2fe90f22d3cb683",
+        "normalized_lf_sha256": "3854e4e6327aab07711622acc13e5b87b4b8593df328dd8ea2fe90f22d3cb683"
+      },
+      {
+        "path": "csrc/kernel_launcher/small_deployment.cpp",
+        "raw_file_sha256": "aeb7b8c88511dff90970059d8bc80550701b165925c6d28b41f3b474cedbca71",
+        "normalized_lf_sha256": "aeb7b8c88511dff90970059d8bc80550701b165925c6d28b41f3b474cedbca71"
+      },
+      {
+        "path": "csrc/kernel_launcher/small_deployment.h",
+        "raw_file_sha256": "9a929379863403af1b6a62004b06195eb77634bbac96ab08bb4a8fa941bd7b92",
+        "normalized_lf_sha256": "9a929379863403af1b6a62004b06195eb77634bbac96ab08bb4a8fa941bd7b92"
+      },
+      {
+        "path": "csrc/kernel_launcher/small_plan_fp16_generated.inl",
+        "raw_file_sha256": "6c0b17a5c9d206aa18ac56bd4b6c5f86c3999926c268a7d80da9b5092f670c9f",
+        "normalized_lf_sha256": "6c0b17a5c9d206aa18ac56bd4b6c5f86c3999926c268a7d80da9b5092f670c9f"
+      },
+      {
+        "path": "csrc/kernel_launcher/small_plan_generated.inl",
+        "raw_file_sha256": "83342a4cd5ef0b88a26df0b4d4fafb49a1e0f946a510b8298aa2cdd13e33eb8f",
+        "normalized_lf_sha256": "83342a4cd5ef0b88a26df0b4d4fafb49a1e0f946a510b8298aa2cdd13e33eb8f"
+      },
+      {
+        "path": "csrc/kernel_launcher/small_plan_geometry_fp16_generated.inl",
+        "raw_file_sha256": "6db1b9595f327df862439cc96215a48615cd9108754eaec79759f4157b45a2b3",
+        "normalized_lf_sha256": "6db1b9595f327df862439cc96215a48615cd9108754eaec79759f4157b45a2b3"
+      },
+      {
+        "path": "csrc/kernel_launcher/small_plan_geometry_generated.inl",
+        "raw_file_sha256": "c329e9cd41ad159e49db2bad303a6fb773960f2ee65775acec1bfcdcfeb60d26",
+        "normalized_lf_sha256": "c329e9cd41ad159e49db2bad303a6fb773960f2ee65775acec1bfcdcfeb60d26"
+      },
+      {
+        "path": "csrc/kernel_launcher/split_launch.cpp",
+        "raw_file_sha256": "d8367eafd9e7e1570398b0e350708eb59e7c6c4a33bd04abd3c524e870ec84ba",
+        "normalized_lf_sha256": "d8367eafd9e7e1570398b0e350708eb59e7c6c4a33bd04abd3c524e870ec84ba"
+      },
+      {
+        "path": "csrc/kernel_launcher/split_launch.h",
+        "raw_file_sha256": "6f061b87c31542a2639b8b92275549c0e70b08c0726460928d41c48df0601da5",
+        "normalized_lf_sha256": "6f061b87c31542a2639b8b92275549c0e70b08c0726460928d41c48df0601da5"
+      },
+      {
+        "path": "csrc/kernel_launcher/split_launch_policy.h",
+        "raw_file_sha256": "bdd40dbc3f56ddbace08985faf45c9635413ceaa5da3a9dd80007c69ce50c998",
+        "normalized_lf_sha256": "bdd40dbc3f56ddbace08985faf45c9635413ceaa5da3a9dd80007c69ce50c998"
+      },
+      {
+        "path": "csrc/kernel_launcher/windows_dispatch.h",
+        "raw_file_sha256": "84aec8cb19a29e52caba3597517841b626e362a6e9c746effe0c22c0a282bfb0",
+        "normalized_lf_sha256": "84aec8cb19a29e52caba3597517841b626e362a6e9c746effe0c22c0a282bfb0"
+      },
+      {
+        "path": "csrc/kernel_launcher/windows_dispatch.inl",
+        "raw_file_sha256": "426715520a7a1b04a3bc6eb364d0d02dd3ac3041269f94798d0abfa0538bd6c4",
+        "normalized_lf_sha256": "2e0bb220090896e7c93ce2b35b5bf7ff99411f5cf7adc7b7c3c0af8510d39860"
+      },
+      {
+        "path": "csrc/kernel_launcher/windows_entries.inl",
+        "raw_file_sha256": "117e00f3732c740015f3f4eaeb4c46dc05f3fc375e6bf925292bc61d5291d5c6",
+        "normalized_lf_sha256": "117e00f3732c740015f3f4eaeb4c46dc05f3fc375e6bf925292bc61d5291d5c6"
+      },
+      {
+        "path": "csrc/torch_api/extension.cpp",
+        "raw_file_sha256": "25512d9fdaf03bdb3cdc46c2e24bb4acb01f304f4d2ea3bdba85219321506f0b",
+        "normalized_lf_sha256": "25512d9fdaf03bdb3cdc46c2e24bb4acb01f304f4d2ea3bdba85219321506f0b"
+      },
+      {
+        "path": "csrc/torch_api/prepared_ops.cpp",
+        "raw_file_sha256": "b7cf69d7bdcee129085533175af10ed28881afad60ed61182745ff66dc09ba15",
+        "normalized_lf_sha256": "b7cf69d7bdcee129085533175af10ed28881afad60ed61182745ff66dc09ba15"
+      },
+      {
+        "path": "csrc/torch_api/prepared_ops.h",
+        "raw_file_sha256": "425cfe989da5671886b68e4e9a177769b0b89e0b9128753bebcce5445fd306fb",
+        "normalized_lf_sha256": "425cfe989da5671886b68e4e9a177769b0b89e0b9128753bebcce5445fd306fb"
+      },
+      {
+        "path": "csrc/torch_api/small_extension.cpp",
+        "raw_file_sha256": "b490bf93d6af55791c1d853bfa5fa9fc96af865978e4290033d855913da0fd0d",
+        "normalized_lf_sha256": "b490bf93d6af55791c1d853bfa5fa9fc96af865978e4290033d855913da0fd0d"
+      },
+      {
+        "path": "dlssnr/build/native.py",
+        "raw_file_sha256": "130b2a77fb5983a37d1fffb38b04b0b90692481c7953863a32c65d6dc6c52f92",
+        "normalized_lf_sha256": "130b2a77fb5983a37d1fffb38b04b0b90692481c7953863a32c65d6dc6c52f92"
+      },
+      {
+        "path": "dlssnr/build/resolution.py",
+        "raw_file_sha256": "abe7658713ff008e04a7271b3a9b6e36664c54eb7655a1e5c914bd84cdac17ce",
+        "normalized_lf_sha256": "abe7658713ff008e04a7271b3a9b6e36664c54eb7655a1e5c914bd84cdac17ce"
+      },
+      {
+        "path": "dlssnr/build/targets.py",
+        "raw_file_sha256": "2784879a9e9474a8349e74471c929ee93fb792ab29df5ade20ee3980493e1f97",
+        "normalized_lf_sha256": "2784879a9e9474a8349e74471c929ee93fb792ab29df5ade20ee3980493e1f97"
+      },
+      {
+        "path": "dlssnr/build/toolchain.py",
+        "raw_file_sha256": "88f4a743c36c3f07c01fbb68b9bc99c3146490842d03e15c484266c59c7fb71f",
+        "normalized_lf_sha256": "88f4a743c36c3f07c01fbb68b9bc99c3146490842d03e15c484266c59c7fb71f"
+      },
+      {
+        "path": "MANIFEST.in",
+        "raw_file_sha256": "1d2e022b9093679420dc035e6af20e273d543b00a958dbf3611c6512ca37528e",
+        "normalized_lf_sha256": "1d2e022b9093679420dc035e6af20e273d543b00a958dbf3611c6512ca37528e"
+      },
+      {
+        "path": "pyproject.toml",
+        "raw_file_sha256": "1db78d63db7a86b3204d7d50da31b37750c8b02d77b087d44f8f1b038f7ff4dd",
+        "normalized_lf_sha256": "1db78d63db7a86b3204d7d50da31b37750c8b02d77b087d44f8f1b038f7ff4dd"
+      },
+      {
+        "path": "setup.py",
+        "raw_file_sha256": "b10e16802af492e92d29ff72a9c349c0be12580830dd74876f43188ed7f99781",
+        "normalized_lf_sha256": "b10e16802af492e92d29ff72a9c349c0be12580830dd74876f43188ed7f99781"
+      },
+      {
+        "path": "tuning/sm_120.json",
+        "raw_file_sha256": "a4d891a0a4dcce5483fc6205411bdae6018a672bb4cabb410ae2f0aa96dc9078",
+        "normalized_lf_sha256": "a4d891a0a4dcce5483fc6205411bdae6018a672bb4cabb410ae2f0aa96dc9078"
+      }
+    ]
+  },
+  "environment": {
+    "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+    "gpu_uuid": "GPU-4f3e5e0b-5405-012c-ee8d-2c9a8126d693",
+    "driver": "610.62",
+    "cuda": "12.8",
+    "pytorch": "2.8.0+cu128",
+    "timing_method": "CUDA-event batched per-pass average of the captured plan; 30 fresh-process samples per arm, each from 10 replays x 3 trunk passes after 20 warmup replays.",
+    "seed": 3108,
+    "warmup": 20,
+    "samples": 30,
+    "iterations": 10,
+    "rounds": 3,
+    "methodology": "Fresh-process paired A/B sampling with fixed ABBA/BAAB blocks, 20 warmup replays, 30 samples of 10 replays x 3 trunk passes, integer timing-case identities, and separate paired/order-effect summaries. No threshold or automatic performance pass is applied."
+  },
+  "protocol": {
+    "child_processes_per_case": 8,
+    "original_processes": 4,
+    "candidate_processes": 4,
+    "process_order": [
+      "original",
+      "candidate",
+      "candidate",
+      "original",
+      "candidate",
+      "original",
+      "original",
+      "candidate"
+    ],
+    "methodology": "Two ABBA/BAAB four-process blocks per case; each fresh process contributes 30 samples (10 replays per sample, 3 trunk passes per replay) and one process median. Order effects and paired deltas are preserved separately."
+  },
+  "timing": {
+    "receipt": {
+      "path": "receipts/timing/timing-receipt.json",
+      "sha256": "792ad18226ed4e5611101573b92291364a22fe7c992ec9f3960104910cd17992"
+    },
+    "decision": {
+      "status": "accepted",
+      "methodology": "Sixteen cases, two balanced blocks (ABBA then BAAB with reversed case order), four fresh process medians per arm per case. Each process uses 20 warmups and 30 CUDA-event samples, each normalized from 10 graph replays of three trunk passes. Review process and paired-block effects; do not treat individual replays as independent experiments.",
+      "rationale": "Accept the measured latency cost as an explicit tradeoff for shared implementations and corrected split-result publication. All 128 processes completed; no incomplete attempt contributes data. This is a whole-build comparison on one SM120 device, not evidence of zero overhead or isolated wrapper cost. Original toolchain provenance is incomplete."
+    },
+    "cases": [
+      {
+        "id": "legacy71_fp16_720p",
+        "model": "legacy71",
+        "precision": "fp16",
+        "size": "720p",
+        "width": 1280,
+        "height": 720,
+        "original": {
+          "process_medians_ms": [
+            3.626649602254232,
+            3.6248550415039062,
+            3.6451647440592447,
+            3.6481274922688804
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            3.6343456268310548,
+            3.630126953125,
+            3.668347676595052,
+            3.6592571258544924
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            3.6248550415039062,
+            3.6481274922688804
+          ],
+          "candidate_range_ms": [
+            3.630126953125,
+            3.668347676595052
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +10.894 us (+0.300%); median paired B-A +9.413 us, pair range +5.272 to +23.183 us; block effects +6.484/+17.156 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+        }
+      },
+      {
+        "id": "legacy71_fp16_1080p",
+        "model": "legacy71",
+        "precision": "fp16",
+        "size": "1080p",
+        "width": 1920,
+        "height": 1080,
+        "original": {
+          "process_medians_ms": [
+            4.321627807617188,
+            4.332685852050782,
+            4.362497202555339,
+            4.356509908040365
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            4.329932912190754,
+            4.332244873046875,
+            4.376165771484375,
+            4.37035903930664
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            4.321627807617188,
+            4.362497202555339
+          ],
+          "candidate_range_ms": [
+            4.329932912190754,
+            4.376165771484375
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +6.704 us (+0.154%); median paired B-A +10.987 us, pair range -0.441 to +13.849 us; block effects +3.932/+13.759 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim. Mixed pair signs limit claims about a stable ordering."
+        }
+      },
+      {
+        "id": "legacy71_fp16_2k",
+        "model": "legacy71",
+        "precision": "fp16",
+        "size": "2k",
+        "width": 2560,
+        "height": 1440,
+        "original": {
+          "process_medians_ms": [
+            5.8413856506347654,
+            5.856976572672526,
+            5.925957743326823,
+            5.919993082682291
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            5.903965759277344,
+            5.916758982340495,
+            5.973309326171875,
+            5.972247060139974
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            5.8413856506347654,
+            5.925957743326823
+          ],
+          "candidate_range_ms": [
+            5.903965759277344,
+            5.973309326171875
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +56.018 us (+0.951%); median paired B-A +56.018 us, pair range +47.352 to +62.580 us; block effects +61.181/+49.803 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+        }
+      },
+      {
+        "id": "legacy71_fp16_4k",
+        "model": "legacy71",
+        "precision": "fp16",
+        "size": "4k",
+        "width": 3840,
+        "height": 2160,
+        "original": {
+          "process_medians_ms": [
+            10.919897969563802,
+            11.049325561523437,
+            11.057654825846354,
+            11.08923085530599
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            11.095975748697917,
+            11.12866668701172,
+            11.105757649739584,
+            11.269605000813803
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            10.919897969563802,
+            11.08923085530599
+          ],
+          "candidate_range_ms": [
+            11.095975748697917,
+            11.269605000813803
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +63.722 us (+0.576%); median paired B-A +127.709 us, pair range +48.103 to +180.374 us; block effects +127.709/+114.238 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim. Headline and paired differences diverge substantially; report both and retain the process spread."
+        }
+      },
+      {
+        "id": "legacy71_fp8_720p",
+        "model": "legacy71",
+        "precision": "fp8",
+        "size": "720p",
+        "width": 1280,
+        "height": 720,
+        "original": {
+          "process_medians_ms": [
+            2.191357930501302,
+            2.1913190205891926,
+            2.1875476837158203,
+            2.1836036682128905
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            2.205095418294271,
+            2.204863993326823,
+            2.2001834869384767,
+            2.1961561838785806
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            2.1836036682128905,
+            2.191357930501302
+          ],
+          "candidate_range_ms": [
+            2.1961561838785806,
+            2.205095418294271
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +13.090 us (+0.598%); median paired B-A +13.090 us, pair range +12.553 to +13.737 us; block effects +13.641/+12.594 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+        }
+      },
+      {
+        "id": "legacy71_fp8_1080p",
+        "model": "legacy71",
+        "precision": "fp8",
+        "size": "1080p",
+        "width": 1920,
+        "height": 1080,
+        "original": {
+          "process_medians_ms": [
+            2.5871439615885414,
+            2.5875237782796225,
+            2.5873483022054033,
+            2.588377634684245
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            2.599985122680664,
+            2.601462427775065,
+            2.601469294230143,
+            2.6004207611083983
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            2.5871439615885414,
+            2.588377634684245
+          ],
+          "candidate_range_ms": [
+            2.599985122680664,
+            2.601469294230143
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +13.506 us (+0.522%); median paired B-A +13.390 us, pair range +12.043 to +14.121 us; block effects +13.390/+13.082 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+        }
+      },
+      {
+        "id": "legacy71_fp8_2k",
+        "model": "legacy71",
+        "precision": "fp8",
+        "size": "2k",
+        "width": 2560,
+        "height": 1440,
+        "original": {
+          "process_medians_ms": [
+            3.502916208902995,
+            3.5175894419352214,
+            3.5122095743815107,
+            3.5095099131266276
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            3.530497105916341,
+            3.5212484995524087,
+            3.521925354003906,
+            3.524038314819336
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            3.502916208902995,
+            3.5175894419352214
+          ],
+          "candidate_range_ms": [
+            3.5212484995524087,
+            3.530497105916341
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +12.122 us (+0.345%); median paired B-A +12.122 us, pair range +3.659 to +27.581 us; block effects +15.620/+12.122 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+        }
+      },
+      {
+        "id": "legacy71_fp8_4k",
+        "model": "legacy71",
+        "precision": "fp8",
+        "size": "4k",
+        "width": 3840,
+        "height": 2160,
+        "original": {
+          "process_medians_ms": [
+            6.499590301513672,
+            6.5458005269368496,
+            6.460491180419922,
+            6.484870402018229
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            6.520295461018881,
+            6.528767903645834,
+            6.431028747558594,
+            6.506120045979818
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            6.460491180419922,
+            6.5458005269368496
+          ],
+          "candidate_range_ms": [
+            6.431028747558594,
+            6.528767903645834
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +20.977 us (+0.323%); median paired B-A +1.836 us, pair range -29.462 to +21.250 us; block effects +1.836/-4.106 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim. Mixed pair signs limit claims about a stable ordering."
+        }
+      },
+      {
+        "id": "small31_fp16_720p",
+        "model": "small31",
+        "precision": "fp16",
+        "size": "720p",
+        "width": 1280,
+        "height": 720,
+        "original": {
+          "process_medians_ms": [
+            1.8193440119425457,
+            1.8171056111653647,
+            1.8134741465250652,
+            1.8125338872273762
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            1.8243488311767577,
+            1.8271584192911785,
+            1.8231274922688803,
+            1.822001584370931
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            1.8125338872273762,
+            1.8193440119425457
+          ],
+          "candidate_range_ms": [
+            1.822001584370931,
+            1.8271584192911785
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +8.448 us (+0.465%); median paired B-A +9.561 us, pair range +5.005 to +10.053 us; block effects +7.529/+9.561 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+        }
+      },
+      {
+        "id": "small31_fp16_1080p",
+        "model": "small31",
+        "precision": "fp16",
+        "size": "1080p",
+        "width": 1920,
+        "height": 1080,
+        "original": {
+          "process_medians_ms": [
+            2.184486897786458,
+            2.1844863891601562,
+            2.184036382039388,
+            2.1846986134847004
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            2.191754150390625,
+            2.1925407409667965,
+            2.1939744313557945,
+            2.1935583750406904
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            2.184036382039388,
+            2.1846986134847004
+          ],
+          "candidate_range_ms": [
+            2.191754150390625,
+            2.1939744313557945
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +8.563 us (+0.392%); median paired B-A +8.457 us, pair range +7.267 to +9.938 us; block effects +7.661/+9.399 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+        }
+      },
+      {
+        "id": "small31_fp16_2k",
+        "model": "small31",
+        "precision": "fp16",
+        "size": "2k",
+        "width": 2560,
+        "height": 1440,
+        "original": {
+          "process_medians_ms": [
+            2.8107701619466146,
+            2.811430486043294,
+            2.8180491129557295,
+            2.8147833506266275
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            2.8645914713541667,
+            2.8684117635091146,
+            2.8726164499918623,
+            2.8678212483723957
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            2.8107701619466146,
+            2.8180491129557295
+          ],
+          "candidate_range_ms": [
+            2.8645914713541667,
+            2.8726164499918623
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +55.010 us (+1.955%); median paired B-A +54.194 us, pair range +53.038 to +56.981 us; block effects +55.401/+53.803 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+        }
+      },
+      {
+        "id": "small31_fp16_4k",
+        "model": "small31",
+        "precision": "fp16",
+        "size": "4k",
+        "width": 3840,
+        "height": 2160,
+        "original": {
+          "process_medians_ms": [
+            5.386629231770833,
+            5.407859293619792,
+            5.400265502929688,
+            5.400643666585287
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            5.493934885660807,
+            5.490675862630209,
+            5.478233083089193,
+            5.497000376383463
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            5.386629231770833,
+            5.407859293619792
+          ],
+          "candidate_range_ms": [
+            5.478233083089193,
+            5.497000376383463
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +91.851 us (+1.701%); median paired B-A +89.587 us, pair range +77.968 to +107.306 us; block effects +95.061/+87.162 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+        }
+      },
+      {
+        "id": "small31_fp8_720p",
+        "model": "small31",
+        "precision": "fp8",
+        "size": "720p",
+        "width": 1280,
+        "height": 720,
+        "original": {
+          "process_medians_ms": [
+            1.1095626831054686,
+            1.1092298507690428,
+            1.1094282786051433,
+            1.108945083618164
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            1.1229541142781576,
+            1.123133341471354,
+            1.1228869120279947,
+            1.1219866434733072
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            1.108945083618164,
+            1.1095626831054686
+          ],
+          "candidate_range_ms": [
+            1.1219866434733072,
+            1.123133341471354
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +13.591 us (+1.225%); median paired B-A +13.425 us, pair range +13.042 to +13.903 us; block effects +13.647/+13.250 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+        }
+      },
+      {
+        "id": "small31_fp8_1080p",
+        "model": "small31",
+        "precision": "fp8",
+        "size": "1080p",
+        "width": 1920,
+        "height": 1080,
+        "original": {
+          "process_medians_ms": [
+            1.3359050750732422,
+            1.3349231719970702,
+            1.3418752034505208,
+            1.341920026143392
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            1.348957316080729,
+            1.350158373514811,
+            1.3568122227986654,
+            1.3568970362345376
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            1.3349231719970702,
+            1.341920026143392
+          ],
+          "candidate_range_ms": [
+            1.348957316080729,
+            1.3568970362345376
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +14.595 us (+1.090%); median paired B-A +14.957 us, pair range +13.052 to +15.235 us; block effects +14.144/+14.957 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+        }
+      },
+      {
+        "id": "small31_fp8_2k",
+        "model": "small31",
+        "precision": "fp8",
+        "size": "2k",
+        "width": 2560,
+        "height": 1440,
+        "original": {
+          "process_medians_ms": [
+            1.699742889404297,
+            1.700326983133952,
+            1.7027301788330078,
+            1.702896499633789
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            1.7228469212849935,
+            1.7168810526529947,
+            1.7168927510579426,
+            1.7180266698201496
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            1.699742889404297,
+            1.702896499633789
+          ],
+          "candidate_range_ms": [
+            1.7168810526529947,
+            1.7228469212849935
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +15.931 us (+0.936%); median paired B-A +15.842 us, pair range +14.163 to +23.104 us; block effects +19.829/+14.646 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+        }
+      },
+      {
+        "id": "small31_fp8_4k",
+        "model": "small31",
+        "precision": "fp8",
+        "size": "4k",
+        "width": 3840,
+        "height": 2160,
+        "original": {
+          "process_medians_ms": [
+            3.187875239054362,
+            3.1979839324951174,
+            3.1868741353352865,
+            3.1922398885091146
+          ]
+        },
+        "candidate": {
+          "process_medians_ms": [
+            3.1946842193603517,
+            3.2004442850748696,
+            3.1867130279541014,
+            3.2000474294026695
+          ]
+        },
+        "uncertainty": {
+          "method": "min/max of the four fresh-process medians",
+          "original_range_ms": [
+            3.1868741353352865,
+            3.1979839324951174
+          ],
+          "candidate_range_ms": [
+            3.1867130279541014,
+            3.2004442850748696
+          ]
+        },
+        "decision": {
+          "status": "accepted",
+          "rationale": "Headline B-A +7.308 us (+0.229%); median paired B-A +4.635 us, pair range -0.161 to +7.808 us; block effects +4.635/+3.823 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim. Mixed pair signs limit claims about a stable ordering."
+        }
+      }
+    ]
+  },
+  "checks": [
+    {
+      "category": "cpu",
+      "status": "pass",
+      "covered_cases": [
+        "test_speed_cpu.py/normal",
+        "test_speed_build_cpu.py/normal",
+        "test_architecture_support_cpu.py/normal",
+        "test_dynamic_geometry_cpu.py/normal",
+        "test_kernel_sources_cpu.py/normal",
+        "test_split_launch_policy_cpu.py/normal",
+        "test_frontend_preprocess.py/normal",
+        "test_window_output_view.py/normal",
+        "test_checkpoint_cpu.py/normal",
+        "test_fp16_plan_cpu.py/normal",
+        "test_clean_records.py/normal",
+        "test_training_checkpoint_cpu.py/normal",
+        "test_resolution_policy_cpu.py/normal",
+        "test_resolution_policy_extrema_cpu.py/normal",
+        "test_reconstructed_benchmark_cpu.py/normal",
+        "test_prepared_kernel_api_cpu.py/normal",
+        "pytest group/normal",
+        "test_speed_cpu.py/optimized",
+        "test_speed_build_cpu.py/optimized",
+        "test_architecture_support_cpu.py/optimized",
+        "test_dynamic_geometry_cpu.py/optimized",
+        "test_kernel_sources_cpu.py/optimized",
+        "test_split_launch_policy_cpu.py/optimized",
+        "test_frontend_preprocess.py/optimized",
+        "test_window_output_view.py/optimized",
+        "test_checkpoint_cpu.py/optimized",
+        "test_fp16_plan_cpu.py/optimized",
+        "test_clean_records.py/optimized",
+        "test_training_checkpoint_cpu.py/optimized",
+        "test_resolution_policy_cpu.py/optimized",
+        "test_resolution_policy_extrema_cpu.py/optimized",
+        "test_reconstructed_benchmark_cpu.py/optimized",
+        "test_prepared_kernel_api_cpu.py/optimized",
+        "pytest group/optimized"
+      ],
+      "receipt": {
+        "path": "receipts/checks/cpu.json",
+        "sha256": "72c826e1d7177e075ceda2ab72adf9f245410d4a51fb9205e39a5a57b6a94cdd"
+      },
+      "summary": "Root-selected aggregate CPU report: 34/34 groups pass, 0 failures."
+    },
+    {
+      "category": "native-bitwise",
+      "status": "pass",
+      "covered_cases": [
+        "legacy71_fp16_1080p",
+        "legacy71_fp16_2k",
+        "legacy71_fp16_4k",
+        "legacy71_fp16_720p",
+        "legacy71_fp8_1080p",
+        "legacy71_fp8_2k",
+        "legacy71_fp8_4k",
+        "legacy71_fp8_720p",
+        "small31_fp16_1080p",
+        "small31_fp16_2k",
+        "small31_fp16_4k",
+        "small31_fp16_720p",
+        "small31_fp8_1080p",
+        "small31_fp8_2k",
+        "small31_fp8_4k",
+        "small31_fp8_720p"
+      ],
+      "receipt": {
+        "path": "receipts/checks/native-bitwise.json",
+        "sha256": "9dacfa83eb7f2cdb5a6af2ce3d59238d69fac4d6429051c53b5c7e97dd7acdd9"
+      },
+      "summary": "32 native children pass; 16 cases have byte-equal A/B outputs and equal split vectors."
+    },
+    {
+      "category": "cuda-graphs",
+      "status": "pass",
+      "covered_cases": [
+        "legacy71_fp16_1080p",
+        "legacy71_fp16_2k",
+        "legacy71_fp16_4k",
+        "legacy71_fp16_720p",
+        "legacy71_fp8_1080p",
+        "legacy71_fp8_2k",
+        "legacy71_fp8_4k",
+        "legacy71_fp8_720p",
+        "small31_fp16_1080p",
+        "small31_fp16_2k",
+        "small31_fp16_4k",
+        "small31_fp16_720p",
+        "small31_fp8_1080p",
+        "small31_fp8_2k",
+        "small31_fp8_4k",
+        "small31_fp8_720p"
+      ],
+      "receipt": {
+        "path": "receipts/checks/cuda-graphs.json",
+        "sha256": "eac3f0e816d478c126bdccf72ca282562a29e6a5e96a516fe5901a3fc8597ed3"
+      },
+      "summary": "Every native case proves a prepared graph, equality with eager, two poisoned replays that rewrite the valid payload, guards, immutable input and reset."
+    },
+    {
+      "category": "guards",
+      "status": "pass",
+      "covered_cases": [
+        "legacy71_fp16_1080p",
+        "legacy71_fp16_2k",
+        "legacy71_fp16_4k",
+        "legacy71_fp16_720p",
+        "legacy71_fp8_1080p",
+        "legacy71_fp8_2k",
+        "legacy71_fp8_4k",
+        "legacy71_fp8_720p",
+        "small31_fp16_1080p",
+        "small31_fp16_2k",
+        "small31_fp16_4k",
+        "small31_fp16_720p",
+        "small31_fp8_1080p",
+        "small31_fp8_2k",
+        "small31_fp8_4k",
+        "small31_fp8_720p"
+      ],
+      "receipt": {
+        "path": "receipts/checks/guards.json",
+        "sha256": "9b1a7f06f3ba2c0c0450e96d1f24c8d74a0b79bc8d37b3062f1fa7932ea554ec"
+      },
+      "summary": "Every native case proves guards intact before/after eager and graph execution, input immutability and a completed reset."
+    },
+    {
+      "category": "checkpoint",
+      "status": "pass",
+      "covered_cases": [
+        "native/legacy71/fp16",
+        "native/legacy71/fp8",
+        "native/small31/fp16",
+        "native/small31/fp8",
+        "training/legacy71/fp32",
+        "training/legacy71/bf16",
+        "training/small31/fp32",
+        "training/small31/bf16"
+      ],
+      "receipt": {
+        "path": "receipts/checks/checkpoint.json",
+        "sha256": "7019caec622701fe08bb10839b9c3bfca1c1c5bdd9528f9cfd106dde255496f9"
+      },
+      "summary": "8 checkpoint validator children accepted: 4 native precision/isolation rows and 4 training AdamW lr=1e-5 bitwise/master-state rows; learned FP8 export rejected."
+    },
+    {
+      "category": "training",
+      "status": "pass",
+      "covered_cases": [
+        "legacy71/bf16",
+        "legacy71/fp32",
+        "small31/bf16",
+        "small31/fp32"
+      ],
+      "receipt": {
+        "path": "receipts/checks/training.json",
+        "sha256": "e42b3f906d25f31e8794897640f4ba5e8e763e033ff028ff53d4018bdc590c44"
+      },
+      "summary": "Four accepted checkpoint-training records verify finite forward/loss/gradients, an AdamW lr=1e-5 update, bitwise FP32 master-state save/reload, and matching post-step output after reload. This is training correctness only; both interrupted training timing attempts are excluded and no training latency is reported."
+    },
+    {
+      "category": "rgb",
+      "status": "pass",
+      "covered_cases": [
+        "cpu_wall",
+        "full_gpu",
+        "trunk_only"
+      ],
+      "receipt": {
+        "path": "receipts/checks/rgb.json",
+        "sha256": "1e03038a29ea951688409cd5b33f5e191ef4dfe9b377fb43a8d48de8d238ffbb"
+      },
+      "summary": "Four ABBA RGB sessions complete with matching deterministic outputs and guards for all four model/precision cases; trunk_only, full_gpu and cpu_wall remain separate scopes. No performance acceptance is claimed."
+    },
+    {
+      "category": "primitives",
+      "status": "pass",
+      "covered_cases": [
+        "native-sm120",
+        "sm80-selected-ptx-on-sm120"
+      ],
+      "receipt": {
+        "path": "receipts/checks/primitives.json",
+        "sha256": "39512dddebd6f250e4bb123aec0f40f4942d532faadb200158c0bfebd6de4d06"
+      },
+      "summary": "Accepted primitive operation 65179cfd... passes the native SM120 probe and the distinct SM80-selected PTX-on-SM120 probe; no production binary was loaded."
+    }
+  ],
+  "ptxas": {
+    "rows": [
+      {
+        "architecture": "SM120",
+        "kernel": "_Z19global_contract_fp8ILb0E36FGlobalFfnContractC1024Fp8ParametersEvT0_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 148,
+        "static_shared_bytes": 16400,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/001-_Z19global_contract_fp8ILb0E36FGlobalFfnContractC1024Fp8ParametersEvT0_.log",
+          "sha256": "eb395f1bf49f6636ec6707082708e5243ec089f4667e82f65877406c0a10d129"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z19global_contract_fp8ILb1E35FGlobalProjectionC1024Fp8ParametersEvT0_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 118,
+        "static_shared_bytes": 8208,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/002-_Z19global_contract_fp8ILb1E35FGlobalProjectionC1024Fp8ParametersEvT0_.log",
+          "sha256": "a3bea50596fe719f42f77f16f9628c8981e668952fa6406ad9a8ee3b963ade1b"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z21window_block_wide_fp8ILi128ELb0ELb0E29FWindowBlockC128Fp8ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 163,
+        "static_shared_bytes": 8192,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/003-_Z21window_block_wide_fp8ILi128ELb0ELb0E29FWindowBlockC128Fp8ParametersEvT2_.log",
+          "sha256": "546cf9dc5cde855ca136d80dc69bd21821a4ea8b2c943b0e242948fb9e45a434"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z21window_block_wide_fp8ILi128ELb0ELb1E39FWindowBlockC128OutputViewFp8ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 161,
+        "static_shared_bytes": 8192,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/004-_Z21window_block_wide_fp8ILi128ELb0ELb1E39FWindowBlockC128OutputViewFp8ParametersEvT2_.log",
+          "sha256": "03117a58e43fcc078b218e6e28035b294c973233dfe7a9f0978e7af20ff325cf"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z21window_block_wide_fp8ILi128ELb1ELb0E38FWindowBlockC128InputViewFp8ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 161,
+        "static_shared_bytes": 8192,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/005-_Z21window_block_wide_fp8ILi128ELb1ELb0E38FWindowBlockC128InputViewFp8ParametersEvT2_.log",
+          "sha256": "e104f01b93876cf4d14d0038aaa7414035c694518bdbb53c7439d082d5495f93"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z21window_block_wide_fp8ILi256ELb0ELb0E29FWindowBlockC256Fp8ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 163,
+        "static_shared_bytes": 16384,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/006-_Z21window_block_wide_fp8ILi256ELb0ELb0E29FWindowBlockC256Fp8ParametersEvT2_.log",
+          "sha256": "e6f90f15df1b1f5d7b9a64edf391e2f94153c895508ebaa90409451e06c0aa81"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z21window_block_wide_fp8ILi256ELb0ELb1E39FWindowBlockC256OutputViewFp8ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 160,
+        "static_shared_bytes": 16384,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/007-_Z21window_block_wide_fp8ILi256ELb0ELb1E39FWindowBlockC256OutputViewFp8ParametersEvT2_.log",
+          "sha256": "4457f664d9a028d787adf07a3a4c46dd6779601e0f78e5669b6f1bb8eb016cde"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z21window_block_wide_fp8ILi256ELb1ELb0E38FWindowBlockC256InputViewFp8ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 164,
+        "static_shared_bytes": 16384,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/008-_Z21window_block_wide_fp8ILi256ELb1ELb0E38FWindowBlockC256InputViewFp8ParametersEvT2_.log",
+          "sha256": "e8d85b87cf1fd856b1ab4268f46c6e053a80564c7b4b94a8d7c5bd9e3f2b136e"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z22spatial_projection_fp8ILi2E43FWindowAttentionProjectionC512Fp8ParametersEvT0_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 100,
+        "static_shared_bytes": 12312,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/009-_Z22spatial_projection_fp8ILi2E43FWindowAttentionProjectionC512Fp8ParametersEvT0_.log",
+          "sha256": "5c1aa40407b27afb36e2d5f7360c8f8ee013484407637c827b64b7dc48970738"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z22spatial_projection_fp8ILi4E37FWindowFfnProjectionC512Fp8ParametersEvT0_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 122,
+        "static_shared_bytes": 12312,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/010-_Z22spatial_projection_fp8ILi4E37FWindowFfnProjectionC512Fp8ParametersEvT0_.log",
+          "sha256": "eee1fb1c8a07f9d989f3e459216a9e9ffa2d1507127094950cdce646b507da60"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z22window_block_wide_fp16ILi128ELb0ELb0E30FWindowBlockC128Fp16ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 164,
+        "static_shared_bytes": 16384,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/011-_Z22window_block_wide_fp16ILi128ELb0ELb0E30FWindowBlockC128Fp16ParametersEvT2_.log",
+          "sha256": "19c054bb47697379764fe0494bbba49def78b9bf3d279430c8a38a61091e47b9"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z22window_block_wide_fp16ILi128ELb0ELb1E40FWindowBlockC128OutputViewFp16ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 16384,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/012-_Z22window_block_wide_fp16ILi128ELb0ELb1E40FWindowBlockC128OutputViewFp16ParametersEvT2_.log",
+          "sha256": "defa5bda668f9c5d8e38190af28dee32725fd73e7975bf075eae7f5e0f5514d5"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z22window_block_wide_fp16ILi128ELb1ELb0E39FWindowBlockC128InputViewFp16ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 16384,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/013-_Z22window_block_wide_fp16ILi128ELb1ELb0E39FWindowBlockC128InputViewFp16ParametersEvT2_.log",
+          "sha256": "942be3e22bbed23bf7ba8de157ca00fd60a7d9a298a4f3a4c7e2cae633440b11"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z22window_block_wide_fp16ILi256ELb0ELb0E30FWindowBlockC256Fp16ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 186,
+        "static_shared_bytes": 32768,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/014-_Z22window_block_wide_fp16ILi256ELb0ELb0E30FWindowBlockC256Fp16ParametersEvT2_.log",
+          "sha256": "058222a3ce5dfcc5797f961101089ef10a63800c666df486185bb284a25c67b0"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z22window_block_wide_fp16ILi256ELb0ELb1E40FWindowBlockC256OutputViewFp16ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 182,
+        "static_shared_bytes": 32768,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/015-_Z22window_block_wide_fp16ILi256ELb0ELb1E40FWindowBlockC256OutputViewFp16ParametersEvT2_.log",
+          "sha256": "65fa91df891c70938b7be0c1f06445a61f554cd869f55aa2dbc922afcbebb3e8"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z22window_block_wide_fp16ILi256ELb1ELb0E39FWindowBlockC256InputViewFp16ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 182,
+        "static_shared_bytes": 32768,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/016-_Z22window_block_wide_fp16ILi256ELb1ELb0E39FWindowBlockC256InputViewFp16ParametersEvT2_.log",
+          "sha256": "2901b21ca3ed41c2495d6e4c21376c04685c0641e5d812ee92018ebad7d20042"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z23repack_spatial_to_tokenILb0EEv23FGlobalRepackParameters",
+        "sm_target": "sm_120",
+        "registers_per_thread": 19,
+        "static_shared_bytes": 0,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/017-_Z23repack_spatial_to_tokenILb0EEv23FGlobalRepackParameters.log",
+          "sha256": "4ca18687e86d8c21d40e2bfb3eb8790cc3eeff97a7027ec028930bceb173d592"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z23repack_spatial_to_tokenILb1EEv23FGlobalRepackParameters",
+        "sm_target": "sm_120",
+        "registers_per_thread": 19,
+        "static_shared_bytes": 0,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/018-_Z23repack_spatial_to_tokenILb1EEv23FGlobalRepackParameters.log",
+          "sha256": "2a7ed7abe6cbe8d415c9324332114e3c9559d0da5fe87b99adb27eb1f2e7799b"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z23repack_token_to_spatialILb0EEv23FGlobalRepackParameters",
+        "sm_target": "sm_120",
+        "registers_per_thread": 20,
+        "static_shared_bytes": 0,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/019-_Z23repack_token_to_spatialILb0EEv23FGlobalRepackParameters.log",
+          "sha256": "1b6816d56e1eb5dc9c0e872536146e07ca5f45ecfd98710244051617c3299075"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z23repack_token_to_spatialILb1EEv23FGlobalRepackParameters",
+        "sm_target": "sm_120",
+        "registers_per_thread": 20,
+        "static_shared_bytes": 0,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/020-_Z23repack_token_to_spatialILb1EEv23FGlobalRepackParameters.log",
+          "sha256": "4a2528dbcf47b7310817104bdfeab6efe4e22c80e385f23bb56c1806888a7025"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z23spatial_projection_fp16ILi2E44FWindowAttentionProjectionC512Fp16ParametersEvT0_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 102,
+        "static_shared_bytes": 12312,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/021-_Z23spatial_projection_fp16ILi2E44FWindowAttentionProjectionC512Fp16ParametersEvT0_.log",
+          "sha256": "ebc679b4977ab6fa5bf61552ce2649f636471e8239703904c45b0bf6620dfa52"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z23spatial_projection_fp16ILi4E38FWindowFfnProjectionC512Fp16ParametersEvT0_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 122,
+        "static_shared_bytes": 12312,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/022-_Z23spatial_projection_fp16ILi4E38FWindowFfnProjectionC512Fp16ParametersEvT0_.log",
+          "sha256": "c9fcbd91638d4346b548625ec6783edba61020bb19cd49f398a22289cdb0e5d7"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z24window_block_compact_fp8ILi32ELb0E28FWindowBlockC32Fp8ParametersEvT1_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 0,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/023-_Z24window_block_compact_fp8ILi32ELb0E28FWindowBlockC32Fp8ParametersEvT1_.log",
+          "sha256": "42ea19c4fa7b1b907701d0302740bd37defe69726ca97a6959386e3b856f6ea2"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z24window_block_compact_fp8ILi32ELb1E37FWindowBlockC32InputViewFp8ParametersEvT1_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 0,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/024-_Z24window_block_compact_fp8ILi32ELb1E37FWindowBlockC32InputViewFp8ParametersEvT1_.log",
+          "sha256": "db67e1e4e664f9164155393b93a083b82e60960aa59cc23214cac810e8eab698"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z25window_block_compact_fp16ILi32ELb0E29FWindowBlockC32Fp16ParametersEvT1_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 0,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/025-_Z25window_block_compact_fp16ILi32ELb0E29FWindowBlockC32Fp16ParametersEvT1_.log",
+          "sha256": "a7b83c74ba892855684520d8be57d73306baf98043f1c1585ca7faddb0f9604e"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z25window_block_compact_fp16ILi32ELb1E38FWindowBlockC32InputViewFp16ParametersEvT1_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 0,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/026-_Z25window_block_compact_fp16ILi32ELb1E38FWindowBlockC32InputViewFp16ParametersEvT1_.log",
+          "sha256": "95b36e865ff3f0f6c13f26129e19657ee620f94238b2b1118f73565571b256a7"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z25window_block_two_warp_fp8ILi64ELb0ELb0E28FWindowBlockC64Fp8ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 160,
+        "static_shared_bytes": 4096,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/027-_Z25window_block_two_warp_fp8ILi64ELb0ELb0E28FWindowBlockC64Fp8ParametersEvT2_.log",
+          "sha256": "6f38e14a3e97c9267e67b35cf719fa031ffd3d3307c1076a055f10f616ead14e"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z25window_block_two_warp_fp8ILi64ELb0ELb1E38FWindowBlockC64OutputViewFp8ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 157,
+        "static_shared_bytes": 4096,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/028-_Z25window_block_two_warp_fp8ILi64ELb0ELb1E38FWindowBlockC64OutputViewFp8ParametersEvT2_.log",
+          "sha256": "9e914a74d7e799210963a1abaea60c35e4db73f0baa9b0ba02f53ca91652e018"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z25window_block_two_warp_fp8ILi64ELb1ELb0E37FWindowBlockC64InputViewFp8ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 157,
+        "static_shared_bytes": 4096,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/029-_Z25window_block_two_warp_fp8ILi64ELb1ELb0E37FWindowBlockC64InputViewFp8ParametersEvT2_.log",
+          "sha256": "15b148f1f7fcc279096ebddc2c2cdc9170456eaa59ea1c112a315bd928fdf787"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z26window_block_two_warp_fp16ILi64ELb0ELb0E29FWindowBlockC64Fp16ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 8192,
+        "spill_bytes": 8,
+        "log": {
+          "path": "receipts/ptxas/030-_Z26window_block_two_warp_fp16ILi64ELb0ELb0E29FWindowBlockC64Fp16ParametersEvT2_.log",
+          "sha256": "9fedaa7a4ac8fb69dc86eeacd2d270abf433ee8a81e2c8651392d87f1f31e34c"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z26window_block_two_warp_fp16ILi64ELb0ELb1E39FWindowBlockC64OutputViewFp16ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 8192,
+        "spill_bytes": 24,
+        "log": {
+          "path": "receipts/ptxas/031-_Z26window_block_two_warp_fp16ILi64ELb0ELb1E39FWindowBlockC64OutputViewFp16ParametersEvT2_.log",
+          "sha256": "280c4a273da55efbe75be3d280c87ce6b9e5b92386a7a4cb4f18a8041ad4fc20"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z26window_block_two_warp_fp16ILi64ELb1ELb0E38FWindowBlockC64InputViewFp16ParametersEvT2_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 8192,
+        "spill_bytes": 36,
+        "log": {
+          "path": "receipts/ptxas/032-_Z26window_block_two_warp_fp16ILi64ELb1ELb0E38FWindowBlockC64InputViewFp16ParametersEvT2_.log",
+          "sha256": "ef765319ad1642c49b80c13305d86ce1b60ded1a348419f37f2099c689fe949b"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z30window_block_wide_upsample_fp8ILi128E37FWindowBlockC128UpsampleFp8ParametersEvT0_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 163,
+        "static_shared_bytes": 8192,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/033-_Z30window_block_wide_upsample_fp8ILi128E37FWindowBlockC128UpsampleFp8ParametersEvT0_.log",
+          "sha256": "0162e90ab9a578357c5f6a46723a5c296d0a235cd131017336b97ebc888b13ba"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z30window_block_wide_upsample_fp8ILi256E37FWindowBlockC256UpsampleFp8ParametersEvT0_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 161,
+        "static_shared_bytes": 16384,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/034-_Z30window_block_wide_upsample_fp8ILi256E37FWindowBlockC256UpsampleFp8ParametersEvT0_.log",
+          "sha256": "177a97d55589fe2ffa7a8d70b11d59cfe26dcf4b79897fd168887a451b2be73d"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z31window_block_wide_upsample_fp16ILi128E38FWindowBlockC128UpsampleFp16ParametersEvT0_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 164,
+        "static_shared_bytes": 16384,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/035-_Z31window_block_wide_upsample_fp16ILi128E38FWindowBlockC128UpsampleFp16ParametersEvT0_.log",
+          "sha256": "e0d4d4d0cdc9fb8462004d063d27843533639c8fbbf45b244dab32a1b51fed73"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z31window_block_wide_upsample_fp16ILi256E38FWindowBlockC256UpsampleFp16ParametersEvT0_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 184,
+        "static_shared_bytes": 32768,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/036-_Z31window_block_wide_upsample_fp16ILi256E38FWindowBlockC256UpsampleFp16ParametersEvT0_.log",
+          "sha256": "3afbca935bac4bc8384e88b9ae357a1403d33e9b3db029a8506150703cc1d00a"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z32window_block_wide_downsample_fp8ILi128E39FWindowBlockC128DownsampleFp8ParametersEvT0_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 167,
+        "static_shared_bytes": 8192,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/037-_Z32window_block_wide_downsample_fp8ILi128E39FWindowBlockC128DownsampleFp8ParametersEvT0_.log",
+          "sha256": "432d87f2d83c6a0babd31017524f3918fe3bf4d0c1959962b4f63f92137667d0"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z32window_block_wide_downsample_fp8ILi256E39FWindowBlockC256DownsampleFp8ParametersEvT0_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 166,
+        "static_shared_bytes": 16384,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/038-_Z32window_block_wide_downsample_fp8ILi256E39FWindowBlockC256DownsampleFp8ParametersEvT0_.log",
+          "sha256": "3a776c6ed1b05be06d658fd463a54ee07063749876037a3fd8da76cb39242410"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z33window_block_wide_downsample_fp16ILi128E40FWindowBlockC128DownsampleFp16ParametersEvT0_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 16384,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/039-_Z33window_block_wide_downsample_fp16ILi128E40FWindowBlockC128DownsampleFp16ParametersEvT0_.log",
+          "sha256": "4216d0a4d905361b26e3966411953919282a80a821322d50dbe5cf59fcfe52af"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "_Z33window_block_wide_downsample_fp16ILi256E40FWindowBlockC256DownsampleFp16ParametersEvT0_",
+        "sm_target": "sm_120",
+        "registers_per_thread": 180,
+        "static_shared_bytes": 32768,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/040-_Z33window_block_wide_downsample_fp16ILi256E40FWindowBlockC256DownsampleFp16ParametersEvT0_.log",
+          "sha256": "edd726db5decd14199bf636e66b3d42f4e7994a49dc590a76737f427b982b899"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "channel_projection_c512_to_c1024_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 96,
+        "static_shared_bytes": 12312,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/041-channel_projection_c512_to_c1024_fp16.log",
+          "sha256": "cd40eff98cf636dd78fbd232ac83d1ac08fbf3cec2ba5613bfa1a9fe0535d798"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "channel_projection_c512_to_c1024_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 96,
+        "static_shared_bytes": 12312,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/042-channel_projection_c512_to_c1024_fp8.log",
+          "sha256": "ac9af1181631f1c2de6d97d8dd02d14ff6ba48d81c960c9ac41568827e5a03f5"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "completion_counter_clear",
+        "sm_target": "sm_120",
+        "registers_per_thread": 10,
+        "static_shared_bytes": 0,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/043-completion_counter_clear.log",
+          "sha256": "0e8b8410eed882ccb16fca8913364ff32ef2c74a8def9127ac2ffbb127c4ef7f"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "decoder_upsample_c1024_to_c512_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 125,
+        "static_shared_bytes": 2064,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/044-decoder_upsample_c1024_to_c512_fp16.log",
+          "sha256": "4617191c7a012e894e6cc7fd8b0661db992ab34c042750c96cd5d6264721259c"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "decoder_upsample_c1024_to_c512_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 125,
+        "static_shared_bytes": 2064,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/045-decoder_upsample_c1024_to_c512_fp8.log",
+          "sha256": "36347d1e8e76e88eb4ec6c649259e9c719818121bf6ebdfb561ebcbe276e5982"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "global_attention_chained_c1024_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 154,
+        "static_shared_bytes": 16400,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/046-global_attention_chained_c1024_fp16.log",
+          "sha256": "912b2354a974a973ec9fe7e2ed19c1ddfd70e50350516d4b8a1c5b4ec4ea00eb"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "global_attention_chained_c1024_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 160,
+        "static_shared_bytes": 8208,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/047-global_attention_chained_c1024_fp8.log",
+          "sha256": "cc0612cec51ffa3322a019b85628127c2ac04cde3175fa2e7deb207a7e349b62"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "global_ffn_contract_c1024_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 142,
+        "static_shared_bytes": 24600,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/048-global_ffn_contract_c1024_fp16.log",
+          "sha256": "15e99985da2fa48d05367597b50c64aec16dec47549df229a01743f478c7fb60"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "global_ffn_expand_c1024_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 140,
+        "static_shared_bytes": 24600,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/049-global_ffn_expand_c1024_fp16.log",
+          "sha256": "92fb973b8872f1136880861e7ef79d02c78f2d1fbd6d9c2a70b978fca200dd6d"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "global_ffn_expand_c1024_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 139,
+        "static_shared_bytes": 24600,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/050-global_ffn_expand_c1024_fp8.log",
+          "sha256": "de4253bc6bc8e68f9af08b0633678d6bf736949aae7f6dc19c965ca181d4a484"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "global_projection_c1024_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 154,
+        "static_shared_bytes": 16400,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/051-global_projection_c1024_fp16.log",
+          "sha256": "d6b1e58c02dd7a8b8ef68e802ae5af3951c7131a4f5dd9fa4d99101de045ae5d"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "global_qkv_c1024_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 202,
+        "static_shared_bytes": 16400,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/052-global_qkv_c1024_fp16.log",
+          "sha256": "fcf681ec076c066d68f7c32efc5a92d940f7e4dd7eaa192b2273124802173b9d"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "global_qkv_c1024_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 160,
+        "static_shared_bytes": 8208,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/053-global_qkv_c1024_fp8.log",
+          "sha256": "b8d12f318b22ccf7986fd27af98e35c19a050def97d00b13ebb6508a939dba0c"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "input_preprocess_window_c32_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 2048,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/054-input_preprocess_window_c32_fp16.log",
+          "sha256": "b3bad4fbef8d36b5917c11de151bc957e1ff0a8186f59968e968e15c3d7a0fe4"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "input_preprocess_window_c32_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 2048,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/055-input_preprocess_window_c32_fp8.log",
+          "sha256": "d8d848c987edad147eb5bf9a6aca83856b0dffd871cb3412ee913d75a9faa687"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "input_preprocess_window_downsample_c32_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 2048,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/056-input_preprocess_window_downsample_c32_fp16.log",
+          "sha256": "84c9f9c8c63ad5318b314cee8684cc9071b2e1581e5f6cea67dd8e50d4e11a84"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "input_preprocess_window_downsample_c32_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 2048,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/057-input_preprocess_window_downsample_c32_fp8.log",
+          "sha256": "3634dbfd21a0c342c9b2c3cdd923e042931d3a59002e3a9936f90276b4fb3460"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "output_window_postprocess_c32_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 0,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/058-output_window_postprocess_c32_fp16.log",
+          "sha256": "bf5af4735b4fc92a56fb06e4f7684043992684e3e43d103705e1004e5c299fcc"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "output_window_postprocess_c32_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 0,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/059-output_window_postprocess_c32_fp8.log",
+          "sha256": "47638cf7b7050ef80ecf177ae85359eca3d7051902da04388b129a214c6dd91b"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "small_global_attention_chained_c1024_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 208,
+        "static_shared_bytes": 16400,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/060-small_global_attention_chained_c1024_fp16.log",
+          "sha256": "d3c09c02f9b7f659e7f585cf49503cdd1df7956c80fe79154e1baa2dea491435"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "small_global_attention_chained_c1024_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 199,
+        "static_shared_bytes": 8208,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/061-small_global_attention_chained_c1024_fp8.log",
+          "sha256": "534e0b0b75cb269ed0a2cbd8f9cd5dc9d8a652b5081f234ae6b0b4766db94e72"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_attention_projection_output_view_c512_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 128,
+        "static_shared_bytes": 12312,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/062-window_attention_projection_output_view_c512_fp16.log",
+          "sha256": "70dacf30c9a84d7d161428beb5847ba8c8ef15342f5c0a2b7ca33411e7dc7823"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_attention_projection_output_view_c512_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 122,
+        "static_shared_bytes": 12312,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/063-window_attention_projection_output_view_c512_fp8.log",
+          "sha256": "c92e209f05e21f270db369dda355319fdfa454781fd4064776f357920a175101"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_attention_projection_pool_c512_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 144,
+        "static_shared_bytes": 8208,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/064-window_attention_projection_pool_c512_fp16.log",
+          "sha256": "103f599bb63a79013ac7aba708119326f180f9cacf103ab798b15cf1a7b2b8ab"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_attention_projection_pool_c512_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 144,
+        "static_shared_bytes": 8208,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/065-window_attention_projection_pool_c512_fp8.log",
+          "sha256": "a582f7192d5350ab2d372d5e276409df56a3f4360ffff0473b6e0c77f43f6a91"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_block_c32_downsample_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 0,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/066-window_block_c32_downsample_fp16.log",
+          "sha256": "8107f55fbd0dbc5c6233095ca3bc8ff31f17cb391d469a949a35646341b6f853"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_block_c32_downsample_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 0,
+        "spill_bytes": 8,
+        "log": {
+          "path": "receipts/ptxas/067-window_block_c32_downsample_fp8.log",
+          "sha256": "77e1e989196f12d2198a5c3d7f3850f8172f2b8f0f2119333018fc721fdbb044"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_block_c32_output_view_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 0,
+        "spill_bytes": 40,
+        "log": {
+          "path": "receipts/ptxas/068-window_block_c32_output_view_fp16.log",
+          "sha256": "29b226fd417d279ef8c7cc6c13239c240201f1ae019bdde26758f52a745ffd7c"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_block_c32_output_view_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 0,
+        "spill_bytes": 16,
+        "log": {
+          "path": "receipts/ptxas/069-window_block_c32_output_view_fp8.log",
+          "sha256": "76f24c57a5d4c449936de6d5574e364fcaaa9421872574d17eeceaf5221a6235"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_block_c32_upsample_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 0,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/070-window_block_c32_upsample_fp16.log",
+          "sha256": "230802abf1722c3996b960647ca95602742ba7e8e32718b7c1409642c8dbc010"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_block_c32_upsample_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 0,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/071-window_block_c32_upsample_fp8.log",
+          "sha256": "1bdb49a182219fd665781b11b7ba3b642754ea142ac753a998d54f48acc73357"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_block_c64_downsample_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 8192,
+        "spill_bytes": 16,
+        "log": {
+          "path": "receipts/ptxas/072-window_block_c64_downsample_fp16.log",
+          "sha256": "7003734d5cac7fd8e186ae9be27ec0403a53f9f6da00dc66eef78f499163d663"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_block_c64_downsample_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 162,
+        "static_shared_bytes": 4096,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/073-window_block_c64_downsample_fp8.log",
+          "sha256": "36b000c44661de309b8631be5f3c7a2123e8af2c6e24487576f509e17dcf8379"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_block_c64_upsample_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 168,
+        "static_shared_bytes": 8192,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/074-window_block_c64_upsample_fp16.log",
+          "sha256": "dfd1dda846f6852739d03582f4c55a63cec1f9bc841945d678dec72bc6baa207"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_block_c64_upsample_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 161,
+        "static_shared_bytes": 4096,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/075-window_block_c64_upsample_fp8.log",
+          "sha256": "8829adaa8ea5c06b55b8f578530c1b36fb50670e7a3e5fe26b625289af03d0b4"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_ffn_c512_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 217,
+        "static_shared_bytes": 8208,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/076-window_ffn_c512_fp16.log",
+          "sha256": "23796fe36388ece642335940364a182c2261becb6ed95ff05cd66e55d91311ee"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_ffn_c512_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 108,
+        "static_shared_bytes": 8208,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/077-window_ffn_c512_fp8.log",
+          "sha256": "a8e89018e8fed056a79d0c1c2e436f85bfc995d61ab14b6c6a5f8e058f809898"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_ffn_input_view_c512_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 215,
+        "static_shared_bytes": 8208,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/078-window_ffn_input_view_c512_fp16.log",
+          "sha256": "2628bd5355cdaa7497c3d9c7da7efb458cbe7399e868c80b6fadcf0c7181aeba"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_ffn_input_view_c512_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 161,
+        "static_shared_bytes": 8208,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/079-window_ffn_input_view_c512_fp8.log",
+          "sha256": "f64660ecb06fe7e1737ce4422477ad302808cfd6da7d7591519eeb3e1a425062"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_ffn_projection_input_view_c512_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 128,
+        "static_shared_bytes": 12312,
+        "spill_bytes": 16,
+        "log": {
+          "path": "receipts/ptxas/080-window_ffn_projection_input_view_c512_fp16.log",
+          "sha256": "1123431923a59d20400ea9a4f27f80b5d816b5d8877c66b46c5ab2621315279a"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_ffn_projection_input_view_c512_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 128,
+        "static_shared_bytes": 12312,
+        "spill_bytes": 56,
+        "log": {
+          "path": "receipts/ptxas/081-window_ffn_projection_input_view_c512_fp8.log",
+          "sha256": "f42362efcce424f7b7271c3cb5dd005ba686925f287789fd00c013691a9ec0f1"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_qkv_c512_fp16",
+        "sm_target": "sm_120",
+        "registers_per_thread": 154,
+        "static_shared_bytes": 4112,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/082-window_qkv_c512_fp16.log",
+          "sha256": "0b2f65c04f75f690348ba1c201f3dcc1b2bacf4771186ad6257aa27aaa972f16"
+        }
+      },
+      {
+        "architecture": "SM120",
+        "kernel": "window_qkv_c512_fp8",
+        "sm_target": "sm_120",
+        "registers_per_thread": 164,
+        "static_shared_bytes": 8208,
+        "spill_bytes": 0,
+        "log": {
+          "path": "receipts/ptxas/083-window_qkv_c512_fp8.log",
+          "sha256": "782e6f6e3856632f184bc39da096395d2c7907707eeaad0f35d2465d495cca9d"
+        }
+      }
+    ],
+    "cuobjdump": {
+      "path": "receipts/ptxas/cuobjdump-resource-usage.txt",
+      "sha256": "17297f6862db4563336e4713fe31430cb0638ec271ee02510afbeb3623b367e6"
+    },
+    "cuobjdump_reserved_bytes": 1024
+  },
+  "ncu": {
+    "state": "absent",
+    "reason": "No current candidate007 Nsight Compute report is attached. Historical NCU evidence remains pinned separately; no fresh counter claim is made."
+  },
+  "limitations": [
+    "These are whole-build comparisons. Incomplete original toolchain provenance prevents isolating wrapper overhead.",
+    "The candidate007 build-time HEAD98 with four dirty source files is distinct from verified later source attribution to commit c6fb8f9.",
+    "The prior 34 CPU groups cover unchanged runtime Python. The 33 source tests are a separate candidate007 supplement, not a full-suite rerun.",
+    "Training correctness uses four accepted FP32/BF16 checkpoint-training records. Both interrupted training timing attempts are excluded; no training latency is reported.",
+    "RGB replays one actual 4K Cyberpunk image with stateless inputs. Timed scopes exclude video decoding and encoding.",
+    "Historical DLL metrics remain separate. Candidate006 numerical tables and every incomplete candidate007 timing run are excluded from final candidate007 results.",
+    "Physical GPU validation is SM120 only. SM80-selected PTX ran on SM120; compilation for four architectures is not execution on four physical GPUs.",
+    "Learned FP8 export is unsupported. Optimizer and export correctness do not establish training throughput.",
+    "Active monitoring samples benchmark-owned lifetimes under a registry gate. Error-free inter-child gaps are explicitly logged as skipped observations, never as idle confirmations. Preflight and block-boundary idle checks remain separate.",
+    "All earlier incomplete native timing stages and interrupted optional training timing stages are excluded.",
+    "The candidate was built from dirty HEAD 98d6309a193b00767877e36ffea56ef1de43dd69 under actual cache key 6d94f46f0bddeb2844a919445fc7c6d67881864158836a620b1de5f6a5789dff by the recorded direct local fallback. Later source-commit attribution verifies measured normalized content; it does not relabel the build-time checkout or claim DeepCluster execution.",
+    "No current NCU counter claim is made; NCU is explicitly absent.",
+    "Candidate007 resources are derived directly from its hash-bound compiler log and cuobjdump output. The accepted parser handles the optional cumulative-stack clause; no historical006 six-row correction is attributed to this build. FFN static shared memory and the1024-byte cuobjdump reserved delta stay separate.",
+    "Old-build continuity limitation: This 2026-10-09 receipt produced an earlier SM120 link and does not contain a binary SHA. It is the receipt for the 61 object files that the 2026-10-30 final link reused, not for the f0d514 link itself. The final 2026-10-30 link has 65 objects: 4 translation units were rebuilt and 61 objects were reused from the earlier 2026-10-09 build. That earlier receipt lacks the full source/binary manifest and the final-link binary SHA; it is the receipt for the reused objects, not the f0d514 final-link binary receipt. The preserved f0d514 final-link binary is a separate artifact. The e2741a72b390f830de810e6f1180369ed52eb325 source replay is a separate source-only record. The 125 measurement-time csrc rows (including 3 FFN rows; e274-blob-exact: 56, e274-blob-lf-to-crlf-reconstruction: 69) are reconstructed from real e2741a72b390f830de810e6f1180369ed52eb325 blobs only after raw SHA-256 and byte length match; they are not a direct archived old-build source association. Raw bytes, normalized-LF bytes and Git blob identities remain distinct. The 12 Small31 final-link sourceHashes are not used as the complete original source manifest.",
+    "Original toolchain versions and CUDA release are preserved from the archived final-link environment; original nvcc/ptxas executable SHA-256 values and the build-time PyTorch distribution are unknown and field-qualified in the build receipt toolchain.qualifications. Coarse recorded versions are preserved; no candidate/current patch version or executable hash is substituted.",
+    "157Python files are byte-identical to accepted006;131native inputs use007 build postmanifest, exactly4changed. Historical006 manifests and evidence untouched.",
+    "The preparation handoff precedes the prepared manifest and runtime acceptance; its original status is preserved, not rewritten. Both interrupted training timing attempts remain excluded. Four checkpoint training records supply training correctness, not latency."
+  ],
+  "decision": {
+    "status": "accepted",
+    "rationale": "Accept the measured latency cost as an explicit tradeoff for shared implementations and corrected split-result publication. All 128 processes completed; no incomplete attempt contributes data. This is a whole-build comparison on one SM120 device, not evidence of zero overhead or isolated wrapper cost. Original toolchain provenance is incomplete."
+  },
+  "artifacts": [
+    {
+      "path": "receipts/build/candidate-build-receipt.json",
+      "sha256": "939ce01239b218069910de4695c702573f50ca95f24a961d74c0106037259f7c",
+      "kind": "build-receipt",
+      "identity": "candidate"
+    },
+    {
+      "path": "receipts/build/original-build-receipt.json",
+      "sha256": "8eeb8fa92ad387fe8d03acae4c9c2b26ea0978c271e18904bde2b0250a404939",
+      "kind": "build-receipt",
+      "identity": "original"
+    },
+    {
+      "path": "receipts/checks/checkpoint.json",
+      "sha256": "7019caec622701fe08bb10839b9c3bfca1c1c5bdd9528f9cfd106dde255496f9",
+      "kind": "check-receipt",
+      "identity": "check:checkpoint"
+    },
+    {
+      "path": "receipts/checks/cpu.json",
+      "sha256": "72c826e1d7177e075ceda2ab72adf9f245410d4a51fb9205e39a5a57b6a94cdd",
+      "kind": "check-receipt",
+      "identity": "check:cpu"
+    },
+    {
+      "path": "receipts/checks/cuda-graphs.json",
+      "sha256": "eac3f0e816d478c126bdccf72ca282562a29e6a5e96a516fe5901a3fc8597ed3",
+      "kind": "check-receipt",
+      "identity": "check:cuda-graphs"
+    },
+    {
+      "path": "receipts/checks/guards.json",
+      "sha256": "9b1a7f06f3ba2c0c0450e96d1f24c8d74a0b79bc8d37b3062f1fa7932ea554ec",
+      "kind": "check-receipt",
+      "identity": "check:guards"
+    },
+    {
+      "path": "receipts/checks/native-bitwise.json",
+      "sha256": "9dacfa83eb7f2cdb5a6af2ce3d59238d69fac4d6429051c53b5c7e97dd7acdd9",
+      "kind": "check-receipt",
+      "identity": "check:native-bitwise"
+    },
+    {
+      "path": "receipts/checks/primitives.json",
+      "sha256": "39512dddebd6f250e4bb123aec0f40f4942d532faadb200158c0bfebd6de4d06",
+      "kind": "check-receipt",
+      "identity": "check:primitives"
+    },
+    {
+      "path": "receipts/checks/rgb.json",
+      "sha256": "1e03038a29ea951688409cd5b33f5e191ef4dfe9b377fb43a8d48de8d238ffbb",
+      "kind": "check-receipt",
+      "identity": "check:rgb"
+    },
+    {
+      "path": "receipts/checks/training.json",
+      "sha256": "e42b3f906d25f31e8794897640f4ba5e8e763e033ff028ff53d4018bdc590c44",
+      "kind": "check-receipt",
+      "identity": "check:training"
+    },
+    {
+      "path": "receipts/ptxas/001-_Z19global_contract_fp8ILb0E36FGlobalFfnContractC1024Fp8ParametersEvT0_.log",
+      "sha256": "eb395f1bf49f6636ec6707082708e5243ec089f4667e82f65877406c0a10d129",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/002-_Z19global_contract_fp8ILb1E35FGlobalProjectionC1024Fp8ParametersEvT0_.log",
+      "sha256": "a3bea50596fe719f42f77f16f9628c8981e668952fa6406ad9a8ee3b963ade1b",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/003-_Z21window_block_wide_fp8ILi128ELb0ELb0E29FWindowBlockC128Fp8ParametersEvT2_.log",
+      "sha256": "546cf9dc5cde855ca136d80dc69bd21821a4ea8b2c943b0e242948fb9e45a434",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/004-_Z21window_block_wide_fp8ILi128ELb0ELb1E39FWindowBlockC128OutputViewFp8ParametersEvT2_.log",
+      "sha256": "03117a58e43fcc078b218e6e28035b294c973233dfe7a9f0978e7af20ff325cf",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/005-_Z21window_block_wide_fp8ILi128ELb1ELb0E38FWindowBlockC128InputViewFp8ParametersEvT2_.log",
+      "sha256": "e104f01b93876cf4d14d0038aaa7414035c694518bdbb53c7439d082d5495f93",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/006-_Z21window_block_wide_fp8ILi256ELb0ELb0E29FWindowBlockC256Fp8ParametersEvT2_.log",
+      "sha256": "e6f90f15df1b1f5d7b9a64edf391e2f94153c895508ebaa90409451e06c0aa81",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/007-_Z21window_block_wide_fp8ILi256ELb0ELb1E39FWindowBlockC256OutputViewFp8ParametersEvT2_.log",
+      "sha256": "4457f664d9a028d787adf07a3a4c46dd6779601e0f78e5669b6f1bb8eb016cde",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/008-_Z21window_block_wide_fp8ILi256ELb1ELb0E38FWindowBlockC256InputViewFp8ParametersEvT2_.log",
+      "sha256": "e8d85b87cf1fd856b1ab4268f46c6e053a80564c7b4b94a8d7c5bd9e3f2b136e",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/009-_Z22spatial_projection_fp8ILi2E43FWindowAttentionProjectionC512Fp8ParametersEvT0_.log",
+      "sha256": "5c1aa40407b27afb36e2d5f7360c8f8ee013484407637c827b64b7dc48970738",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/010-_Z22spatial_projection_fp8ILi4E37FWindowFfnProjectionC512Fp8ParametersEvT0_.log",
+      "sha256": "eee1fb1c8a07f9d989f3e459216a9e9ffa2d1507127094950cdce646b507da60",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/011-_Z22window_block_wide_fp16ILi128ELb0ELb0E30FWindowBlockC128Fp16ParametersEvT2_.log",
+      "sha256": "19c054bb47697379764fe0494bbba49def78b9bf3d279430c8a38a61091e47b9",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/012-_Z22window_block_wide_fp16ILi128ELb0ELb1E40FWindowBlockC128OutputViewFp16ParametersEvT2_.log",
+      "sha256": "defa5bda668f9c5d8e38190af28dee32725fd73e7975bf075eae7f5e0f5514d5",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/013-_Z22window_block_wide_fp16ILi128ELb1ELb0E39FWindowBlockC128InputViewFp16ParametersEvT2_.log",
+      "sha256": "942be3e22bbed23bf7ba8de157ca00fd60a7d9a298a4f3a4c7e2cae633440b11",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/014-_Z22window_block_wide_fp16ILi256ELb0ELb0E30FWindowBlockC256Fp16ParametersEvT2_.log",
+      "sha256": "058222a3ce5dfcc5797f961101089ef10a63800c666df486185bb284a25c67b0",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/015-_Z22window_block_wide_fp16ILi256ELb0ELb1E40FWindowBlockC256OutputViewFp16ParametersEvT2_.log",
+      "sha256": "65fa91df891c70938b7be0c1f06445a61f554cd869f55aa2dbc922afcbebb3e8",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/016-_Z22window_block_wide_fp16ILi256ELb1ELb0E39FWindowBlockC256InputViewFp16ParametersEvT2_.log",
+      "sha256": "2901b21ca3ed41c2495d6e4c21376c04685c0641e5d812ee92018ebad7d20042",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/017-_Z23repack_spatial_to_tokenILb0EEv23FGlobalRepackParameters.log",
+      "sha256": "4ca18687e86d8c21d40e2bfb3eb8790cc3eeff97a7027ec028930bceb173d592",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/018-_Z23repack_spatial_to_tokenILb1EEv23FGlobalRepackParameters.log",
+      "sha256": "2a7ed7abe6cbe8d415c9324332114e3c9559d0da5fe87b99adb27eb1f2e7799b",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/019-_Z23repack_token_to_spatialILb0EEv23FGlobalRepackParameters.log",
+      "sha256": "1b6816d56e1eb5dc9c0e872536146e07ca5f45ecfd98710244051617c3299075",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/020-_Z23repack_token_to_spatialILb1EEv23FGlobalRepackParameters.log",
+      "sha256": "4a2528dbcf47b7310817104bdfeab6efe4e22c80e385f23bb56c1806888a7025",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/021-_Z23spatial_projection_fp16ILi2E44FWindowAttentionProjectionC512Fp16ParametersEvT0_.log",
+      "sha256": "ebc679b4977ab6fa5bf61552ce2649f636471e8239703904c45b0bf6620dfa52",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/022-_Z23spatial_projection_fp16ILi4E38FWindowFfnProjectionC512Fp16ParametersEvT0_.log",
+      "sha256": "c9fcbd91638d4346b548625ec6783edba61020bb19cd49f398a22289cdb0e5d7",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/023-_Z24window_block_compact_fp8ILi32ELb0E28FWindowBlockC32Fp8ParametersEvT1_.log",
+      "sha256": "42ea19c4fa7b1b907701d0302740bd37defe69726ca97a6959386e3b856f6ea2",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/024-_Z24window_block_compact_fp8ILi32ELb1E37FWindowBlockC32InputViewFp8ParametersEvT1_.log",
+      "sha256": "db67e1e4e664f9164155393b93a083b82e60960aa59cc23214cac810e8eab698",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/025-_Z25window_block_compact_fp16ILi32ELb0E29FWindowBlockC32Fp16ParametersEvT1_.log",
+      "sha256": "a7b83c74ba892855684520d8be57d73306baf98043f1c1585ca7faddb0f9604e",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/026-_Z25window_block_compact_fp16ILi32ELb1E38FWindowBlockC32InputViewFp16ParametersEvT1_.log",
+      "sha256": "95b36e865ff3f0f6c13f26129e19657ee620f94238b2b1118f73565571b256a7",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/027-_Z25window_block_two_warp_fp8ILi64ELb0ELb0E28FWindowBlockC64Fp8ParametersEvT2_.log",
+      "sha256": "6f38e14a3e97c9267e67b35cf719fa031ffd3d3307c1076a055f10f616ead14e",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/028-_Z25window_block_two_warp_fp8ILi64ELb0ELb1E38FWindowBlockC64OutputViewFp8ParametersEvT2_.log",
+      "sha256": "9e914a74d7e799210963a1abaea60c35e4db73f0baa9b0ba02f53ca91652e018",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/029-_Z25window_block_two_warp_fp8ILi64ELb1ELb0E37FWindowBlockC64InputViewFp8ParametersEvT2_.log",
+      "sha256": "15b148f1f7fcc279096ebddc2c2cdc9170456eaa59ea1c112a315bd928fdf787",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/030-_Z26window_block_two_warp_fp16ILi64ELb0ELb0E29FWindowBlockC64Fp16ParametersEvT2_.log",
+      "sha256": "9fedaa7a4ac8fb69dc86eeacd2d270abf433ee8a81e2c8651392d87f1f31e34c",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/031-_Z26window_block_two_warp_fp16ILi64ELb0ELb1E39FWindowBlockC64OutputViewFp16ParametersEvT2_.log",
+      "sha256": "280c4a273da55efbe75be3d280c87ce6b9e5b92386a7a4cb4f18a8041ad4fc20",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/032-_Z26window_block_two_warp_fp16ILi64ELb1ELb0E38FWindowBlockC64InputViewFp16ParametersEvT2_.log",
+      "sha256": "ef765319ad1642c49b80c13305d86ce1b60ded1a348419f37f2099c689fe949b",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/033-_Z30window_block_wide_upsample_fp8ILi128E37FWindowBlockC128UpsampleFp8ParametersEvT0_.log",
+      "sha256": "0162e90ab9a578357c5f6a46723a5c296d0a235cd131017336b97ebc888b13ba",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/034-_Z30window_block_wide_upsample_fp8ILi256E37FWindowBlockC256UpsampleFp8ParametersEvT0_.log",
+      "sha256": "177a97d55589fe2ffa7a8d70b11d59cfe26dcf4b79897fd168887a451b2be73d",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/035-_Z31window_block_wide_upsample_fp16ILi128E38FWindowBlockC128UpsampleFp16ParametersEvT0_.log",
+      "sha256": "e0d4d4d0cdc9fb8462004d063d27843533639c8fbbf45b244dab32a1b51fed73",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/036-_Z31window_block_wide_upsample_fp16ILi256E38FWindowBlockC256UpsampleFp16ParametersEvT0_.log",
+      "sha256": "3afbca935bac4bc8384e88b9ae357a1403d33e9b3db029a8506150703cc1d00a",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/037-_Z32window_block_wide_downsample_fp8ILi128E39FWindowBlockC128DownsampleFp8ParametersEvT0_.log",
+      "sha256": "432d87f2d83c6a0babd31017524f3918fe3bf4d0c1959962b4f63f92137667d0",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/038-_Z32window_block_wide_downsample_fp8ILi256E39FWindowBlockC256DownsampleFp8ParametersEvT0_.log",
+      "sha256": "3a776c6ed1b05be06d658fd463a54ee07063749876037a3fd8da76cb39242410",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/039-_Z33window_block_wide_downsample_fp16ILi128E40FWindowBlockC128DownsampleFp16ParametersEvT0_.log",
+      "sha256": "4216d0a4d905361b26e3966411953919282a80a821322d50dbe5cf59fcfe52af",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/040-_Z33window_block_wide_downsample_fp16ILi256E40FWindowBlockC256DownsampleFp16ParametersEvT0_.log",
+      "sha256": "edd726db5decd14199bf636e66b3d42f4e7994a49dc590a76737f427b982b899",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/041-channel_projection_c512_to_c1024_fp16.log",
+      "sha256": "cd40eff98cf636dd78fbd232ac83d1ac08fbf3cec2ba5613bfa1a9fe0535d798",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/042-channel_projection_c512_to_c1024_fp8.log",
+      "sha256": "ac9af1181631f1c2de6d97d8dd02d14ff6ba48d81c960c9ac41568827e5a03f5",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/043-completion_counter_clear.log",
+      "sha256": "0e8b8410eed882ccb16fca8913364ff32ef2c74a8def9127ac2ffbb127c4ef7f",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/044-decoder_upsample_c1024_to_c512_fp16.log",
+      "sha256": "4617191c7a012e894e6cc7fd8b0661db992ab34c042750c96cd5d6264721259c",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/045-decoder_upsample_c1024_to_c512_fp8.log",
+      "sha256": "36347d1e8e76e88eb4ec6c649259e9c719818121bf6ebdfb561ebcbe276e5982",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/046-global_attention_chained_c1024_fp16.log",
+      "sha256": "912b2354a974a973ec9fe7e2ed19c1ddfd70e50350516d4b8a1c5b4ec4ea00eb",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/047-global_attention_chained_c1024_fp8.log",
+      "sha256": "cc0612cec51ffa3322a019b85628127c2ac04cde3175fa2e7deb207a7e349b62",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/048-global_ffn_contract_c1024_fp16.log",
+      "sha256": "15e99985da2fa48d05367597b50c64aec16dec47549df229a01743f478c7fb60",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/049-global_ffn_expand_c1024_fp16.log",
+      "sha256": "92fb973b8872f1136880861e7ef79d02c78f2d1fbd6d9c2a70b978fca200dd6d",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/050-global_ffn_expand_c1024_fp8.log",
+      "sha256": "de4253bc6bc8e68f9af08b0633678d6bf736949aae7f6dc19c965ca181d4a484",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/051-global_projection_c1024_fp16.log",
+      "sha256": "d6b1e58c02dd7a8b8ef68e802ae5af3951c7131a4f5dd9fa4d99101de045ae5d",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/052-global_qkv_c1024_fp16.log",
+      "sha256": "fcf681ec076c066d68f7c32efc5a92d940f7e4dd7eaa192b2273124802173b9d",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/053-global_qkv_c1024_fp8.log",
+      "sha256": "b8d12f318b22ccf7986fd27af98e35c19a050def97d00b13ebb6508a939dba0c",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/054-input_preprocess_window_c32_fp16.log",
+      "sha256": "b3bad4fbef8d36b5917c11de151bc957e1ff0a8186f59968e968e15c3d7a0fe4",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/055-input_preprocess_window_c32_fp8.log",
+      "sha256": "d8d848c987edad147eb5bf9a6aca83856b0dffd871cb3412ee913d75a9faa687",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/056-input_preprocess_window_downsample_c32_fp16.log",
+      "sha256": "84c9f9c8c63ad5318b314cee8684cc9071b2e1581e5f6cea67dd8e50d4e11a84",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/057-input_preprocess_window_downsample_c32_fp8.log",
+      "sha256": "3634dbfd21a0c342c9b2c3cdd923e042931d3a59002e3a9936f90276b4fb3460",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/058-output_window_postprocess_c32_fp16.log",
+      "sha256": "bf5af4735b4fc92a56fb06e4f7684043992684e3e43d103705e1004e5c299fcc",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/059-output_window_postprocess_c32_fp8.log",
+      "sha256": "47638cf7b7050ef80ecf177ae85359eca3d7051902da04388b129a214c6dd91b",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/060-small_global_attention_chained_c1024_fp16.log",
+      "sha256": "d3c09c02f9b7f659e7f585cf49503cdd1df7956c80fe79154e1baa2dea491435",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/061-small_global_attention_chained_c1024_fp8.log",
+      "sha256": "534e0b0b75cb269ed0a2cbd8f9cd5dc9d8a652b5081f234ae6b0b4766db94e72",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/062-window_attention_projection_output_view_c512_fp16.log",
+      "sha256": "70dacf30c9a84d7d161428beb5847ba8c8ef15342f5c0a2b7ca33411e7dc7823",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/063-window_attention_projection_output_view_c512_fp8.log",
+      "sha256": "c92e209f05e21f270db369dda355319fdfa454781fd4064776f357920a175101",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/064-window_attention_projection_pool_c512_fp16.log",
+      "sha256": "103f599bb63a79013ac7aba708119326f180f9cacf103ab798b15cf1a7b2b8ab",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/065-window_attention_projection_pool_c512_fp8.log",
+      "sha256": "a582f7192d5350ab2d372d5e276409df56a3f4360ffff0473b6e0c77f43f6a91",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/066-window_block_c32_downsample_fp16.log",
+      "sha256": "8107f55fbd0dbc5c6233095ca3bc8ff31f17cb391d469a949a35646341b6f853",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/067-window_block_c32_downsample_fp8.log",
+      "sha256": "77e1e989196f12d2198a5c3d7f3850f8172f2b8f0f2119333018fc721fdbb044",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/068-window_block_c32_output_view_fp16.log",
+      "sha256": "29b226fd417d279ef8c7cc6c13239c240201f1ae019bdde26758f52a745ffd7c",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/069-window_block_c32_output_view_fp8.log",
+      "sha256": "76f24c57a5d4c449936de6d5574e364fcaaa9421872574d17eeceaf5221a6235",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/070-window_block_c32_upsample_fp16.log",
+      "sha256": "230802abf1722c3996b960647ca95602742ba7e8e32718b7c1409642c8dbc010",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/071-window_block_c32_upsample_fp8.log",
+      "sha256": "1bdb49a182219fd665781b11b7ba3b642754ea142ac753a998d54f48acc73357",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/072-window_block_c64_downsample_fp16.log",
+      "sha256": "7003734d5cac7fd8e186ae9be27ec0403a53f9f6da00dc66eef78f499163d663",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/073-window_block_c64_downsample_fp8.log",
+      "sha256": "36b000c44661de309b8631be5f3c7a2123e8af2c6e24487576f509e17dcf8379",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/074-window_block_c64_upsample_fp16.log",
+      "sha256": "dfd1dda846f6852739d03582f4c55a63cec1f9bc841945d678dec72bc6baa207",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/075-window_block_c64_upsample_fp8.log",
+      "sha256": "8829adaa8ea5c06b55b8f578530c1b36fb50670e7a3e5fe26b625289af03d0b4",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/076-window_ffn_c512_fp16.log",
+      "sha256": "23796fe36388ece642335940364a182c2261becb6ed95ff05cd66e55d91311ee",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/077-window_ffn_c512_fp8.log",
+      "sha256": "a8e89018e8fed056a79d0c1c2e436f85bfc995d61ab14b6c6a5f8e058f809898",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/078-window_ffn_input_view_c512_fp16.log",
+      "sha256": "2628bd5355cdaa7497c3d9c7da7efb458cbe7399e868c80b6fadcf0c7181aeba",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/079-window_ffn_input_view_c512_fp8.log",
+      "sha256": "f64660ecb06fe7e1737ce4422477ad302808cfd6da7d7591519eeb3e1a425062",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/080-window_ffn_projection_input_view_c512_fp16.log",
+      "sha256": "1123431923a59d20400ea9a4f27f80b5d816b5d8877c66b46c5ab2621315279a",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/081-window_ffn_projection_input_view_c512_fp8.log",
+      "sha256": "f42362efcce424f7b7271c3cb5dd005ba686925f287789fd00c013691a9ec0f1",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/082-window_qkv_c512_fp16.log",
+      "sha256": "0b2f65c04f75f690348ba1c201f3dcc1b2bacf4771186ad6257aa27aaa972f16",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/083-window_qkv_c512_fp8.log",
+      "sha256": "782e6f6e3856632f184bc39da096395d2c7907707eeaad0f35d2465d495cca9d",
+      "kind": "ptxas-log",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/ptxas/cuobjdump-resource-usage.txt",
+      "sha256": "17297f6862db4563336e4713fe31430cb0638ec271ee02510afbeb3623b367e6",
+      "kind": "cuobjdump",
+      "identity": "ptxas"
+    },
+    {
+      "path": "receipts/source/candidate-input-manifest.json",
+      "sha256": "d141c317dc6e3f8a2578449ca7b90a752f1b4a7e338e7130aca5b048285bab95",
+      "kind": "input-manifest",
+      "identity": "candidate"
+    },
+    {
+      "path": "receipts/source/original-input-manifest.json",
+      "sha256": "ca3dd482a76f6b7520e6d8e294ff0ea6340149cf41fd5c248a759600770b5f66",
+      "kind": "input-manifest",
+      "identity": "original"
+    },
+    {
+      "path": "receipts/timing/timing-receipt.json",
+      "sha256": "792ad18226ed4e5611101573b92291364a22fe7c992ec9f3960104910cd17992",
+      "kind": "timing-receipt",
+      "identity": "timing"
+    }
+  ]
+}

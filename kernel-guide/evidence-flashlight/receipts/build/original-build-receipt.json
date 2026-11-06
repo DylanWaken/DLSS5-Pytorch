@@ -1,0 +1,27 @@
+{
+  "schema": "flashlight-build-receipt-v1",
+  "provenance": {
+    "basis": "inferred",
+    "note": "Original binary build is preserved-receipt evidence from the frozen 2026-10-30 link. The recorded short build commit 266d69a resolves to the full commit 266d69acf52dda413df3a874572f1156461f89ff. The receipt does not record the build checkout's dirty state, so dirty is honestly null (inferred basis). e2741a72b390f830de810e6f1180369ed52eb325 is the separate source-replay snapshot, not this original binary's build checkout. Old-build continuity limitation: This 2026-10-09 receipt produced an earlier SM120 link and does not contain a binary SHA. It is the receipt for the 61 object files that the 2026-10-30 final link reused, not for the f0d514 link itself. The final 2026-10-30 link has 65 objects: 4 translation units were rebuilt and 61 objects were reused from the earlier 2026-10-09 build. That earlier receipt lacks the full source/binary manifest and the final-link binary SHA; it is the receipt for the reused objects, not the f0d514 final-link binary receipt. The preserved f0d514 final-link binary is a separate artifact. The e2741a72b390f830de810e6f1180369ed52eb325 source replay is a separate source-only record. The 125 measurement-time csrc rows (including 3 FFN rows; e274-blob-exact: 56, e274-blob-lf-to-crlf-reconstruction: 69) are reconstructed from real e2741a72b390f830de810e6f1180369ed52eb325 blobs only after raw SHA-256 and byte length match; they are not a direct archived old-build source association. Raw bytes, normalized-LF bytes and Git blob identities remain distinct. The 12 Small31 final-link sourceHashes are not used as the complete original source manifest. Toolchain identity basis is preserved-receipt: Original toolchain versions and CUDA release are preserved from the archived final-link environment; original nvcc/ptxas executable SHA-256 values and the build-time PyTorch distribution are unknown and field-qualified in the build receipt toolchain.qualifications. Coarse recorded versions are preserved; no candidate/current patch version or executable hash is substituted. No historical value is invented.",
+    "build_time_HEAD": "266d69acf52dda413df3a874572f1156461f89ff",
+    "dirty": null
+  },
+  "binary": {
+    "filename": "_C_sm120.cp311-win_amd64.pyd",
+    "sha256": "f0d514043dda98bbe0043ac14d1d93a13e6620eae1c0338d1e3901c017528938",
+    "bytes": 18366464
+  },
+  "toolchain": {
+    "nvcc_version": "12.8.93",
+    "nvcc_sha256": null,
+    "ptxas_version": "13.4",
+    "ptxas_sha256": null,
+    "cuda_version": "12.8",
+    "pytorch_version": null,
+    "qualifications": {
+      "nvcc_sha256": "Unknown historical fact: the archived original final-link receipt profile/cutlass-refactor-20261105/baseline/frozen/build-receipts/rgb-safe-attention-build/results.json (sha256 1cd49918c9fc0ffd56f81c65913fe19ffe654b1f75ed1047ac66d4a93f0a432d) and provenance profile/cutlass-refactor-20261105/baseline/provenance/build-provenance.json (sha256 676b4faca69d4d8e54626b71307c2eeba9af2b8a3ae45bfe5afa12be17a6ef8c) record the nvcc version but no nvcc executable SHA-256. No contemporaneous original nvcc bytes are archived; the candidate hash is not substituted.",
+      "ptxas_sha256": "Unknown historical fact: the archived original final-link receipt profile/cutlass-refactor-20261105/baseline/frozen/build-receipts/rgb-safe-attention-build/results.json (sha256 1cd49918c9fc0ffd56f81c65913fe19ffe654b1f75ed1047ac66d4a93f0a432d) and provenance profile/cutlass-refactor-20261105/baseline/provenance/build-provenance.json (sha256 676b4faca69d4d8e54626b71307c2eeba9af2b8a3ae45bfe5afa12be17a6ef8c) record the ptxas version but no ptxas executable SHA-256. No contemporaneous original ptxas bytes are archived; the candidate hash is not substituted.",
+      "pytorch_version": "Unknown build-time fact: the archived original final-link receipt profile/cutlass-refactor-20261105/baseline/frozen/build-receipts/rgb-safe-attention-build/results.json (sha256 1cd49918c9fc0ffd56f81c65913fe19ffe654b1f75ed1047ac66d4a93f0a432d) does not record the PyTorch distribution. The later measurement-time runtime environment profile/cutlass-refactor-20261105/baseline/provenance/environment.json (sha256 7e1fa75dbb253b155afebc816b6059aa13a03d5a4b617ebf3ce17b3cb6c7ace6, captured 2026-11-05T12:02:24.384391+00:00) records torch==2.8.0+cu128; that runtime pip_freeze is not build-time evidence."
+    }
+  }
+}

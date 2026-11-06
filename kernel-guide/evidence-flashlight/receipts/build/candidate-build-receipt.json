@@ -1,0 +1,22 @@
+{
+  "schema": "flashlight-build-receipt-v1",
+  "provenance": {
+    "basis": "preserved-receipt",
+    "note": "Candidate built by direct local fallback after DeepCluster ACCOUNT_QUOTA from HEAD 98d6309a193b00767877e36ffea56ef1de43dd69 with four dirty preprocessing files, actual environment/cache key 6d94f46f0bddeb2844a919445fc7c6d67881864158836a620b1de5f6a5789dff. The launcher records 2026-11-06T08:26:26Z to 2026-11-06T08:27:02Z and 36.734s monotonic duration. This is the actual build-time identity; later source-commit attribution requires normalized measured input bytes to match that commit. No separate preparation-key discrepancy or DeepCluster execution is claimed. The build guard recorded zero blocked calls and one availability stub call. Candidate007 resources are derived directly from its hash-bound compiler log and cuobjdump output. The accepted parser handles the optional cumulative-stack clause; no historical006 six-row correction is attributed to this build. FFN static shared memory and the1024-byte cuobjdump reserved delta stay separate.",
+    "build_time_HEAD": "98d6309a193b00767877e36ffea56ef1de43dd69",
+    "dirty": true
+  },
+  "binary": {
+    "filename": "_C_sm120.cp311-win_amd64.pyd",
+    "sha256": "532dc6b34bbf4813c4aab9e13e9e26f2cd32e9aa98db1fb15216c9b24fdbfbb4",
+    "bytes": 18817024
+  },
+  "toolchain": {
+    "nvcc_version": "12.8.93",
+    "nvcc_sha256": "07565c215cc96e3b3609a931eb6eaffb1ecca24339442603f92832494c656727",
+    "ptxas_version": "13.4.59",
+    "ptxas_sha256": "462442e14a78d62e9165926e9ae75d4d8dbc5d9db2d4130f36f08e9aeaa0e0d5",
+    "cuda_version": "12.8",
+    "pytorch_version": "2.8.0+cu128"
+  }
+}

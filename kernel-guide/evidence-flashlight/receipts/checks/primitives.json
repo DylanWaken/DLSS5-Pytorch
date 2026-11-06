@@ -1,0 +1,24 @@
+{
+  "schema": "flashlight-private-check-receipt-v1",
+  "category": "primitives",
+  "status": "pass",
+  "covered_cases": [
+    "native-sm120",
+    "sm80-selected-ptx-on-sm120"
+  ],
+  "summary": "Accepted primitive operation 65179cfd... passes the native SM120 probe and the distinct SM80-selected PTX-on-SM120 probe; no production binary was loaded.",
+  "root_rationale": "Accepted unchanged-library primitive evidence covers native SM120 and SM80-selected PTX executed on SM120. Four-architecture compile checks are distinct from physical runtime validation.",
+  "source_reports": [
+    {
+      "path": "profile/flashlight-refactor-20261105/native/portable-runtime/attempt-20261105T221620/completion.json",
+      "sha256": "b817798201f169907e9c39243d292028250254fc311c9820b21a7cff8a4701ec"
+    }
+  ],
+  "proof": {
+    "operation": "65179cfd-a142-447c-9ea5-d3db3e109848",
+    "native": true,
+    "ptx_jit": true,
+    "scope": "native SM120 and SM80-selected PTX on SM120 remain distinct"
+  },
+  "note": "Derived small check receipt. It cites the exact selected report hashes and preserves the actual coverage labels and proof fields; it is not a substitute for the root decision."
+}

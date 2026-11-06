@@ -1,0 +1,540 @@
+{
+  "schema": "flashlight-private-timing-receipt-v1",
+  "source_timing_report": {
+    "path": "profile/flashlight-refactor-20261105/runtime-acceptance/attempt-007/timing-rerun-005/timing-results.json",
+    "sha256": "ae4435ba599b1ddf7cd2167d85c225a2561e67139d6ef87d582ac409739ddaaf"
+  },
+  "execution_identity_sha256": "5ed5766361433c9d79420d8441fa88e40b81a34a4bcbfcc9bfed300c59ec6ba3",
+  "protocol": {
+    "child_processes_per_case": 8,
+    "original_processes": 4,
+    "candidate_processes": 4,
+    "process_order": [
+      "original",
+      "candidate",
+      "candidate",
+      "original",
+      "candidate",
+      "original",
+      "original",
+      "candidate"
+    ],
+    "methodology": "Two ABBA/BAAB four-process blocks per case; each fresh process contributes 30 samples (10 replays per sample, 3 trunk passes per replay) and one process median. Order effects and paired deltas are preserved separately."
+  },
+  "uncertainty_method": "min/max of the four fresh-process medians",
+  "cases": [
+    {
+      "id": "legacy71_fp16_720p",
+      "model": "legacy71",
+      "precision": "fp16",
+      "size": "720p",
+      "width": 1280,
+      "height": 720,
+      "original_process_medians_ms": [
+        3.626649602254232,
+        3.6248550415039062,
+        3.6451647440592447,
+        3.6481274922688804
+      ],
+      "candidate_process_medians_ms": [
+        3.6343456268310548,
+        3.630126953125,
+        3.668347676595052,
+        3.6592571258544924
+      ],
+      "original_range_ms": [
+        3.6248550415039062,
+        3.6481274922688804
+      ],
+      "candidate_range_ms": [
+        3.630126953125,
+        3.668347676595052
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +10.894 us (+0.300%); median paired B-A +9.413 us, pair range +5.272 to +23.183 us; block effects +6.484/+17.156 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+      }
+    },
+    {
+      "id": "legacy71_fp16_1080p",
+      "model": "legacy71",
+      "precision": "fp16",
+      "size": "1080p",
+      "width": 1920,
+      "height": 1080,
+      "original_process_medians_ms": [
+        4.321627807617188,
+        4.332685852050782,
+        4.362497202555339,
+        4.356509908040365
+      ],
+      "candidate_process_medians_ms": [
+        4.329932912190754,
+        4.332244873046875,
+        4.376165771484375,
+        4.37035903930664
+      ],
+      "original_range_ms": [
+        4.321627807617188,
+        4.362497202555339
+      ],
+      "candidate_range_ms": [
+        4.329932912190754,
+        4.376165771484375
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +6.704 us (+0.154%); median paired B-A +10.987 us, pair range -0.441 to +13.849 us; block effects +3.932/+13.759 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim. Mixed pair signs limit claims about a stable ordering."
+      }
+    },
+    {
+      "id": "legacy71_fp16_2k",
+      "model": "legacy71",
+      "precision": "fp16",
+      "size": "2k",
+      "width": 2560,
+      "height": 1440,
+      "original_process_medians_ms": [
+        5.8413856506347654,
+        5.856976572672526,
+        5.925957743326823,
+        5.919993082682291
+      ],
+      "candidate_process_medians_ms": [
+        5.903965759277344,
+        5.916758982340495,
+        5.973309326171875,
+        5.972247060139974
+      ],
+      "original_range_ms": [
+        5.8413856506347654,
+        5.925957743326823
+      ],
+      "candidate_range_ms": [
+        5.903965759277344,
+        5.973309326171875
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +56.018 us (+0.951%); median paired B-A +56.018 us, pair range +47.352 to +62.580 us; block effects +61.181/+49.803 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+      }
+    },
+    {
+      "id": "legacy71_fp16_4k",
+      "model": "legacy71",
+      "precision": "fp16",
+      "size": "4k",
+      "width": 3840,
+      "height": 2160,
+      "original_process_medians_ms": [
+        10.919897969563802,
+        11.049325561523437,
+        11.057654825846354,
+        11.08923085530599
+      ],
+      "candidate_process_medians_ms": [
+        11.095975748697917,
+        11.12866668701172,
+        11.105757649739584,
+        11.269605000813803
+      ],
+      "original_range_ms": [
+        10.919897969563802,
+        11.08923085530599
+      ],
+      "candidate_range_ms": [
+        11.095975748697917,
+        11.269605000813803
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +63.722 us (+0.576%); median paired B-A +127.709 us, pair range +48.103 to +180.374 us; block effects +127.709/+114.238 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim. Headline and paired differences diverge substantially; report both and retain the process spread."
+      }
+    },
+    {
+      "id": "legacy71_fp8_720p",
+      "model": "legacy71",
+      "precision": "fp8",
+      "size": "720p",
+      "width": 1280,
+      "height": 720,
+      "original_process_medians_ms": [
+        2.191357930501302,
+        2.1913190205891926,
+        2.1875476837158203,
+        2.1836036682128905
+      ],
+      "candidate_process_medians_ms": [
+        2.205095418294271,
+        2.204863993326823,
+        2.2001834869384767,
+        2.1961561838785806
+      ],
+      "original_range_ms": [
+        2.1836036682128905,
+        2.191357930501302
+      ],
+      "candidate_range_ms": [
+        2.1961561838785806,
+        2.205095418294271
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +13.090 us (+0.598%); median paired B-A +13.090 us, pair range +12.553 to +13.737 us; block effects +13.641/+12.594 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+      }
+    },
+    {
+      "id": "legacy71_fp8_1080p",
+      "model": "legacy71",
+      "precision": "fp8",
+      "size": "1080p",
+      "width": 1920,
+      "height": 1080,
+      "original_process_medians_ms": [
+        2.5871439615885414,
+        2.5875237782796225,
+        2.5873483022054033,
+        2.588377634684245
+      ],
+      "candidate_process_medians_ms": [
+        2.599985122680664,
+        2.601462427775065,
+        2.601469294230143,
+        2.6004207611083983
+      ],
+      "original_range_ms": [
+        2.5871439615885414,
+        2.588377634684245
+      ],
+      "candidate_range_ms": [
+        2.599985122680664,
+        2.601469294230143
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +13.506 us (+0.522%); median paired B-A +13.390 us, pair range +12.043 to +14.121 us; block effects +13.390/+13.082 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+      }
+    },
+    {
+      "id": "legacy71_fp8_2k",
+      "model": "legacy71",
+      "precision": "fp8",
+      "size": "2k",
+      "width": 2560,
+      "height": 1440,
+      "original_process_medians_ms": [
+        3.502916208902995,
+        3.5175894419352214,
+        3.5122095743815107,
+        3.5095099131266276
+      ],
+      "candidate_process_medians_ms": [
+        3.530497105916341,
+        3.5212484995524087,
+        3.521925354003906,
+        3.524038314819336
+      ],
+      "original_range_ms": [
+        3.502916208902995,
+        3.5175894419352214
+      ],
+      "candidate_range_ms": [
+        3.5212484995524087,
+        3.530497105916341
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +12.122 us (+0.345%); median paired B-A +12.122 us, pair range +3.659 to +27.581 us; block effects +15.620/+12.122 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+      }
+    },
+    {
+      "id": "legacy71_fp8_4k",
+      "model": "legacy71",
+      "precision": "fp8",
+      "size": "4k",
+      "width": 3840,
+      "height": 2160,
+      "original_process_medians_ms": [
+        6.499590301513672,
+        6.5458005269368496,
+        6.460491180419922,
+        6.484870402018229
+      ],
+      "candidate_process_medians_ms": [
+        6.520295461018881,
+        6.528767903645834,
+        6.431028747558594,
+        6.506120045979818
+      ],
+      "original_range_ms": [
+        6.460491180419922,
+        6.5458005269368496
+      ],
+      "candidate_range_ms": [
+        6.431028747558594,
+        6.528767903645834
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +20.977 us (+0.323%); median paired B-A +1.836 us, pair range -29.462 to +21.250 us; block effects +1.836/-4.106 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim. Mixed pair signs limit claims about a stable ordering."
+      }
+    },
+    {
+      "id": "small31_fp16_720p",
+      "model": "small31",
+      "precision": "fp16",
+      "size": "720p",
+      "width": 1280,
+      "height": 720,
+      "original_process_medians_ms": [
+        1.8193440119425457,
+        1.8171056111653647,
+        1.8134741465250652,
+        1.8125338872273762
+      ],
+      "candidate_process_medians_ms": [
+        1.8243488311767577,
+        1.8271584192911785,
+        1.8231274922688803,
+        1.822001584370931
+      ],
+      "original_range_ms": [
+        1.8125338872273762,
+        1.8193440119425457
+      ],
+      "candidate_range_ms": [
+        1.822001584370931,
+        1.8271584192911785
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +8.448 us (+0.465%); median paired B-A +9.561 us, pair range +5.005 to +10.053 us; block effects +7.529/+9.561 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+      }
+    },
+    {
+      "id": "small31_fp16_1080p",
+      "model": "small31",
+      "precision": "fp16",
+      "size": "1080p",
+      "width": 1920,
+      "height": 1080,
+      "original_process_medians_ms": [
+        2.184486897786458,
+        2.1844863891601562,
+        2.184036382039388,
+        2.1846986134847004
+      ],
+      "candidate_process_medians_ms": [
+        2.191754150390625,
+        2.1925407409667965,
+        2.1939744313557945,
+        2.1935583750406904
+      ],
+      "original_range_ms": [
+        2.184036382039388,
+        2.1846986134847004
+      ],
+      "candidate_range_ms": [
+        2.191754150390625,
+        2.1939744313557945
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +8.563 us (+0.392%); median paired B-A +8.457 us, pair range +7.267 to +9.938 us; block effects +7.661/+9.399 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+      }
+    },
+    {
+      "id": "small31_fp16_2k",
+      "model": "small31",
+      "precision": "fp16",
+      "size": "2k",
+      "width": 2560,
+      "height": 1440,
+      "original_process_medians_ms": [
+        2.8107701619466146,
+        2.811430486043294,
+        2.8180491129557295,
+        2.8147833506266275
+      ],
+      "candidate_process_medians_ms": [
+        2.8645914713541667,
+        2.8684117635091146,
+        2.8726164499918623,
+        2.8678212483723957
+      ],
+      "original_range_ms": [
+        2.8107701619466146,
+        2.8180491129557295
+      ],
+      "candidate_range_ms": [
+        2.8645914713541667,
+        2.8726164499918623
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +55.010 us (+1.955%); median paired B-A +54.194 us, pair range +53.038 to +56.981 us; block effects +55.401/+53.803 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+      }
+    },
+    {
+      "id": "small31_fp16_4k",
+      "model": "small31",
+      "precision": "fp16",
+      "size": "4k",
+      "width": 3840,
+      "height": 2160,
+      "original_process_medians_ms": [
+        5.386629231770833,
+        5.407859293619792,
+        5.400265502929688,
+        5.400643666585287
+      ],
+      "candidate_process_medians_ms": [
+        5.493934885660807,
+        5.490675862630209,
+        5.478233083089193,
+        5.497000376383463
+      ],
+      "original_range_ms": [
+        5.386629231770833,
+        5.407859293619792
+      ],
+      "candidate_range_ms": [
+        5.478233083089193,
+        5.497000376383463
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +91.851 us (+1.701%); median paired B-A +89.587 us, pair range +77.968 to +107.306 us; block effects +95.061/+87.162 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+      }
+    },
+    {
+      "id": "small31_fp8_720p",
+      "model": "small31",
+      "precision": "fp8",
+      "size": "720p",
+      "width": 1280,
+      "height": 720,
+      "original_process_medians_ms": [
+        1.1095626831054686,
+        1.1092298507690428,
+        1.1094282786051433,
+        1.108945083618164
+      ],
+      "candidate_process_medians_ms": [
+        1.1229541142781576,
+        1.123133341471354,
+        1.1228869120279947,
+        1.1219866434733072
+      ],
+      "original_range_ms": [
+        1.108945083618164,
+        1.1095626831054686
+      ],
+      "candidate_range_ms": [
+        1.1219866434733072,
+        1.123133341471354
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +13.591 us (+1.225%); median paired B-A +13.425 us, pair range +13.042 to +13.903 us; block effects +13.647/+13.250 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+      }
+    },
+    {
+      "id": "small31_fp8_1080p",
+      "model": "small31",
+      "precision": "fp8",
+      "size": "1080p",
+      "width": 1920,
+      "height": 1080,
+      "original_process_medians_ms": [
+        1.3359050750732422,
+        1.3349231719970702,
+        1.3418752034505208,
+        1.341920026143392
+      ],
+      "candidate_process_medians_ms": [
+        1.348957316080729,
+        1.350158373514811,
+        1.3568122227986654,
+        1.3568970362345376
+      ],
+      "original_range_ms": [
+        1.3349231719970702,
+        1.341920026143392
+      ],
+      "candidate_range_ms": [
+        1.348957316080729,
+        1.3568970362345376
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +14.595 us (+1.090%); median paired B-A +14.957 us, pair range +13.052 to +15.235 us; block effects +14.144/+14.957 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+      }
+    },
+    {
+      "id": "small31_fp8_2k",
+      "model": "small31",
+      "precision": "fp8",
+      "size": "2k",
+      "width": 2560,
+      "height": 1440,
+      "original_process_medians_ms": [
+        1.699742889404297,
+        1.700326983133952,
+        1.7027301788330078,
+        1.702896499633789
+      ],
+      "candidate_process_medians_ms": [
+        1.7228469212849935,
+        1.7168810526529947,
+        1.7168927510579426,
+        1.7180266698201496
+      ],
+      "original_range_ms": [
+        1.699742889404297,
+        1.702896499633789
+      ],
+      "candidate_range_ms": [
+        1.7168810526529947,
+        1.7228469212849935
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +15.931 us (+0.936%); median paired B-A +15.842 us, pair range +14.163 to +23.104 us; block effects +19.829/+14.646 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim."
+      }
+    },
+    {
+      "id": "small31_fp8_4k",
+      "model": "small31",
+      "precision": "fp8",
+      "size": "4k",
+      "width": 3840,
+      "height": 2160,
+      "original_process_medians_ms": [
+        3.187875239054362,
+        3.1979839324951174,
+        3.1868741353352865,
+        3.1922398885091146
+      ],
+      "candidate_process_medians_ms": [
+        3.1946842193603517,
+        3.2004442850748696,
+        3.1867130279541014,
+        3.2000474294026695
+      ],
+      "original_range_ms": [
+        3.1868741353352865,
+        3.1979839324951174
+      ],
+      "candidate_range_ms": [
+        3.1867130279541014,
+        3.2004442850748696
+      ],
+      "decision": {
+        "status": "accepted",
+        "rationale": "Headline B-A +7.308 us (+0.229%); median paired B-A +4.635 us, pair range -0.161 to +7.808 us; block effects +4.635/+3.823 us. Accepted as a measured maintainability tradeoff, not a zero-cost claim. Mixed pair signs limit claims about a stable ordering."
+      }
+    }
+  ],
+  "note": "Derived small receipt. Four process medians per arm are copied from the selected timing report; no sample, threshold or performance verdict is recomputed or invented."
+}

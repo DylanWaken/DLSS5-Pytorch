@@ -1,0 +1,76 @@
+{
+  "schema": "flashlight-private-check-receipt-v1",
+  "category": "training",
+  "status": "pass",
+  "covered_cases": [
+    "legacy71/bf16",
+    "legacy71/fp32",
+    "small31/bf16",
+    "small31/fp32"
+  ],
+  "summary": "Four accepted checkpoint-training records verify finite forward/loss/gradients, an AdamW lr=1e-5 update, bitwise FP32 master-state save/reload, and matching post-step output after reload. This is training correctness only; both interrupted training timing attempts are excluded and no training latency is reported.",
+  "root_rationale": "Both models passed real FP32/BF16 AdamW, finite-gradient, master-state and reload checks. Small31 retains the known unused blend-scale qualification. Optional interrupted training-latency runs are excluded; no throughput claim follows.",
+  "source_reports": [
+    {
+      "path": "profile/flashlight-refactor-20261105/runtime-acceptance/attempt-007/correctness/checkpoint-results.json",
+      "sha256": "d74c568de3aef4be9ba0a42e165e9eb3d91f9c863e3e80d7b3207208731f4533"
+    },
+    {
+      "path": "profile/flashlight-refactor-20261105/runtime-acceptance/attempt-007/prepare/checkpoints/checkpoint_training_legacy71_fp32/report.json",
+      "sha256": "cb7f760c794a3283cdba36a10e621688b268b6846a4150218d415970d94e05f2"
+    },
+    {
+      "path": "profile/flashlight-refactor-20261105/runtime-acceptance/attempt-007/prepare/checkpoints/checkpoint_training_legacy71_bf16/report.json",
+      "sha256": "706fa0b45f9f6efe899e3b5dda9f12a5330336cccb70e4b82a3c6381b56ca1b2"
+    },
+    {
+      "path": "profile/flashlight-refactor-20261105/runtime-acceptance/attempt-007/prepare/checkpoints/checkpoint_training_small31_fp32/report.json",
+      "sha256": "c2c4169963f343eade154b493ec898d77bddd6fcaed433b3f1bd71c4080e52aa"
+    },
+    {
+      "path": "profile/flashlight-refactor-20261105/runtime-acceptance/attempt-007/prepare/checkpoints/checkpoint_training_small31_bf16/report.json",
+      "sha256": "7d99499175685a5708bfa829fd3b19ad74dac07b96adecf51e89f0302195c894"
+    }
+  ],
+  "proof": {
+    "records": [
+      {
+        "case": "legacy71/fp32",
+        "checkpoint_sha256": "1d9d2b667a61a770bc4525f40e09ce04b62b737bec88804d3150274785193d11",
+        "changed_parameter_tensors": 639,
+        "optimizer": "AdamW",
+        "learning_rate": 1e-05
+      },
+      {
+        "case": "legacy71/bf16",
+        "checkpoint_sha256": "1d9d2b667a61a770bc4525f40e09ce04b62b737bec88804d3150274785193d11",
+        "changed_parameter_tensors": 639,
+        "optimizer": "AdamW",
+        "learning_rate": 1e-05
+      },
+      {
+        "case": "small31/fp32",
+        "checkpoint_sha256": "742c63cae96fb0d6f53f2de6e89e8175606ad51b8939e5e7d255a9167fbef154",
+        "changed_parameter_tensors": 271,
+        "optimizer": "AdamW",
+        "learning_rate": 1e-05
+      },
+      {
+        "case": "small31/bf16",
+        "checkpoint_sha256": "742c63cae96fb0d6f53f2de6e89e8175606ad51b8939e5e7d255a9167fbef154",
+        "changed_parameter_tensors": 271,
+        "optimizer": "AdamW",
+        "learning_rate": 1e-05
+      }
+    ],
+    "cases": [
+      "legacy71/bf16",
+      "legacy71/fp32",
+      "small31/bf16",
+      "small31/fp32"
+    ],
+    "training_latency_reported": false,
+    "execution_identity_sha256": "5ed5766361433c9d79420d8441fa88e40b81a34a4bcbfcc9bfed300c59ec6ba3"
+  },
+  "note": "Derived small check receipt. It cites the exact selected report hashes and preserves the actual coverage labels and proof fields; it is not a substitute for the root decision."
+}
