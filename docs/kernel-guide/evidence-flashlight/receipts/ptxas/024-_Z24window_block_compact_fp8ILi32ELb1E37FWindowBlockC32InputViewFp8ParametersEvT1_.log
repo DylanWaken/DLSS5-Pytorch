@@ -1,0 +1,9 @@
+# derived ptxas log excerpt for _Z24window_block_compact_fp8ILi32ELb1E37FWindowBlockC32InputViewFp8ParametersEvT1_
+# source build log: profile/flashlight-refactor-20261105/candidate-sm120/attempt-007/logs/build/build-20261106T082625Z.log
+# source build-log sha256: 7f8b827668d40ae01def0aa342018da047549e448adc36d28f7f93cf64254478
+# source lines: 487-491
+ptxas info    : Compiling entry function '_Z24window_block_compact_fp8ILi32ELb1E37FWindowBlockC32InputViewFp8ParametersEvT1_' for 'sm_120'
+ptxas info    : Function properties for _Z24window_block_compact_fp8ILi32ELb1E37FWindowBlockC32InputViewFp8ParametersEvT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 168 registers, used 0 barriers
+ptxas info    : Compile time = 0.000 ms

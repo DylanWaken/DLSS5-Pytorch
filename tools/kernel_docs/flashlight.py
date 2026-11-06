@@ -42,6 +42,7 @@ from flashlight_evidence import (
     load_acceptance,
 )
 from source_providers import Provider, SourceProviderError, require_commit
+from flashlight_results import paired_effects_html, rgb_measurements_html
 
 #: The exact public commit shape accepted for a current implementation provider.
 _COMMIT = re.compile(r"[0-9a-f]{40}")
@@ -371,6 +372,9 @@ def _require_path(provider, path: str) -> str:
 #: Exact, unique source anchors.  Values are ``(path, exact substring)``.
 #: A path may appear many times; each entry is checked independently.
 ANCHORS: dict[str, tuple[str, str]] = {
+    "preprocess_zero_seed": (
+        "csrc/kernel_impl/input_c32/fp16/input_preprocess_window_downsample_c32_fp16.cu",
+        "flashlight::MmaAccumulator<flashlight::AccumulatorPrecision::Half> accumulator{};"),
     "ffn_signature": (
         "csrc/kernel_impl/bottleneck_c1024_ffn/fp16/global_ffn_expand_c1024_fp16.cu",
         "__shared__ __align__(512) unsigned char s_Storage[FProfile::barrier_base + 24];"),
@@ -1440,6 +1444,16 @@ def _acceptance_identity_html(record):
             return "unknown (not recorded)"
         return "dirty" if build.dirty else "clean"
 
+    def tool_text(value):
+        if value is None:
+            return "unknown (not recorded)"
+        return escape(value)
+
+    def tool_sha(value):
+        if value is None:
+            return "unknown (not recorded)"
+        return f"<code>{escape(value)}</code>"
+
     builds = []
     for role, build in (("original", record.original_build),
                         ("candidate", record.candidate_build)):
@@ -1452,10 +1466,10 @@ def _acceptance_identity_html(record):
             f'<code>{escape(build.binary_sha256)}</code>',
             _artifact_link(build.build_receipt, "receipt"),
             _artifact_link(build.input_manifest, "manifest"),
-            escape(build.toolchain["nvcc_version"]),
-            escape(build.toolchain["ptxas_version"]),
-            escape(build.toolchain["cuda_version"]),
-            escape(build.toolchain["pytorch_version"]),
+            tool_text(build.toolchain["nvcc_version"]),
+            tool_text(build.toolchain["ptxas_version"]),
+            tool_text(build.toolchain["cuda_version"]),
+            tool_text(build.toolchain["pytorch_version"]),
         ))
     build_table = _table(("Role", "Provenance basis", "Build-time HEAD", "Worktree",
                           "Binary filename", "Binary SHA-256", "Build receipt",
@@ -1467,15 +1481,26 @@ def _acceptance_identity_html(record):
         f'{escape(build.provenance_note)}.'
         for role, build in (("original", record.original_build),
                             ("candidate", record.candidate_build)))
-    toolchain = record.candidate_build.toolchain
+    toolchain_rows = []
+    for role, build in (("original", record.original_build),
+                        ("candidate", record.candidate_build)):
+        toolchain = build.toolchain
+        qualifications = toolchain.get("qualifications") or {}
+        toolchain_rows.extend((
+            (escape(role), "nvcc", tool_text(toolchain['nvcc_version']),
+             tool_sha(toolchain['nvcc_sha256']),
+             escape(qualifications.get("nvcc_sha256", "—"))),
+            (escape(role), "ptxas", tool_text(toolchain['ptxas_version']),
+             tool_sha(toolchain['ptxas_sha256']),
+             escape(qualifications.get("ptxas_sha256", "—"))),
+            (escape(role), "CUDA", tool_text(toolchain['cuda_version']), "—",
+             escape(qualifications.get("cuda_version", "—"))),
+            (escape(role), "PyTorch", tool_text(toolchain['pytorch_version']), "—",
+             escape(qualifications.get("pytorch_version", "—"))),
+        ))
     toolchain_table = _table(
-        ("Tool identity", "Version", "Recorded SHA-256"),
-        (("nvcc", escape(toolchain['nvcc_version']),
-          f"<code>{escape(toolchain['nvcc_sha256'])}</code>"),
-         ("ptxas", escape(toolchain['ptxas_version']),
-          f"<code>{escape(toolchain['ptxas_sha256'])}</code>"),
-         ("CUDA", escape(toolchain['cuda_version']), "—"),
-         ("PyTorch", escape(toolchain['pytorch_version']), "—")))
+        ("Build role", "Tool identity", "Version", "Recorded SHA-256",
+         "Field qualification"), toolchain_rows)
     environment = record.environment
     environment_table = _table(
         ("Measured environment", "Value"),
@@ -1558,6 +1583,8 @@ def _acceptance_html(record: FinalEvidence | None) -> str:
             "source-free diagram draft is the development path until a real "
             "implementation commit, accepted paired evidence and final receipts exist.")
     return (_acceptance_timing_html(record)
+            + paired_effects_html(record, _table)
+            + rgb_measurements_html(record, _table)
             + _acceptance_checks_html(record)
             + _acceptance_identity_html(record))
 
@@ -1578,8 +1605,7 @@ def _body(provider, record: FinalEvidence | None, revision: str,
         '<a href="global_ffn_expand_c1024_fp16.html">FP16 FFN expansion lesson</a> keeps '
         'its own revision and evidence.'))
     parts.append(_p(
-        'The input is the existing physical tensor contract, not a fresh row-major matrix: '
-        'the globally padded tensor is not ordinary row-major. One model operation '
+        'The input uses the existing globally padded physical tensor layout. One model operation '
         'expands every token from 1024 input channels to 4096 output channels. The next '
         'sections derive the CTA tile, the warp duties, the resource budget and the '
         'execution schedule before following one token through the committed source.'))
@@ -2029,6 +2055,8 @@ def _body(provider, record: FinalEvidence | None, revision: str,
         'the accepted measured performance. A compile-only result is not performance '
         'acceptance.')))
     parts.append(_acceptance_html(record))
+    parts.append(Path(__file__).with_name("flashlight_seed_lesson.html").read_text(encoding="utf-8"))
+    parts.append(q("preprocess_zero_seed", "The first adapter MMA explicitly computes A × B + 0", before=4, after=7))
     parts.append(_h3("trace-sources", "Current source bundle and primary references"))
     parts.append(_p(
         'Every current path below is copied under <code>source-current/</code> from the '

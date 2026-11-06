@@ -1,1 +1,5 @@
 ckpts/*.pt filter=lfs diff=lfs merge=lfs -text
+# Preserve the exact bytes covered by the published validation hashes.
+docs/kernel-guide/evidence-flashlight/** -text
+# cuobjdump emits CRLF; retain its measured bytes and recognize that line ending.
+docs/kernel-guide/evidence-flashlight/receipts/ptxas/cuobjdump-resource-usage.txt whitespace=cr-at-eol

@@ -19,3 +19,7 @@ profile/
 docs/diagram-preview/
 outputs/
 *.log
+
+# Publish the reviewed, hash-bound receipts used by the FlashLight guide.
+!docs/kernel-guide/evidence-flashlight/
+!docs/kernel-guide/evidence-flashlight/**

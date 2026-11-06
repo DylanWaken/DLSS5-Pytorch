@@ -1,0 +1,9 @@
+# derived ptxas log excerpt for global_attention_chained_c1024_fp16
+# source build log: profile/flashlight-refactor-20261105/candidate-sm120/attempt-007/logs/build/build-20261106T082625Z.log
+# source build-log sha256: 7f8b827668d40ae01def0aa342018da047549e448adc36d28f7f93cf64254478
+# source lines: 55-59
+ptxas info    : Compiling entry function 'global_attention_chained_c1024_fp16' for 'sm_120'
+ptxas info    : Function properties for global_attention_chained_c1024_fp16
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 154 registers, used 1 barriers, 16400 bytes smem
+ptxas info    : Compile time = 0.000 ms

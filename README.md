@@ -35,6 +35,40 @@ DLSSNR's activations, tensor layouts, packing and operator composition live in [
 
 The [FlashLight design lesson](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/flashlight.html) walks from the C1024 FFN problem through CTA/warp subdivision, resource budgeting, a three-stage pipeline and one token's exact addresses and register fragments. Historical kernel lessons retain their original source and profiling provenance.
 
+### Measured costs
+
+Original means the pre-FlashLight reconstructed implementation; the DLL-kernel comparison below is a separate historical measurement.
+
+On an NVIDIA RTX PRO 6000 Blackwell Workstation Edition (SM120), the native experiment used 128 fresh processes: two fixed ABBA/BAAB blocks per case, four process medians per arm, and 30 samples per process. The 4K RGB experiment used four ABBA sessions and 50 samples per scope/session; the smaller RGB table below reports the complete GPU pipeline, including preprocessing, the trunk, postprocessing and device-to-device copies; host transfers and decoding are excluded.
+
+| Model / precision / resolution | Original (ms) | FlashLight (ms) | Change (µs) | Change (%) | Paired median change (µs) |
+|---|---:|---:|---:|---:|---:|
+| Legacy71 FP16 / 720p | 3.6359 | 3.6468 | +10.89 | +0.30 | +9.41 |
+| Legacy71 FP16 / 1080p | 4.3446 | 4.3513 | +6.70 | +0.15 | +10.99 |
+| Legacy71 FP16 / 1440p | 5.8885 | 5.9445 | +56.02 | +0.95 | +56.02 |
+| Legacy71 FP16 / 4K | 11.0535 | 11.1172 | +63.72 | +0.58 | +127.71 |
+| Legacy71 FP8 / 720p | 2.1894 | 2.2025 | +13.09 | +0.60 | +13.09 |
+| Legacy71 FP8 / 1080p | 2.5874 | 2.6009 | +13.51 | +0.52 | +13.39 |
+| Legacy71 FP8 / 1440p | 3.5109 | 3.5230 | +12.12 | +0.35 | +12.12 |
+| Legacy71 FP8 / 4K | 6.4922 | 6.5132 | +20.98 | +0.32 | +1.84 |
+| Small31 FP16 / 720p | 1.8153 | 1.8237 | +8.45 | +0.47 | +9.56 |
+| Small31 FP16 / 1080p | 2.1845 | 2.1930 | +8.56 | +0.39 | +8.46 |
+| Small31 FP16 / 1440p | 2.8131 | 2.8681 | +55.01 | +1.96 | +54.19 |
+| Small31 FP16 / 4K | 5.4005 | 5.4923 | +91.85 | +1.70 | +89.59 |
+| Small31 FP8 / 720p | 1.1093 | 1.1229 | +13.59 | +1.23 | +13.43 |
+| Small31 FP8 / 1080p | 1.3389 | 1.3535 | +14.60 | +1.09 | +14.96 |
+| Small31 FP8 / 1440p | 1.7015 | 1.7175 | +15.93 | +0.94 | +15.84 |
+| Small31 FP8 / 4K | 3.1901 | 3.1974 | +7.31 | +0.23 | +4.63 |
+
+| 4K RGB full GPU pipeline | Original (ms) | FlashLight (ms) | Change (µs) | Change (%) |
+|---|---:|---:|---:|---:|
+| Legacy71 FP16 | 13.3942 | 13.4909 | +96.72 | +0.72 |
+| Legacy71 FP8 | 8.4794 | 8.4830 | +3.58 | +0.04 |
+| Small31 FP16 | 7.8951 | 7.9749 | +79.81 | +1.01 |
+| Small31 FP8 | 5.1698 | 5.1756 | +5.86 | +0.11 |
+
+Native headline increases range from +0.15% to +1.96%; Small31 FP16 adds 55.01 µs at 1440p and 91.85 µs at 4K. Headline differences subtract the medians of four process medians; paired differences compare adjacent original/FlashLight processes. They need not agree: Legacy71 FP16 at 4K is +63.72 µs headline versus +127.71 µs paired. The measured cost is accepted as a maintainability and correctness tradeoff. These whole-build comparisons have incomplete original toolchain provenance, so they do not isolate wrapper overhead. All four RGB model/precision outputs match the original. See [FlashLight design and measurements](https://dylanwaken.github.io/DLSS5-Pytorch/kernel-guide/flashlight.html) and [measurement evidence](docs/kernel-guide/evidence-flashlight/acceptance.json).
+
 ## Two model identities
 
 The repository supports two explicit identities. `legacy71` stays the default for the existing 71-block 310.8/310.9.16 High-resource path. `small31` is opt-in and must be named explicitly; the loader never infers a model from a file name, directory or tensor shape. Unknown names raise.

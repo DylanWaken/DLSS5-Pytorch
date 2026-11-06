@@ -1,0 +1,9 @@
+# derived ptxas log excerpt for _Z22window_block_wide_fp16ILi128ELb1ELb0E39FWindowBlockC128InputViewFp16ParametersEvT2_
+# source build log: profile/flashlight-refactor-20261105/candidate-sm120/attempt-007/logs/build/build-20261106T082625Z.log
+# source build-log sha256: 7f8b827668d40ae01def0aa342018da047549e448adc36d28f7f93cf64254478
+# source lines: 521-525
+ptxas info    : Compiling entry function '_Z22window_block_wide_fp16ILi128ELb1ELb0E39FWindowBlockC128InputViewFp16ParametersEvT2_' for 'sm_120'
+ptxas info    : Function properties for _Z22window_block_wide_fp16ILi128ELb1ELb0E39FWindowBlockC128InputViewFp16ParametersEvT2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 168 registers, used 1 barriers, 16384 bytes smem
+ptxas info    : Compile time = 0.000 ms

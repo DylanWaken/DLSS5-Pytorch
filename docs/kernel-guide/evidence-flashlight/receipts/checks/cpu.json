@@ -1,0 +1,61 @@
+{
+  "schema": "flashlight-private-check-receipt-v1",
+  "category": "cpu",
+  "status": "pass",
+  "covered_cases": [
+    "test_speed_cpu.py/normal",
+    "test_speed_build_cpu.py/normal",
+    "test_architecture_support_cpu.py/normal",
+    "test_dynamic_geometry_cpu.py/normal",
+    "test_kernel_sources_cpu.py/normal",
+    "test_split_launch_policy_cpu.py/normal",
+    "test_frontend_preprocess.py/normal",
+    "test_window_output_view.py/normal",
+    "test_checkpoint_cpu.py/normal",
+    "test_fp16_plan_cpu.py/normal",
+    "test_clean_records.py/normal",
+    "test_training_checkpoint_cpu.py/normal",
+    "test_resolution_policy_cpu.py/normal",
+    "test_resolution_policy_extrema_cpu.py/normal",
+    "test_reconstructed_benchmark_cpu.py/normal",
+    "test_prepared_kernel_api_cpu.py/normal",
+    "pytest group/normal",
+    "test_speed_cpu.py/optimized",
+    "test_speed_build_cpu.py/optimized",
+    "test_architecture_support_cpu.py/optimized",
+    "test_dynamic_geometry_cpu.py/optimized",
+    "test_kernel_sources_cpu.py/optimized",
+    "test_split_launch_policy_cpu.py/optimized",
+    "test_frontend_preprocess.py/optimized",
+    "test_window_output_view.py/optimized",
+    "test_checkpoint_cpu.py/optimized",
+    "test_fp16_plan_cpu.py/optimized",
+    "test_clean_records.py/optimized",
+    "test_training_checkpoint_cpu.py/optimized",
+    "test_resolution_policy_cpu.py/optimized",
+    "test_resolution_policy_extrema_cpu.py/optimized",
+    "test_reconstructed_benchmark_cpu.py/optimized",
+    "test_prepared_kernel_api_cpu.py/optimized",
+    "pytest group/optimized"
+  ],
+  "summary": "Root-selected aggregate CPU report: 34/34 groups pass, 0 failures.",
+  "root_rationale": "The prior 34 normal/optimized CPU groups passed on the unchanged runtime Python implementation. Candidate007 also passed 33 kernel-source checks. These are separate dated scopes, not a claimed new full-suite run.",
+  "source_reports": [
+    {
+      "path": "profile/flashlight-refactor-20261105/candidate-sm120/attempt-004/cpu-report.json",
+      "sha256": "88bc4b6415b372730633bc7ce312be922102c5e9f2fe12691188a9376211c8a4"
+    },
+    {
+      "path": "profile/flashlight-refactor-20261105/candidate-sm120/attempt-004/cpu-completion.json",
+      "sha256": "a1ce8685e82f9e29abd91ccf09cb314321ccda5909743cbc5560e92028c6181c"
+    }
+  ],
+  "proof": {
+    "groups_total": 34,
+    "groups_passed": 34,
+    "groups_failed": 0,
+    "run_id": "cpu-20261105T154129Z",
+    "cpu_gate": "pass"
+  },
+  "note": "Derived small check receipt. It cites the exact selected report hashes and preserves the actual coverage labels and proof fields; it is not a substitute for the root decision."
+}

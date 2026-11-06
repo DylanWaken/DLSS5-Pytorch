@@ -39,7 +39,7 @@ CHECKPOINT_API_REVISION = "8d2e104518df3f7cc993acad1edac93dbd5c3c9d"
 #: default and no working-tree mode: an absent pin simply means the current
 #: chapter is not published.  Root supplies the real commit after the
 #: implementation is actually committed.
-REFACTOR_REVISION = None
+REFACTOR_REVISION = "c6fb8f912719e70bda1bc9b5b15383e741c4d39f"
 
 #: Every new or modified runtime/generation/source file the 310.9.16 chapter and
 #: the two additive Small31 lessons rely on.  These paths are added to the

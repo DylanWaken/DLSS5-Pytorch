@@ -618,6 +618,17 @@ def check_flashlight_chapter(guide, manifest, pages):
     return errors
 
 
+class _VisibleText(HTMLParser):
+    """Recover prose across glossary links without including HTML attributes."""
+    def __init__(self, html):
+        super().__init__(convert_charrefs=True)
+        self.parts = []
+        self.feed(html)
+
+    def handle_data(self, data):
+        self.parts.append(data)
+
+
 class _CaseTableRows(HTMLParser):
     """Group the generated accepted timing table into rows and cells.
 
@@ -881,12 +892,13 @@ def check_flashlight_evidence(guide, manifest, pages):
         return errors
     body = page_path.read_text(encoding='utf-8').split(
         '<article class="content">', 1)[-1].split('</article>', 1)[0]
+    visible_text = ''.join(_VisibleText(body).parts)
 
     for role, build in (('original', acceptance.original_build),
                         ('candidate', acceptance.candidate_build)):
         if build.provenance_basis not in body:
             errors.append(f'flashlight.html: {role} provenance basis is not rendered')
-        if html_escape(build.provenance_note) not in body:
+        if build.provenance_note not in visible_text:
             errors.append(f'flashlight.html: {role} provenance note is not rendered')
         if build.binary_filename not in body:
             errors.append(f'flashlight.html: {role} binary filename is not displayed')

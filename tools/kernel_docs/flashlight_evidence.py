@@ -580,23 +580,52 @@ def _read_json_artifact(artifact, bundle_root, label):
         raise EvidenceError(f"{label} is not valid JSON: {artifact.path}: {exc}") from exc
 
 
-def _parse_toolchain(value, label):
+def _parse_toolchain(value, label, role):
     """Parse the shared toolchain identity object used by the receipt and acceptance.
 
     There is exactly one definition of the six tool fields.  The public build
     receipt and the acceptance record must both parse to the same mapping.
+
+    The parser is role-aware because only an *original historical* toolchain may
+    contain an honest unknown.  A null original field is accepted only when the
+    same object carries a non-empty, field-specific qualification naming that
+    exact field.  Candidate facts must always be concrete; a candidate null or a
+    qualifications block is rejected rather than weakened.
     """
-    toolchain = _object(value, label, _TOOLCHAIN_KEYS)
+    toolchain = _object(value, label, _TOOLCHAIN_KEYS, ("qualifications",))
+    qualifications = None
+    if "qualifications" in toolchain:
+        qualifications = dict(_object(toolchain["qualifications"],
+                                      f"{label}.qualifications", (),
+                                      _TOOLCHAIN_KEYS))
+        for key, text in qualifications.items():
+            _string(text, f"{label}.qualifications.{key}")
     parsed = {}
     for key in _TOOLCHAIN_KEYS:
-        if key.endswith("_sha256"):
-            parsed[key] = _hex64(toolchain[key], f"{label}.{key}")
+        raw = toolchain[key]
+        if raw is None:
+            if role != "original":
+                raise EvidenceError(
+                    f"{label}.{key} must be concrete for the candidate build")
+            if qualifications is None or key not in qualifications:
+                raise EvidenceError(
+                    f"{label}.{key} is null and requires an explicit field-specific "
+                    f"qualification at {label}.qualifications.{key}")
+            parsed[key] = None
+        elif key.endswith("_sha256"):
+            parsed[key] = _hex64(raw, f"{label}.{key}")
         else:
-            parsed[key] = _string(toolchain[key], f"{label}.{key}")
+            parsed[key] = _string(raw, f"{label}.{key}")
+    if qualifications is not None:
+        if role != "original":
+            raise EvidenceError(
+                f"{label}.qualifications is only valid for the original historical "
+                "toolchain; candidate facts must remain concrete")
+        parsed["qualifications"] = qualifications
     return parsed
 
 
-def _parse_build_receipt(artifact, bundle_root, label):
+def _parse_build_receipt(artifact, bundle_root, label, role):
     payload = _read_json_artifact(artifact, bundle_root, label)
     item = _object(payload, label, ("schema", "provenance", "binary", "toolchain"))
     schema = _string(item["schema"], f"{label}.schema")
@@ -634,7 +663,7 @@ def _parse_build_receipt(artifact, bundle_root, label):
     sha256 = _hex64(binary["sha256"], f"{label}.binary.sha256")
     if "bytes" in binary:
         _int(binary["bytes"], f"{label}.binary.bytes", minimum=1)
-    toolchain = _parse_toolchain(item["toolchain"], f"{label}.toolchain")
+    toolchain = _parse_toolchain(item["toolchain"], f"{label}.toolchain", role)
     return basis, note, head, dirty, filename, sha256, toolchain
 
 
@@ -721,7 +750,7 @@ def _parse_build(value, label, registry, role, bundle_root):
         require_ffn=(role == "candidate"))
     (receipt_basis, receipt_note, receipt_head, receipt_dirty,
      receipt_filename, receipt_sha, receipt_toolchain) = _parse_build_receipt(
-        build_receipt, bundle_root, f"{label}.build_receipt")
+        build_receipt, bundle_root, f"{label}.build_receipt", role)
     filename = _string(item["binary_filename"], f"{label}.binary_filename")
     sha256 = _hex64(item["binary_sha256"], f"{label}.binary_sha256")
     if (receipt_basis != basis or receipt_note != note
@@ -733,10 +762,13 @@ def _parse_build(value, label, registry, role, bundle_root):
         raise EvidenceError(
             f"{label}: binary_filename/binary_sha256 disagree with the public build "
             "receipt")
-    parsed_toolchain = _parse_toolchain(item["toolchain"], f"{label}.toolchain")
+    parsed_toolchain = _parse_toolchain(item["toolchain"], f"{label}.toolchain", role)
     if receipt_toolchain != parsed_toolchain:
         mismatched = [key for key in _TOOLCHAIN_KEYS
                       if receipt_toolchain[key] != parsed_toolchain[key]]
+        if receipt_toolchain.get("qualifications") != parsed_toolchain.get(
+                "qualifications"):
+            mismatched.append("qualifications")
         raise EvidenceError(
             f"{label}: toolchain identity ({', '.join(mismatched)}) disagrees with the "
             "public build receipt")

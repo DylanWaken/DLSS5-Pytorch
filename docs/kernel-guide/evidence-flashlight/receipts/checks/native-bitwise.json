@@ -1,0 +1,47 @@
+{
+  "schema": "flashlight-private-check-receipt-v1",
+  "category": "native-bitwise",
+  "status": "pass",
+  "covered_cases": [
+    "legacy71_fp16_1080p",
+    "legacy71_fp16_2k",
+    "legacy71_fp16_4k",
+    "legacy71_fp16_720p",
+    "legacy71_fp8_1080p",
+    "legacy71_fp8_2k",
+    "legacy71_fp8_4k",
+    "legacy71_fp8_720p",
+    "small31_fp16_1080p",
+    "small31_fp16_2k",
+    "small31_fp16_4k",
+    "small31_fp16_720p",
+    "small31_fp8_1080p",
+    "small31_fp8_2k",
+    "small31_fp8_4k",
+    "small31_fp8_720p"
+  ],
+  "summary": "32 native children pass; 16 cases have byte-equal A/B outputs and equal split vectors.",
+  "root_rationale": "Actual candidate007 acceptance covers 32 native children and all 16 model/precision/resolution cases with byte-exact A/B outputs, finite typed payloads and matching split vectors on physical SM120.",
+  "source_reports": [
+    {
+      "path": "profile/flashlight-refactor-20261105/runtime-acceptance/attempt-007/correctness/acceptance.json",
+      "sha256": "f159c06c7d689698b167b34d04ccfa55afd5882e5cadad7fe4f58c9a81b914c3"
+    },
+    {
+      "path": "profile/flashlight-refactor-20261105/runtime-acceptance/attempt-007/correctness/native-results.json",
+      "sha256": "2e271d3c00c77410125fc46aa3e9e258785dc937d6fdbf435bc4d409cdfd435a"
+    },
+    {
+      "path": "profile/flashlight-refactor-20261105/runtime-acceptance/attempt-007/correctness/comparison.json",
+      "sha256": "67e43d42108f4c66e0b834d219c4a0f560b88f651b727ee5a0e506b9ca621d59"
+    }
+  ],
+  "proof": {
+    "native_children_passed": 32,
+    "cases": 16,
+    "graph_cases": 16,
+    "guard_cases": 16,
+    "execution_identity_sha256": "5ed5766361433c9d79420d8441fa88e40b81a34a4bcbfcc9bfed300c59ec6ba3"
+  },
+  "note": "Derived small check receipt. It cites the exact selected report hashes and preserves the actual coverage labels and proof fields; it is not a substitute for the root decision."
+}

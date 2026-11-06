@@ -152,7 +152,7 @@ def _make_acceptance_fixture(tmp_path):
     check_receipts = {
         category: add(
             f'receipts/checks/{category}.json', 'check-receipt', f'check:{category}',
-            f'SYNTHETIC TEST DATA {category} check receipt\n')
+            json.dumps({'note': f'SYNTHETIC TEST DATA {category} check receipt', 'proof': {}}) + '\n')
         for category in flashlight_evidence.REQUIRED_CHECK_CATEGORIES
     }
     ptxas_log = add(
@@ -420,6 +420,17 @@ def _rewrite_build_receipt(root, payload, role, *, basis, note, head, dirty,
         document['binary']['filename'] = filename
     if sha256 is not None:
         document['binary']['sha256'] = sha256
+    _replace_artifact(root, payload, relative,
+                      json.dumps(document, indent=2) + '\n')
+
+
+def _rewrite_build_toolchain(root, payload, role, toolchain):
+    """Bind a build receipt and its acceptance record to the same toolchain object."""
+    build = payload[f'{role}_build']
+    build['toolchain'] = copy.deepcopy(toolchain)
+    relative = build['build_receipt']['path']
+    document = json.loads((root / relative).read_text(encoding='utf-8'))
+    document['toolchain'] = copy.deepcopy(toolchain)
     _replace_artifact(root, payload, relative,
                       json.dumps(document, indent=2) + '\n')
 
@@ -1173,6 +1184,137 @@ def test_build_receipt_binds_toolchain_identity(tmp_path):
         flashlight_evidence.load_acceptance(path, CANDIDATE_COMMIT)
 
 
+def test_original_unknown_toolchain_nulls_require_field_specific_qualification(tmp_path):
+    # A null historical toolchain fact is not an invitation to borrow a current
+    # value.  Without a field-specific qualification it is refused.
+    path, payload, root = _make_acceptance_fixture(tmp_path / 'unqualified')
+    original = copy.deepcopy(payload['original_build']['toolchain'])
+    original.update({
+        'nvcc_version': '12.8.93',
+        'nvcc_sha256': None,
+        'ptxas_version': '13.4',
+        'ptxas_sha256': None,
+        'cuda_version': '12.8',
+        'pytorch_version': None,
+    })
+    _rewrite_build_toolchain(root, payload, 'original', original)
+    _rewrite_payload(path, payload)
+    with pytest.raises(flashlight_evidence.EvidenceError,
+                       match='field-specific qualification'):
+        flashlight_evidence.load_acceptance(path, CANDIDATE_COMMIT)
+
+    # A qualification must name the exact field; qualifying the two hashes does
+    # not license an unqualified null build-time PyTorch version.
+    path, payload, root = _make_acceptance_fixture(tmp_path / 'partial')
+    partial = copy.deepcopy(original)
+    partial['qualifications'] = {
+        'nvcc_sha256': 'not recorded by the preserved original link receipt',
+        'ptxas_sha256': 'not recorded by the preserved original link receipt',
+    }
+    _rewrite_build_toolchain(root, payload, 'original', partial)
+    _rewrite_payload(path, payload)
+    with pytest.raises(flashlight_evidence.EvidenceError,
+                       match='pytorch_version is null'):
+        flashlight_evidence.load_acceptance(path, CANDIDATE_COMMIT)
+
+    # Explicit, per-field qualifications are accepted, stay null, and are bound
+    # to the same public build receipt.
+    path, payload, root = _make_acceptance_fixture(tmp_path / 'qualified')
+    qualified = copy.deepcopy(partial)
+    qualified['qualifications']['pytorch_version'] = (
+        'baseline runtime pip_freeze is measurement-time, not build-time')
+    _rewrite_build_toolchain(root, payload, 'original', qualified)
+    _rewrite_payload(path, payload)
+    acceptance = flashlight_evidence.load_acceptance(path, CANDIDATE_COMMIT)
+    assert acceptance.original_build.toolchain == qualified
+    assert acceptance.original_build.toolchain['nvcc_sha256'] is None
+    assert acceptance.original_build.toolchain['ptxas_sha256'] is None
+    assert acceptance.original_build.toolchain['pytorch_version'] is None
+    assert acceptance.original_build.toolchain['ptxas_version'] == '13.4'
+    assert acceptance.original_build.toolchain['nvcc_sha256'] != \
+        acceptance.candidate_build.toolchain['nvcc_sha256']
+    receipt = json.loads(
+        (root / payload['original_build']['build_receipt']['path']).read_text(
+            encoding='utf-8'))
+    assert receipt['toolchain'] == qualified
+    html = flashlight._acceptance_html(acceptance) + flashlight._evidence_html(acceptance)
+    assert html.count('unknown (not recorded)') >= 4
+    assert qualified['qualifications']['nvcc_sha256'] in html
+    assert qualified['qualifications']['pytorch_version'] in html
+    assert acceptance.candidate_build.toolchain['nvcc_sha256'] in html
+    assert 'None' not in html
+
+    # The receipt parser is role-aware too: removing a required field
+    # qualification from the receipt alone is refused, not silently accepted.
+    relative = payload['original_build']['build_receipt']['path']
+    document = json.loads((root / relative).read_text(encoding='utf-8'))
+    del document['toolchain']['qualifications']['pytorch_version']
+    _replace_artifact(root, payload, relative,
+                      json.dumps(document, indent=2) + '\n')
+    _rewrite_payload(path, payload)
+    with pytest.raises(flashlight_evidence.EvidenceError,
+                       match='pytorch_version is null'):
+        flashlight_evidence.load_acceptance(path, CANDIDATE_COMMIT)
+
+    # Mutating only the receipt's null to a concrete candidate-like hash breaks
+    # the receipt/acceptance binding instead of silently replacing history.
+    _rewrite_build_toolchain(root, payload, 'original', qualified)
+    relative = payload['original_build']['build_receipt']['path']
+    document = json.loads((root / relative).read_text(encoding='utf-8'))
+    document['toolchain']['nvcc_sha256'] = 'f' * 64
+    _replace_artifact(root, payload, relative,
+                      json.dumps(document, indent=2) + '\n')
+    _rewrite_payload(path, payload)
+    with pytest.raises(flashlight_evidence.EvidenceError,
+                       match='toolchain identity'):
+        flashlight_evidence.load_acceptance(path, CANDIDATE_COMMIT)
+
+
+def test_candidate_toolchain_nulls_are_rejected(tmp_path):
+    path, payload, root = _make_acceptance_fixture(tmp_path)
+    candidate = copy.deepcopy(payload['candidate_build']['toolchain'])
+    candidate.update({
+        'nvcc_sha256': None,
+        'ptxas_sha256': None,
+        'pytorch_version': None,
+        'qualifications': {
+            'nvcc_sha256': 'not a valid candidate qualification',
+            'ptxas_sha256': 'not a valid candidate qualification',
+            'pytorch_version': 'not a valid candidate qualification',
+        },
+    })
+    _rewrite_build_toolchain(root, payload, 'candidate', candidate)
+    _rewrite_payload(path, payload)
+    with pytest.raises(flashlight_evidence.EvidenceError,
+                       match='candidate build'):
+        flashlight_evidence.load_acceptance(path, CANDIDATE_COMMIT)
+
+    # Candidate values must remain concrete even when only a qualifications
+    # annotation is supplied.
+    path, payload, root = _make_acceptance_fixture(tmp_path / 'annotation')
+    annotated = copy.deepcopy(payload['candidate_build']['toolchain'])
+    annotated['qualifications'] = {
+        'nvcc_sha256': 'annotation-only block is not a candidate weakening'}
+    _rewrite_build_toolchain(root, payload, 'candidate', annotated)
+    _rewrite_payload(path, payload)
+    with pytest.raises(flashlight_evidence.EvidenceError,
+                       match='only valid for the original'):
+        flashlight_evidence.load_acceptance(path, CANDIDATE_COMMIT)
+
+    # A null in the candidate receipt alone is also refused by the shared
+    # role-aware parser, even when the acceptance copy is concrete.
+    path, payload, root = _make_acceptance_fixture(tmp_path / 'receipt-null')
+    relative = payload['candidate_build']['build_receipt']['path']
+    document = json.loads((root / relative).read_text(encoding='utf-8'))
+    document['toolchain']['nvcc_sha256'] = None
+    _replace_artifact(root, payload, relative,
+                      json.dumps(document, indent=2) + '\n')
+    _rewrite_payload(path, payload)
+    with pytest.raises(flashlight_evidence.EvidenceError,
+                       match='candidate build'):
+        flashlight_evidence.load_acceptance(path, CANDIDATE_COMMIT)
+
+
 def test_acceptance_requires_ffn_ptxas_and_separate_reserved_region(tmp_path):
     path, payload, _ = _make_acceptance_fixture(tmp_path)
     no_ffn = copy.deepcopy(payload)
@@ -1376,6 +1518,39 @@ def test_chapter_renders_all_acceptance_rows_checks_and_links(tmp_path):
         assert f'data-check="{check.category}"' in html
 
 
+def test_rgb_table_groups_session_medians_by_arm(tmp_path):
+    """Synthetic numbers distinguish arm medians from the combined-session median."""
+    from types import SimpleNamespace
+    from flashlight_results import rgb_measurements_html
+    key = 'legacy71/fp16/full_gpu'
+    rows = [{'session_arm': arm, 'median_ms': value}
+            for arm, value in zip('ABBA', (10, 13, 15, 12))]
+    (tmp_path / 'rgb.json').write_text(json.dumps({'proof': {'timing_summary': {
+        'arms_scopes': {key: {'sessions': rows}},
+        'paired_sessions': [{'key': key, 'b_minus_a_ms': 3}] * 2,
+    }}}), encoding='utf-8')
+    record = SimpleNamespace(bundle_root=tmp_path, checks=[SimpleNamespace(
+        category='rgb', receipt=SimpleNamespace(path='rgb.json'))])
+    tables = []
+    rgb_measurements_html(record, lambda headers, body: tables.append(body) or '')
+    assert tables[0][0][2:6] == ('11.0000', '14.0000', '+3000.00', '+27.27')
+    assert tables[1][0][2:] == ('10.00000', '13.00000', '15.00000', '12.00000')
+
+
+def test_native_effects_keep_headline_and_paired_median_distinct():
+    """Synthetic skew makes paired mean, paired median and headline disagree."""
+    from types import SimpleNamespace
+    from flashlight_results import paired_effects_html
+    case = SimpleNamespace(id='synthetic', original_process_medians_ms=(10, 20, 100, 101),
+                           candidate_process_medians_ms=(21, 22, 102, 201))
+    tables = []
+    paired_effects_html(SimpleNamespace(timing=SimpleNamespace(cases=[case])),
+                        lambda headers, rows: tables.append(rows) or '')
+    assert tables[0][0][1] == '+2000.00'
+    assert tables[0][0][3] == '+6500.00'
+    assert tables[0][0][4] == '+11000.00, +2000.00, +2000.00, +100000.00'
+
+
 def test_rendered_acceptance_validator_detects_changed_row_report_and_link(tmp_path):
     acceptance, _, _, source_root = _load_fixture(tmp_path)
     guide = tmp_path / 'guide'
@@ -1416,6 +1591,16 @@ def test_rendered_acceptance_validator_detects_changed_row_report_and_link(tmp_p
     }
     pages = {page: None}
     assert validator.check_flashlight_evidence(guide, manifest, pages) == []
+
+    # Glossary markup splits prose into HTML nodes but must preserve the full note.
+    note = validator.html_escape(acceptance.original_build.provenance_note)
+    first, rest = note.split(' ', 1)
+    marked = original_body.replace(note, f'<a href="glossary.html#source">{first}</a> {rest}')
+    page.write_text(marked, encoding='utf-8', newline='\n')
+    assert validator.check_flashlight_evidence(guide, manifest, pages) == []
+    page.write_text(original_body.replace(note, ''), encoding='utf-8', newline='\n')
+    errors = validator.check_flashlight_evidence(guide, manifest, pages)
+    assert any('original provenance note is not rendered' in message for message in errors)
 
     page.write_text(original_body.replace(
         f'data-case="{acceptance.timing.cases[0].id}"', 'data-case="missing"'),
